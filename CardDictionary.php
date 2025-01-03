@@ -190,6 +190,10 @@ function CardSubType($cardID, $uniqueID = -1)
   switch ($cardID) {
     case "ROS027"://Technically false, but helps with Rosetta Limited
       return "Item";
+    case "UPR439":
+    case "UPR440":
+    case "UPR441": //resolved sand cover
+      return "Ash";
     default:
       break;
   }
@@ -629,8 +633,7 @@ function AbilityCost($cardID)
   else if ($set == "AIO") return AIOAbilityCost($cardID);
   else if ($set == "AJV") return AJVAbilityCost($cardID);
   else if ($set == "HNT") return HNTAbilityCost($cardID);
-  else if ($cardID == "HER117") return 0;
-  return CardCost($cardID);
+  return 0;
 }
 
 function DynamicCost($cardID)
@@ -679,7 +682,7 @@ function DynamicCost($cardID)
       if(SearchCurrentTurnEffects("CRU141-NAA", $currentPlayer) || SearchCurrentTurnEffects("CRU141-AA", $currentPlayer)) {
         return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
       }
-      return "0,2,4,6,8,10,12,14,16,18,20";
+      return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60";
     case "MST227":
       return GetIndices(SearchCount(SearchItemsByName($currentPlayer, "Hyper Driver")) + 1);
     case "ROS004":
@@ -1051,7 +1054,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT258":
       $names = "Ability";
       if ($from != "HAND") $names = "-,Attack Reaction";
-      elseif ($currentPlayer == $mainPlayer && count($combatChain) >= 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true)) $names .= ",Attack Reaction";
+      elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true)) $names .= ",Attack Reaction";
       return $names;
     default:
       return "";
@@ -1096,7 +1099,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
-  global $CombatChain, $combatChain;
+  global $CombatChain, $combatChain, $layers;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $myArsenal = &GetArsenal($player);
@@ -1172,7 +1175,17 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
-  elseif ($phase == "P" || $phase == "CHOOSEHANDCANCEL" && $from == "HAND") return true;
+  elseif ($phase == "CHOOSEHANDCANCEL" && $from == "HAND") {
+    if (count($layers) > 0) {
+      $topLayer = $layers[0];
+      return match($topLayer) {
+        "MON000" => ColorContains($cardID, 2, $currentPlayer),
+        "HNT007" => ClassContains($cardID, "ASSASSIN", $currentPlayer),
+        default => true
+      };
+    }
+  }
+  elseif ($phase == "P") return true;
   if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
@@ -1538,7 +1551,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks, $CS_NumInstantPlayed;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -1822,7 +1835,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "EVR173":
     case "EVR174":
     case "EVR175":
-      return GetClassState($player, $CS_DamageDealt) == 0;
+      return GetClassState($player, piece: $CS_PowDamageDealt) == 0;
     case "EVR176":
       return $from == "PLAY" && count($myHand) < 4;
     case "EVR177":
@@ -2200,25 +2213,34 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from == "PLAY") return $myItems[$index + 2] != 2;
       else return false;
     case "HNT003":
-      if (!($CombatChain->HasCurrentLink() & ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN"))) return true;
+    case "HNT004":
+    case "HNT006":
+      if (!($CombatChain->HasCurrentLink() && ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $currentPlayer))) return true;
+      if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
+      return false;
+    case "HNT005":
+      if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
+      return false;
+    case "HNT007":
+      if (!($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "HNT015":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) return false;
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;
     case "HNT102":
       if (!$CombatChain->HasCurrentLink()) return true;
       // This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
       // if you have 3 draconic chain links, and you can't pick the first mode without a dagger attack
       // this could change with release notes
-      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger")) return true;
+      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
       if (NumDraconicChainLinks() > 0) {
         // make sure you have at least one dagger equipped
         $mainCharacter = &GetPlayerCharacter($mainPlayer);
         for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-          if (SubtypeContains($mainCharacter[$i], "Dagger")) return false;
+          if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
         }
         return true;
       }
@@ -2248,12 +2270,16 @@ function IsDefenseReactionPlayable($cardID, $from)
   return true;
 }
 
-function IsAction($cardID)
+function IsAction($cardID, $from="")
 {
-  $cardType = CardType($cardID);
-  if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
-  $abilityType = GetAbilityType($cardID);
-  if ($abilityType == "A" || $abilityType == "AA") return true;
+  if(IsStaticType($cardID, $from)) {
+    $abilityType = GetAbilityType($cardID, from: $from);
+    if ($abilityType == "A" || $abilityType == "AA") return true;
+  }
+  else {
+    $cardType = CardType($cardID, $from);
+    if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
+  }
   return false;
 }
 
@@ -3550,7 +3576,8 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   if ($player == "") $player = $currentPlayer;
   $mod = explode("-", $mod)[0];
-  if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
+  if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
+  if (isFaceDownMod($mod)) return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "MON212" || $mod == "ARC119" || $mod == "ELE064") return true;
   if ($mod == "MST236" && SearchCurrentTurnEffects("MST236-3", $player) && CardType($cardID) != "E") return true;
   if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("ARC112", $player, false)) >= CardCost($cardID, "BANISH")) return true;
@@ -3640,7 +3667,7 @@ function AbilityPlayableFromBanish($cardID, $mod = "")
 {
   global $currentPlayer, $mainPlayer;
   $mod = explode("-", $mod)[0];
-  if ($mod == "INT" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
+  if (isFaceDownMod($mod)) return false;
   switch ($cardID) {
     case "MON192":
       return $currentPlayer == $mainPlayer;
@@ -3655,7 +3682,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
   $mod = explode("-", $mod)[0];
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
-  if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") return false;
+  if (isFaceDownMod($mod)) return false;
   if (ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("MST001", $player) || SearchCurrentTurnEffects("MST002", $player))) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
@@ -3807,7 +3834,7 @@ function WardAmount($cardID, $player, $index = -1)
     case "MST027":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "MST031":
-      return $auras[$index + 3];
+      return isset($auras[$index + 3]) ? $auras[$index + 3] : 0;
     case "MST033":
       return SearchPitchForColor($player, 3) * 3;
     case "MST037":

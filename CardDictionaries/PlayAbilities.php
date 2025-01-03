@@ -374,12 +374,15 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HVY245":
       if ($from == "GY") {
         $character = &GetPlayerCharacter($currentPlayer);
-        EquipWeapon($currentPlayer, "HVY245");
-        $index = FindCharacterIndex($currentPlayer, "HVY245");
-        if ($character[$index + 3] == 0) {
-          ++$character[$index + 3];
-        } else {
-          ++$character[$index + 15];
+        $uniqueID = EquipWeapon($currentPlayer, "HVY245");
+        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          if ($character[$i + 11] == $uniqueID) {
+            if ($character[$i + 3] == 0) {
+              ++$character[$i + 3];
+            } else {
+              ++$character[$i + 15];
+            }
+          }
         }
       }
       return "";
@@ -606,7 +609,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
-      return "Light up the gem when you want the conditional boost effect to trigger";
+      return "Light up the gem under the equipment when you want to use the conditional effect❗";
     case "EVO057":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
@@ -704,7 +707,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "EVO082":
     case "EVO083":
       if ($from == "PLAY") {
-        MZMoveCard($currentPlayer, "MYDISCARD:pitch=" . PitchValue($cardID) . ";type=AA;class=MECHANOLOGIST", "MYHAND", may: true, isReveal: true);
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=" . PitchValue($cardID) . ";type=AA;class=MECHANOLOGIST", "MYHAND", may: true);
       }
       return "";
     case "EVO087":

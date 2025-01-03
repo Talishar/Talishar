@@ -395,9 +395,19 @@ function PlayerTargetedAbility($player, $card, $lastResult)
   }
 }
 
+function filterIndices($indices, $zone, $dqVars, $condition) {
+  $filteredIndices = array_filter($indices, function($index) use ($zone, $dqVars, $condition) {
+      $block = isset($zone[$index]) ? BlockValue($zone[$index]) : -1;
+      $type = CardType($zone[$index]);
+      return $block > -1 && $condition($block, $dqVars) && (DelimStringContains($type, "A") || $type == "AA");
+  });
+  $filteredIndices = implode(",", $filteredIndices);
+  return $filteredIndices == "" ? "PASS" : $filteredIndices;
+}
+
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
-  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
+  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -419,35 +429,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return "";
     case "PULSEWAVEHARPOONFILTER":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $filteredIndices = "";
-      for($i = 0; $i < count($indices); ++$i) {
-        $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block <= $dqVars[0]) {
-          $type = CardType($hand[$indices[$i]]);
-          if(DelimStringContains($type, "A") || $type == "AA") {
-            if ($filteredIndices != "") $filteredIndices .= ",";
-            $filteredIndices .= $indices[$i];
-          }
-        }
-      }
-      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+      $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $hand = GetHand($player);
+      if (empty($hand)) return "PASS";
+      return filterIndices($indices, $hand, $dqVars, function($block, $dqVars) { return $block <= $dqVars[0]; });
     case "PULSEWAVEPROTOCOLFILTER":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $filteredIndices = "";
-      for($i = 0; $i < count($indices); ++$i) {
-        $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block < $dqVars[0]) {
-          $type = CardType($hand[$indices[$i]]);
-          if(DelimStringContains($type, "A") || $type == "AA") {
-            if ($filteredIndices != "") $filteredIndices .= ",";
-            $filteredIndices .= $indices[$i];
-          }
-        }
-      }
-      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+      $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $hand = GetHand($player);
+      return filterIndices($indices, $hand, $dqVars, function($block, $dqVars) { return $block < $dqVars[0]; });
     case "SIFT":
       $numCards = SearchCount($lastResult);
       WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
@@ -472,7 +461,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "EVENBIGGERTHANTHAT":
       $deck = new Deck($player);
       $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
-      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
+      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), piece: $CS_PowDamageDealt)) {
         WriteLog(CardLink($params[1], $params[1]) . " draw a card and created a " . CardLink("WTR225", "WTR225") . " token");
         Draw($player);
         PlayAura("WTR225", $player);
@@ -685,10 +674,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if($lastResult == "PASS") {
         if($dqVars[0] != "-") {
           $char = &GetPlayerCharacter($player);
-          $index = $dqVars[1];
           $hyperdriverArr = explode(",", $dqVars[0]);
-          for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
-          AddCurrentTurnEffect($char[$index] . "-" . (count($hyperdriverArr)*2), $player);
+          $index = $hyperdriverArr[0];
+          $count = count($hyperdriverArr);
+          for($i=1; $i<$count; ++$i) {
+            CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+          }
+          AddCurrentTurnEffect($char[$index] . "-" . (($count-1)*2), $player);
         }
         return $lastResult;
       }

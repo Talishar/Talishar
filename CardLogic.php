@@ -225,7 +225,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   array_unshift($layers, $player);
   array_unshift($layers, $cardID);
   if ($cardID == "TRIGGER") {
-    $orderableIndex = intval($dqState[8]);
+    $orderableIndex = isset($dqState[8]) ? intval($dqState[8]) : -1;
     if ($orderableIndex == -1) $dqState[8] = 0;
     else $dqState[8] += LayerPieces();
   } else $dqState[8] = -1;//If it's not a trigger, it's not orderable
@@ -508,7 +508,7 @@ function ProcessLayer($player, $parameter)
 
 function AddOnHitTrigger($cardID): void
 {
-  global $mainPlayer;
+  global $mainPlayer, $combatChain;
   switch ($cardID) {
     case "WTR083":
     case "WTR084":
@@ -719,8 +719,6 @@ function AddOnHitTrigger($cardID): void
     case "DYN109":
     case "DYN115":
     case "DYN116":
-    case "DYN117":
-    case "DYN118":
     case "DYN119":
     case "DYN121":
     case "DYN120":
@@ -897,6 +895,12 @@ function AddOnHitTrigger($cardID): void
     case "ELE003":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
+    case "DYN117":
+    case "DYN118":
+      if(IsHeroAttackTarget() && ClassContains($combatChain[0], "ASSASSIN", $mainPlayer)) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      }
+      break;
     case "MST103":
       if (NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
@@ -1039,6 +1043,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "AAZ004":
     case "DTD229-HIT":
     case "HNT003-HIT":
+    case "HNT004-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "ELE066-HIT":
@@ -1168,7 +1173,7 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
 
 function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
-  global $combatChain, $mainPlayer, $layers;
+  global $combatChain, $mainPlayer, $layers, $CS_FealtyCreated;
   $character = &GetPlayerCharacter($player);
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
@@ -1243,6 +1248,21 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("DEALARCANE", $player, "1" . "-" . "AUR005" . "-" . "TRIGGER", 1);
       AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
+    case "HNT001":
+    case "HNT002": //arakni
+      GiveAttackGoAgain();
+      break;
+    case "HNT007":
+      WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $target);
+      PlayerLoseHealth($target, 1);
+      break;
+    case "HNT054":
+    case "HNT055":
+    case "HNT098":
+    case "HNT099"://Fang and Cindra
+      PlayAura("HNT167", $player);
+      IncrementClassState($player, piece: $CS_FealtyCreated);
+      break;
     default:
       break;
   }
@@ -1296,7 +1316,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
-  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished, $CS_FealtyCreated;
+  global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $CS_DamagePrevention, $chainLinks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -1668,7 +1688,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DiscardHand($target, false);
       break;
     case "ELE226":
-      DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
+      if(count($combatChain) > 0) DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "EVR018":
       PlayAura("ELE111", $player, effectController: $defPlayer);
@@ -1684,8 +1704,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
       } else {
-        DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
+        DestroyItemForPlayer($player, $index);
       }
       break;
     case "EVR107":
@@ -2094,7 +2114,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "OUT185":
-      MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack() . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack(), "MYTOPDECK", may: true);
+      MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack()-1, "MYTOPDECK", may: true);
       break;
     case "DTD000":
       $deck = new Deck($player);
@@ -2218,12 +2238,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
     case "EVO073":
-      {
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment it cannot be activated until the end of its controller next turn");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-        AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
-      }
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "EVO073-", 1);
       break;
     case "HVY648":
       if (IsAllyAttacking()) {
@@ -2534,7 +2552,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      CloseCombatChain();
+      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+        //only close the chain if removed before the resolution step
+        CloseCombatChain(false);
+      }
       break;
     case "ROS077":
       WriteLog(CardLink($parameter, $parameter) . " draws a card");
@@ -2543,7 +2564,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS079":
     case "ROS080":
     case "ROS081":
-      MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its controller's hand");
+      MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its owner's hand");
       break;
     case "ROS114":
       PummelHit($otherPlayer);
@@ -2650,17 +2671,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
-      break;
-    case "HNT001":
-    case "HNT002":
-      GiveAttackGoAgain();
-      break;
-    case "HNT054":
-    case "HNT055":
-    case "HNT098":
-    case "HNT099"://Fang and Cindra
-      PlayAura("HNT167", $mainPlayer);
-      IncrementClassState($mainPlayer, $CS_FealtyCreated);
       break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
@@ -2892,7 +2902,7 @@ function Intimidate($player = "")
 {
   global $currentPlayer, $defPlayer, $CS_HaveIntimidated;
   IncrementClassState($currentPlayer, $CS_HaveIntimidated);
-  if (!ShouldAutotargetOpponent($currentPlayer) && $player == "") {
+  if (!ShouldAutotargetOpponent($currentPlayer)) {
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose hero to intimidate.", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -3076,13 +3086,6 @@ function HasSteamCounter($array, $index, $player)
     if (CardType($array[$index]) == 'W') return $array[$index + 2] > 0;
     if (SubtypeContains($array[$index], "Item", $player)) return $array[$index + 1] > 0;
   }
-  return false;
-}
-
-function IsHeroActive($player)
-{
-  $char = &GetPlayerCharacter($player);
-  if ($char[1] == 2) return true;
   return false;
 }
 

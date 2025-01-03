@@ -224,6 +224,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Choose Cardback
   $MyCardBack = GetCardBack($playerID);
   $TheirCardBack = GetCardBack($otherPlayer);
+  $borderColor = 0;
 
   $response->MyPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID));
   $response->TheirPlaymat = (IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer));
@@ -330,7 +331,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // their hand contents
   $theirHandContents = array();
   for ($i=0; $i < count($theirBanish); $i += BanishPieces()) {
-    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer)) {
+    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer) && $theirBanish[$i+1] != "TRAPDOOR") {
       array_push($theirHandContents, JSONRenderedCard($theirBanish[$i], borderColor:7));
     }
   }
@@ -390,7 +391,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turn[0], "THEIRBANISH", $i) ? 15 : 0;
-    if ($mod == "INT" || $mod == "UZURI" || $mod == "FACEDOWN" || $mod == "NTSTONERAIN" || $mod == "STONERAIN") {
+    if (isFaceDownMod($mod)) {
       $cardID = "CardBack";
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
@@ -560,8 +561,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    if (($myBanish[$i + 1] == "INT" || $myBanish[$i + 1] == "NTSTONERAIN" || $myBanish[$i + 1] == "STONERAIN") && $playerID == 3) $cardID = "CardBack";
-    if ($myBanish[$i + 1] == "INT") $label = "Intimidated";
+    elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = "CardBack";
+    if ($mod == "INT") {
+      $overlay = 1;
+      $label = "Intimidated";
+    }
     array_push($playerBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->playerBanish = $playerBanishArr;
@@ -1021,10 +1025,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $caption = "";
     if ($turn[0] == "CHOOSEARCANE") {
       $vars = explode("-", $dqVars[0]);
-      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . "&nbsp | &nbspTotal Damage: " . $vars[0] . "&nbsp | &nbsp";
+      $caption .= "Source: " . CardLink($vars[1], $vars[1]) . "&nbsp | &nbspTotal Damage: " . $vars[0];
       if(!CanDamageBePrevented($playerID, $vars[0], "ARCANE", $vars[1])) {
-        $caption .= " <br><span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
+        $caption .= "&nbsp | &nbsp <span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
       }
+      else $caption .= "<br>";
     }
     for ($i = 0; $i < count($options); ++$i) {
       array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $options[$i]), 17, strval($options[$i]), "24px"));
@@ -1226,7 +1231,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
               if($option[0] == "MYDISCARD") $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $currentPlayer);
               else $uniqueIDIndex = SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
             }
-            if($uniqueIDIndex != -1 && $cardID == $source[$uniqueIDIndex]) {
+            if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
               $label = "Targeted";
               continue;
             }
@@ -1256,7 +1261,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
         $borderColor = CardBorderColor($card, "BANISH", $action > 0, $mod);
         if($borderColor == 7) $label = "Playable";
-        if ($source[$index + 1] == "INT" || $source[$index + 1] == "FACEDOWN" || $source[$index + 1] == "NTSTONERAIN" || $source[$index + 1] == "STONERAIN") $card = "CardBack";
+        if (isFaceDownMod($source[$index + 1])) $card = "CardBack";
       }
       else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
       else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;

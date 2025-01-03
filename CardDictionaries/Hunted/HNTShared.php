@@ -4,6 +4,10 @@ function HNTAbilityType($cardID): string
 {
   return match ($cardID) {
     "HNT003" => "AR",
+    "HNT004" => "AR",
+    "HNT005" => "I",
+    "HNT006" => "AR",
+    "HNT007" => "AR",
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT167" => "I",
@@ -36,6 +40,10 @@ function HNTEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "HNT003" => 3,
+    "HNT004" => 3,
+    "HNT005" => 3,
+    "HNT006" => 3,
+    "HNT007" => 3,
     "HNT015" => 3,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
@@ -51,7 +59,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "HNT102" & count($dashArr) > 1) {
-    if ($dashArr[1] == "BUFF") return CardSubType($attackID) == "Dagger";
+    if ($dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
     if (DelimStringContains($dashArr[1], "MARK", true)) {
       $id = explode(",", $dashArr[1])[1];
       $character = &GetPlayerCharacter($mainPlayer);
@@ -59,16 +67,21 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     }
   }
   if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
+  if ($cardID == "HNT004" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   return match ($cardID) {
-    "HNT003" => ClassContains($cardID, "ASSASSIN"),
+    "HNT003" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
+    "HNT004" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
+    "HNT005" => HasStealth($attackID),
+    "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
+    "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT015" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT116" => true,
-    "HNT125" => CardSubType($attackID) == "Dagger",
-    "HNT127" => CardSubType($attackID) == "Dagger",
+    "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT236" => true,
     "HNT249" => true,
@@ -83,8 +96,21 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
-      AddCurrentTurnEffect("HNT003", $currentPlayer);
-      if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("HNT003-HIT", $currentPlayer);
+    case "HNT004":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
+      break;
+    case "HNT005":
+      WriteLog("We don't know what Graphene Chelicera is yet");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT006":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (HasStealth($CombatChain->AttackCard()->ID())) GiveAttackGoAgain();
+      break;
+    case "HNT007":
+      AddCurrentTurnEffect("HNT007", $currentPlayer);
+      break;
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
@@ -294,9 +320,14 @@ function ChaosTransform($characterID, $mainPlayer)
 {
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "HNT001" || $characterID == "HNT002") {
-    $roll = GetRandom(1, 1);
+    $roll = GetRandom(1, 6);
     $transformTarget = match ($roll) {
       1 => "HNT003",
+      2 => "HNT004",
+      3 => "HNT005",
+      4 => "HNT006",
+      5 => "HNT007",
+      6 => "HNT008",
       default => $characterID,
     };
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
@@ -321,4 +352,12 @@ function ChaosTransform($characterID, $mainPlayer)
     $char[10] = $subCards == "" ? "-" : substr($subCards, 0, -1);
   }
   $char[0] = $transformTarget;
+  if ($transformTarget == "HNT008") {
+    AddDecisionQueue("YESNO", $mainPlayer, ":_banish_a_card_to_".CardLink("HNT008", "HNT008")."?");
+    AddDecisionQueue("NOPASS", $mainPlayer, "-");
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("TRAPDOOR", $mainPlayer, "-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+  }
 }

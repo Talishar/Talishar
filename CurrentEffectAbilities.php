@@ -409,6 +409,11 @@ function EffectHitEffect($cardID, $from)
         AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       }
       return 1;
+    case "HNT004-HIT":
+      if (IsHeroAttackTarget()) {
+        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
+      }
+      return 1;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
@@ -733,7 +738,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "WTR060":
         case "WTR061":
         case "WTR062":
-          if (IsAction($cardID)) {
+          if (IsAction($cardID, $from)) {
             $costModifier += 1;
             $remove = true;
           }
@@ -1011,7 +1016,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-            if ($source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+            if (TypeContains($source, "AA") || $source == "ARC112" || $source == "UPR042") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
         case "OUT175":

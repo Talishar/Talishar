@@ -44,7 +44,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
       AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with ".CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with " . CardLink($cardID, $cardID), 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -52,9 +52,9 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
       AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-      AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ".CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "ARC120":
@@ -165,6 +165,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
+    $damage += CurrentEffectDamageModifiers($player, $source, $type);
     if ($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
     if ($fromQueue) {
       if (!$limitDuplicates) {

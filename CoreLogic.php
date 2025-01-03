@@ -142,7 +142,6 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
-
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
@@ -152,6 +151,7 @@ function DefendingTerm($term)
 {
   switch ($term) {
     case "ADDCARDTOCHAINASDEFENDINGCARD": // Pulsewave Harpoon, Pulsewave Protocol, etc.
+    case "PROVOKE":
       return true;
     default:
       return false;
@@ -524,6 +524,7 @@ function AddDamagePreventionSelection($player, $damage, $type, $preventable)
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
+  global $CS_DamageDealt, $CS_PowDamageDealt;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -551,6 +552,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       WriteLog("Lost life from Ode to Wrath");
     }
     $classState[$CS_DamageTaken] += $damage;
+    if ($type !== "COMBAT") SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage);
+    else SetClassState($otherPlayer, $CS_PowDamageDealt, GetClassState($otherPlayer, $CS_PowDamageDealt) + $damage);
     if ($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if ($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
     CurrentEffectDamageEffects($player, $source, $type, $damage);
@@ -638,6 +641,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 {
   global $currentTurnEffects;
   $modifier = 0;
+  if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
     switch ($currentTurnEffects[$i]) {
@@ -880,6 +884,7 @@ function UnsetTurnBanish()
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($defPlayer, "NTSTONERAIN", "STONERAIN");
+  ReplaceBanishModifier($defPlayer, "TRAPDOOR", "FACEDOWN");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
 }
 
@@ -932,24 +937,6 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
     }
   }
   return $cardIDs;
-}
-
-function GetTheirEquipmentChoices()
-{
-  global $currentPlayer;
-  return GetEquipmentIndices(($currentPlayer == 1 ? 2 : 1));
-}
-
-function FindMyCharacter($cardID)
-{
-  global $currentPlayer;
-  return FindCharacterIndex($currentPlayer, $cardID);
-}
-
-function FindDefCharacter($cardID)
-{
-  global $defPlayer;
-  return FindCharacterIndex($defPlayer, $cardID);
 }
 
 function ChainLinkResolvedEffects()
@@ -1353,7 +1340,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   return false;
 }
 
-function ClassOverride($cardID, $player = "")
+function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
   $cardClass = "";
@@ -1425,13 +1412,13 @@ function ColorOverride($cardID, $player = "")
   return $pitch;
 }
 
-function ClassContains($cardID, $class, $player = "")
+function ClassContains($cardID, $class, $player)
 {
   $cardClass = ClassOverride($cardID, $player);
   return DelimStringContains($cardClass, $class);
 }
 
-function ColorContains($cardID, $color, $player = "")
+function ColorContains($cardID, $color, $player)
 {
   $cardColor = ColorOverride($cardID, $player);
   return DelimStringContains($cardColor, $color);
@@ -1831,7 +1818,8 @@ function CloseCombatChain($chainClosed = "true")
 
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
   elseif (in_array("DEFENDSTEP", $layers)) PopLayer();
-  if (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  if(!$chainClosed) FinalizeChainLink(!$chainClosed);
+  elseif (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";
@@ -2128,7 +2116,9 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
     }
     $numActionsPlayed = count($actionsPlayed);
-    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && SearchCurrentTurnEffects("ROS074", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) $hasGoAgain = true;
+    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "ROS074" && DelimStringContains($cardType, "A")) {
+      if (SearchCurrentTurnEffects("ROS074", $mainPlayer, remove: true)) $hasGoAgain = true;
+    }
     if ($cardType == "AA" && SearchCurrentTurnEffects("ELE147", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("UPR190", 1) || SearchAuras("UPR190", 2))) $hasGoAgain = false;
@@ -2608,9 +2598,9 @@ function NumChainLinks()
 
 function ClearGameFiles($gameName)
 {
-  unlink("./Games/" . $gameName . "/gamestateBackup.txt");
-  unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
-  unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+  @unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+  @unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+  @unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
 }
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")

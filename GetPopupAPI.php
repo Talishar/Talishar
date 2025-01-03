@@ -95,7 +95,12 @@ switch ($popupType) {
   case "chainLinkPopup":
     $popupIndex = intval(($chainLinkIndex ?? $params[1]));
     $response = ChainLinkObject($popupIndex);
-    $response->TotalDamageDealt = $chainLinkSummary[$popupIndex * ChainLinkSummaryPieces()];
+    $index = $popupIndex * ChainLinkSummaryPieces();
+    if (isset($chainLinkSummary[$index])) {
+        $response->TotalDamageDealt = $chainLinkSummary[$index];
+    } else {
+        $response->TotalDamageDealt = 0;
+    }
     break;
   case "mySettings":
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
@@ -151,10 +156,12 @@ function JSONPopup($response, $zone, $zonePieces)
 
 function ChainLinkObject($link)
 {
-  global $chainLinks, $cardSize, $playerID, $mainPlayer, $defPlayer;
+  global $chainLinks, $mainPlayer, $defPlayer;
   $chainLink = new stdClass();
   $chainLink->Cards = array();
-  if(!is_array($chainLinks)) return $chainLink;
+  if (!is_array($chainLinks) || empty($chainLinks[$link])) {
+    return $chainLink;
+  }
   for ($i = 0; $i < count($chainLinks[$link]); $i += ChainLinksPieces()) {
     $card = new stdClass();
     $card->Player = $chainLinks[$link][$i+1];

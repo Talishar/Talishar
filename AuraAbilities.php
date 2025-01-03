@@ -875,7 +875,7 @@ function ChannelTalent($index, $talent)
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
     for ($j = $toBottom; $j > 0; --$j) {
-      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", may: true, isSubsequent: $j < $toBottom, DQContext: "Choose a ". ucwords(strtolower($talent)) ." card for ". CardLink($auras[$index], $auras[$index]) ." effect:");
+      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose a " . ucwords(strtolower($talent)) . " card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
@@ -1195,7 +1195,7 @@ function AuraPlayAbilities($cardID, $from = "")
 
 function AuraAttackAbilities($attackID)
 {
-  global $CombatChain, $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {

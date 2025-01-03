@@ -7,7 +7,12 @@ SetHeaders();
 
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$userEmail = $_POST["email"];
+$userEmail = isset($_POST["email"]) ? $_POST["email"] : null;
+if (empty($userEmail)) {
+    $response->error = "Email is required.";
+    echo(json_encode($response));
+    exit;
+}
 
 $selector = bin2hex(random_bytes(8));
 $token = random_bytes(32);

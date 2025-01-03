@@ -29,6 +29,7 @@
     PrependDecisionQueue("NOPASS", $player, "-");
     PrependDecisionQueue("DOCRANK", $player, "-");
     PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($items[$index], $items[$index]) ."?", 1);
+    PrependDecisionQueue("SETDQVAR", $player, "0");
   }
 
   function DoCrank($player, $index, $mainPhase=true)

@@ -167,9 +167,10 @@ function AllyPieces()
 
 //0 - Card ID
 //1 - Where it's played from
+//2 - Subcards , delimited
 function PermanentPieces()
 {
-  return 2;
+  return 3;
 }
 
 //0 - Card ID/Layer type
@@ -337,7 +338,8 @@ $CS_SkipAllRunechants = 86;
 $CS_FealtyCreated = 87;
 $CS_NumDraconicPlayed = 88;
 $CS_NumSeismicSurgeDestroyed = 89;
-$CS_TunicTicks = 90;
+$CS_PowDamageDealt = 90;
+$CS_TunicTicks = 91;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -463,7 +465,7 @@ function ResetCombatChainState()
   $chainLinkSummary = [];
 }
 
-function AttackReplaced($cardID)
+function AttackReplaced($cardID, $player)
 {
   global $combatChainState;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack, $combatChain;
@@ -474,6 +476,7 @@ function AttackReplaced($cardID)
   $combatChain[0] = $cardID;
   $combatChain[5] = 0;//Reset Attack modifiers
   $combatChain[6] = 0;//Reset Defense modifiers
+  $combatChain[7] = GetUniqueId($cardID, $player); //new unique id
   CleanUpCombatEffects(true);
 }
 
@@ -542,6 +545,7 @@ function ResetMainClassState()
   global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
+  global $CS_PowDamageDealt;
   global $CS_TunicTicks;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
@@ -633,6 +637,7 @@ function ResetMainClassState()
   $mainClassState[$CS_FealtyCreated] = 0;
   $mainClassState[$CS_NumDraconicPlayed] = 0;
   $mainClassState[$CS_NumSeismicSurgeDestroyed] = 0;
+  $mainClassState[$CS_PowDamageDealt] = 0;
   $mainClassState[$CS_TunicTicks] = 0;
 }
 

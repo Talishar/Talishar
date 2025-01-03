@@ -408,16 +408,3 @@ function NumEquipment($player)
   }
   return $numEquip;
 }
-
-function ActiveCharacterEffects($player, $index)
-{
-  $effects = "";
-  $characterEffects = GetCharacterEffects($player);
-  for ($i = 0; $i < count($characterEffects); $i += CharacterEffectPieces()) {
-    if ($characterEffects[$i] == $index) {
-      if ($effects != "") $effects .= ", ";
-      $effects .= CardName($characterEffects[$i + 1]);
-    }
-  }
-  return $effects;
-}

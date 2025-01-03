@@ -396,6 +396,11 @@ function MainCharacterBeginEndPhaseAbilities()
         if (CheckMarked($defPlayer)) ChaosTransform($characterID, $mainPlayer);
         break;
       case "HNT003":
+      case "HNT004":
+      case "HNT005":
+      case "HNT006":
+      case "HNT007":
+      case "HNT008":
         ChaosTransform($characterID, $mainPlayer);
         break;
       default:
@@ -462,6 +467,7 @@ function MainCharacterHitTrigger()
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
+  $defPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2") continue;
@@ -530,6 +536,25 @@ function MainCharacterHitTrigger()
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
+      case "HNT001":
+      case "HNT002":
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "HNT007":
+        if (IsHeroAttackTarget() && SubtypeContains($attackID, "Dagger", $mainPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $defPlayer, "MAINCHARHITEFFECT");
+        }
+        break;
+      case "HNT054":
+      case "HNT055":
+      case "HNT098":
+      case "HNT099":
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID,$attackID, "MAINCHARHITEFFECT");
+        }
+        break;
       case "ROGUE016":
         if (CardType($attackID) == "AA") {
           $deck = &GetDeck($mainPlayer);
@@ -550,20 +575,6 @@ function MainCharacterHitTrigger()
         break;
       default:
         break;
-    }
-    $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-    if (CheckMarked($otherPlayer) & IsHeroAttackTarget()) {
-      $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
-      switch ($characterID) {
-        case "HNT054":
-        case "HNT055":
-        case "HNT098":
-        case "HNT099":
-          AddLayer("TRIGGER", $mainPlayer, $mainCharacter[0]);
-          break;
-        default:
-          break;
-      }
     }
   }
 }
@@ -719,7 +730,8 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
       case "MST001":
       case "MST002":
-        if ($from == "THEIRBANISH" && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) $modifier -= $cost;
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        if ($from == "THEIRBANISH" && ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("MST001", $currentPlayer) || SearchCurrentTurnEffects("MST002", $currentPlayer))) $modifier -= $cost;
         break;
       case "MST025":
       case "MST026":
@@ -729,11 +741,15 @@ function CharacterCostModifier($cardID, $from, $cost)
         $modifier += 1;
         AddLayer("TRIGGER", $currentPlayer, "ELE111", "-", "EQUIP", $char[$i + 11]);
         break;
+      case "HNT005":
+        if (CardNameContains($cardID, "Graphene Chelicera", $currentPlayer)) --$modifier;
+        break;
       case "HNT098":
       case "HNT099": // Fang
         $fealties = SearchAurasForCard("HNT167", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
-      default:
+        break;
+       default:
         break;
     }
   }
@@ -799,28 +815,39 @@ function EquipWeapon($player, $card)
   $lastWeapon = 0;
   $replaced = 0;
   $numHands = 0;
-  //Replace the first destroyed weapon; if none you can't re-equip
-  for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
+  $uniqueID = GetUniqueId($card, $player);
+  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
     if (TypeContains($char[$i], "W", $player)) {
-      $lastWeapon = $i;
-      if ($char[$i + 1] == 0) {
-        $char[$i] = $card;
-        $char[$i + 1] = 2;
-        $char[$i + 2] = 0;
-        $char[$i + 3] = 0;
-        $char[$i + 4] = 0;
-        $char[$i + 5] = 1;
-        $char[$i + 6] = 0;
-        $char[$i + 7] = 0;
-        $char[$i + 8] = 0;
-        $char[$i + 9] = CharacterDefaultActiveState($card);
-        $char[$i + 10] = "-";
-        $char[$i + 11] = GetUniqueId($card, $player);
-        $char[$i + 12] = HasCloaked($card, $player);
-        $char[$i + 13] = 0;
-        $replaced = 1;
-      } else if (Is1H($char[$i])) ++$numHands;
-      else $numHands += 2;
+      if ($char[$i + 1] != 0) {
+        if (Is1H($char[$i])) ++$numHands;
+        else $numHands += 2;
+      }
+    }
+  }
+  //check if you have enough hands to equip it
+  if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
+    //Replace the first destroyed weapon; if none you can't re-equip
+    for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
+      if (TypeContains($char[$i], "W", $player)) {
+        $lastWeapon = $i;
+        if ($char[$i + 1] == 0) {
+          $char[$i] = $card;
+          $char[$i + 1] = 2;
+          $char[$i + 2] = 0;
+          $char[$i + 3] = 0;
+          $char[$i + 4] = 0;
+          $char[$i + 5] = 1;
+          $char[$i + 6] = 0;
+          $char[$i + 7] = 0;
+          $char[$i + 8] = 0;
+          $char[$i + 9] = CharacterDefaultActiveState($card);
+          $char[$i + 10] = "-";
+          $char[$i + 11] = $uniqueID;
+          $char[$i + 12] = HasCloaked($card, $player);
+          $char[$i + 13] = 0;
+          $replaced = 1;
+        }
+      }
     }
   }
   if ($numHands < 2 && !$replaced) {
@@ -840,6 +867,7 @@ function EquipWeapon($player, $card)
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
   }
+  return $uniqueID;
 }
 
 function ShiyanaCharacter($cardID, $player = "")
@@ -1414,6 +1442,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $otherPlayerCharacter = &GetPlayerCharacter($otherPlayer);
   for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
+    if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
       case "HER130":
         if (HasStealth($cardID)) {

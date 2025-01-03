@@ -249,9 +249,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "DYN090":
       $numBoosted = $combatChainState[$CCS_NumBoosted];
-      if(IsHeroAttackTarget() && $numBoosted > 0)
+      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayerHand = GetHand($otherPlayer);
+      if(IsHeroAttackTarget() && $numBoosted > 0 && count($otherPlayerHand) > 0)
       {
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
@@ -515,13 +516,11 @@ function DYNHitEffect($cardID, $from, $attackID)
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
     case "DYN115": case "DYN116": if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer); break;
-    case "DYN117": if(IsHeroAttackTarget() && ClassContains($attackID, "ASSASSIN", $mainPlayer)) GiveAttackGoAgain(); break;
+    case "DYN117": GiveAttackGoAgain(); break;
     case "DYN118":
-      if(IsHeroAttackTarget()) {
-        $deck = new Deck($defPlayer);
-        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop("Source-" . $combatChain[0], banishedBy:$combatChain[0]);
-      }
+      $deck = new Deck($defPlayer);
+      if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+      $deck->BanishTop("Source-" . $attackID, banishedBy:$attackID);
       break;
     case "DYN119":
       if(IsHeroAttackTarget()) {
@@ -585,9 +584,9 @@ function DYNHitEffect($cardID, $from, $attackID)
 
 function IsRoyal($player)
 {
-  if (SearchCurrentTurnEffects("UPR187", $player)) return false;//erase face
   $mainCharacter = &GetPlayerCharacter($player);
   if(SearchCharacterForCard($player, "DYN234")) return true;//crown
+  if (SearchCurrentTurnEffects("UPR187", $player)) return false;//erase face
   switch($mainCharacter[0]) {
     case "DYN001": return true;//emperor
     case "HNT054":

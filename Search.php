@@ -140,8 +140,8 @@ function SearchInner(
   $cardList = "";
   if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
-    if ($zone == "CHAR" && ($array[$i + 1] == 0 || $array[$i + 12] == "DOWN") && !$faceDown) continue;
-    if ($zone == "BANISH" && ($array[$i + 1] == "INT" || $array[$i + 1] == "FACEDOWN" || $array[$i + 1] == "NTSTONERAIN" || $array[$i + 1] == "STONERAIN") && !$isIntimidated) continue;
+    if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
+    if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D") || ($type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID)))
@@ -339,20 +339,6 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
   return $cardList;
 }
 
-function SearchAlliesForCard($player, $card1, $card2 = "", $card3 = "")
-{
-  $allies = &GetAllies($player);
-  $cardList = "";
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-    $id = $allies[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    }
-  }
-  return $cardList;
-}
-
 function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
 {
   $allies = &GetAllies($player);
@@ -378,18 +364,6 @@ function SearchPermanentsForCard($player, $card)
     }
   }
   return $indices;
-}
-
-function SearchEquipNegCounter(&$character)
-{
-  $equipList = "";
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if (CardType($character[$i]) == "E" && $character[$i + 4] < 0 && $character[$i + 1] != 0) {
-      if ($equipList != "") $equipList = $equipList . ",";
-      $equipList = $equipList . $i;
-    }
-  }
-  return $equipList;
 }
 
 function SearchCharacterAlive($player, $cardID)
@@ -423,7 +397,7 @@ function SearchCharacterForCard($player, $cardID)
 
 function SearchCharacterAliveSubtype($player, $subtype)
 {
-  global $combatChain, $currentTurnEffects;
+  global $currentTurnEffects;
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
@@ -443,7 +417,6 @@ function SearchCharacterAliveSubtype($player, $subtype)
 
 function SearchCharacterIndexSubtype($player, $subtype)
 {
-  global $combatChain;
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if (SubtypeContains($character[$i], $subtype, $player)) return $i;
@@ -456,7 +429,7 @@ function FindCharacterIndex($player, $cardID)
   $character = &GetPlayerCharacter($player);
   $index = -1;
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == $cardID) {
+    if (isset($character[$i]) && $character[$i] == $cardID) {
       if ($character[$i + 1] != 0) return $i;
     }
   }
@@ -479,29 +452,6 @@ function CombineSearches($search1, $search2)
   if ($search2 == "") return $search1;
   else if ($search1 == "") return $search2;
   return $search1 . "," . $search2;
-}
-
-function CombineThreeSearches($search1, $search2, $search3)
-{
-  if ($search1 == "") {
-    if ($search2 == "") {
-      return $search3;
-    } elseif ($search3 = "") {
-      return $search2;
-    } else {
-      return $search2 . "," . $search3;
-    }
-  } else if ($search2 == "") {
-    if ($search3 == "") {
-      return $search1;
-    } else {
-      return $search1 . "," . $search3;
-    }
-  } else if ($search3 == "") {
-    return $search1 . "," . $search2;
-  } else {
-    return $search1 . "," . $search2 . "," . $search3;
-  }
 }
 
 function SearchRemoveDuplicates($search)
@@ -747,19 +697,6 @@ function GetArsenalFaceDownIndices($player)
   return $indices;
 }
 
-function GetArsenalFaceUpIndices($player)
-{
-  $arsenal = &GetArsenal($player);
-  $indices = "";
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i + 1] == "UP") {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
-    }
-  }
-  return $indices;
-}
-
 function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatChain = false)
 {
   $character = &GetPlayerCharacter($player);
@@ -802,6 +739,20 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
   $indices = "";
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     if ($auras[$i] == $cardID) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
+function SearchCharacterForCards($cardID, $player, $selfReferential = true)
+{
+  if (!$selfReferential && SearchCurrentTurnEffects("OUT183", $player)) return "";
+  $char = &GetPlayerCharacter($player);
+  $indices = "";
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if ($char[$i] == $cardID) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
@@ -984,7 +935,6 @@ function CountAura($cardID, $player)
   return $count;
 }
 
-
 function CountAuraAtkCounters($player)
 {
   $auras = &GetAuras($player);
@@ -1018,24 +968,6 @@ function GetCombatChainCardIDIndex($cardID)
   global $combatChain;
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i] == $cardID) return $i;
-  }
-  return -1;
-}
-
-function GetAuraIndex($cardID, $player)
-{
-  $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == $cardID) return $i;
-  }
-  return -1;
-}
-
-function GetAllyIndex($cardID, $player)
-{
-  $Allies = &GetAllies($player);
-  for ($i = 0; $i < count($Allies); $i += AllyPieces()) {
-    if ($Allies[$i] == $cardID) return $i;
   }
   return -1;
 }
@@ -1127,7 +1059,7 @@ function GetMZCardLink($player, $MZ)
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
   if ($index == "") return "";
-  if ($zoneDS[$index] == "TRIGGER") $index += 2;
+  if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD") $index += 2;
   return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 

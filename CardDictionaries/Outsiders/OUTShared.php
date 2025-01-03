@@ -184,7 +184,7 @@ function OUTAbilityCost($cardID)
         if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
         else $deck = new Deck($otherPlayer);
         $deck->AddBottom($combatChain[0], "CC");
-        AttackReplaced($card->ID());
+        AttackReplaced($card->ID(), $currentPlayer);
         $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
@@ -225,13 +225,18 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Surging Strike from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDTOPDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "TOP,BOTTOM", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
+        AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Combo card from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("OPTX", $currentPlayer, "2", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "TOP,BOTTOM", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
+        AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         return "";
       case "OUT056": case "OUT057": case "OUT058":
         if(ComboActive())
