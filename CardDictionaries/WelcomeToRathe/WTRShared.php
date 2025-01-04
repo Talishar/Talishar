@@ -311,15 +311,6 @@
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "WTR150":
-        // if ($cardID == "WTR150" && GetCharacterGemState($currentPlayer, $cardID) && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
-        //   // doing this here so it doesn't make a layer
-        //   WriteLog("HERE: " . GetClassState($currentPlayer, $CS_TunicTicks));
-        //   $character = &GetPlayerCharacter($currentPlayer);
-        //   $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
-        //   ++$character[$cardIndex + 2];
-        //   IncrementClassState($currentPlayer, $CS_TunicTicks);
-        //   return;
-        // }
         GainResources($currentPlayer, 1);
         return "";
       case "WTR151":

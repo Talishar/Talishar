@@ -138,7 +138,7 @@ function CharacterStartTurnAbility($index)
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "WTR150":
-      if (!GetCharacterGemState($mainPlayer, $cardID)) {
+      if (!ManualTunicSetting($mainPlayer)) {
         if ($char->numCounters < 3) {
           ++$char->numCounters;
           IncrementClassState($mainPlayer, $CS_TunicTicks);
@@ -890,7 +890,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
   $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "WTR150": //Tunic energy counters
-      if (!GetCharacterGemState($currentPlayer, $cardID) || $character[$cardIndex + 2] == 3) {
+      if (!ManualTunicSetting($currentPlayer) || $character[$cardIndex + 2] == 3) {
         $character[$cardIndex + 2] -= 3;
         IncrementClassState($currentPlayer, $CS_TunicTicks, 1);
       }

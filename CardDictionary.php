@@ -1133,7 +1133,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && $character[$index + 1] != "2") return false;
-  if ($phase != "B" && TypeContains($cardID, "E", $player) && (GetCharacterGemState($player, $cardID) == 0 && $cardID != "WTR150")) return false;
+  if ($phase != "B" && TypeContains($cardID, "E", $player) && (ManualTunicSetting($player) == 0 && $cardID != "WTR150")) return false;
   if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
@@ -1639,7 +1639,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "WTR150":
       if ($character[$index + 2] == 3) return false;
       if ($currentPlayer != $mainPlayer) return true; //only tick up on your own turn
-      if (GetCharacterGemState($player, $cardID) && GetClassState($player, piece: $CS_TunicTicks) == 0) {
+      if (ManualTunicSetting($player) && GetClassState($player, piece: $CS_TunicTicks) == 0) {
         if (GetClassState($player, $CS_NumCardsPlayed) == 0) return false;
       }
       return true;
@@ -3014,8 +3014,8 @@ function CharacterDefaultActiveState($cardID)
   switch ($cardID) {
     case "WTR117":
       return 1;
-    case "WTR150":
-      return 0;
+    // case "WTR150":
+    //   return 0;
     case "ARC152":
       return 1;
     case "CRU053":
