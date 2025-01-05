@@ -10,6 +10,7 @@ function HNTAbilityType($cardID): string
     "HNT007" => "AR",
     "HNT054" => "I",
     "HNT055" => "I",
+    "HNT056" => "AA",
     "HNT167" => "I",
     "HNT247" => "I",
     "HNT252" => "I",
@@ -23,6 +24,7 @@ function HNTAbilityCost($cardID): int
   return match ($cardID) {
     "HNT054" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
+    "HNT056" => 1,
     "HNT167" => 0,
     "HNT252" => 0,
     default => 0
@@ -32,6 +34,7 @@ function HNTAbilityCost($cardID): int
 function HNTAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "HNT056" => true,
     default => false,
   };
 }
@@ -120,6 +123,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       RecurDagger($currentPlayer, 0);
       RecurDagger($currentPlayer, 1);
       break;
+    // case "HNT056":
+      // AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+      // break;
     case "HNT057":
       ThrowWeapon("Dagger", $cardID);
       ThrowWeapon("Dagger", $cardID);

@@ -1385,11 +1385,17 @@ function CombatChainClosedTriggers()
           if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numEloquence;
           if ($numEloquence > 0) PlayAura("DTD233", $mainPlayer);
           break;
+        case "HNT056":
+          $uniqueID = $chainLinks[$i][$j+6];
+          $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
+          DestroyCharacter($mainPlayer, $index);
+          break;
         default:
           break;
       }
     }
   }
+  // check for cindra's dagger attack proxy on the stack here in case of spectra
 }
 
 

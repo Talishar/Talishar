@@ -1186,6 +1186,7 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 1]); //From
     array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 7]); //Unique ID
   }
 
   //Don't change state until the end, in case it changes what effects are active

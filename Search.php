@@ -436,6 +436,18 @@ function FindCharacterIndex($player, $cardID)
   return $index;
 }
 
+function FindCharacterIndexUniqueID($player, $uniqueID)
+{
+  $character = &GetPlayerCharacter($player);
+  $index = -1;
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if (isset($character[$i]) && $character[$i+11] == $uniqueID) {
+      if ($character[$i + 1] != 0) return $i;
+    }
+  }
+  return $index;
+}
+
 function FindCurrentTurnEffectIndex($player, $cardID)
 {
   global $currentTurnEffects;
