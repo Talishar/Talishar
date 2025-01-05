@@ -1133,7 +1133,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && $character[$index + 1] != "2") return false;
-  if ($phase != "B" && TypeContains($cardID, "E", $player) && (ManualTunicSetting($player) == 0 && $cardID != "WTR150")) return false;
+  if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0 && (ManualTunicSetting($player) == 0 && $cardID != "WTR150")) return false;
   if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
