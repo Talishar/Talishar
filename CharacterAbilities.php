@@ -129,7 +129,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 
 function CharacterStartTurnAbility($index)
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_TunicTicks;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   $character = GetPlayerCharacter($mainPlayer);
@@ -138,8 +138,13 @@ function CharacterStartTurnAbility($index)
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "WTR150":
-      if ($char->numCounters < 3) ++$char->numCounters;
-      $char->Finished();
+      if (!ManualTunicSetting($mainPlayer)) {
+        if ($char->numCounters < 3) {
+          ++$char->numCounters;
+          IncrementClassState($mainPlayer, $CS_TunicTicks);
+        }
+        $char->Finished();
+      }
       break;
     case "CRU097":
       AddLayer("TRIGGER", $mainPlayer, $char->cardID);
@@ -879,13 +884,16 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CS_TunicTicks;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "WTR150": //Tunic energy counters
-      $character[$cardIndex + 2] -= 3;
+      if (!ManualTunicSetting($currentPlayer) || $character[$cardIndex + 2] == 3) {
+        $character[$cardIndex + 2] -= 3;
+        IncrementClassState($currentPlayer, $CS_TunicTicks, 1);
+      }
       break;
     case "CRU177": //Talishar rust counters
       $character[$cardIndex + 1] = 1;

@@ -34,12 +34,20 @@ $SET_StreamerMode = 22; //Did this player enable caster mode
 $SET_Playmat = 23; //Did this player enable caster mode
 $SET_AlwaysAllowUndo = 24;//Do you want to always allow undo
 $SET_DisableAltArts = 25;//Do you want to disable alt arts
+$SET_ManualTunic = 26;//Do you want to manually tick up tunic each turn
 
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
   return $settings[$SET_AlwaysHoldPriority];
+}
+
+function ManualTunicSetting($player)
+{
+  global $SET_ManualTunic;
+  $settings = GetSettings($player);
+  return $settings[$SET_ManualTunic];
 }
 
 function UseNewUI($player)
@@ -325,6 +333,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "Playmat" => 23,
     "AlwaysAllowUndo" => 24,
     "DisableAltArts" => 25,
+    "ManualTunic" => 26,
   );
   return $settingsToId[$value];
 }
@@ -356,6 +365,7 @@ function SaveSettingInDatabase($setting)
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
+  global $SET_ManualTunic;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -373,6 +383,7 @@ function SaveSettingInDatabase($setting)
     case $SET_Playmat:
     case $SET_AlwaysAllowUndo:
     case $SET_DisableAltArts:
+    case $SET_ManualTunic:
       return true;
     default: return false;
   }

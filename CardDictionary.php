@@ -1133,7 +1133,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && $character[$index + 1] != "2") return false;
-  if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0) return false;
+  if ($phase != "B" && TypeContains($cardID, "E", $player) && (ManualTunicSetting($player) == 0 && $cardID != "WTR150")) return false;
   if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
@@ -1552,6 +1552,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AtksWWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
+  global $CS_TunicTicks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -1636,7 +1637,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!RepriseActive()) return false;
       return !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "WTR150":
-      return $character[$index + 2] < 3;
+      if ($character[$index + 2] == 3) return false;
+      if ($currentPlayer != $mainPlayer) return true; //only tick up on your own turn
+      if (ManualTunicSetting($player) && GetClassState($player, piece: $CS_TunicTicks) == 0) {
+        if (GetClassState($player, $CS_NumCardsPlayed) == 0) return false;
+      }
+      return true;
     case "WTR154":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CardType($CombatChain->AttackCard()->ID()) != "AA") return true;
@@ -3008,6 +3014,8 @@ function CharacterDefaultActiveState($cardID)
   switch ($cardID) {
     case "WTR117":
       return 1;
+    // case "WTR150":
+    //   return 0;
     case "ARC152":
       return 1;
     case "CRU053":
