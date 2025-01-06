@@ -1333,7 +1333,7 @@ function IsFusionActive()
 
 function CombatChainClosedTriggers()
 {
-  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost;
+  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost, $currentTurnEffects;
   for ($i = 0; $i < count($chainLinks); ++$i) {
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $mainPlayer) continue;
@@ -1385,17 +1385,20 @@ function CombatChainClosedTriggers()
           if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numEloquence;
           if ($numEloquence > 0) PlayAura("DTD233", $mainPlayer);
           break;
-        case "HNT056":
-          $uniqueID = $chainLinks[$i][$j+6];
-          $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
-          DestroyCharacter($mainPlayer, $index);
-          break;
         default:
           break;
       }
     }
   }
-  // check for cindra's dagger attack proxy on the stack here in case of spectra
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if (!isset($currentTurnEffects[$i + 1])) continue;
+    if (explode("-", $currentTurnEffects[$i])[0] == "HNT056" && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      RemoveCurrentTurnEffect($i);
+      $uniqueID = explode("-", $currentTurnEffects[$i])[1];
+      $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
+      if ($index != -1) DestroyCharacter($mainPlayer, $index);
+    }
+  }
 }
 
 

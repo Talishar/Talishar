@@ -1186,7 +1186,6 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 1]); //From
     array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
-    array_push($chainLinks[$CLIndex], $combatChain[$i + 7]); //Unique ID
   }
 
   //Don't change state until the end, in case it changes what effects are active
@@ -1700,7 +1699,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
       }
     } 
-    PayAdditionalCosts($cardID, $from);
+    PayAdditionalCosts($cardID, $from, uniqueID: $uniqueID);
     ResetCardPlayed($cardID, $from);
   }
   if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
@@ -2232,7 +2231,7 @@ function PayAbilityAdditionalCosts($cardID, $index)
   }
 }
 
-function PayAdditionalCosts($cardID, $from)
+function PayAdditionalCosts($cardID, $from, $uniqueID="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
   $cardSubtype = CardSubType($cardID);
@@ -2921,6 +2920,9 @@ function PayAdditionalCosts($cardID, $from)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "HNT056":
+      AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
       break;
     case "HNT102":
       if (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power,Additional_Attack,Mark";

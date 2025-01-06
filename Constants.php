@@ -205,10 +205,9 @@ function InventoryPieces()
 //3 - From
 //4 - Attack Modifier
 //5 - Defense Modifier
-//6 - Unique ID
 function ChainLinksPieces()
 {
-  return 7;
+  return 6;
 }
 
 //0 - Damage Dealt
