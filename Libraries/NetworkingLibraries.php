@@ -1611,7 +1611,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
       }
-    } 
+    }
+    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "HNT100" && TalentContains($cardID, "DRACONIC") && $currentPlayer == $mainPlayer) {
+      AddCurrentTurnEffect("HNT100", $currentPlayer);
+      GiveAttackGoAgain();
+    }
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
