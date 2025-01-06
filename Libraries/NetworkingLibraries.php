@@ -1465,7 +1465,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);  
   $mod = "";
   //manual tunic ticking
-  if ($cardID == "WTR150" && ManualTunicSetting($currentPlayer) && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
+  if ($playingCard && $cardID == "WTR150" && ManualTunicSetting($currentPlayer) && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
+    WriteLog("HERE:  " . $turn[0]);
     $character = &GetPlayerCharacter($currentPlayer);
     $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
     if ($character[$cardIndex + 2] < 3) {
