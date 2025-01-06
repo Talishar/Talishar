@@ -485,6 +485,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$cardResult = [
 			"cardId" => GetNormalCardID($card),
 			"cardName" => CardName($card),
+			"numCopies" => $numCopies,
 		];
 		array_push($deck["character"], $cardResult);
 	}
