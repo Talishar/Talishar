@@ -794,7 +794,7 @@ function BlockValue($cardID)
   }
 }
 
-function AttackValue($cardID)
+function AttackValue($cardID, $index=-1)
 {
   global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn;
   if (!$cardID) return "";
@@ -814,6 +814,11 @@ function AttackValue($cardID)
     if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;
     if (SearchCharacterForCard($mainPlayer, "DTD216")) return 5;
+    if (SearchCharacterForCard($mainPlayer, "MST130")) {
+      if ($index != -1) {
+        return WardAmount($cardID, $mainPlayer, $index);
+      }
+    }
   }
   if ($cardID == "MON191") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if ($cardID == "EVR138") return FractalReplicationStats("Attack");
@@ -1546,7 +1551,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
   return false;
 }
 
-function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "")
+function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $uniqueID = "-")
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
@@ -1606,7 +1611,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = true;
     return true;
   }
-  if (EffectAttackRestricted($cardID, $type, $from) != "" && $currentPlayer == $mainPlayer) {
+  if (EffectAttackRestricted($cardID, $type, $from, index:$index) != "" && $currentPlayer == $mainPlayer) {
     $restriction = true;
     return true;
   }

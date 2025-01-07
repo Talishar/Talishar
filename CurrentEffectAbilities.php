@@ -2076,11 +2076,11 @@ function EffectDefenderAttackModifiers($cardID)
   return $mod;
 }
 
-function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false)
+function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1)
 {
   global $mainPlayer, $currentTurnEffects;
   $mainChar = &GetPlayerCharacter($mainPlayer);
-  $attackValue = AttackValue($cardID);
+  $attackValue = AttackValue($cardID, $index);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = GetResolvedAbilityType($cardID);
   $abilityType = GetAbilityType($cardID, from: $from);
