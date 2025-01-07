@@ -1,6 +1,6 @@
 <?php
 
-function ProcessHitEffect($cardID, $from = "-")
+function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
 {
   global $CombatChain, $layers, $mainPlayer;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
@@ -65,7 +65,7 @@ function ProcessHitEffect($cardID, $from = "-")
   else if ($set == "AUR") return AURHitEffect($cardID);
   else if ($set == "ROS") return ROSHitEffect($cardID);
   else if ($set == "AJV") return AJVHitEffect($cardID);
-  else if ($set == "HNT") return HNTHitEffect($cardID);
+  else if ($set == "HNT") return HNTHitEffect($cardID, $uniqueID);
   else return -1;
 }
 

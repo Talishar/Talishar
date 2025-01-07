@@ -801,6 +801,7 @@ function AttackValue($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
+  $defPlayer = $mainPlayer == 1 ? 2 : 1;
 
   //Only weapon that gains power, NOT on their attack
   if ($cardID == "WTR040") return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 4;
@@ -810,6 +811,10 @@ function AttackValue($cardID)
   if ($cardID == "HVY006") return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? 4 : 3;
   if ($cardID == "HVY049") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
   if ($cardID == "ROS003") return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2);
+  if ($cardID == "HNT010") {
+    if ($currentPlayer != $mainPlayer || !IsHeroAttackTarget()) return 1;
+    else return CheckMarked($defPlayer) ? 2 : 1;
+  }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($mainPlayer, "MON003")) return 1;
     if (SearchCharacterForCard($mainPlayer, "MON088")) return 4;

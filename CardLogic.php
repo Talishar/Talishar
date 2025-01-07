@@ -887,6 +887,7 @@ function AddOnHitTrigger($cardID): void
     case "ROS122":
     case "ROS123":
     case "AJV002":
+    case "HNT010":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "CRU054":
@@ -1324,7 +1325,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if ($additionalCosts == "ONHITEFFECT") {
-    ProcessHitEffect($target, $combatChain[2]);
+    ProcessHitEffect($target, $combatChain[2], $uniqueID);
     return;
   }
   if ($additionalCosts == "CRUSHEFFECT") {
