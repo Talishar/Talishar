@@ -1390,13 +1390,13 @@ function CombatChainClosedTriggers()
       }
     }
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if (explode("-", $currentTurnEffects[$i])[0] == "HNT056" && $currentTurnEffects[$i + 1] == $mainPlayer) {
-      RemoveCurrentTurnEffect($i);
       $uniqueID = explode("-", $currentTurnEffects[$i])[1];
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);
+      RemoveCurrentTurnEffect($i);
     }
   }
 }

@@ -1619,7 +1619,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID, $index);
+      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex));
       ActivateAbilityEffects();
       if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
@@ -1702,8 +1702,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddLayer("TRIGGER", $currentPlayer, $triggeredID);
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
       }
-    } 
-    PayAdditionalCosts($cardID, $from, uniqueID: $uniqueID);
+    }
+    PayAdditionalCosts($cardID, $from, index: $index);
     ResetCardPlayed($cardID, $from);
   }
   if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
@@ -2230,12 +2230,17 @@ function PayAbilityAdditionalCosts($cardID, $index)
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
       break;
+    case "HNT056":
+      $character = GetPlayerCharacter($currentPlayer);
+      $uniqueID = $character[$index + 11];
+      AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
+      break;
     default:
       break;
   }
 }
 
-function PayAdditionalCosts($cardID, $from, $uniqueID="-")
+function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
   $cardSubtype = CardSubType($cardID);
@@ -2924,9 +2929,6 @@ function PayAdditionalCosts($cardID, $from, $uniqueID="-")
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-      break;
-    case "HNT056":
-      AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
       break;
     case "HNT102":
       if (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power,Additional_Attack,Mark";

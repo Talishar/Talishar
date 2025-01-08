@@ -82,7 +82,6 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT015" => true,
-    "HNT056" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -317,7 +316,7 @@ function ListDracDaggersGraveyard($player) {
   $graveyard = &GetDiscard($player);
   foreach ($graveyard as $cardID) {
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
-      if (TalentContains($cardID, "")) {
+      if (TalentContains($cardID, "DRACONIC")) {
         if ($weapons != "") $weapons .= ",";
         $weapons .= $cardID;
       }
