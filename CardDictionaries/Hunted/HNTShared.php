@@ -38,8 +38,6 @@ function HNTAbilityCost($cardID): int
 function HNTAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
-    "HNT010" => true,
-    "HNT056" => true,
     default => false,
   };
 }
@@ -84,6 +82,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT015" => true,
+    "HNT056" => true,
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -130,9 +129,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       RecurDagger($currentPlayer, 0);
       RecurDagger($currentPlayer, 1);
       break;
-    // case "HNT056":
-      // AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-      // break;
     case "HNT057":
       ThrowWeapon("Dagger", $cardID);
       ThrowWeapon("Dagger", $cardID);
