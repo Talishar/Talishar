@@ -506,7 +506,7 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function AddOnHitTrigger($cardID): void
+function AddOnHitTrigger($cardID, $uniqueID = -1): void
 {
   global $mainPlayer, $combatChain;
   switch ($cardID) {
@@ -888,7 +888,11 @@ function AddOnHitTrigger($cardID): void
     case "ROS123":
     case "AJV002":
     case "HNT010":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      $char = GetPlayerCharacter($mainPlayer);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        WriteLog($char[$i] . "-" . $char[$i+11]);
+      }
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "CRU054":
       if (ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
