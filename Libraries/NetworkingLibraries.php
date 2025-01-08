@@ -1088,7 +1088,7 @@ function ResolveCombatDamage($damageDone)
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if ($combatChain[$i + 1] == $mainPlayer) {
           $EffectContext = $combatChain[$i]; 
-          AddOnHitTrigger($combatChain[$i]);
+          AddOnHitTrigger($combatChain[$i], $combatChain[$i+8]);
           if ($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i]);
           if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
@@ -1612,11 +1612,17 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
       }
-    } 
+    }
+    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "HNT100" && $currentPlayer == $mainPlayer && !SearchCurrentTurnEffects("HNT100", $currentPlayer)) {
+      if (!IsStaticType($cardType, $from, $cardID) && (TalentContains($cardID, "DRACONIC", $currentPlayer))) {
+        AddCurrentTurnEffect("HNT100", $currentPlayer);
+        GiveAttackGoAgain();
+      }
+    }
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID, $index);
+      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex));
       ActivateAbilityEffects();
       if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
@@ -1699,8 +1705,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddLayer("TRIGGER", $currentPlayer, $triggeredID);
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
       }
-    } 
-    PayAdditionalCosts($cardID, $from);
+    }
+    PayAdditionalCosts($cardID, $from, index: $index);
     ResetCardPlayed($cardID, $from);
   }
   if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
@@ -2227,12 +2233,17 @@ function PayAbilityAdditionalCosts($cardID, $index)
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
       break;
+    case "HNT056":
+      $character = GetPlayerCharacter($currentPlayer);
+      $uniqueID = $character[$index + 11];
+      AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
+      break;
     default:
       break;
   }
 }
 
-function PayAdditionalCosts($cardID, $from)
+function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState, $CCS_LinkBaseAttack;
   $cardSubtype = CardSubType($cardID);

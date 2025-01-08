@@ -1,6 +1,6 @@
 <?php
 
-function ProcessHitEffect($cardID, $from = "-")
+function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
 {
   global $CombatChain, $layers, $mainPlayer;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
@@ -65,7 +65,7 @@ function ProcessHitEffect($cardID, $from = "-")
   else if ($set == "AUR") return AURHitEffect($cardID);
   else if ($set == "ROS") return ROSHitEffect($cardID);
   else if ($set == "AJV") return AJVHitEffect($cardID);
-  else if ($set == "HNT") return HNTHitEffect($cardID);
+  else if ($set == "HNT") return HNTHitEffect($cardID, $uniqueID);
   else return -1;
 }
 
@@ -1333,7 +1333,7 @@ function IsFusionActive()
 
 function CombatChainClosedTriggers()
 {
-  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost;
+  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost, $currentTurnEffects;
   for ($i = 0; $i < count($chainLinks); ++$i) {
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $mainPlayer) continue;
@@ -1388,6 +1388,15 @@ function CombatChainClosedTriggers()
         default:
           break;
       }
+    }
+  }
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    if (!isset($currentTurnEffects[$i + 1])) continue;
+    if (explode("-", $currentTurnEffects[$i])[0] == "HNT056" && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      $uniqueID = explode("-", $currentTurnEffects[$i])[1];
+      $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
+      if ($index != -1) DestroyCharacter($mainPlayer, $index);
+      RemoveCurrentTurnEffect($i);
     }
   }
 }

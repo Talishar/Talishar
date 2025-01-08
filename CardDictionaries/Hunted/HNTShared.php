@@ -8,8 +8,11 @@ function HNTAbilityType($cardID): string
     "HNT005" => "I",
     "HNT006" => "AR",
     "HNT007" => "AR",
+    "HNT010" => "AA",
     "HNT054" => "I",
     "HNT055" => "I",
+    "HNT056" => "AA",
+    "HNT100" => "AA",
     "HNT167" => "I",
     "HNT247" => "I",
     "HNT252" => "I",
@@ -21,8 +24,11 @@ function HNTAbilityCost($cardID): int
 {
   global $currentPlayer, $mainPlayer;
   return match ($cardID) {
+    "HNT010" => 2,
     "HNT054" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
+    "HNT056" => 1,
+    "HNT100" => 1,
     "HNT167" => 0,
     "HNT252" => 0,
     default => 0
@@ -45,6 +51,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT006" => 3,
     "HNT007" => 3,
     "HNT015" => 3,
+    "HNT100" => 1,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
     "HNT236" => -1,
@@ -79,6 +86,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT100" => true,
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -243,12 +251,16 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   return "";
 }
 
-function HNTHitEffect($cardID): void
+function HNTHitEffect($cardID, $uniqueID = -1): void
 {
   global $mainPlayer, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
+    case "HNT010":
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
+      AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+      AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       break;
@@ -304,7 +316,7 @@ function ListDracDaggersGraveyard($player) {
   $graveyard = &GetDiscard($player);
   foreach ($graveyard as $cardID) {
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
-      if (TalentContains($cardID, "")) {
+      if (TalentContains($cardID, "DRACONIC")) {
         if ($weapons != "") $weapons .= ",";
         $weapons .= $cardID;
       }
