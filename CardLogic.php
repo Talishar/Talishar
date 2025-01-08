@@ -887,6 +887,8 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "ROS122":
     case "ROS123":
     case "AJV002":
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     case "HNT010":
       $char = GetPlayerCharacter($mainPlayer);
       for ($i = 0; $i < count($char); $i += CharacterPieces()) {
