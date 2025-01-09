@@ -5017,6 +5017,8 @@ case "5":
 return "C";
 case "4":
 return "C";
+case "3":
+return "T";
 case "6":
 return "W";
 default: return "AA";
@@ -6941,6 +6943,8 @@ case "5":
 switch($cardID[5]) {
 case "7":
 return 2;
+case "3":
+return 1;
 case "6":
 return 1;
 default: return 0;
@@ -15867,21 +15871,13 @@ case "2":
 return -1;
 default: return 3;
 }
-case "7":
-switch($cardID[5]) {
-case "4":
-return -1;
-case "5":
-return -1;
-case "6":
-return -1;
-default: return 3;
-}
 case "5":
 switch($cardID[5]) {
 case "5":
 return -1;
 case "4":
+return -1;
+case "3":
 return -1;
 case "6":
 return -1;
@@ -24493,6 +24489,8 @@ case "5":
 return "Cindra";
 case "4":
 return "Cindra, Dracai of Retribution";
+case "3":
+return "Graphene Chelicera";
 case "6":
 return "Kunai of Retribution";
 default: return "";
@@ -33101,6 +33099,8 @@ case "5":
 return 0;
 case "4":
 return 0;
+case "3":
+return 0;
 case "6":
 return 0;
 default: return 1;
@@ -40375,6 +40375,8 @@ case "5":
 return -1;
 case "4":
 return -1;
+case "3":
+return -1;
 case "6":
 return -1;
 default: return 0;
@@ -46233,6 +46235,8 @@ case "5":
 return "Royal,Young";
 case "4":
 return "Royal";
+case "3":
+return "Dagger";
 case "6":
 return "Dagger";
 default: return "";
@@ -52427,6 +52431,8 @@ case "5":
 return "T";
 case "4":
 return "M";
+case "3":
+return "T";
 case "6":
 return "T";
 default: return "C";
@@ -53857,6 +53863,7 @@ case "CRU080": return true;
 case "HVY094": return true;
 case "DTD135": return true;
 case "JDG005": return true;
+case "HNT053": return true;
 case "HVY245": return true;
 case "TCC028": return true;
 case "CRU048": return true;
@@ -59288,6 +59295,8 @@ case "5":
 return "NINJA";
 case "4":
 return "NINJA";
+case "3":
+return "ASSASSIN";
 case "6":
 return "NINJA";
 default: return "NONE";
@@ -67395,6 +67404,7 @@ case "MST008": return "false";
 case "HVY097": return "false";
 case "EVR000": return "false";
 case "HVY205": return "false";
+case "HNT053": return "false";
 case "DTD167": return "false";
 case "ARC078": return "false";
 case "MST200": return "false";
