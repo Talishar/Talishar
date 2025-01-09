@@ -127,6 +127,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
       break;
+    case "HNT053":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
+      break;
     case "HNT054":
     case "HNT055":
       RecurDagger($currentPlayer, 0);
