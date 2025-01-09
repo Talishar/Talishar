@@ -896,7 +896,8 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "HNT071":
-          if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+          $cardType = CardType($cardID);
+          if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
             $costModifier -= 1;
             --$currentTurnEffects[$i + 3];
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
