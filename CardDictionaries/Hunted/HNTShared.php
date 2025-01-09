@@ -117,6 +117,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT006":
+      $char = GetPlayerCharacter($currentPlayer);
+      for ($i = 0; $i < CharacterPieces(); $i++)
+      {
+        WriteLog("$i-" . $char[$i]);
+      }
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) GiveAttackGoAgain();
       break;
@@ -336,7 +341,8 @@ function ChaosTransform($characterID, $mainPlayer)
 {
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "HNT001" || $characterID == "HNT002") {
-    $roll = GetRandom(1, 6);
+    // $roll = GetRandom(1, 6);
+    $roll = 4;
     $transformTarget = match ($roll) {
       1 => "HNT003",
       2 => "HNT004",
@@ -366,6 +372,7 @@ function ChaosTransform($characterID, $mainPlayer)
     }
     // removing the subcardded hero
     $char[10] = $subCards == "" ? "-" : substr($subCards, 0, -1);
+    $char[1] = 2;
   }
   $char[0] = $transformTarget;
   if ($transformTarget == "HNT008") {
