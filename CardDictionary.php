@@ -815,7 +815,7 @@ function AttackValue($cardID, $index=-1)
   if ($cardID == "HVY049") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
   if ($cardID == "ROS003") return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2);
   if ($cardID == "HNT010") {
-    if ($currentPlayer != $mainPlayer || !IsHeroAttackTarget()) return 1;
+    if (!IsHeroAttackTarget()) return 1;
     else return CheckMarked($defPlayer) ? 2 : 1;
   }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {

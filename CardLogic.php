@@ -890,10 +890,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT010":
-      $char = GetPlayerCharacter($mainPlayer);
-      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-        WriteLog($char[$i] . "-" . $char[$i+11]);
-      }
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "CRU054":
