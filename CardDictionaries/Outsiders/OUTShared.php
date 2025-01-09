@@ -753,12 +753,12 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
     AddDecisionQueue("DEALDAMAGE", $otherPlayer, "<-", 1);
+    AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
-    AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_FlickedDamage, 1);
   }
 
   function DamageDealtBySubtype($subtype)

@@ -1421,6 +1421,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "INCREMENTCOMBATCHAINSTATE":
       $combatChainState[$parameter] = $combatChainState[$parameter] + 1;
       return $lastResult;
+    case "INCREMENTCOMBATCHAINSTATEBY":
+      $combatChainState[$parameter] = $combatChainState[$parameter] + $lastResult;
+      return $lastResult;
     case "SETLAYERTARGET":
       global $layers;
       $target = $lastResult;
