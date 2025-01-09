@@ -499,7 +499,7 @@ function OUTAbilityCost($cardID)
   {
     global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
-    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_FlickedDamage;
     switch ($cardID)
     {
       case "OUT005": case "OUT006":
@@ -629,6 +629,7 @@ function OUTAbilityCost($cardID)
         {
           if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
         }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("OUT142", "OUT142"));
         LoseHealth($numDaggerHits, $defPlayer);
         break;
@@ -742,7 +743,7 @@ function OUTAbilityCost($cardID)
 
   function ThrowWeapon($subtype, $source)
   {
-    global $currentPlayer, $CCS_HitThisLink;
+    global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
     AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
@@ -757,16 +758,18 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
+    AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_FlickedDamage, 1);
   }
 
   function DamageDealtBySubtype($subtype)
   {
-    global $chainLinks, $chainLinkSummary;
+    global $chainLinks, $chainLinkSummary, $combatChainState, $CCS_FlickedDamage;
     $damage = 0;
     for($i=0; $i<count($chainLinks); ++$i)
     {
       if(CardSubType($chainLinks[$i][0]) == $subtype) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
     }
+    if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
     return $damage;
   }
 
