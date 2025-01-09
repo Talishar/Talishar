@@ -1727,6 +1727,8 @@ function DoesAttackHaveGoAgain()
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
+    case "HNT053":
+      return IsHeroAttackTarget() && CheckMarked($defPlayer);
     case "HNT071":
       return SearchCurrentTurnEffects("HNT071", $mainPlayer);
     case "HNT249":

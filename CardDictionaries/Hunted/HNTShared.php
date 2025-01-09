@@ -9,6 +9,7 @@ function HNTAbilityType($cardID): string
     "HNT006" => "AR",
     "HNT007" => "AR",
     "HNT010" => "AA",
+    "HNT053" => "AA",
     "HNT054" => "I",
     "HNT055" => "I",
     "HNT056" => "AA",
@@ -25,6 +26,7 @@ function HNTAbilityCost($cardID): int
   global $currentPlayer, $mainPlayer;
   return match ($cardID) {
     "HNT010" => 2,
+    "HNT053" => 1,
     "HNT054" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT056" => 1,
@@ -37,6 +39,8 @@ function HNTAbilityCost($cardID): int
 
 function HNTAbilityHasGoAgain($cardID): bool
 {
+  global $currentPlayer;
+  $defPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
     default => false,
   };
@@ -109,7 +113,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
       break;
     case "HNT005":
-      WriteLog("We don't know what Graphene Chelicera is yet");
+      EquipWeapon($currentPlayer, "HNT053");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT006":
