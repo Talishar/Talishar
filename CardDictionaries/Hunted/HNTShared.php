@@ -268,6 +268,7 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
+      break;
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       break;
