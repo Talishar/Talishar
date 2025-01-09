@@ -114,7 +114,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
       break;
     case "HNT005":
-      EquipEquipment($currentPlayer, "HNT053");
+      EquipWeapon($currentPlayer, "HNT053");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT006":

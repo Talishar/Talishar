@@ -80,6 +80,9 @@ function CardType($cardID, $from="")
       return "Macro";
     case "AJV002":
       return "W";
+    case "HNT053":
+      // this is incorrect for Down but not Out, but is needed for now
+      return "W";
     default:
       break;
   }
