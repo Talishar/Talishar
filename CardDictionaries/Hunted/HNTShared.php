@@ -339,10 +339,10 @@ function ListDracDaggersGraveyard($player) {
 
 function ChaosTransform($characterID, $mainPlayer)
 {
+  global $CS_OriginalHero;
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "HNT001" || $characterID == "HNT002") {
-    // $roll = GetRandom(1, 6);
-    $roll = 4;
+    $roll = GetRandom(1, 6);
     $transformTarget = match ($roll) {
       1 => "HNT003",
       2 => "HNT004",
@@ -353,26 +353,15 @@ function ChaosTransform($characterID, $mainPlayer)
       default => $characterID,
     };
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
-    //storing the original hero under the transformed hero
-    $char[10] = ($char[10] == "-") ? $characterID : $char[10] . ",$characterID";
+    SetClassState($mainPlayer, $CS_OriginalHero, $characterID);
   }
   else {
-    $transformTarget = "";
-    WriteLog(CardName($characterID) . " returns to the brood.");
-    $subCards = "";
-    foreach (explode(",", $char[10]) as $subCard) {
-      if ($subCard == "HNT001" || $subCard == "HNT002") {
-        $transformTarget = $subCard;
-      }
-      else $subCards .= "$subCard,";
-    }
-    if ($transformTarget == ""){
+    $transformTarget = GetClassState($mainPlayer, $CS_OriginalHero);
+    if ($transformTarget == "-"){
       WriteLog("Something has gone wrong, please submit a bug report");
       $transformTarget = "HNT001";
     }
-    // removing the subcardded hero
-    $char[10] = $subCards == "" ? "-" : substr($subCards, 0, -1);
-    $char[1] = 2;
+    SetClassState($mainPlayer, $CS_OriginalHero, "-");
   }
   $char[0] = $transformTarget;
   if ($transformTarget == "HNT008") {
