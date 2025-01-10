@@ -79,6 +79,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
   }
   if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "HNT004" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
+  if ($cardID == "HNT167" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   return match ($cardID) {
     "HNT003" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT004" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
@@ -94,7 +95,6 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT167" => DelimStringContains(CardType($attackID), "AA"),
     "HNT236" => true,
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),

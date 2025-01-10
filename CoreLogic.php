@@ -1475,7 +1475,11 @@ function TalentOverride($cardID, $player = "", $zone="-")
       case "UPR062":
         $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
       case "HNT167": //Fealty
-        if (!TypeContains($cardID, "W")) { // We'll need to add cases for Allies and Emperor Attacking
+        if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA")) { // We'll need to add cases for Allies and Emperor Attacking
+          $talentToAdd = "DRACONIC";
+        }
+      case "HNT167-ATTACK":
+        if (!TypeContains($cardID, "W") && TypeContains($cardID, "AA")) {
           $talentToAdd = "DRACONIC";
         }
       default:
