@@ -117,11 +117,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT006":
-      $char = GetPlayerCharacter($currentPlayer);
-      for ($i = 0; $i < CharacterPieces(); $i++)
-      {
-        WriteLog("$i-" . $char[$i]);
-      }
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) GiveAttackGoAgain();
       break;
