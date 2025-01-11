@@ -582,10 +582,12 @@
           for($i=0; $i<count($chainLinks); ++$i)
           {
             $listOfNames = $chainLinkSummary[$i*ChainLinkSummaryPieces()+4];
-            if($chainLinks[$i][2] == "1" && GamestateUnsanitize($listOfNames) == "Hundred Winds")
-            {
-              $chainLinks[$i][2] = "0";
-              $deck->AddBottom($chainLinks[$i][0], "CC");
+            foreach (explode(",", $listOfNames) as $name) {
+              if($chainLinks[$i][2] == "1" && GamestateUnsanitize($name) == "Hundred Winds")
+              {
+                $chainLinks[$i][2] = "0";
+                $deck->AddBottom($chainLinks[$i][0], "CC");
+              }
             }
           }
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
