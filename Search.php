@@ -180,7 +180,7 @@ function SearchInner(
           if ($array[$i + 1] != "INT") continue;
         }
         if ($hasAttackCounters && !HasAttackCounters($zone, $array, $i)) continue;
-        if ($nameIncludes != "" && !DelimStringContains(CardName($cardID), $nameIncludes, partial: true)) continue;
+        if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
         if ($cardList != "") $cardList = $cardList . ",";
         $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
       }
