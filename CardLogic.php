@@ -2681,6 +2681,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT246":
       DiscardRandom();
       break;
+    case "HNT253":
+      $arsenal = &GetArsenal($player);
+      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+        if (CardType($arsenal[$i]) == "A" && $arsenal[$i + 1] == "DOWN"){
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_turn_your_arsenal_face_up");
+          AddDecisionQueue("NOPASS", $player, "-");
+          AddDecisionQueue("TURNARSENALFACEUP", $player, $i, 1);
+          AddDecisionQueue("PASSPARAMETER", $player, $arsenal[$i + 5], 1);
+          AddDecisionQueue("CHAINREACTION", $player, "-", 1);
+        }
+      }
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
     case "HNT256":
       GainHealth(1, $player);
       break;
