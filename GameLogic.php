@@ -2532,6 +2532,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         MarkHero($otherPlayer);
       }
       return $lastResult;
+    case "CHAINREACTION":
+      AddCurrentTurnEffect("HNT253-" . $lastResult, $player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
