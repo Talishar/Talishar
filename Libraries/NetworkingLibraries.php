@@ -1690,9 +1690,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
     }
+    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA")) AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
     if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
-      if (SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true) && TypeContains($cardID, "AA")) AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
+      SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
     }
     if(DelimStringContains($cardType, "I")) {
       if(!HasMeld($cardID)) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
