@@ -56,6 +56,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT006" => 3,
     "HNT007" => 3,
     "HNT015" => 3,
+    "HNT026" => 3,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
     "HNT127" => 1,
@@ -89,6 +90,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT015" => true,
+    "HNT026" => HasStealth($attackID),
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -129,6 +131,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      break;
+    case "HNT026":
+      EquipWeapon($currentPlayer, "HNT053");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT053":
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
