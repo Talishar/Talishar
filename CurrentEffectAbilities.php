@@ -862,10 +862,10 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "AKO004":
           $attack = 0;
-          for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-            if (IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
-              if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-                $attack += EffectAttackModifier($currentTurnEffects[$i]);
+          for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
+            if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
+              if ($currentTurnEffects[$j + 1] == $currentPlayer) {
+                $attack += EffectAttackModifier($currentTurnEffects[$j]);
               }
             }
           }  
