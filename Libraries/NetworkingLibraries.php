@@ -1502,6 +1502,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (count($layers) > 0 && $layers[count($layers) - LayerPieces()] == "ENDTURN") $layers[count($layers) - LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
   }
   if ($turn[0] != "P") {
+    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA")) AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
+    if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
+      IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
+      SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
+    }
     if ($dynCostResolved >= 0) {
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from)));
@@ -1689,11 +1694,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
-    }
-    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA")) AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
-    if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
-      IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
-      SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
     }
     if(DelimStringContains($cardType, "I")) {
       if(!HasMeld($cardID)) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
