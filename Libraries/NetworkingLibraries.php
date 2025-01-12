@@ -53,7 +53,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $uniqueID = $arsenal[$index + 5];
         SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
-        RemoveArsenal($playerID, $index);
+        if(IsStaticType(CardType($arsenal[$index], "ARS"), "ARS", $arsenal[$index])) RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
       } else {
         echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
@@ -1323,6 +1323,7 @@ function FinishTurnPass()
   QuellEndPhase(2);
   ItemEndTurnAbilities();
   AuraBeginEndPhaseAbilities();
+  ArsenalBeginEndPhaseAbilities();
   MainCharacterBeginEndPhaseAbilities();
   LandmarkBeginEndPhaseAbilities();
   BeginEndPhaseEffects();

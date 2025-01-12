@@ -609,6 +609,7 @@ function GetNormalCardID($cardID)
 		case "MON400": return "LEV005";
 		case "MON404": return "PSM002";
 		case "MON402": return "PSM007";
+		case "HNT407": return "ARK007";
 	}
 	return $cardID;
 }

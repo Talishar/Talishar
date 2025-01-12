@@ -242,12 +242,12 @@ function SearchHandForCardName($player, $name)
   return $indices;
 }
 
-function SearchArsenalForCard($player, $card)
+function SearchArsenalForCard($player, $card, $facing = "-")
 {
   $arsenal = &GetArsenal($player);
   $indices = "";
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i] == $card) {
+    if ($arsenal[$i] == $card && ($arsenal[$i + 1] == $facing || $facing == "-")) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }

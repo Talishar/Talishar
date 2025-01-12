@@ -290,11 +290,41 @@ function ArsenalStartTurnAbilities()
           AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
         }
         break;
+      case "HNT407":
+        if ($arsenal[$i + 1] == "UP") {
+          AddCurrentTurnEffect("HNT407", $mainPlayer);
+        }
       default:
         break;
     }
   }
 }
+
+function ArsenalBeginEndPhaseAbilities()
+{
+  global $mainPlayer;
+  $arsenal = &GetArsenal($mainPlayer);
+  for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
+    switch ($arsenal[$i]) {
+      case "HNT407":
+        if ($arsenal[$i + 1] == "UP" && CountItem("EVR195", $mainPlayer) >= 1) {
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_a_".Cardlink("EVR195", "EVR195")."_or_put_".CardLink($arsenal[$i], $arsenal[$i])."_at_the_bottom_of_your_deck", 1);
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
+          AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ELSE", $mainPlayer, "-");
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYARS-" . $i, 1);
+          AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBOTDECK", 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 
 function ArsenalAttackAbilities()
 {

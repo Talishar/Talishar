@@ -773,6 +773,7 @@ function IsAltCard($cardID)
     case "MON405":
     case "MON406":
     case "MON407":
+    case "HNT407":
       return true;
   }
   return false;

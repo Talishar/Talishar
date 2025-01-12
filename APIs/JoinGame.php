@@ -491,6 +491,7 @@ function GetAltCardID($cardID)
     case "DRO026": return "WTR173";
     case "AUR002": return "ROS009";
     case "JDG032": return "AIO004";
+    case "ARK007": return "HNT407";
   }
   return $cardID;
 }

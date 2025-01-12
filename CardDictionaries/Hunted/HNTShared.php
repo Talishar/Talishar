@@ -17,6 +17,7 @@ function HNTAbilityType($cardID): string
     "HNT167" => "I",
     "HNT247" => "I",
     "HNT252" => "I",
+    "HNT407" => "AR",
     default => ""
   };
 }
@@ -31,8 +32,6 @@ function HNTAbilityCost($cardID): int
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT056" => 1,
     "HNT100" => 1,
-    "HNT167" => 0,
-    "HNT252" => 0,
     default => 0
   };
 }
@@ -48,6 +47,8 @@ function HNTAbilityHasGoAgain($cardID): bool
 
 function HNTEffectAttackModifier($cardID): int
 {
+  global $currentPlayer;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
     "HNT003" => 3,
     "HNT004" => 3,
@@ -60,6 +61,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT127" => 1,
     "HNT236" => -1,
     "HNT258-BUFF" => 2,
+    "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
   };
 }
@@ -98,6 +100,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT236" => true,
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
+    "HNT407" => ContractType($attackID) != "",
     default => false,
   };
 }
@@ -252,6 +255,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT259":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
       MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
+      break;
+    case "HNT407":
+      AddCurrentTurnEffect("HNT407", $currentPlayer);
+      SetArsenalFacing("UP", $currentPlayer);
+      break;
     default:
       break;
   }

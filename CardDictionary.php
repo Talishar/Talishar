@@ -89,7 +89,7 @@ function CardType($cardID, $from="")
   if ($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
     if ($number < 400) return GeneratedCardType($cardID);
-    else if ($set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardType($cardID);
+    else if ($set != "MON" && $set != "DYN" && $set != "HNT" && $cardID != "UPR551" && $cardID != "EVO410" && $cardID != "EVO410b") return GeneratedCardType($cardID);
   }
   if ($set == "ROG") return ROGUECardType($cardID);
   switch ($cardID) {
@@ -120,6 +120,8 @@ function CardType($cardID, $from="")
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
+    case "HNT407":
+      return "M";
     default:
       return "";
   }
@@ -750,7 +752,7 @@ function BlockValue($cardID)
   if ($cardID == "ROS211") return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
   if ($set != "ROG" && $set != "DUM") {
     $number = intval(substr($cardID, 3));
-    if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
+    if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "EVO410" && $cardID != "EVO410b")) return GeneratedBlockValue($cardID);
   }
   if ($set == "ROG") return ROGUEBlockValue($cardID);
   switch ($cardID) {
@@ -791,6 +793,8 @@ function BlockValue($cardID)
     case "MST630":
     case "MST631":
       return 0;
+    case "HNT407":
+      return 4;
     default:
       return 3;
   }
@@ -1247,6 +1251,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
+  if ($cardID == "HNT407" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
@@ -1481,6 +1486,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "MST102":
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else return "GY";
+    case "HNT407":
+      return "-";
     default:
       return "GY";
   }

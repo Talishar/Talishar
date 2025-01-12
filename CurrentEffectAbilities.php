@@ -1541,6 +1541,8 @@ function CurrentEffectGrantsGoAgain()
           else break;
         case "HNT125":
           return true;
+        case "HNT407":
+          return true;
         default:
           break;
       }
