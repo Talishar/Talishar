@@ -1466,7 +1466,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $mod = "";
   //manual tunic ticking
   if ($playingCard && $cardID == "WTR150" && ManualTunicSetting($currentPlayer) && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
-    WriteLog("HERE:  " . $turn[0]);
     $character = &GetPlayerCharacter($currentPlayer);
     $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
     if ($character[$cardIndex + 2] < 3) {
@@ -1479,7 +1478,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if ($playingCard) {
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
-      $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-");
+      $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
     }
     //CR 5.1.2 Announce (CR 2.0)

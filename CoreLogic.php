@@ -1245,7 +1245,7 @@ function GetBanishModifier($index)
 function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul;
+  global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers;
   global $combatChainState, $CCS_EclecticMag;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
@@ -1292,6 +1292,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     $crArsenal = &GetArsenal($currentPlayer);
     for ($i = 0; $i < count($crArsenal); $i += ArsenalPieces()) {
       if (SearchCurrentTurnEffects("HNT253" . "-" . $crArsenal[$i + 5], $currentPlayer)) return true;
+    }
+    for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      if (SearchCurrentTurnEffects("HNT253" . "-" . $layers[$i + 5], $currentPlayer)) return true;
     }
   }
   if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("MST155-INST", $currentPlayer) && CardCost($cardID, $from) <= 2) return true;
