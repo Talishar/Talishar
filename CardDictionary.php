@@ -1251,6 +1251,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
+  if($cardID == "HNT407") WriteLog("HERE: " . $cardType . " " . SearchArsenalForCard($currentPlayer, $cardID, "DOWN"));
+
   if ($cardID == "HNT407" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
@@ -2276,6 +2278,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckMarked($defPlayer);
     case "HNT258":
       return $from != "HAND" && (!$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true));
+    case "HNT407":
+      return ArsenalFaceDownCard($player) == "";
     default:
       return false;
   }
@@ -2356,6 +2360,7 @@ function IsStaticType($cardType, $from = "", $cardID = "")
 {
   if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "D")) return true;
   if ($from == "PLAY") return true;
+  if ($from == "ARS" && DelimStringContains($cardType, "M")) return true;
   if ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
   return false;
 }
