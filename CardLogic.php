@@ -1264,7 +1264,6 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
     case "HNT098":
     case "HNT099"://Fang and Cindra
       PlayAura("HNT167", $player);
-      IncrementClassState($player, piece: $CS_FealtyCreated);
       break;
     default:
       break;

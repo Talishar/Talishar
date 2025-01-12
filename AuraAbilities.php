@@ -2,7 +2,7 @@
 
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-")
 {
-  global $CS_NumAuras, $EffectContext, $defPlayer;
+  global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -56,6 +56,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
   else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
   else if ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
+  if ($cardID == "HNT167") IncrementClassState($player, $CS_FealtyCreated, $number);
 }
 
 function AuraNumUses($cardID)
