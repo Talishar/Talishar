@@ -2111,6 +2111,11 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
         case "WarmongersPeace":
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "DTD230";
           break;
+        case "HNT149":
+          if ($type == "AA" && !SearchCurrentTurnEffects("HNT167", $mainPlayer) && !TalentContains($cardID, "DRACONIC")) {
+            $restrictedBy = "HNT149";
+          }
+          break;
         default:
           break;
       }
@@ -2165,6 +2170,11 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
         case "WarmongersPeace":
           // !str_contains(GetAbilityTypes($cardID), "I") should allow discarding attack actions for instant abilities under peace
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230";
+          break;
+        case "HNT149":
+          if (!SearchCurrentTurnEffects("HNT167", $currentPlayer) && !TalentContains($cardID, "DRACONIC") && $from != "PLAY" && $from != "EQUIP") {
+            $restrictedBy = "HNT149";
+          }
           break;
         default:
           break;
