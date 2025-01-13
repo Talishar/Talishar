@@ -58,7 +58,11 @@ function HNTEffectAttackModifier($cardID): int
     "HNT015" => 3,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
+    "HNT104" => 3,
     "HNT127" => 1,
+    "HNT140" => 3,
+    "HNT141" => 2,
+    "HNT142" => 1,
     "HNT236" => -1,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
@@ -94,9 +98,13 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT100" => true,
+    "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
@@ -175,6 +183,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT102":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
+      break;
+    case "HNT104":
+      if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
+      break;
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -186,6 +198,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("PROVOKE", $otherPlayer, "-", 1);
       }
+      break;
+    case "HNT140":
+    case "HNT141":
+    case "HNT142":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
