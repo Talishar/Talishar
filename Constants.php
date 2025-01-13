@@ -642,7 +642,6 @@ function ResetMainClassState()
   $mainClassState[$CS_NumSeismicSurgeDestroyed] = 0;
   $mainClassState[$CS_PowDamageDealt] = 0;
   $mainClassState[$CS_TunicTicks] = 0;
-  $mainClassState[$CS_OriginalHero] = "-";
 }
 
 function ResetCardPlayed($cardID, $from="-")
