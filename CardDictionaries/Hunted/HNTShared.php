@@ -362,7 +362,7 @@ function CheckMarked($player): bool
 
 function RemoveMark($player)
 {
-  $effectIndex = SearchCurrentTurnEffects("HNT244", $player);
+  $effectIndex = SearchCurrentTurnEffectsForIndex("HNT244", $player);
   if ($effectIndex > -1) RemoveCurrentTurnEffect($effectIndex);
   $character = &GetPlayerCharacter($player);
   $character[13] = 0;
