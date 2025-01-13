@@ -313,11 +313,11 @@ function ArsenalBeginEndPhaseAbilities()
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "EVR195-2", 1);
           AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
           AddDecisionQueue("ELSE", $mainPlayer, "-");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYARS-" . $i, 1);
-          AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBOTDECK", 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
         }
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYARS-" . $i, 1);
+        AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBOTDECK", 1);
+        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+        AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
         break;
       default:
         break;
