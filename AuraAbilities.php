@@ -619,7 +619,7 @@ function AuraStartTurnAbilities()
       WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");
       break;
     case "HNT125":
-      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); 
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     case "HNT126":
@@ -631,7 +631,7 @@ function AuraStartTurnAbilities()
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     case "HNT127":
-      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     default:
