@@ -1690,9 +1690,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
     }
+    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA")) AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
     if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityType($cardID, $from) != "I") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
-      if (SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true) && TypeContains($cardID, "AA")) AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
+      SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
     }
     if(DelimStringContains($cardType, "I")) {
       if(!HasMeld($cardID)) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
@@ -2082,6 +2083,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS104":
     case "ROS105":
     case "ROS106":
+    case "HNT044":
+    case "HNT045":
+    case "HNT046":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);

@@ -421,6 +421,14 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT140":
+    case "HNT141":
+    case "HNT142":
+      if (IsHeroAttackTarget()){
+        MarkHero($defPlayer);
+        return 1;
+      }
+      break;
     default:
       break;
   }
@@ -862,10 +870,10 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "AKO004":
           $attack = 0;
-          for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-            if (IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
-              if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-                $attack += EffectAttackModifier($currentTurnEffects[$i]);
+          for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
+            if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
+              if ($currentTurnEffects[$j + 1] == $currentPlayer) {
+                $attack += EffectAttackModifier($currentTurnEffects[$j]);
               }
             }
           }  
