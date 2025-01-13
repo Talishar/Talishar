@@ -950,9 +950,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "AAZ016":
       if (IsHeroAttackTarget() && HasAimCounter()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
+    case "HNT064":
+      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
     case "HNT074":
     case "HNT076":
       if (IsHeroAttackTarget() && SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     default:
       break;
   }

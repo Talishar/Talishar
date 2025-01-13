@@ -277,6 +277,9 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
+    case "HNT064":
+      ThrowWeapon("Dagger", $cardID);
+      break;
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       break;
@@ -286,6 +289,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
       break;
+    case "HNT092":
+    case "HNT093":
+    case "HNT094":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
     default:
       break;
   }
