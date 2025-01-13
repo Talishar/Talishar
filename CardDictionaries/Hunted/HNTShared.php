@@ -57,6 +57,8 @@ function HNTEffectAttackModifier($cardID): int
     "HNT007" => 3,
     "HNT015" => 3,
     "HNT026" => 3,
+    "HNT027" => 2,
+    "HNT028" => 1,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
     "HNT104" => 3,
@@ -95,6 +97,8 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT015" => true,
     "HNT026" => HasStealth($attackID),
+    "HNT027" => HasStealth($attackID),
+    "HNT028" => HasStealth($attackID),
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -141,6 +145,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
       break;
     case "HNT026":
+    case "HNT027":
+    case "HNT028":
       EquipWeapon($currentPlayer, "HNT053");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
