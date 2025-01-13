@@ -935,6 +935,9 @@ function HasGoAgain($cardID): bool|int
     case "AIO004":
     case "AJV017":
     case "HNT010":
+    case "HNT026":
+    case "HNT027":
+    case "HNT028":
     case "HNT056":
     case "HNT057":
     case "HNT092":
