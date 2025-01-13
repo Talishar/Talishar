@@ -130,6 +130,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
       break;
+    case "HNT044":
+    case "HNT045":
+    case "HNT046":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        MarkHero($otherPlayer);
+      }
+      break;
     case "HNT053":
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
       break;
@@ -276,6 +283,15 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
+      break;
+    case "HNT032":
+    case "HNT033":
+    case "HNT034":
+      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID);
