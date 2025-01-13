@@ -324,7 +324,7 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       break;
     case "HNT064":
-      ThrowWeapon("Dagger", $cardID);
+      ThrowWeapon("Dagger", $cardID, true);
       break;
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);

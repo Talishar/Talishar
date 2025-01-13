@@ -744,13 +744,14 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function ThrowWeapon($subtype, $source)
+  function ThrowWeapon($subtype, $source, $optional = false)
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
     AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
