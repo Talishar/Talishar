@@ -185,6 +185,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
       break;
     case "HNT104":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
       break;
     case "HNT116":
@@ -325,7 +326,8 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "HNT092":
     case "HNT093":
     case "HNT094":
-      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      MarkHero($defPlayer);
+      break;
     default:
       break;
   }
