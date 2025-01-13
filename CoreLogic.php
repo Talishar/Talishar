@@ -2071,64 +2071,41 @@ function NumNegCounterEquipBlock()
 function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
-  if ($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock() < $combatChainState[$CCS_RequiredEquipmentBlock]) return false;
-  if ($phase == "B" && HaveUnblockedNegCounterEquip($currentPlayer) && NumNegCounterEquipBlock() < $combatChainState[$CCS_RequiredNegCounterEquipmentBlock]) return false;
+  if ($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock() < $combatChainState[$CCS_RequiredEquipmentBlock]) {
+    return false;
+  }
+  if ($phase == "B" && HaveUnblockedNegCounterEquip($currentPlayer) && NumNegCounterEquipBlock() < $combatChainState[$CCS_RequiredNegCounterEquipmentBlock]) {
+    return false;
+  }
   switch ($phase) {
     case "P":
-      return 0;
     case "PDECK":
-      return 0;
     case "CHOOSEDECK":
-      return 0;
     case "CHOOSETHEIRDECK":
-      return 0;
     case "HANDTOPBOTTOM":
-      return 0;
     case "CHOOSECOMBATCHAIN":
-      return 0;
     case "CHOOSECHARACTER":
-      return 0;
     case "CHOOSEHAND":
-      return 0;
     case "CHOOSEHANDCANCEL":
-      return 0;
     case "MULTICHOOSEDISCARD":
-      return 0;
     case "CHOOSEDISCARDCANCEL":
-      return 0;
     case "CHOOSEARCANE":
-      return 0;
     case "CHOOSEARSENAL":
-      return 0;
     case "CHOOSEDISCARD":
-      return 0;
     case "MULTICHOOSEHAND":
-      return 0;
     case "CHOOSEMULTIZONE":
-      return 0;
     case "CHOOSEBANISH":
-      return 0;
     case "MULTICHOOSEBANISH":
-      return 0;
     case "BUTTONINPUTNOPASS":
-      return 0;
     case "CHOOSEFIRSTPLAYER":
-      return 0;
     case "MULTICHOOSEDECK":
-      return 0;
     case "CHOOSEPERMANENT":
-      return 0;
     case "MULTICHOOSETEXT":
-      return 0;
     case "CHOOSEMYSOUL":
-      return 0;
     case "CHOOSEMYAURA":
-      return 0;
     case "CHOOSECARD":
     case "CHOOSECARDID":
-      return 0;
     case "OVER":
-      return 0;
     case "BUTTONINPUT":
       return 0;
     default:
