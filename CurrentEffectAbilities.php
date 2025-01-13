@@ -421,6 +421,14 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT140":
+    case "HNT141":
+    case "HNT142":
+      if (IsHeroAttackTarget()){
+        MarkHero($defPlayer);
+        return 1;
+      }
+      break;
     default:
       break;
   }

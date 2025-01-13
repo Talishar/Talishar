@@ -1365,6 +1365,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "HNT044":
+    case "HNT045":
+    case "HNT046":
     case "HNT258":
       return $from == "HAND";
     case "MST134":
@@ -1773,6 +1776,8 @@ function DoesAttackHaveGoAgain()
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
+    case "HNT064":
+      return NumDraconicChainLinks() > 1;
     case "HNT071":
       return SearchCurrentTurnEffects("HNT071", $mainPlayer);
     case "HNT249":

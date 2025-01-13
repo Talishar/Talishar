@@ -509,6 +509,7 @@ function ProcessLayer($player, $parameter)
 function AddOnHitTrigger($cardID, $uniqueID = -1): void
 {
   global $mainPlayer, $combatChain;
+  $defPlayer = $mainPlayer == 1 ? 0 : 1;
   switch ($cardID) {
     case "WTR083":
     case "WTR084":
@@ -945,14 +946,26 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "ROS221":
     case "ROS222":
     case "ROS243":
+    case "HNT092":
+    case "HNT093":
+    case "HNT094":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "AAZ016":
       if (IsHeroAttackTarget() && HasAimCounter()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
+    case "HNT032":
+    case "HNT033":
+    case "HNT034":
+      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
+    case "HNT064":
+      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     case "HNT074":
     case "HNT076":
       if (IsHeroAttackTarget() && SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
+      break;
     default:
       break;
   }
@@ -1167,6 +1180,9 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "HNT102-MARK":
+    case "HNT140":
+    case "HNT141":
+    case "HNT142":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     default:

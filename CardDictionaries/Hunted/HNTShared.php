@@ -58,7 +58,11 @@ function HNTEffectAttackModifier($cardID): int
     "HNT015" => 3,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
+    "HNT104" => 3,
     "HNT127" => 1,
+    "HNT140" => 3,
+    "HNT141" => 2,
+    "HNT142" => 1,
     "HNT236" => -1,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
@@ -94,9 +98,13 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT100" => true,
+    "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
@@ -129,6 +137,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      break;
+    case "HNT044":
+    case "HNT045":
+    case "HNT046":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        MarkHero($otherPlayer);
+      }
       break;
     case "HNT053":
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
@@ -168,6 +183,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT102":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
+      break;
+    case "HNT104":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
+      break;
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -179,6 +199,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("PROVOKE", $otherPlayer, "-", 1);
       }
+      break;
+    case "HNT140":
+    case "HNT141":
+    case "HNT142":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
@@ -277,6 +302,18 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
+    case "HNT032":
+    case "HNT033":
+    case "HNT034":
+      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
+      break;
+    case "HNT064":
+      ThrowWeapon("Dagger", $cardID);
+      break;
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       break;
@@ -285,6 +322,11 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
       AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
       AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+      break;
+    case "HNT092":
+    case "HNT093":
+    case "HNT094":
+      MarkHero($defPlayer);
       break;
     default:
       break;
