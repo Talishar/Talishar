@@ -2324,6 +2324,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "WTR180":
     case "WTR181":
       $indices = SearchHand($currentPlayer, "", "", -1, 2);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal");
       AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
       break;
@@ -2331,6 +2332,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "WTR183":
     case "WTR184":
       $indices = SearchHand($currentPlayer, "", "", 1, 0);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal");
       AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
       AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
       break;

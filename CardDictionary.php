@@ -1682,6 +1682,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CardType($CombatChain->AttackCard()->ID()) != "AA") return true;
       if (CardCost($CombatChain->AttackCard()->ID()) > 1) return true;
       return false;
+    case "WTR179":
+    case "WTR180":
+    case "WTR181":
+      return SearchCount(SearchHand($currentPlayer, "", "", -1, 2)) < 2;
+    case "WTR182":
+    case "WTR183":
+    case "WTR184":    
+      return SearchCount(SearchHand($currentPlayer, "", "", -1, 0)) < 2;
     case "WTR206":
     case "WTR207":
     case "WTR208":
