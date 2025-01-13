@@ -1066,13 +1066,13 @@ function AuraDamageTakenAbilities($player, $damage, $source)
       case "ROS077":
         if(GetClassState($otherPlayer, $CS_DamageDealt) == 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
           $otherAuras[$i + 5] -= 1;
-          if (CardType($source) != "AA" || !HitEffectsArePrevented($source) || !SearchCurrentTurnEffects("OUT108", $otherPlayer)) {
+          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("OUT108", $otherPlayer) && !HitEffectsArePrevented($source)) {
             AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
           }
         }
         elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
           $otherAuras[$i + 5] -= 1;
-          if (CardType($source) != "AA" || !HitEffectsArePrevented($source) || !SearchCurrentTurnEffects("OUT108", $otherPlayer)) {
+          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("OUT108", $otherPlayer) && !HitEffectsArePrevented($source)) {
             AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
           }
         }
