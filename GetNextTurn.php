@@ -1085,7 +1085,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
-  if (($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
+  if (($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
     $optCards = array();
@@ -1093,7 +1093,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
       if ($turn[0] == "CHOOSETOP") array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
       if ($turn[0] == "CHOOSEBOTTOM") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
-      if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
   }

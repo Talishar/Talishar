@@ -375,7 +375,7 @@ function RecurDagger($player, $mode) //$mode == 0 for left, and 1 for right
     AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
     AddDecisionQueue("NULLPASS", $player, "-", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
-    AddDecisionQueue("CHOOSECARD", $player, "<-", 1);
+    AddDecisionQueue("MAYCHOOSECARD", $player, "<-", 1);
     AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
   }
 }

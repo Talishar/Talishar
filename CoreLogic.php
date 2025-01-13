@@ -2124,6 +2124,7 @@ function CanPassPhase($phase)
       return 0;
     case "CHOOSEMYAURA":
       return 0;
+    case "CHOOSECARD":
     case "CHOOSECARDID":
       return 0;
     case "OVER":
