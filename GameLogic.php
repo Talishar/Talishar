@@ -2495,8 +2495,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "PASS";
     case "SPURLOCKED":
       $otherPlayer = $player == 1 ? 2 : 1;
-      if($lastResult == "PASS") WriteLog("🎲 Nothing Happened");
-      if($lastResult == $player) {
+      if($lastResult == "PASS") {
+        WriteLog("🎲 Nothing Happened");
+      }
+      elseif($lastResult == $player) {
         LoseHealth($dqVars[0], $player);
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:maxCost=" . $dqVars[0], 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
