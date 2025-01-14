@@ -711,7 +711,7 @@ function OnBlockResolveEffects($cardID = "")
         }
         break;
       case "OUT185":
-        $NumActionsBlocking = CachedNumActionBlocked();
+        $NumActionsBlocking = NumActionsBlocking();
         for ($i = 0; $i < $NumActionsBlocking; ++$i) {
           AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
         }
