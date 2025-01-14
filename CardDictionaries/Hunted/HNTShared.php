@@ -170,8 +170,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ThrowWeapon("Dagger", $cardID);
       break;
     case "HNT071":
+      $uniqueID = $CombatChain->AttackCard()->UniqueID();
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
       }
       break;
     case "HNT074":
