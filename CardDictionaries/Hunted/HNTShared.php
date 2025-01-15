@@ -59,8 +59,12 @@ function HNTEffectAttackModifier($cardID): int
     "HNT026" => 3,
     "HNT027" => 2,
     "HNT028" => 1,
+    "HNT077" => 3,
+    "HNT078" => 3,
+    "HNT079" => 3,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
+    "HNT103" => 2,
     "HNT104" => 3,
     "HNT127" => 1,
     "HNT140" => 3,
@@ -103,7 +107,11 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT077" => true,
+    "HNT078" => true,
+    "HNT079" => true,
     "HNT100" => true,
+    "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -144,6 +152,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
       break;
+    case "HNT017":
+    case "HNT018":
+    case "HNT019":
+      ThrowWeapon("Dagger", $cardID, true);
+      break;
     case "HNT026":
     case "HNT027":
     case "HNT028":
@@ -169,9 +182,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ThrowWeapon("Dagger", $cardID);
       ThrowWeapon("Dagger", $cardID);
       break;
+    case "HNT058":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "HNT071":
+      $uniqueID = $CombatChain->AttackCard()->UniqueID();
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
       }
       break;
     case "HNT074":
@@ -192,10 +209,18 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
+    case "HNT077":
+    case "HNT078":
+    case "HNT079":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
     case "HNT102":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
       break;
+    case "HNT103":
     case "HNT104":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
@@ -219,6 +244,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT149":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT155":
+      GainResources($currentPlayer, 1);
+      Draw($currentPlayer, effectSource:$cardID);
       break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
@@ -365,7 +394,7 @@ function CheckMarked($player): bool
 
 function RemoveMark($player)
 {
-  $effectIndex = SearchCurrentTurnEffects("HNT244", $player);
+  $effectIndex = SearchCurrentTurnEffectsForIndex("HNT244", $player);
   if ($effectIndex > -1) RemoveCurrentTurnEffect($effectIndex);
   $character = &GetPlayerCharacter($player);
   $character[13] = 0;

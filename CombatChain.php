@@ -711,7 +711,7 @@ function OnBlockResolveEffects($cardID = "")
         }
         break;
       case "OUT185":
-        $NumActionsBlocking = CachedNumActionBlocked();
+        $NumActionsBlocking = NumActionsBlocking();
         for ($i = 0; $i < $NumActionsBlocking; ++$i) {
           AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
         }
@@ -761,7 +761,7 @@ function OnBlockResolveEffects($cardID = "")
     if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
     if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
-    if (SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
+    if (SearchCurrentTurnEffects("HVY104", $mainPlayer) && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
     $defendingCard = $combatChain[$i];
     switch ($defendingCard) {//code for Jarl's armor
       case "AJV004":

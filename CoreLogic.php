@@ -1779,7 +1779,8 @@ function DoesAttackHaveGoAgain()
     case "HNT064":
       return NumDraconicChainLinks() > 1;
     case "HNT071":
-      return SearchCurrentTurnEffects("HNT071", $mainPlayer);
+      $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
+      return SearchCurrentTurnEffects("HNT071-$attackUniqueID", $mainPlayer);
     case "HNT249":
       return SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1;
     default:
@@ -2454,6 +2455,8 @@ function SelfCostModifier($cardID, $from)
     case "HVY251":
       return (-1 * NumRunechants($currentPlayer));
     case "HNT057":
+      return (-1 * NumDraconicChainLinks());
+    case "HNT155":
       return (-1 * NumDraconicChainLinks());
     default:
       return 0;

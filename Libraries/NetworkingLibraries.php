@@ -1115,7 +1115,7 @@ function ResolveCombatDamage($damageDone)
     if (IsHeroAttackTarget()) {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       if (CheckMarked($otherPlayer)) {
-        WriteLog($otherPlayer . " loses their mark");
+        WriteLog("Player " . $otherPlayer . " loses their mark");
         RemoveMark($otherPlayer);
       }
     }

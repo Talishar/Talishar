@@ -34,7 +34,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
-  if (CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+  if (!TypeContains($cardID, "T", $player)) { //If you banish a token, the token ceases to exist.
     $rv = count($banish);
     array_push($banish, $cardID);
     array_push($banish, $mod);
@@ -632,7 +632,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       $cardID = $set . $id;
     }
   }
-  if (HasEphemeral($cardID)) return;
+  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player)) return;
   switch ($cardID) {
     case "MON124":
       BanishCardForPlayer($cardID, $player, $from, "NA");
