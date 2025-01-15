@@ -2184,6 +2184,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
         case "HNT115":
           if (IsWeapon($cardID)) $restrictedBy = "HNT115";
           break;
+        case "HNT148";
         case "HNT149":
           if (!SearchCurrentTurnEffects("HNT167", $currentPlayer) && !TalentContains($cardID, "DRACONIC") && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
             $restrictedBy = "HNT149";
