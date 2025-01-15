@@ -142,7 +142,8 @@ function CurrentTurnEffectPieces()
 
 function CurrentTurnEffectUses($cardID)
 {
-  switch ($cardID) {
+  $effectID = substr($cardID, 0, 6);
+  switch ($effectID) {
     case "EVR033":
       return 6;
     case "EVR034":
