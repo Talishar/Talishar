@@ -234,6 +234,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT142":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT155":
+      GainResources($currentPlayer, 1);
+      Draw($currentPlayer, effectSource:$cardID);
+      break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
         PlayAura("HNT167", $currentPlayer);
