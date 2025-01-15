@@ -765,6 +765,7 @@ function AuraBeginEndPhaseTriggers()
       case "OUT235":
       case "OUT236":
       case "ROS034":
+      case "HNT118":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "HNT167":
@@ -1280,6 +1281,13 @@ function AuraAttackModifiers($index, &$attackModifiers, $onBlock=false)
             array_push($attackModifiers, -1);
           }
           break;
+        case "HNT118":
+          if(IsWeaponAttack())
+          {
+            $modifier += 1;
+            array_push($attackModifiers, $myAuras[$i]);
+            array_push($attackModifiers, 1);
+          }
         default:
           break;
       }

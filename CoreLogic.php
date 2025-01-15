@@ -1626,6 +1626,7 @@ function DoesAttackHaveGoAgain()
   if (SearchCurrentTurnEffectsForCycle("HVY127", "HVY128", "HVY129", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
   if (SearchCurrentTurnEffects("MST094", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
   if ((SearchCurrentTurnEffects("ROS010-GOAGAIN", $mainPlayer) || SearchCurrentTurnEffects("ROS074", $mainPlayer)) && $CombatChain->AttackCard()->From() != "PLAY" && $attackType == "AA") return true;
+  if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("HNT118", $mainPlayer)) return true;
   //the last action in numActions is going to be the current chain link
   //so we want the second to last to be current funnel, and 3rd to last to be lightning
   $mainPitch = &GetPitch($mainPlayer);
