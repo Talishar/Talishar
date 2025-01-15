@@ -418,6 +418,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
+    case "HNT101":
+      return 4;
     case "HNT116":
       return 3;
     case "HNT249":

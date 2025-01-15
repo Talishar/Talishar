@@ -113,6 +113,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT078" => true,
     "HNT079" => true,
     "HNT100" => true,
+    "HNT101" => true,
     "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
@@ -220,6 +221,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
+      break;
+    case "HNT101":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT102":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);

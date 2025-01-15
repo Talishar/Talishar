@@ -2272,6 +2272,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;
+    case "HNT101";
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (CountAura("HNT167", $currentPlayer) < 3) return true;
+      $subtype = CardSubType($CombatChain->AttackCard()->ID());
+      return $subtype != "Dagger";
     case "HNT102":
       if (!$CombatChain->HasCurrentLink()) return true;
       // This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
