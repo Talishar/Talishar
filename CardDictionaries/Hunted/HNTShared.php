@@ -61,6 +61,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT028" => 1,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
+    "HNT103" => 2,
     "HNT104" => 3,
     "HNT127" => 1,
     "HNT140" => 3,
@@ -104,6 +105,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT100" => true,
+    "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -197,6 +199,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
       break;
+    case "HNT103":
     case "HNT104":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
