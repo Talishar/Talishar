@@ -481,6 +481,17 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
         if (SearchCurrentTurnEffects("OUT174", $player) != "") {//vambrace
           $damage += 1;
           SearchCurrentTurnEffects("OUT174", $player, remove:true);
+          // if there's still floating prevention after vambrace we do it again
+          // in the future this may need to be re-implemented as a while loop
+          if ($classState[$CS_DamagePrevention] > 0) {
+            if($damage <= $classState[$CS_DamagePrevention]) {
+              $classState[$CS_DamagePrevention] -= $damage;
+              $damage = 0;
+            } else {
+              $damage -= $classState[$CS_DamagePrevention];
+              $classState[$CS_DamagePrevention] = 0;
+            }
+          }
         }
       }
     }
