@@ -1054,7 +1054,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT046":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
-        if (!SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) $names .= ",Attack";
+        if (!SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer) && !SearchCurrentTurnEffects("HNT149", $currentPlayer)) $names .= ",Attack";
       }
       return $names;
     case "ROS120": case "ROS169":
