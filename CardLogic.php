@@ -2694,6 +2694,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT115":
       AddCurrentTurnEffect($parameter, $mainPlayer);
       break;
+    case "HNT118":
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
