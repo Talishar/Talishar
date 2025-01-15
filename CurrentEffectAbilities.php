@@ -2187,7 +2187,23 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
         case "HNT148";
         case "HNT149":
           if (!SearchCurrentTurnEffects("HNT167", $currentPlayer) && !TalentContains($cardID, "DRACONIC") && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
-            $restrictedBy = "HNT149";
+            if (TypeContains($cardID, "AA")) {
+              // this case is needed because brand with cinderclaw isn't set to become active until after the attack is played
+              $restrict = true;
+              for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
+                switch ($currentTurnEffects[$j]) {
+                  case "UPR060":
+                  case "UPR061":
+                  case "UPR062":
+                    $restrict = false;
+                    break;
+                  default:
+                    break;
+                  }
+              }
+              if ($restrict) $restrictedBy = "HNT149";
+            }
+            else $restrictedBy = "HNT149";
           }
           break;
         default:
