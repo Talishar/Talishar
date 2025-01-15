@@ -905,7 +905,6 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "HNT061":
           if (SubtypeContains($cardID, "Dagger", $currentPlayer)) {
             $costModifier -= 1;
-            $remove = true;
           }
           break;
         case "ROGUE803":
