@@ -2203,9 +2203,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
               }
               if ($restrict) $restrictedBy = "HNT149";
             }
-            elseif (!SearchCurrentTurnEffects("UPR060", $currentPlayer) && !SearchCurrentTurnEffects("UPR061", $currentPlayer) && !SearchCurrentTurnEffects("UPR060", $currentPlayer) || !TypeContains($cardID, "AA")) {
-              $restrictedBy = "HNT149";
-            }
+            else $restrictedBy = "HNT149";
           }
           break;
         default:
