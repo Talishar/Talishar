@@ -451,6 +451,13 @@ function MZStartTurnAbility($player, $MZIndex)
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("AFTERTHAW", $player, "<-", 1);
       break;
+    case "HNT150":
+      AddDecisionQueue("PASSPARAMETER", $player, $MZIndex);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $player, "GY,-", 1);
+      MZMoveCard($player, "MYDISCARD:isSameName=HNT150", "MYBANISH", DQContext:"Choose a card named Loyalty Beyond the Grave to banish", isSubsequent:true);
+      AddDecisionQueue("DRAW", $player, "-", 0);
+      break;
     default:
       break;
   }

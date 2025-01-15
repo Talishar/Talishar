@@ -217,7 +217,7 @@ function MZStartTurnMayAbilities()
 {
   global $mainPlayer;
   AddDecisionQueue("FINDINDICES", $mainPlayer, "MZSTARTTURN");
-  AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a start turn ability to activate (or pass)", 1);
+  AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a start of turn ability to activate (or pass)", 1);
   AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
   AddDecisionQueue("MZSTARTTURNABILITY", $mainPlayer, "-", 1);
 }
