@@ -2173,6 +2173,11 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
           // !str_contains(GetAbilityTypes($cardID), "I") should allow discarding attack actions for instant abilities under peace
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230";
           break;
+        case "HNT149":
+          if (!SearchCurrentTurnEffects("HNT167", $currentPlayer) && !TalentContains($cardID, "DRACONIC") && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
+            $restrictedBy = "HNT149";
+          }
+          break;
         default:
           break;
       }
