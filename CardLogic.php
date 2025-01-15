@@ -2691,6 +2691,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT073":
+      $index = SearchAurasForUniqueID($uniqueID, $player);
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_prowess_and_draw");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, "$index", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "MYAURAS-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      AddDecisionQueue("DRAW", $player, "-", 1);
     case "HNT115":
       AddCurrentTurnEffect($parameter, $mainPlayer);
       break;
