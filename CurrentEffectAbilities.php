@@ -2167,7 +2167,6 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false)
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230";
           break;
         case "HNT149":
-          // WriteLog("HERE: $cardID-$from");
           if (!SearchCurrentTurnEffects("HNT167", $currentPlayer) && !TalentContains($cardID, "DRACONIC") && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
             $restrictedBy = "HNT149";
           }
