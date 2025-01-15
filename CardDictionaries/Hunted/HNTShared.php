@@ -59,6 +59,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT026" => 3,
     "HNT027" => 2,
     "HNT028" => 1,
+    "HNT061" => 1,
     "HNT077" => 3,
     "HNT078" => 3,
     "HNT079" => 3,
@@ -103,6 +104,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT026" => HasStealth($attackID),
     "HNT027" => HasStealth($attackID),
     "HNT028" => HasStealth($attackID),
+    "HNT061" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -183,6 +185,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       ThrowWeapon("Dagger", $cardID);
       break;
     case "HNT058":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT061":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT071":

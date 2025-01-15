@@ -2454,6 +2454,7 @@ function SelfCostModifier($cardID, $from)
       return (GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0 ? -1 : 0);
     case "HVY251":
       return (-1 * NumRunechants($currentPlayer));
+    case "HNT061":
     case "HNT057":
       return (-1 * NumDraconicChainLinks());
     case "HNT155":

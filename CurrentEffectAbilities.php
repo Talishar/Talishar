@@ -605,6 +605,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST212":
       case "MST213":
       case "MST214": //Water the Seeds
+      case "HNT061":
         $remove = 1;
         break;
       default:
@@ -897,6 +898,12 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "HNT058":
           if (TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+            $costModifier -= 1;
+            $remove = true;
+          }
+          break;
+        case "HNT061":
+          if (SubtypeContains($cardID, "Dagger", $currentPlayer)) {
             $costModifier -= 1;
             $remove = true;
           }
@@ -1924,6 +1931,7 @@ function IsCombatEffectPersistent($cardID)
     case "AJV006-E":
     case "AJV006-I":
       return true;
+    case "HNT061":
     case "HNT125":
     case "HNT127":
     case "HNT258-BUFF":
