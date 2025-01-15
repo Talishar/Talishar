@@ -889,7 +889,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword, $CS_NumAttacks;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = false;
@@ -908,6 +908,8 @@ function AuraEndTurnAbilities()
       case "DYN072":
         if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) $remove = true;
         break;
+      case "HNT073":
+        if (GetClassState($mainPlayer, $CS_NumAttacks) <= 3) $remove = true;
       default:
         break;
     }
@@ -1197,7 +1199,7 @@ function AuraPlayAbilities($cardID, $from = "")
 
 function AuraAttackAbilities($attackID)
 {
-  global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks, $CS_NumTimesAttacked;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -1228,6 +1230,10 @@ function AuraAttackAbilities($attackID)
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
+      case "HNT073":
+        if (GetClassState($mainPlayer, $CS_NumTimesAttacked) == 4) {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
       default:
         break;
     }
