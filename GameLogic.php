@@ -2464,7 +2464,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDONHITMARK":
       $ind = explode("-", $parameter)[1];
       $char = &GetPlayerCharacter($player);
-      AddCurrentTurnEffect("HNT102-MARK" . "," . $char[$ind+11], $player);
+      AddCurrentTurnEffect("HNT102-MARK" . "," . $char[$ind+11], $player,"", $char[$ind+11]);
       return $lastResult;
     case "PROVOKE":
       $handInd = explode("-", $lastResult)[1];

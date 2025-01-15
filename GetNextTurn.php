@@ -610,7 +610,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
       $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
       $weaponAttackModifiers = [];
-      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $playerID) > 0 && !$playable) $border = 5;
+      if(!$playable) {
+        if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $playerID) > 0) $border = 5;
+        if(SearchCurrentTurnEffectsForPartielID($myCharacter[$i + 11])) $border = 5;
+      }
       $atkCounters = $myCharacter[$i + 3];
     }
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3 && $myCharacter[$i + 12] != "DOWN") {
