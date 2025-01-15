@@ -251,6 +251,10 @@ function MZStartTurnIndices()
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         }
         break;
+      case "HNT150":
+        $foundLoyalties = SearchDiscard($mainPlayer, nameIncludes:"Loyalty,Beyond,the,Grave");
+        if (count(explode(",", $foundLoyalties)) >= 2) $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
+        break;
       default:
         break;
     }
