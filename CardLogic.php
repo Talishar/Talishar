@@ -2690,9 +2690,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
-    case "HNT149":
-      AddCurrentTurnEffect($parameter, $player);
-      break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
