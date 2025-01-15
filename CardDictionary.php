@@ -2530,6 +2530,7 @@ function HasBladeBreak($cardID)
     case "AJV004":
     case "AJV007":
       return true;
+    case "HNT115":
     case "HNT247":
       return true;
     default:
