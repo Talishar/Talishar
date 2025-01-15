@@ -1400,7 +1400,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "HER130":
-        if (HasStealth($cardID)) {
+        if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
           GiveAttackGoAgain();
           $character[$i + 1] = 1;
         }
@@ -1445,7 +1445,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
       case "HER130":
-        if (HasStealth($cardID)) {
+        if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
           GiveAttackGoAgain();
           $otherPlayerCharacter[$j + 1] = 1;
         }
