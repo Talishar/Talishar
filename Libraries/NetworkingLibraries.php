@@ -3044,7 +3044,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           return;
         }
       }
-      if (IsPlayRestricted($cardID, $restriction, $from) && $additionalCosts == "-") {
+      if (IsPlayRestricted($cardID, $restriction, $from, resolutionCheck: true) && $additionalCosts == "-") {
         WriteLog(CardLink($cardID, $cardID) . " fail to resolve because the target is no longer a legal target.");
         return;
       }
