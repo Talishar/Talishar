@@ -889,7 +889,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword, $CS_NumAttacks;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword, $CS_NumTimesAttacked;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = false;
@@ -909,7 +909,7 @@ function AuraEndTurnAbilities()
         if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) $remove = true;
         break;
       case "HNT073":
-        if (GetClassState($mainPlayer, $CS_NumAttacks) < 3) $remove = true;
+        if (GetClassState($mainPlayer, $CS_NumTimesAttacked) < 3) $remove = true;
         break;
       default:
         break;
