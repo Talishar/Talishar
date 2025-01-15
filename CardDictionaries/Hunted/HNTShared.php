@@ -72,6 +72,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT236" => -1,
+    "HNT237" => 1,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -123,6 +124,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
+    "HNT237" => true,
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
@@ -277,6 +279,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
         AddCurrentTurnEffectNextAttack($cardID, $otherPlayer);
       }
+      break;
+    case "HNT237":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (IsHeroAttackTarget()) MarkHero($otherPlayer);
       break;
     case "HNT246":
       DiscardRandom();
