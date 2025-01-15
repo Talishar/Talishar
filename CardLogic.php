@@ -2692,10 +2692,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
     case "HNT073":
-      //additional costs = unique id
+      $index = SearchAurasForUniqueID($uniqueID, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_prowess_and_draw");
       AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("PASSPARAMETER", $player, $additionalCosts, 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "$index", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $player, "MYAURAS-", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       AddDecisionQueue("DRAW", $player, "-", 1);

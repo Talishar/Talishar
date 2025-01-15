@@ -909,7 +909,8 @@ function AuraEndTurnAbilities()
         if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) $remove = true;
         break;
       case "HNT073":
-        if (GetClassState($mainPlayer, $CS_NumAttacks) <= 3) $remove = true;
+        if (GetClassState($mainPlayer, $CS_NumAttacks) < 3) $remove = true;
+        break;
       default:
         break;
     }
