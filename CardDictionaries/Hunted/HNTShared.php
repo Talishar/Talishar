@@ -152,6 +152,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
       break;
+    case "HNT017":
+    case "HNT018":
+    case "HNT019":
+      ThrowWeapon("Dagger", $cardID, true);
+      break;
     case "HNT026":
     case "HNT027":
     case "HNT028":
