@@ -895,6 +895,12 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = true;
           }
           break;
+        case "HNT058":
+          if (TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+            $costModifier -= 1;
+            $remove = true;
+          }
+          break;
         case "ROGUE803":
           if (IsStaticType(CardType($cardID), $from, $cardID)) {
             $costModifier -= 1;
