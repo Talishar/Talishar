@@ -238,6 +238,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
       break;
+    case "HNT105":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $character = &GetPlayerCharacter($mainPlayer);
+      $weaponIndex1 = CharacterPieces();
+      $weaponIndex2 = CharacterPieces() * 2;
+      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
+      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
