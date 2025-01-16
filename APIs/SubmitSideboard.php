@@ -8,7 +8,7 @@ include "../GameLogic.php";
 include "../GameTerms.php";
 include "../Libraries/StatFunctions.php";
 include "../Libraries/PlayerSettings.php";
-include "../Libraries/UILibraries2.php";
+include "../Libraries/UILibraries.php";
 include "../AI/CombatDummy.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
@@ -61,8 +61,6 @@ if(isset($submission->arms) && $submission->arms != "") $character .= " " . $sub
 if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
-//TODO: parse inventory
-
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);
@@ -135,7 +133,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "M 1\r\n"); //What phase/player is active
   fwrite($handler, "1\r\n"); //Action points
   fwrite($handler, "\r\n"); //Combat Chain
-  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0\r\n"); //Combat Chain State
+  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0\r\n"); //Combat Chain State
   fwrite($handler, "\r\n"); //Current Turn Effects
   fwrite($handler, "\r\n"); //Current Turn Effects From Combat
   fwrite($handler, "\r\n"); //Next Turn Effects

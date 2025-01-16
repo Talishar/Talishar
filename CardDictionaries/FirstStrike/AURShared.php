@@ -1,14 +1,4 @@
 <?php
-
-/*  Aurora First Strike Deck METHODS
-  // Ability Type
-  // Ability Cost
-  // Combat Effect active
-  // Effect Attack Modifier
-  // Play Ability
-  // Hit Effect
-*/
-
 function AUREffectAttackModifier($cardID): int
 {
   return match ($cardID) {

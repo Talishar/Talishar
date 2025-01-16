@@ -1,7 +1,8 @@
 <?php
 
-//include "ParseGamestate.php";
-//include "WriteLog.php";
+include "HostFiles/Redirector.php";
+include_once "AccountFiles/AccountSessionAPI.php";
+
 
 array_push($layerPriority, ShouldHoldPriority(1));
 array_push($layerPriority, ShouldHoldPriority(2));
@@ -12,6 +13,8 @@ $p1H = &GetHealth(1);
 $p2H = &GetHealth(2);
 $p1H = CharacterHealth($p1Char[0]);
 $p2H = CharacterHealth($p2Char[0]);
+$format = is_numeric($format) ? FormatName($format) : $format;
+
 if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
@@ -46,6 +49,16 @@ if (CardSet($p2Char[0]) == "ROG") {
     }
   }
   ROGUEPowerStart();
+}
+
+//Dummy - Single Player
+if ($p2Char[0] == "DUMMY") {
+  $cards = ["CRU109", "ARC029", "ARC022", "EVR070", "ARC010", "ARC026"];
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
+  AddGraveyard($cards[rand(0, 5)], 2, "DECK");
 }
 
 //CR 2.0 4.1.5b Meta-static abilities affecting deck composition
@@ -106,12 +119,30 @@ if (($index = FindCharacterIndex(2, "DYN026")) > 0) {
   $p2Char[$index + 4] = -2;
 }
 
+//Barbed Castaway
+if (($index = FindCharacterIndex(1, "OUT093")) > 0) {
+  AddCurrentTurnEffect("OUT093-Load", 1);
+  AddCurrentTurnEffect("OUT093-Aim", 1);
+}
+if (($index = FindCharacterIndex(2, "OUT093")) > 0) {
+  AddCurrentTurnEffect("OUT093-Load", 2);
+  AddCurrentTurnEffect("OUT093-Aim", 2);
+}
+
 //Victor
 if (SearchCharacterForCard(1, "HVY047") || SearchCharacterForCard(1, "HVY048")) {
   AddDecisionQueue("ADDCURRENTEFFECT", 1, $p1Char[0] . "-1", 1);
 }
 if (SearchCharacterForCard(2, "HVY047") || SearchCharacterForCard(2, "HVY048")) {
   AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0] . "-1", 1);
+}
+
+//Aria Sanctuary for Rosseta Limited
+if($format == "draft"){
+  AddDecisionQueue("PASSPARAMETER", 1, "ROS027");
+  AddDecisionQueue("PUTPLAY", 1, "-");
+  AddDecisionQueue("PASSPARAMETER", 2, "ROS027");
+  AddDecisionQueue("PUTPLAY", 2, "-");
 }
 
 InventoryStartGameAbilities(1);

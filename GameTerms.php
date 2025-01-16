@@ -1,22 +1,14 @@
 <?php
 
-function PhaseName($phase)
-{
-  switch ($phase) {
-    case "M":
-      return "Main";
-    case "B":
-      return "Block";
-    case "A":
-      return "Attack Reaction";
-    case "D":
-      return "Defense Reaction";
-    case "P":
-      return "Pitch";
-    case "ARS":
-      return "Arsenal";
-  }
-}
+// Removed function PhaseName($phase) as it was not being used. Kept it here for reference for the new developpers.
+/* PhaseName
+    case "M": "Main"
+    case "B": "Block"
+    case "A": "Attack Reaction"
+    case "D": "Defense Reaction"
+    case "P": "Pitch"
+    case "ARS": "Arsenal"
+*/
 
 function TypeToPlay($phase)
 {
@@ -64,13 +56,13 @@ function TypeToPlay($phase)
     case "BUTTONINPUTNOPASS":
       return "a button";
     case "MAYCHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "CHOOSEDISCARDCANCEL":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "CHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "MULTICHOOSEDISCARD":
-      return "cards from discard";
+      return "cards from the graveyard";
     case "MULTICHOOSEHAND":
       return "cards from hand";
     case "MAYMULTICHOOSEHAND":
@@ -88,7 +80,7 @@ function TypeToPlay($phase)
     case "MAYMULTICHOOSETEXT":
       return " options";
     case "CHOOSEARCANE":
-      return "an amount to pitch to arcane barrier";
+      return "an amount to pitch to Arcane Barrier:";
     case "MAYCHOOSEARSENAL":
       return "a card from arsenal";
     case "CHOOSEARSENAL":
@@ -117,6 +109,8 @@ function TypeToPlay($phase)
       return "a card from soul";
     case "INPUTCARDNAME":
       return "a card name";
+    case "CHOOSENUMBER":
+      return "a number";
   }
 }
 

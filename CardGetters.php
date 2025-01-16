@@ -18,7 +18,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = &GetSoul($player);
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
-  else if ($zone == "CC") return $combatChain;
+  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
   return $rv;
 }
 
@@ -45,7 +45,7 @@ function &GetRelativeMZZone($player, $zone)
 
 function &GetPlayerCharacter($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mainCharacter, $defCharacter, $myCharacter, $theirCharacter;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -59,7 +59,7 @@ function &GetPlayerCharacter($player)
 
 function &GetCharacterEffects($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mainCharacterEffects, $defCharacterEffects, $myCharacterEffects, $theirCharacterEffects;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -73,7 +73,7 @@ function &GetCharacterEffects($player)
 
 function &GetPlayerClassState($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -87,7 +87,7 @@ function &GetPlayerClassState($player)
 
 function GetClassState($player, $piece)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -101,7 +101,7 @@ function GetClassState($player, $piece)
 
 function &GetDeck($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDeck, $theirDeck, $mainDeck, $defDeck;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -115,7 +115,7 @@ function &GetDeck($player)
 
 function &GetHand($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myHand, $theirHand, $mainHand, $defHand;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -129,7 +129,7 @@ function &GetHand($player)
 
 function &GetBanish($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -143,7 +143,7 @@ function &GetBanish($player)
 
 function &GetPitch($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myPitch, $theirPitch, $mainPitch, $defPitch;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -157,7 +157,7 @@ function &GetPitch($player)
 
 function &GetHealth($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myHealth, $theirHealth, $mainHealth, $defHealth;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -245,11 +245,23 @@ function &GetAuras($player)
   global $myAuras, $theirAuras, $mainAuras, $defAuras;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return $mainAuras;
-    else return $defAuras;
+    if ($player == $mainPlayer) {
+      $mainAuras = array_values($mainAuras);//It seems like there's a bug with things not being removed correctly
+      return $mainAuras;
+    }
+    else {
+      $defAuras = array_values($defAuras);
+      return $defAuras;
+    }
   } else {
-    if ($player == $myStateBuiltFor) return $myAuras;
-    else return $theirAuras;
+    if ($player == $myStateBuiltFor) {
+      $myAuras = array_values($myAuras);
+      return $myAuras;
+    }
+    else {
+      $theirAuras = array_values($theirAuras);
+      return $theirAuras;
+    }
   }
 }
 
@@ -395,17 +407,4 @@ function NumEquipment($player)
     if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) ++$numEquip;
   }
   return $numEquip;
-}
-
-function ActiveCharacterEffects($player, $index)
-{
-  $effects = "";
-  $characterEffects = GetCharacterEffects($player);
-  for ($i = 0; $i < count($characterEffects); $i += CharacterEffectPieces()) {
-    if ($characterEffects[$i] == $index) {
-      if ($effects != "") $effects .= ", ";
-      $effects .= CardName($characterEffects[$i + 1]);
-    }
-  }
-  return $effects;
 }

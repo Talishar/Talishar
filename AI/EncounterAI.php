@@ -238,7 +238,7 @@ function EncounterAI()
       {
         if($AIDebug) WriteLog("AI Branch - Opt");
         $options = explode(",", $turn[2]);
-        ProcessInput($currentPlayer, 9, $options[0], 0, 0, "");
+        ProcessInput($currentPlayer, 107, $options[0], 0, 0, "");
         CacheCombatResult();
       }
       else if($turn[0] == "HANDTOPBOTTOM"  && $mainPlayer = $currentPlayer)

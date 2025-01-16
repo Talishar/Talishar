@@ -2,7 +2,14 @@
 
 function IsWeapon($cardID)
 {
-  global $currentPlayer;
+  global $currentPlayer, $mainPlayer;
+  if(DelimStringContains(CardSubType($cardID), "Aura") && 
+      ClassContains($cardID, "ILLUSIONIST", $mainPlayer) && 
+      SearchCharacterForCard($mainPlayer, "MON003") || 
+      SearchCharacterForCard($mainPlayer, "MON088") || 
+      SearchCharacterForCard($mainPlayer, "DTD216") || 
+      SearchCharacterForCard($mainPlayer, "MST130")
+  ) return true;
   return TypeContains($cardID, "W", $currentPlayer);
 }
 
@@ -51,10 +58,4 @@ function ApplyEffectToEachWeapon($effectID)
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if (CardType($character[$i]) == "W") AddCharacterEffect($currentPlayer, $i, $effectID);
   }
-}
-
-function IsAuraWeapon($cardID, $player, $from)
-{
-  if ((SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216") || SearchCharacterForCard($player, "MST130")) && DelimStringContains(CardSubType($cardID), "Aura") && $from == "PLAY") return true;
-  else return false;
 }

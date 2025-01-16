@@ -180,7 +180,7 @@
       case "ELE177": return CardCost($attackID) >= 0;
       case "ELE178": return CardCost($attackID) >= 1;
       case "ELE179": return CardCost($attackID) >= 2;
-      case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer);
+      case "ELE180": case "ELE181": case "ELE182": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer) && CardType($attackID) == "AA";
       case "ELE183": case "ELE184": case "ELE185": return true;
       case "ELE195": case "ELE196": case "ELE197": return true;
       case "ELE198": case "ELE199": case "ELE200": return CardType($attackID) == "AA";

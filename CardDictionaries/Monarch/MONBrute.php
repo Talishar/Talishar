@@ -25,7 +25,7 @@
         $card = DiscardRandom();
         if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with Deadwood Rumbler");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with " . CardLink($cardID, $cardID), 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);

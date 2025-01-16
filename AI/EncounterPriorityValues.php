@@ -38,6 +38,7 @@
 
 function GetPriority($cardID, $heroID, $type)
 {
+  global $currentPlayer;
   switch($heroID)
   {
     case "CRU046"://Ira
@@ -472,7 +473,7 @@ function ROGUE017GorgPrio()
 function ROGUE023GauntletPrio()
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "CRU029": case "CRU030": case "CRU031": return 0.9;

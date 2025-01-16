@@ -59,7 +59,6 @@
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         }
         return "";
       case "UPR136":
@@ -89,7 +88,7 @@
         if($cardID == "UPR144") $numFrostbites = 3;
         else if($cardID == "UPR145") $numFrostbites = 2;
         else $numFrostbites = 1;
-        PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites);
+        PlayAura("ELE111", ($currentPlayer == 1 ? 2 : 1), $numFrostbites, effectController: $currentPlayer);
         return "";
       case "UPR147": case "UPR148": case "UPR149":
         if($cardID == "UPR147") $cost = 3;
@@ -106,9 +105,8 @@
         if($from == "ARS") Draw($currentPlayer);
         return "";
       case "UPR183":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $char = &GetPlayerCharacter($currentPlayer);
-        $char[GetClassState($currentPlayer, $CS_PlayIndex)+7] = 1;
+        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
       case "UPR191": case "UPR192": case "UPR193":
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff Flex", 1);
@@ -200,7 +198,8 @@
         if(IsHeroAttackTarget()) {
           $hand = &GetHand($defPlayer);
           LoseHealth(count($hand)/HandPieces(), $defPlayer);
-        }
+          WriteLog("Player $defPlayer loses " . count($hand)/HandPieces() . " health");
+        } 
         break;
       default: break;
     }
@@ -269,8 +268,10 @@
 
   function ThawIndices($player) {
     $iceAfflictions = SearchMultiZoneFormat(SearchAura($player, "", "Affliction", -1, -1, "", "ICE"), "MYAURAS");
-    $frostBites = SearchMultiZoneFormat(SearchAurasForCard("ELE111", $player), "MYAURAS");
-    $search = CombineSearches($iceAfflictions, $frostBites);
+    $frostbites = SearchMultiZoneFormat(SearchAurasForCard("ELE111", $player), "MYAURAS");
+    $search = CombineSearches($iceAfflictions, $frostbites);
+    $equipmentSlotFrostbites = SearchMultiZoneFormat(SearchCharacterForCards("ELE111", $player), "MYCHAR");
+    $search = CombineSearches($search, $equipmentSlotFrostbites);
     $myFrozenArsenal = SearchMultiZoneFormat(SearchArsenal($player, frozenOnly:true), "MYARS");
     $search = CombineSearches($search, $myFrozenArsenal);
     $myFrozenAllies = SearchMultiZoneFormat(SearchAllies($player, frozenOnly:true), "MYALLY");

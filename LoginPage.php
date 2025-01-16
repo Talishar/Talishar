@@ -41,7 +41,3 @@ if (IsUserLoggedIn()) {
     <br>
     <div style='width:100%; text-align:center'><a href='./MenuFiles/PrivacyPolicy.php'>Privacy Policy</a></div>
   </div>
-
-<?php
-include_once './Disclaimer.php';
-?>

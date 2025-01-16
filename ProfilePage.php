@@ -7,7 +7,7 @@ if (!isset($_SESSION['userid'])) {
 }
 
 include_once "CardDictionary.php";
-include_once "./Libraries/UILibraries2.php";
+include_once "./Libraries/UILibraries.php";
 include_once "./APIKeys/APIKeys.php";
 
 if (isset($_SESSION['userid'])) {
@@ -84,7 +84,3 @@ if (isset($_SESSION["isPatron"])) {
   }
   ?>
 </div>
-
-<?php
-require "Disclaimer.php";
-?>

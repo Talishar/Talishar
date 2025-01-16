@@ -120,7 +120,10 @@
       case "EVR152": return 2;
       case "EVR157-BUFF": return 1;
       case "EVR160": return IsHeroAttackTarget() ? -1 : 0;
-      case "EVR161-2": return 2;
+      case "EVR161-2": 
+      case "EVR162-2":
+      case "EVR163-2": 
+        return 2;
       case "EVR170-2": return 3;
       case "EVR171-2": return 2;
       case "EVR172-2": return 1;
@@ -169,6 +172,8 @@
       case "EVR150": case "EVR151": case "EVR152": return CardType($attackID) == "AA";
       case "EVR160": return true;
       case "EVR161-1": case "EVR161-2": case "EVR161-3": return true;
+      case "EVR162-1": case "EVR162-2": case "EVR162-3": return true;
+      case "EVR163-1": case "EVR163-2": case "EVR163-3": return true;
       case "EVR164": case "EVR165": case "EVR166": return true;
       case "EVR170-1": case "EVR171-1": case "EVR172-1": return CardType($attackID) == "AA";
       case "EVR170-2": case "EVR171-2": case "EVR172-2": return CardType($attackID) == "AA";
@@ -222,7 +227,7 @@
         if(GetDieRoll($currentPlayer) >= $target) AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "EVR022":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKAURAMAXCOST," . ($resourcesPaid));
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKAURAMAXCOST," . ($resourcesPaid-CardCost($cardID)), 1);
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
@@ -353,12 +358,15 @@
         }
         return "";
       case "EVR124":
+        $targetPlayer = substr($target, 0, 5) == "THEIR";
+        $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
         for($i=0; $i<$resourcesPaid; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=0");
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $parameter);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         }
-        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid);
+        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
         return "";
       case "EVR125": case "EVR126": case "EVR127":
         $oppTurn = $currentPlayer != $mainPlayer;
@@ -414,10 +422,22 @@
       case "EVR161": case "EVR162": case "EVR163":
         $rand = GetRandom(1, 3);
         $altCostPaid = DelimStringContains($additionalCosts, "ALTERNATIVECOST");
-        if($altCostPaid || $rand == 1) { WriteLog(CardLink($cardID, $cardID) . " gained 'When this hits, gain 2 life'"); AddCurrentTurnEffect("EVR161-1", $currentPlayer); }
-        if($altCostPaid || $rand == 2) { WriteLog(CardLink($cardID, $cardID) . " gained +2 power"); AddCurrentTurnEffect("EVR161-2", $currentPlayer); }
-        if($altCostPaid || $rand == 3) { WriteLog(CardLink($cardID, $cardID) . " gained go again"); AddCurrentTurnEffect("EVR161-3", $currentPlayer); }
-        return ($resourcesPaid == 0 ? "Party time!" : "");
+        $log = "";
+        if($altCostPaid || $rand == 1) { 
+          $log .= " When this hits gain 2 life"; 
+          AddCurrentTurnEffect($cardID . "-1", $currentPlayer); 
+        }
+        if($altCostPaid || $rand == 2) { 
+          if($log != "") $log .= ", +2 power";
+          else $log = " gained +2 power"; 
+          AddCurrentTurnEffect($cardID . "-2", $currentPlayer); 
+        }
+        if($altCostPaid || $rand == 3) { 
+          if($log != "") $log .= " and go again.";
+          else $log .= " gained go again"; 
+          AddCurrentTurnEffect($cardID . "-3", $currentPlayer); 
+        }
+        return $log .= ($altCostPaid == 1 ? " Party time!🍻" : ".");
       case "EVR164": case "EVR165": case "EVR166":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -443,7 +463,7 @@
         else if($cardID == "EVR174") $opt = 2;
         else if($cardID == "EVR175") $opt = 1;
         PlayerOpt($currentPlayer, $opt);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT-".$cardID);
         return "";
       case "EVR176":
         if($from == "PLAY") {
@@ -562,10 +582,12 @@
           for($i=0; $i<count($chainLinks); ++$i)
           {
             $listOfNames = $chainLinkSummary[$i*ChainLinkSummaryPieces()+4];
-            if($chainLinks[$i][2] == "1" && GamestateUnsanitize($listOfNames) == "Hundred Winds")
-            {
-              $chainLinks[$i][2] = "0";
-              $deck->AddBottom($chainLinks[$i][0], "CC");
+            foreach (explode(",", $listOfNames) as $name) {
+              if($chainLinks[$i][2] == "1" && GamestateUnsanitize($name) == "Hundred Winds")
+              {
+                $chainLinks[$i][2] = "0";
+                $deck->AddBottom($chainLinks[$i][0], "CC");
+              }
             }
           }
           AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
@@ -584,7 +606,7 @@
           {
             $id = $hand[$i];
             $cardType = CardType($id);
-            if($cardType != "A" && $cardType != "AA")
+            if(!DelimStringContains($cardType, "A") && $cardType != "AA")
             {
               AddGraveyard($id, $defPlayer, "HAND");
               unset($hand[$i]);
@@ -595,7 +617,7 @@
           }
           LoseHealth($numDiscarded, $defPlayer);
           RevealCards($cards, $defPlayer);//CanReveal checked earlier
-          WriteLog("Battering Bolt discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
+          if($numDiscarded > 0)WriteLog(CardLink("EVR088", "EVR088") . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
         break;
@@ -783,7 +805,7 @@
     switch($stat) {
       case "Attack": return $highestAttack;
       case "Block": return $highestBlock;
-      case "Phantasm": return $hasPhantasm;
+      case "HasPhantasm": return $hasPhantasm;
       case "GoAgain": return $hasGoAgain;
       default: return 0;
     }

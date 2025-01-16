@@ -16,7 +16,7 @@ Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your
 This is the back end client for Talishar.net - completely separate from the front end. In order to test Talishar locally, you will need to install the front end project.
 
 Learn more about the Talishar-FE project here: [Talishar-FE](https://github.com/Talishar/Talishar-FE)
-Learn more about the Card-Images project here: [Talishar-FE](https://github.com/Talishar/Card-Images)
+Learn more about the CardImages project here: [Talishar-FE](https://github.com/Talishar/CardImages)
 
 ## New docker way to run Talishar.
 
@@ -25,10 +25,10 @@ Learn more about the Card-Images project here: [Talishar-FE](https://github.com/
  - Talishar-FE
 
 Easier to do on *nix OS than on MS OS.
-It's important if you want to run ad-hoc scripts like zzCardCodeGenerator.php to have Talishar-FE and Card-Images repositories located in the same directory as Talishar. 
+It's important if you want to run ad-hoc scripts like zzCardCodeGenerator.php to have Talishar-FE and CardImages repositories located in the same directory as Talishar. 
 
 The docker-compose file is set up to mount the ../Talishar-FE directory into the container.
-In order to generate new cards and images, those are generated in ../Card-Images directory.
+In order to generate new cards and images, those are generated in ../CardImages directory.
 
 First clone the repo:
 ```

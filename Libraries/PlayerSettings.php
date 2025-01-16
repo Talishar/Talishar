@@ -34,12 +34,20 @@ $SET_StreamerMode = 22; //Did this player enable caster mode
 $SET_Playmat = 23; //Did this player enable caster mode
 $SET_AlwaysAllowUndo = 24;//Do you want to always allow undo
 $SET_DisableAltArts = 25;//Do you want to disable alt arts
+$SET_ManualTunic = 26;//Do you want to manually tick up tunic each turn
 
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
   return $settings[$SET_AlwaysHoldPriority];
+}
+
+function ManualTunicSetting($player)
+{
+  global $SET_ManualTunic;
+  $settings = GetSettings($player);
+  return $settings[$SET_ManualTunic];
 }
 
 function UseNewUI($player)
@@ -176,6 +184,16 @@ function GetCardBack($player)
     case 84: return "CBTideBreakers";
     case 85: return "CBCD1";
     case 86: return "CBCD2";
+    case 87: return "CBCupofTCG";
+    case 88: return "CBScowlingFleshBag";
+    case 89: return "CBDazzyfizzle";
+    case 90: return "CBDazzyfizzle1";
+    case 91: return "CBDazzyfizzle2";
+    case 92: return "CBDazzyfizzle3";
+    case 93: return "CBDazzyfizzle4";
+    case 94: return "CBDazzyfizzle5";
+    case 95: return "CBDazzyfizzle6";
+    case 96: return "CBThaiCardsShop";
     default: return "CardBack";
   }
 }
@@ -315,6 +333,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "Playmat" => 23,
     "AlwaysAllowUndo" => 24,
     "DisableAltArts" => 25,
+    "ManualTunic" => 26,
   );
   return $settingsToId[$value];
 }
@@ -341,101 +360,12 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
   if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
 }
 
-function GetSettingsUI($player)
-{
-  global $SET_AlwaysHoldPriority, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs, $SET_AutotargetArcane, $SET_ColorblindMode;
-  global $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_Mute, $SET_Cardback, $SET_MuteChat, $SET_DisableStats;
-  global $SET_CasterMode, $SET_StreamerMode;
-  $rv = "";
-  $settings = GetSettings($player);
-  $currentValue = HoldPrioritySetting($player);
-  $rv .= "<h3>Hold Priority Settings: </h3>";
-  $rv .= CreateRadioButton($SET_AlwaysHoldPriority . "-0", "Auto-pass Priority", 26, $SET_AlwaysHoldPriority . "-" . $currentValue, "Auto-pass Priority");
-  $rv .= CreateRadioButton($SET_AlwaysHoldPriority . "-4", "Always Pass Priority", 26, $SET_AlwaysHoldPriority . "-" . $currentValue, "Always Pass Priority");
-  $rv .= "<BR>";
-  $rv .= CreateRadioButton($SET_AlwaysHoldPriority . "-1", "Always Hold Priority", 26, $SET_AlwaysHoldPriority . "-" . $currentValue, "Always Hold Priority");
-  $rv .= CreateRadioButton($SET_AlwaysHoldPriority . "-2", "Hold Priority All Opp", 26, $SET_AlwaysHoldPriority . "-" . $currentValue, "Hold Priority All Opp");
-  $rv .= "<BR>";
-  $rv .= CreateRadioButton($SET_AlwaysHoldPriority . "-3", "Hold Priority Opp. Attacks", 26, $SET_AlwaysHoldPriority . "-" . $currentValue, "Hold Priority Opp. Attacks");
-  $rv .= "<BR>";
-  if ($settings[$SET_SkipARs] == 0) $rv .= CreateCheckbox($SET_SkipARs . "-1", "Skip Attack Reactions", 26, false, "Skip Attack Reactions");
-  else $rv .= CreateCheckbox($SET_SkipARs . "-0", "Skip Attack Reactions", 26, true, "Skip Attack Reactions");
-  $rv .= "<BR>";
-  if ($settings[$SET_SkipDRs] == 0) $rv .= CreateCheckbox($SET_SkipDRs . "-1", "Skip Defense Reactions", 26, false, "Skip Defense Reactions");
-  else $rv .= CreateCheckbox($SET_SkipDRs . "-0", "Skip Defense Reactions", 26, true, "Skip Defense Reactions");
-  $rv .= "<BR>";
-  if ($settings[$SET_AutotargetArcane] == 0) $rv .= CreateCheckbox($SET_AutotargetArcane . "-1", "Arcane Manual Targeting", 26, true, "Manual Targeting");
-  else $rv .= CreateCheckbox($SET_AutotargetArcane . "-0", "Arcane Manual Targeting", 26, false, "Manual Targeting");
-  $rv .= "<BR>";
-  $currentValue = ShortcutAttackThreshold($player);
-  $rv .= "<h3 style='padding-top:10px;'>Attack Shortcut Threshold: </h3>";
-  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-0", "Never Skip", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Never Skip");
-  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-1", "Skip 1 Power Attacks", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Skip 1 Power Attacks");
-  $rv .= "<BR>";
-  $rv .= CreateRadioButton($SET_ShortcutAttackThreshold . "-99", "Skip All Attacks", 26, $SET_ShortcutAttackThreshold . "-" . $currentValue, "Skip All Attacks");
-  $rv .= "<BR>";
-  $rv .= "<h3>In-Game Theme:</h3>";
-  $rv .= CreateRadioButton($SET_DarkMode . "-0", "Normal Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Normal Mode");
-  $rv .= CreateRadioButton($SET_DarkMode . "-1", "Dark Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Mode");
-  $rv .= "<BR>";
-  $rv .= CreateRadioButton($SET_DarkMode . "-2", "Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Plain Mode");
-  $rv .= CreateRadioButton($SET_DarkMode . "-3", "Dark Plain Mode", 26, $SET_DarkMode . "-" . $settings[$SET_DarkMode], "Dark Plain Mode");
-
-  $rv .= "<h3>Card Backs</h3>";
-  $hasCardBacks = false;
-  foreach(PatreonCampaign::cases() as $campaign) {
-    if(isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"]))) {
-      $hasCardBacks = true;
-      $cardBacks = $campaign->CardBacks();
-      $cardBacks = explode(",", $cardBacks);
-      for($i = 0; $i < count($cardBacks); ++$i) {
-        $name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
-        $rv .= CreateRadioButton($SET_Cardback . "-" . $cardBacks[$i], str_replace(' ', '', $name), 26, $SET_Cardback . "-" . $settings[$SET_Cardback], $name);
-      }
-    }
-  }
-
-  $rv .= "<BR>";
-  if($settings[$SET_ManualMode] == 0) $rv .= CreateCheckbox($SET_ManualMode . "-1", "Manual Mode", 26, false, "Manual Mode");
-  else $rv .= CreateCheckbox($SET_ManualMode . "-0", "Manual Mode", 26, true, "Manual Mode");
-  $rv .= "<BR>";
-
-  if($settings[$SET_ColorblindMode] == 0) $rv .= CreateCheckbox($SET_ColorblindMode . "-1", "Accessibility Mode", 26, false, "Accessibility Mode");
-  else $rv .= CreateCheckbox($SET_ColorblindMode . "-0", "Accessibility Mode", 26, true, "Accessibility Mode");
-  $rv .= "<BR>";
-
-  if($settings[$SET_EnableDynamicScaling] == 0) $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-1", "Dynamic Scaling (Under Dev)", 26, false, "Dynamic Scaling (Under Dev)", true);
-  else $rv .= CreateCheckbox($SET_EnableDynamicScaling . "-0", "Dynamic Scaling (Under Dev)", 26, true, "Dynamic Scaling (Under Dev)", true);
-  $rv .= "<BR>";
-
-  if($settings[$SET_Mute] == 0) $rv .= CreateCheckbox($SET_Mute . "-1", "Mute", 26, false, "Mute", true);
-  else $rv .= CreateCheckbox($SET_Mute . "-0", "Unmute", 26, true, "Unmute", true);
-  $rv .= "<BR>";
-
-  if($settings[$SET_MuteChat] == 0) $rv .= CreateCheckbox($SET_MuteChat . "-1", "Disable Chat", 26, false, "Disable Chat", true);
-  else $rv .= CreateCheckbox($SET_MuteChat . "-0", "Disable Chat", 26, true, "Disable Chat", true);
-  $rv .= "<BR>";
-
-  if($settings[$SET_DisableStats] == 0) $rv .= CreateCheckbox($SET_DisableStats . "-1", "Disable Stats", 26, false, "Disable Stats", true);
-  else $rv .= CreateCheckbox($SET_DisableStats . "-0", "Disable Stats", 26, true, "Disable Stats", true);
-  $rv .= "<BR>";
-
-  if($settings[$SET_CasterMode] == 0) $rv .= CreateCheckbox($SET_CasterMode . "-1", "Caster Mode", 26, false, "Caster Mode", true);
-  else $rv .= CreateCheckbox($SET_CasterMode . "-0", "Caster Mode", 26, true, "Caster Mode", true);
-  $rv .= "<BR>";
-
-  if($settings[$SET_StreamerMode] == 0) $rv .= CreateCheckbox($SET_StreamerMode . "-1", "Streamer Mode", 26, false, "Streamer Mode", true);
-  else $rv .= CreateCheckbox($SET_StreamerMode . "-0", "Streamer Mode", 26, true, "Streamer Mode", true);
-  $rv .= "<BR>";
-
-  return $rv;
-}
-
 function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
+  global $SET_ManualTunic;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -453,6 +383,7 @@ function SaveSettingInDatabase($setting)
     case $SET_Playmat:
     case $SET_AlwaysAllowUndo:
     case $SET_DisableAltArts:
+    case $SET_ManualTunic:
       return true;
     default: return false;
   }
@@ -470,9 +401,11 @@ function FormatCode($format)
     case "sealed": return 6;
     case "draft": return 7;
     case "llcc": return 8;
-    case "llblitz": return 9;
+    case "llblitz": return 9; //Currently not used
     case "openformatblitz": return 10;
-    case "clash": return 11;
+    case "clash": return -1;
+    case "openformatllcc": return 11;
+    case "openformatllblitz": return 12; //Currently not used
     default: return -1;
   }
 }
@@ -490,9 +423,11 @@ function FormatName($formatCode)
     case 6: return "sealed";
     case 7: return "draft";
     case 8: return "llcc";
-    case 9: return "llblitz";
+    case 9: return "llblitz"; //Currently not used
     case 10: return "openformatblitz";
-    case 11: return "clash";
+    case -1: return "clash";
+    case 11: return "openformatllcc";
+    case 12: return "openformatllblitz"; //Currently not used
     default: return "-";
   }
 }
@@ -557,7 +492,6 @@ function IsTeamEmperorsRome($userID)
 function IsTeamTalishar($userID)
 {
   switch($userID) {
-    case "PvtVoid":
     case "HelpMeJace2":
     case "RainyDays":
     case "Ragnell":
@@ -602,6 +536,42 @@ function IsTeamSunflowerSamurai($userID)
     case "juanmonzonf":
     case "Raiswind":
     case "Bossen":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function isTeamCupofTCG($userID)
+{
+  switch($userID) {
+    case "Cody1304":
+    case "Glem":
+    case "parallaxdream":
+    case "2birds1stone":
+    case "PvtVoid":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function isTeamScowlingFleshBag($userID)
+{
+  switch($userID) {
+    case "ScowlingFleshBag":
+    case "PvtVoid":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamThaiCardsShop($userID)
+{
+  switch($userID) {
+    case "terrythai03":
+    case "PvtVoid":
       return true;
     default: break;
   }
@@ -664,5 +634,6 @@ function IsTeamRighteousGaming($userID)
       return true;
     default: break;
 }
+
 return false;
 }

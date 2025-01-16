@@ -2,7 +2,7 @@
 
   function ARCAbilityCost($cardID)
   {
-    global $CS_CharacterIndex, $CS_PlayIndex, $currentPlayer, $CombatChain;
+    global $CS_PlayIndex, $currentPlayer, $CombatChain;
     switch($cardID)
     {
       case "ARC003":

@@ -9,7 +9,7 @@ include "GameLogic.php";
 include "GameTerms.php";
 include "Libraries/StatFunctions.php";
 include "Libraries/PlayerSettings.php";
-include "Libraries/UILibraries2.php";
+include "Libraries/UILibraries.php";
 include "AI/CombatDummy.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
@@ -61,7 +61,7 @@ fwrite($handler, "1\r\n"); //Current Turn
 fwrite($handler, "M 1\r\n"); //What phase/player is active
 fwrite($handler, "1\r\n"); //Action points
 fwrite($handler, "\r\n"); //Combat Chain
-fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0\r\n"); //Combat Chain State
+fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0\r\n"); //Combat Chain State
 fwrite($handler, "\r\n"); //Current Turn Effects
 fwrite($handler, "\r\n"); //Current Turn Effects From Combat
 fwrite($handler, "\r\n"); //Next Turn Effects
@@ -122,9 +122,6 @@ ob_end_clean();
 //Update the game file to show that the game has started and other players can join to spectate
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
-
-if(isset($gameUIPath)) header("Location: " . $gameUIPath . "?gameName=$gameName&playerID=$playerID");
-else header("Location: " . $redirectPath . "/NextTurn4.php?gameName=$gameName&playerID=$playerID");
 
 exit;
 

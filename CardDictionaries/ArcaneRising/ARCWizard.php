@@ -10,22 +10,23 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Kano?");
-      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with Kano", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ". CardLink($cardID, $cardID)."?");
+      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Kano shows the top of your deck is <0>");
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Kano", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <0>");
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "ARC115":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ARC116":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       return "";
     case "ARC117":
@@ -43,7 +44,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
       AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with Sonic Boom", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with " . CardLink($cardID, $cardID), 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -51,16 +52,16 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,ARC119-{0}", 1);
       AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-      AddDecisionQueue("NULLPASS", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Sonic Boom shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Sonic Boom", 1);
+      AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <1>", 1);
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "ARC120":
       $arcaneBonus = ConsumeArcaneBonus($currentPlayer);
       $damage = ArcaneDamage($cardID) + $arcaneBonus;
-      DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
-      DealArcane($damage, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
+      DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
+      DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "ARC121":
       DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -122,6 +123,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=A;class=WIZARD;maxCost={1}", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish or pass", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "HAND,INST," . $currentPlayer, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -156,12 +158,14 @@ function ARCWizardHitEffect($cardID)
 //2: Any Target
 //3: Their Hero + Their Allies
 //4: My Hero only (For afflictions)
-function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "", $nbArcaneInstance = 1, $isPassable = 0)
+function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "-", $nbArcaneInstance = 1, $isPassable = 0, $meldState = "-")
 {
   global $currentPlayer, $CS_ArcaneTargetsSelected;
   if ($player == 0) $player = $currentPlayer;
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
-    $damage += CurrentEffectArcaneModifier($source, $player) * $nbArcaneInstance;
+    $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
+    $damage += CurrentEffectDamageModifiers($player, $source, $type);
     if ($type != "PLAYCARD") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
     if ($fromQueue) {
       if (!$limitDuplicates) {
@@ -172,27 +176,37 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
       if (!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if ($resolvedTarget != "") {
-        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget);
+        PrependDecisionQueue("PASSPARAMETER", $player, $resolvedTarget);
       } else {
-        PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
         if ($mayAbility) PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         else PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>");
         PrependDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target);
-        PrependDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $source);
+        PrependDecisionQueue("SETDQVAR", $player, "0");
+        PrependDecisionQueue("PASSPARAMETER", $player, $source);
       }
     } else {
-      if ($resolvedTarget != "") {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $resolvedTarget, ($isPassable ? 1 : 0));
+      if ($resolvedTarget != "-") {
+        AddDecisionQueue("PASSPARAMETER", $player, $resolvedTarget, ($isPassable ? 1 : 0));
       } else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $source, ($isPassable ? 1 : 0));
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", ($isPassable ? 1 : 0));
+        AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
+        AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
-        if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        $allies = GetAllies($player);
+        $theirAllies = GetAllies($otherPlayer);
+        if(ShouldAutotargetOpponent($player) && $target == 0) {
+          AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+        }
+        elseif (ShouldAutotargetOpponent($player) && ($target == 2 || $target == 3) && count($allies) <= 0 && count($theirAllies) <= 0) {
+          AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+        }
+        else{
+          if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        }
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
       }
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if (!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
@@ -213,7 +227,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
 //2: Any Target
 //3: Their Hero + Their Allies
 //4: My Hero only (For afflictions)
-function PlayRequiresTarget($cardID)
+function PlayRequiresTarget($cardID, $from)
 {
   switch ($cardID) {
     case "ARC118":
@@ -264,8 +278,6 @@ function PlayRequiresTarget($cardID)
       return 0;//Snapback
     case "EVR123":
       return 1;//Aether Wildfire
-    case "EVR124":
-      return 1;//Scour
     case "EVR125":
     case "EVR126":
     case "EVR127":
@@ -342,6 +354,10 @@ function PlayRequiresTarget($cardID)
       return 2;//Destructive Aethertide
     case "ROS167"://eternal inferno
       return 2;
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
+      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1; //Chorus of Amphitheater
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -349,7 +365,7 @@ function PlayRequiresTarget($cardID)
     case "ROS186":
     case "ROS187":
     case "ROS188":
-      return (GetResolvedAbilityType($cardID, "HAND")=="A") ? 2 : -1;//Arcane Twining
+      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1; //Arcane Twining
     case "ROS189":
     case "ROS190":
     case "ROS191":
@@ -412,29 +428,113 @@ function GetArcaneTargetIndices($player, $target): string
   return implode(",", $targets);
 }
 
-function CurrentEffectArcaneModifier($source, $player): int|string
+//Visual used for current effect only
+//!Effects are never removed from here
+function ArcaneModifierAmount($source, $player, $index) 
+{
+  global $currentTurnEffects;
+    $effectArr = explode(",", $currentTurnEffects[$index]);
+    if ($currentTurnEffects[$index + 1] != $player || $source != $effectArr[0]) return 0;
+    switch ($effectArr[0]) {
+      case "ARC115":
+        return 1;
+      case "ARC122":
+        return 1;
+      case "ARC123":
+      case "ARC124":
+      case "ARC125":
+        return 2;
+      case "ARC129":
+        return 3;
+      case "ARC130":
+        return 2;
+      case "ARC131":
+        return 1;
+      case "ARC132":
+      case "ARC133":
+      case "ARC134":
+        return $effectArr[1];
+      case "CRU161":
+        return 1;
+      case "CRU165":
+      case "CRU166":
+      case "CRU167":
+        return 1;
+      case "CRU171":
+      case "CRU172":
+      case "CRU173":
+        return 1;
+      case "DYN192":
+        return $effectArr[1];
+      case "DYN200":
+        return 3;
+      case "DYN201":
+        return 2;
+      case "DYN202":
+        return 1;
+      case "DYN209":
+      case "DYN210":
+      case "DYN211":
+        return 1;  
+      case "EVR123":
+        return $effectArr[1];
+      case "ROS017":
+        return $effectArr[1];
+      case "ROS000":
+      case "ROS015-AMP":
+      case "ROS168"://sigil of aether
+      case "ROS078":
+      case "ROS186":
+      case "ROS187":
+      case "ROS188":
+      case "ROS204":
+      case "ROS205":
+      case "ROS206":
+      case "MST234":
+      case "ROS165":
+        return 1;
+      case "ROS021":
+        return $effectArr[1];
+      case "ROS033":
+        return 3;
+      case "ROS163-AMP":
+        return 1;
+      case "ROS170":
+      case "ROS171":
+      case "ROS172":
+        return 1;
+      case "ROS192":
+      case "ROS193":
+      case "ROS194":
+        return $effectArr[1];
+        break;
+      default:
+        break;
+    }
+  return 0;
+}
+
+function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|string
 {
   global $currentTurnEffects;
   $modifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     $effectArr = explode(",", $currentTurnEffects[$i]);
     switch ($effectArr[0]) {
       case "EVR123":
         $cardType = CardType($source);
-        if ($cardType == "A" || $cardType == "AA") $modifier += $effectArr[1];
+        if ((DelimStringContains($cardType, "A") || $cardType == "AA")
+          && (!HasMeld($source) || DelimStringContains($meldState, "A"))) $modifier += $effectArr[1];
         break;
-      case "DYN192":
-        if (ActionsThatDoArcaneDamage($source) || ActionsThatDoXArcaneDamage($source)) {
-          if ($currentTurnEffects[$i + 1] != $player) break;
-          $modifier += $effectArr[1];
-          $remove = true;
-        }
+      case "ROS017":
+        if ($currentTurnEffects[$i + 1] != $player) break;
+        $modifier += $effectArr[1];
+        $remove = true;
         break;
       case "ROS000":
       case "ROS015-AMP":
       case "ROS168"://sigil of aether
-      case "ROS204-AMP":
       case "ROS078":
       case "ROS186":
       case "ROS187":
@@ -463,6 +563,12 @@ function CurrentEffectArcaneModifier($source, $player): int|string
         $modifier += 1;
         $remove = true;
         break;
+      case "ROS170":
+      case "ROS171":
+      case "ROS172":
+        if ($currentTurnEffects[$i + 1] != $player) break;
+        $modifier += 1;
+        break;
       case "ROS192":
       case "ROS193":
       case "ROS194":
@@ -481,18 +587,16 @@ function CurrentEffectArcaneModifier($source, $player): int|string
 function ArcaneDamage($cardID): int
 {
   //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
-  global $mainPlayer, $currentPlayer, $CS_ArcaneDamageTaken, $resourcesPaid;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   return match ($cardID) {
     "ARC147", "EVR134", "UPR105", "UPR133", "UPR110", "UPR113", "DYN195" => 5,
     "ARC126", "ARC141", "ARC148", "CRU171", "EVR125", "EVR123", "EVR135", "UPR170", "UPR134", "UPR127", "UPR122",
-    "UPR111", "UPR114", "DYN197", "ROS167", "ROS204" => 4,
+    "UPR111", "UPR114", "DYN197", "ROS167", "ROS170", "ROS204" => 4,
     "ARC119", "ARC121", "ARC127", "ARC132", "ARC138", "ARC142", "ARC144", "ARC149", "EVR126", "EVR136", "DYN198",
     "DYN203", "DYN206", "CRU162", "CRU168", "CRU172", "CRU174", "UPR173", "UPR171", "UPR135", "UPR130", "UPR128",
-    "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS176", "ROS186", "ROS189", "ROS195", "ROS198", "ROS201", "ROS207", "ROS173",
+    "UPR123", "UPR112", "UPR115", "UPR104", "UPR119", "ROS171", "ROS176", "ROS186", "ROS189", "ROS195", "ROS198", "ROS201", "ROS207", "ROS173",
     "ROS205" => 3,
     "ARC120", "CRU169", "CRU173", "CRU175", "EVR127", "UPR174", "UPR172", "UPR131", "UPR129", "UPR124", "UPR120",
-    "DYN194", "DYN199", "DYN204", "DYN207", "ROS177", "ROS187", "ROS190", "ROS196", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
+    "DYN194", "DYN199", "DYN204", "DYN207", "ROS172", "ROS177", "ROS187", "ROS190", "ROS196", "ROS199", "ROS202", "ROS208", "ROS174", "ARC128",
     "ARC133", "ARC139", "ARC143", "ARC145", "ROS206" => 2,
     "ARC134", "ARC140", "ARC146", "CRU170", "CRU176", "UPR175", "UPR179", "UPR180", "UPR181", "UPR132", "UPR121",
     "DYN205", "DYN208", "HVY252", "ROS166", "ROS178", "ROS188", "ROS191", "ROS197", "ROS200", "ROS203", "ROS209", "ROS175" => 1,
@@ -513,7 +617,7 @@ function ActionsThatDoXArcaneDamage($cardID)
   }
 }
 
-function ActionsThatDoArcaneDamage($cardID)
+function ActionsThatDoArcaneDamage($cardID, $playerID)
 {
   switch ($cardID) {
     case "ARC119":
@@ -604,8 +708,16 @@ function ActionsThatDoArcaneDamage($cardID)
       return true;
     case "HVY252":
       return true;
+    case "ROS011":
+    case "ROS012":
+    case "ROS018":
+    case "ROS024":
+    case "ROS023":
     case "ROS166":
     case "ROS167":
+    case "ROS170":
+    case "ROS171":
+    case "ROS172":
     case "ROS173":
     case "ROS174":
     case "ROS175":
@@ -633,6 +745,7 @@ function ActionsThatDoArcaneDamage($cardID)
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "ROS253":
       return true;
     default:
       return false;
@@ -825,7 +938,7 @@ function ArcaneBarrierChoices($playerID, $max)
         break;
     }
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     switch ($currentTurnEffects[$i]) {
       case "ARC017":
         ++$barrierArray[2];
@@ -896,11 +1009,23 @@ function ArcaneHitEffect($player, $source, $target, $damage)
   }
 
   if ($damage > 0 && CardType($source) != "W" && SearchCurrentTurnEffects("UPR125", $player, true)) AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+  $auras = &GetAuras($player);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    switch ($auras[$i]) {
+      case "HNT256":
+        if ($auras[$i+5] > 0) {
+          AddLayer("TRIGGER", $player, $auras[$i]);
+          $auras[$i+5] -= 1;
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   if (HasSurge($source) && $damage > ArcaneDamage($source)) {
     ProcessSurge($source, $player, $target);
   }
-  AuraDamageEffects($source);
 }
 
 function ProcessSurge($cardID, $player, $target)
@@ -914,7 +1039,7 @@ function ProcessSurge($cardID, $player, $target)
       if ($numToDraw < 0) $numToDraw = 0;
       $deck = &GetDeck($targetPlayer);
       while (count($hand) > 0) array_push($deck, array_shift($hand));
-      for ($i = 0; $i < $numToDraw; ++$i) array_push($hand, array_shift($deck));
+      for ($i = 0; $i < $numToDraw; ++$i) Draw($targetPlayer);
       WriteLog("Mind Warp warps the target's mind.");
       AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
       break;
@@ -925,7 +1050,7 @@ function ProcessSurge($cardID, $player, $target)
     case "DYN197":
     case "DYN198":
     case "DYN199":
-      if (CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
+      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
       GainActionPoints();
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
@@ -945,17 +1070,19 @@ function ProcessSurge($cardID, $player, $target)
       break;
     case "ROS166":
       if (MZIsPlayer($target)) {
-        MZChooseAndDestroy($player, "THEIRARS");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card you want to destroy from their arsenal", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, false, 1);
+        }
+      break;
+    case "ROS167"://eternal inferno
+      BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
+      $discard = &GetDiscard($player);
+      for($i = 0; $i < DiscardPieces(); $i++){
+        array_pop($discard);
       }
       break;
-      case "ROS167"://eternal inferno
-        BanishCardForPlayer("ROS167", $player, "MYDISCARD", "TT", "ROS167");
-        $discard = &GetDiscard($player);
-        for($i = 0; $i < DiscardPieces(); $i++){
-          array_pop($discard);
-        }
-        $banish = GetBanish($player);
-        break;
     case "ROS176":
     case "ROS177":
     case "ROS178":
@@ -983,7 +1110,7 @@ function ProcessSurge($cardID, $player, $target)
     case "ROS201":
     case "ROS202":
     case "ROS203": //perennial aetherbloom
-      WriteLog("Surge active, returning to the bottom of the deck");
+      WriteLog("Surge active, returning on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
       for($i = 0; $i < DiscardPieces(); $i++){
@@ -996,19 +1123,21 @@ function ProcessSurge($cardID, $player, $target)
       WriteLog("Surge Active, gaining 1 life and returning sigils to the deck");
       GainHealth(1, $player);
       $auras = &GetAuras($player);
+      $sigilFound = false;
       for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
         $auraName = CardName($auras[$i]);
         if (DelimStringContains($auraName, "Sigil", partial: true)) {
           AddBottomDeck($auras[$i], $player, "STACK");
           RemoveAura($player, $i, $auras[$i + 4]);
+          $sigilFound = true;
         }
       }
-      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      if($sigilFound)AddDecisionQueue("SHUFFLEDECK", $player, "-");
       break;
     case "ROS207":
     case "ROS208":
     case "ROS209":
-      if (CurrentEffectPreventsGoAgain() || $player != $mainPlayer) break;
+      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
       GainActionPoints();
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;

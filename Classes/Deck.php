@@ -73,7 +73,7 @@ class Deck {
       $cardID = $this->Remove(0);
       $cardType = CardType($cardID);
       if($modifier == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($cardID)) $modifier = "-";
-      WriteLog(CardLink($cardID, $cardID). " was banished");
+      WriteLog(CardLink($cardID, $cardID). " was banished.");
       BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
     }
     return $cardID;
@@ -89,5 +89,12 @@ class Deck {
   {
     array_push($this->deck, $cardID);
     return $cardID;
+  }
+
+  function Opt($topCardID, $bottomCardID, $from="GY")
+  {
+    $this->deck = array_merge($topCardID, $this->deck);
+    $this->deck = array_merge($this->deck, $bottomCardID);
+    return true;
   }
 }

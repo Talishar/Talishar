@@ -2,8 +2,8 @@
 
 function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
-  global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen, $dqVars;
-  SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);
+  global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen;
+  if(isset($lastResult[0])) SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);
   AddDecisionQueue("CURRENTEFFECTAFTERPLAYORACTIVATEABILITY", $player, "<-");
   switch($card)
   {
@@ -42,6 +42,44 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           }
           case "Go_again": {
             GiveAttackGoAgain();
+            break;
+          }
+        }
+      }
+      return $lastResult;
+    case "TARANTULATOXIN":
+      switch($lastResult) {
+        case "Buff_Power": AddCurrentTurnEffect("HNT015", $player); break;
+        case "Reduce_Block":
+          Shred($player, -3);
+          break;
+        case "Both":
+          Shred($player, -3);
+          AddCurrentTurnEffect("HNT015", $player); 
+          break;
+      }
+      return $lastResult;
+    case "LONGWHISKER":
+      if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      for($i = 0; $i < count($lastResult); ++$i) {
+        $mode = $lastResult[$i];
+        switch($mode) {
+          case "Buff_Power": {
+            AddCurrentTurnEffect("HNT102-BUFF", $player);
+            break;
+          }
+          case "Additional_Attack": {
+            AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Dagger", 1);
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to attack an additional time", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("EXTRAATTACK", $player, "<-", 1);
+            break;
+          }
+          case "Mark": {
+            AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Dagger", 1);
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to add an on-hit mark effect to", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("ADDONHITMARK", $player, "<-", 1);
             break;
           }
         }
@@ -158,7 +196,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Proto card to equip", 1);
             AddDecisionQueue("CHOOSECARD", $player, "<-", 1);
             AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
-            AddDecisionQueue("EQUIPCARD", $player, "<-", 1);
+            AddDecisionQueue("EQUIPCARDINVENTORY", $player, "<-", 1);
             break;
           case "Evo_permanents_get_+1_block":
             AddCurrentTurnEffect("EVO146", $player);
@@ -308,7 +346,6 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       AddDecisionQueue("DQPAYORDISCARD", $target, "1");
       return "";
     case "WINTERSBITE":
-      WriteLog($params[1]);
       AddDecisionQueue("DQPAYORDISCARD", $target, $params[1]);
       return "";
     case "IMPERIALWARHORN":
@@ -358,11 +395,22 @@ function PlayerTargetedAbility($player, $card, $lastResult)
   }
 }
 
+function filterIndices($indices, $zone, $dqVars, $condition) {
+  $filteredIndices = array_filter($indices, function($index) use ($zone, $dqVars, $condition) {
+      $block = isset($zone[$index]) ? BlockValue($zone[$index]) : -1;
+      $type = CardType($zone[$index]);
+      return $block > -1 && $condition($block, $dqVars) && (DelimStringContains($type, "A") || $type == "AA");
+  });
+  $filteredIndices = implode(",", $filteredIndices);
+  return $filteredIndices == "" ? "PASS" : $filteredIndices;
+}
+
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
-  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
+  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   $otherPlayer = ($player == 1) ? 2 : 1;
-  switch($card)
+  $params = explode("-", $card);
+  switch($params[0])
   {
     case "RIGHTEOUSCLEANSING":
       $numBanished = SearchCount($lastResult);
@@ -381,37 +429,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return "";
     case "PULSEWAVEHARPOONFILTER":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $filteredIndices = "";
-      for($i = 0; $i < count($indices); ++$i) {
-        $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block <= $dqVars[0]) {
-          $type = CardType($hand[$indices[$i]]);
-          if($type == "A" || $type == "AA") {
-            if ($filteredIndices != "") $filteredIndices .= ",";
-            $filteredIndices .= $indices[$i];
-          }
-        }
-      }
-      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+      $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $hand = GetHand($player);
+      if (empty($hand)) return "PASS";
+      return filterIndices($indices, $hand, $dqVars, function($block, $dqVars) { return $block <= $dqVars[0]; });
     case "PULSEWAVEPROTOCOLFILTER":
-      $indices = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
-      $hand = &GetHand($player);
-      $filteredIndices = "";
-      for($i = 0; $i < count($indices); ++$i) {
-        $block = BlockValue($hand[$indices[$i]]);
-        if($block > -1 && $block < $dqVars[0]) {
-          $type = CardType($hand[$indices[$i]]);
-          if($type == "A" || $type == "AA") {
-            if ($filteredIndices != "") $filteredIndices .= ",";
-            $filteredIndices .= $indices[$i];
-          }
-        }
-      }
-      return ($filteredIndices != "" ? $filteredIndices : "PASS");
+      $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $hand = GetHand($player);
+      return filterIndices($indices, $hand, $dqVars, function($block, $dqVars) { return $block < $dqVars[0]; });
     case "SIFT":
       $numCards = SearchCount($lastResult);
+      WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
       for ($i = 0; $i < $numCards; ++$i) {
         Draw($player);
       }
@@ -433,8 +461,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "EVENBIGGERTHANTHAT":
       $deck = new Deck($player);
       $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
-      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
-        WriteLog("Even Bigger Than That! drew a card and created a Quicken token");
+      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), piece: $CS_PowDamageDealt)) {
+        WriteLog(CardLink($params[1], $params[1]) . " draw a card and created a " . CardLink("WTR225", "WTR225") . " token");
         Draw($player);
         PlayAura("WTR225", $player);
       }
@@ -457,6 +485,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KNICKKNACK":
+      PrependDecisionQueue("PUTPLAY", $player, "-", 1);
+      PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
+      PrependDecisionQueue("FINDINDICES", $player, "KNICKKNACK");
       for($i = 0; $i < $lastResult; ++$i) {
         PrependDecisionQueue("PUTPLAY", $player, "-", 1);
         PrependDecisionQueue("MAYCHOOSEDECK", $player, "<-", 1);
@@ -530,7 +561,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $mod = (CardType($cards[0]) == "A" ? "INST" : "-");
       for($i = 0; $i < count($cards); ++$i) {
         $index = BanishCardForPlayer($cards[$i], $player, "DECK", $mod);
-        WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished");
+        WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished.");
         if($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-" . $index;
       }
@@ -599,11 +630,19 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if(ClassContains($lastResult, "ILLUSIONIST", $player)) PlayAura("MON104", $player);
       return 1;
     case "SPOILEDSKULL":
-      $rand = GetRandom(0, count($lastResult) - 1);
       $banish = new Banish($player);
-      $card = $banish->Card($lastResult[$rand]);
-      $card->SetModifier("TT");
-      WriteLog("You may play " . CardLink($card->ID(), $card->ID()) . " this turn");
+      $index = implode(",", $lastResult);
+      $cleanIndexes = RemoveCardSameNames($player, $index, GetBanish($player));
+      if(count(explode(",", $cleanIndexes)) < 3) {
+        WriteLog("You selected cards that have the same name. Reverting gamestate prior to that effect.", highlight: true);
+        RevertGamestate();
+      }
+      else {
+        $rand = GetRandom(0, count($lastResult) - 1);
+        $card = $banish->Card($lastResult[$rand]);
+        $card->SetModifier("TT");
+        WriteLog("You may play " . CardLink($card->ID(), $card->ID()) . " this turn");  
+      }
       return $lastResult;
     case "ALLURINGINDUCEMENT":
       global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
@@ -629,16 +668,19 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "TICKTOCKCLOCK":
-      DamageTrigger($player, $dqVars[0], "DAMAGE", "EVO074");
+      DamageTrigger($player, $dqVars[0]+1, "DAMAGE", "EVO074");
       return $lastResult;
     case "EVOBREAKER":
       if($lastResult == "PASS") {
         if($dqVars[0] != "-") {
           $char = &GetPlayerCharacter($player);
-          $index = $dqVars[1];
           $hyperdriverArr = explode(",", $dqVars[0]);
-          for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
-          AddCurrentTurnEffect($char[$index] . "-" . (count($hyperdriverArr)*2), $player);
+          $index = $hyperdriverArr[0];
+          $count = count($hyperdriverArr);
+          for($i=1; $i<$count; ++$i) {
+            CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+          }
+          AddCurrentTurnEffect($char[$index] . "-" . (($count-1)*2), $player);
         }
         return $lastResult;
       }
@@ -704,7 +746,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $discard = GetDiscard($player);
       $cardList = [];
       for($i=2; $i>=0; $i--) {
-        WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished");
+        WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished.");
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN", "MST233");
         array_push($cardList, $discard[$lastResult[$i]]);
       }
@@ -753,12 +795,16 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $CombatChain->Card($index)->ModifyPower(2);
       return $lastResult;
     case "SUMMERSFALL":
-      MZMoveCard($player, "THEIRAURAS", "THEIRBOTDECK", may: true, DQContext: "Choose an aura");
+      if($params[1] != "NONE")
+      {
+        AddDecisionQueue("PASSPARAMETER", $player, $params[1] . "-" . $params[2]);
+        AddDecisionQueue("MZBOTTOM", $player, "-", 1);
+      }
       return $lastResult;
     default: return "";
   }
-}
 
+}
 function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=3", $skipGain=false)
 {
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
@@ -769,4 +815,30 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
   PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+}
+
+function MeldCards($player, $cardID, $lastResult){
+  if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
+  else $names[] = GamestateUnsanitize($lastResult);
+  if($lastResult == "Both") {
+    AddLayer("MELD", $player, $cardID);
+    $meldState = CardType($cardID);
+  }
+  else $meldState = "I";
+  for ($i=count($names)-1; $i >= 0 ; --$i) { 
+    switch ($names[$i]) {
+      case "Life":
+        GainHealth(1, $player);
+        break;
+      case "Shock":
+        $type = count($names) > 1 && IsDoubleArcane($cardID) ? "ARCANESHOCK" : "PLAYCARD";
+        DealArcane(1, 2, $type, $cardID, false, $player, meldState: $meldState);
+        break;
+      default:
+        if($lastResult != "Both") {
+          ProcessMeld($player, $cardID, additionalCosts:$lastResult);
+        }
+      break;
+    }
+  }
 }

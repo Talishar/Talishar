@@ -186,13 +186,14 @@ function Boost($cardID)
 
 function DoBoost($player, $cardID, $boostCount=1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $charSubCards;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
     if($deck->Empty()) { WriteLog("Could not boost"); return; }
     ItemBoostEffects();
     GainActionPoints(CountCurrentTurnEffects("ARC006", $player), $player);
+    GainResources($player, CountCurrentTurnEffects("AIO004", $player));
     $boostedCardID = $deck->Top(remove:true);
     SelfBoostEffects($player, $boostedCardID, $cardID);
     CharacterBoostAbilities($player);
@@ -210,7 +211,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     }
     if (!$skipBanish) BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
-    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "DID" : "did NOT") . " grant go again");
+    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
     IncrementClassState($player, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChainState[$CCS_IsBoosted] = 1;

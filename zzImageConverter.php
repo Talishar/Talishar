@@ -6,8 +6,8 @@ function CheckImage($cardID, $isDuplicate=false)
   $number = substr($cardID, 3);
   $filename = "./WebpImages/" . $cardID . ".webp";
   $filenameNew = "./New Cards/" . $cardID . ".webp";
-  $cardImagesUploadedFolder = "../Card-Images/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
-  $cardImagesMissingFolder = "../Card-Images/media/missing/cardimages/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
+  $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($filename) || !file_exists($cardImagesUploadedFolder))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $cardID . ".webp";
@@ -38,8 +38,8 @@ function CheckImage($cardID, $isDuplicate=false)
     }
   }
   $concatFilename = "./concat/" . $cardID . ".webp";
-  $cardSquaresUploadedFolder = "../Card-Images/media/uploaded/public/cardsquares/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
-  $cardSquaresMissingFolder = "../Card-Images/media/missing/cardsquares/english/" . $cardID . ".webp"; // !! Card-Images/ to be changed for your own folder name
+  $cardSquaresUploadedFolder = "../CardImages/media/uploaded/public/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardSquaresMissingFolder = "../CardImages/media/missing/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($concatFilename) || !file_exists($cardSquaresUploadedFolder))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");
@@ -65,8 +65,8 @@ function CheckImage($cardID, $isDuplicate=false)
     }
   }
   $cropFilename = "./crops/" . $cardID . "_cropped.png";
-  $cardCropsUploadedFolder = "../Card-Images/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! Card-Images/ to be changed for your own folder name
-  $cardCropsMissingFolder = "../Card-Images/media/missing/crops/" . $cardID . "_cropped.png"; // !! Card-Images/ to be changed for your own folder name
+  $cardCropsUploadedFolder = "../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
+  $cardCropsMissingFolder = "../CardImages/media/missing/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($cropFilename) || !file_exists($cardCropsUploadedFolder))
   {
     echo("Crop image for " . $cardID . " does not exist.<BR>");

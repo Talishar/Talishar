@@ -56,18 +56,19 @@ function EVOHitEffect($cardID)
     case "EVO054":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) {
         global $combatChain, $CombatChain;
-        $defendingCardsArr = explode(",", GetChainLinkCards($defPlayer, exclCardTypes: "C"));
-        rsort($defendingCardsArr);
-        foreach ($defendingCardsArr as $defendingCard) {
-          if (CardType($combatChain[$defendingCard]) == "E") {
-            WriteLog(CardLink("EVO054", "EVO054") . " destroyed " . CardLink($combatChain[$defendingCard], $combatChain[$defendingCard]) . ".");
-            $charID = FindCharacterIndex($defPlayer, $combatChain[$defendingCard]);
-            DestroyCharacter($defPlayer, $charID);
-            $CombatChain->Remove($defendingCard);
-          } else {
-            WriteLog(CardLink("EVO054", "EVO054") . " destroyed " . CardLink($combatChain[$defendingCard], $combatChain[$defendingCard]) . ".");
-            AddGraveyard($combatChain[$defendingCard], $defPlayer, "CC");
-            $CombatChain->Remove($defendingCard);
+        $defendingCards = GetChainLinkCards($defPlayer);
+        if (!empty($defendingCards)) {
+          $defendingCardsArr = array_reverse(explode(",", GetChainLinkCards($defPlayer, exclCardTypes: "C")));
+          foreach ($defendingCardsArr as $defendingCard) {
+            if (CardType($combatChain[$defendingCard]) == "E") {
+              WriteLog(CardLink("EVO054", "EVO054") . " destroyed " . CardLink($combatChain[$defendingCard], $combatChain[$defendingCard]) . ".");
+              $charID = FindCharacterIndex($defPlayer, $combatChain[$defendingCard]);
+              DestroyCharacter($defPlayer, $charID);
+            } else {
+              WriteLog(CardLink("EVO054", "EVO054") . " destroyed " . CardLink($combatChain[$defendingCard], $combatChain[$defendingCard]) . ".");
+              AddGraveyard($combatChain[$defendingCard], $defPlayer, "CC");
+              $CombatChain->Remove($defendingCard);
+            }
           }
         }
       }
@@ -147,7 +148,7 @@ function HVYHitEffect($cardID)
   global $mainPlayer, $defPlayer, $currentTurnEffects;;
   switch ($cardID) {
     case "HVY012":
-      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnPieces()) {
+      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
         if ($currentTurnEffects[$i] == $cardID) {
           RemoveCurrentTurnEffect($i);
           break;
@@ -163,7 +164,10 @@ function HVYHitEffect($cardID)
     case "HVY072":
     case "HVY073":
       if (IsHeroAttackTarget() && HasIncreasedAttack()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRARS");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you want to destroy from their arsenal", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
       }
       break;
     case "HVY074":

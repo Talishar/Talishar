@@ -56,12 +56,12 @@ if (!IsReplay()) {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
   if ($playerID != 3 && $authKey != $targetAuth) exit;
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) ExitProcessInput();
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;;
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
-    ExitProcessInput();
+    exit;;
   }
 }
 
@@ -123,7 +123,7 @@ switch ($mode) {
     $newLayers = [];
     for($i = 0; $i < count($submission->layers); ++$i) {
       for($j = $submission->layers[$i]; $j < $submission->layers[$i] + LayerPieces(); ++$j) {
-        array_push($newLayers, $layers[$j]);
+        if(isset($layers[$j])) array_push($newLayers, $layers[$j]);
       }
     }
     if(count($layers) > count($newLayers)) {
@@ -133,6 +133,28 @@ switch ($mode) {
     }
     $layers = $newLayers;
     break;
+  case 106: // change opt order
+      $deck = new Deck($playerID);
+      $cardListTop = $submission->cardListTop;
+      $cardListBottom = $submission->cardListBottom;
+      $cardListTopString = implode(",", $cardListTop);
+      $cardListBottomString = implode(",", $cardListBottom);
+      $newOptions = $cardListTopString . ";" . $cardListBottomString;
+      $turn[2] = $newOptions;
+      break;
+    case 107: //submit Opt
+      $deck = new Deck($playerID);
+      $cardListTop = $submission->cardListTop;
+      $cardListBottom = $submission->cardListBottom;
+      $deck->Opt($cardListTop, $cardListBottom);
+
+      $topCount = count($cardListTop);
+      $bottomCount = count($cardListBottom);
+      $topMessage = $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+      $bottomMessage = $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+      WriteLog("Player " . $playerID . " has put " . $topMessage . " and " . $bottomMessage . " of their deck.");
+      ContinueDecisionQueue();
+      break;
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";
@@ -202,4 +224,4 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
 
-ExitProcessInput();
+exit;;

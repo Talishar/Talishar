@@ -2,7 +2,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $actionPoints, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_DamagePrevention, $combatChain, $layers;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $CS_DamagePrevention, $combatChain, $layers;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -22,14 +22,16 @@
       case "ELE107": GainHealth(2, $currentPlayer); return "";
       case "ELE108": GainHealth(1, $currentPlayer); return "";
       case "ELE112":
-        if(count($combatChain) > 0 || CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA") AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        if (count($combatChain) > 0 || isset($layers[0]) && (CardType($layers[0]) == "AA" || GetAbilityType($layers[0]) == "AA")) {
+          AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        }
         else AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE113":
         AddDecisionQueue("FINDINDICES", $currentPlayer, $cardID);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "2-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "Cards returned:", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "Cards returned", 1);
         AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "1", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
         return "";
@@ -41,7 +43,16 @@
         AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
         return "";
       case "ELE116":
-        MZMoveCard($currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH", "MYHAND");
+        $params = explode("-", $target);
+        $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
+          AddDecisionQueue("MZADDZONE", $currentPlayer, "MYHAND", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        } else {
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          return "FAILED";
+        }
         return "";
       case "ELE118":
         Draw($currentPlayer);
@@ -66,11 +77,23 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ELE140": case "ELE141": case "ELE142":
-        if($cardID == "ELE140") $minCost = 0;
-        else if($cardID == "ELE141") $minCost = 1;
-        else $minCost = 2;
-        MZMoveCard($currentPlayer, "MYDISCARD:type=A;talent=EARTH,ELEMENTAL;minCost=" . $minCost . "&MYDISCARD:type=AA;talent=EARTH,ELEMENTAL;minCost=" . $minCost, "MYBOTDECK");
-        if($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+        $params = explode("-", $target);
+        $index = SearchdiscardForUniqueID($params[1], $currentPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
+          AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          if($from == "ARS") {
+            AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+            WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+          }
+          ResolveGoesWhere("BANISH", $cardID, $currentPlayer, $from);
+        } 
+        else {
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          ResolveGoesWhere("GY", $cardID, $currentPlayer, $from);
+          return "FAILED";
+        }
         return "";
       case "ELE143":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -79,7 +102,7 @@
         AddCurrentTurnEffect($cardID, $otherPlayer);
         return "";
       case "ELE145":
-        PlayAura("ELE111", $otherPlayer);
+        PlayAura("ELE111", $otherPlayer, effectController: $currentPlayer);
         return "";
       case "ELE147":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again");
@@ -107,7 +130,10 @@
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-        if($from == "ARS") Draw($currentPlayer);
+        if($from == "ARS") {
+          Draw($currentPlayer);
+          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+        }
         return "";
       case "ELE169": case "ELE170": case "ELE171": 
         if($cardID == "ELE169") $pay = 3;
@@ -156,7 +182,10 @@
         return "";
       case "ELE198": case "ELE199": case "ELE200":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        if($from == "ARS") Draw($currentPlayer);
+        if($from == "ARS") {
+          Draw($currentPlayer);
+          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+        }
         return "";
       case "ELE201":
         if($from == "PLAY") {
@@ -193,7 +222,7 @@
         if(IsHeroAttackTarget()) PayOrDiscard($defPlayer, 2);
         break;
       case "ELE157": case "ELE158": case "ELE159":
-        if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura("ELE111", $defPlayer, effectController: $mainPlayer);
         break;
       default: break;
     }
@@ -219,6 +248,7 @@
       $otherPlayer = $player == 1 ? 2 : 1;
       PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
   }
 
@@ -227,12 +257,13 @@
       $otherPlayer = $player == 1 ? 2 : 1;
       PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
-      PrependDecisionQueue("WRITELOG", $player, "Declined_to_pay_for_Exposed_to_the_Elements.", 1);
+      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("ELE093", "ELE093").".", 1);
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0, 1);
-      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Pay_2_to_prevent_an_equipment_from_being_destroyed");
+      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0);
+      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_2_to_prevent_an_equipment_with_0_defense_from_being_destroyed.");
   }
 
   function KorshemRevealAbility($player)

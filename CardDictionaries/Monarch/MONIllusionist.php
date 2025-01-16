@@ -17,12 +17,13 @@
         return "";
       case "MON091":
         if(!IsAllyAttackTarget()) {
+          AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
           AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
           AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was put on the bottom of the deck.", 1);
-          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "Skip", 1);
           AddDecisionQueue("DRAW", $otherPlayer, "-");
         }
         return "";
@@ -151,7 +152,7 @@
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     if(PowerCantBeModified($card->ID())) return AttackValue($card->ID()) >= 6;
     $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    $attackValue += AuraAttackModifiers($index, $attackModifiers);
+    $attackValue += AuraAttackModifiers($index, $attackModifiers, onBlock: true);
     $attackValue += $card->AttackValue();//Combat chain attack modifier
     return $attackValue >= 6;
   }

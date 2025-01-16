@@ -22,11 +22,14 @@
 
   function Crank($player, $index, $mainPhase="True")
   {
+    $items = GetItems($player);
+    PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
     PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");
-    PrependDecisionQueue("DOCRANK", $player, "if you want to Crank");
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to Crank", 1);
+    PrependDecisionQueue("DOCRANK", $player, "-");
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($items[$index], $items[$index]) ."?", 1);
+    PrependDecisionQueue("SETDQVAR", $player, "0");
   }
 
   function DoCrank($player, $index, $mainPhase=true)
@@ -124,6 +127,9 @@
     switch($cardID)
     {
       case "HVY050":
+        if($deck->Empty()) {
+          break;
+        }
         if ($playerID == $mainPlayer) DestroyTopCardOpponent($playerID);
         else {
           $character = &GetPlayerCharacter($mainPlayer);
@@ -242,7 +248,7 @@
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     if(SearchCurrentTurnEffects("HVY176", $wonWager)) $amount += CountCurrentTurnEffects("HVY176", $wonWager);
-    for($i = count($currentTurnEffects) - CurrentTurnPieces(); $i >= 0; $i -= CurrentTurnPieces()) {
+    for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = true;
       if(isset($currentTurnEffects[$i])) {
         switch($currentTurnEffects[$i]) {
@@ -359,53 +365,27 @@
    *
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
-  function Decompose($player, $specificCardDQ) {
-    $totalBanishes = 3;
+  function Decompose($player, $specificCardDQ, $target = "") {
     $actionBanishes = 1;
     $earthBanishes = 2; 
-
-    // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
-    $countInDiscard = SearchCount(
-      SearchRemoveDuplicates(
-        CombineSearches(
-          SearchDiscard($player, talent: "EARTH"),
-          CombineSearches(
-            SearchDiscard($player, "A"),
-            SearchDiscard($player
-            , "AA"))
-          )
-        )
-      );
-
-    // Must have the minimum # of earth cards too.
-    $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
-
-    // This is a MAY ability.
-    if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
-
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_Decompose");
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-
       // Earth Banishes
       for($i = 0; $i < $earthBanishes; $i++) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " earth card(s) to banish", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " Earth card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
 
       // Action banishes.
       for($i = 0; $i < $actionBanishes; $i++) {
         AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
-        AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different earth cards.", 1);
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different Earth cards.", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+        AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
-      AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ, 1);
+      AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
       return "";
-    }
-    return "Decompose was not possible.";
   }

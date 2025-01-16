@@ -184,8 +184,7 @@ function OUTAbilityCost($cardID)
         if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
         else $deck = new Deck($otherPlayer);
         $deck->AddBottom($combatChain[0], "CC");
-        AttackReplaced();
-        $combatChain[0] = $card->ID();
+        AttackReplaced($card->ID(), $currentPlayer);
         $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
@@ -195,7 +194,7 @@ function OUTAbilityCost($cardID)
       case "OUT014":
         for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
         {
-          if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer);
+          if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         }
         return "";
       case "OUT021": case "OUT022": case "OUT023":
@@ -226,13 +225,18 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Surging Strike from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDTOPDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "TOP,BOTTOM", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
+        AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Combo card from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("OPTX", $currentPlayer, "2", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "TOP,BOTTOM", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
+        AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         return "";
       case "OUT056": case "OUT057": case "OUT058":
         if(ComboActive())
@@ -252,6 +256,7 @@ function OUTAbilityCost($cardID)
         return "";
       case "OUT093":
         $abilityName = GetResolvedAbilityName($cardID);
+        SearchCurrentTurnEffects("OUT093-".$abilityName, $currentPlayer, true);
         if($abilityName == "Load") LoadArrow($currentPlayer);
         else if($abilityName == "Aim") {
           $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
@@ -388,13 +393,13 @@ function OUTAbilityCost($cardID)
           MZMoveCard($otherPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
         }
         PlayAura("DYN244", $currentPlayer);//Ponder
-        PlayAura($CID_BloodRotPox, $otherPlayer);
+        PlayAura($CID_BloodRotPox, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT160":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         CodexOfFrailty($currentPlayer);
         PlayAura("DYN244", $currentPlayer);
-        PlayAura($CID_Frailty, $otherPlayer);
+        PlayAura($CID_Frailty, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT161":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -411,7 +416,7 @@ function OUTAbilityCost($cardID)
           PummelHit($otherPlayer);
         }
         PlayAura("DYN244", $currentPlayer);
-        PlayAura($CID_Inertia, $otherPlayer);
+        PlayAura($CID_Inertia, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "OUT165": case "OUT166": case "OUT167":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -456,9 +461,9 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
         return "";
       case "OUT192": case "OUT193": case "OUT194":
-        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer);
-        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer);
-        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer);
+        if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer, effectController: $currentPlayer);
+        if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $currentPlayer);
+        if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer, effectController: $currentPlayer);
         return "";
       case "OUT195": case "OUT196": case "OUT197":
         if(DelimStringContains($additionalCosts, "BANISH1ATTACK"))
@@ -492,9 +497,9 @@ function OUTAbilityCost($cardID)
 
   function OUTHitEffect($cardID, $from)
   {
-    global $mainPlayer, $defPlayer, $combatChain, $chainLinks, $chainLinkSummary;
+    global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
-    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_FlickedDamage;
     switch ($cardID)
     {
       case "OUT005": case "OUT006":
@@ -536,13 +541,13 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT024": case "OUT025": case "OUT026":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT036": case "OUT037": case "OUT038":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT039": case "OUT040": case "OUT041":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT051":
         $char = &GetPlayerCharacter($defPlayer);
@@ -576,7 +581,7 @@ function OUTAbilityCost($cardID)
         $resources = &GetResources($mainPlayer);
         if(Count($hand) > 0 || $resources[0] > 0)
         {
-          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give this a name", 0, 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give ".CardLink($cardID, $cardID)." a name", 0, 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
@@ -610,13 +615,13 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "OUT118": case "OUT119": case "OUT120":
-        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT124": case "OUT125": case "OUT126":
-        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT136": case "OUT137": case "OUT138":
-        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer);
+        if(IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
         break;
       case "OUT142":
         $numDaggerHits = 0;
@@ -624,6 +629,7 @@ function OUTAbilityCost($cardID)
         {
           if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
         }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("OUT142", "OUT142"));
         LoseHealth($numDaggerHits, $defPlayer);
         break;
@@ -634,7 +640,7 @@ function OUTAbilityCost($cardID)
         if(IsHeroAttackTarget())
         {
           AddDecisionQueue("CHOOSECARD", $mainPlayer, $CID_BloodRotPox . "," . $CID_Frailty . "," . $CID_Inertia);
-          AddDecisionQueue("PUTPLAY", $defPlayer, "-", 1);
+          AddDecisionQueue("PUTPLAY", $defPlayer, $mainPlayer, 1);
         }
         break;
       case "OUT183":
@@ -728,24 +734,31 @@ function OUTAbilityCost($cardID)
       case "MST121": case "MST122": case "MST123": 
       case "MST124": case "MST125": case "MST126":
       case "MST127": case "MST128": case "MST129":
+      case "HNT017": case "HNT018": case "HNT019":
+      case "HNT030": case "HNT031":
+      case "HNT032": case "HNT033": case "HNT034":
+      case "HNT044": case "HNT045": case "HNT046":
+      case "HNT053":
         return true;
       default:
         return false;
     }
   }
 
-  function ThrowWeapon($subtype, $source)
+  function ThrowWeapon($subtype, $source, $optional = false)
   {
-    global $currentPlayer, $CCS_HitThisLink;
+    global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
     AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
     AddDecisionQueue("DEALDAMAGE", $otherPlayer, "<-", 1);
+    AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
@@ -755,12 +768,13 @@ function OUTAbilityCost($cardID)
 
   function DamageDealtBySubtype($subtype)
   {
-    global $chainLinks, $chainLinkSummary;
+    global $chainLinks, $chainLinkSummary, $combatChainState, $CCS_FlickedDamage;
     $damage = 0;
     for($i=0; $i<count($chainLinks); ++$i)
     {
       if(CardSubType($chainLinks[$i][0]) == $subtype) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
     }
+    if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
     return $damage;
   }
 
@@ -787,7 +801,7 @@ function OUTAbilityCost($cardID)
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
     if($char[1] == 2 && $characterID == "OUT091" || $characterID == "OUT092")
     {
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID, $cardID);
     }
   }
 
@@ -806,8 +820,11 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
-    AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
-    if($showHand) AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
+    if($showHand) {
+      AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's hand", 1);
+      AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "-", 1);
+    }
+    else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);

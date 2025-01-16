@@ -60,6 +60,7 @@
         }
         else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          return "FAILED";
         }
         return "";
       default: return "";

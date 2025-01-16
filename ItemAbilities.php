@@ -111,7 +111,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       }
       break;
     case "CRU105":
-      if ($from == "PLAY" && $items[$index + 1] > 0) {
+      if ($from == "PLAY" && $items[$index + 1] > 0 && $items[$index + 2] == 2) {
         $items[$index + 1] -= 1;
         AddAdditionalCost($currentPlayer, "PAID");
       }
@@ -125,12 +125,12 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVO075":
     case "EVO076":
     case "EVO077":
-      RemoveItem($currentPlayer, $index);
       if (substr($items[$index + 9], 0, 5) != "THEIR") {
         $deck = new Deck($currentPlayer);
       } else {
         $deck = new Deck($otherPlayer);
       }
+      RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
     case "EVO087":
@@ -203,6 +203,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
     unset($items[$i]);
   }
   $items = array_values($items);
+  if ($cardID == "EVO073") AddLayer("TRIGGER", $player, $cardID);
   return $cardID;
 }
 
@@ -425,6 +426,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       }
     }
   }
+  if(SearchCurrentTurnEffects("EVO000-".$item, $playerID, true)) $counters += 1;
   return $counters;
 }
 
@@ -457,7 +459,7 @@ function ItemBlockModifier($cardID)
           $typeEvo = CardType("EVO0" . $number);
         }
         $attackID = $CombatChain->AttackCard()->ID();
-        if (($type == "A" || $type == "AA" || $typeEvo == "A") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
+        if ((DelimStringContains($type, "A") || $type == "AA" || $typeEvo == "A") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
         break;
       default:
         break;

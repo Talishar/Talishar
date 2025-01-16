@@ -1,14 +1,4 @@
 <?php
-
-/*  Azalea Armory Deck METHODS
-  // Ability Type
-  // Ability Has Goi Again
-  // Combat Effect active
-  // Effect Attack Modifier
-  // Play Ability
-  // Hit Effect
-*/
-
 function AAZAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
@@ -89,13 +79,11 @@ function AAZHitEffect($cardID): void
   global $defPlayer;
   switch ($cardID) {
     case "AAZ016":
-      if (IsHeroAttackTarget() && HasAimCounter()) {
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
-        AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,NTINT," . $cardID, 1);
-      }
+      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,NTSTONERAIN," . $cardID, 1);
       break;
   }
 }

@@ -178,7 +178,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $hand = &GetHand($currentPlayer);
         $arsenal = GetArsenal($currentPlayer);
         if (count($hand) + count($arsenal) == 1) {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that goes to the bottom of your deck.", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that goes on the bottom of your deck.", 1);
           AddDecisionQueue("OK", $currentPlayer, "-");
         }
         if (count($hand) + count($arsenal) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent: true);
@@ -341,7 +341,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "HVY212":
       LookAtTopCard($currentPlayer, $cardID, showHand: true);
-      if ($from == "ARS") Draw($currentPlayer);
+      if ($from == "ARS") AddDecisionQueue("DRAW", $currentPlayer, "-");
       return "";
     case "HVY213":
     case "HVY214":
@@ -374,12 +374,15 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HVY245":
       if ($from == "GY") {
         $character = &GetPlayerCharacter($currentPlayer);
-        EquipWeapon($currentPlayer, "HVY245");
-        $index = FindCharacterIndex($currentPlayer, "HVY245");
-        if ($character[$index + 3] == 0) {
-          ++$character[$index + 3];
-        } else {
-          ++$character[$index + 15];
+        $uniqueID = EquipWeapon($currentPlayer, "HVY245");
+        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          if ($character[$i + 11] == $uniqueID) {
+            if ($character[$i + 3] == 0) {
+              ++$character[$i + 3];
+            } else {
+              ++$character[$i + 15];
+            }
+          }
         }
       }
       return "";
@@ -432,7 +435,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are:", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
@@ -576,12 +579,15 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char[11] = GetUniqueId("EVO410", $currentPlayer);
       $mechropotentIndex = 0; // we pushed it, so should be the last element
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if ($char[$i] != "EVO410") {
+        if ($char[$i] != "EVO410" && $char[$i] != "NONE00") {
           EvoTransformAbility("EVO410", $char[$i], $currentPlayer);
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
         }
       }
       PutCharacterIntoPlayForPlayer("EVO410b", $currentPlayer);
+      return "";
+    case "EVO013":
+      ModularMove($cardID, $additionalCosts);
       return "";
     case "EVO014":
       MZMoveCard($mainPlayer, "MYBANISH:class=MECHANOLOGIST;type=AA", "MYTOPDECK", isReveal: true);
@@ -603,7 +609,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
-      return "Light up the gem when you want the conditional boost effect to trigger";
+      return "Light up the gem under the equipment when you want to use the conditional effect❗";
     case "EVO057":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
@@ -701,7 +707,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "EVO082":
     case "EVO083":
       if ($from == "PLAY") {
-        MZMoveCard($currentPlayer, "MYDISCARD:pitch=" . PitchValue($cardID) . ";type=AA;class=MECHANOLOGIST", "MYHAND", may: true, isReveal: true);
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=" . PitchValue($cardID) . ";type=AA;class=MECHANOLOGIST", "MYHAND", may: true);
       }
       return "";
     case "EVO087":
@@ -964,3 +970,13 @@ function PhantomTidemawDestroy($player = -1, $index = -1)
   }
 }
 
+function ModularMove($cardID, $uniqueID)
+{
+  global $currentPlayer;
+  AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $currentPlayer, "-");
+  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment zone to move " . CardLink($cardID, $cardID) . " to.", 1);
+  AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+  AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+  AddDecisionQueue("EQUIPCARD", $currentPlayer, $cardID . "-{0}", 1);
+  AddDecisionQueue("REMOVEMODULAR", $currentPlayer, $uniqueID);
+}

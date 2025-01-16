@@ -305,6 +305,9 @@ function logCompletedGameStats()
 	if (!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if (!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+	
+	// Sends data to FabInsights DB
+	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
 
 	mysqli_close($conn);
 }
@@ -393,16 +396,65 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	curl_close($ch);
 }
 
+function SendFaBInsightsResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID)
+{
+	global $FaBInsightsKey, $gameName, $p2IsAI;
+    // Skip AI games
+    if ($p2IsAI == "1") return;
+
+    // Your Azure Function endpoint URL
+	$url = "https://fab-insights.azurewebsites.net/api/send_results";
+
+    // Prepare the data for the POST request
+    $payloadArr = [];
+    $payloadArr['gameID'] = $gameID;
+    $payloadArr['gameName'] = $gameName;
+    $payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
+    $payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
+    $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));  // Send JSON data
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                 // Get the response back
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",  // Specify the content type
+		"x-functions-key: " . $FaBInsightsKey // Add x-functions-key header
+    ]);
+
+    // Execute the request and get the response
+    $response = curl_exec($ch);
+
+	// Uncomment to log fab-insights stats reporting
+	// $logfile = "./BugReports/FabInsightsStatsLogging.txt";
+	// $logHandler = fopen($logfile, "a");
+	// date_default_timezone_set('America/Chicago');
+	// $logDate = date('m/d/Y h:i:s a');
+	// $logText = "Game log sent to FaBInsights for game $gameName at $logDate. $p1deckbuilderID as $p1Hero with $p1Decklink vs $p2deckbuilderID as $p2Hero with $p2Decklink. API Response: $response";
+	// fwrite($logHandler, $logText . "\r\n");
+	// fclose($logHandler);
+
+    // Close the cURL session
+    curl_close($ch);
+}
+
+
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
-	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft;
-	global $p1TotalTime, $p2TotalTime;
-	$DeckLink = explode("/", $DeckLink);
-	$DeckLink = $DeckLink[count($DeckLink) - 1];
+	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
+	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
+	if($DeckLink != "") {
+		$DeckLink = explode("/", $DeckLink);
+		$DeckLink = $DeckLink[count($DeckLink) - 1];
+	}
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
 	if(count($deckAfterSB) == 1) return "";
+	$character = $deckAfterSB[0];
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
 	if($gameID != "") $deck["gameId"] = $gameID;
@@ -414,23 +466,57 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
+	$deck["character"] = [];
+
+	$character = explode(" ", $character);
+	$deduplicatedCharacter = [];
+	for($i = 0; $i < count($character); ++$i) {
+		$card = $character[$i];
+
+		if (array_key_exists($card, $deduplicatedCharacter)) {
+			$deduplicatedCharacter[$card]++;
+		} else {
+			$deduplicatedCharacter[$card] = 1;
+		}
+	}
+	$deck["character"] = [];
+
+	foreach ($deduplicatedCharacter as $card => $numCopies) {
+		$cardResult = [
+			"cardId" => GetNormalCardID($card),
+			"cardName" => CardName($card),
+			"numCopies" => $numCopies,
+		];
+		array_push($deck["character"], $cardResult);
+	}
+
 	$deckAfterSB = explode(" ", $deckAfterSB);
 	$deduplicatedDeck = [];
 	for($i = 0; $i < count($deckAfterSB); ++$i) {
-		if($i > 0 && $deckAfterSB[$i] == $deckAfterSB[$i - 1]) continue; //Don't send duplicates
-		array_push($deduplicatedDeck, $deckAfterSB[$i]);
+		$card = $deckAfterSB[$i];
+
+		if (array_key_exists($card, $deduplicatedDeck)) {
+			$deduplicatedDeck[$card]++;
+		} else {
+			$deduplicatedDeck[$card] = 1;
+		}
 	}
-	for ($i = 0; $i < count($deduplicatedDeck); ++$i) {
-		$deck["cardResults"][$i] = [];
-		$deck["cardResults"][$i]["cardId"] = GetNormalCardID($deduplicatedDeck[$i]);
-		$deck["cardResults"][$i]["played"] = 0;
-		$deck["cardResults"][$i]["blocked"] = 0;
-		$deck["cardResults"][$i]["pitched"] = 0;
-		$deck["cardResults"][$i]["hits"] = 0;
-		$deck["cardResults"][$i]["charged"] = 0;
-		$deck["cardResults"][$i]["cardName"] = CardName($deduplicatedDeck[$i]);
-		$deck["cardResults"][$i]["pitchValue"] = PitchValue($deduplicatedDeck[$i]);
+
+	foreach ($deduplicatedDeck as $card => $numCopies) {
+		$cardResult = [
+			"cardId" => GetNormalCardID($card),
+			"played" => 0,
+			"blocked" => 0,
+			"pitched" => 0,
+			"hits" => 0,
+			"charged" => 0,
+			"cardName" => CardName($card),
+			"pitchValue" => PitchValue($card),
+			"numCopies" => $numCopies,
+		];
+		array_push($deck["cardResults"], $cardResult);
 	}
+
 	$cardStats = &GetCardStats($player);
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
@@ -454,8 +540,12 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"][$i]["resourcesUsed"] = $turnStats[$i + $TurnStats_ResourcesUsed];
 		$deck["turnResults"][$i]["resourcesLeft"] = $turnStats[$i + $TurnStats_ResourcesLeft];
 		$deck["turnResults"][$i]["cardsLeft"] = $turnStats[$i + $TurnStats_CardsLeft];
+		$deck["turnResults"][$i]["damageThreatened"] = $turnStats[$i + $TurnStats_DamageThreatened];
 		$deck["turnResults"][$i]["damageDealt"] = $turnStats[$i + $TurnStats_DamageDealt];
+		$deck["turnResults"][$i]["damageBlocked"] = $turnStats[$i + $TurnStats_DamageBlocked];
+		$deck["turnResults"][$i]["damagePrevented"] = $turnStats[$i + $TurnStats_DamagePrevented];
 		$deck["turnResults"][$i]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
+		$deck["turnResults"][$i]["lifeGained"] = $turnStats[$i + $TurnStats_LifeGained];
 	}
 
 	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
@@ -471,6 +561,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalCardsLeft = 0;
 	$totalDefensiveCards = 0;
 	$totalBlocked = 0;
+	$totalLifeGained = 0;
+	$totalDamagePrevented = 0;
 	$numTurns = 0;
 	$start = ($player == $firstPlayer ? TurnStatPieces() : 0);
 	for($i = $start; $i < count($turnStats); $i += TurnStatPieces()) {
@@ -480,6 +572,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
 		$totalDefensiveCards += ($turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]); //TODO: Separate out pitch for offense and defense
 		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
+		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
+		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
 		++$numTurns;
 	}
 
@@ -489,15 +583,18 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	$deck["totalDamageThreatened"] = $totalDamageThreatened;
 	$deck["totalDamageDealt"] = $totalDamageDealt;
+	$deck["totalLifeGained"] = $totalLifeGained;
+	$deck["totalDamagePrevented"] = $totalDamagePrevented;
 	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $numTurns, 2);
 	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $numTurns, 2);
 	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
 	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
 
-	if($includeFullLog) $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : "";
-
+	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
+	
 	return json_encode($deck);
 }
 
@@ -512,6 +609,7 @@ function GetNormalCardID($cardID)
 		case "MON400": return "LEV005";
 		case "MON404": return "PSM002";
 		case "MON402": return "PSM007";
+		case "HNT407": return "ARK007";
 	}
 	return $cardID;
 }

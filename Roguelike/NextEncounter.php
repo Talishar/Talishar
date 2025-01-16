@@ -1,7 +1,7 @@
 <head>
 
 <?php
-
+/*
   include '../Libraries/HTTPLibraries.php';
   include '../Libraries/SHMOPLibraries.php';
 
@@ -15,7 +15,7 @@
   include "EncounterDictionary.php";
   include "../CardDictionary.php";
   include "../HostFiles/Redirector.php";
-  include "../Libraries/UILibraries2.php";
+  include "../Libraries/UILibraries.php";
   include "../WriteLog.php";
 
 ?>
@@ -84,7 +84,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
       <div style='margin: 0; top: 50%; left: 50%; margin-right: -50%; width: 32px; height: 32px; padding: 1px;
       text-align: center; transform: translate(-50%, -50%); line-height: 1.2;
       position:absolute; font-size:32px; font-weight: 600; color: #EEE; text-shadow: 3px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;'>" . $encounter->rerolls . "</div></img></span></div>");*/
-
+/*
   echo("<center>" . Card($character[0], "../concat", $cardSize, 0, 1) . "</center>");
   echo("<BR>");
 
@@ -154,7 +154,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "</div>";
       //$encounterContent .= "<div>";
       break;
-    }*/
+    }
     case "REMOVEDECKCARD":{
       $options = explode(",", $myDQ[1]);
       $encounterContent .= "<h2>Remove a card from your deck</h2>";

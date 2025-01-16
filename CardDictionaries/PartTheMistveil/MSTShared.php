@@ -1,14 +1,4 @@
 <?php
-
-/*  PART THE MISTVEIL METHODS
-  // Ability Type
-  // Ability Cost
-  // Combat Effect active
-  // Effect Attack Modifier
-  // Play Ability
-  // Hit Effect
-*/
-
 function MSTAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
@@ -32,7 +22,7 @@ function MSTAbilityCost($cardID): int
 
 function MSTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer, $CS_NumBluePlayed, $combatChainState, $CCS_LinkBaseAttack, $CS_Transcended, $CombatChain;
+  global $mainPlayer, $combatChainState, $CCS_LinkBaseAttack, $CombatChain;
   $from = $CombatChain->AttackCard()->From();
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
@@ -56,7 +46,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
 
 function MSTEffectAttackModifier($cardID): int
 {
-  global $mainPlayer, $CS_Transcended, $combatChain;
+  global $mainPlayer;
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
   return match ($cardID) {
@@ -90,16 +80,16 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0");
       AddDecisionQueue("SETDQVAR", $otherPlayer, "0");
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with Nuu?");
-      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with Nuu", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with " . CardLink($cardID, $cardID)."?");
+      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with " . CardLink($cardID, $cardID), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "0", 1);
       AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,-," . $cardID, 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("NONECARDPITCHORPASS", $currentPlayer, "3");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Nuu shows the top of your deck is <0>");
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with Nuu", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <0>");
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with " . CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -108,7 +98,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
       AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-," . $cardID, 1);
+      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-", 1);
       return "";
     case "MST006":
       AddPlayerHand("MST023", $currentPlayer, $cardID); //Fang Strike
@@ -410,6 +400,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST497," . $from);
       } else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+        return "FAILED";
       }
       return "";
     case "MST098":
@@ -426,6 +417,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST499," . $from);
       } else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
+        return "FAILED";
       }
       return "";
     case "MST100":
@@ -491,8 +483,24 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $amount = 3;
       if ($cardID == "MST135") $amount = 2;
       else if ($cardID == "MST136") $amount = 1;
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target, 1);
-      AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
+      $params = explode("-", $target);
+      if(substr($params[0], 0, 5) != "THEIR") {
+        $zone = "MYAURAS-";
+        $player = $currentPlayer;
+      }
+      else {
+        $zone = "THEIRAURAS-";
+        $player = $otherPlayer;
+      }
+      $index = SearchAurasForUniqueID($params[1], $player);
+      if ($index != -1) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $zone . $index, 1);
+        AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
+      }
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        return "FAILED";
+      }
       return "";
     case "MST146":
     case "MST147":
@@ -594,7 +602,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to equip");
         AddDecisionQueue("CHOOSECARD", $currentPlayer, "<-");
         AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-INVENTORY");
-        AddDecisionQueue("EQUIPCARD", $currentPlayer, "<-");
+        AddDecisionQueue("EQUIPCARDINVENTORY", $currentPlayer, "<-");
       }
       return "";
     case "MST227":
@@ -665,7 +673,7 @@ function MSTHitEffect($cardID, $from): void
       AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
       AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are:", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
       break;
@@ -743,7 +751,7 @@ function MSTHitEffect($cardID, $from): void
         AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from your hand to discard.", 1);
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-" . $defPlayer, 1);
+        AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-" . $mainPlayer, 1);
       }
       break;
     case "MST192":

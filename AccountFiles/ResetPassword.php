@@ -5,19 +5,22 @@ include_once './AccountSessionAPI.php';
 include_once '../includes/dbh.inc.php';
 
 $_POST = json_decode(file_get_contents('php://input'), true);
-$selector = $_POST['selector'];
-$validator = $_POST['validator'];
-$password = $_POST['password'];
-$passwordRepeat = $_POST['passwordRepeat'];
+
+$selector = isset($_POST['selector']) ? $_POST['selector'] : null;
+$validator = isset($_POST['validator']) ? $_POST['validator'] : null;
+$password = isset($_POST['password']) ? $_POST['password'] : null;
+$passwordRepeat = isset($_POST['passwordRepeat']) ? $_POST['passwordRepeat'] : null;
 
 SetHeaders();
 $response = new stdClass();
 
-if (empty($password) || empty($passwordRepeat)) {
-  $response->error = "Password Empty";
-  echo (json_encode($response));
-  exit();
-} else if ($password != $passwordRepeat) {
+if (empty($selector) || empty($validator) || empty($password) || empty($passwordRepeat)) 
+{
+  $response->error = "One or more required fields is empty.";
+  echo(json_encode($response));
+  exit;
+} 
+else if ($password != $passwordRepeat) {
   $response->error = "New passwords not equal";
   echo (json_encode($response));
   exit();

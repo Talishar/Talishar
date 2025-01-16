@@ -5,8 +5,8 @@
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v6.1.1/json/english/card.json";
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/bright-lights/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/rosetta/json/english/card.json"; //!ROS
-  //$jsonUrl = "https://raw.githubusercontent.com/pvtvoid/flesh-and-blood-cards/talishar/json/english/card.json"; 
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/the-hunters/json/english/card.json"; //!HNT
+  //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json"; 
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -50,7 +50,7 @@
   {
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO"];
+    $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "LGS", "HER", "FAB", "JDG", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "AAZ", "TER", "AUR", "AIO", "ROS", "AJV", "HNT", "ARK"];
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
@@ -74,8 +74,8 @@
         if($set == "LSS" && $cardNumber != 004) continue;
         if($set == "LGS" && $cardNumber < 176) continue;
         if($set == "LGS" && $cardNumber > 178) continue;
-        if($set == "HER" && $cardNumber != 117 && $cardNumber != 100 && $cardNumber != 123) continue;
-        if($set == "FAB" && $cardNumber < 300) continue;
+        if($set == "HER" && $cardNumber != 117 && $cardNumber != 100 && $cardNumber != 123 && $cardNumber != 130) continue;
+        if($set == "FAB" && $cardNumber < 500) continue;
         if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") { $cardNumber += 400; $cardID = $set . $cardNumber; }
         else {
           $duplicate = false;
