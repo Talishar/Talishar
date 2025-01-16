@@ -2310,6 +2310,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !$CombatChain->HasCurrentLink();
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
+    case "HNT235":
+      return CheckMarked($defPlayer);
     case "HNT236":
       return CheckMarked($defPlayer);
     case "HNT237":
