@@ -42,6 +42,7 @@ function HNTAbilityHasGoAgain($cardID): bool
   global $currentPlayer;
   $defPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
+    "HNT228" => true,
     default => false,
   };
 }
