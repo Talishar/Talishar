@@ -1629,10 +1629,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = "EVO073";
     return true;
   } //Can't be activated
-  if (SearchCurrentTurnEffects("HNT228" . ) {
-      $restriction = "HNT228";
-      return true;
-  |
   if (CardType($cardID) == "A" 
     && $from != "PLAY" 
     && GetClassState($player, $CS_NumNonAttackCards) >= 1 
