@@ -356,7 +356,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HNTHitEffect($cardID, $uniqueID = -1): void
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $CS_LastAttack, $CCS_GoesWhereAfterLinkResolves, $chainLinkSummary;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
@@ -376,6 +376,18 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID, true);
+      break;
+    case "HNT072":
+      if (count($chainLinkSummary) == 0) break; # No previous links so nothing happens if this is true
+      $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
+      $isDraconic = false;
+      for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
+        if ($talents[$i] == "DRACONIC") $isDraconic = true;
+      }
+      if($isDraconic) {
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        BanishCardForPlayer("HNT072", $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer); # throw Devotion Never Dies to banish. it can be played this turn (TT)
+      }
       break;
     case "HNT074":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
