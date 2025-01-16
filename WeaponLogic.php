@@ -1,15 +1,13 @@
 <?php
 
-function IsWeapon($cardID)
+function IsWeapon($cardID, $from)
 {
   global $currentPlayer, $mainPlayer;
-  if(DelimStringContains(CardSubType($cardID), "Aura") && 
-      ClassContains($cardID, "ILLUSIONIST", $mainPlayer) && 
-      SearchCharacterForCard($mainPlayer, "MON003") || 
-      SearchCharacterForCard($mainPlayer, "MON088") || 
-      SearchCharacterForCard($mainPlayer, "DTD216") || 
-      SearchCharacterForCard($mainPlayer, "MST130")
-  ) return true;
+  if (DelimStringContains(CardSubType($cardID), "Aura") && ClassContains($cardID, "ILLUSIONIST", $mainPlayer) && $from == "PLAY" && (
+      SearchCharacterForCard($mainPlayer, "MON003") || SearchCharacterForCard($mainPlayer, "MON088") || SearchCharacterForCard($mainPlayer, "DTD216") || SearchCharacterForCard($mainPlayer, "MST130"))) 
+    {
+    return true;
+  }
   return TypeContains($cardID, "W", $currentPlayer);
 }
 
