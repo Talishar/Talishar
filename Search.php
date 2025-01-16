@@ -1082,6 +1082,7 @@ function GetMZCardLink($player, $MZ)
 //Example: AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:maxAttack=3;type=AA");
 function SearchMultizone($player, $searches)
 {
+  global $combatChain;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $unionSearches = explode("&", $searches);
   $rv = "";
@@ -1117,6 +1118,7 @@ function SearchMultizone($player, $searches)
     $hasAttackCounters = false;
     $isIntimidated = false;
     $arcaneDamage = -1;
+    WriteLog("HERE: " . $unionSearches[$i]);
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);

@@ -365,6 +365,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
+    case "HNT012":
+      WriteLog("The " . CardLink("HNT012", "HNT012") . " drains 1 life from $defPlayer!");
+      LoseHealth(1, $defPlayer);
+      break;
     case "HNT032":
     case "HNT033":
     case "HNT034":
