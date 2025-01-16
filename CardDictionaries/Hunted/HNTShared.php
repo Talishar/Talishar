@@ -67,6 +67,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT102-BUFF" => 2,
     "HNT103" => 2,
     "HNT104" => 3,
+    "HNT105" => 1,
     "HNT127" => 1,
     "HNT140" => 3,
     "HNT141" => 2,
