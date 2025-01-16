@@ -15,6 +15,7 @@ function HNTAbilityType($cardID): string
     "HNT056" => "AA",
     "HNT100" => "AA",
     "HNT167" => "I",
+    "HNT228" => "A",
     "HNT247" => "I",
     "HNT252" => "I",
     "HNT407" => "AR",
