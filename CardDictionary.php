@@ -2308,6 +2308,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "HNT117":
       return !$CombatChain->HasCurrentLink();
+    case "HNT143":
+      if(!$CombatChain->HasCurrentLink()) return true;
+      if(!TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer)) return true;
+      return false;
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
     case "HNT236":
