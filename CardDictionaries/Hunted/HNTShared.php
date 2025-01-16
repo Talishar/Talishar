@@ -14,6 +14,7 @@ function HNTAbilityType($cardID): string
     "HNT055" => "I",
     "HNT056" => "AA",
     "HNT100" => "AA",
+    "HNT143" => "I",
     "HNT167" => "I",
     "HNT247" => "I",
     "HNT252" => "I",
@@ -32,6 +33,7 @@ function HNTAbilityCost($cardID): int
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT056" => 1,
     "HNT100" => 1,
+    "HNT143" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     default => 0
   };
 }
