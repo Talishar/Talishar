@@ -1907,6 +1907,8 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   if ($index == -1) return "";
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
+  $linkedEffect = $char[$index] . "-" . $char[$index + 11];
+  SearchCurrentTurnEffects($linkedEffect, $player, true);
   $char[$index + 1] = 0;
   $char[$index + 2] = 0;
   $char[$index + 3] = 0;
