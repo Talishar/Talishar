@@ -71,6 +71,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT140" => 3,
     "HNT141" => 2,
     "HNT142" => 1,
+    "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
     "HNT258-BUFF" => 2,
@@ -260,6 +261,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT149":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT152":
+      $otherchar = &GetPlayerCharacter($otherPlayer);
+      if (CardNameContains($otherchar[0], "Arakni")) {
+        MarkHero($otherPlayer);
+      }
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
