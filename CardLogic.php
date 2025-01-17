@@ -1417,6 +1417,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "WTR077":
       KatsuHit();
       break;
+    case "WTR079":
+      Draw($player);
+      break;
     case "WTR119":
       Draw($mainPlayer);
       break;
