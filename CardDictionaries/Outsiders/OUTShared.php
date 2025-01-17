@@ -754,6 +754,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
     if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
     AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
@@ -762,7 +763,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
   }

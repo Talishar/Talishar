@@ -501,3 +501,14 @@ function ChaosTransform($characterID, $mainPlayer)
     AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
   }
 }
+
+function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its applicable attack (for kiss of death)
+{
+  return match($cardID) {
+    "OUT165" => true,
+    "OUT021" => true,
+    "OUT022" => true,
+    "OUT023" => true,
+    default => false
+  };
+}

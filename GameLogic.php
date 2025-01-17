@@ -1949,8 +1949,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "";
     case "ONHITEFFECT":
-      ProcessHitEffect($lastResult, $parameter);
-      //handling flick knives and mark
+      $cardID = $lastResult;
+      $location = $dqVars[2];
+      ProcessHitEffect($cardID, $parameter, location:$location);
       $mainChar = &GetPlayerCharacter($mainPlayer);
       if (CheckMarked($defPlayer)) {
         if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") {
