@@ -564,6 +564,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
     }
     else $searchedEffect = $cardID;
     switch ($searchedEffect) {
+      case "WTR079":
       case "CRU106":
       case "CRU107":
       case "CRU108": //High Speed Impact
@@ -2181,7 +2182,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230";
           break;
         case "HNT115":
-          if (IsWeapon($cardID)) $restrictedBy = "HNT115";
+          if (IsWeapon($cardID, $from)) $restrictedBy = "HNT115";
           break;
         case "HNT148";
         case "HNT149":

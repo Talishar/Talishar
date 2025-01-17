@@ -372,10 +372,10 @@ function ArsenalAttackModifier(&$attackModifiers)
   return $modifier;
 }
 
-function ArsenalHitEffects()
+function ArsenalHitEffects($attackID="")
 {
   global $CombatChain, $mainPlayer;
-  $attackID = $CombatChain->AttackCard()->ID();
+  if($attackID == "") $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
@@ -1907,6 +1907,8 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   if ($index == -1) return "";
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
+  $linkedEffect = $char[$index] . "-" . $char[$index + 11];
+  SearchCurrentTurnEffects($linkedEffect, $player, true);
   $char[$index + 1] = 0;
   $char[$index + 2] = 0;
   $char[$index + 3] = 0;

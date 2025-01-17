@@ -928,6 +928,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $opponentEffects = array();
   $friendlyEffects = "";
   $BorderColor = NULL;
+  $counters = NULL;
+  $counts = array_count_values($currentTurnEffects);
+  $friendlyRenderedEffects = array();
+  $opponentRenderedEffects = array();
+
   for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     $cardID = explode("-", $currentTurnEffects[$i])[0];
     $cardID = explode(",", $cardID)[0];
@@ -935,8 +940,18 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
     $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
     $BorderColor = ($isFriendly ? "blue" : "red");
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
-    else array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+    if(isset($counts[$cardID])) $counters = $counts[$cardID];
+
+    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
+      if(array_search($cardID, $friendlyRenderedEffects) === false) {
+        array_push($friendlyRenderedEffects, $cardID);
+        array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+      }
+    }  
+    elseif(array_search($cardID, $opponentRenderedEffects) === false) {
+      array_push($opponentRenderedEffects, $cardID);
+      array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+    }
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;

@@ -1952,6 +1952,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $lastResult;
       $location = $dqVars[2];
       ProcessHitEffect($cardID, $parameter, location:$location);
+      MainCharacterHitTrigger($cardID);
+      ArsenalHitEffects();
+      AuraHitEffects($cardID);
+      ItemHitTrigger($cardID);
+      //handling flick knives and mark
       $mainChar = &GetPlayerCharacter($mainPlayer);
       if (CheckMarked($defPlayer)) {
         if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") {
