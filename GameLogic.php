@@ -2191,6 +2191,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $lastResult = ltrim($lastResult, ",");
         }
       }
+      WriteLog("HERE are the indices: $lastResult");
       return $lastResult;
     case "CHANGESHIYANA":
       $otherPlayer = ($player == 1 ? 2 : 1);
