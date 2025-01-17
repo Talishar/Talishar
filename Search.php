@@ -1134,7 +1134,6 @@ function SearchMultizone($player, $searches)
     $hasAttackCounters = false;
     $isIntimidated = false;
     $arcaneDamage = -1;
-    WriteLog("HERE: " . $unionSearches[$i]);
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -1392,6 +1391,7 @@ function SearchMultizone($player, $searches)
           $searchResult = SearchLandmarks($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         case "COMBATCHAINATTACKS":
+          WriteLog("There is currently a graphical glitch when flicking with Kiss of Death involved. The funny options are Kiss of Death");
           $searchResult = SearchCombatChainAttacks($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         default:
