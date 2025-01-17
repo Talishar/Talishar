@@ -255,6 +255,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT142":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT143":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "HNT148":
       GainResources($currentPlayer, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
