@@ -20,6 +20,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     array_push($allies, 0); //Life Counters
     array_push($allies, 1); //Ability/effect uses
     array_push($allies, 0); //Attack Counters
+    array_push($allies, 0); //Damage dealt to the opponent
     if ($cardID == "UPR414") {
       WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
       Transform($player, "Ash", "UPR042", true);

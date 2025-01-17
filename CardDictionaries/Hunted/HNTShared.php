@@ -134,7 +134,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_DamageDealtToOpponent;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -156,6 +156,14 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      break;
+    case "HNT016":
+      if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
+      $allies = GetAllies($otherPlayer);
+      for ($j = 0; $j < count($allies); $j += AllyPieces()) {
+        if ($allies[$j + 10] > 0) --$allies[$j+2];
+        if ($allies[$j+2] == 0) DestroyAlly($otherPlayer, $j);
+      }
       break;
     case "HNT017":
     case "HNT018":
