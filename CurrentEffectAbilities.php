@@ -564,6 +564,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
     }
     else $searchedEffect = $cardID;
     switch ($searchedEffect) {
+      case "WTR079":
       case "CRU106":
       case "CRU107":
       case "CRU108": //High Speed Impact
