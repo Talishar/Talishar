@@ -2692,6 +2692,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT011":
+      $char = &GetPlayerCharacter($player);
+      if (CheckMarked($mainPlayer)) AddDecisionQueue("CHOOSECARD", $player, "HNT003,HNT004,HNT005,HNT006,HNT007,HNT008");
+      else AddDecisionQueue("PASSPARAMETER", $player, -1);
+      AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
     case "HNT073":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_prowess_and_draw");
