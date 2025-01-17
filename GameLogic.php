@@ -1950,7 +1950,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "ONHITEFFECT":
       ProcessHitEffect($lastResult, $parameter);
-      MainCharacterHitTrigger($lastResult);
+      MainCharacterHitTrigger();
+      MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($lastResult);
       ItemHitTrigger($lastResult);

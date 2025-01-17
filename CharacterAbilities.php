@@ -463,10 +463,10 @@ function MainCharacterEndTurnAbilities()
   }
 }
 
-function MainCharacterHitTrigger($attackID="")
+function MainCharacterHitTrigger()
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  if($attackID == "") $attackID = $CombatChain->AttackCard()->ID();
+  $attackID = $CombatChain->AttackCard()->ID();
   $defPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
@@ -485,7 +485,9 @@ function MainCharacterHitTrigger($attackID="")
         if (CardType($attackID) == "AA" && CountCurrentTurnEffects("WTR079", $mainPlayer) >= 3) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
-          while (SearchCurrentTurnEffects("WTR079", $mainPlayer, true));
+          SearchCurrentTurnEffects("WTR079", $mainPlayer, true);
+          SearchCurrentTurnEffects("WTR079", $mainPlayer, true);
+          SearchCurrentTurnEffects("WTR079", $mainPlayer, true);
         }
         break;
       case "WTR113":

@@ -372,10 +372,10 @@ function ArsenalAttackModifier(&$attackModifiers)
   return $modifier;
 }
 
-function ArsenalHitEffects($attackID="")
+function ArsenalHitEffects()
 {
   global $CombatChain, $mainPlayer;
-  if($attackID == "") $attackID = $CombatChain->AttackCard()->ID();
+  $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
