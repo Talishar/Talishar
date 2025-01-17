@@ -8,6 +8,7 @@ function HNTAbilityType($cardID): string
     "HNT005" => "I",
     "HNT006" => "AR",
     "HNT007" => "AR",
+    "HNT009" => "AA",
     "HNT010" => "AA",
     "HNT053" => "AA",
     "HNT054" => "I",
@@ -26,6 +27,7 @@ function HNTAbilityCost($cardID): int
 {
   global $currentPlayer, $mainPlayer;
   return match ($cardID) {
+    "HNT009" => 2,
     "HNT010" => 2,
     "HNT053" => 1,
     "HNT054" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
@@ -360,6 +362,8 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
+    case "HNT009":
+      MarkHero($defPlayer);
     case "HNT010":
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
