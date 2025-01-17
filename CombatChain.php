@@ -12,6 +12,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $location = "-")
     $activeEffects = explode(",", $chainLinks[$index][6]);
     foreach ($activeEffects as $effect) {
       AddEffectHitTrigger($effect);
+      AddOnHitTrigger($effect);
     }
   }
 
