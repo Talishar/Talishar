@@ -414,6 +414,9 @@ function EffectHitEffect($cardID, $from)
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       }
       return 1;
+    case "HNT051-ATTACK":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
