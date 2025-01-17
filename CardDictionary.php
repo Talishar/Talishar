@@ -2278,6 +2278,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;
+    case "HNT023":
+    case "HNT024":
+    case "HNT025":
+      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
     case "HNT101";
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CountAura("HNT167", $currentPlayer) < 3) return true;
