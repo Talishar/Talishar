@@ -737,6 +737,7 @@ function OUTAbilityCost($cardID)
       case "HNT017": case "HNT018": case "HNT019":
       case "HNT030": case "HNT031":
       case "HNT032": case "HNT033": case "HNT034":
+      case "HNT038": case "HNT039": case "HNT040":
       case "HNT044": case "HNT045": case "HNT046":
       case "HNT053":
         return true;
