@@ -940,7 +940,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
     $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
     $BorderColor = ($isFriendly ? "blue" : "red");
-    $counters = $counts[$cardID];
+    if(isset($counts[$cardID])) $counters = $counts[$cardID];
 
     if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
       if(array_search($cardID, $friendlyRenderedEffects) === false) {
