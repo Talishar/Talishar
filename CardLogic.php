@@ -2712,6 +2712,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT246":
       DiscardRandom();
       break;
+    case "HNT052":
+      WriteLog("The Hunter has become the hunted");
+      LoseHealth(1, $mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
+    case "HNT191":
+    case "HNT214":
+      WriteLog("The Hunter stumbles into the spider");
+      MarkHero($mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
     case "HNT253":
       $arsenal = &GetArsenal($player);
       for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
