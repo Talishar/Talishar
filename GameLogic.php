@@ -1952,6 +1952,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ProcessHitEffect($lastResult, $parameter);
       //handling flick knives and mark
       $mainChar = &GetPlayerCharacter($mainPlayer);
+      if(FindCharacterIndex($mainPlayer, "WTR079") != -1 && $mainChar[FindCharacterIndex($mainPlayer, "WTR079") + 5] > 0){
+        --$mainChar[FindCharacterIndex($mainPlayer, "WTR079") + 5];
+        AddCurrentTurnEffect("WTR079", $mainPlayer);
+      }
       if (CheckMarked($defPlayer)) {
         if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") {
           AddLayer("TRIGGER", $mainPlayer, $mainChar[0], $attackID, "MAINCHARHITEFFECT");
