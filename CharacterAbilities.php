@@ -481,13 +481,10 @@ function MainCharacterHitTrigger()
         }
         break;
       case "WTR079":
-        if ($mainCharacter[$i + 1] == 2) AddCurrentTurnEffect("WTR079", $mainPlayer);
-        if (CardType($attackID) == "AA" && CountCurrentTurnEffects("WTR079", $mainPlayer) >= 3) {
+        AddCurrentTurnEffect("WTR079", $mainPlayer);
+        if (CardType($attackID) == "AA" && HitsInRow() >= 2) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
-          SearchCurrentTurnEffects("WTR079", $mainPlayer, true);
-          SearchCurrentTurnEffects("WTR079", $mainPlayer, true);
-          SearchCurrentTurnEffects("WTR079", $mainPlayer, true);
         }
         break;
       case "WTR113":
