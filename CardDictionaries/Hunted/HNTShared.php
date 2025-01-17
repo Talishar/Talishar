@@ -374,6 +374,11 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
       AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       break;
+    case "HNT035":
+    case "HNT036":
+    case "HNT037":
+      MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
+      break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID, true);
       break;
