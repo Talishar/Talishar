@@ -1,11 +1,21 @@
 <?php
 
-function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
+function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $location = "-")
 {
-  global $CombatChain, $layers, $mainPlayer;
+  global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
+
+  if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
+    $index = explode("-", $location)[1];
+    $activeEffects = explode(",", $chainLinks[$index][6]);
+    foreach ($activeEffects as $effect) {
+      AddEffectHitTrigger($effect);
+      AddOnHitTrigger($effect);
+    }
+  }
+
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);

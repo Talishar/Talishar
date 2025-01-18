@@ -67,12 +67,18 @@ function HNTEffectAttackModifier($cardID): int
     "HNT102-BUFF" => 2,
     "HNT103" => 2,
     "HNT104" => 3,
+    "HNT105" => 1,
     "HNT127" => 1,
     "HNT140" => 3,
     "HNT141" => 2,
     "HNT142" => 1,
+    "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
+    "HNT241" => CheckMarked($otherPlayer) ? 3 : 0,
+    "HNT242" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT243" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -125,6 +131,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
+    "HNT241" => CheckMarked($otherPlayer),
+    "HNT242" => CheckMarked($otherPlayer),
+    "HNT243" => CheckMarked($otherPlayer),
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
@@ -161,6 +170,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT018":
     case "HNT019":
       ThrowWeapon("Dagger", $cardID, true);
+      break;
+    case "HNT020":
+    case "HNT021":
+    case "HNT022":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) EquipWeapon($currentPlayer, "HNT053");
       break;
     case "HNT026":
     case "HNT027":
@@ -241,6 +255,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
       break;
+    case "HNT105":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $character = &GetPlayerCharacter($mainPlayer);
+      $weaponIndex1 = CharacterPieces();
+      $weaponIndex2 = CharacterPieces() * 2;
+      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
+      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -265,6 +286,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT149":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT152":
+      $otherchar = &GetPlayerCharacter($otherPlayer);
+      if (CardNameContains($otherchar[0], "Arakni")) {
+        MarkHero($otherPlayer);
+      }
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
@@ -290,6 +316,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT237";
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      MarkHero($otherPlayer);
+      break;
+    case "HNT241":
+    case "HNT242":
+    case "HNT243":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       MarkHero($otherPlayer);
       break;
@@ -370,6 +402,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
+    case "HNT012":
+      WriteLog("The " . CardLink("HNT012", "HNT012") . " drains 1 life from $defPlayer!");
+      LoseHealth(1, $defPlayer);
+      break;
     case "HNT032":
     case "HNT033":
     case "HNT034":
@@ -378,6 +414,11 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
       AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
+      break;
+    case "HNT035":
+    case "HNT036":
+    case "HNT037":
+      MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID, true);
@@ -501,4 +542,26 @@ function ChaosTransform($characterID, $mainPlayer)
     AddDecisionQueue("TRAPDOOR", $mainPlayer, "-", 1);
     AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
   }
+}
+
+function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its applicable attack (for kiss of death)
+{
+  return match($cardID) {
+    "EVR176" => true,
+    "DYN118" => true,
+    "OUT021" => true,
+    "OUT022" => true,
+    "OUT023" => true,
+    "OUT143" => true,
+    "OUT158" => true,
+    "OUT165" => true,
+    "MST105-HIT" => true,
+    "HNT003-HIT" => true,
+    "HNT004-HIT" => true,
+    "HNT051" => true,
+    "HNT208" => true,
+    "HNT209" => true,
+    "HNT210" => true,
+    default => false
+  };
 }

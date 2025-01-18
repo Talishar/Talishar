@@ -734,9 +734,12 @@ function OUTAbilityCost($cardID)
       case "MST121": case "MST122": case "MST123": 
       case "MST124": case "MST125": case "MST126":
       case "MST127": case "MST128": case "MST129":
+      case "HNT012":
       case "HNT017": case "HNT018": case "HNT019":
+      case "HNT020": case "HNT021": case "HNT022":
       case "HNT030": case "HNT031":
       case "HNT032": case "HNT033": case "HNT034":
+      case "HNT035": case "HNT036": case "HNT037":
       case "HNT041": case "HNT042": case "HNT043":
       case "HNT044": case "HNT045": case "HNT046":
       case "HNT047": case "HNT048": case "HNT049":
@@ -751,10 +754,11 @@ function OUTAbilityCost($cardID)
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=" . $subtype);
     AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
     if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
     AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
@@ -763,7 +767,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
   }
