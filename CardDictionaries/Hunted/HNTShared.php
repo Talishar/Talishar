@@ -19,6 +19,7 @@ function HNTAbilityType($cardID): string
     "HNT145" => "I",
     "HNT146" => "AR",
     "HNT147" => "AR",
+    "HNT148" => "A",
     "HNT167" => "I",
     "HNT247" => "I",
     "HNT252" => "I",
@@ -478,6 +479,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT148":
       GainResources($currentPlayer, 1);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT148":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT149":
