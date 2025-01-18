@@ -78,7 +78,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT103" => 2,
     "HNT104" => 3,
     "HNT105" => 1,
-    "HNT106" => NumDraconicChainLinks() > 1 ? 3 : 0,
+    "HNT106" => NumDraconicChainLinks() > 1 ? 3 : 2,
     "HNT107" => 4,
     "HNT108" => 3,
     "HNT109" => 2,
