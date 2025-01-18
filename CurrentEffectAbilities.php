@@ -1769,7 +1769,7 @@ function CurrentEffectEndTurnAbilities()
   }
 }
 
-function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false)
+function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false, $flicked = false)
 {
   global $CombatChain;
   if ($SpectraTarget) return;
@@ -1800,7 +1800,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "ROS") return ROSCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AIO") return AIOCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AJV") return AJVCombatEffectActive($cardID, $cardToCheck);
-  else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck, $flicked);
   switch ($cardID) {
     case "LGS180":
       return DTDCombatEffectActive($cardID, $cardToCheck);

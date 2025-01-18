@@ -1042,7 +1042,7 @@ function AddTowerEffectTrigger($cardID)
   }
 }
 
-function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
+function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
   global $mainPlayer, $defPlayer, $CombatChain;
   if (SearchCurrentTurnEffects("MST079-HITPREVENTION", $defPlayer)) return false;
@@ -1105,7 +1105,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "HNT185":
     case "HNT186":
     case "HNT187":
-      if(IsHeroAttackTarget() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
+      if(IsHeroAttackTarget() && (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger") || SubtypeContains($sourceID, "Dagger"))) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
     default:

@@ -1962,8 +1962,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
         if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
-        if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-          AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+        if (IsCombatEffectActive($currentTurnEffects[$i], flicked: true) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+          AddCardEffectHitTrigger($currentTurnEffects[$i], $cardID); // Effects that do not gives it's effect to the attack
         }
       }
       MainCharacterHitTrigger($cardID);
