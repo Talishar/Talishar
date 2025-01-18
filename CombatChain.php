@@ -979,6 +979,9 @@ function OnBlockResolveEffects($cardID = "")
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
           break;
+        case "HNT162":
+          if (ColorContains($CombatChain->AttackCard()->ID(), PitchValue(1))) AddLayer("TRIGGER", $defPlayer, $cardID);
+          break;
         default:
           break;
       }
