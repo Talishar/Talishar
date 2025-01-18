@@ -171,6 +171,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT019":
       ThrowWeapon("Dagger", $cardID, true);
       break;
+    case "HNT020":
+    case "HNT021":
+    case "HNT022":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) EquipWeapon($currentPlayer, "HNT053");
+      break;
     case "HNT026":
     case "HNT027":
     case "HNT028":
