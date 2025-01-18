@@ -784,6 +784,7 @@ function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -969,7 +970,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "HNT145":
-          $otherChar = &GetPlayerCharacter($otherPlayer);
+          $otherChar = &GetPlayerCharacter(player: $otherPlayer);
           if (CardNameContains($otherChar[0], "Arakni")) {
             $costModifier -= 1;
             $remove = true;
