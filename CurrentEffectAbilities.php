@@ -414,6 +414,9 @@ function EffectHitEffect($cardID, $from)
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       }
       return 1;
+    case "HNT051-ATTACK":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
@@ -421,14 +424,30 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT111":
+    case "HNT114":
+      if (IfHeroAttackTarget() && NumDraconicChainLinks() > 1) MarkHero($defPlayer);
+      break;
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+      $character = &GetPlayerCharacter($mainPlayer);
+      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      return 1;
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT140":
     case "HNT141":
     case "HNT142":
-      if (IsHeroAttackTarget()){
-        MarkHero($defPlayer);
-        return 1;
-      }
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
+    case "HNT198-HIT":
+      Draw($mainPlayer, effectSource:"HNT198");
+      return 1;
     default:
       break;
   }
@@ -564,6 +583,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
     }
     else $searchedEffect = $cardID;
     switch ($searchedEffect) {
+      case "WTR079":
       case "CRU106":
       case "CRU107":
       case "CRU108": //High Speed Impact
@@ -606,6 +626,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST213":
       case "MST214": //Water the Seeds
       case "HNT061":
+      case "HNT105":
         $remove = 1;
         break;
       default:
@@ -1441,7 +1462,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras, $defPlayer;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
@@ -1562,6 +1583,10 @@ function CurrentEffectGrantsGoAgain()
           else break;
         case "HNT125":
           return true;
+        case "HNT134-GOAGAIN":
+        case "HNT135-GOAGAIN":
+        case "HNT136-GOAGAIN":
+          return IsHeroAttackTarget() && CheckMarked($defPlayer);
         case "HNT407":
           return true;
         default:
@@ -1933,9 +1958,18 @@ function IsCombatEffectPersistent($cardID)
     case "HNT061":
     case "HNT125":
     case "HNT127":
+    case "HNT134-GOAGAIN":
+    case "HNT135-GOAGAIN":
+    case "HNT136-GOAGAIN":
+    case "HNT137-MARKEDBUFF":
+    case "HNT138-MARKEDBUFF":
+    case "HNT139-MARKEDBUFF":
+    case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
+    case "HNT156":
+      return CardTalent($cardID) == "Draconic";
     //Roguelike
     case "ROGUE018":
     case "ROGUE601":
@@ -2181,7 +2215,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "DTD230";
           break;
         case "HNT115":
-          if (IsWeapon($cardID)) $restrictedBy = "HNT115";
+          if (IsWeapon($cardID, $from)) $restrictedBy = "HNT115";
           break;
         case "HNT148";
         case "HNT149":
