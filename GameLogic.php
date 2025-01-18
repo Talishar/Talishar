@@ -430,7 +430,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddArsenal($deck->Top(), $player, $from, $facing);
         return $lastResult;
       } else {
-        writelog("Your arsenal is full, you cannot put a card in your arsenal");
+        writelog("Player $player arsenal is full, no card was puit in arsenal");
         return "PASS";
       }
     case "TURNCHARACTERFACEUP":
@@ -1949,6 +1949,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "";
     case "ONHITEFFECT":
+      $cardID = $lastResult;
+      $location = $dqVars[2];
+      ProcessHitEffect($cardID, $parameter, location:$location);
+      MainCharacterHitTrigger($cardID);
+      ArsenalHitEffects();
+      AuraHitEffects($cardID);
+      ItemHitTrigger($cardID);
       ProcessHitEffect($lastResult, $parameter);
       //handling flick knives and mark
       $mainChar = &GetPlayerCharacter($mainPlayer);

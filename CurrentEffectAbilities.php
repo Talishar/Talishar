@@ -414,6 +414,9 @@ function EffectHitEffect($cardID, $from)
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       }
       return 1;
+    case "HNT051-ATTACK":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
@@ -429,6 +432,9 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT198-HIT":
+      Draw($mainPlayer, effectSource:"HNT198");
+      return 1;
     default:
       break;
   }
@@ -607,6 +613,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST213":
       case "MST214": //Water the Seeds
       case "HNT061":
+      case "HNT105":
         $remove = 1;
         break;
       default:
@@ -1934,6 +1941,7 @@ function IsCombatEffectPersistent($cardID)
     case "HNT061":
     case "HNT125":
     case "HNT127":
+    case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
