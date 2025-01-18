@@ -1084,7 +1084,6 @@ function CombatChainClosedCharacterEffects()
           }
         } 
         elseif (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-          WriteLog("here");
           $character[$charIndex + 4] -= 1;//Add -1 block counter
         }
       }
