@@ -2390,6 +2390,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
+    case "HNT197":
+      // make sure you have at least one dagger equipped
+      $mainCharacter = &GetPlayerCharacter($mainPlayer);
+      for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+        if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
+      }
+      return true;
     case "HNT199":
     case "HNT200":
     case "HNT201":

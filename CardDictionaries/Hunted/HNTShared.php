@@ -536,6 +536,14 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT190":
       if(IsHeroAttackTarget()) throwWeapon("Dagger", $cardID, true);
       break;
+    case "HNT197":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a dagger to attack an additional time and discount", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("EXTRAATTACK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("PERFORATE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+      break;
     case "HNT198":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
@@ -794,7 +802,8 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
     SetClassState($mainPlayer, $CS_OriginalHero, "-");
   }
   $char[0] = $transformTarget;
-  if ($transformTarget == "HNT008") {
+  //don't trigger trapdoor if you transfrom from trapdoor into trapdoor
+  if ($transformTarget == "HNT008" && $characterID != "HNT008") {
     AddDecisionQueue("YESNO", $mainPlayer, ":_banish_a_card_to_".CardLink("HNT008", "HNT008")."?");
     AddDecisionQueue("NOPASS", $mainPlayer, "-");
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);

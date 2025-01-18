@@ -2480,6 +2480,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char[$ind+5]++;
       if ($char[$ind+1] == 1) $char[$ind+1]++;
       return $lastResult;
+    case "PERFORATE":
+      $ind = explode("-", $parameter)[1];
+      $char = &GetPlayerCharacter($player);
+      AddCurrentTurnEffect("HNT197", $player,"", $char[$ind+11]);
+      return $lastResult;
     case "ADDONHITMARK":
       $ind = explode("-", $parameter)[1];
       $char = &GetPlayerCharacter($player);
