@@ -2048,7 +2048,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT042":
     case "OUT043":
     case "OUT044":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
+      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || (CardType($CombatChain->AttackCard()->ID()) != "AA");
     case "OUT054":
       return ($from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID()) : false);
     case "OUT094":
