@@ -8,6 +8,7 @@ function HNTAbilityType($cardID): string
     "HNT005" => "I",
     "HNT006" => "AR",
     "HNT007" => "AR",
+    "HNT009" => "AA",
     "HNT010" => "AA",
     "HNT053" => "AA",
     "HNT054" => "I",
@@ -26,6 +27,7 @@ function HNTAbilityCost($cardID): int
 {
   global $currentPlayer, $mainPlayer;
   return match ($cardID) {
+    "HNT009" => 2,
     "HNT010" => 2,
     "HNT053" => 1,
     "HNT054" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
@@ -56,9 +58,14 @@ function HNTEffectAttackModifier($cardID): int
     "HNT006" => 3,
     "HNT007" => 3,
     "HNT015" => 3,
+    "HNT023" => 3,
+    "HNT024" => 2,
+    "HNT025" => 1,
     "HNT026" => 3,
     "HNT027" => 2,
     "HNT028" => 1,
+    "HNT051-DAGGER" => 3,
+    "HNT051-ATTACK" => 3,
     "HNT061" => 1,
     "HNT077" => 3,
     "HNT078" => 3,
@@ -67,13 +74,23 @@ function HNTEffectAttackModifier($cardID): int
     "HNT102-BUFF" => 2,
     "HNT103" => 2,
     "HNT104" => 3,
+    "HNT105" => 1,
+    "HNT106" => NumDraconicChainLinks() > 1 ? 3 : 0,
+    "HNT107" => 4,
+    "HNT108" => 3,
+    "HNT109" => 2,
     "HNT127" => 1,
     "HNT140" => 3,
     "HNT141" => 2,
     "HNT142" => 1,
+    "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
     "HNT198" => 4,
+    "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
+    "HNT241" => CheckMarked($otherPlayer) ? 3 : 0,
+    "HNT242" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT243" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -103,9 +120,13 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT015" => true,
+    "HNT023" => HasStealth($attackID),
+    "HNT024" => HasStealth($attackID),
+    "HNT025" => HasStealth($attackID),
     "HNT026" => HasStealth($attackID),
     "HNT027" => HasStealth($attackID),
     "HNT028" => HasStealth($attackID),
+    "HNT051" => true,
     "HNT061" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
@@ -118,6 +139,10 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT101" => true,
     "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT106" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT107" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT108" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT109" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -127,6 +152,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
+    "HNT241" => CheckMarked($otherPlayer),
+    "HNT242" => CheckMarked($otherPlayer),
+    "HNT243" => CheckMarked($otherPlayer),
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
@@ -164,6 +192,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT019":
       ThrowWeapon("Dagger", $cardID, true);
       break;
+    case "HNT020":
+    case "HNT021":
+    case "HNT022":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) EquipWeapon($currentPlayer, "HNT053");
+      break;
+    case "HNT023":
+    case "HNT024":
+    case "HNT025":
+      GiveAttackGoAgain();
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "HNT026":
     case "HNT027":
     case "HNT028":
@@ -176,6 +215,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         MarkHero($otherPlayer);
       }
+      break;
+    case "HNT047":
+    case "HNT048":
+    case "HNT049":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
+      break;
+    case "HNT051":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("MODAL", $currentPlayer, "TWOSIDES", 1);
       break;
     case "HNT053":
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
@@ -238,6 +286,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
       break;
+    case "HNT105":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $character = &GetPlayerCharacter($mainPlayer);
+      $weaponIndex1 = CharacterPieces();
+      $weaponIndex2 = CharacterPieces() * 2;
+      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
+      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -262,6 +317,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT149":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT152":
+      $otherchar = &GetPlayerCharacter($otherPlayer);
+      if (CardNameContains($otherchar[0], "Arakni")) {
+        MarkHero($otherPlayer);
+      }
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
@@ -291,6 +351,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT237";
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      MarkHero($otherPlayer);
+      break;
+    case "HNT241":
+    case "HNT242":
+    case "HNT243":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       MarkHero($otherPlayer);
       break;
@@ -366,10 +432,16 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
+    case "HNT009":
+      MarkHero($defPlayer);
     case "HNT010":
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
+      break;
+    case "HNT012":
+      WriteLog("The " . CardLink("HNT012", "HNT012") . " drains 1 life from $defPlayer!");
+      LoseHealth(1, $defPlayer);
       break;
     case "HNT032":
     case "HNT033":
@@ -379,6 +451,16 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
       AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
+      break;
+    case "HNT035":
+    case "HNT036":
+    case "HNT037":
+      MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
+      break;
+    case "HNT038":
+    case "HNT039":
+    case "HNT040":
+      MarkHero($defPlayer);
       break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID, true);
@@ -502,4 +584,26 @@ function ChaosTransform($characterID, $mainPlayer)
     AddDecisionQueue("TRAPDOOR", $mainPlayer, "-", 1);
     AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
   }
+}
+
+function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its applicable attack (for kiss of death)
+{
+  return match($cardID) {
+    "EVR176" => true,
+    "DYN118" => true,
+    "OUT021" => true,
+    "OUT022" => true,
+    "OUT023" => true,
+    "OUT143" => true,
+    "OUT158" => true,
+    "OUT165" => true,
+    "MST105-HIT" => true,
+    "HNT003-HIT" => true,
+    "HNT004-HIT" => true,
+    "HNT051" => true,
+    "HNT208" => true,
+    "HNT209" => true,
+    "HNT210" => true,
+    default => false
+  };
 }
