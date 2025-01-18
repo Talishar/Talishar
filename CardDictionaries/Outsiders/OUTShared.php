@@ -183,7 +183,11 @@ function OUTAbilityCost($cardID)
         if(CardCost($card->ID()) > 2) { $card->ClearModifier(); return "Uzuri was bluffing"; }
         if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
         else $deck = new Deck($otherPlayer);
-        $deck->AddBottom($combatChain[0], "CC");
+        if (CardType($combatChain[0] == "AA")) $deck->AddBottom($combatChain[0], "CC");
+        else {//chelicera
+          $index = SearchCharacterForUniqueID($combatChain[8], $currentPlayer);
+          DestroyCharacter($currentPlayer, $index);
+        }
         AttackReplaced($card->ID(), $currentPlayer);
         $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
