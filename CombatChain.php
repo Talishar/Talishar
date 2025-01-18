@@ -420,6 +420,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
+    case "HNT009":
+      return NumEquipBlock() > 0 ? 1 : 0;
     case "HNT041":
     case "HNT042":
     case "HNT043":
@@ -446,6 +448,21 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
       return $numDaggerHits > 0 ? 1 : 0;
+    case "HNT199":
+      return CheckMarked($defPlayer) ? 4 : 3;
+    case "HNT200":
+      return CheckMarked($defPlayer) ? 3 : 2;
+    case "HNT201":
+      return CheckMarked($defPlayer) ? 2 : 1;
+    case "HNT205": return 3;
+    case "HNT206": return 2;
+    case "HNT207": return 1;
+    case "HNT208": return 3;
+    case "HNT209": return 2;
+    case "HNT210": return 1;
+    case "HNT211": return 3;
+    case "HNT212": return 2;
+    case "HNT213": return 1;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:

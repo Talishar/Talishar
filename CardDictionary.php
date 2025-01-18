@@ -2397,6 +2397,22 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
       }
       return true;
+    case "HNT199":
+    case "HNT200":
+    case "HNT201":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+    case "HNT205":
+    case "HNT206":
+    case "HNT207":
+    case "HNT208":
+    case "HNT209":
+    case "HNT210":
+    case "HNT211":
+    case "HNT212":
+    case "HNT213":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT235":
       return CheckMarked($defPlayer);
     case "HNT236":

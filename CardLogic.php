@@ -1082,6 +1082,12 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;
     case "ROS012":
+    case "HNT208":
+    case "HNT209":
+    case "HNT210":
+    case "HNT211":
+    case "HNT212":
+    case "HNT213":
       if(IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }

@@ -454,6 +454,20 @@ function EffectHitEffect($cardID, $from)
     case "HNT198-HIT":
       Draw($mainPlayer, effectSource:"HNT198");
       return 1;
+    case "HNT208":
+    case "HNT209":
+    case "HNT210":
+      MarkHero($defPlayer);
+      return 1;
+    case "HNT211":
+    case "HNT212":
+    case "HNT213":
+      if(CheckMarked($defPlayer)) {
+        $character = &GetPlayerCharacter($mainPlayer);
+        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      }
+      return 1;
     default:
       break;
   }
