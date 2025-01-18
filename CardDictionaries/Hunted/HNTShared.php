@@ -240,6 +240,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed;
+  global $CS_NumNonAttackCards;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -610,6 +611,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
+    case "HNT254":
+      // WriteLog("HERE num NAAs: " . GetClassState($currentPlayer, $CS_NumNonAttackCards));
+      PlayAura("ARC112", $currentPlayer, GetClassState($currentPlayer, $CS_NumNonAttackCards), isToken:true);
+      if (GetClassState($currentPlayer, piece: $CS_NumNonAttackCards) >= 3) GiveAttackGoAgain();
+      break;
     case "HNT255":
       AddDecisionQueue("CHOOSENUMBER", $currentPlayer, "1,2,3,4,5,6");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
