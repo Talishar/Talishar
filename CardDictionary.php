@@ -2426,6 +2426,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckMarked($defPlayer);
     case "HNT237":
       return !$CombatChain->HasCurrentLink() && CheckMarked($currentPlayer);
+    case "HNT238":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (AttackValue($CombatChain->AttackCard()->ID()) > 3) return true;
+      return false;
     case "HNT239":
       return !$CombatChain->HasCurrentLink() && AttackValue($CombatChain->AttackCard()->ID()) <= 3;
     case "HNT258":

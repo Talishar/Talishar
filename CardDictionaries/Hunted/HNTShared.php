@@ -227,6 +227,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT236" => true,
     "HNT237" => true,
     "HNT239" => true,
+    "HNT240" => AttackValue($attackID) <= 3,
     "HNT241" => CheckMarked($defPlayer),
     "HNT242" => CheckMarked($defPlayer),
     "HNT243" => CheckMarked($defPlayer),
@@ -570,6 +571,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT239":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT240":
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
     case "HNT241":
     case "HNT242":
