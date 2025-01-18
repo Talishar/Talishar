@@ -989,6 +989,7 @@ function HasGoAgain($cardID): bool|int
     case "HNT190":
     case "HNT198":
     case "HNT235":
+    case "HNT240":
     case "HNT241":
     case "HNT242":
     case "HNT243":
@@ -2384,6 +2385,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckMarked($defPlayer);
     case "HNT237":
       return !$CombatChain->HasCurrentLink() && CheckMarked($currentPlayer);
+    case "HNT239":
+      return !$CombatChain->HasCurrentLink() && AttackValue($CombatChain->AttackCard()->ID()) <= 3;
     case "HNT258":
       return $from != "HAND" && (!$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true));
     case "HNT407":
