@@ -2488,6 +2488,8 @@ function SelfCostModifier($cardID, $from)
     case "HVY251":
       return (-1 * NumRunechants($currentPlayer));
     case "HNT061":
+    case "HNT062":
+    case "HNT063":
     case "HNT057":
       return (-1 * NumDraconicChainLinks());
     case "HNT105":
