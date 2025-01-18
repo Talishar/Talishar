@@ -708,6 +708,9 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     case "HNT052":
       if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
+    case "HNT162":
+      if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
     case "HNT191":
       if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
@@ -1007,9 +1010,6 @@ function OnBlockResolveEffects($cardID = "")
         case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
-          break;
-        case "HNT162":
-          if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
           break;
         default:
           break;
