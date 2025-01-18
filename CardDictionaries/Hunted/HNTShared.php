@@ -370,6 +370,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         else {
           BanishCardForPlayer($cardRemoved, $currentPlayer, "DECK", "TT", "HNT154");
         }
+      break;
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
