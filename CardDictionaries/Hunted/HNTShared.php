@@ -121,9 +121,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT236" => -1,
     "HNT237" => 1,
     "HNT239" => 1,
-    "HNT241" => CheckMarked($otherPlayer) ? 3 : 0,
-    "HNT242" => CheckMarked($otherPlayer) ? 2 : 0,
-    "HNT243" => CheckMarked($otherPlayer) ? 1 : 0,
+    "HNT241" => 3,
+    "HNT242" => 2,
+    "HNT243" => 1,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -309,6 +309,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT058":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT059":
+    case "HNT060":
+      if(IsHeroAttackTarget() && NumDraconicChainLinks() >= 2) {
+        GiveAttackGoAgain();
+        PlayAura("HNT167", $currentPlayer);
+      }
       break;
     case "HNT061":
       AddCurrentTurnEffect($cardID, $currentPlayer);
