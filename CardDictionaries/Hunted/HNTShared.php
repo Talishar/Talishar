@@ -70,6 +70,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT077" => 3,
     "HNT078" => 3,
     "HNT079" => 3,
+    "HNT083" => 1,
+    "HNT084" => 1,
+    "HNT085" => 1,
     "HNT100" => 1,
     "HNT102-BUFF" => 2,
     "HNT103" => 2,
@@ -135,6 +138,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT077" => true,
     "HNT078" => true,
     "HNT079" => true,
+    "HNT083" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT084" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT085" => TalentContains($cardID, "DRACONIC", $mainPlayer),
     "HNT100" => true,
     "HNT101" => true,
     "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -294,6 +300,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT082":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer) && IsHeroAttackTarget()) {
         ThrowWeapon("Dagger", $cardID, true);
+      }
+      break;
+    case "HNT083":
+    case "HNT084":
+    case "HNT085":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
+        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       }
       break;
     case "HNT101":
