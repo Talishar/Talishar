@@ -1957,6 +1957,9 @@ function IsCombatEffectPersistent($cardID)
     case "HNT134-GOAGAIN":
     case "HNT135-GOAGAIN":
     case "HNT136-GOAGAIN":
+    case "HNT137-MARKEDBUFF":
+    case "HNT138-MARKEDBUFF":
+    case "HNT139-MARKEDBUFF":
     case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
