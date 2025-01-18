@@ -460,6 +460,12 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return 2;
     case "HNT207":
       return 1;
+    case "HNT208":
+      return 3;
+    case "HNT209":
+      return 2;
+    case "HNT210":
+      return 1;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:
