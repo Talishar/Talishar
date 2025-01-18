@@ -3220,6 +3220,8 @@ function CharacterNumUsesPerTurn($cardID)
       return 999;
     case "ROS027":
       return 999;
+    case "HNT215":
+      return 999;
     default:
       return 1;
   }

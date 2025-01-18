@@ -605,6 +605,8 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HNT219":
       if (IsWeaponAttack()) $blockModifier += 1;
       break;
+    case "HNT215":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
     default:
       break;
   }

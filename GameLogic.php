@@ -1669,7 +1669,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else WriteLog(CardLink("EVR156", "EVR156") . "... did not hit the mark");
       return $lastResult;
     case "ADDCARDTOCHAINASDEFENDINGCARD":
-      AddCombatChain($lastResult, $player, $parameter, 0, -1);
+      if ($parameter == "EQUIP") {
+        $character = &GetPlayerCharacter($player);
+        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          if ($character[$i] == $lastResult) {
+            $character[$i + 6] = 1;
+            PlayCard($cardID, "EQUIP", -1, $i, $character[$i + 11]);
+            break;
+          }
+        }
+      }
+      else AddCombatChain($lastResult, $player, $parameter, 0, -1);
       OnBlockResolveEffects($lastResult);
       OnDefenseReactionResolveEffects("CC", cardID: $lastResult);
       return $lastResult;

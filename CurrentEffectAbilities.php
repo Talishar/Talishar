@@ -547,6 +547,7 @@ function EffectHasBlockModifier($cardID)
 function EffectBlockModifier($cardID, $index, $from)
 {
   global $CombatChain, $defPlayer, $mainPlayer;
+  WriteLog("HERE: $cardID");
   switch ($cardID) {
     case "MON089":
       if ($CombatChain->Card($index)->ID() == $cardID) return 1;
@@ -2006,6 +2007,7 @@ function IsCombatEffectPersistent($cardID)
     case "HNT186":
     case "HNT187":
     case "HNT198-HIT":
+    case "HNT215":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
