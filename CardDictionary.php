@@ -936,6 +936,7 @@ function HasGoAgain($cardID): bool|int
     case "ROS253":
     case "AIO004":
     case "AJV017":
+    case "HNT009":
     case "HNT010":
     case "HNT026":
     case "HNT027":
@@ -2719,6 +2720,7 @@ function HasPiercing($cardID, $from = "")
     case "OUT009":
     case "OUT010": //Weapons with Piercing
     case "HVY245":
+    case "HNT009":
       return true;
     case "DYN076":
     case "DYN077":
