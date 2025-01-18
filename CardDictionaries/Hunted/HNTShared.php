@@ -249,7 +249,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT005":
       EquipWeapon($currentPlayer, "HNT053");
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
     case "HNT006":
       AddCurrentTurnEffect($cardID, $currentPlayer);
