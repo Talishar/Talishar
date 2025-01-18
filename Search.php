@@ -47,6 +47,22 @@ function SearchCombatChainLink($player, $type = "", $subtype = "", $maxCost = -1
   return SearchInner($combatChain, $player, "CC", CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
 }
 
+function SearchCombatChainAttacks($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
+{
+  global $chainLinks;
+  $attacks = [];
+  foreach ($chainLinks as $link) {
+    if ($link[2] == 1) {
+      for ($i = 0; $i < ChainLinksPieces(); ++$i) array_push($attacks, $link[$i]);
+    }
+    else {
+      //can't find something that's gone
+      for ($i = 0; $i < ChainLinksPieces(); ++$i) array_push($attacks, "-");
+    }
+  }
+  return SearchInner($attacks, $player, "CC", ChainLinksPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+}
+
 function SearchArsenal($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $faceUp = false, $faceDown = false)
 {
   $arsenal = &GetArsenal($player);
@@ -1084,6 +1100,7 @@ function GetMZCardLink($player, $MZ)
 //Example: AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:maxAttack=3;type=AA");
 function SearchMultizone($player, $searches)
 {
+  global $combatChain;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $unionSearches = explode("&", $searches);
   $rv = "";
@@ -1376,6 +1393,10 @@ function SearchMultizone($player, $searches)
           break;
         case "LANDMARK":
           $searchResult = SearchLandmarks($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
+          break;
+        case "COMBATCHAINATTACKS":
+          WriteLog("There is currently a graphical glitch when flicking with Kiss of Death involved. The funny options are Kiss of Death");
+          $searchResult = SearchCombatChainAttacks($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         default:
           break;

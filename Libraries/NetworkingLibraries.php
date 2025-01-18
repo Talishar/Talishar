@@ -1112,17 +1112,17 @@ function ResolveCombatDamage($damageDone)
       ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
+    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
+      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
+        AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+      }
+    }
     if (IsHeroAttackTarget()) {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       if (CheckMarked($otherPlayer)) {
         WriteLog("Player " . $otherPlayer . " loses their mark");
         RemoveMark($otherPlayer);
-      }
-    }
-    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
-      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
       }
     }
   } else {
@@ -1165,10 +1165,7 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
   
   ResolveWagers();
-  //Clean up combat effects that were used and are one-time
-  CleanUpCombatEffects();
-  CopyCurrentTurnEffectsFromCombat();
-  ChainLinkResolvedEffects();
+  
 
   array_push($chainLinks, array());
   $CLIndex = count($chainLinks) - 1;
@@ -1186,7 +1183,13 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 1]); //From
     array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
+    array_push($chainLinks[$CLIndex], ""); //Added On-hits (comma separated)
   }
+
+  //Clean up combat effects that were used and are one-time
+  CleanUpCombatEffects();
+  CopyCurrentTurnEffectsFromCombat();
+  ChainLinkResolvedEffects();
 
   //Don't change state until the end, in case it changes what effects are active
   if ($CombatChain->HasCurrentLink()) {
@@ -1210,14 +1213,19 @@ function FinalizeChainLink($chainClosed = false)
 
 function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
 {
-  global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain;
+  global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks;
   $effectsToRemove = [];
+  $CLIndex = count($chainLinks) - 1;
+  $addedOnHits = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
       if ($currentTurnEffects[$i + 3] == 0) array_push($effectsToRemove, $i);
+      if (AddedOnHit($currentTurnEffects[$i])) {
+        $addedOnHits .= $currentTurnEffects[$i] . ",";
+      }
     }
     if (substr($currentTurnEffects[$i], 0, 6) == "DYN065") array_push($effectsToRemove, $i);
     switch ($currentTurnEffects[$i]) {
@@ -1236,6 +1244,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
         break;
     }
   }
+  if ($addedOnHits != "") $addedOnHits = substr($addedOnHits, 0, -1);
+  if (isset($chainLinks[$CLIndex])) {
+    if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedOnHits;
+  } 
   for ($i = 0; $i < count($effectsToRemove); ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
 }
 
@@ -2085,6 +2097,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS104":
     case "ROS105":
     case "ROS106":
+    case "HNT013":
     case "HNT044":
     case "HNT045":
     case "HNT046":
@@ -2936,6 +2949,15 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Buff_Power,Reduce_Block,Both";
       elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power";
       else $modalities = "Reduce_Block";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "HNT051":
+      if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0])) $modalities = "Buff_Dagger,Buff_Stealth";
+      elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Dagger";
+      else $modalities = "Buff_Stealth";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);

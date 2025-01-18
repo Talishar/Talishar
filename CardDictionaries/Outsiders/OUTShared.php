@@ -734,10 +734,16 @@ function OUTAbilityCost($cardID)
       case "MST121": case "MST122": case "MST123": 
       case "MST124": case "MST125": case "MST126":
       case "MST127": case "MST128": case "MST129":
+      case "HNT012": case "HNT013":
       case "HNT017": case "HNT018": case "HNT019":
+      case "HNT020": case "HNT021": case "HNT022":
       case "HNT030": case "HNT031":
       case "HNT032": case "HNT033": case "HNT034":
+      case "HNT035": case "HNT036": case "HNT037":
+      case "HNT038": case "HNT039": case "HNT040":
+      case "HNT041": case "HNT042": case "HNT043":
       case "HNT044": case "HNT045": case "HNT046":
+      case "HNT047": case "HNT048": case "HNT049":
       case "HNT053":
         return true;
       default:
@@ -745,15 +751,17 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function ThrowWeapon($subtype, $source, $optional = false)
+  function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false)
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=" . $subtype);
     AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
     if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-    AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
+    if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+    else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
@@ -761,9 +769,10 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
+    if ($onHitDraw) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
   }
 
   function DamageDealtBySubtype($subtype)
