@@ -73,6 +73,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
     "HNT241" => CheckMarked($otherPlayer) ? 3 : 0,
