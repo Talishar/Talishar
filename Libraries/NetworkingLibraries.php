@@ -1245,7 +1245,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
     }
   }
   if ($addedOnHits != "") $addedOnHits = substr($addedOnHits, 0, -1);
-  array_push($chainLinks[$CLIndex], $addedOnHits);
+  if (isset($chainLinks[$CLIndex])) {
+    if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedOnHits;
+  } 
   for ($i = 0; $i < count($effectsToRemove); ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
 }
 
