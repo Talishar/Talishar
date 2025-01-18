@@ -1458,7 +1458,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras, $defPlayer;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
@@ -1579,6 +1579,10 @@ function CurrentEffectGrantsGoAgain()
           else break;
         case "HNT125":
           return true;
+        case "HNT134-GOAGAIN":
+        case "HNT135-GOAGAIN":
+        case "HNT136-GOAGAIN":
+          return IsHeroAttackTarget() && CheckMarked($defPlayer);
         case "HNT407":
           return true;
         default:
@@ -1950,6 +1954,9 @@ function IsCombatEffectPersistent($cardID)
     case "HNT061":
     case "HNT125":
     case "HNT127":
+    case "HNT134-GOAGAIN":
+    case "HNT135-GOAGAIN":
+    case "HNT136-GOAGAIN":
     case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
