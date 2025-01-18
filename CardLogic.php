@@ -1206,6 +1206,9 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "HNT122":
     case "HNT123":
     case "HNT124":
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
     case "HNT140":
     case "HNT141":
     case "HNT142":
