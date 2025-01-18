@@ -1058,7 +1058,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "ARC003", "TCC050", "CRU101" => "A,AA",
     "OUT093" => "I,I",
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", 
-    "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209", "HNT044", "HNT045", "HNT046"=> "I,AA",
+    "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209", "HNT013", "HNT044", "HNT045", "HNT046"=> "I,AA",
     "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     "ROS120", "ROS169" => "B,I",
     "HNT258" => "I,AR",
@@ -1581,6 +1581,11 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
             return "BOTDECK";
           }
           break;
+        case "HNT013":
+          if ($cardID == $currentTurnEffects[$i + 2]) {
+            RemoveCurrentTurnEffect($i);
+            return "BANISH";
+          }
         default:
           break;
       }

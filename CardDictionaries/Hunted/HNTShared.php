@@ -261,10 +261,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT013":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isTrap");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:subtype=Trap");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
         AddDecisionQueue("BANISHCARD", $currentPlayer, "DISCARD,TT", 1);
+        AddDecisionQueue("UNDERTRAPDOOR", $currentPlayer, "<-", 1);
       }
       break;
     case "HNT015":

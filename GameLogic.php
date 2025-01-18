@@ -2474,6 +2474,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "UNDERTRAPDOOR":
+      AddCurrentTurnEffect("HNT013", $currentPlayer, "", $parameter);
+      return $lastResult;
     case "EXTRAATTACK":
       $ind = explode("-", $parameter)[1];
       $char = &GetPlayerCharacter($player);

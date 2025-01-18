@@ -2097,6 +2097,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS104":
     case "ROS105":
     case "ROS106":
+    case "HNT013":
     case "HNT044":
     case "HNT045":
     case "HNT046":
