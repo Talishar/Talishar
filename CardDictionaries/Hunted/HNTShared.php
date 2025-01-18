@@ -380,6 +380,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAura("HNT167", $currentPlayer);
       }
       break;
+    case "HNT161":
+      if(GetClassState($mainPlayer, $CS_NumRedPlayed) > 1 && IsHeroAttackTarget()){
+        MarkHero($otherPlayer);
+      }
     case "HNT165":
       $otherchar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
