@@ -1084,16 +1084,10 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;
     case "ROS012":
-    case "HNT208":
-    case "HNT209":
-    case "HNT210":
-    case "HNT211":
-    case "HNT212":
-    case "HNT213":
       if(IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
-      break;  
+      break;
     case "ROS119":
       if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
@@ -1117,7 +1111,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
 
 function AddEffectHitTrigger($cardID): void // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
-  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers;
+  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
     case "WTR129":
@@ -1230,6 +1224,16 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "HNT111":
     case "HNT114":
       if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "HNT208":
+    case "HNT209":
+    case "HNT210":
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "HNT211":
+    case "HNT212":
+    case "HNT213":
+      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     default:
       break;
