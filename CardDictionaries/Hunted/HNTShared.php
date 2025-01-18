@@ -503,6 +503,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT175":
+      ThrowWeapon("Dagger", $cardID, onHitDraw: true);
+      break;
     case "HNT188":
     case "HNT189":
     case "HNT190":
@@ -598,7 +601,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HNTHitEffect($cardID, $uniqueID = -1): void
 {
-  global $mainPlayer, $defPlayer, $CS_LastAttack, $CCS_GoesWhereAfterLinkResolves, $chainLinkSummary;
+  global $mainPlayer, $defPlayer, $CS_LastAttack, $CCS_GoesWhereAfterLinkResolves, $chainLinkSummary, $combatChainState;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
@@ -662,6 +665,9 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "HNT096":
     case "HNT097":
       MarkHero($defPlayer);
+      break;
+    case "HNT174":
+      ThrowWeapon("Dagger", $cardID, destroy: false);
       break;
     case "HNT224":
     case "HNT225":
