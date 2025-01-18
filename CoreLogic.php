@@ -1799,6 +1799,8 @@ function DoesAttackHaveGoAgain()
     case "HNT071":
       $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
       return SearchCurrentTurnEffects("HNT071-$attackUniqueID", $mainPlayer);
+    case "HNT153":
+      return GetClassState($mainPlayer, $CS_FealtyCreated) > 0;
     case "HNT249":
       return SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1;
     default:
