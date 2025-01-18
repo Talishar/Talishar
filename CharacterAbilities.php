@@ -471,7 +471,7 @@ function MainCharacterHitTrigger($cardID = "-")
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $isAA = ($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA");
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    if (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2") continue;
+    if ($mainCharacter[$i] != "HNT007" && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || ($mainCharacter[$i + 1] != "2"))) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
     switch ($characterID) {
       case "WTR076":
