@@ -67,13 +67,18 @@ function HNTEffectAttackModifier($cardID): int
     "HNT102-BUFF" => 2,
     "HNT103" => 2,
     "HNT104" => 3,
+    "HNT105" => 1,
     "HNT127" => 1,
     "HNT140" => 3,
     "HNT141" => 2,
     "HNT142" => 1,
+    "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
+    "HNT241" => CheckMarked($otherPlayer) ? 3 : 0,
+    "HNT242" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT243" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -126,6 +131,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
+    "HNT241" => CheckMarked($otherPlayer),
+    "HNT242" => CheckMarked($otherPlayer),
+    "HNT243" => CheckMarked($otherPlayer),
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
@@ -237,6 +245,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("HNT167", $currentPlayer);
       break;
+    case "HNT105":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $character = &GetPlayerCharacter($mainPlayer);
+      $weaponIndex1 = CharacterPieces();
+      $weaponIndex2 = CharacterPieces() * 2;
+      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
+      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -261,6 +276,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT149":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT152":
+      $otherchar = &GetPlayerCharacter($otherPlayer);
+      if (CardNameContains($otherchar[0], "Arakni")) {
+        MarkHero($otherPlayer);
+      }
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
@@ -286,6 +306,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT237";
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      MarkHero($otherPlayer);
+      break;
+    case "HNT241":
+    case "HNT242":
+    case "HNT243":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       MarkHero($otherPlayer);
       break;
