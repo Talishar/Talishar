@@ -1618,6 +1618,7 @@ function DoesAttackHaveGoAgain()
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
@@ -1819,6 +1820,16 @@ function DoesAttackHaveGoAgain()
       return isPreviousLinkDraconic();
     case "HNT153":
       return GetClassState($mainPlayer, $CS_FealtyCreated) > 0;
+    case "HNT176":
+    case "HNT177":
+    case "HNT178":
+      $numDaggerHits = 0;
+        for($i=0; $i<count($chainLinks); ++$i)
+        {
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+        }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+      return $numDaggerHits > 0;
     case "HNT249":
       return SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1;
     default:
