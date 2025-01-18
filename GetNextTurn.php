@@ -951,7 +951,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     elseif(array_search($cardID, $opponentRenderedEffects) === false) {
       array_push($opponentRenderedEffects, $cardID);
       array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
-    }
+    }  
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;

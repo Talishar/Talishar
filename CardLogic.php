@@ -1212,6 +1212,9 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
       AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID)." was destroyed", 1);
       break;
+    case "WTR079":
+      Draw($player);
+      break;
     case "ARC152":
       $index = FindCharacterIndex($player, $cardID);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_gain_2_resources");
