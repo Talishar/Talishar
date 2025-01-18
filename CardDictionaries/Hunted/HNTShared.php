@@ -379,6 +379,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $weaponIndex2 = CharacterPieces() * 2;
       if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex1, 1);
       if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex2, 1);
+      break;
+    case "HNT106":
+    case "HNT107":
+    case "HNT108":
+    case "HNT109":
+    case "HNT110":
+    case "HNT111":
+    case "HNT112":
+    case "HNT113":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
