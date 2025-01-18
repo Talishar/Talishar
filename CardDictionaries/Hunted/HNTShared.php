@@ -249,7 +249,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT005":
       EquipWeapon($currentPlayer, "HNT053");
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (!$CombatChain->HasCurrentLink()) AddCurrentTurnEffect($cardID, $currentPlayer);
+      else AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
     case "HNT006":
       AddCurrentTurnEffect($cardID, $currentPlayer);
