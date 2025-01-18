@@ -222,7 +222,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -429,8 +429,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT152":
-      $otherchar = &GetPlayerCharacter($otherPlayer);
-      if (CardNameContains($otherchar[0], "Arakni")) {
+      $otherChar = &GetPlayerCharacter($otherPlayer);
+      if (CardNameContains($otherChar[0], "Arakni")) {
         MarkHero($otherPlayer);
       }
     case "HNT155":
@@ -443,13 +443,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT161":
-      if(GetClassState($mainPlayer, $CS_NumRedPlayed) > 1 && IsHeroAttackTarget()){
+      if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1 && IsHeroAttackTarget()){
         MarkHero($otherPlayer);
       }
     case "HNT165":
-      $otherchar = &GetPlayerCharacter($otherPlayer);
+      $otherChar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
-      if (CardNameContains($otherchar[0], "Arakni")) {
+      if (CardNameContains($otherChar[0], "Arakni")) {
         GainResources($currentPlayer, 1);
       }
       break;
@@ -549,13 +549,14 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
   switch ($cardID) {
     case "HNT009":
       MarkHero($defPlayer);
+      break;
     case "HNT010":
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy " . CardLink($cardID, $cardID) . " and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
     case "HNT012":
-      WriteLog("The " . CardLink("HNT012", "HNT012") . " drains 1 life from $defPlayer!");
+      WriteLog("Player $defPlayer loses 1 life.");
       LoseHealth(1, $defPlayer);
       break;
     case "HNT032":
