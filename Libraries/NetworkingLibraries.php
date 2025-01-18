@@ -1112,17 +1112,17 @@ function ResolveCombatDamage($damageDone)
       ItemHitTrigger($combatChain[0]);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
+    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
+      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
+        AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+      }
+    }
     if (IsHeroAttackTarget()) {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       if (CheckMarked($otherPlayer)) {
         WriteLog("Player " . $otherPlayer . " loses their mark");
         RemoveMark($otherPlayer);
-      }
-    }
-    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-      if ($currentTurnEffects[$i] == "DYN213") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "DYN213");
-      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
       }
     }
   } else {

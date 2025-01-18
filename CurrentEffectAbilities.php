@@ -429,6 +429,9 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT198-HIT":
+      Draw($mainPlayer, effectSource:"HNT198");
+      return 1;
     default:
       break;
   }
@@ -1934,6 +1937,7 @@ function IsCombatEffectPersistent($cardID)
     case "HNT061":
     case "HNT125":
     case "HNT127":
+    case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
