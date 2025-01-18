@@ -1805,9 +1805,6 @@ function DoesAttackHaveGoAgain()
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
-    case "HNT059":
-    case "HNT060":
-      return NumDraconicChainLinks() >= 2;
     case "HNT064":
       return NumDraconicChainLinks() > 1;
     case "HNT067":
