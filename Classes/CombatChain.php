@@ -106,4 +106,8 @@ class ChainCard {
     function UniqueID() {
       return $this->chain[$this->index+7];
     }
+
+    function SetID($id) {
+      $this->chain[$this->index] = $id;
+    }
 }

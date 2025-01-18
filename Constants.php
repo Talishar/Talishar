@@ -63,9 +63,10 @@ function BanishPieces()
 //6 - Defense Modifier
 //7 - Combat Chain Unique ID
 //8 - Origin Unique ID
+//9 - Original Card ID (for if the card becomes a copy of another card)
 function CombatChainPieces()
 {
-  return 9;
+  return 10;
 }
 
 //0 - Card ID
@@ -206,9 +207,10 @@ function InventoryPieces()
 //4 - Attack Modifier
 //5 - Defense Modifier
 //6 - Added On-hits (comma separated)
+//7 - Original Card ID (in case of copies)
 function ChainLinksPieces()
 {
-  return 7;
+  return 8;
 }
 
 //0 - Damage Dealt
@@ -452,8 +454,9 @@ function ResetCombatChainState()
       }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
         if(CardType($chainLinks[$i][$j]) == "T" || CardType($chainLinks[$i][$j]) == "Macro") continue;//Don't need to add to anywhere if it's a token
-        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
-        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CHAINCLOSING");
+        // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
+        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j+7], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
+        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j+7], $chainLinks[$i][$j + 1], "CHAINCLOSING");
       }
     }
   }

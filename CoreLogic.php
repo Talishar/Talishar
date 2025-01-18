@@ -142,6 +142,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
+  array_push($combatChain, $cardID); //original cardID in case it becomes a copy
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
