@@ -131,16 +131,16 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT028" => HasStealth($attackID),
     "HNT051" => true,
     "HNT061" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT071" => TalentContains($cardID, "DRACONIC", $mainPlayer),
-    "HNT074" => TalentContains($cardID, "DRACONIC", $mainPlayer),
-    "HNT075" => TalentContains($cardID, "DRACONIC", $mainPlayer),
-    "HNT076" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT071" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT074" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT075" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT076" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT077" => true,
     "HNT078" => true,
     "HNT079" => true,
-    "HNT083" => TalentContains($cardID, "DRACONIC", $mainPlayer),
-    "HNT084" => TalentContains($cardID, "DRACONIC", $mainPlayer),
-    "HNT085" => TalentContains($cardID, "DRACONIC", $mainPlayer),
+    "HNT083" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT084" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT085" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT100" => true,
     "HNT101" => true,
     "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -299,9 +299,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT083":
     case "HNT084":
     case "HNT085":
-      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
-      }
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
     case "HNT101":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -499,13 +497,7 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       MarkHero($defPlayer);
       break;
     case "HNT072":
-      if (count($chainLinkSummary) == 0) break; # No previous links so nothing happens if this is true
-      $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
-      $isDraconic = false;
-      for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
-        if ($talents[$i] == "DRACONIC") $isDraconic = true;
-      }
-      if($isDraconic) {
+      if(isPreviousLinkDraconic()) {
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         BanishCardForPlayer("HNT072", $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer); # throw Devotion Never Dies to banish. it can be played this turn (TT)
       }
