@@ -848,16 +848,16 @@ function BubbleToTheSurface()
     {
       if($cardsToReveal != "") $cardsToReveal .= ",";
       $cardsToReveal .= $deck[$i];
-      if(PitchValue($deck->Top()) == 1)
-      {
+      if(PitchValue($deck[$i]) == 1)
+            {
         $cardRemoved = $deck[$i];
         unset($deck[$i]);
         $deck = array_values($deck);
-        break;
+        RevealCards($cardsToReveal);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        return $cardRemoved;
       }
     }
-    RevealCards($cardsToReveal);
-    AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
     return $cardRemoved;
   }
 
