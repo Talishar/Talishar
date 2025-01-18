@@ -2459,6 +2459,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "CURRENTATTACKBECOMES":
+      $combatChain[0] = $lastResult;
+      return $lastResult;
     case "EXTRAATTACK":
       $ind = explode("-", $parameter)[1];
       $char = &GetPlayerCharacter($player);

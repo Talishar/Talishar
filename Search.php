@@ -29,10 +29,10 @@ function SearchPitch($player, $type = "", $subtype = "", $maxCost = -1, $minCost
   return SearchInner($searchPitch, $player, "PITCH", PitchPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
 }
 
-function SearchDiscard($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "", $getDistinctCardNames = false)
+function SearchDiscard($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "", $getDistinctCardNames = false, $hasStealth = false)
 {
   $discard = &GetDiscard($player);
-  return SearchInner($discard, $player, "DISCARD", DiscardPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, $getDistinctCardNames);
+  return SearchInner($discard, $player, "DISCARD", DiscardPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, $getDistinctCardNames, hasStealth: $hasStealth);
 }
 
 function SearchBanish($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $isIntimidated = false,)
@@ -134,7 +134,8 @@ function SearchInner(
   $faceUp = false,
   $faceDown = false,
   $isIntimidated = false,
-  $arcaneDamage = -1
+  $arcaneDamage = -1,
+  $hasStealth = false
 )
 {
   $cardList = "";
@@ -181,6 +182,7 @@ function SearchInner(
         }
         if ($hasAttackCounters && !HasAttackCounters($zone, $array, $i)) continue;
         if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
+        if ($hasStealth && !hasStealth($cardID)) continue;
         if ($cardList != "") $cardList = $cardList . ",";
         $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
       }
@@ -1307,6 +1309,8 @@ function SearchMultizone($player, $searches)
           case "arcaneDamage":
             $arcaneDamage = $condition[1];
             break;
+          case "hasStealth":
+            $hasStealth = $condition[1];
           default:
             break;
         }
@@ -1326,7 +1330,7 @@ function SearchMultizone($player, $searches)
           break;
         case "MYDISCARD":
         case "THEIRDISCARD":
-          $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, nameIncludes: $nameIncludes);
+          $searchResult = SearchDiscard($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, nameIncludes: $nameIncludes, hasStealth:$hasStealth);
           break;
         case "MYARS":
         case "THEIRARS":

@@ -153,6 +153,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT007":
       AddCurrentTurnEffect("HNT007", $currentPlayer);
       break;
+    case "HNT014":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
+        AddCurrentTurnEffect("$cardID-FULL", $currentPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYGRAVEYARD:hasStealth");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+        AddDecisionQueue("CURRENTATTACKBECOMES", $currentPlayer, "-", 1);
+      }
+      else AddCurrentTurnEffect("$cardID", $currentPlayer);
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
