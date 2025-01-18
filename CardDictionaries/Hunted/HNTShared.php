@@ -90,7 +90,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
-    "HNT152" => 1,
+    "HNT156" => 1,
     "HNT163" => 3,
     "HNT166" => 3,
     "HNT198" => 4,
@@ -164,6 +164,8 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT156" => TalentContains($attackID, "Draconic", $mainPlayer),
+    "HNT166" => TalentContains($attackID, "Draconic", $mainPlayer),
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
@@ -363,9 +365,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (CardNameContains($otherchar[0], "Arakni")) {
         MarkHero($otherPlayer);
       }
+    case "HNT154":
+        $cardRemoved = BubbleToTheSurface();
+        if($cardRemoved == "") { AddCurrentTurnEffect("HNT154-7", $currentPlayer); return "You cannot reveal cards."; }
+        else {
+          BanishCardForPlayer($cardRemoved, $currentPlayer, "DECK", "TT", "HNT154");
+        }
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
+      break;
+    case "HNT156":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID, $otherPlayer);
       break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
@@ -658,3 +670,27 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
     default => false
   };
 }
+
+function BubbleToTheSurface()
+{
+  global $currentPlayer;
+  if(!CanRevealCards($currentPlayer)) return "";
+    $cardRemoved = "";
+    $deck = &GetDeck($currentPlayer);
+    $cardsToReveal = "";
+    for($i=0; $i<count($deck); ++$i)
+    {
+      if($cardsToReveal != "") $cardsToReveal .= ",";
+      $cardsToReveal .= $deck[$i];
+      if(PitchValue($deck->Top()) == 1)
+      {
+        $cardRemoved = $deck[$i];
+        unset($deck[$i]);
+        $deck = array_values($deck);
+        break;
+      }
+    }
+    RevealCards($cardsToReveal);
+    AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+    return $cardRemoved;
+  }
