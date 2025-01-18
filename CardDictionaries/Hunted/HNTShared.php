@@ -221,6 +221,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT179" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT180" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT181" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT185" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT186" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT187" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
@@ -519,6 +522,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT183":
     case "HNT184":
       Retrieve($currentPlayer, "Dagger");
+      break;
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT188":
     case "HNT189":
