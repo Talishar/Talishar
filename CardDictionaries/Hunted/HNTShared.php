@@ -359,7 +359,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT161":
-      if(GetClassState($mainPlayer, $CS_NumRedPlayed) > 1){
+      if(GetClassState($mainPlayer, $CS_NumRedPlayed) > 1 && IsHeroAttackTarget()){
         MarkHero($otherPlayer);
       }
     case "HNT165":
