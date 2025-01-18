@@ -454,18 +454,15 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return CheckMarked($defPlayer) ? 3 : 2;
     case "HNT201":
       return CheckMarked($defPlayer) ? 2 : 1;
-    case "HNT205":
-      return 3;
-    case "HNT206":
-      return 2;
-    case "HNT207":
-      return 1;
-    case "HNT208":
-      return 3;
-    case "HNT209":
-      return 2;
-    case "HNT210":
-      return 1;
+    case "HNT205": return 3;
+    case "HNT206": return 2;
+    case "HNT207": return 1;
+    case "HNT208": return 3;
+    case "HNT209": return 2;
+    case "HNT210": return 1;
+    case "HNT211": return 3;
+    case "HNT212": return 2;
+    case "HNT213": return 1;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:
