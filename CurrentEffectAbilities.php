@@ -424,6 +424,10 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT111":
+    case "HNT114":
+      if (IfHeroAttackTarget() && NumDraconicChainLinks() > 1) MarkHero($defPlayer);
+      break;
     case "HNT122":
     case "HNT123":
     case "HNT124":
