@@ -459,6 +459,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT188":
+    case "HNT189":
+    case "HNT190":
+      if(IsHeroAttackTarget()) throwWeapon("Dagger", $cardID, true);
+      break;
     case "HNT198":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
