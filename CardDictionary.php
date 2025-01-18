@@ -1,4 +1,4 @@
-<?php
+  <?php
 
 include "Constants.php";
 include "CardDictionaries/WelcomeToRathe/WTRShared.php";
@@ -2319,6 +2319,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT106":
     case "HNT108":
     case "HNT109":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
+      return false;
+    case "HNT107":
+      if (NumDraconicChainLinks() < 2) return true;
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
       return false;
