@@ -75,6 +75,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
+    "HNT241" => CheckMarked($otherPlayer) ? 3 : 0,
+    "HNT242" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT243" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -127,6 +130,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
+    "HNT241" => CheckMarked($otherPlayer),
+    "HNT242" => CheckMarked($otherPlayer),
+    "HNT243" => CheckMarked($otherPlayer),
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
@@ -299,6 +305,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT237";
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      MarkHero($otherPlayer);
+      break;
+    case "HNT241":
+    case "HNT242":
+    case "HNT243":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       MarkHero($otherPlayer);
       break;
