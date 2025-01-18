@@ -7,7 +7,6 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
   if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
 
-  
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
