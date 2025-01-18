@@ -2706,6 +2706,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT000":
+      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-", 1);
+      AddDecisionQueue("ADDARSENAL", $player, "DECK", 1);
+      AddDecisionQueue("ADDARSENAL", $defPlayer, "DECK", 1);
+      break;
+    case "HNT052":
+      WriteLog("The Hunter has become the hunted");
+      LoseHealth(1, $mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
     case "HNT073":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_prowess_and_draw");
@@ -2723,19 +2734,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "HNT246":
-      DiscardRandom();
-      break;
-    case "HNT052":
-      WriteLog("The Hunter has become the hunted");
-      LoseHealth(1, $mainPlayer);
-      if (!IsAllyAttacking()) TrapTriggered($parameter);
-      break;
     case "HNT191":
     case "HNT214":
       WriteLog("The Hunter stumbles into the spider");
       MarkHero($mainPlayer);
       if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
+    case "HNT246":
+      DiscardRandom();
       break;
     case "HNT253":
       $arsenal = &GetArsenal($player);

@@ -430,7 +430,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddArsenal($deck->Top(), $player, $from, $facing);
         return $lastResult;
       } else {
-        writelog("Your arsenal is full, you cannot put a card in your arsenal");
+        writelog("Player $player arsenal is full, no card was puit in arsenal");
         return "PASS";
       }
     case "TURNCHARACTERFACEUP":
