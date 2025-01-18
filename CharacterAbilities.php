@@ -463,7 +463,7 @@ function MainCharacterEndTurnAbilities()
   }
 }
 
-function MainCharacterHitTrigger()
+function MainCharacterHitTrigger($cardID)
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -540,7 +540,7 @@ function MainCharacterHitTrigger()
         break;
       case "HNT001":
       case "HNT002":
-        if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID)) {
+        if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID) && $cardID == $attackID) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;

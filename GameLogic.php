@@ -1951,26 +1951,28 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ONHITEFFECT":
       $cardID = $lastResult;
       $location = $dqVars[2];
-      ProcessHitEffect($cardID, $parameter, location:$location);
+      AddOnHitTrigger($cardID);
+      if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
+        $index = explode("-", $location)[1];
+        $activeEffects = explode(",", $chainLinks[$index][6]);
+        foreach ($activeEffects as $effect) {
+          AddEffectHitTrigger($effect);
+          AddOnHitTrigger($effect);
+        }
+      }
       MainCharacterHitTrigger($cardID);
-      ArsenalHitEffects();
+      ArsenalHitEffects(); // should be reworked to add a triggered-layer, but not urgent
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
-      ProcessHitEffect($lastResult, $parameter);
-      //handling flick knives and mark
+      //mask of momentum
       $mainChar = &GetPlayerCharacter($mainPlayer);
       if(FindCharacterIndex($mainPlayer, "WTR079") != -1 && $mainChar[FindCharacterIndex($mainPlayer, "WTR079") + 5] > 0){
         --$mainChar[FindCharacterIndex($mainPlayer, "WTR079") + 5];
         AddCurrentTurnEffect("WTR079", $mainPlayer);
       }
+      //handling flick knives and mark
       if (CheckMarked($defPlayer)) {
-        if ($mainChar[0] == "HNT054" || $mainChar[0] == "HNT055" || $mainChar[0] == "HNT098" || $mainChar[0] == "HNT099") {
-          AddLayer("TRIGGER", $mainPlayer, $mainChar[0], $attackID, "MAINCHARHITEFFECT");
-        }
         RemoveMark($defPlayer);
-      }
-      if ($mainChar[0] == "HNT007") { //arakni, tarantula
-        AddLayer("TRIGGER", $mainPlayer, $mainChar[0], $defPlayer, "MAINCHARHITEFFECT");
       }
       return $parameter;
     case "AWAKEN":
