@@ -59,6 +59,12 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           break;
       }
       return $lastResult;
+    case "TWOSIDES":
+      switch($lastResult) {
+        case "Buff_Dagger": AddCurrentTurnEffect("HNT051-DAGGER", $player); break;
+        case "Buff_Stealth": AddCurrentTurnEffect("HNT051-ATTACK", $player); break;
+      }
+      return $lastResult;
     case "LONGWHISKER":
       if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for($i = 0; $i < count($lastResult); ++$i) {
