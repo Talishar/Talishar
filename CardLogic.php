@@ -1096,6 +1096,12 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+      if(IsHeroAttackTarget() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
     default:
       break;
   }

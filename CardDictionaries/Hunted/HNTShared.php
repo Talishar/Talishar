@@ -116,6 +116,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT156" => 1,
     "HNT166" => 3,
     "HNT163" => 3,
+    "HNT179" => 4,
+    "HNT180" => 3,
+    "HNT181" => 2,
     "HNT198" => 4,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
@@ -215,6 +218,12 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT156" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT163" => true,
     "HNT166" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT179" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT180" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT181" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT185" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT186" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT187" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
@@ -505,6 +514,22 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT175":
       ThrowWeapon("Dagger", $cardID, onHitDraw: true);
+      break;
+    case "HNT179":
+    case "HNT180":
+    case "HNT181":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      Retrieve($currentPlayer, "Dagger");
+      break;
+    case "HNT182":
+    case "HNT183":
+    case "HNT184":
+      Retrieve($currentPlayer, "Dagger");
+      break;
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT188":
     case "HNT189":
@@ -815,4 +840,19 @@ function BubbleToTheSurface()
     RevealCards($cardsToReveal);
     AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
     return $cardRemoved;
+  }
+
+  function Retrieve($player, $subtype)
+  {
+    if (SearchDiscard($player, subtype:$subtype)) {
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
+      AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
+  }
   }

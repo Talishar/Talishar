@@ -76,6 +76,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
     case "WTR003":
@@ -435,6 +436,16 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HNT120":
     case "HNT121":
       return 1;
+    case "HNT176":
+    case "HNT177":
+    case "HNT178":
+      $numDaggerHits = 0;
+        for($i=0; $i<count($chainLinks); ++$i)
+        {
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+        }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+      return $numDaggerHits > 0 ? 1 : 0;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:

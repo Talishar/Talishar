@@ -445,6 +445,12 @@ function EffectHitEffect($cardID, $from)
     case "HNT142":
       if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+      WriteLog("The " . CardLink($cardID, $cardID) . " drains 1 health");
+      LoseHealth(1, $defPlayer);
+      break;
     case "HNT198-HIT":
       Draw($mainPlayer, effectSource:"HNT198");
       return 1;
@@ -627,6 +633,9 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST214": //Water the Seeds
       case "HNT061":
       case "HNT105":
+      case "HNT185":
+      case "HNT186":
+      case "HNT187":
         $remove = 1;
         break;
       default:
@@ -1964,6 +1973,9 @@ function IsCombatEffectPersistent($cardID)
     case "HNT137-MARKEDBUFF":
     case "HNT138-MARKEDBUFF":
     case "HNT139-MARKEDBUFF":
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
     case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
