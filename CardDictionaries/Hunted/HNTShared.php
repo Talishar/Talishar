@@ -415,6 +415,11 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "HNT037":
       MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       break;
+    case "HNT038":
+    case "HNT039":
+    case "HNT040":
+      MarkHero($defPlayer);
+      break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID, true);
       break;
