@@ -601,6 +601,18 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT226";
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
+      AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      break;
     case "HNT236":
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
         AddCurrentTurnEffectNextAttack($cardID, $otherPlayer);
