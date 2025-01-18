@@ -586,6 +586,7 @@ function CardCost($cardID, $from="-")
     case "ROS206":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
       return 1;
+    case "HNT051":
     case "HNT248":
       return 1;
     default:
@@ -2322,7 +2323,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
     case "HNT051":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
+      if (HasStealth($CombatChain->AttackCard()->ID())) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;
     case "HNT101";
