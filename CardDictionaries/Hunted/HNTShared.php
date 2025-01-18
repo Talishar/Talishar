@@ -461,6 +461,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (CardNameContains($otherChar[0], "Arakni")) {
         MarkHero($otherPlayer);
       }
+      break;
     case "HNT154":
         $cardRemoved = BubbleToTheSurface();
         if($cardRemoved == "") { AddCurrentTurnEffect("HNT154-7", $currentPlayer); return "You cannot reveal cards."; }
