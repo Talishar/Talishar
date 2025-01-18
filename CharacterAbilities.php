@@ -475,14 +475,14 @@ function MainCharacterHitTrigger($cardID = "-")
     switch ($characterID) {
       case "WTR076":
       case "WTR077":
-        if (CardType($attackID) == "AA") {
+        if (($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA")) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
         }
         break;
       case "WTR079":
         if($mainCharacter[$i + 1] == 2 && CountCurrentTurnEffects("WTR079", $mainPlayer) <= HitsInRow()) AddCurrentTurnEffect("WTR079", $mainPlayer);
-        if (CardType($attackID) == "AA" && HitsInRow() >= 2) {
+        if ((($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA")) && HitsInRow() >= 2) {
           while (SearchCurrentTurnEffects("WTR079", $mainPlayer, true));
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
