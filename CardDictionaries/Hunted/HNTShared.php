@@ -84,6 +84,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT198" => 4,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
@@ -148,6 +149,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
     "HNT241" => CheckMarked($otherPlayer),
@@ -338,6 +340,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT198":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
       break;
     case "HNT236":
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
