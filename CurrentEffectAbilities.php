@@ -968,6 +968,13 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = true;
           }
           break;
+        case "HNT145":
+          $otherChar = &GetPlayerCharacter($otherPlayer);
+          if (CardNameContains($otherChar[0], "Arakni")) {
+            $costModifier -= 1;
+            $remove = true;
+          }
+          break;
         case "HNT197":
           if (GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i + 2]) $costModifier -= 1;
           break;
