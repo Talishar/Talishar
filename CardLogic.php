@@ -948,6 +948,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "ROS221":
     case "ROS222":
     case "ROS243":
+    case "HNT012":
     case "HNT092":
     case "HNT093":
     case "HNT094":

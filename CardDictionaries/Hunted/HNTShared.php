@@ -397,6 +397,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
+    case "HNT012":
+      WriteLog("The " . CardLink("HNT012", "HNT012") . " drains 1 life from $defPlayer!");
+      LoseHealth(1, $defPlayer);
+      break;
     case "HNT032":
     case "HNT033":
     case "HNT034":
@@ -533,4 +537,26 @@ function ChaosTransform($characterID, $mainPlayer)
     AddDecisionQueue("TRAPDOOR", $mainPlayer, "-", 1);
     AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
   }
+}
+
+function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its applicable attack (for kiss of death)
+{
+  return match($cardID) {
+    "EVR176" => true,
+    "DYN118" => true,
+    "OUT021" => true,
+    "OUT022" => true,
+    "OUT023" => true,
+    "OUT143" => true,
+    "OUT158" => true,
+    "OUT165" => true,
+    "MST105-HIT" => true,
+    "HNT003-HIT" => true,
+    "HNT004-HIT" => true,
+    "HNT051" => true,
+    "HNT208" => true,
+    "HNT209" => true,
+    "HNT210" => true,
+    default => false
+  };
 }
