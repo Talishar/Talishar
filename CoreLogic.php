@@ -2391,6 +2391,7 @@ function GetDamagePreventionTargetIndices()
 function SelfCostModifier($cardID, $from)
 {
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
+  $otherPlayer = ($currentPlayer == 1) ? 2 : 1;
   switch ($cardID) {
     case "ARC080":
     case "ARC082":
@@ -2468,6 +2469,10 @@ function SelfCostModifier($cardID, $from)
     case "HVY058":
       if (GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || CountAura("HVY242", $currentPlayer) > 0) return -1;
       else return 0;
+    case "HNT023":
+    case "HNT024":
+    case "HNT025":
+      return (IsHeroAttackTarget() && CheckMarked(player: $otherPlayer)) ? -1 : 0;
     case "HVY183":
     case "HVY184":
     case "HVY185":
