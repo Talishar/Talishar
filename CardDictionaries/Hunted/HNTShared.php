@@ -802,7 +802,9 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
     }
     else $transformTarget = $choice;
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
-    SetClassState($mainPlayer, $CS_OriginalHero, $characterID);
+    if (GetClassState($mainPlayer, $CS_OriginalHero) == "-") {
+      SetClassState($mainPlayer, $CS_OriginalHero, $characterID);
+    }
   }
   else {
     $transformTarget = GetClassState($mainPlayer, $CS_OriginalHero);
