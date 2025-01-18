@@ -634,6 +634,10 @@ function AuraStartTurnAbilities()
       AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
+    case "HNT163":
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
     default:
       break;
     }

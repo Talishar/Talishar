@@ -78,20 +78,44 @@ function HNTEffectAttackModifier($cardID): int
     "HNT103" => 2,
     "HNT104" => 3,
     "HNT105" => 1,
-    "HNT106" => NumDraconicChainLinks() > 1 ? 3 : 0,
+    "HNT106" => NumDraconicChainLinks() > 1 ? 3 : 2,
     "HNT107" => 4,
     "HNT108" => 3,
     "HNT109" => 2,
+    "HNT110" => NumDraconicChainLinks(),
+    "HNT111" => 2,
+    "HNT112" => 3,
+    "HNT113" => NumDraconicChainLinks() > 1 ? 4 : 3,
+    "HNT114" => 3,
     "HNT119" => 3,
     "HNT120" => 2,
     "HNT121" => 1,
+    "HNT122" => 4,
+    "HNT123" => 3,
+    "HNT124" => 2,
     "HNT127" => 1,
+    "HNT128" => 4,
+    "HNT129" => 3,
+    "HNT130" => 2,
+    "HNT131" => 4,
+    "HNT132" => 3,
+    "HNT133" => 2,
+    "HNT134-BUFF" => 4,
+    "HNT135-BUFF" => 3,
+    "HNT136-BUFF" => 2,
+    "HNT137-NEXTDAGGER" => 3,
+    "HNT137-MARKEDBUFF" => 1,
+    "HNT138-NEXTDAGGER" => 2,
+    "HNT138-MARKEDBUFF" => 1,
+    "HNT139-NEXTDAGGER" => 1,
+    "HNT139-MARKEDBUFF" => 1,
     "HNT140" => 3,
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
     "HNT156" => 1,
     "HNT166" => 3,
+    "HNT163" => 3,
     "HNT198" => 4,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
@@ -150,21 +174,46 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT101" => true,
     "HNT103" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT104" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT105" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT106" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT107" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT108" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT109" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT110" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT111" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT112" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT113" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT114" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT119" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT120" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT121" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT122" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT123" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT124" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT116" => true,
     "HNT125" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT127" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT128" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT129" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT130" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT131" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT132" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT133" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT134-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT135-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT136-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT137-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT137-MARKEDBUFF" => CheckMarked($defPlayer),
+    "HNT138-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT138-MARKEDBUFF" => CheckMarked($defPlayer),
+    "HNT139-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT139-MARKEDBUFF" => CheckMarked($defPlayer),
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT156" => TalentContains($attackID, "Draconic", $mainPlayer),
-    "HNT166" => TalentContains($attackID, "Draconic", $mainPlayer),
+    "HNT156" => TalentContains($attackID, "DRACONIC", $mainPlayer),
+    "HNT163" => true,
+    "HNT166" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
@@ -180,7 +229,7 @@ function HNTCombatEffectActive($cardID, $attackID): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -347,6 +396,33 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT121":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT128":
+    case "HNT129":
+    case "HNT130":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT134":
+    case "HNT135":
+    case "HNT136":
+      AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer);
+      AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
+      break;
+    case "HNT137":
+    case "HNT138":
+    case "HNT139":
+      AddCurrentTurnEffect($cardID."-NEXTDAGGER", $currentPlayer);
+      AddCurrentTurnEffect($cardID."-MARKEDBUFF", $currentPlayer);
+      break;
     case "HNT140":
     case "HNT141":
     case "HNT142":
@@ -360,8 +436,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT152":
-      $otherchar = &GetPlayerCharacter($otherPlayer);
-      if (CardNameContains($otherchar[0], "Arakni")) {
+      $otherChar = &GetPlayerCharacter($otherPlayer);
+      if (CardNameContains($otherChar[0], "Arakni")) {
         MarkHero($otherPlayer);
       }
     case "HNT154":
@@ -384,13 +460,18 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAura("HNT167", $currentPlayer);
       }
       break;
+    case "HNT161":
+      if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1 && IsHeroAttackTarget()){
+        MarkHero($otherPlayer);
+      }
+      break;
     case "HNT164":
       PlayAura("HNT167", $currentPlayer);
       break;
     case "HNT165":
-      $otherchar = &GetPlayerCharacter($otherPlayer);
+      $otherChar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
-      if (CardNameContains($otherchar[0], "Arakni")) {
+      if (CardNameContains($otherChar[0], "Arakni")) {
         GainResources($currentPlayer, 1);
       }
       break;
@@ -399,6 +480,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT188":
+    case "HNT189":
+    case "HNT190":
+      if(IsHeroAttackTarget()) throwWeapon("Dagger", $cardID, true);
       break;
     case "HNT198":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -493,13 +579,14 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
   switch ($cardID) {
     case "HNT009":
       MarkHero($defPlayer);
+      break;
     case "HNT010":
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy ".CardLink($cardID, $cardID)." and mark the opponent", 0, 1);
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy " . CardLink($cardID, $cardID) . " and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
     case "HNT012":
-      WriteLog("The " . CardLink("HNT012", "HNT012") . " drains 1 life from $defPlayer!");
+      WriteLog("Player $defPlayer loses 1 life.");
       LoseHealth(1, $defPlayer);
       break;
     case "HNT032":
@@ -549,6 +636,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "HNT095":
     case "HNT096":
     case "HNT097":
+      MarkHero($defPlayer);
+      break;
+    case "HNT224":
+    case "HNT225":
       MarkHero($defPlayer);
       break;
     default:

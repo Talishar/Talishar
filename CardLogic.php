@@ -959,6 +959,8 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "HNT095":
     case "HNT096":
     case "HNT097":
+    case "HNT224":
+    case "HNT225":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "AAZ016":
@@ -1203,6 +1205,12 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
       break;
     case "HNT051-ATTACK":
     case "HNT102-MARK":
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
     case "HNT140":
     case "HNT141":
     case "HNT142":

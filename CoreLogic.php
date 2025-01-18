@@ -1073,6 +1073,7 @@ function CombatChainClosedCharacterEffects()
         BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
       }
       if (!$nervesOfSteelActive) {
+
         if (HasTemper($chainLinks[$i][$j])) {
           if ($character[$charIndex + 1] != 0 && $character[$charIndex + 6] != 0) {
             $character[$charIndex + 4] -= 1; //Add -1 block counter
@@ -1081,11 +1082,18 @@ function CombatChainClosedCharacterEffects()
           if ((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($defPlayer, $charIndex);
           }
-        } else if (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) $character[$charIndex + 4] -= 1;//Add -1 block counter
+        } 
+        elseif (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
+          WriteLog("here");
+          $character[$charIndex + 4] -= 1;//Add -1 block counter
+        }
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
         $character[$charIndex + 4] -= (BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
-      } else if (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) DestroyCharacter($defPlayer, $charIndex);
+      } 
+      elseif (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
+        DestroyCharacter($defPlayer, $charIndex);
+      }
       switch ($chainLinks[$i][$j]) {
         case "MON089":
           if (!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6) {
@@ -1533,6 +1541,9 @@ function TalentOverride($cardID, $player = "", $zone="-")
       case "UPR061":
       case "UPR062":
         $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
+        break;
+      case "HNT163":
+        $talentToAdd = "DRACONIC";
         break;
       case "HNT167": //Fealty
         if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA")) { // We'll need to add cases for Allies and Emperor Attacking

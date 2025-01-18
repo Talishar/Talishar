@@ -961,14 +961,32 @@ function HasGoAgain($cardID): bool|int
     case "HNT096":
     case "HNT097":
     case "HNT118":
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
     case "HNT125":
     case "HNT126":
     case "HNT127":
+    case "HNT128":
+    case "HNT129":
+    case "HNT130":
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+    case "HNT134":
+    case "HNT135":
+    case "HNT136":
+    case "HNT137":
+    case "HNT138":
+    case "HNT139":
     case "HNT140":
     case "HNT141":
     case "HNT142":
     case "HNT148":
     case "HNT149":
+    case "HNT188":
+    case "HNT189":
+    case "HNT190":
     case "HNT235":
     case "HNT241":
     case "HNT242":
@@ -2339,6 +2357,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
       return false;
+    case "HNT110":
+    case "HNT111":
+    case "HNT113":
+    case "HNT114":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
+      return false;
+    case "HNT112":
+      if (NumDraconicChainLinks() < 2) return true;
     case "HNT116":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "HNT117":
@@ -2576,6 +2603,10 @@ function HasBladeBreak($cardID)
     case "AJV007":
       return true;
     case "HNT115":
+    case "HNT192":
+    case "HNT193":
+    case "HNT194":
+    case "HNT195":
     case "HNT247":
       return true;
     default:
@@ -2735,6 +2766,10 @@ function HasGuardwell($cardID)
   switch ($cardID) {
     case "HVY195":
     case "ROS211":
+    case "HNT216":
+    case "HNT217":
+    case "HNT218":
+    case "HNT219":
       return true;
     default:
       return false;
