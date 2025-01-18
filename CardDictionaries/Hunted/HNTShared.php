@@ -15,6 +15,10 @@ function HNTAbilityType($cardID): string
     "HNT055" => "I",
     "HNT056" => "AA",
     "HNT100" => "AA",
+    "HNT144" => "AR",
+    "HNT145" => "I",
+    "HNT146" => "AR",
+    "HNT147" => "AR",
     "HNT167" => "I",
     "HNT247" => "I",
     "HNT252" => "I",
@@ -112,6 +116,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT140" => 3,
     "HNT141" => 2,
     "HNT142" => 1,
+    "HNT146" => 1,
     "HNT156" => 1,
     "HNT166" => 3,
     "HNT163" => 3,
@@ -220,6 +225,9 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT144" => true,
+    "HNT146" => true,
+    "HNT147" => true,
     "HNT156" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT163" => true,
     "HNT166" => TalentContains($attackID, "DRACONIC", $mainPlayer),
@@ -472,6 +480,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT140":
     case "HNT141":
     case "HNT142":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT144":
+      MarkHero($otherPlayer);
+      break;
+    case "HNT145":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT148":

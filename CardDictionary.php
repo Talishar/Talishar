@@ -2395,6 +2395,18 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT121":
       if (!$CombatChain->HasCurrentLink()) return true;
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+    case "HNT144":
+      $otherChar = &GetPlayerCharacter($otherPlayer);
+      if (!CardNameContains($otherChar[0], "Arakni")) return true;
+      break;
+    case "HNT146":
+      $otherChar = &GetPlayerCharacter($otherPlayer);
+      if (!CardNameContains($otherChar[0], "Arakni")) return true;
+      break;
+    case "HNT147":
+      $otherChar = &GetPlayerCharacter($otherPlayer);
+      if (!CardNameContains($otherChar[0], "Arakni")) return true;
+      break;
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
     case "HNT197":
@@ -2654,6 +2666,10 @@ function HasBladeBreak($cardID)
       return true;
     case "HNT011":
     case "HNT115":
+    case "HNT144":
+    case "HNT145":
+    case "HNT146":
+    case "HNT147":
     case "HNT192":
     case "HNT193":
     case "HNT194":

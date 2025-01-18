@@ -968,6 +968,13 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = true;
           }
           break;
+        case "HNT145":
+          $otherChar = &GetPlayerCharacter($otherPlayer);
+          if (CardNameContains($otherChar[0], "Arakni")) {
+            $costModifier -= 1;
+            $remove = true;
+          }
+          break;
         case "HNT197":
           if (GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i + 2]) $costModifier -= 1;
           break;
@@ -1613,6 +1620,8 @@ function CurrentEffectGrantsGoAgain()
         case "HNT135-GOAGAIN":
         case "HNT136-GOAGAIN":
           return IsHeroAttackTarget() && CheckMarked($defPlayer);
+        case "HNT147":
+          return true;
         case "HNT240":
           return true;
         case "HNT407":
