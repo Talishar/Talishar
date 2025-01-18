@@ -189,6 +189,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         MarkHero($otherPlayer);
       }
       break;
+    case "HNT047":
+    case "HNT048":
+    case "HNT049":
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
+      break;
     case "HNT053":
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
       break;
