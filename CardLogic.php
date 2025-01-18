@@ -959,6 +959,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "HNT032":
     case "HNT033":
     case "HNT034":
+    case "HNT035":
+    case "HNT036":
+    case "HNT037":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT064":
