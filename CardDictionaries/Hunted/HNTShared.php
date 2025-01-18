@@ -90,6 +90,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT152" => 1,
+    "HNT163" => 3,
+    "HNT166" => 3,
     "HNT198" => 4,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
@@ -369,12 +372,21 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAura("HNT167", $currentPlayer);
       }
       break;
+    case "HNT162":
+      if () MarkHero($otherPlayer);
+      break;
+    case "HNT164":
+      PlayAura("HNT167", $currentPlayer);
+      break;
     case "HNT165":
       $otherchar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
       if (CardNameContains($otherchar[0], "Arakni")) {
         GainResources($currentPlayer, 1);
       }
+      break;
+    case "HNT166":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
