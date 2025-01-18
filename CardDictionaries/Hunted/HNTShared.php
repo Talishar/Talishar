@@ -132,7 +132,7 @@ function HNTEffectAttackModifier($cardID): int
   };
 }
 
-function HNTCombatEffectActive($cardID, $attackID): bool
+function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
@@ -221,9 +221,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT180" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT181" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT185" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT186" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT187" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT186" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
+    "HNT187" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
+    "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
     "HNT236" => true,
     "HNT237" => true,
     "HNT239" => true,
