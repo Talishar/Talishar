@@ -428,13 +428,22 @@ function EffectHitEffect($cardID, $from)
     case "HNT114":
       if (IfHeroAttackTarget() && NumDraconicChainLinks() > 1) MarkHero($defPlayer);
       break;
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+      $character = &GetPlayerCharacter($mainPlayer);
+      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      return 1;
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT140":
     case "HNT141":
     case "HNT142":
-      if (IsHeroAttackTarget()){
-        MarkHero($defPlayer);
-        return 1;
-      }
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
     case "HNT198-HIT":
       Draw($mainPlayer, effectSource:"HNT198");
@@ -1453,7 +1462,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras, $defPlayer;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
@@ -1574,6 +1583,10 @@ function CurrentEffectGrantsGoAgain()
           else break;
         case "HNT125":
           return true;
+        case "HNT134-GOAGAIN":
+        case "HNT135-GOAGAIN":
+        case "HNT136-GOAGAIN":
+          return IsHeroAttackTarget() && CheckMarked($defPlayer);
         case "HNT407":
           return true;
         default:
@@ -1945,6 +1958,12 @@ function IsCombatEffectPersistent($cardID)
     case "HNT061":
     case "HNT125":
     case "HNT127":
+    case "HNT134-GOAGAIN":
+    case "HNT135-GOAGAIN":
+    case "HNT136-GOAGAIN":
+    case "HNT137-MARKEDBUFF":
+    case "HNT138-MARKEDBUFF":
+    case "HNT139-MARKEDBUFF":
     case "HNT198-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":

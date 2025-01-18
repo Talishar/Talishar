@@ -435,17 +435,15 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HNT086":
     case "HNT087":
     case "HNT088":
-      if (count($chainLinkSummary) == 0) break; # No previous links so nothing happens if this is true
-      $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
-      $isDraconic = false;
-      for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
-        if ($talents[$i] == "DRACONIC") $isDraconic = true;
-      }
-      return $isDraconic ? 1 : 0;
+      return isPreviousLinkDraconic() ? 1 : 0;
     case "HNT101":
       return 4;
     case "HNT116":
       return 3;
+    case "HNT119":
+    case "HNT120":
+    case "HNT121":
+      return 1;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:

@@ -957,10 +957,28 @@ function HasGoAgain($cardID): bool|int
     case "HNT092":
     case "HNT093":
     case "HNT094":
+    case "HNT095":
+    case "HNT096":
+    case "HNT097":
     case "HNT118":
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
     case "HNT125":
     case "HNT126":
     case "HNT127":
+    case "HNT128":
+    case "HNT129":
+    case "HNT130":
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+    case "HNT134":
+    case "HNT135":
+    case "HNT136":
+    case "HNT137":
+    case "HNT138":
+    case "HNT139":
     case "HNT140":
     case "HNT141":
     case "HNT142":
@@ -2349,6 +2367,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "HNT117":
       return !$CombatChain->HasCurrentLink();
+    case "HNT119":
+    case "HNT120":
+    case "HNT121":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
     case "HNT235":

@@ -1805,6 +1805,10 @@ function DoesAttackHaveGoAgain()
     case "HNT071":
       $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
       return SearchCurrentTurnEffects("HNT071-$attackUniqueID", $mainPlayer);
+    case "HNT089":
+    case "HNT090":
+    case "HNT091":
+      return isPreviousLinkDraconic();
     case "HNT153":
       return GetClassState($mainPlayer, $CS_FealtyCreated) > 0;
     case "HNT249":
@@ -2496,6 +2500,7 @@ function SelfCostModifier($cardID, $from)
     case "HNT108":
     case "HNT109":
       return (-1 * NumDraconicChainLinks());
+    case "HNT151":
     case "HNT155":
       return (-1 * NumDraconicChainLinks());
     default:
@@ -3304,4 +3309,16 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
     default:
       break;
   }
+}
+
+function isPreviousLinkDraconic()
+{
+  global $chainLinkSummary;
+  $isDraconic = false;
+  if (count($chainLinkSummary) == 0) return $isDraconic; # No previous links so nothing happens if this is true
+  $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
+  for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
+    if ($talents[$i] == "DRACONIC") $isDraconic = true;
+  }
+  return $isDraconic;
 }
