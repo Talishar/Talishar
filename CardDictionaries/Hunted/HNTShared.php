@@ -99,7 +99,7 @@ function HNTEffectAttackModifier($cardID): int
 
 function HNTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "HNT102" & count($dashArr) > 1) {
@@ -152,9 +152,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
-    "HNT241" => CheckMarked($otherPlayer),
-    "HNT242" => CheckMarked($otherPlayer),
-    "HNT243" => CheckMarked($otherPlayer),
+    "HNT241" => CheckMarked($defPlayer),
+    "HNT242" => CheckMarked($defPlayer),
+    "HNT243" => CheckMarked($defPlayer),
     "HNT249" => true,
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
@@ -240,6 +240,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT058":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT059":
+    case "HNT060":
+      if(NumDraconicChainLinks() >= 2) {
+        PlayAura("HNT167", $currentPlayer);
+      }
+      break;
     case "HNT061":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -288,11 +294,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT105":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $character = &GetPlayerCharacter($mainPlayer);
+      $character = &GetPlayerCharacter($currentPlayer);
       $weaponIndex1 = CharacterPieces();
       $weaponIndex2 = CharacterPieces() * 2;
-      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
-      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
+      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex1, 1);
+      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex2, 1);
     case "HNT116":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
