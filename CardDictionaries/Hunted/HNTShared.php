@@ -113,6 +113,8 @@ function HNTEffectAttackModifier($cardID): int
     "HNT141" => 2,
     "HNT142" => 1,
     "HNT152" => CheckMarked($otherPlayer) ? 2 : 0,
+    "HNT156" => 1,
+    "HNT166" => 3,
     "HNT163" => 3,
     "HNT198" => 4,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
@@ -209,7 +211,9 @@ function HNTCombatEffectActive($cardID, $attackID): bool
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT156" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT163" => true,
+    "HNT166" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT236" => true,
     "HNT237" => true,
@@ -436,9 +440,20 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (CardNameContains($otherChar[0], "Arakni")) {
         MarkHero($otherPlayer);
       }
+    case "HNT154":
+        $cardRemoved = BubbleToTheSurface();
+        if($cardRemoved == "") { AddCurrentTurnEffect("HNT154-7", $currentPlayer); return "You cannot reveal cards."; }
+        else {
+          BanishCardForPlayer($cardRemoved, $currentPlayer, "DECK", "TT", "HNT154");
+        }
+      break;
     case "HNT155":
       GainResources($currentPlayer, 1);
       Draw($currentPlayer, effectSource:$cardID);
+      break;
+    case "HNT156":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect($cardID, $otherPlayer);
       break;
     case "HNT158": case "HNT159": case "HNT160":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
@@ -449,12 +464,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1 && IsHeroAttackTarget()){
         MarkHero($otherPlayer);
       }
+      break;
+    case "HNT164":
+      PlayAura("HNT167", $currentPlayer);
+      break;
     case "HNT165":
       $otherChar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
       if (CardNameContains($otherChar[0], "Arakni")) {
         GainResources($currentPlayer, 1);
       }
+      break;
+    case "HNT166":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -736,3 +758,27 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
     default => false
   };
 }
+
+function BubbleToTheSurface()
+{
+  global $currentPlayer;
+  if(!CanRevealCards($currentPlayer)) return "";
+    $cardRemoved = "";
+    $deck = &GetDeck($currentPlayer);
+    $cardsToReveal = "";
+    for($i=0; $i<count($deck); ++$i)
+    {
+      if($cardsToReveal != "") $cardsToReveal .= ",";
+      $cardsToReveal .= $deck[$i];
+      if(PitchValue($deck->Top()) == 1)
+      {
+        $cardRemoved = $deck[$i];
+        unset($deck[$i]);
+        $deck = array_values($deck);
+        break;
+      }
+    }
+    RevealCards($cardsToReveal);
+    AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+    return $cardRemoved;
+  }

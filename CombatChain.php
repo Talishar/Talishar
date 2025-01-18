@@ -991,6 +991,9 @@ function OnBlockResolveEffects($cardID = "")
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
           break;
+        case "HNT162":
+          if (ColorContains($cardID, 1, $playerID) AddLayer("TRIGGER", $defPlayer, $cardID);
+          break;
         default:
           break;
       }

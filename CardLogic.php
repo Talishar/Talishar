@@ -2746,6 +2746,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT118":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "HNT162":
+      MarkHero($mainPlayer);
+      break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
       break;

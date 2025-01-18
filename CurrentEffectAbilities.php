@@ -1968,6 +1968,8 @@ function IsCombatEffectPersistent($cardID)
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
+    case "HNT156":
+      return CardTalent($cardID) == "Draconic";
     //Roguelike
     case "ROGUE018":
     case "ROGUE601":
