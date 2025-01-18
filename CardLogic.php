@@ -2727,6 +2727,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ADDARSENAL", $player, "DECK", 1);
       AddDecisionQueue("ADDARSENAL", $defPlayer, "DECK", 1);
       break;
+    case "HNT011":
+      $char = &GetPlayerCharacter($player);
+      if (CheckMarked($mainPlayer)) AddDecisionQueue("CHOOSECARD", $player, "HNT003,HNT004,HNT005,HNT006,HNT007,HNT008");
+      else AddDecisionQueue("PASSPARAMETER", $player, -1);
+      AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
+      break;
     case "HNT052":
       WriteLog("The Hunter has become the hunted");
       LoseHealth(1, $mainPlayer);

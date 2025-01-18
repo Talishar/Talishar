@@ -2504,6 +2504,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($dqVars[0] > $dqVars[1]) return $player;
       elseif ($dqVars[0] < $dqVars[1]) return $otherPlayer;
       return "PASS";
+    case "CHAOSTRANSFORM":
+      ChaosTransform($parameter, $player, true, $lastResult);
+      return $lastResult;
     case "SPURLOCKED":
       $otherPlayer = $player == 1 ? 2 : 1;
       if($lastResult == "PASS") {

@@ -700,21 +700,24 @@ function ListDracDaggersGraveyard($player) {
   return $weapons;
 }
 
-function ChaosTransform($characterID, $mainPlayer)
+function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -1)
 {
   global $CS_OriginalHero;
   $char = &GetPlayerCharacter($mainPlayer);
-  if ($characterID == "HNT001" || $characterID == "HNT002") {
-    $roll = GetRandom(1, 6);
-    $transformTarget = match ($roll) {
-      1 => "HNT003",
-      2 => "HNT004",
-      3 => "HNT005",
-      4 => "HNT006",
-      5 => "HNT007",
-      6 => "HNT008",
-      default => $characterID,
-    };
+  if ($characterID == "HNT001" || $characterID == "HNT002" || $toAgent) {
+    if ($choice == -1) {
+      $roll = GetRandom(1, 6);
+      $transformTarget = match ($roll) {
+        1 => "HNT003",
+        2 => "HNT004",
+        3 => "HNT005",
+        4 => "HNT006",
+        5 => "HNT007",
+        6 => "HNT008",
+        default => $characterID,
+      };
+    }
+    else $transformTarget = $choice;
     WriteLog(CardName($characterID) . " becomes " . CardName($transformTarget));
     SetClassState($mainPlayer, $CS_OriginalHero, $characterID);
   }
