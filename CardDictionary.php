@@ -2654,6 +2654,10 @@ function HasBladeBreak($cardID)
       return true;
     case "HNT011":
     case "HNT115":
+    case "HNT144":
+    case "HNT145":
+    case "HNT146":
+    case "HNT147":
     case "HNT192":
     case "HNT193":
     case "HNT194":
