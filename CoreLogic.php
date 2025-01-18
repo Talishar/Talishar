@@ -2503,7 +2503,6 @@ function SelfCostModifier($cardID, $from)
     case "HNT151":
     case "HNT154":
     case "HNT155":
-    case "HNT156":
       return (-1 * NumDraconicChainLinks());
     default:
       return 0;
