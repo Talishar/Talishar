@@ -1104,6 +1104,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "ROS056":
     case "ROS057":
     case "HVY209":
+    case "HNT013":
     case "HNT044":
     case "HNT045":
     case "HNT046":
@@ -2468,6 +2469,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "ROS056":
     case "ROS055":
     case "HVY209":
+    case "HNT013":
     case "HNT044":
     case "HNT045":
     case "HNT046":

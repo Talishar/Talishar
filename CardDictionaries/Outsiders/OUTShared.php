@@ -734,7 +734,7 @@ function OUTAbilityCost($cardID)
       case "MST121": case "MST122": case "MST123": 
       case "MST124": case "MST125": case "MST126":
       case "MST127": case "MST128": case "MST129":
-      case "HNT012":
+      case "HNT012": case "HNT013":
       case "HNT017": case "HNT018": case "HNT019":
       case "HNT020": case "HNT021": case "HNT022":
       case "HNT030": case "HNT031":
