@@ -329,12 +329,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT061":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "HNT067":
-    case "HNT069":
-      if(NumDraconicChainLinks() >= 2) {
-        MarkHero($otherPlayer);
-      }
-      break;
     case "HNT071":
       $uniqueID = $CombatChain->AttackCard()->UniqueID();
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {

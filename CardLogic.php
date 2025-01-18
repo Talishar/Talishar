@@ -976,6 +976,8 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT064":
+    case "HNT067":
+    case "HNT069":
       if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT074":
