@@ -2759,6 +2759,10 @@ function HasGuardwell($cardID)
   switch ($cardID) {
     case "HVY195":
     case "ROS211":
+    case "HNT216":
+    case "HNT217":
+    case "HNT218":
+    case "HNT219":
       return true;
     default:
       return false;

@@ -552,7 +552,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "HVY096":
       if (IsWeaponAttack()) $blockModifier += 2;
-      break;
+      break;    
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
@@ -577,6 +577,12 @@ function BlockModifier($cardID, $from, $resourcesPaid)
         break;
     case "AIO005":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
+        break;
+      case "HNT216":
+      case "HNT217":
+      case "HNT218":
+      case "HNT219":
+        if (IsWeaponAttack()) $blockModifier += 1;
         break;
     default:
       break;
