@@ -1,11 +1,21 @@
 <?php
 
-function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
+function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $location = "-")
 {
-  global $CombatChain, $layers, $mainPlayer;
+  global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
+
+  if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
+    $index = explode("-", $location)[1];
+    $activeEffects = explode(",", $chainLinks[$index][6]);
+    foreach ($activeEffects as $effect) {
+      AddEffectHitTrigger($effect);
+      AddOnHitTrigger($effect);
+    }
+  }
+
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
@@ -73,7 +83,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
+  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
@@ -418,10 +428,22 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
+    case "HNT041":
+    case "HNT042":
+    case "HNT043":
+      return (IsHeroAttackTarget() && CheckMarked($defPlayer)) ? 1 : 0;
+    case "HNT086":
+    case "HNT087":
+    case "HNT088":
+      return isPreviousLinkDraconic() ? 1 : 0;
     case "HNT101":
       return 4;
     case "HNT116":
       return 3;
+    case "HNT119":
+    case "HNT120":
+    case "HNT121":
+      return 1;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:
@@ -530,7 +552,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "HVY096":
       if (IsWeaponAttack()) $blockModifier += 2;
-      break;
+      break;    
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
@@ -556,6 +578,18 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "AIO005":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
         break;
+    case "HNT192":
+    case "HNT193":
+    case "HNT194":
+    case "HNT195":
+      if (NumAttackReactionsPlayed() > 0) $blockModifier += 1;
+      break;
+    case "HNT216":
+    case "HNT217":
+    case "HNT218":
+    case "HNT219":
+      if (IsWeaponAttack()) $blockModifier += 1;
+      break;
     default:
       break;
   }
@@ -653,6 +687,15 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT173":
+      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT052":
+      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT191":
+      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT214":
       if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "HNT253":
@@ -947,6 +990,9 @@ function OnBlockResolveEffects($cardID = "")
         case "OUT010":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
+          break;
+        case "HNT162":
+          if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
           break;
         default:
           break;

@@ -1073,6 +1073,7 @@ function CombatChainClosedCharacterEffects()
         BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
       }
       if (!$nervesOfSteelActive) {
+
         if (HasTemper($chainLinks[$i][$j])) {
           if ($character[$charIndex + 1] != 0 && $character[$charIndex + 6] != 0) {
             $character[$charIndex + 4] -= 1; //Add -1 block counter
@@ -1081,11 +1082,18 @@ function CombatChainClosedCharacterEffects()
           if ((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($defPlayer, $charIndex);
           }
-        } else if (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) $character[$charIndex + 4] -= 1;//Add -1 block counter
+        } 
+        elseif (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
+          WriteLog("here");
+          $character[$charIndex + 4] -= 1;//Add -1 block counter
+        }
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
         $character[$charIndex + 4] -= (BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
-      } else if (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) DestroyCharacter($defPlayer, $charIndex);
+      } 
+      elseif (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
+        DestroyCharacter($defPlayer, $charIndex);
+      }
       switch ($chainLinks[$i][$j]) {
         case "MON089":
           if (!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6) {
@@ -1534,6 +1542,9 @@ function TalentOverride($cardID, $player = "", $zone="-")
       case "UPR062":
         $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
         break;
+      case "HNT163":
+        $talentToAdd = "DRACONIC";
+        break;
       case "HNT167": //Fealty
         if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA")) { // We'll need to add cases for Allies and Emperor Attacking
           $talentToAdd = "DRACONIC";
@@ -1606,7 +1617,7 @@ function DoesAttackHaveGoAgain()
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
-  global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed;
+  global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
@@ -1794,11 +1805,23 @@ function DoesAttackHaveGoAgain()
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "ROS245":
       return ComboActive($attackID);
+    case "HNT059":
+    case "HNT060":
+      return NumDraconicChainLinks() >= 2;
     case "HNT064":
       return NumDraconicChainLinks() > 1;
+    case "HNT067":
+    case "HNT069":
+      return NumDraconicChainLinks() >= 2;
     case "HNT071":
       $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
       return SearchCurrentTurnEffects("HNT071-$attackUniqueID", $mainPlayer);
+    case "HNT089":
+    case "HNT090":
+    case "HNT091":
+      return isPreviousLinkDraconic();
+    case "HNT153":
+      return GetClassState($mainPlayer, $CS_FealtyCreated) > 0;
     case "HNT249":
       return SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1;
     default:
@@ -1907,6 +1930,8 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   if ($index == -1) return "";
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
+  $linkedEffect = $char[$index] . "-" . $char[$index + 11];
+  SearchCurrentTurnEffects($linkedEffect, $player, true);
   $char[$index + 1] = 0;
   $char[$index + 2] = 0;
   $char[$index + 3] = 0;
@@ -2389,6 +2414,7 @@ function GetDamagePreventionTargetIndices()
 function SelfCostModifier($cardID, $from)
 {
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
+  $otherPlayer = ($currentPlayer == 1) ? 2 : 1;
   switch ($cardID) {
     case "ARC080":
     case "ARC082":
@@ -2466,6 +2492,10 @@ function SelfCostModifier($cardID, $from)
     case "HVY058":
       if (GetClassState($currentPlayer, $CS_NumVigorDestroyed) > 0 || CountAura("HVY242", $currentPlayer) > 0) return -1;
       else return 0;
+    case "HNT023":
+    case "HNT024":
+    case "HNT025":
+      return (IsHeroAttackTarget() && CheckMarked(player: $otherPlayer)) ? -1 : 0;
     case "HVY183":
     case "HVY184":
     case "HVY185":
@@ -2473,8 +2503,16 @@ function SelfCostModifier($cardID, $from)
     case "HVY251":
       return (-1 * NumRunechants($currentPlayer));
     case "HNT061":
+    case "HNT062":
+    case "HNT063":
     case "HNT057":
       return (-1 * NumDraconicChainLinks());
+    case "HNT105":
+    case "HNT108":
+    case "HNT109":
+      return (-1 * NumDraconicChainLinks());
+    case "HNT151":
+    case "HNT154":
     case "HNT155":
       return (-1 * NumDraconicChainLinks());
     default:
@@ -2797,6 +2835,7 @@ function PitchAbility($cardID)
     case "CRU000":
     case "OUT000":
     case "DTD000":
+    case "HNT000":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "EVO000": // Technically wrong, it should be a trigger, but since we can't reorder those it works better gameplay-wise to not have that one as a trigger
@@ -3282,4 +3321,16 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
     default:
       break;
   }
+}
+
+function isPreviousLinkDraconic()
+{
+  global $chainLinkSummary;
+  $isDraconic = false;
+  if (count($chainLinkSummary) == 0) return $isDraconic; # No previous links so nothing happens if this is true
+  $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
+  for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
+    if ($talents[$i] == "DRACONIC") $isDraconic = true;
+  }
+  return $isDraconic;
 }

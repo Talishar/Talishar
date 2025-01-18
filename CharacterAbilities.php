@@ -481,7 +481,9 @@ function MainCharacterHitTrigger()
         }
         break;
       case "WTR079":
+        if($mainCharacter[$i + 1] == 2 && CountCurrentTurnEffects("WTR079", $mainPlayer) <= HitsInRow()) AddCurrentTurnEffect("WTR079", $mainPlayer);
         if (CardType($attackID) == "AA" && HitsInRow() >= 2) {
+          while (SearchCurrentTurnEffects("WTR079", $mainPlayer, true));
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
         }
@@ -1399,7 +1401,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
-      case "HER130":
+      case "HER130": case "HNT261":
         if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
           GiveAttackGoAgain();
           $character[$i + 1] = 1;
@@ -1444,7 +1446,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
-      case "HER130":
+      case "HER130": case "HNT261":
         if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
           GiveAttackGoAgain();
           $otherPlayerCharacter[$j + 1] = 1;

@@ -1,4 +1,4 @@
-<?php
+  <?php
 
 include "Constants.php";
 include "CardDictionaries/WelcomeToRathe/WTRShared.php";
@@ -198,6 +198,8 @@ function CardSubType($cardID, $uniqueID = -1)
     case "UPR440":
     case "UPR441": //resolved sand cover
       return "Ash";
+    case "HNT012":
+      return "Dagger,Attack";
     default:
       break;
   }
@@ -934,6 +936,7 @@ function HasGoAgain($cardID): bool|int
     case "ROS253":
     case "AIO004":
     case "AJV017":
+    case "HNT009":
     case "HNT010":
     case "HNT026":
     case "HNT027":
@@ -941,20 +944,53 @@ function HasGoAgain($cardID): bool|int
     case "HNT056":
     case "HNT058":
     case "HNT061":
+    case "HNT062":
+    case "HNT063":
     case "HNT057":
     case "HNT072":
+    case "HNT083":
+    case "HNT084":
+    case "HNT085":
+    case "HNT086":
+    case "HNT087":
+    case "HNT088":
     case "HNT092":
     case "HNT093":
     case "HNT094":
+    case "HNT095":
+    case "HNT096":
+    case "HNT097":
     case "HNT118":
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
     case "HNT125":
     case "HNT126":
     case "HNT127":
+    case "HNT128":
+    case "HNT129":
+    case "HNT130":
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+    case "HNT134":
+    case "HNT135":
+    case "HNT136":
+    case "HNT137":
+    case "HNT138":
+    case "HNT139":
     case "HNT140":
     case "HNT141":
     case "HNT142":
     case "HNT148":
     case "HNT149":
+    case "HNT188":
+    case "HNT189":
+    case "HNT190":
+    case "HNT235":
+    case "HNT241":
+    case "HNT242":
+    case "HNT243":
     case "HNT248":
     case "HNT255":
       return true;
@@ -2278,6 +2314,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;
+    case "HNT023":
+    case "HNT024":
+    case "HNT025":
+      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
+    case "HNT051":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
+      return true;
     case "HNT101";
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CountAura("HNT167", $currentPlayer) < 3) return true;
@@ -2301,15 +2346,39 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "HNT103":
     case "HNT104":
+    case "HNT106":
+    case "HNT108":
+    case "HNT109":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
       return false;
+    case "HNT107":
+      if (NumDraconicChainLinks() < 2) return true;
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
+      return false;
+    case "HNT110":
+    case "HNT111":
+    case "HNT113":
+    case "HNT114":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
+      return false;
+    case "HNT112":
+      if (NumDraconicChainLinks() < 2) return true;
     case "HNT116":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "HNT117":
       return !$CombatChain->HasCurrentLink();
+    case "HNT119":
+    case "HNT120":
+    case "HNT121":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
+    case "HNT235":
+      return CheckMarked($defPlayer);
     case "HNT236":
       return CheckMarked($defPlayer);
     case "HNT237":
@@ -2535,6 +2604,10 @@ function HasBladeBreak($cardID)
       return true;
     case "HNT011":
     case "HNT115":
+    case "HNT192":
+    case "HNT193":
+    case "HNT194":
+    case "HNT195":
     case "HNT247":
       return true;
     default:
@@ -2694,6 +2767,10 @@ function HasGuardwell($cardID)
   switch ($cardID) {
     case "HVY195":
     case "ROS211":
+    case "HNT216":
+    case "HNT217":
+    case "HNT218":
+    case "HNT219":
       return true;
     default:
       return false;
@@ -2713,6 +2790,7 @@ function HasPiercing($cardID, $from = "")
     case "OUT009":
     case "OUT010": //Weapons with Piercing
     case "HVY245":
+    case "HNT009":
       return true;
     case "DYN076":
     case "DYN077":
