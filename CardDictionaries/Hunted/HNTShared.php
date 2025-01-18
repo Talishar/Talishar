@@ -124,6 +124,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT180" => 3,
     "HNT181" => 2,
     "HNT198" => 4,
+    "HNT202" => 4,
+    "HNT203" => 3,
+    "HNT204" => 2,
     "HNT208" => 3,
     "HNT209" => 2,
     "HNT210" => 1,
@@ -238,6 +241,9 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT186" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
     "HNT187" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
     "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
+    "HNT202" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT203" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT204" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT208" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT209" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT210" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -577,6 +583,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT198":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
+      break;
+    case "HNT202":
+    case "HNT203":
+    case "HNT204":     
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
+      AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
+      AddDecisionQueue("MARKHERO", $otherPlayer, "-", 1);
       break;
     case "HNT208":
     case "HNT209":

@@ -2564,6 +2564,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         MarkHero($otherPlayer);
       }
       return $lastResult;
+    case "IFTYPEREVEALED":
+      $cards = explode(",", $lastResult);
+      foreach ($cards as $cardID) {
+        if (CardType($cardID) == $parameter) {
+          return $cardID;
+        }
+      }
+      return "PASS";
+    case "MARKHERO":
+      MarkHero($player);
+      return $lastResult;
     case "CHAINREACTION":
       AddCurrentTurnEffect("HNT253-" . $lastResult, $player);
       return $lastResult;
