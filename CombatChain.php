@@ -83,7 +83,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
+  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
@@ -432,6 +432,16 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HNT042":
     case "HNT043":
       return (IsHeroAttackTarget() && CheckMarked($defPlayer)) ? 1 : 0;
+    case "HNT086":
+    case "HNT087":
+    case "HNT088":
+      if (count($chainLinkSummary) == 0) break; # No previous links so nothing happens if this is true
+      $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
+      $isDraconic = false;
+      for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
+        if ($talents[$i] == "DRACONIC") $isDraconic = true;
+      }
+      return $isDraconic ? 1 : 0;
     case "HNT101":
       return 4;
     case "HNT116":

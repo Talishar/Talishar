@@ -249,12 +249,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT058":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "HNT059":
-    case "HNT060":
-      if(NumDraconicChainLinks() >= 2) {
-        PlayAura("HNT167", $currentPlayer);
-      }
-      break;
     case "HNT061":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -499,6 +493,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       break;
     case "HNT064":
       ThrowWeapon("Dagger", $cardID, true);
+      break;
+    case "HNT067":
+    case "HNT069":
+      MarkHero($defPlayer);
       break;
     case "HNT072":
       if (count($chainLinkSummary) == 0) break; # No previous links so nothing happens if this is true
