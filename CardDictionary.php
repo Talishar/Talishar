@@ -2395,6 +2395,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT201":
       if (!$CombatChain->HasCurrentLink()) return true;
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+    case "HNT205":
+    case "HNT206":
+    case "HNT207":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT235":
       return CheckMarked($defPlayer);
     case "HNT236":
