@@ -190,7 +190,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT017":
     case "HNT018":
     case "HNT019":
-      ThrowWeapon("Dagger", $cardID, true);
+      if (IsHeroAttackTarget())
+      {
+        ThrowWeapon("Dagger", $cardID, true);
+      }
       break;
     case "HNT020":
     case "HNT021":
@@ -284,6 +287,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT079":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
+    case "HNT080":
+    case "HNT081":
+    case "HNT082":
+      if(TalentContains($cardID, "DRACONIC", $currentPlayer) && IsHeroAttackTarget()) {
+        ThrowWeapon("Dagger", $cardID, true);
       }
       break;
     case "HNT101":
