@@ -384,9 +384,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAura("HNT167", $currentPlayer);
       }
       break;
-    case "HNT162":
-      if () MarkHero($otherPlayer);
-      break;
     case "HNT164":
       PlayAura("HNT167", $currentPlayer);
       break;
