@@ -1065,8 +1065,6 @@ function CombatChainClosedCharacterEffects()
   for ($i = 0; $i < count($chainLinks); ++$i) {
     $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("EVR023", $defPlayer);
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-      
-      WriteLog("Here: " . $chainLinks[$i][$j + 1] . " " . $defPlayer);
       if ($chainLinks[$i][$j + 1] != $defPlayer) continue;
       $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
       if ($charIndex == -1) continue;
