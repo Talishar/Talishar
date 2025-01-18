@@ -1949,6 +1949,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "";
     case "ONHITEFFECT":
+      $cardID = $lastResult;
+      $location = $dqVars[2];
+      ProcessHitEffect($cardID, $parameter, location:$location);
+      MainCharacterHitTrigger($cardID);
+      ArsenalHitEffects();
+      AuraHitEffects($cardID);
+      ItemHitTrigger($cardID);
       ProcessHitEffect($lastResult, $parameter);
       //handling flick knives and mark
       $mainChar = &GetPlayerCharacter($mainPlayer);
