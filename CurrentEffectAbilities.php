@@ -424,6 +424,13 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+      $character = &GetPlayerCharacter($mainPlayer);
+      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      return 1;
     case "HNT140":
     case "HNT141":
     case "HNT142":

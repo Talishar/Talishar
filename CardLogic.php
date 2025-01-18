@@ -1203,6 +1203,9 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
       break;
     case "HNT051-ATTACK":
     case "HNT102-MARK":
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
     case "HNT140":
     case "HNT141":
     case "HNT142":
