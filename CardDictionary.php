@@ -2626,6 +2626,8 @@ function HasBattleworn($cardID)
       return true;
     case "ROS163"://Aether Bindings
       return true;
+    case "HNT143":
+      return true;
     default:
       return false;
   }
