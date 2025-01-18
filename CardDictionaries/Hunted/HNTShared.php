@@ -609,6 +609,10 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "HNT097":
       MarkHero($defPlayer);
       break;
+    case "HNT224":
+    case "HNT225":
+      MarkHero($defPlayer);
+      break;
     default:
       break;
   }
