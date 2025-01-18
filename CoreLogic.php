@@ -1799,6 +1799,9 @@ function DoesAttackHaveGoAgain()
       return NumDraconicChainLinks() >= 2;
     case "HNT064":
       return NumDraconicChainLinks() > 1;
+    case "HNT067":
+    case "HNT069":
+      return NumDraconicChainLinks() >= 2;
     case "HNT071":
       $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
       return SearchCurrentTurnEffects("HNT071-$attackUniqueID", $mainPlayer);
