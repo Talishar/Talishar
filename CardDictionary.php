@@ -198,6 +198,8 @@ function CardSubType($cardID, $uniqueID = -1)
     case "UPR440":
     case "UPR441": //resolved sand cover
       return "Ash";
+    case "HNT012":
+      return "Dagger,Attack";
     default:
       break;
   }
