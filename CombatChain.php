@@ -1,11 +1,21 @@
 <?php
 
-function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
+function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $location = "-")
 {
-  global $CombatChain, $layers, $mainPlayer;
+  global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
+
+  if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
+    $index = explode("-", $location)[1];
+    $activeEffects = explode(",", $chainLinks[$index][6]);
+    foreach ($activeEffects as $effect) {
+      AddEffectHitTrigger($effect);
+      AddOnHitTrigger($effect);
+    }
+  }
+
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
@@ -418,6 +428,10 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
+    case "HNT041":
+    case "HNT042":
+    case "HNT043":
+      return (IsHeroAttackTarget() && CheckMarked($defPlayer)) ? 1 : 0;
     case "HNT101":
       return 4;
     case "HNT116":
@@ -653,6 +667,15 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT173":
+      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT052":
+      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT191":
+      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT214":
       if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "HNT253":

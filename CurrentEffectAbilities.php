@@ -610,6 +610,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST213":
       case "MST214": //Water the Seeds
       case "HNT061":
+      case "HNT105":
         $remove = 1;
         break;
       default:

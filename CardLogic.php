@@ -892,8 +892,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "HNT072":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
+    case "HNT009":
     case "HNT010":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT", $uniqueID);
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "CRU054":
       if (ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
@@ -948,6 +949,10 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "ROS221":
     case "ROS222":
     case "ROS243":
+    case "HNT012":
+    case "HNT038":
+    case "HNT039":
+    case "HNT040":
     case "HNT092":
     case "HNT093":
     case "HNT094":
@@ -959,6 +964,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "HNT032":
     case "HNT033":
     case "HNT034":
+    case "HNT035":
+    case "HNT036":
+    case "HNT037":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT064":
@@ -2712,6 +2720,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "HNT246":
       DiscardRandom();
+      break;
+    case "HNT052":
+      WriteLog("The Hunter has become the hunted");
+      LoseHealth(1, $mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
+    case "HNT191":
+    case "HNT214":
+      WriteLog("The Hunter stumbles into the spider");
+      MarkHero($mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
     case "HNT253":
       $arsenal = &GetArsenal($player);
