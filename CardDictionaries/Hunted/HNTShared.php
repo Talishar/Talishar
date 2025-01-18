@@ -258,6 +258,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT007":
       AddCurrentTurnEffect("HNT007", $currentPlayer);
       break;
+    case "HNT013":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:subtype=Trap");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+        AddDecisionQueue("BANISHCARD", $currentPlayer, "DISCARD,TT", 1);
+        AddDecisionQueue("UNDERTRAPDOOR", $currentPlayer, "<-", 1);
+      }
+      break;
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
