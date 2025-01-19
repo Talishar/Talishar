@@ -20,6 +20,8 @@ function HNTAbilityType($cardID): string
     "HNT146" => "AR",
     "HNT147" => "AR",
     "HNT167" => "I",
+    "HNT173" => "AR",
+    "HNT196" => "AR",
     "HNT247" => "I",
     "HNT252" => "I",
     "HNT407" => "AR",
@@ -566,6 +568,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT173":
+      ThrowWeapon("Dagger", $cardID);
+      break;
     case "HNT175":
       ThrowWeapon("Dagger", $cardID, onHitDraw: true);
       break;
@@ -589,6 +594,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT189":
     case "HNT190":
       if(IsHeroAttackTarget()) throwWeapon("Dagger", $cardID, true);
+      break;
+    case "HNT196":
+      GiveAttackGoAgain();
       break;
     case "HNT197":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger", 1);
