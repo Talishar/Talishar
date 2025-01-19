@@ -138,6 +138,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT211" => 3,
     "HNT212" => 2,
     "HNT213" => 1,
+    "HNT221" => 1,
     "HNT223-AA" => 3,
     "HNT223-WEAPON" => 3,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
@@ -254,6 +255,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT211" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT212" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT213" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT221" => true,
     "HNT236" => true,
     "HNT237" => true,
     "HNT239" => true,
@@ -625,6 +627,24 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT212":
     case "HNT213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT221":
+      $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
+      $oppMaxCards = SearchCount(SearchDiscard($otherPlayer, maxAttack:1, minAttack:1));
+      $maxCards = min($myMaxCards, $oppMaxCards);
+      for ($i = 0; $i < $maxCards; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxAttack=1;minAttack=1",1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:maxAttack=1;minAttack=1");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      }
       break;
     case "HNT223":
       if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
