@@ -271,7 +271,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumAttacks, $CS_PlayIndex;
+  global $CS_NumNonAttackCards, $CS_NumBoosted;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -704,7 +704,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "HNT250":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_NumBoosted) > 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
+      else AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       break;
     case "HNT251":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
