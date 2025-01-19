@@ -171,6 +171,9 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "HNT167" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
+  if ($cardID == "HNT134" || $cardID == "HNT135" || $cardID == "HNT136" && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if ($cardID == "HNT137" || $cardID == "HNT138" || $cardID == "HNT139" && count($dashArr) > 1 && $dashArr[1] == "NEXTDAGGER") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if ($cardID == "HNT137" || $cardID == "HNT138" || $cardID == "HNT139" && count($dashArr) > 1 && $dashArr[1] == "MARKEDBUFF") return CheckMarked($defPlayer);
   return match ($cardID) {
     "HNT003" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT004" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
@@ -226,15 +229,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT131" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT132" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT133" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT134-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT135-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT136-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT137-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT137-MARKEDBUFF" => CheckMarked($defPlayer),
-    "HNT138-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT138-MARKEDBUFF" => CheckMarked($defPlayer),
-    "HNT139-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT139-MARKEDBUFF" => CheckMarked($defPlayer),
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
