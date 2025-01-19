@@ -932,6 +932,28 @@ function SearchItemForIndex($cardID, $player)
   return -1;
 }
 
+function SearchItemForLastIndex($cardID, $player)
+{
+  $items = &GetItems($player);
+  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    if ($items[$i] == $cardID) {
+      return $i;
+    }
+  }
+  return -1;
+}
+
+function SearchItemForModalities($modality, $player, $cardID)
+{
+  $items = &GetItems($player);
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    if ($items[$i] == $cardID && $items[$i + 8] == $modality) {
+      return $i;
+    }
+  }
+  return -1;
+}
+
 function SearchInventoryForCard($player, $cardID)
 {
   $inventory = &GetInventory($player);

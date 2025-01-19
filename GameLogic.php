@@ -2585,6 +2585,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CHAINREACTION":
       AddCurrentTurnEffect("HNT253-" . $lastResult, $player);
       return $lastResult;
+    case "NULLTIMEZONE":
+      $params = explode(",", $parameter);
+      $items = &GetItems($player);
+      $items[$params[0]+8] = $params[1];
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

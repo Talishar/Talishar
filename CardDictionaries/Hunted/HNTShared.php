@@ -276,7 +276,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumAttacks;
+  global $CS_NumNonAttackCards, $CS_NumAttacks, $CS_PlayIndex;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -701,6 +701,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       }
       break;
+    case "HNT251":
+      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
+      AddDecisionQueue("NULLTIMEZONE", $currentPlayer, SearchItemForLastIndex($cardID, $currentPlayer).",{0}");
+      return "";
     case "HNT252":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);

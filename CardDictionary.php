@@ -1616,6 +1616,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 {
   global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
+  $otherPlayer = $playerID == 1 ? 2 : 1;
   if(PitchValue($cardID) <= 0) return true; //Can't pitch mentors or landmarks
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $playerID) {
@@ -1647,6 +1648,10 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     return true;
   }
   if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
+  if(SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
+    $restrictedBy = "HNT251";
+    return true;
+  }
   return false;
 }
 
@@ -3065,6 +3070,8 @@ function ETASteamCounters($cardID)
     case "EVO098":
       return 1;
     case "AIO026":
+      return 2;
+    case "HNT251":
       return 2;
     default:
       return 0;

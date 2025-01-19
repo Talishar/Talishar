@@ -2235,6 +2235,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
@@ -2285,6 +2286,10 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
       }
     }
+  }
+  if(SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
+    $restrictedBy = "HNT251";
+    return true;
   }
   if ($revertNeeded && $restrictedBy != "") {
     WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
