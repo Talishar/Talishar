@@ -23,6 +23,7 @@ function HNTAbilityType($cardID): string
     "HNT173" => "AR",
     "HNT196" => "AR",
     "HNT247" => "I",
+    "HNT250" => "I",
     "HNT252" => "I",
     "HNT407" => "AR",
     default => ""
@@ -707,6 +708,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
         AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       }
+      break;
+    case "HNT250":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT251":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");

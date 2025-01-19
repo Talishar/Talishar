@@ -1023,7 +1023,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $CS_NumBoosted;
   $otherPlayer = ($player == 1 ? 2 : 1);
   $vambraceAvailable = SearchCurrentTurnEffects("OUT174", $player) != "";
   $vambraceRemove = false;
@@ -1257,6 +1257,13 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
           }
+          break;
+        case "HNT250":
+          if ($preventable) {
+            if(GetClassState($CS_NumBoosted, $player) > 0) $preventedDamage += 2;
+            else $preventedDamage += 1;
+          }
+          $remove = true;
           break;
         default:
           break;
