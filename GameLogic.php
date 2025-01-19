@@ -2204,10 +2204,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char = GetPlayerCharacter($player);
       for ($i = 0; $i < count($indices); $i++) {
         $option = explode("-", $indices[$i]);
-        if ($char[$option[1]] == $combatChain[0] && $char[$option[1] + 11] == $combatChain[8]) {
-          $lastResult = str_replace($indices[$i], "", $lastResult);
-          $lastResult = rtrim($lastResult, ",");
-          $lastResult = ltrim($lastResult, ",");
+        if ($option[0] == "MYCHAR") {
+          if ($char[$option[1]] == $combatChain[0] && $char[$option[1] + 11] == $combatChain[8]) {
+            $lastResult = str_replace($indices[$i], "", $lastResult);
+            $lastResult = rtrim($lastResult, ",");
+            $lastResult = ltrim($lastResult, ",");
+          }
         }
       }
       return $lastResult;
