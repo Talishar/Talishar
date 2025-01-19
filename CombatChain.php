@@ -4,7 +4,9 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
 {
   global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  if (!DelimStringContains(CardType($cardID), "W")) {//stops flicks from interacting with tarpit trap
+    if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  }
   $cardID = ShiyanaCharacter($cardID);
 
   $set = CardSet($cardID);
