@@ -2741,10 +2741,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
     case "HNT000":
-      AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-", 1);
-      AddDecisionQueue("ADDARSENAL", $player, "DECK", 1);
-      AddDecisionQueue("ADDARSENAL", $defPlayer, "DECK", 1);
+      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      AddDecisionQueue("ADDARSENAL", $player, "DECK");
+      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
+      AddDecisionQueue("ADDARSENAL", $defPlayer, "DECK");
       break;
     case "HNT011":
       $char = &GetPlayerCharacter($player);
