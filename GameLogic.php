@@ -2201,7 +2201,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "REMOVEINDICESIFACTIVECHAINLINK":
       $indices = explode(",", $lastResult);
-      WriteLog("HERE: $indices");
       $char = GetPlayerCharacter($player);
       for ($i = 0; $i < count($indices); $i++) {
         $option = explode("-", $indices[$i]);
