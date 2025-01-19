@@ -51,8 +51,9 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $lastResult = $CombatChain->Remove($mzIndex[1]);
         break;
       case "COMBATCHAINATTACKS":
-        $lastResult = $chainLinks[$mzIndex[1]][0];
-        $chainLinks[$mzIndex[1]][2] = 0;
+        $ind = intdiv($mzIndex[1],ChainLinksPieces());
+        $lastResult = $chainLinks[$ind][0];
+        $chainLinks[$ind][2] = 0;
         AddGraveyard($lastResult, $player, "CC", $player);
         break;
       default:

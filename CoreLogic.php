@@ -142,6 +142,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
+  array_push($combatChain, $cardID); //original cardID in case it becomes a copy
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
@@ -1393,6 +1394,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "HNT044":
     case "HNT045":
     case "HNT046":
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
     case "HNT258":
       return $from == "HAND";
     case "MST134":
@@ -2801,6 +2805,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         $index = SearchCurrentTurnEffectsForIndex("HER117", $currentPlayer);
         $dynCost = explode("-", $currentTurnEffects[$index]);
         MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID);
+        return "";
+      case "JDG038";
+          PlayAura("CRU075", $currentPlayer);
+          PlayAura("OUT236", $currentPlayer);
         return "";
       default:
         break;

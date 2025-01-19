@@ -605,6 +605,8 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "HNT219":
       if (IsWeaponAttack()) $blockModifier += 1;
       break;
+    case "HNT215":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
     default:
       break;
   }
@@ -1464,7 +1466,6 @@ function CombatChainClosedTriggers()
       $uniqueID = explode("-", $currentTurnEffects[$i])[1];
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);
-      RemoveCurrentTurnEffect($i);
     }
   }
 }

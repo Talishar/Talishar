@@ -929,29 +929,39 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $friendlyEffects = "";
   $BorderColor = NULL;
   $counters = NULL;
-  $counts = array_count_values($currentTurnEffects);
+  $friendlyCounts = array();
+  $opponentCounts = array();
   $friendlyRenderedEffects = array();
   $opponentRenderedEffects = array();
 
   for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-    $cardID = explode("-", $currentTurnEffects[$i])[0];
-    $cardID = explode(",", $cardID)[0];
-    $cardID = explode("_", $cardID)[0];
-    if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
-    $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
-    $BorderColor = ($isFriendly ? "blue" : "red");
-    if(isset($counts[$cardID])) $counters = $counts[$cardID];
+      $cardID = explode("-", $currentTurnEffects[$i])[0];
+      $cardID = explode(",", $cardID)[0];
+      $cardID = explode("_", $cardID)[0];
+      if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
+      $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+      $BorderColor = ($isFriendly ? "blue" : "red");
 
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
-      if(array_search($cardID, $friendlyRenderedEffects) === false) {
-        array_push($friendlyRenderedEffects, $cardID);
-        array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+      if ($isFriendly) {
+          if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
+          $friendlyCounts[$cardID]++;
+          $counters = $friendlyCounts[$cardID];
+      } else {
+          if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
+          $opponentCounts[$cardID]++;
+          $counters = $opponentCounts[$cardID];
       }
-    }  
-    elseif(array_search($cardID, $opponentRenderedEffects) === false) {
-      array_push($opponentRenderedEffects, $cardID);
-      array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
-    }  
+
+      if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
+          if(array_search($cardID, $friendlyRenderedEffects) === false) {
+              array_push($friendlyRenderedEffects, $cardID);
+              array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+          }
+      }  
+      elseif(array_search($cardID, $opponentRenderedEffects) === false && $otherPlayer == $currentTurnEffects[$i + 1]) {
+          array_push($opponentRenderedEffects, $cardID);
+          array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+      }  
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;
@@ -1219,6 +1229,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+      else if ($option[0] == "COMBATCHAINATTACKS") {
+        $source = [];
+        foreach ($chainLinks as $link) {
+          if ($link[2] == 1) {
+            for ($j = 0; $j < ChainLinksPieces(); ++$j) {
+              array_push($source, $link[$j]);
+            }
+          }
+          else {
+            //can't find something that's gone
+            for ($j = 0; $j < ChainLinksPieces(); ++$j) array_push($source, "-");
+          }
+        }
+      }
       else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
       else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
       $counters = 0;
@@ -1292,6 +1316,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "CC") $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
       else if ($option[0] == "LAYER") {
         $borderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
+      }
+      else if ($option[0] == "COMBATCHAINATTACKS") {
+        $borderColor = 1;
       }
       if ($option[0] == "COMBATCHAINLINK"){
         $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);

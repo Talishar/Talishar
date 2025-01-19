@@ -1668,8 +1668,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
       } else WriteLog(CardLink("EVR156", "EVR156") . "... did not hit the mark");
       return $lastResult;
+    case "ALREADYBLOCKING":
+      $alreadyBlocking = false;
+      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == $parameter) return "PASS";
+      }
+      return $parameter;
     case "ADDCARDTOCHAINASDEFENDINGCARD":
-      AddCombatChain($lastResult, $player, $parameter, 0, -1);
+      if ($parameter == "EQUIP") {
+        $character = &GetPlayerCharacter($player);
+        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          if ($character[$i] == $lastResult) {
+            $character[$i + 6] = 1;
+            PlayCard($lastResult, $param, -1, $i, $character[$i + 11]);
+            break;
+          }
+        }
+      }
+      else AddCombatChain($lastResult, $player, $parameter, 0, -1);
       OnBlockResolveEffects($lastResult);
       OnDefenseReactionResolveEffects("CC", cardID: $lastResult);
       return $lastResult;
@@ -1958,6 +1974,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         foreach ($activeEffects as $effect) {
           AddEffectHitTrigger($effect);
           AddOnHitTrigger($effect);
+          AddCardEffectHitTrigger($cardID);
         }
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -2204,10 +2221,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char = GetPlayerCharacter($player);
       for ($i = 0; $i < count($indices); $i++) {
         $option = explode("-", $indices[$i]);
-        if ($char[$option[1]] == $combatChain[0] && $char[$option[1] + 11] == $combatChain[8]) {
-          $lastResult = str_replace($indices[$i], "", $lastResult);
-          $lastResult = rtrim($lastResult, ",");
-          $lastResult = ltrim($lastResult, ",");
+        if ($option[0] == "MYCHAR") {
+          if ($char[$option[1]] == $combatChain[0] && $char[$option[1] + 11] == $combatChain[8]) {
+            $lastResult = str_replace($indices[$i], "", $lastResult);
+            $lastResult = rtrim($lastResult, ",");
+            $lastResult = ltrim($lastResult, ",");
+            $lastResult = str_replace(",,", ",", $lastResult);
+          }
         }
       }
       return $lastResult;
@@ -2477,6 +2497,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "UNDERTRAPDOOR":
       AddCurrentTurnEffect("HNT013", $currentPlayer, "", $parameter);
       return $lastResult;
+    case "CURRENTATTACKBECOMES":
+      WriteLog(CardLink($combatChain[0], $combatChain[0]) . " takes up the mantle of " . CardLink($lastResult, $lastResult));
+      $combatChain[5] += AttackValue($lastResult) - AttackValue($combatChain[0]);
+      $combatChain[0] = $lastResult;
+      return $lastResult;
     case "EXTRAATTACK":
       $ind = explode("-", $parameter)[1];
       $char = &GetPlayerCharacter($player);
@@ -2564,8 +2589,24 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         MarkHero($otherPlayer);
       }
       return $lastResult;
+    case "IFTYPEREVEALED":
+      $cards = explode(",", $lastResult);
+      foreach ($cards as $cardID) {
+        if (CardType($cardID) == $parameter) {
+          return $cardID;
+        }
+      }
+      return "PASS";
+    case "MARKHERO":
+      MarkHero($player);
+      return $lastResult;
     case "CHAINREACTION":
       AddCurrentTurnEffect("HNT253-" . $lastResult, $player);
+      return $lastResult;
+    case "NULLTIMEZONE":
+      $params = explode(",", $parameter);
+      $items = &GetItems($player);
+      $items[$params[0]+8] = $params[1];
       return $lastResult;
     default:
       return "NOTSTATIC";
