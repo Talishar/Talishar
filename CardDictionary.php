@@ -1004,6 +1004,7 @@ function HasGoAgain($cardID): bool|int
     case "HNT203":
     case "HNT204":
     case "HNT223":
+    case "HNT229":
     case "HNT235":
     case "HNT240":
     case "HNT241":
@@ -1431,7 +1432,7 @@ function CanBlockWithAura()
 
 function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom = "", $stillOnCombatChain = 1, $additionalCosts = "-")
 {
-  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed;
+  global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed, $CS_NumAttacks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if (($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) {
@@ -1558,6 +1559,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "MST101":
     case "MST102":
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
+      else return "GY";
+    case "HNT229":
+      if (GetClassState($currentPlayer, $CS_NumAttacks) > 0) return "BOTDECK";
       else return "GY";
     case "HNT407":
       return "-";

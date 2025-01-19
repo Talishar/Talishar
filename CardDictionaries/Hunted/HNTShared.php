@@ -276,7 +276,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards;
+  global $CS_NumNonAttackCards, $CS_NumAttacks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -632,8 +632,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT223":
-      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) writelog("HERE"); AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
-      if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) writelog("THERE"); AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
       break;
     case "HNT226";
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -646,6 +646,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      break;
+    case "HNT229":
+      MarkHero($otherPlayer);
       break;
     case "HNT236":
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
