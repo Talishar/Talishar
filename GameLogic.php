@@ -2499,7 +2499,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " takes up the mantle of " . CardLink($lastResult, $lastResult));
-      // $combatChain[5] += AttackValue($lastResult) - AttackValue($combatChain[0]);
       $combatChainState[$CCS_LinkBaseAttack] = AttackValue($lastResult);
       $combatChain[0] = $lastResult;
       return $lastResult;
