@@ -630,6 +630,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT215":
+      if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      $ind = SearchCharacterForCard($currentPlayer, $cardID);
+      $char = &GetPlayerCharacter($currentPlayer);
+      ++$char[$ind + 6];
+      WriteLog("HERE: " . $char[$ind + 6]);
+      // Looks like the game automatically adds it to the chain
+      // AddDecisionQueue("ALLREADYBLOCKING", $currentPlayer, $cardID);
+      // AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "EQUIP", 1);
+      // AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
+      break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
       $oppMaxCards = SearchCount(SearchDiscard($otherPlayer, maxAttack:1, minAttack:1));
@@ -651,18 +662,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT223":
       if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
-      break;
-    case "HNT215":
-      if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-      $alreadyBlocking = false;
-      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-        if ($combatChain[$i] == $cardID) $alreadyBlocking = true;
-      }
-      if (!$alreadyBlocking) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
-        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "EQUIP", 1);
-      }
-      AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
       break;
     case "HNT226";
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");

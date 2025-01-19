@@ -1668,13 +1668,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Draw($player);
       } else WriteLog(CardLink("EVR156", "EVR156") . "... did not hit the mark");
       return $lastResult;
+    case "ALREADYBLOCKING":
+      $alreadyBlocking = false;
+      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        // WriteLog("HERE2: " . $combatChain[$i]);
+        if ($combatChain[$i] == $parameter) return "PASS";
+      }
+      return $parameter;
     case "ADDCARDTOCHAINASDEFENDINGCARD":
       if ($parameter == "EQUIP") {
         $character = &GetPlayerCharacter($player);
         for ($i = 0; $i < count($character); $i += CharacterPieces()) {
           if ($character[$i] == $lastResult) {
             $character[$i + 6] = 1;
-            PlayCard($cardID, $param, -1, $i, $character[$i + 11]);
+            PlayCard($lastResult, $param, -1, $i, $character[$i + 11]);
             break;
           }
         }
