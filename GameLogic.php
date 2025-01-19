@@ -25,7 +25,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
+  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_LinkBaseAttack;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -2499,7 +2499,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " takes up the mantle of " . CardLink($lastResult, $lastResult));
-      $combatChain[5] += AttackValue($lastResult) - AttackValue($combatChain[0]);
+      // $combatChain[5] += AttackValue($lastResult) - AttackValue($combatChain[0]);
+      $combatChainState[$CCS_LinkBaseAttack] = AttackValue($lastResult);
       $combatChain[0] = $lastResult;
       return $lastResult;
     case "EXTRAATTACK":
