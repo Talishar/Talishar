@@ -137,6 +137,8 @@ function HNTEffectAttackModifier($cardID): int
     "HNT211" => 3,
     "HNT212" => 2,
     "HNT213" => 1,
+    "HNT223-AA" => 3,
+    "HNT223-WEAPON" => 3,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
@@ -166,6 +168,8 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "HNT004" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "HNT167" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
   return match ($cardID) {
     "HNT003" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT004" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
@@ -271,7 +275,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
   global $CS_NumNonAttackCards;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
@@ -626,6 +630,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT212":
     case "HNT213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT223":
+      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) writelog("HERE"); AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) writelog("THERE"); AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
       break;
     case "HNT226";
       AddCurrentTurnEffect($cardID, $currentPlayer);
