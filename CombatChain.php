@@ -1466,7 +1466,6 @@ function CombatChainClosedTriggers()
       $uniqueID = explode("-", $currentTurnEffects[$i])[1];
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);
-      RemoveCurrentTurnEffect($i);
     }
   }
 }

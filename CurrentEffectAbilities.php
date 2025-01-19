@@ -547,7 +547,6 @@ function EffectHasBlockModifier($cardID)
 function EffectBlockModifier($cardID, $index, $from)
 {
   global $CombatChain, $defPlayer, $mainPlayer;
-  WriteLog("HERE: $cardID");
   switch ($cardID) {
     case "MON089":
       if ($CombatChain->Card($index)->ID() == $cardID) return 1;

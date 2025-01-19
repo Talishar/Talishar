@@ -3029,7 +3029,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink("EVO410", "EVO410") . " grants the attack go again.");
     }
   }
-  if ($cardID == "HNT215") WriteLog("HERE: " . $turn[0]);
   if ($index > -1) SetClassState($currentPlayer, $CS_PlayIndex, $index);
   $definedCardType = CardType($cardID);
   $definedCardSubType = CardSubType($cardID);

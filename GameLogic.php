@@ -1671,7 +1671,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ALREADYBLOCKING":
       $alreadyBlocking = false;
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-        // WriteLog("HERE2: " . $combatChain[$i]);
         if ($combatChain[$i] == $parameter) return "PASS";
       }
       return $parameter;

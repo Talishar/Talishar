@@ -1260,6 +1260,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
+    if ($cardID == "HNT215")
+    {
+      //I don't fully understand why I need to do this as a special case
+      $defCharacter = GetPlayerCharacter($defPlayer);
+      $ind = SearchCharacterForCard($defPlayer, $cardID);
+      if ($defCharacter[$ind + 6] == 1) return false;
+    }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if ($phase == "B" || $phase == "D") {
@@ -2513,7 +2520,7 @@ function IsActionCard($cardID)
 
 function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 {
-  global $layers;
+  global $layers, $combatChain;
   switch ($cardID) {
     case "HVY143":
     case "HVY144":
@@ -2543,6 +2550,11 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "HNT258":
       return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
+    case "HNT215":
+      for ($i = 0; $i < count(value: $combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == $cardID) return false;
+      }
+      return true;
     default:
       break;
   }

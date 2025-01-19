@@ -634,12 +634,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       $ind = SearchCharacterForCard($currentPlayer, $cardID);
       $char = &GetPlayerCharacter($currentPlayer);
-      ++$char[$ind + 6];
-      WriteLog("HERE: " . $char[$ind + 6]);
-      // Looks like the game automatically adds it to the chain
-      // AddDecisionQueue("ALLREADYBLOCKING", $currentPlayer, $cardID);
-      // AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "EQUIP", 1);
-      // AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
+      $char[$ind + 6] = 1;
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
