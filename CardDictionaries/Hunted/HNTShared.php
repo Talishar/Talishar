@@ -630,11 +630,18 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT215":
-      if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-      $ind = SearchCharacterForCard($currentPlayer, $cardID);
       $char = &GetPlayerCharacter($currentPlayer);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        if ($char[$i] == "HNT215") {
+          $ind = $i;
+          break;
+        }
+      }
+      if (!SearchCurrentTurnEffects("HNT215", $currentPlayer)) {
+        AddCurrentTurnEffect("HNT215", $currentPlayer);
+        AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);
+      }
       $char[$ind + 6] = 1;
-      AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
