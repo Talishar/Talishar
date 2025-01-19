@@ -1417,7 +1417,6 @@ function SearchMultizone($player, $searches)
           $searchResult = SearchLandmarks($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         case "COMBATCHAINATTACKS":
-          WriteLog("There is currently a graphical glitch when flicking with Kiss of Death involved. The funny options are Kiss of Death");
           $searchResult = SearchCombatChainAttacks($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         default:

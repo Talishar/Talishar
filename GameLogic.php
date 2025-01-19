@@ -2209,6 +2209,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $lastResult = str_replace($indices[$i], "", $lastResult);
             $lastResult = rtrim($lastResult, ",");
             $lastResult = ltrim($lastResult, ",");
+            $lastResult = str_replace(",,", ",", $lastResult);
           }
         }
       }
