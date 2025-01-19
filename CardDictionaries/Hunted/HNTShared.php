@@ -631,7 +631,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
       break;
     case "HNT226";
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
       AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
       AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
