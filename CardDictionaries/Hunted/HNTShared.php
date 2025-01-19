@@ -945,7 +945,7 @@ function BubbleToTheSurface()
 
   function Retrieve($player, $subtype)
   {
-    if (SearchDiscard($player, subtype:$subtype)) {
+    if (SearchDiscard($player, subtype:$subtype) != "") {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
