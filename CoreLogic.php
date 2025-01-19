@@ -2806,6 +2806,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         $dynCost = explode("-", $currentTurnEffects[$index]);
         MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID);
         return "";
+      case "JDG038";
+          PlayAura("CRU075", $currentPlayer);
+          PlayAura("OUT236", $currentPlayer);
+        return "";
       default:
         break;
     }

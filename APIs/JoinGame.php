@@ -500,7 +500,7 @@ function isClashLegal($cardID, $character) {
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3, 3));
   switch ($cardID) { //Special Use Promos
-    case "JDG001": case "JDG003": case "JDG006": case "JDG010": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
+    case "JDG001": case "JDG003": case "JDG006": case "JDG010": case "JDG010": case "JDG019": case "JDG024": case "JDG025": case "JDG038":
       return true;
       default:
       break;
@@ -546,7 +546,7 @@ function isCardRestricted($cardID, $format, $count) {
 function isSpecialUsePromo($cardID) {
   $specialUsePromos = [
       "JDG001", "JDG002", "JDG003", "JDG004", "JDG005", "JDG006", "JDG008", "JDG010",
-      "JDG019", "JDG024", "JDG025", "LSS001", "LSS002", "LSS003", "LSS004", "LSS005",
+      "JDG019", "JDG024", "JDG025", "JDG038", "LSS001", "LSS002", "LSS003", "LSS004", "LSS005",
       "LSS006", "LSS007", "LSS008", "FAB094", "LGS099", "HER101"
   ];
   return in_array($cardID, $specialUsePromos);

@@ -1056,6 +1056,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AJV") return AJVAbilityType($cardID);
   else if ($set == "HNT") return HNTAbilityType($cardID);
   else if ($cardID == "HER117") return "I";
+  else if ($cardID == "JDG038") return "A";
 }
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
