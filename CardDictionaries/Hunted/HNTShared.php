@@ -23,6 +23,7 @@ function HNTAbilityType($cardID): string
     "HNT173" => "AR",
     "HNT196" => "AR",
     "HNT215" => "DR",
+    "HNT220" => "DR",
     "HNT247" => "I",
     "HNT250" => "I",
     "HNT252" => "I",
@@ -635,6 +636,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char = &GetPlayerCharacter($currentPlayer);
       $char[$ind + 6] = 1;
       AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
+      break;
+    case "HNT220":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "ARS", 1);
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));

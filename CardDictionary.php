@@ -2466,6 +2466,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT213":
       if (!$CombatChain->HasCurrentLink()) return true;
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+    case "HNT220":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
     case "HNT235":
       return CheckMarked($defPlayer);
     case "HNT236":
@@ -2555,6 +2558,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
         if ($combatChain[$i] == $cardID) return false;
       }
       return true;
+    case "HNT220":
+      return $phase == "B";
     default:
       break;
   }
