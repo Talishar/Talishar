@@ -1064,7 +1064,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "ARC003", "TCC050", "CRU101" => "A,AA",
     "OUT093" => "I,I",
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", 
-    "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209", "HNT013", "HNT044", "HNT045", "HNT046"=> "I,AA",
+    "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209", "HNT013", "HNT044", "HNT045", "HNT046",
+    "HNT232", "HNT233", "HNT234" => "I,AA",
     "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
     "ROS120", "ROS169" => "B,I",
     "HNT258" => "I,AR",
@@ -1114,6 +1115,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT044":
     case "HNT045":
     case "HNT046":
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
         if (!SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer) && (!SearchCurrentTurnEffects("HNT149", $currentPlayer) || SearchCurrentTurnEffects("HNT167", $currentPlayer))) $names .= ",Attack";
@@ -2505,7 +2509,7 @@ function IsActionCard($cardID)
 
 function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 {
-  global $layers, $mainPlayer;
+  global $layers;
   switch ($cardID) {
     case "HVY143":
     case "HVY144":
@@ -2527,6 +2531,9 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "HNT044":
     case "HNT045":
     case "HNT046":
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "MST133":
       return GetResolvedAbilityType($cardID, $from) == "AA";

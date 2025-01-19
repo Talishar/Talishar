@@ -650,6 +650,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT229":
       MarkHero($otherPlayer);
       break;
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        MarkHero($otherPlayer);
+      }
+      break;
     case "HNT236":
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
         AddCurrentTurnEffectNextAttack($cardID, $otherPlayer);

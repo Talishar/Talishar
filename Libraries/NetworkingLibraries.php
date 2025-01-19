@@ -2105,6 +2105,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "HNT044":
     case "HNT045":
     case "HNT046":
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
