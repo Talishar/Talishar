@@ -2,10 +2,11 @@
 
 function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
 {
-  global $CombatChain, $layers, $mainPlayer;
+  global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   $cardID = ShiyanaCharacter($cardID);
+
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
@@ -73,8 +74,9 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
+  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   switch ($cardID) {
     case "WTR003":
@@ -418,10 +420,45 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
+    case "HNT009":
+      return NumEquipBlock() > 0 ? 1 : 0;
+    case "HNT041":
+    case "HNT042":
+    case "HNT043":
+      return (IsHeroAttackTarget() && CheckMarked($defPlayer)) ? 1 : 0;
+    case "HNT086":
+    case "HNT087":
+    case "HNT088":
+      return isPreviousLinkDraconic() ? 1 : 0;
     case "HNT101":
       return 4;
     case "HNT116":
       return 3;
+    case "HNT119":
+    case "HNT120":
+    case "HNT121":
+      return 1;
+    case "HNT152":
+      return CheckMarked($defPlayer) ? 2 : 0;
+    case "HNT176":
+    case "HNT177":
+    case "HNT178":
+      $numDaggerHits = 0;
+        for($i=0; $i<count($chainLinks); ++$i)
+        {
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+        }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+      return $numDaggerHits > 0 ? 1 : 0;
+    case "HNT199":
+      return CheckMarked($defPlayer) ? 4 : 3;
+    case "HNT200":
+      return CheckMarked($defPlayer) ? 3 : 2;
+    case "HNT201":
+      return CheckMarked($defPlayer) ? 2 : 1;
+    case "HNT205": return 3;
+    case "HNT206": return 2;
+    case "HNT207": return 1;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:
@@ -530,7 +567,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "HVY096":
       if (IsWeaponAttack()) $blockModifier += 2;
-      break;
+      break;    
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
@@ -556,6 +593,20 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "AIO005":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
         break;
+    case "HNT192":
+    case "HNT193":
+    case "HNT194":
+    case "HNT195":
+      if (NumAttackReactionsPlayed() > 0) $blockModifier += 1;
+      break;
+    case "HNT216":
+    case "HNT217":
+    case "HNT218":
+    case "HNT219":
+      if (IsWeaponAttack()) $blockModifier += 1;
+      break;
+    case "HNT215":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
     default:
       break;
   }
@@ -653,6 +704,18 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "OUT173":
+      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT052":
+      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT162":
+      if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT191":
+      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT214":
       if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "HNT253":
@@ -864,6 +927,7 @@ function OnBlockResolveEffects($cardID = "")
       case "ROS028":
       case "ROS072"://flash of brilliance
       case "AJV013"://Unforgiving Unforgetting
+      case "HNT011":
       case "HNT115"://Kabuto of Imperial Authority
       case "HNT246"://Thick Hide Hunter
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
@@ -1402,7 +1466,6 @@ function CombatChainClosedTriggers()
       $uniqueID = explode("-", $currentTurnEffects[$i])[1];
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);
-      RemoveCurrentTurnEffect($i);
     }
   }
 }

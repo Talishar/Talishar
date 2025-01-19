@@ -414,6 +414,9 @@ function EffectHitEffect($cardID, $from)
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       }
       return 1;
+    case "HNT051-ATTACK":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT102-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
@@ -421,14 +424,50 @@ function EffectHitEffect($cardID, $from)
         return 1;
       }
       break;
+    case "HNT111":
+    case "HNT114":
+      MarkHero($defPlayer);
+      break;
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+      $character = &GetPlayerCharacter($mainPlayer);
+      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      return 1;
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
+      break;
     case "HNT140":
     case "HNT141":
     case "HNT142":
-      if (IsHeroAttackTarget()){
-        MarkHero($defPlayer);
-        return 1;
-      }
+      if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+      WriteLog("The " . CardLink($cardID, $cardID) . " drains 1 health");
+      LoseHealth(1, $defPlayer);
+      break;
+    case "HNT198-HIT":
+      Draw($mainPlayer, effectSource:"HNT198");
+      return 1;
+    case "HNT208":
+    case "HNT209":
+    case "HNT210":
+      MarkHero($defPlayer);
+      return 1;
+    case "HNT211":
+    case "HNT212":
+    case "HNT213":
+      if(CheckMarked($defPlayer)) {
+        $character = &GetPlayerCharacter($mainPlayer);
+        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      }
+      return 1;
     default:
       break;
   }
@@ -607,6 +646,9 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST213":
       case "MST214": //Water the Seeds
       case "HNT061":
+      case "HNT185":
+      case "HNT186":
+      case "HNT187":
         $remove = 1;
         break;
       default:
@@ -741,6 +783,7 @@ function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -924,6 +967,16 @@ function CurrentEffectCostModifiers($cardID, $from)
             $costModifier -= 2;
             $remove = true;
           }
+          break;
+        case "HNT145":
+          $otherChar = &GetPlayerCharacter(player: $otherPlayer);
+          if (CardNameContains($otherChar[0], "Arakni")) {
+            $costModifier -= 1;
+            $remove = true;
+          }
+          break;
+        case "HNT197":
+          if (GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i + 2]) $costModifier -= 1;
           break;
         default:
           break;
@@ -1205,6 +1258,13 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
           }
           break;
+        case "HNT250":
+          if ($preventable) {
+            $preventedDamage += intval($effects[1]);
+            $remove = true;
+            break;
+          }
+          break;
         default:
           break;
       }
@@ -1442,7 +1502,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras;
+  global $currentTurnEffects, $mainPlayer, $combatChainState, $CCS_AttackFused, $CS_NumAuras, $defPlayer;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
@@ -1562,6 +1622,14 @@ function CurrentEffectGrantsGoAgain()
           if(GetClassState($mainPlayer, $CS_NumAuras) >= 1) return true;
           else break;
         case "HNT125":
+          return true;
+        case "HNT134-GOAGAIN":
+        case "HNT135-GOAGAIN":
+        case "HNT136-GOAGAIN":
+          return IsHeroAttackTarget() && CheckMarked($defPlayer);
+        case "HNT147":
+          return true;
+        case "HNT240":
           return true;
         case "HNT407":
           return true;
@@ -1719,7 +1787,7 @@ function CurrentEffectEndTurnAbilities()
   }
 }
 
-function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false)
+function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false, $flicked = false)
 {
   global $CombatChain;
   if ($SpectraTarget) return;
@@ -1750,7 +1818,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "ROS") return ROSCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AIO") return AIOCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AJV") return AJVCombatEffectActive($cardID, $cardToCheck);
-  else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck, $flicked);
   switch ($cardID) {
     case "LGS180":
       return DTDCombatEffectActive($cardID, $cardToCheck);
@@ -1932,8 +2000,21 @@ function IsCombatEffectPersistent($cardID)
     case "AJV006-I":
       return true;
     case "HNT061":
+    case "HNT105":
     case "HNT125":
     case "HNT127":
+    case "HNT134-GOAGAIN":
+    case "HNT135-GOAGAIN":
+    case "HNT136-GOAGAIN":
+    case "HNT137-MARKEDBUFF":
+    case "HNT138-MARKEDBUFF":
+    case "HNT139-MARKEDBUFF":
+    case "HNT156":
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+    case "HNT198-HIT":
+    case "HNT215":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
@@ -2162,6 +2243,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
@@ -2212,6 +2294,10 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
       }
     }
+  }
+  if(SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
+    $restrictedBy = "HNT251";
+    return true;
   }
   if ($revertNeeded && $restrictedBy != "") {
     WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
