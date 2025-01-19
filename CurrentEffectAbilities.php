@@ -646,7 +646,6 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST213":
       case "MST214": //Water the Seeds
       case "HNT061":
-      case "HNT105":
       case "HNT185":
       case "HNT186":
       case "HNT187":
@@ -1993,6 +1992,7 @@ function IsCombatEffectPersistent($cardID)
     case "AJV006-I":
       return true;
     case "HNT061":
+    case "HNT105":
     case "HNT125":
     case "HNT127":
     case "HNT134-GOAGAIN":
