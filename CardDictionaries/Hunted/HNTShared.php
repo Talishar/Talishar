@@ -635,10 +635,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
       AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
       AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
       break;
