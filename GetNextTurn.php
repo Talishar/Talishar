@@ -1223,15 +1223,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $source = [];
         foreach ($chainLinks as $link) {
           if ($link[2] == 1) {
-            for ($j = 0; $j < ChainLinksPieces(); ++$j) {
-              // I have no idea why this is necessary, but it shouldn't break anything
-              if (isset($link[$j])) array_push($source, $link[$j]);
-              else array_push($source, "");
+            // Why is the last ChainLinkPiece not there?
+            for ($j = 0; $j < ChainLinksPieces()-1; ++$j) {
+              array_push($source, $link[$j]);
+              // if (isset($link[$j])) array_push($source, $link[$j]);
+              // else array_push($source, "");
             }
           }
           else {
             //can't find something that's gone
-            for ($j = 0; $j < ChainLinksPieces(); ++$j) array_push($source, "-");
+            for ($j = 0; $j < ChainLinksPieces()-1; ++$j) array_push($source, "-");
           }
         }
       }
