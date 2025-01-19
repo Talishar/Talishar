@@ -1233,11 +1233,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $source = [];
         foreach ($chainLinks as $link) {
           if ($link[2] == 1) {
-            // Why is the last ChainLinkPiece not there?
             for ($j = 0; $j < ChainLinksPieces(); ++$j) {
               array_push($source, $link[$j]);
-              // if (isset($link[$j])) array_push($source, $link[$j]);
-              // else array_push($source, "");
             }
           }
           else {
@@ -1319,6 +1316,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "CC") $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
       else if ($option[0] == "LAYER") {
         $borderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
+      }
+      else if ($option[0] == "COMBATCHAINATTACKS") {
+        $borderColor = 1;
       }
       if ($option[0] == "COMBATCHAINLINK"){
         $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
