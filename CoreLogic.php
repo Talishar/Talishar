@@ -572,7 +572,7 @@ function AddDamagePreventionSelection($player, $damage, $type, $preventable)
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
-  global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent;
+  global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -600,7 +600,12 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       WriteLog("Lost life from Ode to Wrath");
     }
     $classState[$CS_DamageTaken] += $damage;
-    if (!IsAllyAttacking()) IncrementClassState($player, $CS_DamageDealtToOpponent, $damage);
+    if (!IsAllyAttacking()) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
+    else {
+      $allyInd = SearchAlliesForUniqueID($combatChain[8], $otherPlayer);
+      $allies = &GetAllies($otherPlayer);
+      $allies[$allyInd + 10] += $damage;
+    }
     // add ally tracking  here
     if ($type !== "COMBAT") SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage);
     else SetClassState($otherPlayer, $CS_PowDamageDealt, GetClassState($otherPlayer, $CS_PowDamageDealt) + $damage);

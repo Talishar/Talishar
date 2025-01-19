@@ -360,6 +360,7 @@ function updateAllyHealth(&$allies)
       $allies[$i + 1] = 2;
       $allies[$i + 2] = AllyHealth($allies[$i]) + $allies[$i + 7];
       $allies[$i + 8] = 1;
+      $allies[$i + 10] = 0;
     }
   }
 }
