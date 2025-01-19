@@ -1955,6 +1955,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
         $index = explode("-", $location)[1];
         $activeEffects = explode(",", $chainLinks[$index][6]);
+        WriteLog($chainLinks[$index][6]);
         foreach ($activeEffects as $effect) {
           AddEffectHitTrigger($effect);
           AddOnHitTrigger($effect);

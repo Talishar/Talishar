@@ -1183,7 +1183,7 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 1]); //From
     array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
-    array_push($chainLinks[$CLIndex], ""); //Added On-hits (comma separated)
+    array_push($chainLinks[$CLIndex], "-"); //Added On-hits (comma separated)
   }
 
   //Clean up combat effects that were used and are one-time
