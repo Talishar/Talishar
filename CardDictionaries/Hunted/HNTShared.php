@@ -22,6 +22,7 @@ function HNTAbilityType($cardID): string
     "HNT167" => "I",
     "HNT173" => "AR",
     "HNT196" => "AR",
+    "HNT215" => "DR",
     "HNT247" => "I",
     "HNT250" => "I",
     "HNT252" => "I",
@@ -41,6 +42,7 @@ function HNTAbilityCost($cardID): int
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT056" => 1,
     "HNT100" => 1,
+    "HNT215" => 1,
     default => 0
   };
 }
@@ -273,7 +275,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted;
+  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -626,6 +628,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT212":
     case "HNT213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT215":
+      if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      $ind = SearchCharacterForCard($currentPlayer, $cardID);
+      $char = &GetPlayerCharacter($currentPlayer);
+      $char[$ind + 6] = 1;
+      AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));

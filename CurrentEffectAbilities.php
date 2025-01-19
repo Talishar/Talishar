@@ -2014,6 +2014,7 @@ function IsCombatEffectPersistent($cardID)
     case "HNT186":
     case "HNT187":
     case "HNT198-HIT":
+    case "HNT215":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
