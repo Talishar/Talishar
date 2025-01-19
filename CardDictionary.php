@@ -570,6 +570,9 @@ function CardCost($cardID, $from="-")
     case "ROS106":
     case "ROS105":
     case "ROS104":
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 1;
     case "ROS120":
