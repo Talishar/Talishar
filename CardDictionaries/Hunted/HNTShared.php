@@ -61,6 +61,8 @@ function HNTEffectAttackModifier($cardID): int
     "HNT005" => 3,
     "HNT006" => 3,
     "HNT007" => 3,
+    "HNT014" => 2,
+    "HNT014-FULL" => 3,
     "HNT015" => 3,
     "HNT023" => 3,
     "HNT024" => 2,
@@ -168,6 +170,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT005" => HasStealth($attackID),
     "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT014" => HasStealth($attackID),
     "HNT015" => true,
     "HNT023" => HasStealth($attackID),
     "HNT024" => HasStealth($attackID),
@@ -295,6 +298,21 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("UNDERTRAPDOOR", $currentPlayer, "<-", 1);
       }
       break;
+    case "HNT014":
+      global $CombatChain;
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
+        WriteLog("Here before the swap: " . $CombatChain->AttackCard()->ID());
+        AddCurrentTurnEffect("$cardID-FULL", $currentPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:hasStealth=1");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+        AddDecisionQueue("CURRENTATTACKBECOMES", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      }
+      else AddCurrentTurnEffect("$cardID", $currentPlayer);
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);

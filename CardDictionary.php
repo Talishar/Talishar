@@ -2332,6 +2332,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
+    case "HNT014":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (HasStealth($CombatChain->AttackCard()->ID()) && CardType($CombatChain->AttackCard()->ID(), "AA")) return false;
+      return true;
     case "HNT015":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;

@@ -2477,6 +2477,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "UNDERTRAPDOOR":
       AddCurrentTurnEffect("HNT013", $currentPlayer, "", $parameter);
       return $lastResult;
+    case "CURRENTATTACKBECOMES":
+      WriteLog(CardLink($combatChain[0], $combatChain[0]) . " takes up the mantle of " . CardLink($lastResult, $lastResult));
+      $combatChain[5] += AttackValue($lastResult) - AttackValue($combatChain[0]);
+      $combatChain[0] = $lastResult;
+      return $lastResult;
     case "EXTRAATTACK":
       $ind = explode("-", $parameter)[1];
       $char = &GetPlayerCharacter($player);
