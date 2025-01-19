@@ -1076,9 +1076,14 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
     case "OUT188_1":
     case "AAZ004":
     case "DTD229-HIT":
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
     case "HNT003-HIT":
     case "HNT004-HIT":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      // This shouldn't trigger from a flicked dagger
+      if ($sourceID == "-") {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");

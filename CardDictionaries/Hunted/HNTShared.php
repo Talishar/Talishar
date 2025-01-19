@@ -304,7 +304,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT014":
       global $CombatChain;
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
-        WriteLog("Here before the swap: " . $CombatChain->AttackCard()->ID());
         AddCurrentTurnEffect("$cardID-FULL", $currentPlayer);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:hasStealth=1");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
