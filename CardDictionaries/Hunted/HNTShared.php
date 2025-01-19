@@ -635,6 +635,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $ind = SearchCharacterForCard($currentPlayer, $cardID);
       $char = &GetPlayerCharacter($currentPlayer);
       $char[$ind + 6] = 1;
+      AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
