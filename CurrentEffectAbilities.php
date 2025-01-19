@@ -647,7 +647,6 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "MST213":
       case "MST214": //Water the Seeds
       case "HNT061":
-      case "HNT105":
       case "HNT185":
       case "HNT186":
       case "HNT187":
@@ -785,6 +784,7 @@ function CurrentEffectCostModifiers($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -970,7 +970,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "HNT145":
-          $otherChar = &GetPlayerCharacter($otherPlayer);
+          $otherChar = &GetPlayerCharacter(player: $otherPlayer);
           if (CardNameContains($otherChar[0], "Arakni")) {
             $costModifier -= 1;
             $remove = true;
@@ -1257,6 +1257,13 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+          }
+          break;
+        case "HNT250":
+          if ($preventable) {
+            $preventedDamage += intval($effects[1]);
+            $remove = true;
+            break;
           }
           break;
         default:
@@ -1994,6 +2001,7 @@ function IsCombatEffectPersistent($cardID)
     case "AJV006-I":
       return true;
     case "HNT061":
+    case "HNT105":
     case "HNT125":
     case "HNT127":
     case "HNT134-GOAGAIN":
@@ -2236,6 +2244,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
@@ -2286,6 +2295,10 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
       }
     }
+  }
+  if(SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
+    $restrictedBy = "HNT251";
+    return true;
   }
   if ($revertNeeded && $restrictedBy != "") {
     WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");

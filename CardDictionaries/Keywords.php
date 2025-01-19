@@ -15,6 +15,7 @@
       case "EVO093": case "EVO094": case "EVO095":
       case "EVO096": case "EVO097": case "EVO098":
       case "AIO026":
+      case "HNT251":
         return true;
       default: return false;
     }

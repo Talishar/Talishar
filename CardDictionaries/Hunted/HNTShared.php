@@ -20,8 +20,11 @@ function HNTAbilityType($cardID): string
     "HNT146" => "AR",
     "HNT147" => "AR",
     "HNT167" => "I",
+    "HNT173" => "AR",
+    "HNT196" => "AR",
     "HNT215" => "DR",
     "HNT247" => "I",
+    "HNT250" => "I",
     "HNT252" => "I",
     "HNT407" => "AR",
     default => ""
@@ -63,6 +66,8 @@ function HNTEffectAttackModifier($cardID): int
     "HNT005" => 3,
     "HNT006" => 3,
     "HNT007" => 3,
+    "HNT014" => 2,
+    "HNT014-FULL" => 3,
     "HNT015" => 3,
     "HNT023" => 3,
     "HNT024" => 2,
@@ -135,6 +140,9 @@ function HNTEffectAttackModifier($cardID): int
     "HNT211" => 3,
     "HNT212" => 2,
     "HNT213" => 1,
+    "HNT221" => 1,
+    "HNT223-AA" => 3,
+    "HNT223-WEAPON" => 3,
     "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
@@ -164,12 +172,18 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "HNT003" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "HNT004" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "HNT167" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
+  if ($cardID == "HNT134" || $cardID == "HNT135" || $cardID == "HNT136" && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if ($cardID == "HNT137" || $cardID == "HNT138" || $cardID == "HNT139" && count($dashArr) > 1 && $dashArr[1] == "NEXTDAGGER") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if ($cardID == "HNT137" || $cardID == "HNT138" || $cardID == "HNT139" && count($dashArr) > 1 && $dashArr[1] == "MARKEDBUFF") return CheckMarked($defPlayer);
   return match ($cardID) {
     "HNT003" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT004" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT005" => HasStealth($attackID),
     "HNT006" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "HNT007" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT014" => HasStealth($attackID),
     "HNT015" => true,
     "HNT023" => HasStealth($attackID),
     "HNT024" => HasStealth($attackID),
@@ -218,15 +232,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT131" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT132" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT133" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT134-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT135-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT136-BUFF" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT137-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT137-MARKEDBUFF" => CheckMarked($defPlayer),
-    "HNT138-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT138-MARKEDBUFF" => CheckMarked($defPlayer),
-    "HNT139-NEXTDAGGER" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT139-MARKEDBUFF" => CheckMarked($defPlayer),
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -239,10 +244,10 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT179" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT180" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT181" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "HNT185" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT185" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
     "HNT186" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
     "HNT187" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
-    "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked,
+    "HNT198" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT202" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT203" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT204" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -252,6 +257,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT211" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT212" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT213" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT221" => true,
     "HNT236" => true,
     "HNT237" => true,
     "HNT239" => true,
@@ -268,8 +274,8 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed;
-  global $CS_NumNonAttackCards, $combatChain;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
+  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -297,6 +303,21 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("UNDERTRAPDOOR", $currentPlayer, "<-", 1);
       }
       break;
+    case "HNT014":
+      global $CombatChain;
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
+        WriteLog("Here before the swap: " . $CombatChain->AttackCard()->ID());
+        AddCurrentTurnEffect("$cardID-FULL", $currentPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:hasStealth=1");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
+        AddDecisionQueue("CURRENTATTACKBECOMES", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      }
+      else AddCurrentTurnEffect("$cardID", $currentPlayer);
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
@@ -550,6 +571,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT167":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT173":
+      ThrowWeapon("Dagger", $cardID);
+      break;
     case "HNT175":
       ThrowWeapon("Dagger", $cardID, onHitDraw: true);
       break;
@@ -573,6 +597,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT189":
     case "HNT190":
       if(IsHeroAttackTarget()) throwWeapon("Dagger", $cardID, true);
+      break;
+    case "HNT196":
+      GiveAttackGoAgain();
       break;
     case "HNT197":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger", 1);
@@ -603,6 +630,28 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT213":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "HNT221":
+      $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
+      $oppMaxCards = SearchCount(SearchDiscard($otherPlayer, maxAttack:1, minAttack:1));
+      $maxCards = min($myMaxCards, $oppMaxCards);
+      for ($i = 0; $i < $maxCards; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:maxAttack=1;minAttack=1",1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:maxAttack=1;minAttack=1");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      }
+      break;
+    case "HNT223":
+      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
+      break;
     case "HNT215":
       if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       $alreadyBlocking = false;
@@ -616,16 +665,25 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
       break;
     case "HNT226";
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
       AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
       AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      break;
+    case "HNT229":
+      MarkHero($otherPlayer);
+      break;
+    case "HNT232":
+    case "HNT233":
+    case "HNT234":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        MarkHero($otherPlayer);
+      }
       break;
     case "HNT236":
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
@@ -678,6 +736,16 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       }
       break;
+    case "HNT250":
+      if(GetClassState($currentPlayer, $CS_NumBoosted) > 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
+      else AddCurrentTurnEffect($cardID."-1", $currentPlayer);
+      break;
+    case "HNT251":
+      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
+      AddDecisionQueue("NULLTIMEZONE", $currentPlayer, SearchItemForLastIndex($cardID, $currentPlayer).",{0}");
+      return "";
     case "HNT252":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
@@ -941,7 +1009,7 @@ function BubbleToTheSurface()
 
   function Retrieve($player, $subtype)
   {
-    if (SearchDiscard($player, subtype:$subtype)) {
+    if (SearchDiscard($player, subtype:$subtype) != "") {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
