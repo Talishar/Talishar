@@ -1050,8 +1050,12 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "ROS249":
     case "ROS250":
     case "AIO004":
+    case "HNT173":
+    case "HNT196":
     case "HNT247":
+    case "HNT250":
     case "HNT252":
+    case "JDG038":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "DTD001":
