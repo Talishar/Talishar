@@ -1224,7 +1224,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         foreach ($chainLinks as $link) {
           if ($link[2] == 1) {
             // Why is the last ChainLinkPiece not there?
-            for ($j = 0; $j < ChainLinksPieces()-1; ++$j) {
+            for ($j = 0; $j < ChainLinksPieces(); ++$j) {
               array_push($source, $link[$j]);
               // if (isset($link[$j])) array_push($source, $link[$j]);
               // else array_push($source, "");
@@ -1232,7 +1232,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           }
           else {
             //can't find something that's gone
-            for ($j = 0; $j < ChainLinksPieces()-1; ++$j) array_push($source, "-");
+            for ($j = 0; $j < ChainLinksPieces(); ++$j) array_push($source, "-");
           }
         }
       }
