@@ -97,6 +97,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVO081":
     case "EVO082":
     case "EVO083":
+    case "HNT228";
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":

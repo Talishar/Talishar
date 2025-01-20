@@ -25,6 +25,7 @@ function HNTAbilityType($cardID): string
     "HNT196" => "AR",
     "HNT215" => "DR",
     "HNT220" => "DR",
+    "HNT228" => "A",
     "HNT247" => "I",
     "HNT250" => "I",
     "HNT252" => "I",
@@ -52,9 +53,8 @@ function HNTAbilityCost($cardID): int
 
 function HNTAbilityHasGoAgain($cardID): bool
 {
-  global $currentPlayer;
-  $defPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
+    "HNT228" => true,
     default => false,
   };
 }
@@ -718,6 +718,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      break;
+    case "HNT228":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(IsRoyal($currentPlayer)) AddCurrentTurnEffect($cardID."-HIT", $currentPlayer);
       break;
     case "HNT229":
       MarkHero($otherPlayer);

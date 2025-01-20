@@ -2504,6 +2504,7 @@ function IsDefenseReactionPlayable($cardID, $from)
   if ($from == "HAND" && CardSubType($CombatChain->AttackCard()->ID()) == "Arrow" && SearchCharacterForCard($mainPlayer, "EVR087")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
   if (SearchCurrentTurnEffects("MON245", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("HNT228", $mainPlayer)) return false;
   return true;
 }
 

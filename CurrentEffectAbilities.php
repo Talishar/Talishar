@@ -468,6 +468,8 @@ function EffectHitEffect($cardID, $from)
         ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
       }
       return 1;
+    case "HNT228-HIT":
+      DestroyArsenal($defPlayer, effectController:$mainPlayer);
     default:
       break;
   }
@@ -2027,6 +2029,7 @@ function IsCombatEffectPersistent($cardID)
     case "HNT187":
     case "HNT198-HIT":
     case "HNT215":
+    case "HNT228":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
