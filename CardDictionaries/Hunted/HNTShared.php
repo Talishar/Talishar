@@ -1046,7 +1046,7 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
     "MST105-HIT" => true,
     "HNT003-HIT" => true,
     "HNT004-HIT" => true,
-    "HNT051" => true,
+    "HNT051-ATTACK" => true,
     "HNT208" => true,
     "HNT209" => true,
     "HNT210" => true,
