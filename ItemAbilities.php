@@ -44,7 +44,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
-  if ($item == "EVO073") AddLayer("TRIGGER", $player, $item);
+  PlayAbility($item, $from, 0);
 }
 
 function ItemUses($cardID)
