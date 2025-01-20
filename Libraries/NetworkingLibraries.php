@@ -23,7 +23,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
         if ($turn[0] == "B") $character[$index + 6] = 1;
-        if ($turn[0] == "D" && canBeAddedToChainDuringDR($cardID)) {
+        elseif ($turn[0] == "D" && canBeAddedToChainDuringDR($cardID)) {
           $character[$index + 1] = 1;
           $character[$index + 6] = 1;
         }
