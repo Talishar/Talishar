@@ -1202,7 +1202,7 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
-  global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
+  global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
   global $CombatChain, $combatChain, $layers;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -1250,6 +1250,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
+  if ($phase == "D" && canBeAddedToChainDuringDR($cardID) && $combatChainState[$CCS_NumUsedInReactions] > 0) return true;
   if ($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
@@ -2557,6 +2558,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     default:
       break;
   }
+  if (canBeAddedToChainDuringDR($cardID) && $phase == "D") return true;
   if ($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
   else if ($phase == "M" && $cardID == "MON192" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
   else $cardType = CardType($cardID);
@@ -4569,6 +4571,18 @@ function HasEssenceOfEarth($cardID){
     case "ROS014":
     case "TER001":
     case "AJV001": 
+      return true;
+    default:
+      return false;
+  }
+}
+
+function canBeAddedToChainDuringDR($cardID){
+  switch ($cardID) {
+    case "HNT169":
+    case "HNT170":
+    case "HNT171":
+    case "HNT172":
       return true;
     default:
       return false;

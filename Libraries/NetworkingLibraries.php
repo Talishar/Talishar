@@ -23,6 +23,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
         if ($turn[0] == "B") $character[$index + 6] = 1;
+        if ($turn[0] == "D" && canBeAddedToChainDuringDR($cardID)) {
+          $character[$index + 1] = 1;
+          $character[$index + 6] = 1;
+        }
         else EquipPayAdditionalCosts($index, "EQUIP");
         PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11]);
       } else {
@@ -1467,7 +1471,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed;
-  global $CS_NumDraconicPlayed, $currentTurnEffects, $CS_TunicTicks, $CCS_NumUsedInReactions;
+  global $CS_NumDraconicPlayed, $currentTurnEffects, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1716,6 +1720,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(DelimStringContains($cardType, "I")) {
       if(!HasMeld($cardID)) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
       elseif($from != "MELD") IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
+    }
+    if(DelimStringContains($cardType, "AR") || DelimStringContains($abilityType, "AR")) {
+      ++$combatChainState[$CCS_NumReactionPlayedActivated];
     }
     if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
@@ -3052,7 +3059,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $skipDRResolution = false;
   $isSpectraTarget = HasSpectra(GetMzCard($currentPlayer, GetAttackTarget()));
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
-  if (GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
+  if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
+  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
     if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
