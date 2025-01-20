@@ -934,6 +934,24 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $friendlyRenderedEffects = array();
   $opponentRenderedEffects = array();
 
+  // Count the occurrences of each effect
+  for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+      $cardID = explode("-", $currentTurnEffects[$i])[0];
+      $cardID = explode(",", $cardID)[0];
+      $cardID = explode("_", $cardID)[0];
+      if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
+      $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+
+      if ($isFriendly) {
+          if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
+          $friendlyCounts[$cardID]++;
+      } else {
+          if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
+          $opponentCounts[$cardID]++;
+      }
+  }
+
+  // Render the effects
   for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $cardID = explode("-", $currentTurnEffects[$i])[0];
       $cardID = explode(",", $cardID)[0];
@@ -942,15 +960,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
       $BorderColor = ($isFriendly ? "blue" : "red");
 
-      if ($isFriendly) {
-          if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
-          $friendlyCounts[$cardID]++;
-          $counters = $friendlyCounts[$cardID];
-      } else {
-          if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
-          $opponentCounts[$cardID]++;
-          $counters = $opponentCounts[$cardID];
-      }
+      $counters = ($isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID]);
 
       if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
           if(array_search($cardID, $friendlyRenderedEffects) === false) {
