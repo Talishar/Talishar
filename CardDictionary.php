@@ -1016,6 +1016,8 @@ function HasGoAgain($cardID): bool|int
     case "HNT248":
     case "HNT255":
       return true;
+    case "HNT257":
+      return GetResolvedAbilityType($cardID) == "A";
   }
   $set = CardSet($cardID);
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
@@ -1070,7 +1072,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", 
     "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209", "HNT013", "HNT044", "HNT045", "HNT046",
     "HNT232", "HNT233", "HNT234" => "I,AA",
-    "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
+    "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206", "HNT257" => "I,A",
     "ROS120", "ROS169" => "B,I",
     "HNT258" => "I,AR",
     default => "",
@@ -1146,6 +1148,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "HNT257":
       $names = "Ability";
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
@@ -1260,13 +1263,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
-    if ($cardID == "HNT215")
-    {
-      //I don't fully understand why I need to do this as a special case
-      $defCharacter = GetPlayerCharacter($defPlayer);
-      $ind = SearchCharacterForCard($defPlayer, $cardID);
-      if ($defCharacter[$ind + 6] == 1) return false;
-    }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if ($phase == "B" || $phase == "D") {
@@ -1282,7 +1278,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($CombatChain->AttackCard()->ID() == "DYN121" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
-  if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction)) return false;
+  if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction, phase:$phase)) return false;
   elseif ($phase == "CHOOSEHANDCANCEL" && $from == "HAND") {
     if (count($layers) > 0) {
       $topLayer = $layers[0];
@@ -1627,7 +1623,7 @@ function CanPlayInstant($phase)
   return false;
 }
 
-function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction = "")
+function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction = "", $phase = "P")
 {
   global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
@@ -1663,7 +1659,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     return true;
   }
   if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
-  if(SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
+  if($phase == "P" && SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
     $restrictedBy = "HNT251";
     return true;
   }
@@ -2453,8 +2449,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT199":
     case "HNT200":
     case "HNT201":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT205":
     case "HNT206":
     case "HNT207":
@@ -2465,7 +2459,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT212":
     case "HNT213":
       if (!$CombatChain->HasCurrentLink()) return true;
-      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+      return !DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Dagger");
+    case "HNT220":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
     case "HNT235":
       return CheckMarked($defPlayer);
     case "HNT236":
@@ -2555,6 +2552,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
         if ($combatChain[$i] == $cardID) return false;
       }
       return true;
+    case "HNT220":
+      return $phase == "B";
     default:
       break;
   }
@@ -2712,6 +2711,10 @@ function HasBladeBreak($cardID)
     case "HNT145":
     case "HNT146":
     case "HNT147":
+    case "HNT169":
+    case "HNT170":
+    case "HNT171":
+    case "HNT172":
     case "HNT192":
     case "HNT193":
     case "HNT194":

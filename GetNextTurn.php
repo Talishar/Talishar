@@ -1229,20 +1229,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
-      else if ($option[0] == "COMBATCHAINATTACKS") {
-        $source = [];
-        foreach ($chainLinks as $link) {
-          if ($link[2] == 1) {
-            for ($j = 0; $j < ChainLinksPieces(); ++$j) {
-              array_push($source, $link[$j]);
-            }
-          }
-          else {
-            //can't find something that's gone
-            for ($j = 0; $j < ChainLinksPieces(); ++$j) array_push($source, "-");
-          }
-        }
-      }
+      else if ($option[0] == "COMBATCHAINATTACKS") $source = GetCombatChainAttacks();
       else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
       else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
       $counters = 0;

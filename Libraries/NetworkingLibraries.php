@@ -2172,6 +2172,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "HNT257":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
@@ -2985,6 +2986,18 @@ function PayAdditionalCosts($cardID, $from, $index="-")
           AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
           AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
         }
+      }
+      break;
+    case "HNT257":
+      if (GetResolvedAbilityType($cardID, $from) == "I")   
+      {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
       }
       break;
     case "HNT258":
