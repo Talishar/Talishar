@@ -2712,6 +2712,7 @@ function HasBladeBreak($cardID)
     case "HNT145":
     case "HNT146":
     case "HNT147":
+    case "HNT168":
     case "HNT192":
     case "HNT193":
     case "HNT194":
@@ -3342,6 +3343,8 @@ function CharacterDefaultActiveState($cardID)
     case "ROS240":
     case "ROS241":
     case "ROS242":
+      return 1;
+    case "HNT168":
       return 1;
     default:
       return 2;
