@@ -3119,7 +3119,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       if ($index == 0) {//if adding an attacking card
         for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsStaticBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
             if ($combatChain[10] == "-") $combatChain[10] = $currentTurnEffects[$i];
             else $combatChain[10] .= "," . $currentTurnEffects[$i];
             RemoveCurrentTurnEffect($i);
