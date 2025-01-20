@@ -570,7 +570,6 @@ function CardCost($cardID, $from="-")
     case "ROS106":
     case "ROS105":
     case "ROS104":
-    case "HNT222":
     case "HNT232":
     case "HNT233":
     case "HNT234":
