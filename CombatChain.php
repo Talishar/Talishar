@@ -82,6 +82,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
+  if (HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
   switch ($cardID) {
     case "WTR003":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -269,30 +270,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN060":
     case "DYN061":
       return (ComboActive() ? 4 : 0);
-    case "DYN079":
-      return 3 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN080":
-      return 2 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN081":
-      return 1 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN156":
-    case "DYN157":
-    case "DYN158":
-      return HasPiercing($cardID, $from) && NumEquipBlock() > 0 ? 1 : 0;
-    case "DYN115":
-    case "DYN116":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT005":
-    case "OUT006":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT007":
-    case "OUT008":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT009":
-    case "OUT010":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "HVT245":
-      return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT018":
     case "OUT019":
     case "OUT020":
@@ -375,8 +352,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY147":
     case "HVY148":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
-    case "HVY245":
-      return NumEquipBlock() > 0 ? 1 : 0;
     case "MST082":
       return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 2 : 0;
     case "MST087":
@@ -424,8 +399,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
-    case "HNT009":
-      return NumEquipBlock() > 0 ? 1 : 0;
     case "HNT041":
     case "HNT042":
     case "HNT043":
@@ -1554,21 +1527,19 @@ function CachedNumActionBlocked()
 
 function IsPiercingActive($cardID)
 {
-  global $combatChain, $CombatChain, $currentTurnEffects, $mainPlayer;
+  global $CombatChain, $currentTurnEffects, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) {
-    if (HasPiercing($cardID))
-      return true;
+    if (HasPiercing($cardID)) return true;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       if (!isset($currentTurnEffects[$i + 1])) continue;
       if ($currentTurnEffects[$i + 1] == $mainPlayer && HasPiercing($currentTurnEffects[$i])) return true;
-      else return false;
     }
   }
+  return false;
 }
-
 
 function IsTowerActive()
 {
-  global $combatChain, $CCS_CachedTowerActive;
+  global $combatChain;
   return (CachedTotalAttack() >= 13 && HasTower($combatChain[0]));
 }

@@ -2909,6 +2909,7 @@ function HasGuardwell($cardID)
 
 function HasPiercing($cardID, $from = "")
 {
+  $cardID = substr($cardID, 0, 6);
   switch ($cardID) {
     case "DYN115":
     case "DYN116":
