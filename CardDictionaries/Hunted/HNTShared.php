@@ -1050,7 +1050,7 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
   };
 }
 
-function IsStaticBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
+function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
   //for now only tracking dagger buffs, ideally we'd want to track all static buffs
   return match($cardID) {
     "OUT151" => true,
