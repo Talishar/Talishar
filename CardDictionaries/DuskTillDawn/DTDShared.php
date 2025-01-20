@@ -469,12 +469,12 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "DTD215":
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "ALLURINGINDUCEMENT", 1);
+      AddDecisionQueue("CURRENTATTACKBECOMES", $currentPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
       return "";
     case "DTD219"://Lost in Thought
       LookAtHand($otherPlayer);

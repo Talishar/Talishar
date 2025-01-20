@@ -1680,7 +1680,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = 0; $i < count($character); $i += CharacterPieces()) {
           if ($character[$i] == $lastResult) {
             $character[$i + 6] = 1;
-            PlayCard($lastResult, $param, -1, $i, $character[$i + 11]);
+            PlayCard($lastResult, $parameter, -1, $i, $character[$i + 11]);
             break;
           }
         }

@@ -50,13 +50,15 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
     }
   }
   //check static buffs
-  $staticBuffs = explode(",", $combatChain[10]);
-  foreach ($staticBuffs as $buff) {
-    $attack = EffectAttackModifier($buff);
-    if (($canGainAttack || $attack < 0) && !$snagActive) {
-      array_push($attackModifiers, $buff);
-      array_push($attackModifiers, $attack);
-      AddAttack($totalAttack, $attack);
+  if(isset($combatChain[10])) {
+    $staticBuffs = explode(",", $combatChain[10]);
+    foreach ($staticBuffs as $buff) {
+      $attack = EffectAttackModifier($buff);
+      if (($canGainAttack || $attack < 0) && !$snagActive) {
+        array_push($attackModifiers, $buff);
+        array_push($attackModifiers, $attack);
+        AddAttack($totalAttack, $attack);
+      }
     }
   }
   if ($combatChainState[$CCS_WeaponIndex] != -1) {
