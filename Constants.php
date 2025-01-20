@@ -493,6 +493,8 @@ function AttackReplaced($cardID, $player)
   $combatChain[5] = 0;//Reset Attack modifiers
   $combatChain[6] = 0;//Reset Defense modifiers
   $combatChain[7] = GetUniqueId($cardID, $player); //new unique id
+  $combatChain[9] = $cardID; //new original id
+  $combatChain[10] = "-"; // get rid of any layer continuous buffs
   CleanUpCombatEffects(true);
 }
 
