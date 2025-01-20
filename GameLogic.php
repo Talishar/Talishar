@@ -2498,7 +2498,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect("HNT013", $currentPlayer, "", $parameter);
       return $lastResult;
     case "CURRENTATTACKBECOMES":
-      WriteLog(CardLink($combatChain[0], $combatChain[0]) . " takes up the mantle of " . CardLink($lastResult, $lastResult));
+      WriteLog(CardLink($combatChain[0], $combatChain[0]) . " copy and become " . CardLink($lastResult, $lastResult));
       $combatChainState[$CCS_LinkBaseAttack] = AttackValue($lastResult);
       $combatChain[0] = $lastResult;
       return $lastResult;
