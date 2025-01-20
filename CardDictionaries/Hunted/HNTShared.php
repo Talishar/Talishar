@@ -539,7 +539,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if($character[$combatChainState[$CCS_WeaponIndex] + 1] == 1) $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
       }
       elseif ($subtype) {
-        $ally = GetAllies($currentPlayer);
+        $ally = &GetAllies($currentPlayer);
         $allyIndex = SearchAlliesForUniqueID($combatChain[8], $currentPlayer);
         if($allyIndex != -1) {
           $ally[$allyIndex + 1] = 2;
