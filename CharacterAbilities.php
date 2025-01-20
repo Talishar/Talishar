@@ -482,7 +482,7 @@ function MainCharacterHitTrigger($cardID = "-")
         }
         break;
       case "WTR079":
-        if($mainCharacter[$i + 1] == 2 && CountCurrentTurnEffects($characterID, $mainPlayer) < HitsInRow()) AddCurrentTurnEffect("WTR079", $mainPlayer); 
+        if($mainCharacter[$i + 1] == 2 && CountCurrentTurnEffects($characterID, $mainPlayer) <= HitsInRow()) AddCurrentTurnEffect("WTR079", $mainPlayer); 
         if ($isAA && HitsInRow() >= 2) {
           while (SearchCurrentTurnEffects($characterID, $mainPlayer, true));
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
