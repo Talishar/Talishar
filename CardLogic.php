@@ -1251,7 +1251,7 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
 
 function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
-  global $combatChain, $mainPlayer, $layers, $CS_FealtyCreated;
+  global $combatChain, $mainPlayer, $layers;
   $character = &GetPlayerCharacter($player);
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
