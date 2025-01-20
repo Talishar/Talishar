@@ -720,8 +720,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
       break;
     case "HNT228":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      if(IsRoyal($currentPlayer)) AddCurrentTurnEffect($cardID."-HIT", $currentPlayer);
+      if($from == "PLAY") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(IsRoyal($currentPlayer)) AddCurrentTurnEffect($cardID."-HIT", $currentPlayer);
+      }
       break;
     case "HNT229":
       MarkHero($otherPlayer);
