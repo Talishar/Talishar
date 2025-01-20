@@ -160,7 +160,7 @@ function HNTEffectAttackModifier($cardID): int
 
 function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $combatChain;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "HNT102" & count($dashArr) > 1) {
@@ -1019,6 +1019,19 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
   };
 }
 
+function IsStaticBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
+  //for now only tracking dagger buffs, ideally we'd want to track all static buffs
+  return match($cardID) {
+    "OUT151" => true,
+    "HNT179" => true,
+    "HNT180" => true,
+    "HNT181" => true,
+    "HNT198" => true,
+    "HNT202" => true,
+    default => false
+  };
+}
+
 function BubbleToTheSurface()
 {
   global $currentPlayer;
@@ -1051,10 +1064,10 @@ function BubbleToTheSurface()
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
       AddDecisionQueue("WRITELOG", $player, "<b>Pitch cards to pay to retrieve</b>", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype;type=W");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
       AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
-  }
+    }
   }

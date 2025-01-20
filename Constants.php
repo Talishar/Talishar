@@ -64,9 +64,10 @@ function BanishPieces()
 //7 - Combat Chain Unique ID
 //8 - Origin Unique ID
 //9 - Original Card ID (for if the card becomes a copy of another card)
+//10 - Added static buff effects
 function CombatChainPieces()
 {
-  return 10;
+  return 11;
 }
 
 //0 - Card ID
