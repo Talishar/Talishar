@@ -352,7 +352,7 @@ function ItemStartTurnAbility($index)
     case "EVO097":
     case "EVO098":
     case "AIO026":
-    case "HNT251"
+    case "HNT251":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
