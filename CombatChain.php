@@ -415,6 +415,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HNT120":
     case "HNT121":
       return 1;
+    case "HNT146":
+      return 1;
     case "HNT152":
       return CheckMarked($defPlayer) ? 2 : 0;
     case "HNT176":
