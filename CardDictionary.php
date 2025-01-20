@@ -1016,6 +1016,8 @@ function HasGoAgain($cardID): bool|int
     case "HNT248":
     case "HNT255":
       return true;
+    case "HNT257":
+      return GetResolvedAbilityType($cardID) == "A";
   }
   $set = CardSet($cardID);
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
@@ -1070,7 +1072,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "HVY143", "HVY144", "HVY145", "HVY163", "HVY164", "HVY165", "HVY186", "HVY187", "HVY188", "MST133", 
     "ROS104", "ROS105", "ROS106", "ROS055", "ROS056", "ROS057", "HVY209", "HNT013", "HNT044", "HNT045", "HNT046",
     "HNT232", "HNT233", "HNT234" => "I,AA",
-    "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206" => "I,A",
+    "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206", "HNT257" => "I,A",
     "ROS120", "ROS169" => "B,I",
     "HNT258" => "I,AR",
     default => "",
@@ -1146,6 +1148,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "HNT257":
       $names = "Ability";
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";

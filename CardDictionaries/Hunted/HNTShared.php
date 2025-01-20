@@ -151,6 +151,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT241" => 3,
     "HNT242" => 2,
     "HNT243" => 1,
+    "HNT257" => 4,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -267,6 +268,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT242" => CheckMarked($defPlayer),
     "HNT243" => CheckMarked($defPlayer),
     "HNT249" => true,
+    "HNT257" => SubtypeContains($attackID, "Angel", $mainPlayer),
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
     default => false,
@@ -276,7 +278,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_DamageDealtToOpponent;
+  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -782,6 +784,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
       AddDecisionQueue("COMPARENUMBERS", $currentPlayer, "-");
       AddDecisionQueue("SPURLOCKED", $currentPlayer, "-");
+      break;
+    case "HNT257":
+      if (GetResolvedAbilityType($cardID, "HAND") == "A") {
+        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      }
+      else {
+        for ($i = 0; $i < GetClassState($currentPlayer, piece: $CS_AdditionalCosts); $i++) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "TURNBANISHFACEDOWN", 1);
+        }
+      }
       break;
     case "HNT258":
       if (GetResolvedAbilityType($cardID, "HAND") == "AR") {
