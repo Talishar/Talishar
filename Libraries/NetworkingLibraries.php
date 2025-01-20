@@ -2172,6 +2172,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "ROS204":
     case "ROS205":
     case "ROS206":
+    case "HNT257":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
@@ -2987,6 +2988,18 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         }
       }
       break;
+    case "HNT257":
+      if (GetResolvedAbilityType($cardID, $from) == "I")   
+      {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
+      }
+      break;
     case "HNT258":
       if (GetResolvedAbilityType($cardID, $from) == "I")   
       {
@@ -3016,6 +3029,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_TunicTicks, $CS_NumTimesAttacked;
+  global $currentTurnEffects;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if ($additionalCosts == "-" || $additionalCosts == "") $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
@@ -3079,7 +3093,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
     }
     if ($resourcesPaid != "Skipped") $target = GetMzCard($currentPlayer, GetAttackTarget());
-    if (!$skipDRResolution && !$isSpectraTarget && $target != "") $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+    if (!$skipDRResolution && !$isSpectraTarget && $target != "") {
+      $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+      if ($index == 0) {//if adding an attacking card
+        for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsStaticBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+            if ($combatChain[10] == "-") $combatChain[10] = $currentTurnEffects[$i];
+            else $combatChain[10] .= "," . $currentTurnEffects[$i];
+            RemoveCurrentTurnEffect($i);
+          }
+        }
+      }
+    }
     if ($isSpectraTarget) {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       if(CardType($cardID) != "T" && CardType($cardID) != "Macro") { //Don't need to add to anywhere if it's a token

@@ -23,6 +23,7 @@ function HNTAbilityType($cardID): string
     "HNT173" => "AR",
     "HNT196" => "AR",
     "HNT215" => "DR",
+    "HNT220" => "DR",
     "HNT247" => "I",
     "HNT250" => "I",
     "HNT252" => "I",
@@ -150,6 +151,7 @@ function HNTEffectAttackModifier($cardID): int
     "HNT241" => 3,
     "HNT242" => 2,
     "HNT243" => 1,
+    "HNT257" => 4,
     "HNT258-BUFF" => 2,
     "HNT407" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
@@ -158,7 +160,7 @@ function HNTEffectAttackModifier($cardID): int
 
 function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $combatChain;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "HNT102" & count($dashArr) > 1) {
@@ -266,6 +268,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT242" => CheckMarked($defPlayer),
     "HNT243" => CheckMarked($defPlayer),
     "HNT249" => true,
+    "HNT257" => SubtypeContains($attackID, "Angel", $mainPlayer),
     "HNT258" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
     "HNT407" => ContractType($attackID) != "",
     default => false,
@@ -275,7 +278,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain;
+  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -320,6 +323,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      break;
+    case "HNT016":
+      if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
+      $allies = GetAllies($otherPlayer);
+      for ($j = 0; $j < count($allies); $j += AllyPieces()) {
+        WriteLog("HERE: " . $allies[$j + 10]);
+        if ($allies[$j + 10] > 0) --$allies[$j+2];
+        if ($allies[$j+2] == 0) DestroyAlly($otherPlayer, $j);
+      }
       break;
     case "HNT017":
     case "HNT018":
@@ -630,11 +642,25 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT215":
-      if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-      $ind = SearchCharacterForCard($currentPlayer, $cardID);
       $char = &GetPlayerCharacter($currentPlayer);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        if ($char[$i] == "HNT215") {
+          $ind = $i;
+          break;
+        }
+      }
+      if (!SearchCurrentTurnEffects("HNT215", $currentPlayer)) {
+        AddCurrentTurnEffect("HNT215", $currentPlayer);
+        AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);
+      }
       $char[$ind + 6] = 1;
-      AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
+      break;
+    case "HNT220":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "ARS", 1);
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
@@ -671,6 +697,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT229":
       MarkHero($otherPlayer);
+      break;
+    case "HNT230":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT232":
     case "HNT233":
@@ -755,6 +784,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
       AddDecisionQueue("COMPARENUMBERS", $currentPlayer, "-");
       AddDecisionQueue("SPURLOCKED", $currentPlayer, "-");
+      break;
+    case "HNT257":
+      if (GetResolvedAbilityType($cardID, "HAND") == "A") {
+        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      }
+      else {
+        for ($i = 0; $i < GetClassState($currentPlayer, piece: $CS_AdditionalCosts); $i++) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "TURNBANISHFACEDOWN", 1);
+        }
+      }
       break;
     case "HNT258":
       if (GetResolvedAbilityType($cardID, "HAND") == "AR") {
@@ -977,6 +1019,19 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
   };
 }
 
+function IsStaticBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
+  //for now only tracking dagger buffs, ideally we'd want to track all static buffs
+  return match($cardID) {
+    "OUT151" => true,
+    "HNT179" => true,
+    "HNT180" => true,
+    "HNT181" => true,
+    "HNT198" => true,
+    "HNT202" => true,
+    default => false
+  };
+}
+
 function BubbleToTheSurface()
 {
   global $currentPlayer;
@@ -1003,15 +1058,16 @@ function BubbleToTheSurface()
 
   function Retrieve($player, $subtype)
   {
-    if (SearchDiscard($player, subtype:$subtype) != "") {
+    if (SearchDiscard($player, subtype:$subtype, type:"W") != "") {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+      AddDecisionQueue("WRITELOG", $player, "<b>Pitch cards to pay to retrieve</b>", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
       AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
-  }
+    }
   }

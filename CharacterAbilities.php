@@ -1057,6 +1057,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "AIO004":
     case "HNT173":
     case "HNT196":
+    case "HNT220":
     case "HNT247":
     case "HNT250":
     case "HNT252":
