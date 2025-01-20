@@ -1013,19 +1013,6 @@ function ChainLinkResolvedEffects()
   $allies = GetAllies($mainPlayer);
   if ($CombatChain->HasCurrentLink()) {
     if ($combatChain[0] == "MON245" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
-    switch ($combatChain[0]) {
-      case "CRU051":
-      case "CRU052":
-        EvaluateCombatChain($totalAttack, $totalBlock);
-        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if (!($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack)) {
-            UndestroyCurrentWeapon();
-          }
-        }
-        break;
-      default:
-        break;
-    }
   }
   if (IsAllyAttacking() && isset($allies[$combatChainState[$CCS_WeaponIndex] + 2]) && $allies[$combatChainState[$CCS_WeaponIndex] + 2] <= 0) {
     DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
