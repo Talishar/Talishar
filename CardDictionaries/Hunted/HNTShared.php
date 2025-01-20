@@ -680,6 +680,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       }
       break;
+    case "HNT222":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
     case "HNT223":
       if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);

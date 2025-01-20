@@ -162,6 +162,7 @@ function CurrentTurnEffectUses($cardID)
       return 2;
     case "HNT071":
       return 4; //Technically 3, but it sees and counts itself. We put 4 so it affects the next 3 Draconic cards
+    case "HNT222":
     case "HNT230":
       return 3;
     default:

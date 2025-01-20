@@ -570,6 +570,7 @@ function CardCost($cardID, $from="-")
     case "ROS106":
     case "ROS105":
     case "ROS104":
+    case "HNT222":
     case "HNT232":
     case "HNT233":
     case "HNT234":
@@ -1074,6 +1075,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "HNT232", "HNT233", "HNT234" => "I,AA",
     "ROS170", "ROS171", "ROS172", "ROS186", "ROS187", "ROS188", "ROS204", "ROS205", "ROS206", "HNT257" => "I,A",
     "ROS120", "ROS169" => "B,I",
+    "HNT222" => "I,DR",
     "HNT258" => "I,AR",
     default => "",
   };
@@ -1154,6 +1156,11 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
       elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
       if($from != "HAND") $names = "-,Action";
+      return $names;
+    case "HNT222":
+      $names = "Ability";
+      if ($from != "HAND") $names = "-,Defense Reaction";
+      elseif ($currentPlayer == $defPlayer && count($combatChain) > 0) $names .= ",Defense Reaction";
       return $names;
     case "HNT258":
       $names = "Ability";
@@ -2546,6 +2553,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "MST133":
       return GetResolvedAbilityType($cardID, $from) == "AA";
+    case "HNT222":
+      return GetResolvedAbilityType($cardID, $from) == "DR";
     case "HNT258":
       return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
     case "HNT215":

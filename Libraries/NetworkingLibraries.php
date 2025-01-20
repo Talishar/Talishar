@@ -2191,6 +2191,20 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
       }
       break;
+    case "HNT222":
+      $names = GetAbilityNames($cardID, $index, $from);
+      if ($names == "Ability,Defense Reaction") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the defense reaction or ability");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      } 
+      elseif ($names == "-,Defense Reaction") {
+        AddDecisionQueue("SETABILITYTYPEDEFENSEREACTION", $currentPlayer, $cardID);
+      }
+      else {
+        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      }
+      break;
     case "HNT258":
       $names = GetAbilityNames($cardID, $index, $from);
       if ($names == "Ability,Attack Reaction") {

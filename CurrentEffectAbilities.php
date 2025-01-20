@@ -1013,6 +1013,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
             RemoveCurrentTurnEffect($i);
           }
           return $damage;
+        case "HNT222":
         case "HNT230":
           $preventedDamage = 1;
           --$currentTurnEffects[$i + 3];
