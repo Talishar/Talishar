@@ -15,6 +15,7 @@ function HNTAbilityType($cardID): string
     "HNT055" => "I",
     "HNT056" => "AA",
     "HNT100" => "AA",
+    "HNT143" => "I",
     "HNT144" => "AR",
     "HNT145" => "I",
     "HNT146" => "AR",
@@ -43,6 +44,7 @@ function HNTAbilityCost($cardID): int
     "HNT055" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT056" => 1,
     "HNT100" => 1,
+    "HNT143" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "HNT215" => 1,
     default => 0
   };
@@ -521,6 +523,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT141":
     case "HNT142":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "HNT143":
+      //TODO:
       break;
     case "HNT144":
       MarkHero($otherPlayer);
