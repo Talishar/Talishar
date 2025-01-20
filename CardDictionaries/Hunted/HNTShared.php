@@ -1022,12 +1022,12 @@ function BubbleToTheSurface()
 
   function Retrieve($player, $subtype)
   {
-    if (SearchDiscard($player, subtype:$subtype) != "") {
+    if (SearchDiscard($player, subtype:$subtype, type:"W") != "") {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype;type=W");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
