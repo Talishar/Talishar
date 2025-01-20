@@ -558,6 +558,11 @@ function MainCharacterHitTrigger($cardID = "-")
           AddLayer("TRIGGER", $mainPlayer, $characterID,$attackID, "MAINCHARHITEFFECT");
         }
         break;
+      case "HNT168":
+        if (SubtypeContains($attackID, "Dagger", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        }
+        break;
       case "ROGUE016":
         if (CardType($attackID) == "AA") {
           $deck = &GetDeck($mainPlayer);
