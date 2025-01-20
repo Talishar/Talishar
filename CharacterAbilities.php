@@ -465,11 +465,12 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitTrigger($cardID = "-")
 {
-  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $layers;
   $attackID = $CombatChain->AttackCard()->ID();
   $defPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $isAA = ($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA");
+  $damageSource = $cardID != "-" ? $cardID : $attackID;
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     if ($mainCharacter[$i] != "HNT007" && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || ($mainCharacter[$i + 1] != "2"))) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
@@ -477,7 +478,7 @@ function MainCharacterHitTrigger($cardID = "-")
       case "WTR076":
       case "WTR077":
         if ($isAA) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
         }
         break;
@@ -485,7 +486,7 @@ function MainCharacterHitTrigger($cardID = "-")
         if($mainCharacter[$i + 1] == 2 && CountCurrentTurnEffects($characterID, $mainPlayer) <= HitsInRow()) AddCurrentTurnEffect("WTR079", $mainPlayer); 
         if ($isAA && HitsInRow() >= 2) {
           while (SearchCurrentTurnEffects($characterID, $mainPlayer, true));
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
         }
         break;
@@ -499,12 +500,12 @@ function MainCharacterHitTrigger($cardID = "-")
         break;
       case "WTR117":
         if (TypeContains($attackID, "W", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "ARC152":
         if ($isAA && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "CRU047":
@@ -514,40 +515,40 @@ function MainCharacterHitTrigger($cardID = "-")
         }
         break;
       case "CRU053":
-        if ($isAA && ClassContains($attackID, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+        if ($isAA && ClassContains($damageSource, "NINJA", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "ELE062":
       case "ELE063":
         if (IsHeroAttackTarget() && $isAA && !SearchAuras("ELE109", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "EVR037":
         if ($isAA && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "HVY097":
         if (TypeContains($attackID, "W", $mainPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "AUR005":
         if (IsHeroAttackTarget()) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "HNT001":
       case "HNT002":
         if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID) && ($cardID == "-" || $cardID == $attackID)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "HNT007":
         if (IsHeroAttackTarget() && ($cardID == "-" && SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer))) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $defPlayer, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "HNT054":
@@ -555,12 +556,12 @@ function MainCharacterHitTrigger($cardID = "-")
       case "HNT098":
       case "HNT099":
         if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID,$attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID,$damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "HNT168":
         if ((SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer)) && IsCharacterActive($mainPlayer, $i)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
       case "ROGUE016":

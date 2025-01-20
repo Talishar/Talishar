@@ -1251,7 +1251,7 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
 
 function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
-  global $combatChain, $mainPlayer, $layers;
+  global $combatChain, $mainPlayer, $layers, $defPlayer;
   $character = &GetPlayerCharacter($player);
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
   switch ($cardID) {
@@ -1331,8 +1331,8 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       GiveAttackGoAgain();
       break;
     case "HNT007":
-      WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $target);
-      PlayerLoseHealth($target, 1);
+      WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $defPlayer);
+      PlayerLoseHealth($defPlayer, 1);
       break;
     case "HNT054":
     case "HNT055":
