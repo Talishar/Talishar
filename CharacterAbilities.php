@@ -559,7 +559,7 @@ function MainCharacterHitTrigger($cardID = "-")
         }
         break;
       case "HNT168":
-        if (SubtypeContains($cardID, "Dagger", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
+        if (SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $attackID, "MAINCHARHITEFFECT");
         }
         break;
