@@ -1263,13 +1263,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
-    if ($cardID == "HNT215")
-    {
-      //I don't fully understand why I need to do this as a special case
-      $defCharacter = GetPlayerCharacter($defPlayer);
-      $ind = SearchCharacterForCard($defPlayer, $cardID);
-      if ($defCharacter[$ind + 6] == 1) return false;
-    }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if ($phase == "B" || $phase == "D") {
@@ -2469,6 +2462,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT213":
       if (!$CombatChain->HasCurrentLink()) return true;
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+    case "HNT220":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
     case "HNT235":
       return CheckMarked($defPlayer);
     case "HNT236":
@@ -2558,6 +2554,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
         if ($combatChain[$i] == $cardID) return false;
       }
       return true;
+    case "HNT220":
+      return $phase == "B";
     default:
       break;
   }

@@ -23,6 +23,7 @@ function HNTAbilityType($cardID): string
     "HNT173" => "AR",
     "HNT196" => "AR",
     "HNT215" => "DR",
+    "HNT220" => "DR",
     "HNT247" => "I",
     "HNT250" => "I",
     "HNT252" => "I",
@@ -277,7 +278,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts;
+  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -322,6 +323,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      break;
+    case "HNT016":
+      if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
+      $allies = GetAllies($otherPlayer);
+      for ($j = 0; $j < count($allies); $j += AllyPieces()) {
+        WriteLog("HERE: " . $allies[$j + 10]);
+        if ($allies[$j + 10] > 0) --$allies[$j+2];
+        if ($allies[$j+2] == 0) DestroyAlly($otherPlayer, $j);
+      }
       break;
     case "HNT017":
     case "HNT018":
@@ -632,11 +642,25 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT215":
-      if (!SearchCurrentTurnEffects($cardID, $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
-      $ind = SearchCharacterForCard($currentPlayer, $cardID);
       $char = &GetPlayerCharacter($currentPlayer);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        if ($char[$i] == "HNT215") {
+          $ind = $i;
+          break;
+        }
+      }
+      if (!SearchCurrentTurnEffects("HNT215", $currentPlayer)) {
+        AddCurrentTurnEffect("HNT215", $currentPlayer);
+        AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);
+      }
       $char[$ind + 6] = 1;
-      AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, FindCharacterIndex($currentPlayer, $cardID), 1);
+      break;
+    case "HNT220":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "ARS", 1);
       break;
     case "HNT221":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
@@ -673,6 +697,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT229":
       MarkHero($otherPlayer);
+      break;
+    case "HNT230":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT232":
     case "HNT233":
@@ -1018,12 +1045,12 @@ function BubbleToTheSurface()
 
   function Retrieve($player, $subtype)
   {
-    if (SearchDiscard($player, subtype:$subtype) != "") {
+    if (SearchDiscard($player, subtype:$subtype, type:"W") != "") {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype;type=W");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
