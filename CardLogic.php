@@ -1083,8 +1083,8 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       break;
     case "HNT003-HIT":
     case "HNT004-HIT":
-      // This shouldn't trigger from a flicked dagger
-      if ($sourceID == "-") {
+      // This shouldn't trigger from a flicked dagger (other than kiss of death)
+      if (DelimStringContains(CardType($sourceID), "AA", true)) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;

@@ -1978,7 +1978,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         foreach ($activeEffects as $effect) {
           AddEffectHitTrigger($effect);
           AddOnHitTrigger($effect);
-          AddCardEffectHitTrigger($cardID);
+          AddCardEffectHitTrigger($effect, $cardID);
         }
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
