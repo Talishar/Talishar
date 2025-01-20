@@ -672,6 +672,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT229":
       MarkHero($otherPlayer);
       break;
+    case "HNT230":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "HNT232":
     case "HNT233":
     case "HNT234":

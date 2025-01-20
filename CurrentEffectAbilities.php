@@ -990,34 +990,44 @@ function CurrentEffectCostModifiers($cardID, $from)
 function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 {
   global $currentTurnEffects;
+  $preventedDamage = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
-    if ($currentTurnEffects[$i + 1] == $player) {
+    if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "MST137":
           if (PitchValue($source) == 1) {
-            $damage = 0;
+            $preventedDamage = $damage;
             RemoveCurrentTurnEffect($i);
           }
           return $damage;
         case "MST138":
           if (PitchValue($source) == 2) {
-            $damage = 0;
+            $preventedDamage = $damage;
             RemoveCurrentTurnEffect($i);
           }
           return $damage;
         case "MST139":
           if (PitchValue($source) == 3) {
-            $damage = 0;
+            $preventedDamage = $damage;
             RemoveCurrentTurnEffect($i);
           }
           return $damage;
+        case "HNT230":
+          $preventedDamage = 1;
+          --$currentTurnEffects[$i + 3];
+          if ($currentTurnEffects[$i + 3] == 0) $remove = true;
         default:
           break;
       }
     }
     if ($remove) RemoveCurrentTurnEffect($i);
   }
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("OUT174", $player) != "") {
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("OUT174", $player, remove:true);
+  }
+  $damage -= $preventedDamage;
   return $damage;
 }
 
