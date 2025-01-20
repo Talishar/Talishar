@@ -161,9 +161,10 @@ function ArsenalPieces()
 //7 - Life Counters
 //8 - Ability/effect Uses
 //9 - Attack Counters
+//10 - Dealt Damage to opposing hero
 function AllyPieces()
 {
-  return 10;
+  return 11;
 }
 
 //0 - Card ID
@@ -345,6 +346,7 @@ $CS_PowDamageDealt = 90;
 $CS_TunicTicks = 91;
 $CS_OriginalHero = 92;
 $CS_NumTimesAttacked = 93; //number of attacks that reached the attack step, distinct from $CS_NumAttacks
+$CS_DamageDealtToOpponent = 94; //Damage dealt specifically to the opposing hero (for anaphylactic shock)
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
