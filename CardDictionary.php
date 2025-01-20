@@ -1260,13 +1260,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
-    if ($cardID == "HNT215")
-    {
-      //I don't fully understand why I need to do this as a special case
-      $defCharacter = GetPlayerCharacter($defPlayer);
-      $ind = SearchCharacterForCard($defPlayer, $cardID);
-      if ($defCharacter[$ind + 6] == 1) return false;
-    }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("ARC160-2", $player)) || $cardID == "OUT184" || HasAmbush($cardID))) return false;
   if ($phase == "B" || $phase == "D") {
