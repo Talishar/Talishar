@@ -3,7 +3,7 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $layers, $combatChain;
+  global $layers, $combatChain, $chainLinks;
   $rv = "";
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
@@ -19,6 +19,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
+  else if ($zone == "COMBATCHAINATTACKS") return GetCombatChainAttacks();
   return $rv;
 }
 
@@ -333,6 +334,24 @@ function &GetMainCharacterEffects($player)
     if ($player == $myStateBuiltFor) return $myCharacterEffects;
     else return $theirCharacterEffects;
   }
+}
+
+function GetCombatChainAttacks()
+{
+  global $chainLinks;
+  $attacks = [];
+  foreach ($chainLinks as $link) {
+    if ($link[2] == 1) {
+      for ($j = 0; $j < ChainLinksPieces(); ++$j) {
+        array_push($attacks, $link[$j]);
+      }
+    }
+    else {
+      //can't find something that's gone
+      for ($j = 0; $j < ChainLinksPieces(); ++$j) array_push($attacks, "-");
+    }
+  }
+  return $attacks;
 }
 
 function HasTakenDamage($player)

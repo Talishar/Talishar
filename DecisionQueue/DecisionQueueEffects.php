@@ -59,6 +59,12 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           break;
       }
       return $lastResult;
+    case "TWOSIDES":
+      switch($lastResult) {
+        case "Buff_Dagger": AddCurrentTurnEffect("HNT051-DAGGER", $player); break;
+        case "Buff_Stealth": AddCurrentTurnEffect("HNT051-ATTACK", $player); break;
+      }
+      return $lastResult;
     case "LONGWHISKER":
       if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for($i = 0; $i < count($lastResult); ++$i) {
@@ -799,6 +805,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       {
         AddDecisionQueue("PASSPARAMETER", $player, $params[1] . "-" . $params[2]);
         AddDecisionQueue("MZBOTTOM", $player, "-", 1);
+      }
+      return $lastResult;
+    case "BLOODSPATTEREDVEST":
+      $char = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, "HNT168");
+      if($index != -1){
+        GainResources($player, 1);
+        if(++$char[$index + 2] >= 3) {
+          DestroyCharacter($player, $index); # If it has three counters blow it up
+          WriteLog(CardLink("HNT168", "HNT168") . " got too dirty...");
+        }
       }
       return $lastResult;
     default: return "";

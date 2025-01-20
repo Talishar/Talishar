@@ -63,9 +63,11 @@ function BanishPieces()
 //6 - Defense Modifier
 //7 - Combat Chain Unique ID
 //8 - Origin Unique ID
+//9 - Original Card ID (for if the card becomes a copy of another card)
+//10 - Added static buff effects
 function CombatChainPieces()
 {
-  return 9;
+  return 11;
 }
 
 //0 - Card ID
@@ -160,9 +162,10 @@ function ArsenalPieces()
 //7 - Life Counters
 //8 - Ability/effect Uses
 //9 - Attack Counters
+//10 - Dealt Damage to opposing hero
 function AllyPieces()
 {
-  return 10;
+  return 11;
 }
 
 //0 - Card ID
@@ -205,9 +208,11 @@ function InventoryPieces()
 //3 - From
 //4 - Attack Modifier
 //5 - Defense Modifier
+//6 - Added On-hits (comma separated)
+//7 - Original Card ID (in case of copies)
 function ChainLinksPieces()
 {
-  return 6;
+  return 8;
 }
 
 //0 - Damage Dealt
@@ -342,6 +347,7 @@ $CS_PowDamageDealt = 90;
 $CS_TunicTicks = 91;
 $CS_OriginalHero = 92;
 $CS_NumTimesAttacked = 93; //number of attacks that reached the attack step, distinct from $CS_NumAttacks
+$CS_DamageDealtToOpponent = 94; //Damage dealt specifically to the opposing hero (for anaphylactic shock)
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -386,6 +392,9 @@ $CCS_NumInstantsPlayedByAttackingPlayer = 38;
 $CCS_NextInstantBouncesAura = 39;
 $CCS_EclecticMag = 40;
 $CCS_FlickedDamage = 41;
+$CCS_NumUsedInReactions = 42;
+$CCS_NumReactionPlayedActivated = 43; //Number of reactions played or activated
+
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
 
@@ -398,7 +407,7 @@ function ResetCombatChainState()
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
-  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage;
+  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $$CCS_NumReactionPlayedActivated;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -439,6 +448,8 @@ function ResetCombatChainState()
   $combatChainState[$CCS_NextInstantBouncesAura] = 0;
   $combatChainState[$CCS_EclecticMag] = 0;
   $combatChainState[$CCS_FlickedDamage] = 0;
+  $combatChainState[$CCS_NumUsedInReactions] = 0;
+  $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
   
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
@@ -451,8 +462,9 @@ function ResetCombatChainState()
       }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
         if(CardType($chainLinks[$i][$j]) == "T" || CardType($chainLinks[$i][$j]) == "Macro") continue;//Don't need to add to anywhere if it's a token
-        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
-        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j], $chainLinks[$i][$j + 1], "CHAINCLOSING");
+        // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
+        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j+7], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
+        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j+7], $chainLinks[$i][$j + 1], "CHAINCLOSING");
       }
     }
   }
@@ -492,7 +504,7 @@ function ResetChainLinkState()
   global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
-  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag;
+  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
 
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -530,6 +542,8 @@ function ResetChainLinkState()
   $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
   $combatChainState[$CCS_NextInstantBouncesAura] = 0;
   $combatChainState[$CCS_EclecticMag] = 0;
+  $combatChainState[$CCS_NumUsedInReactions] = 0;
+  $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
   UnsetChainLinkBanish();
 }
 

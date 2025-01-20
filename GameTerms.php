@@ -116,6 +116,7 @@ function TypeToPlay($phase)
 
 function PlayTerm($phase, $from="", $cardID="")
 {
+  if((canBeAddedToChainDuringDR($cardID) && $phase == "D")) return "blocked with";
   if ($cardID != "") {
     if (IsStaticType(CardType($cardID), $from, $cardID) && $phase != "B") return "activated";
   }

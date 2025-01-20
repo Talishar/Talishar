@@ -162,6 +162,9 @@ function CurrentTurnEffectUses($cardID)
       return 2;
     case "HNT071":
       return 4; //Technically 3, but it sees and counts itself. We put 4 so it affects the next 3 Draconic cards
+    case "HNT222":
+    case "HNT230":
+      return 3;
     default:
       return 1;
   }
@@ -892,8 +895,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "HNT072":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
+    case "HNT009":
     case "HNT010":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT", $uniqueID);
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "CRU054":
       if (ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
@@ -948,9 +952,19 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "ROS221":
     case "ROS222":
     case "ROS243":
+    case "HNT012":
+    case "HNT038":
+    case "HNT039":
+    case "HNT040":
     case "HNT092":
     case "HNT093":
     case "HNT094":
+    case "HNT095":
+    case "HNT096":
+    case "HNT097":
+    case "HNT174":
+    case "HNT224":
+    case "HNT225":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "AAZ016":
@@ -959,9 +973,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1): void
     case "HNT032":
     case "HNT033":
     case "HNT034":
+    case "HNT035":
+    case "HNT036":
+    case "HNT037":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT064":
+    case "HNT067":
+    case "HNT069":
       if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "ONHITEFFECT");
       break;
     case "HNT074":
@@ -1028,7 +1047,7 @@ function AddTowerEffectTrigger($cardID)
   }
 }
 
-function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
+function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
   global $mainPlayer, $defPlayer, $CombatChain;
   if (SearchCurrentTurnEffects("MST079-HITPREVENTION", $defPlayer)) return false;
@@ -1060,9 +1079,14 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
     case "OUT188_1":
     case "AAZ004":
     case "DTD229-HIT":
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
     case "HNT003-HIT":
     case "HNT004-HIT":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      // This shouldn't trigger from a flicked dagger
+      if ($sourceID == "-") {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
       break;
     case "ELE066-HIT":
       AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
@@ -1071,12 +1095,23 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
       if(IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
-      break;  
+      break;
     case "ROS119":
       if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;
+    case "HNT198-HIT":
+      if(IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
+      break;
+    case "HNT185":
+    case "HNT186":
+    case "HNT187":
+      if(IsHeroAttackTarget() && (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger") || SubtypeContains($sourceID, "Dagger"))) {
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
     default:
       break;
   }
@@ -1084,7 +1119,7 @@ function AddCardEffectHitTrigger($cardID) // Effects that do not gives it's effe
 
 function AddEffectHitTrigger($cardID): void // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
-  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers;
+  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
     case "WTR129":
@@ -1181,11 +1216,32 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "MST162-HIT":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
+    case "HNT051-ATTACK":
     case "HNT102-MARK":
+    case "HNT122":
+    case "HNT123":
+    case "HNT124":
+    case "HNT131":
+    case "HNT132":
+    case "HNT133":
     case "HNT140":
     case "HNT141":
     case "HNT142":
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "HNT111":
+    case "HNT114":
+      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "HNT208":
+    case "HNT209":
+    case "HNT210":
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      break;
+    case "HNT211":
+    case "HNT212":
+    case "HNT213":
+      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     default:
       break;
@@ -1282,6 +1338,11 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
     case "HNT098":
     case "HNT099"://Fang and Cindra
       PlayAura("HNT167", $player);
+      break;
+    case "HNT168":
+      AddDecisionQueue("YESNO", $player, "to_add_a_stain_counter_to_".Cardlink($cardID, $cardID));
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("SPECIFICCARD", $player, "BLOODSPATTEREDVEST", 1);
       break;
     default:
       break;
@@ -2692,6 +2753,23 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "AJV007":
       PlayAura("ELE109", $defPlayer, effectController: $defPlayer);
       break;
+    case "HNT000":
+      AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      AddDecisionQueue("ADDARSENAL", $player, "DECK");
+      AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
+      AddDecisionQueue("ADDARSENAL", $defPlayer, "DECK");
+      break;
+    case "HNT011":
+      $char = &GetPlayerCharacter($player);
+      if (CheckMarked($mainPlayer)) AddDecisionQueue("CHOOSECARD", $player, "HNT003,HNT004,HNT005,HNT006,HNT007,HNT008");
+      else AddDecisionQueue("PASSPARAMETER", $player, -1);
+      AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
+      break;
+    case "HNT052":
+      WriteLog("The Hunter has become the hunted");
+      LoseHealth(1, $mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
+      break;
     case "HNT073":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_prowess_and_draw");
@@ -2706,8 +2784,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "HNT118":
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "HNT162":
+      MarkHero($mainPlayer);
+      break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "HNT191":
+    case "HNT214":
+      WriteLog("The Hunter stumbles into the spider");
+      MarkHero($mainPlayer);
+      if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
     case "HNT246":
       DiscardRandom();
@@ -3119,6 +3206,16 @@ function HasBindCounters($cardID)
 {
   switch ($cardID) {
     case "ELE224":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function HasStainCounters($cardID)
+{
+  switch ($cardID) {
+    case "HNT168":
       return true;
     default:
       return false;
