@@ -2449,8 +2449,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT199":
     case "HNT200":
     case "HNT201":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "HNT205":
     case "HNT206":
     case "HNT207":
@@ -2461,7 +2459,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "HNT212":
     case "HNT213":
       if (!$CombatChain->HasCurrentLink()) return true;
-      return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+      return !DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Dagger");
     case "HNT220":
       if (!$CombatChain->HasCurrentLink()) return true;
       return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
