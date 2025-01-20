@@ -239,6 +239,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT140" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT141" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "HNT142" => SubtypeContains($attackID, "Dagger", $mainPlayer),
+    "HNT143" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "HNT144" => true,
     "HNT146" => true,
     "HNT147" => true,

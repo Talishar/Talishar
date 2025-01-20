@@ -1636,11 +1636,11 @@ function CurrentEffectGrantsGoAgain()
           else break;
         case "HNT125":
           return true;
-        case "HNT143":
         case "HNT134-GOAGAIN":
         case "HNT135-GOAGAIN":
         case "HNT136-GOAGAIN":
           return IsHeroAttackTarget() && CheckMarked($defPlayer);
+        case "HNT143":
         case "HNT147":
           return true;
         case "HNT240":
