@@ -1331,6 +1331,11 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
     case "HNT099"://Fang and Cindra
       PlayAura("HNT167", $player);
       break;
+    case "HNT168":
+      AddDecisionQueue("YESNO", $player, "to_add_a_stain_counter_to_".Cardlink($cardID, $cardID));
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("SPECIFICCARD", $player, "BLOODSPATTEREDVEST", 1);
+      break;
     default:
       break;
   }
@@ -3193,6 +3198,16 @@ function HasBindCounters($cardID)
 {
   switch ($cardID) {
     case "ELE224":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function HasStainCounters($cardID)
+{
+  switch ($cardID) {
+    case "HNT168":
       return true;
     default:
       return false;
