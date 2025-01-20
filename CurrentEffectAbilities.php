@@ -470,6 +470,7 @@ function EffectHitEffect($cardID, $from)
       return 1;
     case "HNT228-HIT":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
+      return 1;
     default:
       break;
   }
@@ -2030,6 +2031,7 @@ function IsCombatEffectPersistent($cardID)
     case "HNT198-HIT":
     case "HNT215":
     case "HNT228":
+    case "HNT228-HIT":
     case "HNT258-BUFF":
     case "HNT258-DMG":
       return true;
