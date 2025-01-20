@@ -2773,7 +2773,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "HNT073":
       $index = SearchAurasForUniqueID($uniqueID, $player);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_prowess_and_draw");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("HNT073","HNT073")."_and_draw");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, "$index", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $player, "MYAURAS-", 1);
