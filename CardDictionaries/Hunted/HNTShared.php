@@ -280,7 +280,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
+  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent, $combatChainState, $CCS_WeaponIndex;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -525,7 +525,21 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT143":
-      //TODO:
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $type = TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer);
+      $subtype = SubtypeContains($CombatChain->AttackCard()->ID(), "Ally", $currentPlayer);
+      if($type) {
+        $character = &GetPlayerCharacter($currentPlayer);
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+        if($character[$combatChainState[$CCS_WeaponIndex] + 1] == 1) $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      }
+      elseif ($subtype) {
+        $ally = GetAllies($currentPlayer);
+        $allyIndex = SearchAlliesForUniqueID($combatChain[8], $currentPlayer);
+        if($allyIndex != -1) {
+          $ally[$allyIndex + 1] = 2;
+        }
+      }
       break;
     case "HNT144":
       MarkHero($otherPlayer);
