@@ -531,7 +531,7 @@ function MainCharacterHitTrigger($cardID = "-")
         }
         break;
       case "HVY097":
-        if (TypeContains($attackID, "W", $mainPlayer)) {
+        if (TypeContains($attackID, "W", $mainPlayer) && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;

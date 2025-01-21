@@ -3366,6 +3366,7 @@ function CharacterDefaultActiveState($cardID)
       return 1;
     case "AKO005":
       return 1;
+    case "HVY097":
     case "MST027":
     case "MST232":
       return 1;
