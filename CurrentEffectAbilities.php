@@ -408,12 +408,12 @@ function EffectHitEffect($cardID, $from)
         AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
         AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       }
-      return 1;
+      return 0;
     case "HNT004-HIT":
       if (IsHeroAttackTarget()) {
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
       }
-      return 1;
+      return 0;
     case "HNT051-ATTACK":
       if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
