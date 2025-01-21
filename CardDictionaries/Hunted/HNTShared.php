@@ -1023,7 +1023,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
   $char[0] = $transformTarget;
   //don't trigger trapdoor if you transfrom from trapdoor into trapdoor
   if ($transformTarget == "HNT008" && $characterID != "HNT008") {
-    AddDecisionQueue("YESNO", $mainPlayer, ":_banish_a_card_to_".CardLink("HNT008", "HNT008")."?");
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("HNT008", "HNT008")."?");
     AddDecisionQueue("NOPASS", $mainPlayer, "-");
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);

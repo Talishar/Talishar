@@ -1082,19 +1082,19 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "HNT003-HIT":
-    case "HNT004-HIT":
       // This shouldn't trigger from a flicked dagger (other than kiss of death)
       if (IsHeroAttackTarget() && TypeContains($combatChain[0], "AA", $mainPlayer)) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;
-    case "ELE066-HIT":
-      AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
-      break;
     case "ROS012":
-      if(IsHeroAttackTarget()) {
+    case "HNT004-HIT":
+      if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
+      break;
+    case "ELE066-HIT":
+      AddLayer("TRIGGER", $mainPlayer, "ELE066", "ELE066-TRIGGER", "EFFECTHITEFFECT");
       break;
     case "ROS119":
       if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
