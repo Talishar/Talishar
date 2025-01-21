@@ -2218,6 +2218,23 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "DTD047":
       Charge();
       break;
+    case "DTD048":
+      PlayAura("DTD232", $player);
+      break;
+    case "DTD049":
+      PlayAura("WTR225", $player);
+      break;
+    case "DTD050":
+      PlayAura("DYN246", $player);
+      break;
+    case "DTD054":
+      AddCurrentTurnEffect("DTD054", $player);
+      break;
+    case "DTD055":
+      AddCurrentTurnEffect("DTD055", $player);
+      break;
+    case "DTD056":
+      AddCurrentTurnEffect("DTD056", $player);
     case "DTD200":
       global $mainPlayer;
       Intimidate($mainPlayer);
