@@ -465,7 +465,7 @@ function MainCharacterEndTurnAbilities()
 
 function MainCharacterHitTrigger($cardID = "-")
 {
-  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $layers;
+  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $chainLinks;
   $attackID = $CombatChain->AttackCard()->ID();
   $defPlayer = ($mainPlayer == 1 ? 2 : 1);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -483,7 +483,10 @@ function MainCharacterHitTrigger($cardID = "-")
         }
         break;
       case "WTR079":
-        if($mainCharacter[$i + 1] == 2 && CountCurrentTurnEffects($characterID, $mainPlayer) <= HitsInRow() && CountCurrentTurnEffects($characterID, $mainPlayer) <= 3) AddCurrentTurnEffect("WTR079", $mainPlayer); 
+        $count = CountCurrentTurnEffects($characterID, $mainPlayer);
+        if($mainCharacter[$i + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
+          AddCurrentTurnEffect("WTR079", $mainPlayer); 
+        } 
         if ($isAA && HitsInRow() >= 2) {
           while (SearchCurrentTurnEffects($characterID, $mainPlayer, true));
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");

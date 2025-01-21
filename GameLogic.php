@@ -2005,9 +2005,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       ItemHitTrigger($cardID);
       //mask of momentum
       $mainChar = &GetPlayerCharacter($mainPlayer);
-      if(FindCharacterIndex($mainPlayer, "WTR079") != -1 && $mainChar[FindCharacterIndex($mainPlayer, "WTR079") + 5] > 0){
-        --$mainChar[FindCharacterIndex($mainPlayer, "WTR079") + 5];
-        AddCurrentTurnEffect("WTR079", $mainPlayer);
+      $momIndex = FindCharacterIndex($mainPlayer, "WTR079");
+      if($momIndex != -1 && $mainChar[$momIndex + 5] > 0){
+        --$mainChar[$momIndex + 5];
+        $count = CountCurrentTurnEffects($characterID, $mainPlayer);
+        if($mainCharacter[$momIndex + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
+          AddCurrentTurnEffect("WTR079", $mainPlayer);
+        }
       }
       //handling flick knives and mark
       if (CheckMarked($defPlayer)) {
