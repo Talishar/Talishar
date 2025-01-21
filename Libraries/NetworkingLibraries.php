@@ -1229,6 +1229,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       --$currentTurnEffects[$i + 3];
       if ($currentTurnEffects[$i + 3] == 0) array_push($effectsToRemove, $i);
       if (AddedOnHit($currentTurnEffects[$i])) {
+        //adding onhits after chain resolution
         $addedOnHits .= $currentTurnEffects[$i] . ",";
       }
     }
