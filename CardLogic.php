@@ -2756,9 +2756,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "HNT000":
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
-      AddDecisionQueue("ADDARSENAL", $mainPlayer, "DECK");
+      AddDecisionQueue("ADDARSENALFROMDECK", $mainPlayer, "-");
       AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
-      AddDecisionQueue("ADDARSENAL", $defPlayer, "DECK");
+      AddDecisionQueue("ADDARSENALFROMDECK", $defPlayer, "-");
       break;
     case "HNT011":
       $char = &GetPlayerCharacter($player);

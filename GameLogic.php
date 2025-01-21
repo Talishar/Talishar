@@ -433,6 +433,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         writelog("Player $player arsenal is full, no card was puit in arsenal");
         return "PASS";
       }
+    case "ADDARSENALFROMDECK": //needed for schism so pass doesn't skip the other player
+      $params = explode("-", $parameter);
+      $from = (count($params) > 0 ? $params[0] : "-");
+      $facing = (count($params) > 1 ? $params[1] : "DOWN");
+      $deck = new Deck($player);
+      if (!ArsenalFull($player)) {
+        AddArsenal($deck->Top(), $player, $from, $facing);
+        RemoveDeck($player, 0);
+        return $lastResult;
+      } else {
+        return $lastResult;
+      }
     case "TURNCHARACTERFACEUP":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 12] = "UP";
