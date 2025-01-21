@@ -1082,13 +1082,13 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "HNT003-HIT":
-      // This shouldn't trigger from a flicked dagger (other than kiss of death)
-      if (IsHeroAttackTarget() && TypeContains($combatChain[0], "AA", $mainPlayer)) {
+    case "HNT004-HIT":
+      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
+      if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;
     case "ROS012":
-    case "HNT004-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
