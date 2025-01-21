@@ -1049,7 +1049,7 @@ function AddTowerEffectTrigger($cardID)
 
 function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
-  global $mainPlayer, $defPlayer, $CombatChain;
+  global $mainPlayer, $defPlayer, $CombatChain, $combatChain;
   if (SearchCurrentTurnEffects("MST079-HITPREVENTION", $defPlayer)) return false;
   $effects = explode(',', $cardID);
   switch ($effects[0]) {
@@ -1084,7 +1084,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
     case "HNT003-HIT":
     case "HNT004-HIT":
       // This shouldn't trigger from a flicked dagger (other than kiss of death)
-      if (DelimStringContains(CardType($sourceID), "AA", true)) {
+      if (IsHeroAttackTarget() && TypeContains($combatChain[0], "AA", $mainPlayer)) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;
