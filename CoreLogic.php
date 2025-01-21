@@ -1853,14 +1853,6 @@ function DoesAttackHaveGoAgain()
   }
 }
 
-function UndestroyCurrentWeapon()
-{
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  $index = $combatChainState[$CCS_WeaponIndex];
-  $char = &GetPlayerCharacter($mainPlayer);
-  $char[$index + 7] = "0";
-}
-
 function DestroyCurrentWeapon()
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
