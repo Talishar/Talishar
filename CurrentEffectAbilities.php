@@ -2,7 +2,7 @@
 
 
 //Return 1 if the effect should be removed
-function EffectHitEffect($cardID, $from)
+function EffectHitEffect($cardID, $from, $source = "-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
@@ -408,7 +408,11 @@ function EffectHitEffect($cardID, $from)
       AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
       return 0;
     case "HNT004-HIT":
-      MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("BANISHCARD", $defPlayer, "MYARS,-,$source", 1);
       return 0;
     case "HNT051-ATTACK":
       if (IsHeroAttackTarget()) MarkHero($defPlayer);
@@ -790,7 +794,6 @@ function CurrentEffectCostModifiers($cardID, $from)
         if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
           $costModifier -= 1;
           --$currentTurnEffects[$i + 3];
-          WriteLog("HERE using up a charge, " . $currentTurnEffects[$i + 3] . " charges left");
           if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
         }
         break;

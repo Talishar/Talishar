@@ -343,7 +343,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
       $allies = GetAllies($otherPlayer);
       for ($j = 0; $j < count($allies); $j += AllyPieces()) {
-        WriteLog("HERE: " . $allies[$j + 10]);
         if ($allies[$j + 10] > 0) --$allies[$j+2];
         if ($allies[$j+2] == 0) DestroyAlly($otherPlayer, $j);
       }

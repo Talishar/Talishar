@@ -1082,10 +1082,17 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "HNT003-HIT":
-    case "HNT004-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      }
+      break;
+    case "HNT004-HIT":
+      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
+      if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
+        if ($sourceID == "-") $source = $CombatChain->AttackCard()->ID();
+        else $source = $sourceID;
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
     case "ROS012":
@@ -1418,7 +1425,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     return;
   }
   if ($additionalCosts == "EFFECTHITEFFECT") {
-    if (EffectHitEffect($target, $combatChain[2])) {
+    if (EffectHitEffect($target, $combatChain[2], $uniqueID)) {
       $index = FindCurrentTurnEffectIndex($player, $target);
       if ($index != -1) RemoveCurrentTurnEffect($index);
     }
