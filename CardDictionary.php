@@ -2500,7 +2500,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (AttackValue($CombatChain->AttackCard()->ID()) > 3) return true;
       return false;
     case "HNT239":
-      return !$CombatChain->HasCurrentLink() && AttackValue($CombatChain->AttackCard()->ID()) <= 3;
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (AttackValue($CombatChain->AttackCard()->ID()) > 3) return true;
+      return false;
     case "HNT258":
       return $from != "HAND" && (!$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true));
     case "HNT407":
