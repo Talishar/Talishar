@@ -1389,14 +1389,14 @@ function FinalizeTurn()
   //Reset characters/equipment
   for ($i = 1; $i < count($mainCharacter); $i += CharacterPieces()) {
     if ($mainCharacter[$i - 1] == "CRU177" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
-    if ($mainCharacter[$i + 6] == 1) $mainCharacter[$i] = 0; //Destroy if it was flagged for destruction
+    if ($mainCharacter[$i + 6] == 1) DestroyCharacter($mainPlayer, $i-1); //Destroy if it was flagged for destruction
     if ($mainCharacter[$i] != 0) {
       if ($mainCharacter[$i] != 4) $mainCharacter[$i] = 2;
       $mainCharacter[$i + 4] = CharacterNumUsesPerTurn($mainCharacter[$i - 1]);
     }
   }
   for ($i = 1; $i < count($defCharacter); $i += CharacterPieces()) {
-    if ($defCharacter[$i + 6] == 1) $defCharacter[$i] = 0; //Destroy if it was flagged for destruction
+    if ($defCharacter[$i + 6] == 1) DestroyCharacter($defPlayer, $i-1); //Destroy if it was flagged for destruction
     if ($defCharacter[$i] == 1 || $defCharacter[$i] == 2) {
       if ($defCharacter[$i] != 4) $defCharacter[$i] = 2;
       $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i - 1]);
