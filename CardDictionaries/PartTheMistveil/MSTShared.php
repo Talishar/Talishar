@@ -580,7 +580,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST200":
     case "MST201":
     case "MST202":
-      if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext: "Choose a card to banish from their graveyard.");
+      if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, DQContext: "Choose a card to banish from their graveyard.");
       return "";
     case "MST212":
     case "MST213":
