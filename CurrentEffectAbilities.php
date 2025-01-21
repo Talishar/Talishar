@@ -646,6 +646,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "HNT185":
       case "HNT186":
       case "HNT187":
+      case "HNT215":
         $remove = 1;
         break;
       default:
