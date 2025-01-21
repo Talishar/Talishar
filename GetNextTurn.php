@@ -962,13 +962,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       $counters = ($isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID]);
 
+      if($cardID == "HNT222" || $cardID == "HNT230") {
+        $counters = $currentTurnEffects[$i + 3];
+      }
+
       if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
-          if(array_search($cardID, $friendlyRenderedEffects) === false) {
+          if(array_search($cardID, $friendlyRenderedEffects) === false || !skipEffectUIStacking($cardID)) {
               array_push($friendlyRenderedEffects, $cardID);
               array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
           }
       }  
-      elseif(array_search($cardID, $opponentRenderedEffects) === false && $otherPlayer == $currentTurnEffects[$i + 1]) {
+      elseif(array_search($cardID, $opponentRenderedEffects) === false && $otherPlayer == $currentTurnEffects[$i + 1] || !skipEffectUIStacking($cardID)) {
           array_push($opponentRenderedEffects, $cardID);
           array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
       }  
@@ -1593,4 +1597,8 @@ function GetPhaseHelptext()
   global $turn;
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   return (GetDQHelpText() != "-" ? GamestateUnsanitize(GetDQHelpText()) : $defaultText);
+}
+
+function skipEffectUIStacking($cardID) {
+  return $cardID != "HNT222" && $cardID != "HNT230";
 }
