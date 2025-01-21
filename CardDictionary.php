@@ -2092,8 +2092,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "OUT094":
       return !ArsenalHasFaceDownCard($player);
     case "OUT139":
-      if (!$CombatChain->HasCurrentLink()) return false;
-      if (!SearchCharacterAliveSubtype($player, "Dagger")) {
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SearchCharacterAliveSubtype($player, "Dagger") && SearchCombatChainAttacks($player, subtype:"Dagger") == "") {
         $restriction = "No dagger to throw";
         return true;
       }
@@ -2362,7 +2362,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "HNT014":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (HasStealth($CombatChain->AttackCard()->ID()) && CardType($CombatChain->AttackCard()->ID(), "AA")) return false;
+      if (HasStealth($CombatChain->AttackCard()->ID()) && DelimStringContains(CardType($CombatChain->AttackCard()->ID()), "AA", true)) return false;
       return true;
     case "HNT015":
       if (!$CombatChain->HasCurrentLink()) return true;
@@ -2448,6 +2448,20 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       break;
     case "HNT149":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
+    case "HNT173":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SearchCharacterAliveSubtype($player, "Dagger") && SearchCombatChainAttacks($player, subtype:"Dagger") == "") {
+        $restriction = "No dagger to throw";
+        return true;
+      }
+      return false;
+    case "HNT175":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SearchCharacterAliveSubtype($player, "Dagger") && SearchCombatChainAttacks($player, subtype:"Dagger") == "") {
+        $restriction = "No dagger to throw";
+        return true;
+      }
+      return false;
     case "HNT196":
       return $combatChainState[$CCS_NumUsedInReactions] == 0;
     case "HNT197":
