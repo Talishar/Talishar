@@ -790,6 +790,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
           $costModifier -= 1;
           --$currentTurnEffects[$i + 3];
+          WriteLog("HERE using up a charge, " . $currentTurnEffects[$i + 3] . " charges left");
           if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
         }
         break;
@@ -1846,6 +1847,7 @@ function IsCombatEffectPersistent($cardID)
   global $Card_LifeBanner, $Card_ResourceBanner;
   $effectArr = explode(",", $cardID);
   $cardID = ShiyanaCharacter($effectArr[0]);
+  if (DelimStringContains($cardID, "HNT071", true)) return true;
   switch ($cardID) {
     case "WTR007":
     case "WTR038":
