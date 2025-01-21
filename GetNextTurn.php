@@ -460,7 +460,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         facing: $theirCharacter[$i + 12],
         numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-        marked: $theirCharacter[$i + 13]
+        marked: $theirCharacter[$i + 13] == 1
         ));
       }
     } else {
@@ -476,7 +476,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           label: $label,
           facing: $theirCharacter[$i + 12],
           subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-          marked: $theirCharacter[$i + 13]
+          marked: $theirCharacter[$i + 13] == 1
           ));
     } 
   }
@@ -651,7 +651,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           facing: $myCharacter[$i + 12],
           numUses: $myCharacter[$i + 5], //Number of Uses
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10],
-          marked: $myCharacter[$i + 13]));
+          marked: $myCharacter[$i + 13] == 1));
       }
     }
   }
