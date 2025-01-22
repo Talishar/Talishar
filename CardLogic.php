@@ -2771,6 +2771,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       LoseHealth(1, $mainPlayer);
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
+    case "HNT057":
+      ThrowWeapon("Dagger", "HNT057");
+      ThrowWeapon("Dagger", "HNT057");
+      break;
     case "HNT073":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("HNT073","HNT073")."_and_draw");
