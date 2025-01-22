@@ -2242,6 +2242,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "DTD056":
       AddCurrentTurnEffect("DTD056", $player);
+      break;
     case "DTD200":
       global $mainPlayer;
       Intimidate($mainPlayer);
