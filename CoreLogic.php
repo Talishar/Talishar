@@ -1057,7 +1057,9 @@ function CombatChainClosedMainCharacterEffects()
       switch ($chainLinks[$i][$j]) {
         case "CRU051":
         case "CRU052":
-          if ($character[$charIndex + 7] == "1") DestroyCharacter($mainPlayer, $charIndex);
+          if ($character[$charIndex + 7] == "1") {
+            DestroyCharacter($mainPlayer, $charIndex);
+          }
           break;
         default:
           break;
@@ -1952,6 +1954,7 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   $char[$index + 2] = 0;
   $char[$index + 3] = 0;
   $char[$index + 4] = 0;
+  $char[$index + 7] = "0"; //avoid it getting double destroyed
   $cardID = $char[$index];
   if ($char[$index + 6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   $char[$index + 6] = 0;

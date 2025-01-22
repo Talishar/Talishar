@@ -637,7 +637,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT188":
     case "HNT189":
     case "HNT190":
-      if(IsHeroAttackTarget()) throwWeapon("Dagger", $cardID, true);
+      if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, true);
       break;
     case "HNT196":
       GiveAttackGoAgain();
