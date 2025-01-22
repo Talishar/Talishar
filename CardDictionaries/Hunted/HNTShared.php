@@ -397,8 +397,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       RecurDagger($currentPlayer, 1);
       break;
     case "HNT057":
-      ThrowWeapon("Dagger", $cardID);
-      ThrowWeapon("Dagger", $cardID);
+      AddLayer("TRIGGER", $currentPlayer, "HNT057");
       break;
     case "HNT058":
       AddCurrentTurnEffect($cardID, $currentPlayer);
