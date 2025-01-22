@@ -161,7 +161,7 @@ function CurrentTurnEffectUses($cardID)
     case "UPR223":
       return 2;
     case "HNT071":
-      return 4; //Technically 3, but it sees and counts itself. We put 4 so it affects the next 3 Draconic cards
+      return 3;
     case "HNT222":
     case "HNT230":
       return 3;
@@ -1082,13 +1082,20 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       break;
     case "HNT003-HIT":
-      // This shouldn't trigger from a flicked dagger (other than kiss of death)
-      if (IsHeroAttackTarget() && TypeContains($combatChain[0], "AA", $mainPlayer)) {
+      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
+      if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
       break;
-    case "ROS012":
     case "HNT004-HIT":
+      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
+      if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
+        if ($sourceID == "-") $source = $CombatChain->AttackCard()->ID();
+        else $source = $sourceID;
+        AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
+    case "ROS012":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
       }
@@ -1418,7 +1425,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     return;
   }
   if ($additionalCosts == "EFFECTHITEFFECT") {
-    if (EffectHitEffect($target, $combatChain[2])) {
+    if (EffectHitEffect($target, $combatChain[2], $uniqueID)) {
       $index = FindCurrentTurnEffectIndex($player, $target);
       if ($index != -1) RemoveCurrentTurnEffect($index);
     }
@@ -2218,6 +2225,23 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "DTD047":
       Charge();
       break;
+    case "DTD048":
+      PlayAura("DTD232", $player);
+      break;
+    case "DTD049":
+      PlayAura("WTR225", $player);
+      break;
+    case "DTD050":
+      PlayAura("DYN246", $player);
+      break;
+    case "DTD054":
+      AddCurrentTurnEffect("DTD054", $player);
+      break;
+    case "DTD055":
+      AddCurrentTurnEffect("DTD055", $player);
+      break;
+    case "DTD056":
+      AddCurrentTurnEffect("DTD056", $player);
     case "DTD200":
       global $mainPlayer;
       Intimidate($mainPlayer);

@@ -1108,22 +1108,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner, $CS_DamageDealt;
       switch ($lastResult) {
         case $Card_CourageBanner:
-          PlayAura("DTD232", $player);
+          AddLayer("TRIGGER", $player, $lastResult);
           break;
         case $Card_QuickenBanner:
-          PlayAura("WTR225", $player);
+          AddLayer("TRIGGER", $player, $lastResult);
           break;
         case $Card_SpellbaneBanner:
-          PlayAura("DYN246", $player);
+          AddLayer("TRIGGER", $player, $lastResult);
           break;
         case $Card_LifeBanner:
-          AddCurrentTurnEffect($Card_LifeBanner, $player);
+          AddLayer("TRIGGER", $player, $lastResult);
           break;
         case $Card_BlockBanner:
-          AddCurrentTurnEffect($Card_BlockBanner, $player);
+          AddLayer("TRIGGER", $player, $lastResult);
           break;
         case $Card_ResourceBanner:
-          AddCurrentTurnEffect($Card_ResourceBanner, $player);
+          AddLayer("TRIGGER", $player, $lastResult);
           break;
         default:
           break;

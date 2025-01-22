@@ -1159,8 +1159,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT222":
       $names = "Ability";
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
+      $dreadboreRestricted = $from == "HAND" && SearchCurrentTurnEffects("EVR087", $mainPlayer);
       if ($from != "HAND") $names = "-,Defense Reaction";
-      elseif ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted) $names .= ",Defense Reaction";
+      elseif ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$dreadboreRestricted) $names .= ",Defense Reaction";
       return $names;
     case "HNT258":
       $names = "Ability";

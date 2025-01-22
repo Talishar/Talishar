@@ -178,9 +178,17 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "HNT167" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "HNT223" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
-  if ($cardID == "HNT134" || $cardID == "HNT135" || $cardID == "HNT136" && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
-  if ($cardID == "HNT137" || $cardID == "HNT138" || $cardID == "HNT139" && count($dashArr) > 1 && $dashArr[1] == "NEXTDAGGER") return SubtypeContains($attackID, "Dagger", $mainPlayer);
-  if ($cardID == "HNT137" || $cardID == "HNT138" || $cardID == "HNT139" && count($dashArr) > 1 && $dashArr[1] == "MARKEDBUFF") return CheckMarked($defPlayer);
+  if ($cardID == ("HNT134" || $cardID == "HNT135" || $cardID == "HNT136") && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if ($cardID == ("HNT137" || $cardID == "HNT138" || $cardID == "HNT139") && count($dashArr) > 1) {
+    switch ($dashArr[1]) {
+      case "NEXTDAGGER":
+        return SubtypeContains($attackID, "Dagger", $mainPlayer);
+      case "MARKEDBUFF":
+        return CheckMarked($defPlayer);
+      default:
+        break;
+    }
+  }
   if ($cardID == "HNT228" && count($dashArr) > 1 && $dashArr[1] == "HIT") return true;
   return match ($cardID) {
     "HNT003" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
@@ -335,7 +343,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
       $allies = GetAllies($otherPlayer);
       for ($j = 0; $j < count($allies); $j += AllyPieces()) {
-        WriteLog("HERE: " . $allies[$j + 10]);
         if ($allies[$j + 10] > 0) --$allies[$j+2];
         if ($allies[$j+2] == 0) DestroyAlly($otherPlayer, $j);
       }

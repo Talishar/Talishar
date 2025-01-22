@@ -631,7 +631,13 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   switch ($combatChain[0]) {
     case "CRU051":
     case "CRU052":
-      AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+      EvaluateCombatChain($totalAttack, $totalBlock);
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+          break;
+        }
+      }
       break;
     case "DTD205":
       if (!SearchCurrentTurnEffects("DTD205", $mainPlayer)) {
@@ -747,7 +753,13 @@ function OnBlockResolveEffects($cardID = "")
     switch ($combatChain[0]) {
       case "CRU051":
       case "CRU052":
-        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+        EvaluateCombatChain($totalAttack, $totalBlock);
+        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+            AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+            break;
+          }
+        }
         break;
       case "ELE004":
         if (SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
