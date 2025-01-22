@@ -2491,9 +2491,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
     case "HNT235":
-      return CheckMarked($defPlayer);
+      return CheckMarked($currentPlayer);
     case "HNT236":
-      return CheckMarked($defPlayer);
+      return CheckMarked($currentPlayer);
     case "HNT237":
       return !$CombatChain->HasCurrentLink() && CheckMarked($currentPlayer);
     case "HNT238":
