@@ -654,8 +654,7 @@ function MSTHitEffect($cardID, $from): void
   $discard = new Discard($defPlayer);
   switch ($cardID) {
     case "MST003":
-      if ($from != "OUT139" && $from != "OUT148" && $from != "OUT149" && $from != "OUT150") AddCurrentTurnEffect($cardID, $mainPlayer);
-      else AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
+      AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
       break;
     case "MST103":
       $count = count(GetDeck($defPlayer));
