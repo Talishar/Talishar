@@ -1057,9 +1057,7 @@ function CombatChainClosedMainCharacterEffects()
       switch ($chainLinks[$i][$j]) {
         case "CRU051":
         case "CRU052":
-          if ($character[$charIndex + 7] == "1") {
-            DestroyCharacter($mainPlayer, $charIndex);
-          }
+          if ($character[$charIndex + 7] == "1") DestroyCharacter($mainPlayer, $charIndex);
           break;
         default:
           break;
