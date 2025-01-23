@@ -1501,6 +1501,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
+    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA") && !SearchCurrentTurnEffects("HNT167-ATTACK", $currentPlayer) && GetResolvedAbilityName($cardID, $from) != "Ability") {
+      WriteLog("HERE adding attack effect");
+      AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
+    }
     if ($playingCard) {
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
@@ -1584,11 +1588,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     array_push($pitch, $cardID);
     if (CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);
-  }
-  if ($turn[0] != "P") {
-    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA") && !SearchCurrentTurnEffects("HNT167-ATTACK", $currentPlayer) && GetResolvedAbilityName($cardID, $from) != "Ability") {
-      AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
-    }
   }
   //CR 2.0 5.1.7. Pay Asset-Costs
   if ($resources[0] < $resources[1] || (CardCareAboutChiPitch($cardID) && ($turn[0] != "B" || count($layers) > 0))) {
