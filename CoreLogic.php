@@ -101,7 +101,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       case "CRU051":
       case "CRU052":
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if ((intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+          $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
+          if ($totalDefense > 0 && $blockVal > $totalAttack) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
             for ($i = 0; $i < count($char); $i += CharacterPieces()) {
