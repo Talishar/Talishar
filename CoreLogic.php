@@ -198,7 +198,6 @@ function DefendingTerm($term)
 function CombatChainPowerModifier($index, $amount)
 {
   global $combatChain, $mainPlayer;
-  WriteLog("HERE in process CombatChainPowerModifier");
   $combatChain[$index + 5] += $amount;
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
