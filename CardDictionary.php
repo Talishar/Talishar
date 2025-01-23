@@ -1258,6 +1258,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
+  if ($phase != "D" && DelimStringContains(CardType($cardID, $from), "DR") &&  GetResolvedAbilityName($cardID, $from) != "Ability") return false;
+  if ($phase != "A" && DelimStringContains(CardType($cardID, $from), "AR") &&  GetResolvedAbilityName($cardID, $from) != "Ability") return false;
   if ($phase == "D" && canBeAddedToChainDuringDR($cardID) && $combatChainState[$CCS_NumUsedInReactions] > 0) return true;
   if ($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
