@@ -335,11 +335,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           case "CRU051":
           case "CRU052":
           EvaluateCombatChain($totalAttack, $totalBlock);
-          for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-            if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
-              AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
-            }
-          }
         }
         if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
         else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");

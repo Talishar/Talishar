@@ -3,7 +3,7 @@
 include "CardSetters.php";
 include "CardGetters.php";
 
-function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = [])
+function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = [], $secondNeedleCheck = false)
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
   global $CCS_WeaponIndex, $combatChain;
@@ -96,6 +96,29 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   if ($canGainAttack || $attack < 0) {
     AddAttack($totalAttack, $attack);
   }
+  if (!$secondNeedleCheck) {
+    switch ($combatChain[0]) {
+      case "CRU051":
+      case "CRU052":
+        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if ((intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+            $char = GetPlayerCharacter($mainPlayer);
+            $charID = -1;
+            for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+              if ($char[$i + 11] == $combatChain[8]) $charID = $i;
+            }
+            if ($charID == -1) WriteLog("something went wrong, please submit a bug report");
+            if (SearchLayersForCardID($combatChain[0]) == -1 && $char[$charID + 7] != "1") {
+              AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+            }
+            break;
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 function AddAttack(&$totalAttack, $amount): void
@@ -174,7 +197,8 @@ function DefendingTerm($term)
 
 function CombatChainPowerModifier($index, $amount)
 {
-  global $combatChain;
+  global $combatChain, $mainPlayer;
+  WriteLog("HERE in process CombatChainPowerModifier");
   $combatChain[$index + 5] += $amount;
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
