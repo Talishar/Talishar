@@ -1065,6 +1065,7 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
   //for now only tracking dagger buffs, ideally we'd want to track all static buffs
   return match($cardID) {
     "OUT151" => true,
+    "HNT051-ATTACK" => true,
     "HNT179" => true,
     "HNT180" => true,
     "HNT181" => true,
