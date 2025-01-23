@@ -796,7 +796,6 @@ function CurrentEffectCostModifiers($cardID, $from)
           --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
         }
-        break;
       }
       switch ($currentTurnEffects[$i]) {
         case "WTR060":
