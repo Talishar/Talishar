@@ -404,13 +404,14 @@ function SearchCharacterForCard($player, $cardID)
   return false;
 }
 
-function SearchCharacterAliveSubtype($player, $subtype)
+function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $combatChain;
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
-      return true;
+      if (!$notActiveLink) return true;
+      else if ($combatChain[8] != $character[$i + 11]) return true;
     }
     if ($character[$i] == "ELE111") {
       $slot = "";
