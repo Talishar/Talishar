@@ -6,7 +6,7 @@ include "CardGetters.php";
 function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = [], $secondNeedleCheck = false)
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
-  global $CCS_WeaponIndex, $combatChain;
+  global $CCS_WeaponIndex, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());
@@ -102,7 +102,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       case "CRU052":
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
           $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
-          if ($totalDefense > 0 && $blockVal > $totalAttack) {
+          if ($totalDefense > 0 && $blockVal > $totalAttack && $combatChain[$i + 1] == $defPlayer) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
             for ($i = 0; $i < count($char); $i += CharacterPieces()) {

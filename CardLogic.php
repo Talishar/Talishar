@@ -1555,7 +1555,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "CRU052":
       EvaluateCombatChain($totalAttack, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if ($totalBlock > 0 && (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]) > $totalAttack) {
+        $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
+        if ($totalBlock > 0 && ($blockVal > $totalAttack) && $combatChain[$i + 1] == $defPlayer) {
           DestroyCurrentWeapon();
         }
       }
