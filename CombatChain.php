@@ -1457,7 +1457,7 @@ function CacheCombatResult()
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
-  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
+  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
