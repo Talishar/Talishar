@@ -1501,9 +1501,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
-    if (SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA") && !SearchCurrentTurnEffects("HNT167-ATTACK", $currentPlayer) && GetResolvedAbilityName($cardID, $from) != "Ability") {
-      AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
-    }
     if ($playingCard) {
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
@@ -1512,7 +1509,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $playerID . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $playerID . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
-
     if ($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
@@ -1533,6 +1529,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($turn[0] != "P") {
     if ($dynCostResolved >= 0) {
+      if ($playingCard && SearchCurrentTurnEffects("HNT167", $currentPlayer) && TypeContains($cardID, "AA") && !SearchCurrentTurnEffects("HNT167-ATTACK", $currentPlayer) && GetResolvedAbilityName($cardID, $from) != "Ability") {
+        AddCurrentTurnEffect("HNT167-ATTACK", $currentPlayer);
+      }
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from)));
       if(HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
