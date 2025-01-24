@@ -816,8 +816,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "HNT254":
+      $startingRunechants = CountAura("ARC112", $currentPlayer);
       PlayAura("ARC112", $currentPlayer, GetClassState($currentPlayer, $CS_NumNonAttackCards), isToken:true);
-      if (GetClassState($currentPlayer, piece: $CS_NumNonAttackCards) >= 3) GiveAttackGoAgain();
+      if (CountAura("ARC112", $currentPlayer) - $startingRunechants >= 3) GiveAttackGoAgain();
       break;
     case "HNT255":
       AddDecisionQueue("CHOOSENUMBER", $currentPlayer, "1,2,3,4,5,6");
