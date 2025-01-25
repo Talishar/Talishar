@@ -55,6 +55,7 @@ function HNTAbilityCost($cardID): int
 function HNTAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "HNT148" => true,
     "HNT228" => true,
     default => false,
   };
