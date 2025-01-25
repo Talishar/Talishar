@@ -1658,7 +1658,7 @@ function DoesAttackHaveGoAgain()
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
-  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
@@ -1696,6 +1696,31 @@ function DoesAttackHaveGoAgain()
   if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("HNT118", $mainPlayer)) return true;
   //the last action in numActions is going to be the current chain link
   //so we want the second to last to be current funnel, and 3rd to last to be lightning
+  $character = &GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    if ($character[$i + 1] != 2) continue;
+    $characterID = ShiyanaCharacter($character[$i]);
+    switch ($characterID) {
+      case "OUT003": case "HER130": case "HNT261":
+        if (HasStealth($attackID) && GetClassState($mainPlayer, piece: $CS_NumStealthAttacks) == 1) {
+          return true;
+        }
+      default:
+        break;
+    }
+  }
+  $otherPlayerCharacter = &GetPlayerCharacter($defPlayer);
+  for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
+    if ($otherPlayerCharacter[$j + 1] != 2) continue;
+    switch ($otherPlayerCharacter[$j]) {
+      case "HER130": case "HNT261":
+        if (HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1) {
+          return true;
+        }
+      default:
+        break;
+    }
+  }
   $mainPitch = &GetPitch($mainPlayer);
   switch ($attackID) {
     case "WTR078":
