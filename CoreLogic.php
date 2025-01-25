@@ -1701,7 +1701,7 @@ function DoesAttackHaveGoAgain()
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
-      case "HER130": case "HNT261":
+      case "OUT003": case "HER130": case "HNT261":
         if (HasStealth($attackID) && GetClassState($mainPlayer, piece: $CS_NumStealthAttacks) == 1) {
           return true;
         }
