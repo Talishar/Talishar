@@ -1041,26 +1041,19 @@ function ChainLinkResolvedEffects()
   if (IsAllyAttacking() && isset($allies[$combatChainState[$CCS_WeaponIndex] + 2]) && $allies[$combatChainState[$CCS_WeaponIndex] + 2] <= 0) {
     DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
   }
+}
 
+function ResolutionStepTriggers()
+{
+  global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     switch ($currentEffect[0]) {
       case "ROS085":
       case "ROS086":
       case "ROS087":
-        $index = GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]);
-        if($index == -1) $index = GetCombatChainCardIDIndex($currentEffect[1]);
-        if($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-" && $index != -1)
-        {
-          if(substr($combatChain[$index+2], 0, 5) == "THEIR") AddPlayerHand($currentEffect[1], $combatChain[$index+1] == 1 ? 2 : 1, "CC");
-          else AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
-          $CombatChain->Remove($index);
-        }
-        else if($currentTurnEffects[$i+1] == $defPlayer && $index != -1) {
-          if(substr($combatChain[$index+2], 0, 5) == "THEIR") AddPlayerHand($currentEffect[1], $combatChain[$index+1] == 1 ? 2 : 1, "CC");
-          else AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
-          $CombatChain->Remove($index);
-        }
+        $player = $currentTurnEffects[$i + 1];
+        AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
         RemoveCurrentTurnEffect($i);
         break;
       default:

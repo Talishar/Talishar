@@ -266,7 +266,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         "ROS087" => 2
       };
       $options = SearchCombatChainLink($currentPlayer, "AA", minCost: $minCost);
-      if($options != "" && SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+      if($options != "") {
         $max = count(explode(",", $options));
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);

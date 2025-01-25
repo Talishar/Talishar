@@ -2674,6 +2674,33 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS081":
       MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its owner's hand");
       break;
+    case "ROS085":
+    case "ROS086":
+    case "ROS087":
+      $prevLink = $chainLinks[count($chainLinks) - 1];
+      $indices = array();
+      $index = -1;
+      for ($i = 0; $i < count($prevLink); $i += ChainLinksPieces()) {
+        if ($target == $prevLink[$i+7] && $prevLink[$i+2] == 1) {
+          array_push($indices, $i);
+        }
+      }
+      if (count($indices) == 1) {
+        $index = $indices[0];
+      }
+      else if (count($indices) > 1) { //if there are two copies of the same card on the link, assume the player chose their own card
+        // fix later
+        foreach ($indices as $i) {
+          if ($prevLink[$i + 1] == $player) $index = $i; 
+        }
+        if ($index == -1) $index = $indices[0];
+      }
+      if ($index != -1)
+      {
+        AddPlayerHand($target, $prevLink[$index + 1], "CC");
+        $chainLinks[count($chainLinks) - 1][$index + 2] = 0;
+      }
+      break;
     case "ROS114":
       PummelHit($otherPlayer);
       Draw($player);
