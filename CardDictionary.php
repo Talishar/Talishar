@@ -1166,7 +1166,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT258":
       $names = "Ability";
       if ($from != "HAND") $names = "-,Attack Reaction";
-      elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true)) $names .= ",Attack Reaction";
+      elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && CardNameContains($combatChain[0], "Raydn", $mainPlayer, true) && IsReactionPhase()) $names .= ",Attack Reaction";
       return $names;
     default:
       return "";
@@ -2505,7 +2505,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (AttackValue($CombatChain->AttackCard()->ID()) > 3) return true;
       return false;
     case "HNT258":
-      return $from != "HAND" && (!$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true));
+      if ($from == "HAND") return false;
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true)) return true;
+      return false;
     case "HNT407":
       return ArsenalFaceDownCard($player) == "";
     default:
