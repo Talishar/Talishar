@@ -2300,9 +2300,9 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
                       break;
                     }
                 }
-                if ($restrict) $restrictedBy = $cardID;
+                if ($restrict) $restrictedBy = $effectID;
               }
-              else $restrictedBy = $cardID;
+              else $restrictedBy = $effectID;
             }
           }
           break;
