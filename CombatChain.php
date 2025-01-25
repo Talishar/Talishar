@@ -960,6 +960,12 @@ function OnBlockResolveEffects($cardID = "")
       case "ROS217":
         AddNextTurnEffect($defendingCard, $defPlayer);
         break;
+      case "HNT215":
+        $char = &GetPlayerCharacter($defPlayer);
+        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+          if ($char[$i] == $defendingCard) $char[$i+7] = "1";
+        }
+        break;
       default:
         break;
     }
