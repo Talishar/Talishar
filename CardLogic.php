@@ -2182,6 +2182,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $mainPlayer);
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
+    case "OUT168":
+    case "OUT169":
+    case "OUT170":
+      WriteLog(CardLink($parameter, $parameter) . " creates a Bloodrot Pox from being blocked from hand.");
+      PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
+      break;
     case "OUT171":
       PlayAura($CID_BloodRotPox, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
@@ -2508,6 +2514,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $index = GetCombatChainIndex($parameter, $player);
       $chainCard = $CombatChain->Card($index);
       $chainCard->ModifyDefense(3);
+      break;
+    case "MST081":
+      Draw($player, effectSource:$parameter);
+      WriteLog(CardLink($parameter, $parameter) . " draw a card.");
       break;
     case "MST137":
     case "MST138":

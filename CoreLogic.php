@@ -1081,16 +1081,26 @@ function ResolutionStepCharacterTriggers()
   }
 }
 
-function ResolutionStepCombatChainTriggers()
+function ResolutionStepAttackTriggers()
 {
-  global $combatChain;
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    switch ($combatChain[$i]) {
-      case "MST081":
+  global $mainPlayer, $defPlayer, $combatChain, $CID_BloodRotPox, $CS_Transcended;
+  switch ($combatChain[0]) {
+    case "OUT168":
+    case "OUT169":
+    case "OUT170":
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
         break;
-      default:
-        break;
-    }
+      }
+      break;
+    case "MST081":
+      if (GetClassState($mainPlayer, $CS_Transcended) > 0) {
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+      }
+      break;
+    default:
+      break;
   }
 }
 

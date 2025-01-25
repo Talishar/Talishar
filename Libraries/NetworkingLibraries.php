@@ -999,27 +999,6 @@ function ChainLinkBeginResolutionEffects()
       }
     }
   }
-
-  switch ($combatChain[0]) {
-    case "OUT168":
-    case "OUT169":
-    case "OUT170":
-      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
-        WriteLog(CardLink($combatChain[0], $combatChain[0]) . " creates a Bloodrot Pox from being blocked from hand.");
-        PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
-        break;
-      }
-      break;
-    case "MST081":
-      if (GetClassState($mainPlayer, $CS_Transcended) > 0) {
-        Draw($mainPlayer);
-        WriteLog(CardLink($combatChain[0], $combatChain[0]) . " draw a card.");
-      }
-      break;
-    default:
-      break;
-  }
 }
 
 function ResolveChainLink()
@@ -1170,7 +1149,7 @@ function FinalizeChainLink($chainClosed = false)
   ResolveWagers();
   ResolutionStepEffectTriggers();
   ResolutionStepCharacterTriggers();
-  ResolutionStepCombatChainTriggers();
+  ResolutionStepAttackTriggers();
   
 
   array_push($chainLinks, array());
