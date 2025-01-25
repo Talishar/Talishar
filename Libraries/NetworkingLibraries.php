@@ -1478,7 +1478,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed;
-  global $CS_NumDraconicPlayed, $currentTurnEffects, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
+  global $CS_NumDraconicPlayed, $currentTurnEffects, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1694,6 +1694,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityName($cardID, $from) != "Ability") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
       SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
+    }
+    if (HasStealth($cardID) && GetResolvedAbilityName($cardID, $from) != "Ability") {
+      IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       if($from == "BANISH") $mod = GetBanishModifier($index);

@@ -1418,12 +1418,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
-      case "HER130": case "HNT261":
-        if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
-          GiveAttackGoAgain();
-          $character[$i + 1] = 1;
-        }
-        break;
+      // case "HER130": case "HNT261":
+      //   if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
+      //     GiveAttackGoAgain();
+      //     $character[$i + 1] = 1;
+      //   }
+      //   break;
       case "ROGUE017":
         if (CardType($cardID) == "AA") {
           $deck = &GetDeck($currentPlayer);
@@ -1463,12 +1463,12 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
-      case "HER130": case "HNT261":
-        if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
-          GiveAttackGoAgain();
-          $otherPlayerCharacter[$j + 1] = 1;
-        }
-        break;
+      // case "HER130": case "HNT261":
+      //   if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) != "I") {
+      //     GiveAttackGoAgain();
+      //     $otherPlayerCharacter[$j + 1] = 1;
+      //   }
+      //   break;
       default:
         break;
     }
