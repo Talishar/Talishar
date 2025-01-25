@@ -1043,7 +1043,7 @@ function ChainLinkResolvedEffects()
   }
 }
 
-function ResolutionStepTriggers()
+function ResolutionStepEffectTriggers()
 {
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -1055,6 +1055,38 @@ function ResolutionStepTriggers()
         $player = $currentTurnEffects[$i + 1];
         AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
         RemoveCurrentTurnEffect($i);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function ResolutionStepCharacterTriggers()
+{
+  global $mainPlayer, $combatChain;
+  $character = &GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    $charID = $character[$i];
+    switch ($charID) {
+      case "MST001":
+      case "MST002":
+        if (HasStealth($combatChain[0]) && $character[$i + 1] < 3) {
+          AddLayer("TRIGGER", $mainPlayer, $charID, $combatChain[0]);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function ResolutionStepCombatChainTriggers()
+{
+  global $combatChain;
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    switch ($combatChain[$i]) {
+      case "MST081":
         break;
       default:
         break;

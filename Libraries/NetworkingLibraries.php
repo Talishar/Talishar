@@ -945,24 +945,24 @@ function BeginChainLinkResolution()
 
 function NuuStaticAbility($banishedBy)
 {
-  global $combatChain, $mainPlayer, $defPlayer, $CombatChain;
-  $defendingCards = GetChainLinkCards($defPlayer);
-  if (!empty($defendingCards)) {
-    $defendingCards = array_reverse(explode(",", $defendingCards));
-    foreach ($defendingCards as $card) {
-      $originalID = GetCardIDBeforeTransform($combatChain[$card]);
-      $cardType = CardType($combatChain[$card]);
-      if ($cardType === "E" && CardType($originalID) === "A" && $combatChain[$card] !== "EVO410b" && $combatChain[$card] !== "DYN492b") {
-        WriteLog(CardLink($combatChain[$card], $combatChain[$card]) . " was banished.");
-        BanishCardForPlayer(GetCardIDBeforeTransform($combatChain[$card]), $defPlayer, "CC", "Source-" . $banishedBy, $mainPlayer);
-        $index = FindCharacterIndex($defPlayer, $combatChain[$card]);
-        DestroyCharacter($defPlayer, $index, wasBanished: true);
-      }
-      if (DelimStringContains($cardType, "A") || $cardType === "AA") {
-        WriteLog(CardLink($combatChain[$card], $combatChain[$card]) . " was banished.");
-        BanishCardForPlayer($combatChain[$card], $defPlayer, "CC", "Source-" . $banishedBy, $banishedBy);
-        $index = GetCombatChainIndex($combatChain[$card], $defPlayer);
-        $CombatChain->Remove($index);
+  global $combatChain, $mainPlayer, $defPlayer, $CombatChain, $chainLinks;
+  $prevLink = $chainLinks[count($chainLinks) - 1];
+  if (count($prevLink) > 0) {
+    for ($i = 0; $i < count($prevLink); $i += ChainLinksPieces()) {
+      if ($defPlayer == $prevLink[$i+1]) {
+        $originalID = GetCardIDBeforeTransform($prevLink[$i]);
+        $cardType = CardType($prevLink[$i]);
+        if ($cardType === "E" && CardType($originalID) === "A" && $prevLink[$i] !== "EVO410b" && $prevLink[$i] !== "DYN492b") {
+          WriteLog(CardLink($prevLink[$i], $prevLink[$i]) . " was banished.");
+          BanishCardForPlayer($originalID, $defPlayer, "CC", "Source-" . $banishedBy, $mainPlayer);
+          $index = FindCharacterIndex($defPlayer, $prevLink[$i]);
+          DestroyCharacter($defPlayer, $index, wasBanished: true);
+        }
+        if (DelimStringContains($cardType, "A") || $cardType === "AA") {
+          WriteLog(CardLink($prevLink[$i], $prevLink[$i]) . " was banished.");
+          BanishCardForPlayer($prevLink[$i], $defPlayer, "CC", "Source-" . $banishedBy, $banishedBy);
+          $chainLinks[count($chainLinks) - 1][$i + 2] = 0;
+        }
       }
     }
   }
@@ -1135,7 +1135,6 @@ function ResolveCombatDamage($damageDone)
   $character = &GetPlayerCharacter($mainPlayer);
   $charID = $character[0];
   $charID = ShiyanaCharacter($charID);
-  if (HasStealth($combatChain[0]) && ($charID == "MST001" || $charID == "MST002") && $character[1] < 3) NuuStaticAbility($combatChain[0]);
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
 }
@@ -1169,7 +1168,9 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
   
   ResolveWagers();
-  ResolutionStepTriggers();
+  ResolutionStepEffectTriggers();
+  ResolutionStepCharacterTriggers();
+  ResolutionStepCombatChainTriggers();
   
 
   array_push($chainLinks, array());

@@ -2490,6 +2490,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PLAYAURA", $player, "HVY241-2", 1);
       AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_".Cardlink("HVY241", "HVY241")."_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
       break;
+    case "MST001":
+    case "MST002":
+      NuuStaticAbility($target);
+      break;
     case "MST027":
       AddDecisionQueue("YESNO", $player, "if_you_want_" . CardLink("MST027", "MST027") . "_to_gain_Ward_3");
       AddDecisionQueue("NOPASS", $player, "-");
