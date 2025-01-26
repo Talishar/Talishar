@@ -356,7 +356,7 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT139":
-        ThrowWeapon("Dagger", $cardID);
+        ThrowWeapon("Dagger", $cardID, target:$target);
         return "";
       case "OUT140":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -755,14 +755,37 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false)
+  function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false, $target = "-")
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
-    AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-    if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-    else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    if ($target == "-") {
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
+      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
+      if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    }
+    else {
+      $targetArr = explode("-", $target);
+      if ($targetArr[0] == "COMBATCHAINATTACKS") {
+        $ccAttacks = GetCombatChainAttacks();
+        if ($ccAttacks[$targetArr[1] + 2] == 0) {
+          WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
+          return;
+        }
+        $targetInd = $target;
+      }
+      else {
+        $char = GetPlayerCharacter($currentPlayer);
+        $ind = SearchCharacterForUniqueID($targetArr[1], $currentPlayer);
+        if ($ind == -1 || $char[$ind + 1] == 0) {
+          WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
+          return;
+        }
+        $targetInd = "MYCHAR-$ind";
+      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetInd, 1);
+    }
     AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
     if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);

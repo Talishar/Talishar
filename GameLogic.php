@@ -1457,6 +1457,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $char = GetPlayerCharacter($otherPlayer);
         $target = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
       }
+      if ($targetArr[0] == "MYCHAR") {
+        $char = GetPlayerCharacter($player);
+        $target = "MYCHAR-" . $char[$targetArr[1] + 11];
+      }
+      if ($targetArr[0] == "COMBATCHAINATTACKS") {
+        // It's not possible for this index to get messed up before resolution
+        $target = $lastResult;
+      }
       if ($targetArr[0] == "COMBATCHAIN") {
         $char = GetPlayerCharacter($otherPlayer);
         //right now only support targetting the active chain link
