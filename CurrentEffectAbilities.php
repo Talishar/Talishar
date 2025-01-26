@@ -434,7 +434,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
       $character = &GetPlayerCharacter($mainPlayer);
       $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
       ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
-      return 1;
+      return 0;
     case "HNT131":
     case "HNT132":
     case "HNT133":
