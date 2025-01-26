@@ -615,10 +615,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT173":
-      ThrowWeapon("Dagger", $cardID);
+      ThrowWeapon("Dagger", $cardID, target:$target);
       break;
     case "HNT175":
-      ThrowWeapon("Dagger", $cardID, onHitDraw: true);
+      ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
       break;
     case "HNT179":
     case "HNT180":

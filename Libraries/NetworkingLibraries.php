@@ -2709,6 +2709,13 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "OUT094":
       FaceDownArsenalBotDeck($currentPlayer);
       break;
+    case "OUT139":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
+      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "OUT139", 1);
+      break;
     case "OUT148":
     case "OUT149":
     case "OUT150":
@@ -2999,6 +3006,14 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         }
       }
       break;
+    case "HNT173":
+    case "HNT175":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
+      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "HNT257":
       if (GetResolvedAbilityType($cardID, $from) == "I")   
       {
@@ -3104,7 +3119,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         return;
       }
     }
-    if ($resourcesPaid != "Skipped") $target = GetMzCard($currentPlayer, GetAttackTarget());
+    if ($resourcesPaid != "Skipped") {
+      switch ($cardID) {
+        case "OUT139":
+        case "HNT173":
+        case "HNT175":
+          break;
+        default:
+          $target = GetMzCard($currentPlayer, GetAttackTarget());
+          break;
+      }
+    }
     if (!$skipDRResolution && !$isSpectraTarget && $target != "") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       if ($index == 0) {//if adding an attacking card
