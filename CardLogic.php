@@ -2182,6 +2182,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $mainPlayer);
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
+    case "OUT168":
+    case "OUT169":
+    case "OUT170":
+      WriteLog(CardLink($parameter, $parameter) . " creates a Bloodrot Pox from being blocked from hand.");
+      PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
+      break;
     case "OUT171":
       PlayAura($CID_BloodRotPox, $mainPlayer, effectController: $defPlayer);
       TrapTriggered($parameter);
@@ -2490,6 +2496,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PLAYAURA", $player, "HVY241-2", 1);
       AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_".Cardlink("HVY241", "HVY241")."_tokens_from_" . CardLink("AKO005", "AKO005"), 1);
       break;
+    case "MST001":
+    case "MST002":
+      NuuStaticAbility($target);
+      break;
     case "MST027":
       AddDecisionQueue("YESNO", $player, "if_you_want_" . CardLink("MST027", "MST027") . "_to_gain_Ward_3");
       AddDecisionQueue("NOPASS", $player, "-");
@@ -2504,6 +2514,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $index = GetCombatChainIndex($parameter, $player);
       $chainCard = $CombatChain->Card($index);
       $chainCard->ModifyDefense(3);
+      break;
+    case "MST081":
+      Draw($player, effectSource:$parameter);
+      WriteLog(CardLink($parameter, $parameter) . " draw a card.");
       break;
     case "MST137":
     case "MST138":
@@ -2673,6 +2687,33 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS080":
     case "ROS081":
       MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its owner's hand");
+      break;
+    case "ROS085":
+    case "ROS086":
+    case "ROS087":
+      $prevLink = $chainLinks[count($chainLinks) - 1];
+      $indices = array();
+      $index = -1;
+      for ($i = 0; $i < count($prevLink); $i += ChainLinksPieces()) {
+        if ($target == $prevLink[$i+7] && $prevLink[$i+2] == 1) {
+          array_push($indices, $i);
+        }
+      }
+      if (count($indices) == 1) {
+        $index = $indices[0];
+      }
+      else if (count($indices) > 1) { //if there are two copies of the same card on the link, assume the player chose their own card
+        // fix later
+        foreach ($indices as $i) {
+          if ($prevLink[$i + 1] == $player) $index = $i; 
+        }
+        if ($index == -1) $index = $indices[0];
+      }
+      if ($index != -1)
+      {
+        AddPlayerHand($target, $prevLink[$index + 1], "CC");
+        $chainLinks[count($chainLinks) - 1][$index + 2] = 0;
+      }
       break;
     case "ROS114":
       PummelHit($otherPlayer);

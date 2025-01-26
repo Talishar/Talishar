@@ -1041,31 +1041,66 @@ function ChainLinkResolvedEffects()
   if (IsAllyAttacking() && isset($allies[$combatChainState[$CCS_WeaponIndex] + 2]) && $allies[$combatChainState[$CCS_WeaponIndex] + 2] <= 0) {
     DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
   }
+}
 
+function ResolutionStepEffectTriggers()
+{
+  global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     switch ($currentEffect[0]) {
       case "ROS085":
       case "ROS086":
       case "ROS087":
-        $index = GetCombatChainIndex($currentEffect[1], $currentTurnEffects[$i+1]);
-        if($index == -1) $index = GetCombatChainCardIDIndex($currentEffect[1]);
-        if($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-" && $index != -1)
-        {
-          if(substr($combatChain[$index+2], 0, 5) == "THEIR") AddPlayerHand($currentEffect[1], $combatChain[$index+1] == 1 ? 2 : 1, "CC");
-          else AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
-          $CombatChain->Remove($index);
-        }
-        else if($currentTurnEffects[$i+1] == $defPlayer && $index != -1) {
-          if(substr($combatChain[$index+2], 0, 5) == "THEIR") AddPlayerHand($currentEffect[1], $combatChain[$index+1] == 1 ? 2 : 1, "CC");
-          else AddPlayerHand($currentEffect[1], $combatChain[$index+1], "CC");
-          $CombatChain->Remove($index);
-        }
+        $player = $currentTurnEffects[$i + 1];
+        AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
         RemoveCurrentTurnEffect($i);
         break;
       default:
         break;
     }
+  }
+}
+
+function ResolutionStepCharacterTriggers()
+{
+  global $mainPlayer, $combatChain;
+  $character = &GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    $charID = $character[$i];
+    switch ($charID) {
+      case "MST001":
+      case "MST002":
+        if (HasStealth($combatChain[0]) && $character[$i + 1] < 3) {
+          AddLayer("TRIGGER", $mainPlayer, $charID, $combatChain[0]);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function ResolutionStepAttackTriggers()
+{
+  global $mainPlayer, $defPlayer, $combatChain, $CID_BloodRotPox, $CS_Transcended;
+  switch ($combatChain[0]) {
+    case "OUT168":
+    case "OUT169":
+    case "OUT170":
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+        break;
+      }
+      break;
+    case "MST081":
+      if (GetClassState($mainPlayer, $CS_Transcended) > 0) {
+        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+      }
+      break;
+    default:
+      break;
   }
 }
 
