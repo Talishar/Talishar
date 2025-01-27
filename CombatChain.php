@@ -5,10 +5,16 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
   global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   if (!DelimStringContains(CardType($cardID), "W")) {//stops flicks from interacting with tarpit trap
-    if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+    if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+      WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+      return true;
+    }
   }
   //check tarpit trap against flicked kiss of death if the current attack is a dagger
-  if (CardType($cardID) == "AA" && SubtypeContains($cardID, "Dagger", $mainPlayer) && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  if (CardType($cardID) == "AA" && SubtypeContains($cardID, "Dagger", $mainPlayer) && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+    WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+    return true;
+  }
   $cardID = ShiyanaCharacter($cardID);
 
   $set = CardSet($cardID);

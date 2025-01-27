@@ -1260,7 +1260,10 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
   global $combatChain, $mainPlayer, $layers, $defPlayer;
   $character = &GetPlayerCharacter($player);
-  if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+    WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+    return true;
+  }
   switch ($cardID) {
     case "WTR076":
     case "WTR077":
@@ -1361,7 +1364,10 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 {
   global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) return true;
+  if (CardType($target) == "AA" && SearchCurrentTurnEffects("OUT108", $player, count($layers) <= LayerPieces())) {
+    WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+    return true;
+  }
   switch ($cardID) {
     case "DYN094":
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
