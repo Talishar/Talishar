@@ -1569,7 +1569,6 @@ function ColorContains($cardID, $color, $player)
 function TypeContains($cardID, $type, $player = "", $partial = false)
 {
   $cardType = CardType($cardID);
-  if ($cardID == "HNT053") WriteLog("HERE: $cardType, $type");
   return DelimStringContains($cardType, $type, $partial);
 }
 
