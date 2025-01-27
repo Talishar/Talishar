@@ -472,8 +472,9 @@ function MainCharacterHitTrigger($cardID = "-")
   $isAA = ($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA");
   $damageSource = $cardID != "-" ? $cardID : $attackID;
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
-    if ($mainCharacter[$i] != "HNT007" && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || ($mainCharacter[$i + 1] != "2"))) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
+    //tarantula and cindra should still have active triggers after using their abilities
+    if (($characterID != "HNT007" && $characterID != "HNT054" && $characterID != "HNT055") && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || ($mainCharacter[$i + 1] != "2"))) continue;
     switch ($characterID) {
       case "WTR076":
       case "WTR077":
