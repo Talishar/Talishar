@@ -1410,6 +1410,11 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
       return true;
     }
   };
+  //modal cards dominate and overpower restriction
+  if (IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID) != "") return true;
+  if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID) != "") {
+    if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
+  } 
   if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura()) return true;
   switch ($cardID) {
     case "HVY198":
