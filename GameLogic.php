@@ -433,7 +433,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $from = (count($params) > 0 ? $params[0] : "-");
       $facing = (count($params) > 1 ? $params[1] : "DOWN");
       $deck = new Deck($player);
-      if (!ArsenalFull($player)) {
+      if (!ArsenalFull($player) && $deck->RemainingCards() > 0) {
         AddArsenal($deck->Top(), $player, $from, $facing);
         RemoveDeck($player, 0);
         return $lastResult;
