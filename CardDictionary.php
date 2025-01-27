@@ -4039,6 +4039,7 @@ function IsSpecialization($cardID): bool
 function Is1H($cardID): bool|int
 {
   if($cardID == "JDG005") return true;
+  if (SubtypeContains($cardID, "Off-Hand")) return true;
   return GeneratedIs1H($cardID);
 }
 

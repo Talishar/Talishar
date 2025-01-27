@@ -829,7 +829,7 @@ function EquipWeapon($player, $card)
   $numHands = 0;
   $uniqueID = GetUniqueId($card, $player);
   for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
-    if (TypeContains($char[$i], "W", $player)) {
+    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) {
       if ($char[$i + 1] != 0) {
         if (Is1H($char[$i])) ++$numHands;
         else $numHands += 2;
@@ -840,7 +840,7 @@ function EquipWeapon($player, $card)
   if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
     //Replace the first destroyed weapon; if none you can't re-equip
     for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
-      if (TypeContains($char[$i], "W", $player)) {
+      if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
         $lastWeapon = $i;
         if ($char[$i + 1] == 0) {
           $char[$i] = $card;
