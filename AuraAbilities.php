@@ -55,8 +55,30 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
   else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
+  else if (CreatesAuraForOpponent($EffectContext)) IncrementClassState($effectController, $CS_NumAuras, $number);
   else if ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
   if ($cardID == "HNT167") IncrementClassState($player, $CS_FealtyCreated, $number);
+}
+
+//cards that instruct the player to create an aura under their opponent's control
+//it still "counts" as the player creating an aura
+function CreatesAuraForOpponent($cardID)
+{
+  return match($cardID) {
+    "OUT021" => true,
+    "OUT022" => true,
+    "OUT023" => true,
+    "OUT024" => true,
+    "OUT025" => true,
+    "OUT026" => true,
+    "OUT036" => true,
+    "OUT037" => true,
+    "OUT038" => true,
+    "OUT039" => true,
+    "OUT040" => true,
+    "OUT041" => true,
+    default => false
+  };
 }
 
 function AuraNumUses($cardID)
