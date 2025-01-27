@@ -63,7 +63,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 
 function HNTEffectAttackModifier($cardID): int
 {
-  global $currentPlayer;
+  global $currentPlayer, $defPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
     "HNT003" => 3,
@@ -148,7 +148,6 @@ function HNTEffectAttackModifier($cardID): int
     "HNT221" => 1,
     "HNT223-AA" => 3,
     "HNT223-WEAPON" => 3,
-    "HNT235" => CheckMarked($otherPlayer) ? 1 : 0,
     "HNT236" => -1,
     "HNT237" => 1,
     "HNT239" => 1,
