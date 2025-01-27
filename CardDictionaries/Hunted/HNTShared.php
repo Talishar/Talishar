@@ -360,7 +360,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT020":
     case "HNT021":
     case "HNT022":
-      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) EquipWeapon($currentPlayer, "HNT053");
+      if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) EquipWeapon($currentPlayer, "HNT053", $cardID);
       break;
     case "HNT023":
     case "HNT024":
@@ -371,7 +371,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "HNT026":
     case "HNT027":
     case "HNT028":
-      EquipWeapon($currentPlayer, "HNT053");
+      EquipWeapon($currentPlayer, "HNT053", $cardID);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "HNT044":

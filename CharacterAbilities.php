@@ -821,8 +821,15 @@ function EquipEquipment($player, $card, $slot = "")
   if ($card == "ELE111") AddCurrentTurnEffect("ELE111-" . $uniqueID . "," . $slot, $player);
 }
 
-function EquipWeapon($player, $card)
+function EquipWeapon($player, $card, $source = "-")
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if (SearchCurrentTurnEffects("HVY209", $player) != "" || (SearchCurrentTurnEffects("HVY209", $otherPlayer)) != "") {
+    if (TypeContains($card, "T", $player, true) && (CardType($source) == "A" || CardType($source) == "AA")) {
+      WriteLog("You can't equip token weapons from an action card under ripple away");
+      return;
+    }
+  }
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;
   $replaced = 0;

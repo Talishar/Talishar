@@ -1566,10 +1566,11 @@ function ColorContains($cardID, $color, $player)
   return DelimStringContains($cardColor, $color);
 }
 
-function TypeContains($cardID, $type, $player = "")
+function TypeContains($cardID, $type, $player = "", $partial = false)
 {
   $cardType = CardType($cardID);
-  return DelimStringContains($cardType, $type);
+  if ($cardID == "HNT053") WriteLog("HERE: $cardType, $type");
+  return DelimStringContains($cardType, $type, $partial);
 }
 
 function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
