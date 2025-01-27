@@ -2884,6 +2884,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
+    case "HNT254":
+      $startingRunechants = CountAura("ARC112", $player);
+      PlayAura("ARC112", $player, GetClassState($player, $CS_NumNonAttackCards), isToken:true);
+      if (CountAura("ARC112", $player) - $startingRunechants >= 3) GiveAttackGoAgain();
     case "HNT256":
       GainHealth(1, $player);
       break;
