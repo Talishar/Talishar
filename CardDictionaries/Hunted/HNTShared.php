@@ -405,9 +405,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT059":
     case "HNT060":
-      if(IsHeroAttackTarget() && NumDraconicChainLinks() >= 2) {
+      if (NumDraconicChainLinks() >= 2) {
         GiveAttackGoAgain();
-        PlayAura("HNT167", $currentPlayer);
+        if(IsHeroAttackTarget()) {
+          PlayAura("HNT167", $currentPlayer);
+        }
       }
       break;
     case "HNT061":
