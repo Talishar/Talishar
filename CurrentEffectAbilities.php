@@ -1397,7 +1397,7 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
   return false;
 }
 
-function CurrentEffectAfterPlayOrActivateAbility()
+function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 {
   global $currentTurnEffects, $currentPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -1406,7 +1406,7 @@ function CurrentEffectAfterPlayOrActivateAbility()
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch ($effectArr[0]) {
         case "HVY053":
-          CacheCombatResult();
+          if ($cache) CacheCombatResult();
           if ($effectArr[1] != "ACTIVE" && CachedTotalAttack() > intval($effectArr[1])) $currentTurnEffects[$i] = "HVY053,ACTIVE";
           break;
         default:

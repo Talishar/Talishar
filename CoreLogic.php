@@ -96,6 +96,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   if ($canGainAttack || $attack < 0) {
     AddAttack($totalAttack, $attack);
   }
+  CurrentEffectAfterPlayOrActivateAbility(false); //checking gauntlets of iron will
   if (!$secondNeedleCheck) {
     switch ($combatChain[0]) {
       case "CRU051":
