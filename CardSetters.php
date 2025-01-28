@@ -84,17 +84,17 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST106" && ColorContains($cardID, 1, $currentPlayer)) {
+  if ($banishedBy == "MST106" && ColorContains($cardID, 1, $player)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST107" && ColorContains($cardID, 2, $currentPlayer)) {
+  if ($banishedBy == "MST107" && ColorContains($cardID, 2, $player)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST108" && ColorContains($cardID, 3, $currentPlayer)) {
+  if ($banishedBy == "MST108" && ColorContains($cardID, 3, $player)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
