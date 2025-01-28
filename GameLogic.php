@@ -2298,6 +2298,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       if (count($params) < 2) $target = $lastResult;
       else $target = $params[1];
+      // for now only do this for blast to oblivion
+      if ($params[0] == "ROS079" || $params[0] == "ROS080" || $params[0] == "ROS081") {
+        if (DelimStringContains($lastResult, "THEIR", true)) $targettedPlayer = $player == 1 ? 2 : 1;
+        else $targettedPlayer = $player;
+        WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
+      }
       AddLayer("TRIGGER", $player, $params[0], $target);
       return $lastResult;
     case "UNDERCURRENTDESIRES":

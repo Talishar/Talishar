@@ -1718,7 +1718,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
       if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
         $triggeredID = $CombatChain->AttackCard()->ID();
-        AddLayer("TRIGGER", $currentPlayer, $triggeredID);
+        $context = "Blast to Oblivion trigger: Choose an aura to return to its owner's hand (or pass)";
+        $search = "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T";
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $triggeredID, 1);
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
       }
     }

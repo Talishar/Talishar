@@ -2692,7 +2692,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ROS079":
     case "ROS080":
     case "ROS081":
-      MZChooseAndBounce($mainPlayer, "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T", may: true, context: "Choose an aura to return to its owner's hand");
+      MZBounce($player, $target);
       break;
     case "ROS085":
     case "ROS086":
