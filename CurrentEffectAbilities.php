@@ -1005,21 +1005,25 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
+          break;
         case "MST138":
           if (PitchValue($source) == 2) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
+          break;
         case "MST139":
           if (PitchValue($source) == 3) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
+          break;
         case "HNT222":
         case "HNT230":
           $preventedDamage += 1;
           --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] == 0) $remove = true;
+          break;
         default:
           break;
       }
