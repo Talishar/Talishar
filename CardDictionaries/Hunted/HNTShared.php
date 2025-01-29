@@ -336,6 +336,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       }
       else AddCurrentTurnEffect("$cardID", $currentPlayer);
+      break;
     case "HNT015":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
