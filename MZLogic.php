@@ -52,7 +52,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "COMBATCHAINATTACKS":
         $ind = intdiv($mzIndex[1],ChainLinksPieces());
-        $lastResult = $chainLinks[$ind][0];
+        $lastResult = $chainLinks[$ind][7];
         $chainLinks[$ind][2] = 0;
         AddGraveyard($lastResult, $player, "CC", $player);
         break;
