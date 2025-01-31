@@ -975,7 +975,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           break;
         case "HNT145":
           $otherChar = &GetPlayerCharacter(player: $otherPlayer);
-          if (CardNameContains($otherChar[0], "Arakni")) {
+          if (CardNameContains($otherChar[0], "Arakni") && GetResolvedAbilityType($cardID, $from) == "AA") {
             $costModifier -= 1;
             $remove = true;
           }
