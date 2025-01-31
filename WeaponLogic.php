@@ -19,6 +19,14 @@ function IsWeaponAttack()
   return false;
 }
 
+// function WeaponWithNonAttack($cardID,  $from) 
+// {
+//   if (!IsWeapon($cardID, $from)) return false;
+//   if (GetAbilityTypes($cardID) != "") return true;
+//   if (GetAbilityType($cardID) != "AA") return true;
+//   return false;
+// }
+
 function WeaponIndices($chooser, $player, $subtype = "")
 {
   global $mainPlayer;
