@@ -1093,7 +1093,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "CRU101":
       if ($index == -1) return "";
       $rv = "Add_a_steam_counter";
-      if ($character[$index + 2] > 0) $rv .= ",Attack";
+      if ($character[$index + 2] > 0 && !SearchCurrentTurnEffects("HNT115", $mainPlayer)) $rv .= ",Attack";
       return $rv;
     case "OUT093":
       if(!SearchCurrentTurnEffects("OUT093-Load", $currentPlayer)) return "Aim";
@@ -1136,7 +1136,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($auras[$index + 3] > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("ARC043", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2) {
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2 && !SearchCurrentTurnEffects("HNT115", $currentPlayer)) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
