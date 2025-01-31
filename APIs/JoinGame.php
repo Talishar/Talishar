@@ -524,8 +524,6 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "HNT") return true; // The Hunted Launch 31st January
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January  
   if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && isSpecialUsePromo($cardID)) return true;
   if(isBannedInFormat($cardID, $format)) return true;
   return false;
