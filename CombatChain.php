@@ -976,7 +976,6 @@ function OnBlockResolveEffects($cardID = "")
       default:
         break;
     }
-    WriteLog("HERE? $i");
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "ELE174");
