@@ -295,6 +295,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
   global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent, $combatChainState, $CCS_WeaponIndex;
+  global $chainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "HNT003":
@@ -678,6 +679,14 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "HNT215":
       $char = &GetPlayerCharacter($currentPlayer);
+      // remove flexors from its previous link
+      for ($i = 0; $i < count($chainLinks); ++$i) {
+        for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+          if ($chainLinks[$i][$j] == "HNT215") {
+            $chainLinks[$i][$j+2] = 0;
+          }
+        }
+      }
       for ($i = 0; $i < count($char); $i += CharacterPieces()) {
         if ($char[$i] == "HNT215") {
           $ind = $i;

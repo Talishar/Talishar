@@ -334,7 +334,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $buff = NumCardsBlocking();
       for ($i = 0; $i < count($chainLinks); ++$i) {
         for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-          if ($chainLinks[$i][$j + 1] == $defPlayer) ++$buff;
+          if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
         }
       }
       AddCurrentTurnEffect($cardID . "," . $buff, $currentPlayer);
