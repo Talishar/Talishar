@@ -1695,7 +1695,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
   if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
   $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1;
   $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $playerID, "HNT251") != -1;
-  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && !$foundNullTime){
+  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && $foundNullTime){
     $restrictedBy = "HNT251";
     return true;
   }
