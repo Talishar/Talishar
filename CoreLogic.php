@@ -49,12 +49,12 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       }
     }
   }
-  //check static buffs
+  //check layer continuous buffs
   if(isset($combatChain[10])) {
-    $staticBuffs = explode(",", $combatChain[10]);
-    foreach ($staticBuffs as $buff) {
+    $layerContBuffs = explode(",", $combatChain[10]);
+    foreach ($layerContBuffs as $buff) {
       $attack = EffectAttackModifier($buff);
-      if (($canGainAttack || $attack < 0) && !$snagActive) {
+      if (($canGainAttack || $attack < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
         array_push($attackModifiers, $buff);
         array_push($attackModifiers, $attack);
         AddAttack($totalAttack, $attack);
