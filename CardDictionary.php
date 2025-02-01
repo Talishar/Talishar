@@ -1693,7 +1693,9 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     return true;
   }
   if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
-  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1){
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $playerID, "HNT251") != -1;
+  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && !$foundNullTime){
     $restrictedBy = "HNT251";
     return true;
   }

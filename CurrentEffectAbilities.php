@@ -2317,7 +2317,9 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
       }
     }
   }
-  if(SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1 && $from == "HAND"){
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "HNT251") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $currentPlayer, "HNT251") != -1;
+  if($foundNullTime && $from == "HAND"){
     $restrictedBy = "HNT251";
     return true;
   }
