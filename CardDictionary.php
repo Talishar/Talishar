@@ -1389,7 +1389,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 
 function IsBlockRestricted($cardID, &$restriction = null, $player = "")
 {
-  global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed;
+  global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
+  global $defPlayer;
   if (IsEquipment($cardID, $player) && !CanBlockWithEquipment()) {
     $restriction = "This attack disallows blocking with equipment";
     return true;
@@ -1414,7 +1415,21 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
   if (IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID) != "") return true;
   if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID) != "") {
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
-  } 
+  }
+  //current turn effects
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    if ($currentTurnEffects[$i + 1] == $defPlayer) {
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      $effectID = $effectArr[0];
+      switch ($effectID) {
+        case "ARC162":
+          if (GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) return true;
+          break;
+        default:
+          break;
+      }
+    }
+  }
   if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura()) return true;
   switch ($cardID) {
     case "HVY198":
