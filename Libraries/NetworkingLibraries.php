@@ -1676,7 +1676,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
       SearchCurrentTurnEffects("HNT167", $currentPlayer, remove:true);
     }
-    if (HasStealth($cardID) && GetResolvedAbilityName($cardID, $from) != "Ability") {
+    if (HasStealth($cardID) && GetResolvedAbilityType($cardID, $from) == "AA") {
       IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {

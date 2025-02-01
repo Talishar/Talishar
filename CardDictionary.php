@@ -1209,7 +1209,8 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
   $abilityNames = GetAbilityNames($cardID, -1, $from);
   if ($abilityNames == "" || $abilityIndex == "-") return "";
   $abilityNames = explode(",", $abilityNames);
-  return $abilityNames[$abilityIndex];
+  if (isset($abilityNames[$abilityIndex])) return $abilityNames[$abilityIndex];
+  else return "";
 }
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
