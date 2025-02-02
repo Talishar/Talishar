@@ -2,7 +2,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost, $layers;
     $rv = "";
     switch($cardID)
     {
@@ -112,9 +112,11 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "TOMEOFDUPLICITY", 1);
         return "";
       case "UPR169":
+        $index = intval(explode("-", $target)[1]);
+        $targetPlayer = $layers[$index + 1];
         if(substr($from, 0, 5) != "THEIR") NegateLayer($target, "HAND");
         else NegateLayer($target, "THEIRHAND"); 
-        if($currentPlayer != $mainPlayer) GainActionPoints(1, $mainPlayer);
+        if($targetPlayer == $mainPlayer) GainActionPoints(1, $mainPlayer);
         return "";
       case "UPR170": case "UPR171": case "UPR172":
         if($cardID == "UPR170") $damage = 4;
