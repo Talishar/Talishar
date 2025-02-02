@@ -1150,6 +1150,7 @@ function SearchMultizone($player, $searches)
     $hasAttackCounters = false;
     $isIntimidated = false;
     $arcaneDamage = -1;
+    $hasStealth = false;
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
