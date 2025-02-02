@@ -1,6 +1,6 @@
 <?php
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-")
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -13,11 +13,11 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
-
+  $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
   if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
 
-  if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
+  if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) $number -= $numMinusTokens;
   if ($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if ($cardID == "MON104") {
     $index = SearchArsenalReadyCard($player, "MON404");

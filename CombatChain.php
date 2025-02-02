@@ -1431,7 +1431,7 @@ function CombatChainClosedTriggers()
           $numRunechant = 0;
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numRunechant;
           if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numRunechant;
-          if ($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
+          if ($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant, effectSource: $chainLinks[$i][$j]);
           break;
         case "DTD143":
         case "DTD144":
