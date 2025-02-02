@@ -28,6 +28,31 @@ ob_end_clean();
 
 session_start();
 
+if($playerID == 3) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  if(!IsUserLoggedIn()) {
+    loginFromCookie();
+    if(!IsUserLoggedIn()) {
+      $response->error = "You must be logged in to spectate games";
+      echo (json_encode($response));
+      exit;
+    }
+  }
+  //Now audit the spectate
+  $userID = LoggedInUser();
+  $conn = GetDBConnection();
+  if ($conn->connect_error) {
+    $response->error = "Database connection failed: " . $conn->connect_error;
+    echo (json_encode($response));
+    exit;
+  }
+  $query = "UPDATE users SET numSpectates = numSpectates + 1 WHERE usersId = ?";
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param("i", $userID);
+  $stmt->execute();
+  $stmt->close();
+}
+
 // CORS etc *must* be set for all endpoints
 SetHeaders();
 
