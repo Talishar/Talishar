@@ -20,6 +20,23 @@ $playerID = TryPOST("playerID", 0);
 $response = new stdClass();
 session_write_close();
 
+if($playerID == 3) {
+  if(!IsUserLoggedIn()) {
+    $response->error = "You must be logged in to spectate games";
+    echo (json_encode($response));
+    exit;
+  }
+  //Now audit the spectate
+  include_once "../includes/dbh.inc.php";
+  $userID = GetLoggedInUserID();
+  $conn = GetDBConnection();
+  $query = "UPDATE users SET numSpectates = numSpectates + 1 WHERE usersId = ?";
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param("i", $userID);
+  $stmt->execute();
+  $stmt->close();
+}
+
 if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
   echo (json_encode(new stdClass()));
   exit;
