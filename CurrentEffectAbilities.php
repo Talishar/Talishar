@@ -6,9 +6,14 @@ function EffectHitEffect($cardID, $from, $source = "-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
-  // if (DelimStringContains($cardID, "HNT102", true)) WriteLog($cardID);
   $attackID = $CombatChain->AttackCard()->ID();
-  if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+  if ($source == "-") {
+    if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+      WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+      return true;
+    }
+  }
+  else if (CardType($source) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
     WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
     return true;
   }
