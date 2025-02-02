@@ -1355,7 +1355,9 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   global $currentPlayer, $mainPlayer, $CS_NumNonAttackCards, $CS_NumBoostPlayed;
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 2) continue;
+    // don't turn off hanabi blaster counting if it has fired that turn
+    if ($character[$i + 1] != 2 && $character[$i] != "DYN088") continue;
+    // WriteLog("HERE: " . $character[$i]);
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
       case "ARC075":
