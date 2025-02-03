@@ -157,7 +157,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "ARC188":
     case "ARC189":
     case "ARC190":
-      return HitsInRow() > 0 ? 2 : 0;
+      return $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()] > 0 ? 2 : 0;
     case "CRU016":
     case "CRU017":
     case "CRU018":
