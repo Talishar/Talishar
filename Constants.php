@@ -482,14 +482,17 @@ function ResetCombatChainState()
   $chainLinkSummary = [];
 }
 
+//we will likely need to check layer continuous effects here
 function AttackReplaced($cardID, $player)
 {
   global $combatChainState;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack, $combatChain;
+  global $CS_NumStealthAttacks;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
   $combatChainState[$CCS_LinkBaseAttack] = 0;
+  if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
   $combatChain[5] = 0;//Reset Attack modifiers
   $combatChain[6] = 0;//Reset Defense modifiers
