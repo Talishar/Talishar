@@ -393,7 +393,7 @@ function MainCharacterBeginEndPhaseAbilities()
         break;
       case "HNT001":
       case "HNT002":
-        if (CheckMarked($defPlayer)) ChaosTransform($characterID, $mainPlayer);
+        if (CheckMarked($defPlayer) && $mainCharacter[$i + 1] < 3) ChaosTransform($characterID, $mainPlayer);
         break;
       case "HNT003":
       case "HNT004":
@@ -401,7 +401,7 @@ function MainCharacterBeginEndPhaseAbilities()
       case "HNT006":
       case "HNT007":
       case "HNT008":
-        ChaosTransform($characterID, $mainPlayer);
+        if ($mainCharacter[$i + 1] < 3) ChaosTransform($characterID, $mainPlayer);
         break;
       default:
         break;
