@@ -279,7 +279,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "HNT236" => true,
     "HNT237" => true,
     "HNT239" => true,
-    "HNT240" => AttackValue($attackID) <= 3,
+    "HNT240" => AttackValue($attackID, base:true) <= 3,
     "HNT241" => true,
     "HNT242" => true,
     "HNT243" => true,
