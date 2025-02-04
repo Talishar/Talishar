@@ -593,6 +593,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "HNT215":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
+      break;
     default:
       break;
   }
@@ -969,8 +970,8 @@ function OnBlockResolveEffects($cardID = "")
         break;
       case "HNT215":
         $char = &GetPlayerCharacter($defPlayer);
-        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-          if ($char[$i] == $defendingCard) $char[$i+7] = "1";
+        for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+          if ($char[$j] == $defendingCard) $char[$j+7] = "1";
         }
         break;
       default:
