@@ -546,21 +546,27 @@ function MainCharacterHitTrigger($cardID = "-")
         break;
       case "HNT001":
       case "HNT002":
-        if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID) && ($cardID == "-" || $cardID == $attackID)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+        if ($mainCharacter[$i+1] < 3) {
+          if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID) && ($cardID == "-" || $cardID == $attackID)) {
+            AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+          }
         }
         break;
       case "HNT007":
-        if (IsHeroAttackTarget() && ($cardID == "-" && SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer))) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+        if ($mainCharacter[$i+1] < 3) {
+          if (IsHeroAttackTarget() && ($cardID == "-" && SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer))) {
+            AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+          }
         }
         break;
       case "HNT054":
       case "HNT055":
       case "HNT098":
       case "HNT099":
-        if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
-          AddLayer("TRIGGER", $mainPlayer, $characterID,$damageSource, "MAINCHARHITEFFECT");
+        if ($mainCharacter[$i+1] < 3) {
+          if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+            AddLayer("TRIGGER", $mainPlayer, $characterID,$damageSource, "MAINCHARHITEFFECT");
+          }
         }
         break;
       case "HNT168":
