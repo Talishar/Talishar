@@ -1616,7 +1616,9 @@ function TalentOverride($cardID, $player = "", $zone="-")
       case "UPR060":
       case "UPR061":
       case "UPR062":
-        $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
+        if (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) {
+          $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
+        }
         break;
       case "HNT163":
         $talentToAdd = "DRACONIC";
