@@ -510,7 +510,7 @@ function ProcessLayer($player, $parameter)
   }
 }
 
-function AddOnHitTrigger($cardID, $uniqueID = -1): void
+function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
 {
   global $mainPlayer, $combatChain;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
@@ -1123,7 +1123,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
   }
 }
 
-function AddEffectHitTrigger($cardID): void // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer;
   $effects = explode(',', $cardID);
@@ -1216,7 +1216,7 @@ function AddEffectHitTrigger($cardID): void // Effects that gives effect to the 
     case "HVY091":
     case "HVY136":
     case "HVY099":
-      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT");
+      AddLayer("TRIGGER", $mainPlayer, substr($cardID, 0, 6), $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "MST105-HIT":
     case "MST162-HIT":
