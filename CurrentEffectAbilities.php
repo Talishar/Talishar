@@ -8,12 +8,12 @@ function EffectHitEffect($cardID, $from, $source = "-")
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($source == "-") {
-    if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+    if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) < LayerPieces())) {
       WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
       return true;
     }
   }
-  else if (CardType($source) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+  else if (CardType($source) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) < LayerPieces())) {
     WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
     return true;
   }

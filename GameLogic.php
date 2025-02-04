@@ -1994,8 +1994,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $index = intval(explode("-", $location)[1]) / ChainLinksPieces();
         $activeEffects = explode(",", $chainLinks[$index][6]);
         foreach ($activeEffects as $effect) {
-          AddEffectHitTrigger($effect);
-          AddOnHitTrigger($effect);
+          AddEffectHitTrigger($effect, $cardID);
+          AddOnHitTrigger($effect, source:$cardID);
           AddCardEffectHitTrigger($effect, $cardID);
         }
       }
