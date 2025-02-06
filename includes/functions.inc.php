@@ -398,25 +398,24 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 
 function SendFaBInsightsResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID)
 {
-	global $FaBInsightsKey, $gameName, $p2IsAI, $p1id, $p2id;
+	global $FaBInsightsKey, $gameName, $p2IsAI, $p1id, $p2id, $p1uid, $p2uid;
     // Skip AI games
     if ($p2IsAI == "1") return;
 
     // Your Azure Function endpoint URL
-	$url = "https://fab-insights.azurewebsites.net/api/send_results";
-	// $url = "http://host.docker.internal:7072/api/send_results";
+    $url = "https://fab-insights.azurewebsites.net/api/send_results";
+
+    // Get player names from game state variables
+    $p1Name = $p1uid ?? "";
+    $p2Name = $p2uid ?? "";
 
     // Prepare the data for the POST request
     $payloadArr = [];
     $payloadArr['gameID'] = $gameID;
     $payloadArr['gameName'] = $gameName;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
+    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Name, $p1id, $p1Hero));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Name, $p2id, $p2Hero));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
-    
-    // Add player IDs to the payload
-    // $payloadArr['player1ID'] = $p1id;
-    // $payloadArr['player2ID'] = $p2id;
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -568,7 +567,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	return json_encode($deck);
 }
 
-function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
+function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerName = "", $playerId = "", $hero = "")
 {
     global $winner, $currentTurn, $firstPlayer;
     global $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $CardStats_TimesKatsuDiscard;
@@ -597,9 +596,12 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
             "turns" => intval($currentTurn),
             "result" => ($player == $winner ? 1 : 0),
             "firstPlayer" => ($player == $firstPlayer ? 1 : 0),
+            "hero" => $hero,
             "opposingHero" => $opposingHero,
             "deckbuilderID" => $deckbuilderID,
             "playerNumber" => $player,
+            "playerName" => $playerName,
+            "playerId" => $playerId,
             "totalTime" => ($player == 1 ? $p1TotalTime : $p2TotalTime)
         ],
         "turnByTurnStats" => [],
