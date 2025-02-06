@@ -138,12 +138,12 @@ if (SearchCharacterForCard(2, "HVY047") || SearchCharacterForCard(2, "HVY048")) 
 }
 
 //Aria Sanctuary for Rosseta Limited
-if($format == "draft"){
+/* if($format == "draft"){
   AddDecisionQueue("PASSPARAMETER", 1, "ROS027");
   AddDecisionQueue("PUTPLAY", 1, "-");
   AddDecisionQueue("PASSPARAMETER", 2, "ROS027");
   AddDecisionQueue("PUTPLAY", 2, "-");
-}
+} */
 
 InventoryStartGameAbilities(1);
 InventoryStartGameAbilities(2);

@@ -266,7 +266,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         "ROS087" => 2
       };
       $options = SearchCombatChainLink($currentPlayer, "AA", minCost: $minCost);
-      if($options != "" && SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+      if($options != "") {
         $max = count(explode(",", $options));
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -511,7 +511,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ROS247":
       LookAtHand($otherPlayer);
       LookAtArsenal($otherPlayer);
-      AddNextTurnEffect($cardID . "-1", $otherPlayer);
+      if ($otherPlayer != $mainPlayer) AddNextTurnEffect($cardID . "-1", $otherPlayer);
+      else AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
       for ($i=0; $i < 3; $i++) { 
         MZMoveCard($currentPlayer, "MYDECK:subtype=Trap", "MYHAND", may: true, DQContext:"Choose traps from your deck to add to your hand:");
       }

@@ -557,7 +557,10 @@
   {
     global $mainPlayer, $defPlayer, $defCharacter, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers;
     if(!IsHeroAttackTarget()) return;
-    if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+    if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+      WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+      return true;
+    }
     switch($cardID) {
       case "WTR043":
         DiscardRandom($defPlayer, $cardID, $mainPlayer);

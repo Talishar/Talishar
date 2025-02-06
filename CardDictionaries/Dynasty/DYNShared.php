@@ -87,6 +87,9 @@ function DYNEffectAttackModifier($cardID)
     case "DYN076": return (NumEquipBlock() > 0 ? 3 : 0);
     case "DYN077": return (NumEquipBlock() > 0 ? 2 : 0);
     case "DYN078": return (NumEquipBlock() > 0 ? 1 : 0);
+    case "DYN079": return 3;
+    case "DYN080": return 2;
+    case "DYN081": return 1;
     case "DYN082": return 6;
     case "DYN083": return 5;
     case "DYN084": return 4;
@@ -129,6 +132,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "DYN071": return CardSubType($attackID) == "Axe";
     case "DYN073": case "DYN074": case "DYN075": return TypeContains($attackID, "W", $mainPlayer);
     case "DYN076": case "DYN077": case "DYN078":
+    case "DYN079": case "DYN080": case "DYN081":
       $subtype = CardSubType($attackID);
       return ($subtype == "Sword") || ($subtype == "Dagger");
     case "DYN082": case "DYN083": case "DYN084": return CardSubType($attackID) == "Axe";
@@ -584,9 +588,9 @@ function DYNHitEffect($cardID, $from, $attackID)
 
 function IsRoyal($player)
 {
-  if (SearchCurrentTurnEffects("UPR187", $player)) return false;//erase face
   $mainCharacter = &GetPlayerCharacter($player);
   if(SearchCharacterForCard($player, "DYN234")) return true;//crown
+  if (SearchCurrentTurnEffects("UPR187", $player)) return false;//erase face
   switch($mainCharacter[0]) {
     case "DYN001": return true;//emperor
     case "HNT054":
@@ -685,10 +689,10 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
 
 function CheckHitContract($contractType, $otherPlayer)
 {
-  $otherchar = &GetPlayerCharacter($otherPlayer);
+  $otherChar = &GetPlayerCharacter($otherPlayer);
   switch($contractType) {
-    case "HITMARKEDFANG": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Fang");
-    case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & CardNameContains($otherchar[0], "Cindra");
+    case "HITMARKEDFANG": return CheckMarked($otherPlayer) & CardNameContains($otherChar[0], "Fang");
+    case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & CardNameContains($otherChar[0], "Cindra");
     default: return false;
   }
 }

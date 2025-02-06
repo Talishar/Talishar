@@ -28,6 +28,31 @@ ob_end_clean();
 
 session_start();
 
+if($playerID == 3) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  if(!IsUserLoggedIn()) {
+    loginFromCookie();
+    if(!IsUserLoggedIn()) {
+      $response->error = "You must be logged in to spectate games";
+      echo (json_encode($response));
+      exit;
+    }
+  }
+  //Now audit the spectate
+  $userID = LoggedInUser();
+  $conn = GetDBConnection();
+  if ($conn->connect_error) {
+    $response->error = "Database connection failed: " . $conn->connect_error;
+    echo (json_encode($response));
+    exit;
+  }
+  $query = "UPDATE users SET numSpectates = numSpectates + 1 WHERE usersId = ?";
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param("i", $userID);
+  $stmt->execute();
+  $stmt->close();
+}
+
 // CORS etc *must* be set for all endpoints
 SetHeaders();
 
@@ -106,7 +131,7 @@ switch ($popupType) {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
     global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode;
-    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
+    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic;
     $response->Settings = array();
     AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
     AddSetting($response->Settings, "TryReactUI", $SET_TryUI2);
@@ -127,6 +152,7 @@ switch ($popupType) {
     AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode);
     AddSetting($response->Settings, "Playmat", $SET_Playmat);
     AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo);
+    AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic);
     $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     break;
   default:

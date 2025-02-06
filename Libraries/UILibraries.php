@@ -57,6 +57,7 @@ function JSONRenderedCard(
   $frostCounters = NULL,
   $balanceCounters = NULL,
   $bindCounters = NULL,
+  $stainCounters = NULL,
   $lightningPlayed = NULL,
   $showAmpAmount = false,
   $marked = NULL
@@ -95,6 +96,8 @@ function JSONRenderedCard(
   if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
   $bindCounters = property_exists($countersMap, 'bind') ? $bindCounters->bind : $bindCounters;
   if($bindCounters != NULL) $countersMap->bind = $bindCounters;
+  $stainCounters = property_exists($countersMap, 'stain') ? $stainCounters->stain : $stainCounters;
+  if($stainCounters != NULL) $countersMap->stain = $stainCounters;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -142,6 +145,10 @@ function JSONRenderedCard(
     }
     else if(HasBindCounters($cardNumber)) {
       $countersMap->bind = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasStainCounters($cardNumber)) {
+      $countersMap->stain = $countersMap->counters;
       $countersMap->counters = 0;
     }
     else if ($type == "E") {

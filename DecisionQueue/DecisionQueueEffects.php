@@ -59,6 +59,12 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           break;
       }
       return $lastResult;
+    case "TWOSIDES":
+      switch($lastResult) {
+        case "Buff_Dagger": AddCurrentTurnEffect("HNT051-DAGGER", $player); break;
+        case "Buff_Stealth": AddCurrentTurnEffect("HNT051-ATTACK", $player); break;
+      }
+      return $lastResult;
     case "LONGWHISKER":
       if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for($i = 0; $i < count($lastResult); ++$i) {
@@ -401,12 +407,13 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
       $type = CardType($zone[$index]);
       return $block > -1 && $condition($block, $dqVars) && (DelimStringContains($type, "A") || $type == "AA");
   });
-  return implode(",", $filteredIndices) ?: "PASS";
+  $filteredIndices = implode(",", $filteredIndices);
+  return $filteredIndices == "" ? "PASS" : $filteredIndices;
 }
 
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
-  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex;
+  global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -460,7 +467,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "EVENBIGGERTHANTHAT":
       $deck = new Deck($player);
       $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
-      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), $CS_DamageDealt)) {
+      if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), piece: $CS_DamageDealt)) {
         WriteLog(CardLink($params[1], $params[1]) . " draw a card and created a " . CardLink("WTR225", "WTR225") . " token");
         Draw($player);
         PlayAura("WTR225", $player);
@@ -673,10 +680,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if($lastResult == "PASS") {
         if($dqVars[0] != "-") {
           $char = &GetPlayerCharacter($player);
-          $index = $dqVars[1];
           $hyperdriverArr = explode(",", $dqVars[0]);
-          for($i=0; $i<count($hyperdriverArr); ++$i) CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
-          AddCurrentTurnEffect($char[$index] . "-" . (count($hyperdriverArr)*2), $player);
+          $index = $hyperdriverArr[0];
+          $count = count($hyperdriverArr);
+          for($i=1; $i<$count; ++$i) {
+            CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
+          }
+          AddCurrentTurnEffect($char[$index] . "-" . (($count-1)*2), $player);
         }
         return $lastResult;
       }
@@ -746,13 +756,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN", "MST233");
         array_push($cardList, $discard[$lastResult[$i]]);
       }
-    if(!ArsenalFull($player)) {
-        $rand = GetRandom(0, 2);
-        AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
-        RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
-      }
+      if(!ArsenalFull($player)) {
+          $rand = GetRandom(0, 2);
+          AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
+          RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
+        }
       for($j=2; $j>=0; $j--) {
         $index = SearchDiscardForCard($player, $cardList[$j]);
+        $index = explode(",", $index)[0]; //in case the search returns 2 cards
         RemoveGraveyard($player, $index);
       }
       return $lastResult;
@@ -795,6 +806,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       {
         AddDecisionQueue("PASSPARAMETER", $player, $params[1] . "-" . $params[2]);
         AddDecisionQueue("MZBOTTOM", $player, "-", 1);
+      }
+      return $lastResult;
+    case "BLOODSPATTEREDVEST":
+      $char = &GetPlayerCharacter($player);
+      $index = FindCharacterIndex($player, "HNT168");
+      if($index != -1){
+        GainResources($player, 1);
+        if(++$char[$index + 2] >= 3) {
+          DestroyCharacter($player, $index); # If it has three counters blow it up
+          WriteLog(CardLink("HNT168", "HNT168") . " got too dirty...");
+        }
       }
       return $lastResult;
     default: return "";

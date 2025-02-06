@@ -5,26 +5,20 @@ function ProcessMacros()
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants, $defPlayer;
   $somethingChanged = true;
   $lastPhase = $turn[0];
-  for($i=0; $i<$numPass; ++$i)
-  {
+  for ($i = 0; $i < $numPass; ++$i) {
     PassInput();
   }
-  if(!IsGameOver())
-  {
-    for($i=0; $i<10 && $somethingChanged; ++$i)
-    {
-      if($lastPhase != $turn[0]) $i = 0;
+
+  if (!IsGameOver()) {
+    for ($i = 0; $i < 10 && $somethingChanged; ++$i) {
+      if ($lastPhase != $turn[0]) $i = 0;
       $lastPhase = $turn[0];
       $somethingChanged = false;
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if(($turn[0] == "B") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
-      else if($turn[0] == "CHOOSEARCANE" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue("0"); }
-      else if($turn[0] == "CHOOSEARSENAL" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSEHAND" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSEPERMANENT" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSEMYAURA" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if($turn[0] == "CHOOSECARD" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSETHEIRCHARACTER" && strlen($turn[2]) <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
@@ -78,11 +72,19 @@ function ProcessMacros()
 
 function AutopassPhaseWithOneOption($phase)
 {
-  switch($phase)
-  {
-    case "BUTTONINPUT": case "CHOOSEMULTIZONE": case "CHOOSECHARACTER": case "CHOOSECOMBATCHAIN":
+  switch ($phase) {
+    case "BUTTONINPUT":
+    case "CHOOSEMULTIZONE":
+    case "CHOOSECHARACTER":
+    case "CHOOSECOMBATCHAIN":
+    case "CHOOSEARCANE":
+    case "CHOOSEARSENAL":
+    case "CHOOSEHAND":
+    case "CHOOSEPERMANENT":
+    case "CHOOSEMYAURA":
       return true;
-    default: return false;
+    default:
+      return false;
   }
 }
 

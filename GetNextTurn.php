@@ -460,7 +460,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         facing: $theirCharacter[$i + 12],
         numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-        marked: $theirCharacter[$i + 13]
+        marked: $theirCharacter[$i + 13] == 1
         ));
       }
     } else {
@@ -476,7 +476,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           label: $label,
           facing: $theirCharacter[$i + 12],
           subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-          marked: $theirCharacter[$i + 13]
+          marked: $theirCharacter[$i + 13] == 1
           ));
     } 
   }
@@ -610,7 +610,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
       $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
       $weaponAttackModifiers = [];
-      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $playerID) > 0 && !$playable) $border = 5;
+    if (!$playable) {
+        if (MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $playerID) > 0 ||
+            SearchCurrentTurnEffectsForPartielID($myCharacter[$i + 11])) {
+            $border = 5;
+        }
+    }
       $atkCounters = $myCharacter[$i + 3];
     }
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3 && $myCharacter[$i + 12] != "DOWN") {
@@ -646,7 +651,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           facing: $myCharacter[$i + 12],
           numUses: $myCharacter[$i + 5], //Number of Uses
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10],
-          marked: $myCharacter[$i + 13]));
+          marked: $myCharacter[$i + 13] == 1));
       }
     }
   }
@@ -713,7 +718,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $chainLinkOutput = array();
   for ($i = 0; $i < count($chainLinks); ++$i) {
     $damage = $chainLinkSummary[$i * ChainLinkSummaryPieces()];
-    array_push($chainLinkOutput, $damage > 0 ? "hit" : "no-hit");
+    $isDraconic = DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 2], "DRACONIC", $playerID);
+    array_push($chainLinkOutput, [
+      'result' => $damage > 0 ? "hit" : "no-hit",
+      'isDraconic' => $isDraconic
+    ]);
   }
   $response->combatChainLinks = $chainLinkOutput;
 
@@ -919,15 +928,54 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $opponentEffects = array();
   $friendlyEffects = "";
   $BorderColor = NULL;
+  $counters = NULL;
+  $friendlyCounts = array();
+  $opponentCounts = array();
+  $friendlyRenderedEffects = array();
+  $opponentRenderedEffects = array();
+
+  // Count the occurrences of each effect
   for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-    $cardID = explode("-", $currentTurnEffects[$i])[0];
-    $cardID = explode(",", $cardID)[0];
-    $cardID = explode("_", $cardID)[0];
-    if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
-    $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
-    $BorderColor = ($isFriendly ? "blue" : "red");
-    if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
-    else array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+      $cardID = explode("-", $currentTurnEffects[$i])[0];
+      $cardID = explode(",", $cardID)[0];
+      $cardID = explode("_", $cardID)[0];
+      if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
+      $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+
+      if ($isFriendly) {
+          if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
+          $friendlyCounts[$cardID]++;
+      } else {
+          if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
+          $opponentCounts[$cardID]++;
+      }
+  }
+
+  // Render the effects
+  for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+      $cardID = explode("-", $currentTurnEffects[$i])[0];
+      $cardID = explode(",", $cardID)[0];
+      $cardID = explode("_", $cardID)[0];
+      if(AdministrativeEffect($cardID) || $cardID == "HVY254-1" || $cardID == "HVY254-2") continue; //Don't show useless administrative effect
+      $isFriendly = ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]);
+      $BorderColor = ($isFriendly ? "blue" : "red");
+
+      $counters = ($isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID]);
+
+      if($cardID == "HNT222" || $cardID == "HNT230") {
+        $counters = $currentTurnEffects[$i + 3];
+      }
+
+      if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
+          if(array_search($cardID, $friendlyRenderedEffects) === false || !skipEffectUIStacking($cardID)) {
+              array_push($friendlyRenderedEffects, $cardID);
+              array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+          }
+      }  
+      elseif(array_search($cardID, $opponentRenderedEffects) === false && $otherPlayer == $currentTurnEffects[$i + 1] || !skipEffectUIStacking($cardID)) {
+          array_push($opponentRenderedEffects, $cardID);
+          array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
+      }  
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;
@@ -1081,7 +1129,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, GetPhaseHelptext(), 1, "");
   }
 
-  if (($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD") && $turn[1] == $playerID) {
+  if (($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM" || $turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") && $turn[1] == $playerID) {
     $playerInputPopup->active = true;
     $options = explode(",", $turn[2]);
     $optCards = array();
@@ -1089,7 +1137,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($optCards, JSONRenderedCard($options[$i], action: 0));
       if ($turn[0] == "CHOOSETOP") array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 8, $options[$i], "20px"));
       if ($turn[0] == "CHOOSEBOTTOM") array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 9, $options[$i], "20px"));
-      if ($turn[0] == "CHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
+      if ($turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") array_push($playerInputButtons, CreateButtonAPI($playerID, "Choose", 23, $options[$i], "20px"));
     }
     $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
   }
@@ -1195,6 +1243,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "LANDMARK") $source = $landmarks;
       else if ($option[0] == "CC") $source = $combatChain;
       else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+      else if ($option[0] == "COMBATCHAINATTACKS") $source = GetCombatChainAttacks();
       else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
       else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
       $counters = 0;
@@ -1268,6 +1317,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else if ($option[0] == "CC") $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
       else if ($option[0] == "LAYER") {
         $borderColor = ($layers[$index + 1] == $playerID ? 1 : 2);
+      }
+      else if ($option[0] == "COMBATCHAINATTACKS") {
+        $borderColor = 1;
       }
       if ($option[0] == "COMBATCHAINLINK"){
         $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
@@ -1545,4 +1597,8 @@ function GetPhaseHelptext()
   global $turn;
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   return (GetDQHelpText() != "-" ? GamestateUnsanitize(GetDQHelpText()) : $defaultText);
+}
+
+function skipEffectUIStacking($cardID) {
+  return $cardID != "HNT222" && $cardID != "HNT230";
 }

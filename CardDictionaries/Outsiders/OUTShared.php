@@ -183,8 +183,12 @@ function OUTAbilityCost($cardID)
         if(CardCost($card->ID()) > 2) { $card->ClearModifier(); return "Uzuri was bluffing"; }
         if(substr($CombatChain->AttackCard()->From(), 0, 5) != "THEIR") $deck = new Deck($currentPlayer);
         else $deck = new Deck($otherPlayer);
-        $deck->AddBottom($combatChain[0], "CC");
-        AttackReplaced($card->ID());
+        if (CardType($combatChain[0]) == "AA") $deck->AddBottom($combatChain[0], "CC");
+        else {//chelicera
+          $index = SearchCharacterForUniqueID($combatChain[8], $currentPlayer);
+          DestroyCharacter($currentPlayer, $index);
+        }
+        AttackReplaced($card->ID(), $currentPlayer);
         $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
@@ -352,7 +356,7 @@ function OUTAbilityCost($cardID)
         }
         return $rv;
       case "OUT139":
-        ThrowWeapon("Dagger", $cardID);
+        ThrowWeapon("Dagger", $cardID, target:$target);
         return "";
       case "OUT140":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -499,7 +503,7 @@ function OUTAbilityCost($cardID)
   {
     global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
-    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_FlickedDamage;
     switch ($cardID)
     {
       case "OUT005": case "OUT006":
@@ -629,6 +633,7 @@ function OUTAbilityCost($cardID)
         {
           if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
         }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("OUT142", "OUT142"));
         LoseHealth($numDaggerHits, $defPlayer);
         break;
@@ -733,40 +738,79 @@ function OUTAbilityCost($cardID)
       case "MST121": case "MST122": case "MST123": 
       case "MST124": case "MST125": case "MST126":
       case "MST127": case "MST128": case "MST129":
+      case "HNT012": case "HNT013":
+      case "HNT017": case "HNT018": case "HNT019":
+      case "HNT020": case "HNT021": case "HNT022":
       case "HNT030": case "HNT031":
+      case "HNT032": case "HNT033": case "HNT034":
+      case "HNT035": case "HNT036": case "HNT037":
+      case "HNT038": case "HNT039": case "HNT040":
+      case "HNT041": case "HNT042": case "HNT043":
+      case "HNT044": case "HNT045": case "HNT046":
+      case "HNT047": case "HNT048": case "HNT049":
+      case "HNT053":
         return true;
       default:
         return false;
     }
   }
 
-  function ThrowWeapon($subtype, $source)
+  function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false, $target = "-")
   {
-    global $currentPlayer, $CCS_HitThisLink;
+    global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype);
-    AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-    AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+    if ($target == "-") {
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
+      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
+      if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    }
+    else {
+      $targetArr = explode("-", $target);
+      if ($targetArr[0] == "COMBATCHAINATTACKS") {
+        $ccAttacks = GetCombatChainAttacks();
+        if ($ccAttacks[$targetArr[1] + 2] == 0) {
+          WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
+          return;
+        }
+        $targetInd = $target;
+      }
+      else {
+        $char = GetPlayerCharacter($currentPlayer);
+        $ind = SearchCharacterForUniqueID($targetArr[1], $currentPlayer);
+        if ($ind == -1 || $char[$ind + 1] == 0) {
+          WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
+          return;
+        }
+        $targetInd = "MYCHAR-$ind";
+      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetInd, 1);
+    }
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
+    if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+    else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
     AddDecisionQueue("DEALDAMAGE", $otherPlayer, "<-", 1);
+    AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, $source, 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
+    if ($onHitDraw) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
   }
 
   function DamageDealtBySubtype($subtype)
   {
-    global $chainLinks, $chainLinkSummary;
+    global $chainLinks, $chainLinkSummary, $combatChainState, $CCS_FlickedDamage;
     $damage = 0;
     for($i=0; $i<count($chainLinks); ++$i)
     {
       if(CardSubType($chainLinks[$i][0]) == $subtype) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
     }
+    if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
     return $damage;
   }
 

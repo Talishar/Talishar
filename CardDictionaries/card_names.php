@@ -10,7 +10,7 @@ function CardName($cardID)
     if($set != "ROG" && $set != "DUM")
     {
       $number = intval(substr($cardID, 3));
-      if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
+      if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
     }
     if ($set == "ROG") {
       return ROGUEName($cardID);
@@ -38,6 +38,8 @@ function CardName($cardID)
       case "MST495": case "MST496": case "MST497": case "MST498": 
       case "MST499": case "MST500": case "MST501": case "MST502":
         return "Inner Chi";
+      case "HNT407": 
+        return "The Hand that Pulls the Strings";
       default: return "";
     }
 	}

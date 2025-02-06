@@ -1,11 +1,22 @@
 <?php
 
-function ProcessHitEffect($cardID, $from = "-")
+function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
 {
-  global $CombatChain, $layers, $mainPlayer;
+  global $CombatChain, $layers, $mainPlayer, $chainLinks;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+  if (!DelimStringContains(CardType($cardID), "W")) {//stops flicks from interacting with tarpit trap
+    if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) < LayerPieces())) {
+      WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+      return true;
+    }
+  }
+  //check tarpit trap against flicked kiss of death if the current attack is a dagger
+  if (CardType($cardID) == "AA" && SubtypeContains($cardID, "Dagger", $mainPlayer) && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) < LayerPieces())) {
+    WriteLog("Hit effect prevented by " . CardLink("OUT108", "OUT108"));
+    return true;
+  }
   $cardID = ShiyanaCharacter($cardID);
+
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
@@ -65,7 +76,7 @@ function ProcessHitEffect($cardID, $from = "-")
   else if ($set == "AUR") return AURHitEffect($cardID);
   else if ($set == "ROS") return ROSHitEffect($cardID);
   else if ($set == "AJV") return AJVHitEffect($cardID);
-  else if ($set == "HNT") return HNTHitEffect($cardID);
+  else if ($set == "HNT") return HNTHitEffect($cardID, $uniqueID);
   else return -1;
 }
 
@@ -73,9 +84,11 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated;
+  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
+  if (HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
   switch ($cardID) {
     case "WTR003":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -144,7 +157,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "ARC188":
     case "ARC189":
     case "ARC190":
-      return HitsInRow() > 0 ? 2 : 0;
+      return $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()] > 0 ? 2 : 0;
     case "CRU016":
     case "CRU017":
     case "CRU018":
@@ -263,30 +276,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "DYN060":
     case "DYN061":
       return (ComboActive() ? 4 : 0);
-    case "DYN079":
-      return 3 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN080":
-      return 2 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN081":
-      return 1 + (NumEquipBlock() > 0 ? 1 : 0);
-    case "DYN156":
-    case "DYN157":
-    case "DYN158":
-      return HasPiercing($cardID, $from) && NumEquipBlock() > 0 ? 1 : 0;
-    case "DYN115":
-    case "DYN116":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT005":
-    case "OUT006":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT007":
-    case "OUT008":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "OUT009":
-    case "OUT010":
-      return NumEquipBlock() > 0 ? 1 : 0;
-    case "HVT245":
-      return NumEquipBlock() > 0 ? 1 : 0;
     case "OUT018":
     case "OUT019":
     case "OUT020":
@@ -369,8 +358,6 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "HVY147":
     case "HVY148":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 1 : 0;
-    case "HVY245":
-      return NumEquipBlock() > 0 ? 1 : 0;
     case "MST082":
       return GetClassState($mainPlayer, $CS_Transcended) > 0 ? 2 : 0;
     case "MST087":
@@ -418,8 +405,46 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "AJV002":
       return (CheckHeavy($mainPlayer)) ? 2 : 0;
+    case "HNT041":
+    case "HNT042":
+    case "HNT043":
+      return (IsHeroAttackTarget() && CheckMarked($defPlayer)) ? 1 : 0;
+    case "HNT086":
+    case "HNT087":
+    case "HNT088":
+      return isPreviousLinkDraconic() ? 1 : 0;
+    case "HNT101":
+      return 4;
     case "HNT116":
       return 3;
+    case "HNT119":
+    case "HNT120":
+    case "HNT121":
+      return 1;
+    case "HNT146":
+      return 1;
+    case "HNT152":
+      return CheckMarked($defPlayer) ? 2 : 0;
+    case "HNT176":
+    case "HNT177":
+    case "HNT178":
+      $numDaggerHits = 0;
+        for($i=0; $i<count($chainLinks); ++$i)
+        {
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+        }
+        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+      return $numDaggerHits > 0 ? 1 : 0;
+    case "HNT199":
+      return CheckMarked($defPlayer) ? 4 : 3;
+    case "HNT200":
+      return CheckMarked($defPlayer) ? 3 : 2;
+    case "HNT201":
+      return CheckMarked($defPlayer) ? 2 : 1;
+    case "HNT205": return 3;
+    case "HNT206": return 2;
+    case "HNT207": return 1;
+    case "HNT235": return CheckMarked($defPlayer) ? 1 : 0;
     case "HNT249":
       return (SearchCurrentTurnEffectsForIndex("HNT249", $mainPlayer) != -1 ? 2 : 0);
     default:
@@ -528,7 +553,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "HVY096":
       if (IsWeaponAttack()) $blockModifier += 2;
-      break;
+      break;    
     case "HVY100":
       CountAura("HVY240", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
       CountAura("HVY242", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
@@ -554,6 +579,21 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "AIO005":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
         break;
+    case "HNT192":
+    case "HNT193":
+    case "HNT194":
+    case "HNT195":
+      if (NumAttackReactionsPlayed() > 0) $blockModifier += 1;
+      break;
+    case "HNT216":
+    case "HNT217":
+    case "HNT218":
+    case "HNT219":
+      if (IsWeaponAttack()) $blockModifier += 1;
+      break;
+    case "HNT215":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
+      break;
     default:
       break;
   }
@@ -599,7 +639,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   switch ($combatChain[0]) {
     case "CRU051":
     case "CRU052":
-      AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+      EvaluateCombatChain($totalAttack, $totalBlock);
       break;
     case "DTD205":
       if (!SearchCurrentTurnEffects("DTD205", $mainPlayer)) {
@@ -653,6 +693,21 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     case "OUT173":
       if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
+    case "HNT052":
+      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT162":
+      if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT191":
+      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT214":
+      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
+    case "HNT253":
+      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      break;
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "ELE174", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "ELE174");
@@ -700,7 +755,7 @@ function OnBlockResolveEffects($cardID = "")
     switch ($combatChain[0]) {
       case "CRU051":
       case "CRU052":
-        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+        EvaluateCombatChain($totalAttack, $totalBlock);
         break;
       case "ELE004":
         if (SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
@@ -708,7 +763,7 @@ function OnBlockResolveEffects($cardID = "")
         }
         break;
       case "OUT185":
-        $NumActionsBlocking = CachedNumActionBlocked();
+        $NumActionsBlocking = NumActionsBlocking();
         for ($i = 0; $i < $NumActionsBlocking; ++$i) {
           AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
         }
@@ -758,7 +813,11 @@ function OnBlockResolveEffects($cardID = "")
     if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
     if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
     elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
-    if (SearchCurrentTurnEffects("HVY104", $mainPlayer && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1)) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
+    if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain
+      $defendingCard = $cardID;
+      $i = count($combatChain) - CombatChainPieces();
+    }
+    if (SearchCurrentTurnEffects("HVY104", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("HVY104") == -1) AddLayer("TRIGGER", $mainPlayer, "HVY104", $defPlayer);
     $defendingCard = $combatChain[$i];
     switch ($defendingCard) {//code for Jarl's armor
       case "AJV004":
@@ -774,10 +833,6 @@ function OnBlockResolveEffects($cardID = "")
         break;
       default:
         break;
-    }
-    if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain
-      $defendingCard = $cardID;
-      $i = count($combatChain);
     }
     switch ($defendingCard) {
       case "EVR018":
@@ -859,6 +914,8 @@ function OnBlockResolveEffects($cardID = "")
       case "ROS028":
       case "ROS072"://flash of brilliance
       case "AJV013"://Unforgiving Unforgetting
+      case "HNT011":
+      case "HNT115"://Kabuto of Imperial Authority
       case "HNT246"://Thick Hide Hunter
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
@@ -910,6 +967,12 @@ function OnBlockResolveEffects($cardID = "")
         break;
       case "ROS217":
         AddNextTurnEffect($defendingCard, $defPlayer);
+        break;
+      case "HNT215":
+        $char = &GetPlayerCharacter($defPlayer);
+        for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+          if ($char[$j] == $defendingCard) $char[$j+7] = "1";
+        }
         break;
       default:
         break;
@@ -1333,7 +1396,7 @@ function IsFusionActive()
 
 function CombatChainClosedTriggers()
 {
-  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost;
+  global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost, $currentTurnEffects;
   for ($i = 0; $i < count($chainLinks); ++$i) {
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $mainPlayer) continue;
@@ -1369,7 +1432,7 @@ function CombatChainClosedTriggers()
           $numRunechant = 0;
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numRunechant;
           if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numRunechant;
-          if ($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant);
+          if ($numRunechant > 0) PlayAura("ARC112", $mainPlayer, $numRunechant, effectSource: $chainLinks[$i][$j]);
           break;
         case "DTD143":
         case "DTD144":
@@ -1390,6 +1453,14 @@ function CombatChainClosedTriggers()
       }
     }
   }
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    if (!isset($currentTurnEffects[$i + 1])) continue;
+    if (explode("-", $currentTurnEffects[$i])[0] == "HNT056" && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      $uniqueID = explode("-", $currentTurnEffects[$i])[1];
+      $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
+      if ($index != -1) DestroyCharacter($mainPlayer, $index);
+    }
+  }
 }
 
 
@@ -1400,7 +1471,7 @@ function CacheCombatResult()
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalAttack] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
-  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock]);
+  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
@@ -1472,21 +1543,19 @@ function CachedNumActionBlocked()
 
 function IsPiercingActive($cardID)
 {
-  global $combatChain, $CombatChain, $currentTurnEffects, $mainPlayer;
+  global $CombatChain, $currentTurnEffects, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) {
-    if (HasPiercing($cardID))
-      return true;
+    if (HasPiercing($cardID)) return true;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       if (!isset($currentTurnEffects[$i + 1])) continue;
       if ($currentTurnEffects[$i + 1] == $mainPlayer && HasPiercing($currentTurnEffects[$i])) return true;
-      else return false;
     }
   }
+  return false;
 }
-
 
 function IsTowerActive()
 {
-  global $combatChain, $CCS_CachedTowerActive;
+  global $combatChain;
   return (CachedTotalAttack() >= 13 && HasTower($combatChain[0]));
 }

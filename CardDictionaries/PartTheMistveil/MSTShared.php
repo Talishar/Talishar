@@ -580,7 +580,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "MST200":
     case "MST201":
     case "MST202":
-      if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, true, DQContext: "Choose a card to banish from their graveyard.");
+      if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH", true, DQContext: "Choose a card to banish from their graveyard.");
       return "";
     case "MST212":
     case "MST213":
@@ -654,8 +654,7 @@ function MSTHitEffect($cardID, $from): void
   $discard = new Discard($defPlayer);
   switch ($cardID) {
     case "MST003":
-      if ($from != "OUT139" && $from != "OUT148" && $from != "OUT149" && $from != "OUT150") AddCurrentTurnEffect($cardID, $mainPlayer);
-      else AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
+      AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
       break;
     case "MST103":
       $count = count(GetDeck($defPlayer));

@@ -2,7 +2,7 @@
 
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
-  global $CombatChain;
+  global $CombatChain, $chainLinks;
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = ($player == 1 ? 2 : 1);
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
@@ -49,6 +49,12 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "COMBATCHAINLINK":
         $lastResult = $CombatChain->Remove($mzIndex[1]);
+        break;
+      case "COMBATCHAINATTACKS":
+        $ind = intdiv($mzIndex[1],ChainLinksPieces());
+        $lastResult = $chainLinks[$ind][0];
+        $chainLinks[$ind][2] = 0;
+        AddGraveyard($chainLinks[$ind][7], $player, "CC", $player);
         break;
       default:
         break;
@@ -415,15 +421,15 @@ function FrozenOffsetMZ($zone)
 function MZIsPlayer($MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
-  if ($indexArr[0] == "MYCHAR" || $indexArr[0] == "THEIRCHAR") return true;
+  if (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR") return true;
   return false;
 }
 
 function MZPlayerID($me, $MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
-  if ($indexArr[0] == "MYCHAR") return $me;
-  if ($indexArr[0] == "THEIRCHAR") return ($me == 1 ? 2 : 1);
+  if (substr($indexArr[0], 0, 6) == "MYCHAR") return $me;
+  if (substr($indexArr[0], 0, 9) == "THEIRCHAR") return ($me == 1 ? 2 : 1);
   return -1;
 }
 
@@ -450,6 +456,13 @@ function MZStartTurnAbility($player, $MZIndex)
       AddDecisionQueue("FINDINDICES", $player, "UPR086");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("AFTERTHAW", $player, "<-", 1);
+      break;
+    case "HNT150":
+      AddDecisionQueue("PASSPARAMETER", $player, $MZIndex);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("MULTIBANISH", $player, "GY,-", 1);
+      MZMoveCard($player, "MYDISCARD:isSameName=HNT150", "MYBANISH", DQContext:"Choose a card named Loyalty Beyond the Grave to banish", isSubsequent:true);
+      AddDecisionQueue("DRAW", $player, "-", 0);
       break;
     default:
       break;

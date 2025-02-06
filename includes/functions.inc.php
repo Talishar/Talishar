@@ -458,6 +458,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	}
 	$deckAfterSB = explode("\r\n", $deckAfterSB);
 	if(count($deckAfterSB) == 1) return "";
+	$character = $deckAfterSB[0];
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
 	if($gameID != "") $deck["gameId"] = $gameID;
@@ -469,23 +470,57 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
+	$deck["character"] = [];
+
+	$character = explode(" ", $character);
+	$deduplicatedCharacter = [];
+	for($i = 0; $i < count($character); ++$i) {
+		$card = $character[$i];
+
+		if (array_key_exists($card, $deduplicatedCharacter)) {
+			$deduplicatedCharacter[$card]++;
+		} else {
+			$deduplicatedCharacter[$card] = 1;
+		}
+	}
+	$deck["character"] = [];
+
+	foreach ($deduplicatedCharacter as $card => $numCopies) {
+		$cardResult = [
+			"cardId" => GetNormalCardID($card),
+			"cardName" => CardName($card),
+			"numCopies" => $numCopies,
+		];
+		array_push($deck["character"], $cardResult);
+	}
+
 	$deckAfterSB = explode(" ", $deckAfterSB);
 	$deduplicatedDeck = [];
 	for($i = 0; $i < count($deckAfterSB); ++$i) {
-		if($i > 0 && $deckAfterSB[$i] == $deckAfterSB[$i - 1]) continue; //Don't send duplicates
-		array_push($deduplicatedDeck, $deckAfterSB[$i]);
+		$card = $deckAfterSB[$i];
+
+		if (array_key_exists($card, $deduplicatedDeck)) {
+			$deduplicatedDeck[$card]++;
+		} else {
+			$deduplicatedDeck[$card] = 1;
+		}
 	}
-	for ($i = 0; $i < count($deduplicatedDeck); ++$i) {
-		$deck["cardResults"][$i] = [];
-		$deck["cardResults"][$i]["cardId"] = GetNormalCardID($deduplicatedDeck[$i]);
-		$deck["cardResults"][$i]["played"] = 0;
-		$deck["cardResults"][$i]["blocked"] = 0;
-		$deck["cardResults"][$i]["pitched"] = 0;
-		$deck["cardResults"][$i]["hits"] = 0;
-		$deck["cardResults"][$i]["charged"] = 0;
-		$deck["cardResults"][$i]["cardName"] = CardName($deduplicatedDeck[$i]);
-		$deck["cardResults"][$i]["pitchValue"] = PitchValue($deduplicatedDeck[$i]);
+
+	foreach ($deduplicatedDeck as $card => $numCopies) {
+		$cardResult = [
+			"cardId" => GetNormalCardID($card),
+			"played" => 0,
+			"blocked" => 0,
+			"pitched" => 0,
+			"hits" => 0,
+			"charged" => 0,
+			"cardName" => CardName($card),
+			"pitchValue" => PitchValue($card),
+			"numCopies" => $numCopies,
+		];
+		array_push($deck["cardResults"], $cardResult);
 	}
+
 	$cardStats = &GetCardStats($player);
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
@@ -735,6 +770,7 @@ function GetNormalCardID($cardID)
 		case "MON400": return "LEV005";
 		case "MON404": return "PSM002";
 		case "MON402": return "PSM007";
+		case "HNT407": return "ARK007";
 	}
 	return $cardID;
 }

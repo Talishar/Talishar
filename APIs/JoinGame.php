@@ -21,7 +21,7 @@ if (!function_exists("DelimStringContains")) {
 }
 
 if (!function_exists("SubtypeContains")) {
-  function SubtypeContains($cardID, $subtype, $player="")
+  function SubtypeContains($cardID, $subtype)
   {
     $cardSubtype = CardSubtype($cardID);
     return DelimStringContains($cardSubtype, $subtype);
@@ -29,7 +29,7 @@ if (!function_exists("SubtypeContains")) {
 }
 
 if (!function_exists("TypeContains")) {
-  function TypeContains($cardID, $type, $player="")
+  function TypeContains($cardID, $type)
   {
     $cardType = CardType($cardID);
     return DelimStringContains($cardType, $type);
@@ -114,14 +114,6 @@ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
 }
 
 $deckLoaded = false;
-if(substr($decklink, 0, 9) == "DRAFTFAB-")
-{
-  $isDraftFaB = true;
-  $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-  ParseDraftFab(substr($decklink, 9), $deckFile);
-  $decklink = "";//Already loaded deck, so don't try to load again
-  $deckLoaded = true;
-}
 
 if ($decklink != "") {
   if ($playerID == 1) $p1DeckLink = $decklink;
@@ -199,6 +191,9 @@ if ($decklink != "") {
   $modularSideboard = "";
   $unsupportedCards = "";
   $bannedCard = "";
+  $restrictedCard = "";
+  $isDeckBlitzLegal = "";
+  $isDeckCCLegal = "";
   $character = "";
   $head = "";
   $chest = "";
@@ -211,194 +206,94 @@ if ($decklink != "") {
   $weaponSideboard = "";
   $totalCards = 0;
   $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT"];
+
   if (is_countable($cards)) {
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
       $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
-      $id = "";
-      if ($isFaBDB) {
-        $printings = $cards[$i]->{'printings'};
-        $printing = $printings[0];
-        $sku = $printing->{'sku'};
-        $id = $sku->{'sku'};
-        $id = explode("-", $id)[0];
-      } else if ($isFaBMeta) {
-        $id = $cards[$i]->{'identifier'};
-      } else if(isset($cards[$i]->{'setIdentifiers'})) {
-        $earliest = -1;
-        foreach($cards[$i]->{'setIdentifiers'} as $setCard) {
-          $set = substr($setCard, 0, 3);
-          for($j=0; $j<count($orderedSets); ++$j) {
-            if($orderedSets[$j] == $set && ($earliest == -1 || $j < $earliest)) {
-              $earliest = $j;
-              $id = $setCard;
-              break;
-            }
-          }
-        }
-      }
-
+      $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
       if($id == "" && isset($cards[$i]->{'cardIdentifier'})) {
         $id = $cards[$i]->{'cardIdentifier'};
       }
-      if ($id == "") continue;
-      $id = GetAltCardID($id);
-      $cardType = CardType($id);
-      $cardSet = substr($id, 0, 3);
-
-      if ($cardType == "") { //Card not supported, error
-        if ($unsupportedCards != "") $unsupportedCards .= " ";
-        $unsupportedCards .= $id;
-      } else if (IsModular($id)) {
-        // The way we handle modular equipment, we force it to the sideboard,
-        // and it'll equipped straight from the inventory at start of game
-        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
-        for($j=0; $j < $numMainBoard + $numSideboard; ++$j) {
-          if ($modularSideboard != "") $modularSideboard .= " ";
-          $modularSideboard .= $id;
-        }
-        $totalCards += $numMainBoard + $numSideboard;
-      } else if (TypeContains($id, "C")) {
-        $character = $id;
-      } else if (TypeContains($id, "W")) {
-        ++$totalCards;
-        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
-        for ($j = 0; $j < $numMainBoard; ++$j) {
-          if($j > 0) $id = ReverseArt($id);
-          if ($weapon1 == "") $weapon1 = $id;
-          else if ($weapon2 == "") $weapon2 = $id;
-          else {
-            if ($weaponSideboard != "") $weaponSideboard .= " ";
-            $weaponSideboard .= $id;
-          }
-        }
-        for ($j = 0; $j < $numSideboard; ++$j) {
-          if($numMainBoard > 0 || $j > 0) $id = ReverseArt($id);
-          if ($weaponSideboard != "") $weaponSideboard .= " ";
-          $weaponSideboard .= $id;
-        }
-      } else if (TypeContains($id, "E")) {
-          ++$totalCards;
-          $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
-          if (SubtypeContains($id, "Head")) {
-            for ($j = 0; $j < $numMainBoard; ++$j) {
-              if ($head == "") $head = $id;
-              else {
-                if ($headSideboard != "") $headSideboard .= " ";
-                $headSideboard .= $id;
-              }
-            }
-            for ($j = 0; $j < $numSideboard; ++$j) {
-              if ($headSideboard != "") $headSideboard .= " ";
-              $headSideboard .= $id;
-            }
-          } else if (SubtypeContains($id, "Chest")) {
-            for ($j = 0; $j < $numMainBoard; ++$j) {
-              if ($chest == "") $chest = $id;
-              else {
-                if ($chestSideboard != "") $chestSideboard .= " ";
-                $chestSideboard .= $id;
-              }
-            }
-            for ($j = 0; $j < $numSideboard; ++$j) {
-              if ($chestSideboard != "") $chestSideboard .= " ";
-              $chestSideboard .= $id;
-            }
-          } else if (SubtypeContains($id, "Arms")) {
-            for ($j = 0; $j < $numMainBoard; ++$j) {
-              if ($arms == "") $arms = $id;
-              else {
-                if ($armsSideboard != "") $armsSideboard .= " ";
-                $armsSideboard .= $id;
-              }
-            }
-            for ($j = 0; $j < $numSideboard; ++$j) {
-              if ($armsSideboard != "") $armsSideboard .= " ";
-              $armsSideboard .= $id;
-            }
-          } else if (SubtypeContains($id, "Legs")) {
-            for ($j = 0; $j < $numMainBoard; ++$j) {
-              if ($legs == "") $legs = $id;
-              else {
-                if ($legsSideboard != "") $legsSideboard .= " ";
-                $legsSideboard .= $id;
-              }
-            }
-            for ($j = 0; $j < $numSideboard; ++$j) {
-              if ($legsSideboard != "") $legsSideboard .= " ";
-              $legsSideboard .= $id;
-            }
-          } else if (SubtypeContains($id, "Off-Hand")) {
-            for ($j = 0; $j < $numMainBoard; ++$j) {
-              if ($offhand == "") $offhand = $id;
-              else {
-                if ($offhandSideboard != "") $offhandSideboard .= " ";
-                $offhandSideboard .= $id;
-              }
-            }
-            for ($j = 0; $j < $numSideboard; ++$j) {
-              if ($offhandSideboard != "") $offhandSideboard .= " ";
-              $offhandSideboard .= $id;
-            }
-          } else if (SubtypeContains($id, "Quiver")) {
-            for ($j = 0; $j < $numMainBoard; ++$j) {
-              if ($quiver == "") $quiver = $id;
-              else {
-                if ($quiverSideboard != "") $quiverSideboard .= " ";
-                $quiverSideboard .= $id;
-              }
-            }
-            for ($j = 0; $j < $numSideboard; ++$j) {
-              if ($quiverSideboard != "") $quiverSideboard .= " ";
-              $quiverSideboard .= $id;
-            }
-          }
-      } else {
-        $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
-        for ($j = 0; $j < $numMainBoard; ++$j) {
-          if ($deckCards != "") $deckCards .= " ";
-          $deckCards .= $id;
-        }
-        for ($j = 0; $j < $numSideboard; ++$j) {
-          if ($sideboardCards != "") $sideboardCards .= " ";
-          $sideboardCards .= $id;
-        }
-        $totalCards += $numMainBoard + $numSideboard;
-      }
+      if ($id == "") continue;   
+      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
 
       if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
-        $bannedCard .= CardName($id);
+        $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+      }
+
+      // Track the count of each card ID
+      if (!isset($cardCounts[$id])) {
+        $cardCounts[$id] = 0;
+      }
+      $cardCounts[$id] += $count;
+
+      if(isCardRestricted($id, $format, $cardCounts[$id])) {
+        if ($restrictedCard != "") $restrictedCard .= ", ";
+        $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+      }
+
+      if($character != "TCC027" && $id != "TCC048") { //Exclude Brevant and Chivalry
+        // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
+        if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
+          if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
+          $isDeckBlitzLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+        }
+      }
+      // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
+      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3) {
+        if ($isDeckCCLegal != "") $isDeckCCLegal .= ", ";
+        $isDeckCCLegal .= CardName($id);
       }
     }
     $deckLoaded = true;
   }
+
   if(!$deckLoaded) {
     $response->error = "⚠️ Error retrieving deck. Decklist link invalid.";
     echo(json_encode($response));
     exit;
   }
 
+  if($isDeckBlitzLegal != "") {
+    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckBlitzLegal . ".";
+    echo (json_encode($response));
+    exit;
+  }
+
+  if($isDeckCCLegal != "") {
+    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckCCLegal . ".";
+    echo (json_encode($response));
+    exit;
+  }
+
   if($unsupportedCards != "") {
-    $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards;
+    $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards . ".";
     echo (json_encode($response));
     exit;
   }
 
   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "openformatcc")) {
-    $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character);
+    $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
   }
 
   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz")) {
-    $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character);
+    $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
   }
 
   if ($bannedCard != "") {
-    $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard;
+    $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard . ".";
+    echo (json_encode($response));
+    exit;
+  }
+
+  if ($restrictedCard != "") {
+    $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard . ".";
     echo (json_encode($response));
     exit;
   }
@@ -534,88 +429,6 @@ echo (json_encode($response));
 
 session_write_close();
 
-
-function ParseDraftFab($deck, $filename)
-{
-  global $character;
-  $character = "DYN001";
-  $deckCards = "";
-  $headSideboard = "";
-  $chestSideboard = "";
-  $armsSideboard = "";
-  $legsSideboard = "";
-  $offhandSideboard = "";
-  $weaponSideboard = "";
-  $sideboardCards = "";
-  $quiverSideboard = "";
-
-  $cards = explode(",", $deck);
-  for ($i = 0; $i < count($cards); ++$i) {
-    $card = explode(":", $cards[$i]);
-    $cardID = $card[0];
-    $quantity = $card[2];
-    $type = CardType($cardID);
-    switch ($type) {
-      case TypeContains($cardID, "T"):
-        break;
-      case TypeContains($cardID, "C"):
-        $character = $cardID;
-        break;
-      case TypeContains($cardID, "W"):
-        if ($weaponSideboard != "") $weaponSideboard .= " ";
-        $weaponSideboard .= $cardID;
-        break;
-      case TypeContains($cardID, "E"):
-        if (SubtypeContains($cardID, "Head")) {
-          if ($headSideboard != "") $headSideboard .= " ";
-          $headSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Chest")) {
-          if ($chestSideboard != "") $chestSideboard .= " ";
-          $chestSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Arms")) {
-          if ($armsSideboard != "") $armsSideboard .= " ";
-          $armsSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Legs")) {
-          if ($legsSideboard != "") $legsSideboard .= " ";
-          $legsSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Off-Hand")) {
-          if ($offhandSideboard != "") $offhandSideboard .= " ";
-          $offhandSideboard .= $cardID;
-        } else if (SubtypeContains($cardID, "Quiver")) {
-          if ($quiverSideboard != "") $quiverSideboard .= " ";
-          $quiverSideboard .= $cardID;
-        }
-        break;
-      default:
-        for ($j = 0; $j < $quantity; ++$j) {
-          if ($card[1] == "S") {
-            if ($sideboardCards != "") $sideboardCards .= " ";
-            $sideboardCards .= GetAltCardID($cardID);
-          } else {
-            if ($deckCards != "") $deckCards .= " ";
-            $deckCards .= GetAltCardID($cardID);
-          }
-        }
-        break;
-    }
-  }
-
-
-  $deckFile = fopen($filename, "w");
-  $charString = $character;
-
-  fwrite($deckFile, $charString . "\r\n");
-  fwrite($deckFile, $deckCards . "\r\n");
-  fwrite($deckFile, $headSideboard . "\r\n");
-  fwrite($deckFile, $chestSideboard . "\r\n");
-  fwrite($deckFile, $armsSideboard . "\r\n");
-  fwrite($deckFile, $legsSideboard . "\r\n");
-  fwrite($deckFile, $offhandSideboard . "\r\n");
-  fwrite($deckFile, $weaponSideboard . "\r\n");
-  fwrite($deckFile, $sideboardCards);
-  fclose($deckFile);
-}
-
 function GetAltCardID($cardID)
 {
   switch ($cardID) {
@@ -678,6 +491,7 @@ function GetAltCardID($cardID)
     case "DRO026": return "WTR173";
     case "AUR002": return "ROS009";
     case "JDG032": return "AIO004";
+    case "ARK007": return "HNT407";
   }
   return $cardID;
 }
@@ -686,7 +500,7 @@ function isClashLegal($cardID, $character) {
   $set = substr($cardID, 0, 3);
   $number = intval(substr($cardID, 3, 3));
   switch ($cardID) { //Special Use Promos
-    case "JDG001": case "JDG003": case "JDG006": case "JDG010": case "JDG010": case "JDG019": case "JDG024": case "JDG025":
+    case "JDG001": case "JDG003": case "JDG006": case "JDG010": case "JDG010": case "JDG019": case "JDG024": case "JDG025": case "JDG038":
       return true;
       default:
       break;
@@ -702,113 +516,70 @@ function isClashLegal($cardID, $character) {
   if(($character == "DTD002" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash
   return false;
 }
+
 function IsCardBanned($cardID, $format, $character)
 {
   $set = substr($cardID, 0, 3);
-  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && $cardID != "CRU187") return true;
+  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "CRU187") return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "HNT") return true; // The Hunted Launch 31st January
-  if(($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") && $set == "ARK") return true; // Arakni Blitz Deck Launch 31st January
-  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatllblitz") {
-    switch ($cardID) { //Special Use Promos
-      case "JDG001": case "JDG002": case "JDG003": case "JDG004": case "JDG005": case "JDG006": case "JDG008": case "JDG010": 
-      case "JDG019": case "JDG024": case "JDG025":
-      case "LSS001": case "LSS002": case "LSS003": case "LSS004": case "LSS005": case "LSS006": case "LSS007": case "LSS008":
-      case "FAB094":
-      case "LGS099":
-      case "HER101":
-        return true;
-    }
-  }
-  switch($format) {
-    case "blitz": case "compblitz":
-      switch($cardID) {
-        case "WTR002": //Rhinar
-        case "WTR160": //Tome of Fyendal
-        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
-        case "ARC002": //Dash
-        case "ARC003": //Teklo Plasma Pistol
-        case "ARC076": case "ARC077": // Viserai | Nebula Black
-        case "ARC122": //Tome of Aetherwind
-        case "ARC160": // Art of War
-        case "ELE006": // Awakening
-        case "ELE063": //Briar
-        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "ELE222": //Rosetta
-        case "ELE223": // Duskblade
-        case "WTR152": // Heartened Cross Strap
-        case "CRU141": // Bloodsheath Skeleta
-        case "CRU174": case "CRU175": case "CRU176": // Snapback
-        case "CRU188": // Cash In
-        case "MON065": //Tome of Divinity
-        case "MON239": // Stubby Hammers
-        case "EVR037": // Mask of the Pouncing Lynx
-        case "UPR089": // Tome of Firebrand
-        case "UPR103": case "EVR120": case "EVR121": // Iyslander | Kraken's Aethervein
-        case "ELE002": case "ELE003": // Oldhim | Winter's Wail
-        case "MON154": case "MON155": // Chane | Galaxxi Black
-        case "ARC114": case "ARC115": case "CRU159": // Kano | Crucible of Aetherweave
-        case "CRU077":// Kassai, Cintari Sellsword
-        case "CRU046": case "CRU050": // Ira, Crimson Haze | Edge of Autumn
-        case "DYN009": //Berserk
-        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
-        case "MST080": //Orihon of Mystic Tenets
-        case "MON266": case "MON267": case "MON268": //belittle 
-          return true;
-        default: return false;
-      }
-    case "cc": case "compcc":
-      switch($cardID) {
-        case "WTR160": //Tome of Fyendal
-        case "WTR164": case "WTR165": case "WTR166": // Drone of Brutality
-        case "ARC122": //Tome of Aetherwind
-        case "ARC160": // Art of War
-        case "ARC170": case "ARC171": case "ARC172": // Plunder Run
-        case "CRU141": // Bloodsheath Skeleta
-        case "CRU188": // Cash In    
-        case "MON001": case "MON003": // Prism Sculptor of Arc Light | Luminaris
-        case "MON065": //Tome of Divinity
-        case "MON153": case "MON155": // Chane, Bound by Shadow | Galaxxi Black
-        case "MON239": // Stubby Hammers
-        case "MON266": case "MON267": case "MON268": // Belittle    
-        case "ELE006": // Awakening
-        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "ELE223":  // Duskblade
-        case "ELE115": // Crown of Seeds
-        case "ELE031": case "ELE034": // Lexi, Livewire | Voltaire, Strike Twice
-        case "ELE062": case "ELE222": // Briar, Warden of Thorns | Rosetta Thorn
-        case "ELE001": case "ELE003": // Oldhim, Grandfather of Eternity | Winter's Wail
-        case "EVR017": // Bravo, Star of the Show
-        case "UPR001": case "UPR003": // Dromai, Ash Artist | Storm of Sandikai
-        case "UPR089": // Tome of Firebrand
-        case "UPR102": case "EVR121": // Iyslander, Stormbind | Kraken's Aethervein
-        case "DYN009": //Berserk
-        case "OUT056": case "OUT057": case "OUT058": //Bonds of Ancestry
-        case "MST080": //Orihon of Mystic Tenets
-        case "ARC006": //High Octane
-        case "ROS225": //Count Your Blessings Blue
-          return true;
-        default: return false;
-      }
-    case "commoner":
-      switch($cardID) {
-        case "ELE186": case "ELE187": case "ELE188": // Ball Lightning
-        case "MON266": case "MON267": case "MON268": // Belittle
-        case "MON230": //Aether Ironweave
-          return true;
-        default: return false;
-      }
-    case "llcc":
-      switch($cardID) {
-        case "EVR121": //Kraken's Aethervein
-          return true;
-      }
-    default: return false;
-  }
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && isSpecialUsePromo($cardID)) return true;
+  if(isBannedInFormat($cardID, $format)) return true;
+  return false;
 }
 
+function isCardRestricted($cardID, $format, $count) {
+
+  $restrictedCards = [
+    "llcc" => [
+      "WTR043", "ELE005", "ELE006", "UPR139", "DTD230", "OUT056", "OUT057", "OUT058", 
+      "ROS195", "ROS196", "ROS197", 
+    ]
+  ];
+
+  return isset($restrictedCards[$format]) && in_array($cardID, $restrictedCards[$format]) && $count > 1;
+}
+
+function isSpecialUsePromo($cardID) {
+  $specialUsePromos = [
+      "JDG001", "JDG002", "JDG003", "JDG004", "JDG005", "JDG006", "JDG008", "JDG010",
+      "JDG019", "JDG024", "JDG025", "JDG038", "LSS001", "LSS002", "LSS003", "LSS004", "LSS005",
+      "LSS006", "LSS007", "LSS008", "FAB094", "LGS099", "HER101"
+  ];
+  return in_array($cardID, $specialUsePromos);
+}
+
+function isBannedInFormat($cardID, $format) {
+  if ($format == "compblitz") $format = "blitz";
+  if ($format == "compcc") $format = "cc";
+
+  $bannedCards = [
+      "blitz" => [
+          "WTR002", "WTR160", "WTR164", "WTR165", "WTR166", "ARC002", "ARC003", "ARC076", "ARC077",
+          "ARC122", "ARC160", "ELE006", "ELE063", "ELE186", "ELE187", "ELE188", "ELE222", "ELE223",
+          "WTR152", "CRU141", "CRU174", "CRU175", "CRU176", "CRU188", "MON065", "MON239", "EVR037",
+          "UPR089", "UPR103", "EVR120", "EVR121", "ELE002", "ELE003", "MON154", "MON155", "ARC114",
+          "ARC115", "CRU159", "CRU077", "CRU046", "CRU050", "DYN009", "OUT056", "OUT057", "OUT058",
+          "HVY048", "HVY050", "MST080", "MON266", "MON267", "MON268"
+      ],
+      "cc" => [
+          "WTR160", "WTR164", "WTR165", "WTR166", "ARC122", "ARC160", "ARC170", "ARC171", "ARC172",
+          "CRU141", "CRU188", "MON001", "MON003", "MON065", "MON153", "MON155", "MON239", "MON266",
+          "MON267", "MON268", "ELE006", "ELE186", "ELE187", "ELE188", "ELE223", "ELE115", "ELE031",
+          "ELE034", "ELE062", "ELE222", "ELE001", "ELE003", "EVR017", "UPR001", "UPR003", "UPR089",
+          "UPR102", "EVR121", "DYN009", "OUT056", "OUT057", "OUT058", "MST080", "ARC006", "ROS225"
+      ],
+      "commoner" => [
+          "ELE172", "ELE186", "ELE187", "ELE188", "MON266", "MON267", "MON268", "MON230"
+      ],
+      "llcc" => [
+          "EVR121"
+      ]
+  ];
+
+  return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
+}
 
 function ReverseArt($cardID)
 {
@@ -824,5 +595,160 @@ function ReverseArt($cardID)
     case "OUT009": return "OUT010";
     default:
       return $cardID;
+  }
+}
+
+function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
+  if ($isFaBDB) {
+      $printings = $card->{'printings'};
+      $printing = $printings[0];
+      $sku = $printing->{'sku'};
+      return explode("-", $sku->{'sku'})[0];
+  } elseif ($isFaBMeta) {
+      return $card->{'identifier'};
+  } elseif (isset($card->{'setIdentifiers'})) {
+      $earliest = -1;
+      $id = "";
+      foreach ($card->{'setIdentifiers'} as $setCard) {
+          $set = substr($setCard, 0, 3);
+          for ($j = 0; $j < count($orderedSets); ++$j) {
+              if ($orderedSets[$j] == $set && ($earliest == -1 || $j < $earliest)) {
+                  $earliest = $j;
+                  $id = $setCard;
+                  break;
+              }
+          }
+      }
+      return $id;
+  } elseif (isset($card->{'cardIdentifier'})) {
+      return $card->{'cardIdentifier'};
+  }
+  return "";
+}
+
+function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
+  $id = GetAltCardID($id);
+  $cardName = CardName($id); 
+  if ($cardName == "") {
+      if ($unsupportedCards != "") $unsupportedCards .= " ";
+      $unsupportedCards .= $id;
+      return;
+  }
+
+  $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
+
+  if (IsModular($id)) {
+      for ($j = 0; $j < $numMainBoard + $numSideboard; ++$j) {
+          if ($modularSideboard != "") $modularSideboard .= " ";
+          $modularSideboard .= $id;
+      }
+      $totalCards += $numMainBoard + $numSideboard;
+  } elseif (TypeContains($id, "C")) {
+      $character = $id;
+  } elseif (TypeContains($id, "W")) {
+      ++$totalCards;
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($j > 0) $id = ReverseArt($id);
+          if ($weapon1 == "") $weapon1 = $id;
+          elseif ($weapon2 == "") $weapon2 = $id;
+          else {
+              if ($weaponSideboard != "") $weaponSideboard .= " ";
+              $weaponSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($numMainBoard > 0 || $j > 0) $id = ReverseArt($id);
+          if ($weaponSideboard != "") $weaponSideboard .= " ";
+          $weaponSideboard .= $id;
+      }
+  } elseif (TypeContains($id, "E")) {
+      ++$totalCards;
+      ProcessEquipment($id, $numMainBoard, $numSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard);
+  } else {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($deckCards != "") $deckCards .= " ";
+          $deckCards .= $id;
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($sideboardCards != "") $sideboardCards .= " ";
+          $sideboardCards .= $id;
+      }
+      $totalCards += $numMainBoard + $numSideboard;
+  }
+}
+
+function ProcessEquipment($id, $numMainBoard, $numSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard) {
+  if (SubtypeContains($id, "Head")) {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($head == "") $head = $id;
+          else {
+              if ($headSideboard != "") $headSideboard .= " ";
+              $headSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($headSideboard != "") $headSideboard .= " ";
+          $headSideboard .= $id;
+      }
+  } elseif (SubtypeContains($id, "Chest")) {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($chest == "") $chest = $id;
+          else {
+              if ($chestSideboard != "") $chestSideboard .= " ";
+              $chestSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($chestSideboard != "") $chestSideboard .= " ";
+          $chestSideboard .= $id;
+      }
+  } elseif (SubtypeContains($id, "Arms")) {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($arms == "") $arms = $id;
+          else {
+              if ($armsSideboard != "") $armsSideboard .= " ";
+              $armsSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($armsSideboard != "") $armsSideboard .= " ";
+          $armsSideboard .= $id;
+      }
+  } elseif (SubtypeContains($id, "Legs")) {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($legs == "") $legs = $id;
+          else {
+              if ($legsSideboard != "") $legsSideboard .= " ";
+              $legsSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($legsSideboard != "") $legsSideboard .= " ";
+          $legsSideboard .= $id;
+      }
+  } elseif (SubtypeContains($id, "Off-Hand")) {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($offhand == "") $offhand = $id;
+          else {
+              if ($offhandSideboard != "") $offhandSideboard .= " ";
+              $offhandSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($offhandSideboard != "") $offhandSideboard .= " ";
+          $offhandSideboard .= $id;
+      }
+  } elseif (SubtypeContains($id, "Quiver")) {
+      for ($j = 0; $j < $numMainBoard; ++$j) {
+          if ($quiver == "") $quiver = $id;
+          else {
+              if ($quiverSideboard != "") $quiverSideboard .= " ";
+              $quiverSideboard .= $id;
+          }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+          if ($quiverSideboard != "") $quiverSideboard .= " ";
+          $quiverSideboard .= $id;
+      }
   }
 }

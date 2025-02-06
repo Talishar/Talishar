@@ -1,8 +1,8 @@
 <?php
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-")
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
-  global $CS_NumAuras, $EffectContext, $defPlayer;
+  global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -13,11 +13,11 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
-
+  $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
   if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
 
-  if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
+  if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) $number -= $numMinusTokens;
   if ($cardID == "ARC112") $number += CountCurrentTurnEffects("ARC081", $player);
   if ($cardID == "MON104") {
     $index = SearchArsenalReadyCard($player, "MON404");
@@ -55,7 +55,30 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
   else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
+  else if (CreatesAuraForOpponent($EffectContext)) IncrementClassState($effectController, $CS_NumAuras, $number);
   else if ($cardID != "ELE111") IncrementClassState($player, $CS_NumAuras, $number);
+  if ($cardID == "HNT167") IncrementClassState($player, $CS_FealtyCreated, $number);
+}
+
+//cards that instruct the player to create an aura under their opponent's control
+//it still "counts" as the player creating an aura
+function CreatesAuraForOpponent($cardID)
+{
+  return match($cardID) {
+    "OUT021" => true,
+    "OUT022" => true,
+    "OUT023" => true,
+    "OUT024" => true,
+    "OUT025" => true,
+    "OUT026" => true,
+    "OUT036" => true,
+    "OUT037" => true,
+    "OUT038" => true,
+    "OUT039" => true,
+    "OUT040" => true,
+    "OUT041" => true,
+    default => false
+  };
 }
 
 function AuraNumUses($cardID)
@@ -618,7 +641,7 @@ function AuraStartTurnAbilities()
       WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("AJV017", "AJV017") .".");
       break;
     case "HNT125":
-      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); 
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     case "HNT126":
@@ -630,7 +653,11 @@ function AuraStartTurnAbilities()
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     case "HNT127":
-      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "HNT163":
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     default:
@@ -764,6 +791,7 @@ function AuraBeginEndPhaseTriggers()
       case "OUT235":
       case "OUT236":
       case "ROS034":
+      case "HNT118":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "HNT167":
@@ -875,7 +903,7 @@ function ChannelTalent($index, $talent)
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
     for ($j = $toBottom; $j > 0; --$j) {
-      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", may: true, isSubsequent: $j < $toBottom, DQContext: "Choose a ". ucwords(strtolower($talent)) ." card for ". CardLink($auras[$index], $auras[$index]) ." effect:");
+      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose a " . ucwords(strtolower($talent)) . " card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
@@ -887,7 +915,7 @@ function ChannelTalent($index, $talent)
 
 function AuraEndTurnAbilities()
 {
-  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword;
+  global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword, $CS_NumTimesAttacked;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = false;
@@ -905,6 +933,9 @@ function AuraEndTurnAbilities()
         break;
       case "DYN072":
         if (GetClassState($mainPlayer, $CS_HitsWithSword) <= 0) $remove = true;
+        break;
+      case "HNT073":
+        if (GetClassState($mainPlayer, $CS_NumTimesAttacked) < 3) $remove = true;
         break;
       default:
         break;
@@ -1065,13 +1096,13 @@ function AuraDamageTakenAbilities($player, $damage, $source)
       case "ROS077":
         if(GetClassState($otherPlayer, $CS_DamageDealt) == 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
           $otherAuras[$i + 5] -= 1;
-          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("OUT108", $otherPlayer)) {
+          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("OUT108", $otherPlayer) && !HitEffectsArePrevented($source)) {
             AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
           }
         }
         elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
           $otherAuras[$i + 5] -= 1;
-          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("OUT108", $otherPlayer)) {
+          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("OUT108", $otherPlayer) && !HitEffectsArePrevented($source)) {
             AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
           }
         }
@@ -1195,7 +1226,7 @@ function AuraPlayAbilities($cardID, $from = "")
 
 function AuraAttackAbilities($attackID)
 {
-  global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks;
+  global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks, $CS_NumTimesAttacked;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -1226,6 +1257,10 @@ function AuraAttackAbilities($attackID)
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
+      case "HNT073":
+        if (GetClassState($mainPlayer, $CS_NumTimesAttacked) == 4) {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
+        }
       default:
         break;
     }
@@ -1279,6 +1314,13 @@ function AuraAttackModifiers($index, &$attackModifiers, $onBlock=false)
             array_push($attackModifiers, -1);
           }
           break;
+        case "HNT118":
+          if(IsWeaponAttack())
+          {
+            $modifier += 1;
+            array_push($attackModifiers, $myAuras[$i]);
+            array_push($attackModifiers, 1);
+          }
         default:
           break;
       }

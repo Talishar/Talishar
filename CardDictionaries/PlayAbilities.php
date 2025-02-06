@@ -334,7 +334,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $buff = NumCardsBlocking();
       for ($i = 0; $i < count($chainLinks); ++$i) {
         for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-          if ($chainLinks[$i][$j + 1] == $defPlayer) ++$buff;
+          if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
         }
       }
       AddCurrentTurnEffect($cardID . "," . $buff, $currentPlayer);
@@ -609,7 +609,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
-      return "Light up the gem when you want the conditional boost effect to trigger";
+      return "Light up the gem under the equipment when you want to use the conditional effect❗";
     case "EVO057":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
@@ -707,7 +707,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "EVO082":
     case "EVO083":
       if ($from == "PLAY") {
-        MZMoveCard($currentPlayer, "MYDISCARD:pitch=" . PitchValue($cardID) . ";type=AA;class=MECHANOLOGIST", "MYHAND", may: true, isReveal: true);
+        MZMoveCard($currentPlayer, "MYDISCARD:pitch=" . PitchValue($cardID) . ";type=AA;class=MECHANOLOGIST", "MYHAND", may: true);
       }
       return "";
     case "EVO087":

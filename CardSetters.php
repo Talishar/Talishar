@@ -34,7 +34,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
-  if (CardType($cardID) != "T") { //If you banish a token, the token ceases to exist.
+  if (!TypeContains($cardID, "T", $player)) { //If you banish a token, the token ceases to exist.
     $rv = count($banish);
     array_push($banish, $cardID);
     array_push($banish, $mod);
@@ -84,17 +84,17 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST106" && ColorContains($cardID, 1, $currentPlayer)) {
+  if ($banishedBy == "MST106" && ColorContains($cardID, 1, $player)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST107" && ColorContains($cardID, 2, $currentPlayer)) {
+  if ($banishedBy == "MST107" && ColorContains($cardID, 2, $player)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
   }
-  if ($banishedBy == "MST108" && ColorContains($cardID, 3, $currentPlayer)) {
+  if ($banishedBy == "MST108" && ColorContains($cardID, 3, $player)) {
     Draw($otherPlayer);
     GainHealth(1, $otherPlayer);
     return $rv;
@@ -632,7 +632,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       $cardID = $set . $id;
     }
   }
-  if (HasEphemeral($cardID)) return;
+  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player)) return;
   switch ($cardID) {
     case "MON124":
       BanishCardForPlayer($cardID, $player, $from, "NA");
@@ -773,6 +773,7 @@ function IsAltCard($cardID)
     case "MON405":
     case "MON406":
     case "MON407":
+    case "HNT407":
       return true;
   }
   return false;

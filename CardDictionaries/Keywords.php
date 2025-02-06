@@ -15,6 +15,7 @@
       case "EVO093": case "EVO094": case "EVO095":
       case "EVO096": case "EVO097": case "EVO098":
       case "AIO026":
+      case "HNT251":
         return true;
       default: return false;
     }
@@ -48,7 +49,10 @@
   {
     global $CombatChain, $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
-    if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+    if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) {
+      WriteLog("Tower effect prevented by " . CardLink("OUT108", "OUT108"));
+      return true;
+    }
     switch($cardID)
     {
       case "TCC034": case "HVY062":

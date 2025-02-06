@@ -44,7 +44,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
-  if ($item == "EVO073") AddLayer("TRIGGER", $player, $item);
+  PlayAbility($item, $from, 0);
 }
 
 function ItemUses($cardID)
@@ -97,6 +97,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "EVO081":
     case "EVO082":
     case "EVO083":
+    case "HNT228";
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "ARC035":
@@ -351,6 +352,7 @@ function ItemStartTurnAbility($index)
     case "EVO097":
     case "EVO098":
     case "AIO026":
+    case "HNT251":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;

@@ -1,8 +1,13 @@
 <?php
 
-function IsWeapon($cardID)
+function IsWeapon($cardID, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $mainPlayer;
+  if (DelimStringContains(CardSubType($cardID), "Aura") && ClassContains($cardID, "ILLUSIONIST", $mainPlayer) && $from == "PLAY" && (
+      SearchCharacterForCard($mainPlayer, "MON003") || SearchCharacterForCard($mainPlayer, "MON088") || SearchCharacterForCard($mainPlayer, "DTD216") || SearchCharacterForCard($mainPlayer, "MST130"))) 
+    {
+    return true;
+  }
   return TypeContains($cardID, "W", $currentPlayer);
 }
 
@@ -11,6 +16,14 @@ function IsWeaponAttack()
   global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
   if (TypeContains($combatChain[0], "W", $mainPlayer) || DelimStringContains(CardSubType($combatChain[0]), "Aura")) return true;
+  return false;
+}
+
+function WeaponWithNonAttack($cardID,  $from) 
+{
+  if (!IsWeapon($cardID, $from)) return false;
+  if (GetAbilityTypes($cardID) != "") return true;
+  if (GetAbilityType($cardID) != "AA" && GetAbilityType($cardID) != "") return true;
   return false;
 }
 
