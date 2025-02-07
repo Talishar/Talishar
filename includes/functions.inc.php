@@ -405,16 +405,12 @@ function SendFaBInsightsResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
     // Your Azure Function endpoint URL
     $url = "https://fab-insights.azurewebsites.net/api/send_results";
 
-    // Get player names from game state variables
-    $p1Name = $p1uid ?? "";
-    $p2Name = $p2uid ?? "";
-
     // Prepare the data for the POST request
     $payloadArr = [];
     $payloadArr['gameID'] = $gameID;
     $payloadArr['gameName'] = $gameName;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Name, $p1id, $p1Hero));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Name, $p2id, $p2Hero));
+    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1uid, $p1id, $p1Hero));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2uid, $p2id, $p2Hero));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 
     // Initialize cURL
