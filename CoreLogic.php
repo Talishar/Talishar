@@ -36,7 +36,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       $totalDefense += BlockingCardDefense($i * CombatChainPieces());
     }
   }
-  //Now check current turn effects
+  // //Now check current turn effects
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
@@ -49,7 +49,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       }
     }
   }
-  //check layer continuous buffs
+  // check layer continuous buffs
   if(isset($combatChain[10])) {
     $layerContBuffs = explode(",", $combatChain[10]);
     foreach ($layerContBuffs as $buff) {
@@ -456,9 +456,7 @@ function HasIncreasedAttack()
 {
   global $CombatChain, $combatChainState, $CCS_LinkBaseAttack, $mainPlayer, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
-    $attack = 0;
-    $defense = 0;
-    EvaluateCombatChain($attack, $defense);
+    $attack = CachedTotalAttack();
     if (SearchCharacterActive($mainPlayer, "MST130") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
       if ($attack > WardAmount($combatChain[0], $mainPlayer)) return true;
       else return false;
