@@ -114,8 +114,9 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
   $char = &GetPlayerCharacter($player);
   $type = "-";
   $remove = false;
+  $preventedDamage = 0;
   if ($damage > 0 && HasWard($char[$index], $player)) {
-    if ($preventable) $damage -= WardAmount($char[$index], $player);
+    if ($preventable) $preventedDamage += WardAmount($char[$index], $player);//$damage -= WardAmount($char[$index], $player);
     $remove = true;
   }
   switch ($char[$index]) {
@@ -123,6 +124,11 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
       break;
   }
   if ($remove) DestroyCharacter($player, $index);
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("OUT174", $player) != "") {
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("OUT174", $player, remove:true);
+  }
+  $damage -= $preventedDamage;
   if ($damage <= 0) $damage = 0;
   return $damage;
 }

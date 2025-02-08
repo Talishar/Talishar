@@ -326,8 +326,9 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
   $allies = &GetAllies($player);
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $remove = false;
+  $preventedDamage = 0;
   if ($damage > 0 && HasWard($allies[$index], $player)) {
-    if ($preventable) $damage -= WardAmount($allies[$index], $player);
+    if ($preventable) $preventedDamage += WardAmount($allies[$index], $player);
     $remove = true;
     WardPoppedAbility($player, $allies[$index]);
   }
@@ -336,6 +337,11 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
       break;
   }
   if ($remove) DestroyAlly($player, $index, uniqueID: $allies[$index + 5]);
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("OUT174", $player) != "") {
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("OUT174", $player, remove:true);
+  }
+  $damage -= $preventedDamage;
   if ($damage <= 0) $damage = 0;
   return $damage;
 }
