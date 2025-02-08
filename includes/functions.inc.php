@@ -409,8 +409,10 @@ function SendFaBInsightsResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr = [];
     $payloadArr['gameID'] = $gameID;
     $payloadArr['gameName'] = $gameName;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1uid, $p1id, $p1Hero));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2uid, $p2id, $p2Hero));
+    $payloadArr['player1Name'] = $p1uid ?? "";
+    $payloadArr['player2Name'] = $p2uid ?? "";
+    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1id, $p1Hero));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2id, $p2Hero));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 
     // Initialize cURL
@@ -598,7 +600,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	return json_encode($deck);
 }
 
-function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerName = "", $playerId = "", $hero = "")
+function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerId = "", $hero = "")
 {
     global $winner, $currentTurn, $firstPlayer;
     global $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $CardStats_TimesKatsuDiscard;
@@ -631,7 +633,6 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
             "opposingHero" => $opposingHero,
             "deckbuilderID" => $deckbuilderID,
             "playerNumber" => $player,
-            "playerName" => $playerName,
             "playerId" => $playerId,
             "totalTime" => ($player == 1 ? $p1TotalTime : $p2TotalTime)
         ],
