@@ -1255,6 +1255,34 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
   }
 }
 
+function AddCharacterPlayCardTrigger($cardID, $playType, $from)
+{
+  global $mainPlayer;
+  $otherPlayer = $mainPlayer == 1 ? 2 : 1;
+  $mainChar = GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($mainChar); $i += CharacterPieces()) {
+    switch ($mainChar[$i]) {
+      default:
+        break;
+    }
+  }
+  $otherChar = GetPlayerCharacter($otherPlayer);
+  for ($i = 0; $i < count($otherChar); $i += CharacterPieces()) {
+    switch ($otherChar[$i]) {
+      case "HNT169":
+      case "HNT170":
+      case "HNT171":
+      case "HNT172":
+        if ($playType == "AR" && SearchCharacterActive($otherPlayer, $otherChar[$i], checkGem: true)) {
+          AddLayer("TRIGGER", $otherPlayer, $otherChar[$i]);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
   global $combatChain, $mainPlayer, $layers, $defPlayer;
@@ -2866,6 +2894,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "HNT167":
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "HNT169":
+    case "HNT170":
+    case "HNT171":
+    case "HNT172":
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_add_".Cardlink($parameter,$parameter)."_to_active_chain_link");
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("LEAPFROG", $player, $parameter, 1);
       break;
     case "HNT191":
     case "HNT214":

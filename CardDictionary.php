@@ -1266,7 +1266,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
-  if ($phase == "D" && canBeAddedToChainDuringDR($cardID) && $combatChainState[$CCS_NumUsedInReactions] > 0) return true;
   if ($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
@@ -3420,6 +3419,11 @@ function CharacterDefaultActiveState($cardID)
     case "ROS242":
       return 1;
     case "HNT168":
+      return 1;
+    case "HNT169"://leapfrog equipment
+    case "HNT170":
+    case "HNT171":
+    case "HNT172":
       return 1;
     default:
       return 2;

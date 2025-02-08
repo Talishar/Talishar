@@ -2580,6 +2580,34 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CHAOSTRANSFORM":
       ChaosTransform($parameter, $player, true, $lastResult);
       return $lastResult;
+    case "LEAPFROG":
+      // remove leapfrog from current link
+      for ($i = 0; $i < count($chainLinks); ++$i) {
+        for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+          if ($chainLinks[$i][$j] == $parameter) {
+            $chainLinks[$i][$j+2] = 0;
+          }
+        }
+      }
+      $char = &GetPlayerCharacter($player);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        if ($char[$i] == $parameter) {
+          $ind = $i;
+          break;
+        }
+      }
+      $originUniqueID = $char[$ind + 11];
+      # check if it's already there
+      $onCombatChain = false;
+      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i+8] == $originUniqueID) {
+          $onCombatChain = true;
+          break;
+        }
+      }
+      if (!$onCombatChain) AddCombatChain($parameter, $player, "EQUIP", "-", $originUniqueID);
+      $char[$ind + 6] = 1;
+      return $lastResult;
     case "SPURLOCKED":
       $otherPlayer = $player == 1 ? 2 : 1;
       if($lastResult == "PASS") {
