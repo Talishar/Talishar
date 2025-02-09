@@ -832,6 +832,18 @@ function EquipEquipment($player, $card, $slot = "")
   if ($card == "EVO013") AddCurrentTurnEffect("EVO013-" . $uniqueID . "," . $slot, $player);
   if ($card == "ROS246") AddCurrentTurnEffect("ROS246-" . $uniqueID . ",Base," . $slot, $player);
   if ($card == "ELE111") AddCurrentTurnEffect("ELE111-" . $uniqueID . "," . $slot, $player);
+  AddEquipTrigger($card, $player);
+}
+
+function AddEquipTrigger($cardID, $player)
+{
+  switch ($cardID) {
+    case "DYN234":
+      AddLayer("TRIGGER", $player, $cardID);
+      break;
+    default:
+      break;
+  }
 }
 
 function EquipWeapon($player, $card, $source = "-")

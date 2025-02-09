@@ -2107,6 +2107,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Draw($player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
+    case "DYN234":
+      PutItemIntoPlayForPlayer("DYN243", $player, effectController: $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a Gold token");
+      break;
     case "DYN244":
       Draw($player, false);
       DestroyAuraUniqueID($player, $uniqueID);
