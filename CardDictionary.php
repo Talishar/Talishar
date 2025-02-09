@@ -1129,7 +1129,11 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "HNT234":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
-        if (!SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer) && (!SearchCurrentTurnEffects("HNT149", $currentPlayer) || SearchCurrentTurnEffects("HNT167", $currentPlayer))) $names .= ",Attack";
+        $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
+        $underEdict = SearchCurrentTurnEffects("DYN240-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
+        if (!$warmongersPeace && !$underEdict) {
+          if (!SearchCurrentTurnEffects("HNT149", $currentPlayer) || SearchCurrentTurnEffects("HNT167", $currentPlayer)) $names .= ",Attack";
+        }
       }
       return $names;
     case "ROS120": case "ROS169":
@@ -1740,8 +1744,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     return true;
   }
   if (SearchCurrentTurnEffects("DYN240-" . GamestateSanitize(CardName($cardID)), $player)) {
-    $restriction = "DYN240";
-    return true;
+    if ($from != "PLAY" && $from != "EQUIP" && !DelimStringContains(GetAbilityNames($cardID, $from), "Ability", true)) {
+      $restriction = "DYN240";
+      return true;
+    }
   } //Can't be played
   if (SearchCurrentTurnEffects("EVO073-" . $cardID, $player)) {
     $restriction = "EVO073";
