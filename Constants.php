@@ -570,7 +570,7 @@ function ResetMainClassState()
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
   global $CS_PowDamageDealt, $CS_NumTimesAttacked;
-  global $CS_TunicTicks, $CS_OriginalHero, $CS_NumStealthAttacks;
+  global $CS_TunicTicks, $CS_OriginalHero, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -665,6 +665,7 @@ function ResetMainClassState()
   $mainClassState[$CS_TunicTicks] = 0;
   $mainClassState[$CS_NumTimesAttacked] = 0;
   $mainClassState[$CS_NumStealthAttacks] = 0;
+  $mainClassState[$CS_DamageDealtToOpponent] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")
