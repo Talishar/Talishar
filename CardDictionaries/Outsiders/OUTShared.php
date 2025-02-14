@@ -769,7 +769,7 @@ function OUTAbilityCost($cardID)
       $targetArr = explode("-", $target);
       if ($targetArr[0] == "COMBATCHAINATTACKS") {
         $ccAttacks = GetCombatChainAttacks();
-        if ($ccAttacks[$targetArr[1] + 2] == 0) {
+        if ($ccAttacks[$targetArr[1] + 2] != 1) {
           WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
           return;
         }
