@@ -768,6 +768,20 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
   return $indices;
 }
 
+function SearchAurasForCardName($cardName, $player, $selfReferential = true)
+{
+  if (!$selfReferential && SearchCurrentTurnEffects("OUT183", $player)) return "";
+  $auras = &GetAuras($player);
+  $indices = "";
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if (NameOverride($auras[$i], $player) == $cardName) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchCharacterForCards($cardID, $player, $selfReferential = true)
 {
   if (!$selfReferential && SearchCurrentTurnEffects("OUT183", $player)) return "";

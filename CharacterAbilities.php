@@ -771,7 +771,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
       case "HNT098":
       case "HNT099": // Fang
-        $fealties = SearchAurasForCard("HNT167", $currentPlayer);
+        $fealties = SearchAurasForCardName("Fealty", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
         break;
        default:
