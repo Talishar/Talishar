@@ -403,7 +403,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddLayer("TRIGGER", $currentPlayer, "HNT057");
       break;
     case "HNT058":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddLayer("TRIGGER", $currentPlayer, "HNT058");
       break;
     case "HNT059":
     case "HNT060":

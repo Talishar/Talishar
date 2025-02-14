@@ -2879,6 +2879,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       ThrowWeapon("Dagger", "HNT057");
       ThrowWeapon("Dagger", "HNT057");
       break;
+    case "HNT058":
+      AddCurrentTurnEffect("HNT058", $player);
+      break;
     case "HNT073":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("HNT073","HNT073")."_and_draw");
