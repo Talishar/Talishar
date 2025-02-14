@@ -148,11 +148,11 @@ function OUTAbilityCost($cardID)
       case "OUT124": case "OUT125": case "OUT126": return true;
       case "OUT127": case "OUT128": case "OUT129": return true;
       case "OUT136": case "OUT137": case "OUT138": return true;
-      case "OUT140": return CardSubType($attackID) == "Dagger";
-      case "OUT141": return CardSubType($attackID) == "Dagger";
+      case "OUT140": return SubtypeContains($attackID, "Dagger");
+      case "OUT141": return SubtypeContains($attackID, "Dagger");
       case "OUT143": return true;
-      case "OUT144": return CardSubType($attackID) == "Dagger";
-      case "OUT151": case "OUT152": case "OUT153": return CardSubType($attackID) == "Dagger";
+      case "OUT144": return SubtypeContains($attackID, "Dagger");
+      case "OUT151": case "OUT152": case "OUT153": return SubtypeContains($attackID, "Dagger");
       case "OUT154": case "OUT155": case "OUT156": return true;
       case "OUT158": return CardType($attackID) == "AA";
       case "OUT165": case "OUT166": case "OUT167": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
