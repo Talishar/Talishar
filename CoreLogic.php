@@ -1155,7 +1155,7 @@ function CombatChainClosedCharacterEffects()
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
         $character[$charIndex + 4] -= (BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
-        if (DelimStringContains(CardType($chainLinks[$i][0]), "W") && ($chainLinks[$i][$j] == "HNT216" || $chainLinks[$i][$j] == "HNT217" || $chainLinks[$i][$j] == "HNT218" || $chainLinks[$i][$j] == "HNT219")) {
+        if (IsWeapon($chainLinks[$i][0], "PLAY") && ($chainLinks[$i][$j] == "HNT216" || $chainLinks[$i][$j] == "HNT217" || $chainLinks[$i][$j] == "HNT218" || $chainLinks[$i][$j] == "HNT219")) {
           $character[$charIndex + 4] -= 1;
         }
       } 
