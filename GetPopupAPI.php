@@ -70,7 +70,8 @@ switch ($popupType) {
     for ($i = 0; $i < count($attackModifiers); $i += 2) {
       $thisModifier = new stdClass();
       $idArr = explode("-", $attackModifiers[$i]);
-      $cardID = substr($idArr[0], 0, 6);
+      // $cardID = substr($idArr[0], 0, 6);
+      $cardID = $idArr[0];
       $bonus = $attackModifiers[$i + 1];
       if ($bonus == 0) continue;
       $effectName = CardName($cardID);
