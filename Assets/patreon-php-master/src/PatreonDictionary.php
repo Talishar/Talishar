@@ -338,6 +338,7 @@ enum PatreonCampaign : string
       case "279086": return "dash_inventor_extraordinaire=ARC001-Brandao,kano_dracai_of_aether=ARC113-Brandao,kassai_cintari_sellsword=CRU077-Brandao,lexi_livewire=ELE031-Brandao,riptide_lurker_of_the_deep=OUT091-Brandao,dromai_ash_artist=UPR001-Brandao,bravo_showstopper=WTR038-Brandao,teklo_plasma_pistol=ARC003-Brandao,cintari_saber=CRU079-Brandao,cintari_saber=CRU079-Brandao,copper=CRU197-Brandao,frostbite=ELE111-Brandao,storm_of_sandikai=UPR003-Brandao,aether_ashwing=UPR042-Brandao,ash=UPR043-Brandao,anothos=WTR040-Brandao,seismic_surge=WTR075-Brandao,runechant=ARC112_Brandao,harmonized_kodachi=WTR078_Brandao,vynnset=DTD134_Brandao,flail_of_agony=DTD135_Brandao,maxx_the_hype_nitro=EVO004_Brandao,banksy=EVO006_Brandao,hyper_driver=EVO234_Brandao,katsu_the_wanderer=WTR076_Brandao,harmonized_kodachi=WTR078_Brandao,mandible_claw=CRU004_Brandao,mandible_claw=CRU004_Brandao,courage=DTD232_Brandao,rhinar_reckless_rampage=WTR001_Brandao,dorinthea_ironsong=WTR113_Brandao,dawnblade=WTR115_Brandao";
       //TeamTalishar
       case "14": return "embodiment_of_earth=ELE109-Promo,embodiment_of_lightning=ELE110-Promo";
+      default: return "";
     }
   }
 
