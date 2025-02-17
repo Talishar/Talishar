@@ -199,7 +199,7 @@ function InventoryStartGameAbilities($player)
     switch ($inventory[$i]) {
       case "levia_redeemed":
         PutPermanentIntoPlay($player, "levia_redeemed");
-        array_push($inventory, "levia_redeemed");
+        array_push($inventory, "blasmophet_levia_consumed");
         break;
       case "adaptive_plating":
         AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
