@@ -143,9 +143,10 @@
           for ($j = 0; $j < count($cardArray[$i]->printings); $j++) {
             $setID = $cardArray[$i]->printings[$j]->id;
             $set = substr($setID, 0, 3);
+            $cardNumber = substr($setID, 3, 3);
             $backCardID = $setID . "_" . $cardID;
             if (!ValidSet($setID)) continue;
-            PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $backCardID, $i, $isBool, $isString, $defaultValue, $cardRarity,true);
+            PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $backCardID, $i, $isBool, $isString, $defaultValue, $cardRarity);
           }
         }
         else {
@@ -196,7 +197,7 @@
           break;
         case "health":
           $data = $cardArray[$i]->health;
-          // CheckImage($setID, $cardID, $isDuplicate);
+          CheckImage($setID, $cardID, $isDuplicate);
           break;
         case "rarity":
           $data = $cardRarity;
