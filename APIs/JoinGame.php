@@ -491,7 +491,7 @@ function GetAltCardID($cardID)
     case "sigil_of_solace_1": return "sigil_of_solace_1";
     case "star_fall": return "star_fall";
     case "heavy_industry_power_plant": return "heavy_industry_power_plant";
-    case "the_hand_that_pulls_the_strings": return "arakni_tarantula";
+    case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
   }
   return $cardID;
 }

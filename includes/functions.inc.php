@@ -609,7 +609,7 @@ function GetNormalCardID($cardID)
 		case "MON400": return "spell_fray_cloak";
 		case "the_librarian": return "the_librarian";
 		case "MON402": return "spell_fray_leggings";
-		case "arakni_tarantula": return "the_hand_that_pulls_the_strings";
+		case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
 	}
 	return $cardID;
 }

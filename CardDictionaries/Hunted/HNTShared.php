@@ -30,7 +30,7 @@ function HNTAbilityType($cardID): string
     "tremorshield_sabatons" => "I",
     "misfire_dampener" => "I",
     "enchanted_quiver" => "I",
-    "arakni_tarantula" => "AR",
+    "the_hand_that_pulls_the_strings" => "AR",
     default => ""
   };
 }
@@ -156,7 +156,7 @@ function HNTEffectAttackModifier($cardID): int
     "public_bounty_blue" => 1,
     "war_cry_of_themis_yellow" => 4,
     "war_cry_of_bellona_yellow-BUFF" => 2,
-    "arakni_tarantula" => IsRoyal($otherPlayer) ? 1 : 0,
+    "the_hand_that_pulls_the_strings" => IsRoyal($otherPlayer) ? 1 : 0,
     default => 0,
   };
 }
@@ -286,7 +286,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "retrace_the_past_blue" => true,
     "war_cry_of_themis_yellow" => SubtypeContains($attackID, "Angel", $mainPlayer),
     "war_cry_of_bellona_yellow" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
-    "arakni_tarantula" => ContractType($attackID) != "",
+    "the_hand_that_pulls_the_strings" => ContractType($attackID) != "",
     default => false,
   };
 }
@@ -866,8 +866,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
       MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
       break;
-    case "arakni_tarantula":
-      AddCurrentTurnEffect("arakni_tarantula", $currentPlayer);
+    case "the_hand_that_pulls_the_strings":
+      AddCurrentTurnEffect("the_hand_that_pulls_the_strings", $currentPlayer);
       SetArsenalFacing("UP", $currentPlayer);
       break;
     default:

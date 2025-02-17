@@ -768,7 +768,7 @@ function IsAltCard($cardID)
     case "minerva_themis":
     case "lady_barthimont":
     case "lord_sutcliffe":
-    case "arakni_tarantula":
+    case "the_hand_that_pulls_the_strings":
       return true;
   }
   return false;

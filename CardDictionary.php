@@ -120,7 +120,7 @@ function CardType($cardID, $from="")
     case "DUMMY":
     case "DUMMYDISHONORED":
       return "C";
-    case "arakni_tarantula":
+    case "the_hand_that_pulls_the_strings":
       return "M";
     default:
       return "";
@@ -196,6 +196,8 @@ function SetID($cardID)
     case "nitro_mechanoidb":
     case "nitro_mechanoidc":
       return GeneratedSetID(substr($cardID, 0, strlen($cardID) - 1));
+    case "the_hand_that_pulls_the_strings":
+      return "HNT407";
     default:
       return GeneratedSetID($cardID);
   }
@@ -817,7 +819,7 @@ function BlockValue($cardID)
     case "evo_shortcircuit_blue_equip":
     case "evo_speedslip_blue_equip":
       return 0;
-    case "arakni_tarantula":
+    case "the_hand_that_pulls_the_strings":
       return 4;
     default:
       return 3;
@@ -1375,7 +1377,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if ($cardID == "arakni_tarantula" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
+  if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
@@ -1633,7 +1635,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "relentless_pursuit_blue":
       if (GetClassState($currentPlayer, $CS_NumAttacks) > 0) return "BOTDECK";
       else return "GY";
-    case "arakni_tarantula":
+    case "the_hand_that_pulls_the_strings":
       return "-";
     default:
       return "GY";
@@ -2565,7 +2567,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true)) return true;
       return false;
-    case "arakni_tarantula":
+    case "the_hand_that_pulls_the_strings":
       return ArsenalFaceDownCard($player) == "";
     default:
       return false;

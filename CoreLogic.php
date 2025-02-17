@@ -333,9 +333,9 @@ function ArsenalStartTurnAbilities()
           AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
         }
         break;
-      case "arakni_tarantula":
+      case "the_hand_that_pulls_the_strings":
         if ($arsenal[$i + 1] == "UP") {
-          AddCurrentTurnEffect("arakni_tarantula", $mainPlayer);
+          AddCurrentTurnEffect("the_hand_that_pulls_the_strings", $mainPlayer);
         }
       default:
         break;
@@ -349,7 +349,7 @@ function ArsenalBeginEndPhaseAbilities()
   $arsenal = &GetArsenal($mainPlayer);
   for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
     switch ($arsenal[$i]) {
-      case "arakni_tarantula":
+      case "the_hand_that_pulls_the_strings":
         if ($arsenal[$i + 1] == "UP") {
           if(CountItem("silver", $mainPlayer) >= 1) {
             AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_a_".Cardlink("silver", "silver")."_or_put_".CardLink($arsenal[$i], $arsenal[$i])."_at_the_bottom_of_your_deck", 1);

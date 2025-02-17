@@ -1655,7 +1655,7 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "trot_along_blue":
           return true;
-        case "arakni_tarantula":
+        case "the_hand_that_pulls_the_strings":
           return true;
         default:
           break;
