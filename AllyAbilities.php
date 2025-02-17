@@ -48,7 +48,7 @@ function AllyAddGraveyard($player, $cardID)
 {
   if (CardType($cardID) != "T") {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
-    $setID = GeneratedSetID($cardID);
+    $setID = SetID($cardID);
     $set = substr($setID, 0, 3);
     $number = intval(substr($setID, 3, 3));
     $number -= 400;

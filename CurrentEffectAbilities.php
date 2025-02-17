@@ -1741,7 +1741,7 @@ function CurrentEffectIntellectModifier($remove = false)
   $intellectModifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-      $cardID = substr($currentTurnEffects[$i], 0, 6);
+      $cardID = ExtractCardID($currentTurnEffects[$i]);
       switch ($cardID) {
         case "helm_of_isens_peak":
         case "pursuit_of_knowledge_blue":
@@ -1784,7 +1784,7 @@ function CurrentEffectEndTurnAbilities()
   global $currentTurnEffects, $mainPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
-    $cardID = substr($currentTurnEffects[$i], 0, 6);
+    $cardID = ExtractCardID($currentTurnEffects[$i]);
     if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
     }

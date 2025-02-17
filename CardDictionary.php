@@ -86,7 +86,7 @@ function CardType($cardID, $from="")
   }
   $set = CardSet($cardID);
   if ($set != "ROG" && $set != "DUM") {
-    $setID = GeneratedSetID($cardID);
+    $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400) return GeneratedCardType($cardID);
     else if ($set != "MON" && $set != "DYN" && $set != "HNT" && $setID != "UPR551" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") return GeneratedCardType($cardID);
@@ -188,6 +188,19 @@ function CardTypeExtended($cardID, $from="") // used to handle evos
   return CardType($cardID, $from);
 }
 
+function SetID($cardID)
+{
+  switch ($cardID) {
+    case "teklovossen_the_mechropotentb":
+    case "nitro_mechanoida":
+    case "nitro_mechanoidb":
+    case "nitro_mechanoidc":
+      return GeneratedSetID(substr($cardID, 0, strlen($cardID) - 1));
+    default:
+      return GeneratedSetID($cardID);
+  }
+}
+
 function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";
@@ -217,7 +230,8 @@ function CardSubType($cardID, $uniqueID = -1)
   }
   $set = CardSet($cardID);
   if ($set != "ROG" && $set != "DUM") {
-    $setID = GeneratedSetID($cardID);
+    $setID = SetID($cardID);
+
     $number = intval(substr($setID, 3));
     if ($number < 400) return GeneratedCardSubtype($cardID);
     else if (
@@ -406,7 +420,7 @@ function CardSet($cardID)
   if (!$cardID) return "";
   if (substr($cardID, 0, 3) == "ROG") return "ROG";
   if (substr($cardID, 0, 3) == "DUM") return "DUM";
-  $setID = GeneratedSetID(explode("-", $cardID)[0]);
+  $setID = SetID(explode("-", $cardID)[0]);
   return substr($setID, 0, 3);
 }
 
@@ -439,7 +453,7 @@ function CardClass($cardID)
     default:
       break;
   }
-  $setID = GeneratedSetID($cardID);
+  $setID = SetID($cardID);
   $number = intval(substr($setID, 3));
   if ($number >= 400) {
     $set = substr($setID, 0, 3);
@@ -505,7 +519,7 @@ function CardTalent($cardID, $from="-")
     default:
       break;
   }
-  $setID = GeneratedSetID($cardID);
+  $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
   if ($set == "ROG") return ROGUECardTalent($cardID);
   $number = intval(substr($setID, 3));
@@ -760,7 +774,7 @@ function BlockValue($cardID)
   if ($cardID == "fractal_replication_red") return FractalReplicationStats("Block");
   if ($cardID == "arcanite_fortress") return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
   if ($set != "ROG" && $set != "DUM") {
-    $setID = GeneratedSetID($cardID);
+    $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")) return GeneratedBlockValue($cardID);
   }
@@ -847,7 +861,7 @@ function AttackValue($cardID, $index=-1, $base=false)
   else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Attack");
   else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $currentPlayer);
   if ($set != "ROG" && $set != "DUM") {
-    $setID = GeneratedSetID($cardID);
+    $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN"))
     return GeneratedAttackValue($cardID);
@@ -1630,7 +1644,7 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
 {
   global $currentTurnEffects;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-    $effectID = substr($currentTurnEffects[$i], 0, 6);
+    $effectID = ExtractCardID($currentTurnEffects[$i]);
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($effectID) {
         case "blossoming_spellblade_red":

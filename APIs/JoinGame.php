@@ -497,7 +497,7 @@ function GetAltCardID($cardID)
 }
 
 function isClashLegal($cardID, $character) {
-  $setID = GeneratedSetID($cardID);
+  $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
   $number = intval(substr($setID, 3, 3));
   switch ($cardID) { //Special Use Promos
@@ -520,7 +520,7 @@ function isClashLegal($cardID, $character) {
 
 function IsCardBanned($cardID, $format, $character)
 {
-  $setID = GeneratedSetID($cardID);
+  $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
   if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "springboard_somersault_2") return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);

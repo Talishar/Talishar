@@ -79,6 +79,7 @@ class Character
 
 function PutCharacterIntoPlayForPlayer($cardID, $player)
 {
+  WriteLog("HERE: $cardID-" . GeneratedSetID($cardID));
   $char = &GetPlayerCharacter($player);
   $index = count($char);
   array_push($char, $cardID);

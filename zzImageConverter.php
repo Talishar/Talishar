@@ -15,6 +15,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     //$imageURL = "https://fabrary.net/images/cards/" . $setID . ".width-450.webp";
     if($isDuplicate) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . ".webp";
     else if($number >= 400 && $set == "UPR") $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_A_Back.webp";
+    else if($number >= 400 && $set == "DYN") $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_Back.webp";
     else if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_BACK.webp";
     else $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $setID . ".webp";
     //$imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/" . $setID . "_yajPa8R.width-450.format-webp.webp";
