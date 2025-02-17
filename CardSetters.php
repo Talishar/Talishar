@@ -619,19 +619,12 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       GainActionPoints(1);
     }
   }
-  //Code for EVO400+ going to GY, then Scrapped and it makes them unplayable.
+  //Code for equipped evos+ going to GY, then Scrapped and it makes them unplayable.
   // this may not be required anymore
   if ($from == "CHAR") {
-    $setID = GeneratedSetID($cardID);
-    $set = substr($setID, 0, 3);
-    $number = intval(substr($setID, 3, 3));
-    if ($number >= 400 && !IsAltCard($cardID)) {
-      $number -= 400;
-      if ($number < 0) return;
-      $id = $number;
-      if ($number < 100) $id = "0" . $id;
-      if ($number < 10) $id = "0" . $id;
-      $setID = $set . $id;
+    $splitCard = explode("_", $cardID);
+    if ($splitCard[count($splitCard) - 1] == "equip") {
+      $cardID = GetCardIDBeforeTransform($cardID);
     }
   }
   if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player)) return;

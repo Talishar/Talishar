@@ -700,43 +700,42 @@ function OnAttackEffects($attack)
           break;
         case "good_time_chapeau-PAID":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(substr($currentTurnEffects[$i], 0, 6));
+            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "big_bop_red-BUFF":
         case "big_bop_yellow-BUFF":
         case "big_bop_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(substr($currentTurnEffects[$i], 0, 6));
+            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "bigger_than_big_red-BUFF":
         case "bigger_than_big_yellow-BUFF":
         case "bigger_than_big_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(substr($currentTurnEffects[$i], 0, 6));
+            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "edge_ahead_red-BUFF":
         case "edge_ahead_yellow-BUFF":
         case "edge_ahead_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(substr($currentTurnEffects[$i], 0, 6));
+            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "hold_em_red-BUFF":
         case "hold_em_yellow-BUFF":
         case "hold_em_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(substr($currentTurnEffects[$i], 0, 6));
+            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "money_where_ya_mouth_is_red-BUFF":
         case "money_where_ya_mouth_is_yellow-BUFF":
         case "money_where_ya_mouth_is_blue-BUFF":
-          WriteLog("HERE!");
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(substr($currentTurnEffects[$i], 0, 6));
+            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "shifting_winds_of_the_mystic_beast_blue":

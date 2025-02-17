@@ -1263,11 +1263,8 @@ function NumActionsBlocking()
 
 function GetCardIDBeforeTransform($cardID)
 {
-  $setID = GeneratedSetID($cardID);
-  $cardSet = substr($setID, 0, 3);
-  $originalCardIDNum = (intval(substr($setID, 3, 3)) - 400);
-  if ($originalCardIDNum < 100) return $cardSet . "0" . $originalCardIDNum;
-  return $cardSet . $originalCardIDNum;
+  $splitCard = explode("_", $cardID);
+  return implode("_", array_slice($splitCard, 0, count($splitCard) - 1));;
 }
 
 function PlayerHasLessHealth($player)

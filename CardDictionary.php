@@ -4675,3 +4675,11 @@ function canBeAddedToChainDuringDR($cardID){
       return false;
   }
 }
+
+//utility function for stripping "," and "-" from a card id
+//replaces substr($cardID, 0, 6)
+function ExtractCardID($cardID) {
+  $cardID = explode(",", $cardID)[0];
+  $cardID = explode("-", $cardID)[0];
+  return $cardID;
+}

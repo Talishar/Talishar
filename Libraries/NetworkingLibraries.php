@@ -1056,8 +1056,8 @@ function ResolveCombatDamage($damageDone)
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
       if (SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
-      if (SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer, lenght:10) != -1) {
-        $index = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer, lenght:10);
+      if (SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer) != -1) {
+        $index = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
         $params = explode(",", $currentTurnEffects[$index]);
         $amount = $params[1];
         $uniqueID = $params[2];
@@ -1214,7 +1214,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
         $addedOnHits .= $currentTurnEffects[$i] . ",";
       }
     }
-    if (substr($currentTurnEffects[$i], 0, 6) == "crouching_tiger") array_push($effectsToRemove, $i);
+    if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") array_push($effectsToRemove, $i);
     switch ($currentTurnEffects[$i]) {
       case "rally_the_rearguard_red":
       case "rally_the_rearguard_yellow":

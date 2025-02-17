@@ -612,7 +612,7 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if ($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
   for ($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
-    if ($player != -1 && !SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
+    if ($player != -1 && !SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
     if ($mainCharacterEffects[$i] == $index) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "steelblade_supremacy_red":
@@ -714,7 +714,7 @@ function WeaponHasGoAgainLabel($index, $player)
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if ($mainCharacterEffects[$i] == $index) {
-      if (!SearchCurrentTurnEffects(substr($mainCharacterEffects[$i + 1], 0, 6), $player)) return false;
+      if (!SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
       switch ($mainCharacterEffects[$i + 1]) {
         case "blood_on_her_hands_yellow-2":
           return true;

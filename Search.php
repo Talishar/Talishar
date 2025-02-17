@@ -510,19 +510,19 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
-      if ($activate) $currentTurnEffects[$i] = substr($currentTurnEffects[$i], 0, 6);
+      if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
       return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
     }
   }
   return $returnUniqueID ? -1 : false;
 }
 
-function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false, $returnUniqueID = false, $lenght = 6)
+function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false, $returnUniqueID = false)
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if (substr($currentTurnEffects[$i], 0, $lenght) == $cardID && $currentTurnEffects[$i + 1] == $player) {
+    if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
       return $returnUniqueID ? $currentTurnEffects[$i + 2] : $i;
     }
@@ -537,7 +537,7 @@ function SearchNextTurnEffects($cardID, $player, $remove = false, $returnUniqueI
     if (!isset($nextTurnEffects[$i + 1])) continue;
     if ($nextTurnEffects[$i] == $cardID && $nextTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
-      if ($activate) $nextTurnEffects[$i] = substr($nextTurnEffects[$i], 0, 6);
+      if ($activate) $nextTurnEffects[$i] = ExtractCardID($nextTurnEffects[$i]);
       return $returnUniqueID ? $nextTurnEffects[$i + 2] : true;
     }
   }
@@ -549,7 +549,7 @@ function SearchCurrentTurnEffectsForIndex($cardID, $player)
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if (substr($currentTurnEffects[$i], 0, 6) == $cardID && $currentTurnEffects[$i + 1] == $player) {
+    if (ExtractCardID($currentTurnEffects[$i]) == $cardID && $currentTurnEffects[$i + 1] == $player) {
       return $i;
     }
   }
