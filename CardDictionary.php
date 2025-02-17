@@ -404,6 +404,8 @@ function CharacterIntellect($cardID)
 function CardSet($cardID)
 {
   if (!$cardID) return "";
+  if (substr($cardID, 0, 3) == "ROG") return "ROG";
+  if (substr($cardID, 0, 3) == "DUM") return "DUM";
   $setID = GeneratedSetID(explode("-", $cardID)[0]);
   return substr($setID, 0, 3);
 }
