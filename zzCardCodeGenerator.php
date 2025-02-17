@@ -31,7 +31,7 @@
   fwrite($handler, "<?php\r\n");
 
   GenerateFunction($cardArray, $handler, "CardType", "type", "AA");
-  GenerateFunction($cardArray, $handler, "AttackValue", "attack", "-1");
+  GenerateFunction($cardArray, $handler, "AttackValue", "attack", "0");
   GenerateFunction($cardArray, $handler, "BlockValue", "block", "3");
   GenerateFunction($cardArray, $handler, "CardName", "name");
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
@@ -88,15 +88,13 @@
   function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="")
   {
     global $originalSets;
-    $SEP = "_";
     $rarityDict = ["T"=>0, "C"=>1, "R"=>2, "M"=>3, "L"=>4, "F"=>5, "V"=>6, "P"=>7, "S"=>8, "-"=>9];
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $isString = true;
     $isBool = false;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H") $isString = false;
-    if($propertyName == "1H" || $propertyName == "specialization") $isBool = true;
-    fwrite($handler, "if(\$cardID !== null && strlen(\$cardID) < 6) return " . ($isString ? "\"\"" : "0") . ";\r\n");
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H" || $propertyName == "goAgain") $isString = false;
+    if($propertyName == "1H" || $propertyName == "specialization" || $propertyName == "goAgain") $isBool = true;
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "return match(\$cardID) {\r\n");
     $associativeArray = [];
@@ -144,9 +142,10 @@
         if ($cardID == "inner_chi_blue") {
           for ($j = 0; $j < count($cardArray[$i]->printings); $j++) {
             $setID = $cardArray[$i]->printings[$j]->id;
+            $set = substr($setID, 0, 3);
             $backCardID = $setID . "_" . $cardID;
             if (!ValidSet($setID)) continue;
-            PopulateAssociativeArray($cardArray, $setID, $associativeArray, $propertyName, $backCardID, $i, $isBool, $isString, $defaultValue, $cardRarity,true);
+            PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $backCardID, $i, $isBool, $isString, $defaultValue, $cardRarity,true);
           }
         }
         else {
@@ -197,7 +196,7 @@
           break;
         case "health":
           $data = $cardArray[$i]->health;
-          CheckImage($setID, $cardID, $isDuplicate);
+          // CheckImage($setID, $cardID, $isDuplicate);
           break;
         case "rarity":
           $data = $cardRarity;

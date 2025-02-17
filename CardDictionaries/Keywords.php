@@ -360,6 +360,7 @@
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("GAINRESOURCES", $player, "1", 1);
     }
+    WriteLog("HERE: $cardID");
     if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
     else AddPlayerHand($cardID, $player, "-");
   }

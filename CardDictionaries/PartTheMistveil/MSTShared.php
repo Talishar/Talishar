@@ -159,7 +159,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddDecisionQueue("UNDERCURRENTDESIRES", $currentPlayer, "-", 1);
               break;
             case "Transcend":
-              Transcend($currentPlayer, "sacred_art_undercurrent_desires_blue_inner_chi_blue", $from);
+              Transcend($currentPlayer, "MST010_inner_chi_blue", $from);
               break;
             default:
               break;
@@ -247,7 +247,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddDecisionQueue("ADDALLATTACKCOUNTERS", $currentPlayer, "1", 1);
               break;
             case "Transcend":
-              Transcend($currentPlayer, "sacred_art_immortal_lunar_shrine_blue_inner_chi_blue", $from);
+              Transcend($currentPlayer, "MST032_inner_chi_blue", $from);
               break;
             default:
               break;
@@ -293,7 +293,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               AddCurrentTurnEffect($cardID, $currentPlayer);
               break;
             case "Transcend":
-              Transcend($currentPlayer, "sacred_art_jade_tiger_domain_blue_inner_chi_blue", $from);
+              Transcend($currentPlayer, "MST053_inner_chi_blue", $from);
               break;
             default:
               break;
@@ -397,7 +397,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDISCARD-" . $index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-," . $cardID, 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "pass_over_blue_inner_chi_blue," . $from);
+        if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST097_inner_chi_blue," . $from);
       } else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
         return "FAILED";
@@ -405,7 +405,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "path_well_traveled_blue":
       GiveAttackGoAgain();
-      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "path_well_traveled_blue_inner_chi_blue," . $from);
+      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST098_inner_chi_blue," . $from);
       return "";
     case "preserve_tradition_blue":
       $params = explode("-", $target);
@@ -414,7 +414,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "preserve_tradition_blue_inner_chi_blue," . $from);
+        if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST099_inner_chi_blue," . $from);
       } else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
         return "FAILED";
@@ -427,17 +427,17 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("OK", $currentPlayer, "<-", 1);
       }
       MZMoveCard($currentPlayer, "MYHAND", "MYBOTDECK", silent: true, DQContext: "Choose a card to put on the bottom of your deck:");
-      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "rising_sun_setting_moon_blue_inner_chi_blue," . $from);
+      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST100_inner_chi_blue," . $from);
       return "";
     case "stir_the_pot_blue":
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "stir_the_pot_blue_inner_chi_blue," . $from);
+      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST101_inner_chi_blue," . $from);
       return "";
     case "the_grain_that_tips_the_scale_blue":
       if ($CombatChain->HasCurrentLink() || HasAttackLayer()) {
         AddCurrentTurnEffect($cardID, $mainPlayer);
       }
-      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "the_grain_that_tips_the_scale_blue_inner_chi_blue," . $from);
+      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST102_inner_chi_blue," . $from);
       return "";
     case "just_a_nick_red":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);

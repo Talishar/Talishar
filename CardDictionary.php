@@ -45,7 +45,6 @@ include "CardDictionaries/ArmoryDecks/AJVShared.php";
 include "CardDictionaries/Hunted/HNTShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
-include "GeneratedCode/DatabaseGeneratedCardDictionaries.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";
@@ -247,18 +246,18 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Evo";
     case "teklovossen_the_mechropotentb":
       return "Chest,Evo";
-    case "mistcloak_gully_inner_chi_blue":
-    case "sacred_art_undercurrent_desires_blue_inner_chi_blue":
-    case "sacred_art_immortal_lunar_shrine_blue_inner_chi_blue":
-    case "sacred_art_jade_tiger_domain_blue_inner_chi_blue":
+    case "MST000_inner_chi_blue":
+    case "MST010_inner_chi_blue":
+    case "MST032_inner_chi_blue":
+    case "MST053_inner_chi_blue":
     case "MST095_inner_chi_blue":
     case "MST096_inner_chi_blue":
-    case "pass_over_blue_inner_chi_blue":
-    case "path_well_traveled_blue_inner_chi_blue":
-    case "preserve_tradition_blue_inner_chi_blue":
-    case "rising_sun_setting_moon_blue_inner_chi_blue":
-    case "stir_the_pot_blue_inner_chi_blue":
-    case "the_grain_that_tips_the_scale_blue_inner_chi_blue":
+    case "MST097_inner_chi_blue":
+    case "MST098_inner_chi_blue":
+    case "MST099_inner_chi_blue":
+    case "MST100_inner_chi_blue":
+    case "MST101_inner_chi_blue":
+    case "MST102_inner_chi_blue":
       return "Chi";
     case "evo_recall_blue_equip":
       return "Head,Evo";
@@ -559,18 +558,18 @@ function CardCost($cardID, $from="-")
     case "ripple_away_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 2;
-    case "mistcloak_gully_inner_chi_blue":
-    case "sacred_art_undercurrent_desires_blue_inner_chi_blue":
-    case "sacred_art_immortal_lunar_shrine_blue_inner_chi_blue":
-    case "sacred_art_jade_tiger_domain_blue_inner_chi_blue":
+    case "MST000_inner_chi_blue":
+    case "MST010_inner_chi_blue":
+    case "MST032_inner_chi_blue":
+    case "MST053_inner_chi_blue":
     case "MST095_inner_chi_blue":
     case "MST096_inner_chi_blue":
-    case "pass_over_blue_inner_chi_blue":
-    case "path_well_traveled_blue_inner_chi_blue":
-    case "preserve_tradition_blue_inner_chi_blue":
-    case "rising_sun_setting_moon_blue_inner_chi_blue":
-    case "stir_the_pot_blue_inner_chi_blue":
-    case "the_grain_that_tips_the_scale_blue_inner_chi_blue":
+    case "MST097_inner_chi_blue":
+    case "MST098_inner_chi_blue":
+    case "MST099_inner_chi_blue":
+    case "MST100_inner_chi_blue":
+    case "MST101_inner_chi_blue":
+    case "MST102_inner_chi_blue":
       return -1;
     case "trip_the_light_fantastic_blue":
     case "trip_the_light_fantastic_yellow":
@@ -717,26 +716,22 @@ function PitchValue($cardID)
   if (!$cardID) return "";
   $set = CardSet($cardID);
   if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
-  $setID = GeneratedSetID($cardID);
-  $number = intval(substr($setID, 3));
-  if ($number > 400) {
-    switch ($cardID) {
-      case "mistcloak_gully_inner_chi_blue":
-      case "sacred_art_undercurrent_desires_blue_inner_chi_blue":
-      case "sacred_art_immortal_lunar_shrine_blue_inner_chi_blue":
-      case "sacred_art_jade_tiger_domain_blue_inner_chi_blue":
-      case "MST095_inner_chi_blue":
-      case "MST096_inner_chi_blue":
-      case "pass_over_blue_inner_chi_blue":
-      case "path_well_traveled_blue_inner_chi_blue":
-      case "preserve_tradition_blue_inner_chi_blue":
-      case "rising_sun_setting_moon_blue_inner_chi_blue":
-      case "stir_the_pot_blue_inner_chi_blue":
-      case "the_grain_that_tips_the_scale_blue_inner_chi_blue":
-        return 3;
-      default:
-        break;
-    }
+  switch ($cardID) {
+    case "MST000_inner_chi_blue":
+    case "MST010_inner_chi_blue":
+    case "MST032_inner_chi_blue":
+    case "MST053_inner_chi_blue":
+    case "MST095_inner_chi_blue":
+    case "MST096_inner_chi_blue":
+    case "MST097_inner_chi_blue":
+    case "MST098_inner_chi_blue":
+    case "MST099_inner_chi_blue":
+    case "MST100_inner_chi_blue":
+    case "MST101_inner_chi_blue":
+    case "MST102_inner_chi_blue":
+      return 3;
+    default:
+      break;
   }
   if ($set == "LGS") {
     switch ($cardID) {
@@ -788,18 +783,18 @@ function BlockValue($cardID)
       return 6;
     case "DUMMYDISHONORED":
       return -1;
-    case "mistcloak_gully_inner_chi_blue":
-    case "sacred_art_undercurrent_desires_blue_inner_chi_blue":
-    case "sacred_art_immortal_lunar_shrine_blue_inner_chi_blue":
-    case "sacred_art_jade_tiger_domain_blue_inner_chi_blue":
+    case "MST000_inner_chi_blue":
+    case "MST010_inner_chi_blue":
+    case "MST032_inner_chi_blue":
+    case "MST053_inner_chi_blue":
     case "MST095_inner_chi_blue":
     case "MST096_inner_chi_blue":
-    case "pass_over_blue_inner_chi_blue":
-    case "path_well_traveled_blue_inner_chi_blue":
-    case "preserve_tradition_blue_inner_chi_blue":
-    case "rising_sun_setting_moon_blue_inner_chi_blue":
-    case "stir_the_pot_blue_inner_chi_blue":
-    case "the_grain_that_tips_the_scale_blue_inner_chi_blue":
+    case "MST097_inner_chi_blue":
+    case "MST098_inner_chi_blue":
+    case "MST099_inner_chi_blue":
+    case "MST100_inner_chi_blue":
+    case "MST101_inner_chi_blue":
+    case "MST102_inner_chi_blue":
       return -1;
     case "evo_recall_blue_equip":
     case "evo_heartdrive_blue_equip":

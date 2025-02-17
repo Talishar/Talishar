@@ -38,7 +38,7 @@ function LandmarkBeginEndPhaseAbilities()
         break;
       case "mistcloak_gully":
         if(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) > 0 && SearchPitchForColor($landmarks[$i+1], 3) > 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) > 0) {
-          Transcend($landmarks[$i+1], "mistcloak_gully_inner_chi_blue", $landmarks[$i+2]);
+          Transcend($landmarks[$i+1], "MST000_inner_chi_blue", $landmarks[$i+2]);
           DestroyLandmark($i, true);
         }
         elseif(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) <= 0 && SearchPitchForColor($landmarks[$i+1], 3) <= 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) <= 0) {

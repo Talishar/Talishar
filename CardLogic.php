@@ -2583,7 +2583,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       MZMoveCard($player, "MYDISCARD:comboOnly=true", "MYBOTDECK");
       break;
     case "traverse_the_universe":
-      MZMoveCard($player, "MYDECK:isSameName=preserve_tradition_blue_inner_chi_blue", "MYHAND", may: true);
+      MZMoveCard($player, "MYDECK:isSameName=MST099_inner_chi_blue", "MYHAND", may: true);
       AddDecisionQueue("SHUFFLEDECK", $player, "-");
       break;
     case "stonewall_gauntlet":
