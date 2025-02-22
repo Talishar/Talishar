@@ -2858,7 +2858,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "tectonic_crust":
       PlayAura("seismic_surge", $defPlayer, effectController: $defPlayer);
       break;
-    case "rootbound_trunks":
+    case "root_bound_trunks":
       PlayAura("embodiment_of_earth", $defPlayer, effectController: $defPlayer);
       break;
     case "schism_of_chaos_blue":

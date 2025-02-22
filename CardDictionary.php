@@ -2797,7 +2797,7 @@ function HasBladeBreak($cardID)
     case "face_purgatory":
       return true;
     case "ollin_ice_cap":
-    case "rootbound_trunks":
+    case "root_bound_trunks":
       return true;
     case "mask_of_deceit":
     case "kabuto_of_imperial_authority":

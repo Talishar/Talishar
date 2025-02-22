@@ -828,7 +828,7 @@ function OnBlockResolveEffects($cardID = "")
         $sub = TalentContains($defendingCard, "EARTH", $defPlayer) == true ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
         if ($blockedWithEarth - $sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
-      case "rootbound_trunks":
+      case "root_bound_trunks":
         if ($blockedWithAura > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       default:
