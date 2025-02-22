@@ -1044,6 +1044,9 @@ function HasGoAgain($cardID): bool|int
     case "public_bounty_blue":
     case "roiling_fissure_blue":
     case "spur_locked_blue":
+    case "money_where_ya_mouth_is_red":
+    case "money_where_ya_mouth_is_yellow":
+    case "money_where_ya_mouth_is_blue":
       return true;
     case "war_cry_of_themis_yellow":
       return GetResolvedAbilityType($cardID) == "A";
