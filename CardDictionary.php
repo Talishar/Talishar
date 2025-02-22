@@ -423,7 +423,7 @@ function CardSet($cardID)
   if (!$cardID) return "";
   if (substr($cardID, 0, 3) == "ROG") return "ROG";
   if (substr($cardID, 0, 3) == "DUM") return "DUM";
-  $setID = SetID(explode("-", $cardID)[0]);
+  $setID = SetID(ExtractCardID($cardID));
   return substr($setID, 0, 3);
 }
 
