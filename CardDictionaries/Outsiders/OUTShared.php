@@ -126,7 +126,7 @@ function OUTAbilityCost($cardID)
     $dashArr = explode("-", $cardID);
     $commaArr = explode(",", $cardID);
     $cardID = $dashArr[0];
-    if(strlen($cardID) > 6) $cardID = $commaArr[0];
+    // if(strlen($cardID) > 6) $cardID = $commaArr[0];
     switch ($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return true;
@@ -159,7 +159,7 @@ function OUTAbilityCost($cardID)
       case "silken_gi-2":
         return isset($dashArr[1]) && $dashArr[1] == "2" && CardType($attackID) == "AA";
       case "gore_belching_red": return true;
-      case "premeditate_red": 
+      case "premeditate_red":
         if (isset($dashArr[1]) && $dashArr[1] == "1") return CardType($attackID) == "AA";
         else if (isset($dashArr[1]) && $dashArr[1] == "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
         else return false;
