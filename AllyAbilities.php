@@ -48,15 +48,30 @@ function AllyAddGraveyard($player, $cardID)
 {
   if (CardType($cardID) != "T") {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
-    $setID = SetID($cardID);
-    $set = substr($setID, 0, 3);
-    $number = intval(substr($setID, 3, 3));
-    $number -= 400;
-    if ($number < 0) return;
-    $id = $number;
-    if ($number < 100) $id = "0" . $id;
-    if ($number < 10) $id = "0" . $id;
-    $id = $set . $id;
+    $id = match($cardID) {
+      "suraya_archangel_of_erudition" => "figment_of_erudition_yellow",
+      "themis_archangel_of_judgment" => "figment_of_judgment_yellow",
+      "aegis_archangel_of_protection" => "figment_of_protection_yellow",
+      "sekem_archangel_of_ravages" => "figment_of_ravages_yellow",
+      "avalon_archangel_of_rebirth" => "figment_of_rebirth_yellow",
+      "metis_archangel_of_tenacity" => "figment_of_tenacity_yellow",
+      "victoria_archangel_of_triumph" => "figment_of_triumph_yellow",
+      "bellona_archangel_of_war" => "figment_of_war_yellow",
+      "dracona_optimai" => "invoke_dracona_optimai_red",
+      "tomeltai" => "invoke_tomeltai_red",
+      "dominia" => "invoke_dominia_red",
+      "azvolai" => "invoke_azvolai_red",
+      "cromai" => "invoke_cromai_red",
+      "kyloria" => "invoke_kyloria_red",
+      "miragai" => "invoke_miragai_red",
+      "nekria" => "invoke_nekria_red",
+      "ouvia" => "invoke_ouvia_red",
+      "themai" => "invoke_themai_red",
+      "vynserakai" => "invoke_vynserakai_red",
+      "yendurai" => "invoke_yendurai_red",
+      "suraya_archangel_of_knowledge" => "invoke_suraya",
+      default => ""
+    };
     if (!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player)) return;
     AddGraveyard($id, $player, "PLAY", $player);
   }
