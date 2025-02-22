@@ -53,7 +53,7 @@ if (CardSet($p2Char[0]) == "ROG") {
 
 //Dummy - Single Player
 if ($p2Char[0] == "DUMMY") {
-  $cards = ["combustible_courier_red", "zipper_hit_red", "over_loop_blue", "microprocessor_blue", "induction_chamber_red", "zero_to_sixty_red"];
+  $cards = ["combustible_courier_red", "zipper_hit_red", "over_loop_blue", "micro_processor_blue", "induction_chamber_red", "zero_to_sixty_red"];
   AddGraveyard($cards[rand(0, 5)], 2, "DECK");
   AddGraveyard($cards[rand(0, 5)], 2, "DECK");
   AddGraveyard($cards[rand(0, 5)], 2, "DECK");

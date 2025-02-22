@@ -50,7 +50,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
 function ItemUses($cardID)
 {
   switch ($cardID) {
-    case "microprocessor_blue":
+    case "micro_processor_blue":
       return 3;
     default:
       return 1;
@@ -60,7 +60,7 @@ function ItemUses($cardID)
 function ItemModalities($cardID)
 {
   switch ($cardID) {
-    case 'microprocessor_blue':
+    case 'micro_processor_blue':
       return "Opt,Draw_then_top_deck,Banish_top_deck";
     default:
       return "-";

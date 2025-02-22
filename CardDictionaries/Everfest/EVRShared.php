@@ -5,7 +5,7 @@
     switch($cardID)
     {
       case "helm_of_sharp_eye": return 1;
-      case "microprocessor_blue": return 0;
+      case "micro_processor_blue": return 0;
       case "genis_wotchuneed": return 2;
       case "dreadbore": return 1;
       case "vexing_quillhand": return 0;
@@ -32,7 +32,7 @@
     switch($cardID)
     {
       case "helm_of_sharp_eye": return "AR";
-      case "microprocessor_blue": return "A";
+      case "micro_processor_blue": return "A";
       case "genis_wotchuneed": return "A";
       case "dreadbore": return "A";
       case "vexing_quillhand": return "A";
@@ -284,7 +284,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
-      case "microprocessor_blue":
+      case "micro_processor_blue":
         if($from == "PLAY")
         {
           $items = &GetItems($currentPlayer);

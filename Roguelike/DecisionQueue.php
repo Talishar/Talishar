@@ -468,7 +468,7 @@ function PrependDecisionQueue($phase, $player, $parameter1="-", $parameter2="-",
             $encounter = &GetZone($player, "Encounter");
             switch($encounter->hero)
             {
-              case "Dorinthea": $cardChoices = array("microprocessor_blue", "teklo_core_blue", "blood_on_her_hands_yellow"); break;
+              case "Dorinthea": $cardChoices = array("micro_processor_blue", "teklo_core_blue", "blood_on_her_hands_yellow"); break;
               case "Bravo": $cardChoices = array("alpha_rampage_red", "arknight_ascendancy_red", "shake_down_red"); break;
               case "Fai": $cardChoices = array("force_of_nature_blue", "whirling_mist_blossom_yellow", "spring_tidings_yellow"); break;
               case "Lexi": $cardChoices = array("red_in_the_ledger_red", "frost_hex_blue", "endless_winter_red"); break;

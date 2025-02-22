@@ -1588,7 +1588,7 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $zoneSize = 1, $addi
 
 function ItemOverlay($item, $isReady, $numUses)
 {
-  if ($item == "microprocessor_blue" && $numUses < 3) return 1;
+  if ($item == "micro_processor_blue" && $numUses < 3) return 1;
   return ($isReady != 2 ? 1 : 0);
 }
 

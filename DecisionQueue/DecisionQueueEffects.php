@@ -100,12 +100,12 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       $items[$index+8] = implode(",", $modalities);
       switch($lastResult) {
         case "Opt":
-          WriteLog(Cardlink("microprocessor_blue","microprocessor_blue") . " let you Opt 1");
-          Opt("microprocessor_blue", 1);
+          WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " let you Opt 1");
+          Opt("micro_processor_blue", 1);
           break;
         case "Draw_then_top_deck":
           if(!$deck->Empty()) {
-            WriteLog(Cardlink("microprocessor_blue","microprocessor_blue") . " let you draw a card then put one on top");
+            WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " let you draw a card then put one on top");
             Draw($player);
             HandToTopDeck($player);
           }
@@ -114,7 +114,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           if(!$deck->Empty()) {
             $card = $deck->Top(remove:true);
             BanishCardForPlayer($card, $player, "DECK", "-");
-            WriteLog(Cardlink("microprocessor_blue","microprocessor_blue") . " banished " . CardLink($card, $card));
+            WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " banished " . CardLink($card, $card));
           }
           break;
         default: break;
