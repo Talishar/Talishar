@@ -57,6 +57,7 @@
     $cardID = str_replace(array("ā", "ä", "ö", "ü", "ß", "ṣ"), array("a", "a", "o", "u", "s", "s"), $cardID);
     $cardID = iconv('UTF-8', 'US-ASCII//TRANSLIT', $cardID);
     $cardID = str_replace(" ", $delimiter, $cardID);
+    $cardID = str_replace("-", $delimiter, $cardID);
     $cardID = preg_replace("/[^a-z0-9 $delimiter]/", "", $cardID);
     $cardID = preg_replace("/$delimiter$delimiter/", $delimiter, $cardID);
     $suffix = match($pitch) {
@@ -197,7 +198,7 @@
           break;
         case "health":
           $data = $cardArray[$i]->health;
-          CheckImage($setID, $cardID, $isDuplicate);
+          // CheckImage($setID, $cardID, $isDuplicate);
           break;
         case "rarity":
           $data = $cardRarity;
@@ -261,11 +262,8 @@
           break;
         case "goAgain":
           $data = "false";
-          if (isset($cardArray[$i]->card_keywords)) {
-            for ($k = 0; $k < count($cardArray[$i]->card_keywords); ++$k)
-            {
-              if ($cardArray[$i]->card_keywords[$k] == "Go again") $data = "true";
-            }
+          if (isset($cardArray[$i]->functional_text)) {
+            if (str_contains($cardArray[$i]->functional_text, "Go again")) $data = "true";
           }
           break;
         default:
