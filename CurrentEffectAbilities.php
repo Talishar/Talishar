@@ -2364,7 +2364,7 @@ function EffectsAttackYouControlModifiers($cardID, $player)
 
 function AdministrativeEffect($effectID)
 {
-  $cardID = substr($effectID, 0, 6);
+  $cardID = ExtractCardID($effectID);
   switch ($cardID) {
     case "frostbite":
     case "barbed_castaway":
