@@ -1680,7 +1680,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($health > 13 && $health - $numBloodDebt <= 13) {
           $numBloodDebt -= ($health - 13);
           $health = 13;
-          if (SearchInventoryForCard($mainPlayer, "blasmophet_levia_consumed") != "") {
+          if (SearchInventoryForCard($mainPlayer, "levia_redeemed") != "") {
             AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("blasmophet_levia_consumed", "blasmophet_levia_consumed"));
             AddDecisionQueue("NOPASS", $mainPlayer, "-");
             AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
