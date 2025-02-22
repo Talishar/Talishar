@@ -2534,7 +2534,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "UNDERTRAPDOOR":
-      AddCurrentTurnEffect("under_the_trapdoor_blue", $currentPlayer, "", $parameter);
+      AddCurrentTurnEffect("under_the_trap_door_blue", $currentPlayer, "", $parameter);
       return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " copy and become " . CardLink($lastResult, $lastResult));

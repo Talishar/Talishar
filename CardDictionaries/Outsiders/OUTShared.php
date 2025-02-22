@@ -738,7 +738,7 @@ function OUTAbilityCost($cardID)
       case "impulsive_desire_red": case "impulsive_desire_yellow": case "impulsive_desire_blue": 
       case "minds_desire_red": case "minds_desire_yellow": case "minds_desire_blue":
       case "pick_to_pieces_red": case "pick_to_pieces_yellow": case "pick_to_pieces_blue":
-      case "kiss_of_death_red": case "under_the_trapdoor_blue":
+      case "kiss_of_death_red": case "under_the_trap_door_blue":
       case "bite_red": case "bite_yellow": case "bite_blue":
       case "whittle_from_bone_red": case "whittle_from_bone_yellow": case "whittle_from_bone_blue":
       case "defang_the_dragon_red": case "extinguish_the_flames_red":

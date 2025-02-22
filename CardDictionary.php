@@ -1093,7 +1093,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
     "barbed_castaway" => "I,I",
     "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", "restless_coalescence_yellow", 
-    "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", "ripple_away_blue", "under_the_trapdoor_blue", "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
+    "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", "ripple_away_blue", "under_the_trap_door_blue", "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
     "tipoff_red", "tipoff_yellow", "tipoff_blue" => "I,AA",
     "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", "photon_splicing_red", "photon_splicing_yellow", "photon_splicing_blue", "war_cry_of_themis_yellow" => "I,A",
     "haunting_rendition_red", "mental_block_blue" => "B,I",
@@ -1141,7 +1141,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_blue":
     case "ripple_away_blue":
-    case "under_the_trapdoor_blue":
+    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
@@ -1662,7 +1662,7 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
             return "BOTDECK";
           }
           break;
-        case "under_the_trapdoor_blue":
+        case "under_the_trap_door_blue":
           if ($cardID == $currentTurnEffects[$i + 2]) {
             RemoveCurrentTurnEffect($i);
             return "BANISH";
@@ -2626,7 +2626,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_red":
     case "ripple_away_blue":
-    case "under_the_trapdoor_blue":
+    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":

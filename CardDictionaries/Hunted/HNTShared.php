@@ -314,7 +314,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "arakni_tarantula":
       AddCurrentTurnEffect("arakni_tarantula", $currentPlayer);
       break;
-    case "under_the_trapdoor_blue":
+    case "under_the_trap_door_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:subtype=Trap");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -1021,7 +1021,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
         3 => "arakni_orb_weaver",
         4 => "arakni_redback",
         5 => "arakni_tarantula",
-        6 => "arakni_trapdoor",
+        6 => "arakni_trap_door",
         default => $characterID,
       };
     }
@@ -1040,9 +1040,9 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
     SetClassState($mainPlayer, $CS_OriginalHero, "-");
   }
   $char[0] = $transformTarget;
-  //don't trigger trapdoor if you transfrom from trapdoor into trapdoor
-  if ($transformTarget == "arakni_trapdoor" && $characterID != "arakni_trapdoor") {
-    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("arakni_trapdoor", "arakni_trapdoor")."?");
+  //don't trigger trap_door if you transfrom from trap_door into trap_door
+  if ($transformTarget == "arakni_trap_door" && $characterID != "arakni_trap_door") {
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("arakni_trap_door", "arakni_trap_door")."?");
     AddDecisionQueue("NOPASS", $mainPlayer, "-");
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);

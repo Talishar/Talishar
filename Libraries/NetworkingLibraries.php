@@ -2093,7 +2093,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "trip_the_light_fantastic_red":
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_blue":
-    case "under_the_trapdoor_blue":
+    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":

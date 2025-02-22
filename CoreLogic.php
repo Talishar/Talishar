@@ -1456,7 +1456,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "photon_splicing_red":
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
-    case "under_the_trapdoor_blue":
+    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":

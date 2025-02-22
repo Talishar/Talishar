@@ -406,7 +406,7 @@ function MainCharacterBeginEndPhaseAbilities()
       case "arakni_orb_weaver":
       case "arakni_redback":
       case "arakni_tarantula":
-      case "arakni_trapdoor":
+      case "arakni_trap_door":
         if ($mainCharacter[$i + 1] < 3) ChaosTransform($characterID, $mainPlayer);
         break;
       default:
