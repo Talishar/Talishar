@@ -284,7 +284,7 @@ function GetPriority($cardID, $heroID, $type)
       case "ROGUE020":
         switch($cardID)
         {
-          case "tbone_blue": $priority = array(0.2, 0.2, 0.9, 0, 0, 2.1, 0.8, 0); return $priority[$type];
+          case "t_bone_blue": $priority = array(0.2, 0.2, 0.9, 0, 0, 2.1, 0.8, 0); return $priority[$type];
           case "zero_to_sixty_blue": $priority = array(0.1, 0.1, 0.9, 0, 0, 2.1, 0.8, 0); return $priority[$type];
           case "zipper_hit_blue": $priority = array(10.2, 0.3, 0.9, 0, 0, 2.1, 0.8, 0); return $priority[$type];
           case "combustible_courier_blue": $priority = array(10.2, 0.9, 0.9, 0, 0, 2.1, 0.8, 0); return $priority[$type];

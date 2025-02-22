@@ -136,7 +136,7 @@ function HasBoost($cardID, $player)
     case "zipper_hit_red": case "zipper_hit_yellow": case "zipper_hit_blue":
     case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue":
     case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue":
-    case "tbone_red": case "tbone_yellow": case "tbone_blue":
+    case "t_bone_red": case "t_bone_yellow": case "t_bone_blue":
     case "zoom_in_red": case "zoom_in_yellow": case "zoom_in_blue":
     case "pulsewave_harpoon_red":
     case "scramble_pulse_red": case "scramble_pulse_yellow": case "scramble_pulse_blue":

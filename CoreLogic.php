@@ -2571,11 +2571,11 @@ function SelfCostModifier($cardID, $from)
       return ($from == "BANISH" ? -2 : 0);
     case "runic_reckoning_red":
       return (-1 * NumRunechants($currentPlayer));
-    case "liquidcooled_mayhem_red":
-    case "liquidcooled_mayhem_yellow":
-    case "liquidcooled_mayhem_blue":
-    case "liquidcooled_mayhem_red":
-    case "liquidcooled_mayhem_blue":
+    case "liquid_cooled_mayhem_red":
+    case "liquid_cooled_mayhem_yellow":
+    case "liquid_cooled_mayhem_blue":
+    case "liquid_cooled_mayhem_red":
+    case "liquid_cooled_mayhem_blue":
       return EvoUpgradeAmount($currentPlayer) * -1;
     case "annihilator_engine_red":
     case "terminator_tank_red":

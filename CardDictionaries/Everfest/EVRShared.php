@@ -294,7 +294,7 @@
           AddDecisionQueue("MODAL", $currentPlayer, "MICROPROCESSOR,".GetClassState($currentPlayer, $CS_PlayIndex), 1);
         }
         return $rv;
-      case "tbone_red": case "tbone_yellow": case "tbone_blue":
+      case "t_bone_red": case "t_bone_yellow": case "t_bone_blue":
         if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
         return "";
       case "zoom_in_red": case "zoom_in_yellow": case "zoom_in_blue":

@@ -5,7 +5,7 @@ function HNTAbilityType($cardID): string
   return match ($cardID) {
     "arakni_black_widow" => "AR",
     "arakni_funnel_web" => "AR",
-    "arakni_orbweaver" => "I",
+    "arakni_orb_weaver" => "I",
     "arakni_redback" => "AR",
     "arakni_tarantula" => "AR",
     "hunters_klaive" => "AA",
@@ -68,7 +68,7 @@ function HNTEffectAttackModifier($cardID): int
   return match ($cardID) {
     "arakni_black_widow" => 3,
     "arakni_funnel_web" => 3,
-    "arakni_orbweaver" => 3,
+    "arakni_orb_weaver" => 3,
     "arakni_redback" => 3,
     "arakni_tarantula" => 3,
     "take_up_the_mantle_yellow" => 2,
@@ -77,9 +77,9 @@ function HNTEffectAttackModifier($cardID): int
     "stains_of_the_redback_red" => 3,
     "stains_of_the_redback_yellow" => 2,
     "stains_of_the_redback_blue" => 1,
-    "orbweaver_spinneret_red" => 3,
-    "orbweaver_spinneret_yellow" => 2,
-    "orbweaver_spinneret_blue" => 1,
+    "orb_weaver_spinneret_red" => 3,
+    "orb_weaver_spinneret_yellow" => 2,
+    "orb_weaver_spinneret_blue" => 1,
     "two_sides_to_the_blade_red-DAGGER" => 3,
     "two_sides_to_the_blade_red-ATTACK" => 3,
     "wrath_of_retribution_red" => 1,
@@ -194,7 +194,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   return match ($cardID) {
     "arakni_black_widow" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "arakni_funnel_web" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
-    "arakni_orbweaver" => HasStealth($attackID),
+    "arakni_orb_weaver" => HasStealth($attackID),
     "arakni_redback" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "arakni_tarantula" => true,
     "take_up_the_mantle_yellow" => HasStealth($attackID),
@@ -202,9 +202,9 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "stains_of_the_redback_red" => HasStealth($attackID),
     "stains_of_the_redback_yellow" => HasStealth($attackID),
     "stains_of_the_redback_blue" => HasStealth($attackID),
-    "orbweaver_spinneret_red" => HasStealth($attackID),
-    "orbweaver_spinneret_yellow" => HasStealth($attackID),
-    "orbweaver_spinneret_blue" => HasStealth($attackID),
+    "orb_weaver_spinneret_red" => HasStealth($attackID),
+    "orb_weaver_spinneret_yellow" => HasStealth($attackID),
+    "orb_weaver_spinneret_blue" => HasStealth($attackID),
     "two_sides_to_the_blade_red" => true,
     "wrath_of_retribution_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "art_of_the_dragon_blood_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
@@ -303,7 +303,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
       break;
-    case "arakni_orbweaver":
+    case "arakni_orb_weaver":
       EquipWeapon($currentPlayer, "graphene_chelicera");
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
@@ -369,9 +369,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       GiveAttackGoAgain();
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "orbweaver_spinneret_red":
-    case "orbweaver_spinneret_yellow":
-    case "orbweaver_spinneret_blue":
+    case "orb_weaver_spinneret_red":
+    case "orb_weaver_spinneret_yellow":
+    case "orb_weaver_spinneret_blue":
       EquipWeapon($currentPlayer, "graphene_chelicera", $cardID);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -1018,7 +1018,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
       $transformTarget = match ($roll) {
         1 => "arakni_black_widow",
         2 => "arakni_funnel_web",
-        3 => "arakni_orbweaver",
+        3 => "arakni_orb_weaver",
         4 => "arakni_redback",
         5 => "arakni_tarantula",
         6 => "arakni_trapdoor",

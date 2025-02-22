@@ -2258,7 +2258,7 @@ function PayAbilityAdditionalCosts($cardID, $index)
       break;
     case "arakni_black_widow":
     case "arakni_funnel_web":
-    case "arakni_orbweaver":
+    case "arakni_orb_weaver":
     case "arakni_redback":
     case "arakni_tarantula":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDCLASS,ASSASSIN");

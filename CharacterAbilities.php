@@ -403,7 +403,7 @@ function MainCharacterBeginEndPhaseAbilities()
         break;
       case "arakni_black_widow":
       case "arakni_funnel_web":
-      case "arakni_orbweaver":
+      case "arakni_orb_weaver":
       case "arakni_redback":
       case "arakni_tarantula":
       case "arakni_trapdoor":
@@ -766,7 +766,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         $modifier += 1;
         AddLayer("TRIGGER", $currentPlayer, "frostbite", "-", "EQUIP", $char[$i + 11]);
         break;
-      case "arakni_orbweaver":
+      case "arakni_orb_weaver":
         if (CardNameContains($cardID, "Graphene Chelicera", $currentPlayer)) --$modifier;
         break;
       case "fang_dracai_of_blades":

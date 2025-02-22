@@ -965,9 +965,9 @@ function HasGoAgain($cardID): bool|int
     case "channel_mount_isen_blue":
     case "hunters_klaive":
     case "mark_of_the_huntsman":
-    case "orbweaver_spinneret_red":
-    case "orbweaver_spinneret_yellow":
-    case "orbweaver_spinneret_blue":
+    case "orb_weaver_spinneret_red":
+    case "orb_weaver_spinneret_yellow":
+    case "orb_weaver_spinneret_blue":
     case "kunai_of_retribution":
     case "ignite_red":
     case "wrath_of_retribution_red":
@@ -2411,7 +2411,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!($CombatChain->HasCurrentLink() && ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $currentPlayer))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
-    case "arakni_orbweaver":
+    case "arakni_orb_weaver":
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "arakni_tarantula":
