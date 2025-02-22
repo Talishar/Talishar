@@ -884,6 +884,10 @@ function AttackValue($cardID, $index=-1, $base=false)
 function HasGoAgain($cardID): bool|int
 {
   switch ($cardID) {
+    case "spiders_bite":
+    case "nerve_scalpel":
+    case "orbitoclast":
+    case "hunters_klaive":
     case "beckoning_mistblade":
     case "shifting_winds_of_the_mystic_beast_blue":
     case "wind_chakra_red":
