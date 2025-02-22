@@ -658,7 +658,7 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
       case "arakni_marionette":
       case "arakni_web_of_deceit":
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-        if (HasStealth($CombatChain->CurrentAttack()) & CheckMarked($otherPlayer)) {
+        if (HasStealth($CombatChain->CurrentAttack()) && CheckMarked($otherPlayer) && IsHeroAttackTarget()) {
           $modifier += 1;
           array_push($attackModifiers, $characterID);
           array_push($attackModifiers, 1);
