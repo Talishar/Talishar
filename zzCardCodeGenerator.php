@@ -198,7 +198,7 @@
           break;
         case "health":
           $data = $cardArray[$i]->health;
-          // CheckImage($setID, $cardID, $isDuplicate);
+          CheckImage($setID, $cardID, $isDuplicate);
           break;
         case "rarity":
           $data = $cardRarity;
