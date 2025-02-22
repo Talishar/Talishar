@@ -2003,7 +2003,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($layers) == 0 && !$CombatChain->HasCurrentLink()) return true;
       if (SearchCount(SearchCombatChainLink($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-        if (strlen($layers[$i]) == 6 && CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
+        if (CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
       }
       return true;
     case "shock_striker_red":
