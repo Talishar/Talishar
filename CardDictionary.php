@@ -4585,7 +4585,7 @@ function HasAttackLayer()
   $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
   $layerID = $layers[$layerIndex];
   $parameters = explode("|", $layers[$layerIndex+2]);
-  if (strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
+  // if (strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
   if (GetResolvedAbilityType($layerID, $parameters[0]) == "AA") return true;
   $layerType = CardType($layerID);
   if ($layerType == "AA") return true; //It's an attack
