@@ -1461,9 +1461,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "reapers_call_yellow":
     case "reapers_call_blue":
     case "shelter_from_the_storm_red":
-    case "tipoff_red":
-    case "tipoff_yellow":
-    case "tipoff_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
     case "war_cry_of_themis_yellow":
     case "war_cry_of_bellona_yellow":
       return $from == "HAND";
@@ -2883,9 +2883,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if ($set == "HNT") return HNTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else {
     switch ($cardID) {
-      case "jackolantern_red":
-      case "jackolantern_yellow":
-      case "jackolantern_blue":
+      case "jack_o_lantern_red":
+      case "jack_o_lantern_yellow":
+      case "jack_o_lantern_blue":
         $deck = new Deck($currentPlayer);
         if (!$deck->Empty()) if (ColorContains($deck->BanishTop(), PitchValue($cardID), $currentPlayer)) PlayAura("runechant", $currentPlayer, 1, true);
         return "";

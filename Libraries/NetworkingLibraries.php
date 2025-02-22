@@ -2097,9 +2097,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
-    case "tipoff_red":
-    case "tipoff_yellow":
-    case "tipoff_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);

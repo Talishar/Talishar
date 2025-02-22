@@ -592,9 +592,9 @@ function CardCost($cardID, $from="-")
     case "trip_the_light_fantastic_blue":
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_red":
-    case "tipoff_red":
-    case "tipoff_yellow":
-    case "tipoff_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 1;
     case "haunting_rendition_red":
@@ -753,9 +753,9 @@ function PitchValue($cardID)
   }
   if ($set == "LGS") {
     switch ($cardID) {
-      case "jackolantern_yellow":
+      case "jack_o_lantern_yellow":
         return 2;
-      case "jackolantern_blue":
+      case "jack_o_lantern_blue":
         return 3;
       default:
         break;
@@ -1098,7 +1098,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "barbed_castaway" => "I,I",
     "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", "restless_coalescence_yellow", 
     "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", "ripple_away_blue", "under_the_trap_door_blue", "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
-    "tipoff_red", "tipoff_yellow", "tipoff_blue" => "I,AA",
+    "tip_off_red", "tip_off_yellow", "tip_off_blue" => "I,AA",
     "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", "photon_splicing_red", "photon_splicing_yellow", "photon_splicing_blue", "war_cry_of_themis_yellow" => "I,A",
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
@@ -1149,9 +1149,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
-    case "tipoff_red":
-    case "tipoff_yellow":
-    case "tipoff_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
       $names = "Ability";
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
@@ -2634,9 +2634,9 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
-    case "tipoff_red":
-    case "tipoff_yellow":
-    case "tipoff_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
       return GetResolvedAbilityType($cardID, $from) == "AA";

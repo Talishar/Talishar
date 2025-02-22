@@ -756,9 +756,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "calming_breeze_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "tipoff_red":
-    case "tipoff_yellow":
-    case "tipoff_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         MarkHero($otherPlayer);
       }
