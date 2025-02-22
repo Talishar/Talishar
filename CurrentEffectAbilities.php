@@ -330,7 +330,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "toxicity_blue":
       LoseHealth(3, $defPlayer);
       break;
-    case "premeditate_red_1":
+    case "premeditate_red-1":
       if (IsHeroAttackTarget()) {
         PlayAura("ponder", $mainPlayer);
         return 1;
@@ -904,7 +904,7 @@ function CurrentEffectCostModifiers($cardID, $from)
             $remove = true;
           }
           break;
-        case "silken_gi_1":
+        case "silken_gi-1":
           if (CardType($cardID) == "AA") {
             $costModifier -= 1;
             $remove = true;
@@ -1964,7 +1964,7 @@ function IsCombatEffectPersistent($cardID)
     case "mask_of_shifting_perspectives":
     case "blade_cuff":
     case "knives_out_blue":
-    case "premeditate_red_1":
+    case "premeditate_red-1":
       return true;
     case "figment_of_triumph_yellow":
       return true;

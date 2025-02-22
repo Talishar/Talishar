@@ -77,6 +77,8 @@ function OUTAbilityCost($cardID)
     $idArr = explode("-", $cardID);
     $idArr2 = explode(",", $idArr[0]);
     $cardID = $idArr2[0];
+    if ($cardID == "premeditate_red" && isset($idArr[1]) && $idArr[1] == "2") return 3;
+    if ($cardID == "silken_gi" && isset($idArr[1]) && $idArr[1] == "2") return -1;
     switch($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return 3;
@@ -106,9 +108,7 @@ function OUTAbilityCost($cardID)
       case "short_and_sharp_red": return 3;
       case "short_and_sharp_yellow": return 2;
       case "short_and_sharp_blue": return 1;
-      case "silken_gi_2": return -1;
       case "gore_belching_red": return (-1 * $idArr[1]);
-      case "premeditate_red_2": return 3;
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return 1;
       case "spring_load_red": return 3;
       case "spring_load_yellow": return 2;
@@ -156,10 +156,13 @@ function OUTAbilityCost($cardID)
       case "short_and_sharp_red": case "short_and_sharp_yellow": case "short_and_sharp_blue": return true;
       case "toxic_tips": return CardType($attackID) == "AA";
       case "toxicity_red": case "toxicity_yellow": case "toxicity_blue": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
-      case "silken_gi_2": return CardType($attackID) == "AA";
+      case "silken_gi-2":
+        return isset($dashArr[1]) && $dashArr[1] == "2" && CardType($attackID) == "AA";
       case "gore_belching_red": return true;
-      case "premeditate_red_1": return CardType($attackID) == "AA";
-      case "premeditate_red_2": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+      case "premeditate_red": 
+        if (isset($dashArr[1]) && $dashArr[1] == "1") return CardType($attackID) == "AA";
+        else if (isset($dashArr[1]) && $dashArr[1] == "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+        else return false;
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return true;
       case "spring_load_red": case "spring_load_yellow": case "spring_load_blue": return true;
       case "scout_the_periphery_red": case "scout_the_periphery_yellow": case "scout_the_periphery_blue": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
@@ -433,8 +436,8 @@ function OUTAbilityCost($cardID)
         PlayerOpt($currentPlayer, 1);
         return "";
       case "silken_gi":
-        AddCurrentTurnEffectNextAttack($cardID . "_1", $currentPlayer);
-        AddCurrentTurnEffectNextAttack($cardID . "_2", $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID . "-1", $currentPlayer);
+        AddCurrentTurnEffectNextAttack($cardID . "-2", $currentPlayer);
         return "";
       case "threadbare_tunic":
         GainResources($currentPlayer, 1);
@@ -461,8 +464,8 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "premeditate_red":
-        AddCurrentTurnEffect($cardID . "_1", $currentPlayer);
-        AddCurrentTurnEffect($cardID . "_2", $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
+        AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
         return "";
       case "infectious_host_red": case "infectious_host_yellow": case "infectious_host_blue":
         if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer, effectController: $currentPlayer);

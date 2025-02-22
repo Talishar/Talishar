@@ -1079,7 +1079,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
     case "smashing_good_time_blue-1":
     case "glistening_steelblade_yellow-1":
     case "mask_of_shifting_perspectives":
-    case "premeditate_red_1":
+    case "premeditate_red-1":
     case "target_totalizer":
     case "hack_to_reality_yellow-HIT":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
