@@ -634,7 +634,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
 {
   $permIndex = SearchPermanentsForCard($player, "levia_redeemed");
   if($permIndex != "") RemovePermanent($player, $permIndex);
-  $inventoryIndex = SearchInventoryForCard($player, "levia_redeemed");
+  $inventoryIndex = SearchInventoryForCard($player, "blasmophet_levia_consumed");
   if($inventoryIndex != "") RemoveInventory($player, $inventoryIndex);
   $char = &GetPlayerCharacter($player);
   AddSoul($char[0], $player, "PLAY");
@@ -659,7 +659,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
     case "levia_redeemed":
       for($i=$banish->NumCards() - 1; $i >= 0; --$i) TurnBanishFaceDown($player, $i * BanishPieces());
       break;
-    case "levia_redeemed": // 3.0.3a A player may look at any private object they own, or is in a zone that they own, unless the object is in the deck zone.
+    case "blasmophet_levia_consumed": // 3.0.3a A player may look at any private object they own, or is in a zone that they own, unless the object is in the deck zone.
       $deck = new Deck($player);
       for($i=0; $i<$parameter; ++$i) $deck->BanishTop();
       WriteLog("Banished $parameter cards to your remaining blood debt triggers");
@@ -673,7 +673,7 @@ function DemiHeroHealth($cardID)
   switch($cardID)
   {
     case "levia_redeemed": return 8;
-    case "levia_redeemed": return 13;
+    case "blasmophet_levia_consumed": return 13;
     default: return 0;
   }
 }

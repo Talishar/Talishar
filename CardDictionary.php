@@ -114,6 +114,7 @@ function CardType($cardID, $from="")
     case "teklovossen_the_mechropotent":
       return "C";
     case "levia_redeemed":
+    case "blasmophet_levia_consumed":
       return "D";
     case "suraya_archangel_of_knowledge":
       return "-";
@@ -256,7 +257,7 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Item";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
-    case "levia_redeemed":
+    case "blasmophet_levia_consumed":
       return "Demon";
     case "teklovossen_the_mechropotent":
       return "Evo";
@@ -544,6 +545,7 @@ function CardTalent($cardID, $from="-")
     case "teklovossen_the_mechropotentb":
       return "SHADOW";
     case "levia_redeemed":
+    case "blasmophet_levia_consumed":
       return "SHADOW";
     default:
       break;
@@ -3426,7 +3428,7 @@ function CharacterDefaultActiveState($cardID)
     case "grasp_of_darkness":
     case "dance_of_darkness":
       return 0;
-    case "levia_redeemed":
+    case "blasmophet_levia_consumed":
       return 0;
     case "evo_circuit_breaker_red_equip":
     case "evo_atom_breaker_red_equip":
@@ -3958,7 +3960,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("runechant", $player, false)) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
-  if (!$nonLimitedOnly && $char[0] == "levia_redeemed" && SearchCurrentTurnEffects("levia_redeemed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
+  if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
   switch ($cardID) {
     case "deep_rooted_evil_yellow":
       return GetClassState($player, $CS_Num6PowBan) > 0;

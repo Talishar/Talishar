@@ -25,9 +25,9 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $characterID = ShiyanaCharacter($character[0]);
   AddEvent("BANISH", (isFaceDownMod($mod) ? "CardBack" : $cardID));
   //Effects that change the modifier
-  if ($characterID == "levia_redeemed" && $character[1] < 3) {
+  if ($characterID == "blasmophet_levia_consumed" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);
-    if ($mod != "INT") $mod = "levia_redeemed";
+    if ($mod != "INT") $mod = "blasmophet_levia_consumed";
   }
   //Do effects that change where it goes, or banish it if not
   if ($from == "DECK" && (SearchCharacterActive($player, "data_doll_mkii") || SearchCurrentTurnEffects("data_doll_mkii-SHIYANA", $player)) && CardSubType($cardID, $from) == "Item" && CardCost($cardID, $from) <= 2) {
@@ -43,7 +43,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   ++$classState[$CS_CardsBanished];
   if (isFaceDownMod($mod)) return $rv;
   //Do additional effects
-  if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "levia_redeemed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
+  if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
   if (($mod == "BOOST" || $from == "DECK") 
   && ($cardID == "back_alley_breakline_red" || $cardID == "back_alley_breakline_yellow" || $cardID == "back_alley_breakline_blue") 
   && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")

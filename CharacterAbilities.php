@@ -175,9 +175,9 @@ function CharacterStartTurnAbility($index)
         AddCurrentTurnEffect("valda_brightaxe", $mainPlayer);
       }
       break;
-    case "levia_redeemed":
+    case "blasmophet_levia_consumed":
       if ($character[1] < 3) {
-        AddCurrentTurnEffect("levia_redeemed", $mainPlayer);
+        AddCurrentTurnEffect("blasmophet_levia_consumed", $mainPlayer);
       }
       break;
     case "vynnset_iron_maiden":
@@ -317,10 +317,10 @@ function DefCharacterStartTurnAbilities()
         AddCurrentTurnEffect("barbed_castaway-Load", $defPlayer);
         AddCurrentTurnEffect("barbed_castaway-Aim", $defPlayer);
         break;
-      case "levia_redeemed":
+      case "blasmophet_levia_consumed":
         $character = GetPlayerCharacter($defPlayer);
         if ($character[1] < 3) {
-          AddCurrentTurnEffect("levia_redeemed", $defPlayer);
+          AddCurrentTurnEffect("blasmophet_levia_consumed", $defPlayer);
         }
         break;
       case "victor_goldmane_high_and_mighty":

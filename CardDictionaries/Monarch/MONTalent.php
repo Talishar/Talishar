@@ -135,7 +135,7 @@
           if($numSoul > 0) {
             LoseHealth($numSoul, $defPlayer);
             $char = &GetPlayerCharacter($defPlayer);
-            if($char[0] == "levia_redeemed") WriteLog("<span style='color:red;'>I find your lack of faith disturbing.</span>");
+            if($char[0] == "blasmophet_levia_consumed") WriteLog("<span style='color:red;'>I find your lack of faith disturbing.</span>");
             else if($char[0] == "levia_redeemed") WriteLog("<span style='color:red;'>When I left you, I was but the learner. Now I am the master.</span>");
           }
           for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);

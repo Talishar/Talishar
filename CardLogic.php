@@ -1670,7 +1670,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "BLOODDEBT":
       $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
       $char = &GetPlayerCharacter($mainPlayer);
-      if ($char[0] == "levia_redeemed" && +$char[1] == 2) {
+      if ($char[0] == "blasmophet_levia_consumed" && +$char[1] == 2) {
         $deck = new Deck($mainPlayer);
         for ($i = 0; $i < $numBloodDebt; ++$i) $deck->BanishTop();
         return;
@@ -1680,11 +1680,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($health > 13 && $health - $numBloodDebt <= 13) {
           $numBloodDebt -= ($health - 13);
           $health = 13;
-          if (SearchInventoryForCard($mainPlayer, "levia_redeemed") != "") {
-            AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("levia_redeemed", "levia_redeemed"));
+          if (SearchInventoryForCard($mainPlayer, "blasmophet_levia_consumed") != "") {
+            AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("blasmophet_levia_consumed", "blasmophet_levia_consumed"));
             AddDecisionQueue("NOPASS", $mainPlayer, "-");
             AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
-            AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "levia_redeemed", 1);
+            AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "blasmophet_levia_consumed", 1);
             AddDecisionQueue("ELSE", $mainPlayer, "-");
           }
         }
@@ -2324,10 +2324,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       SetClassState($player, $CS_NextNAACardGoAgain, 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "levia_redeemed":
+    case "blasmophet_levia_consumed":
       $banish = &GetBanish($player);
       for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
-        if ($banish[$i + 1] == "levia_redeemed") {
+        if ($banish[$i + 1] == "blasmophet_levia_consumed") {
           TurnBanishFaceDown($player, $i);
           break;
         }
