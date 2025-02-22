@@ -1181,7 +1181,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       $character[$cardIndex + 12] = "UP";
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
-    case "longdraw_halfglove":
+    case "longdraw_half_glove":
       DestroyCharacter($currentPlayer, $cardIndex, true);
       break;
     case "solar_plexus":

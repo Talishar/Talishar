@@ -3,7 +3,7 @@ function MSTAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "nuu_alluring_desire", "nuu", "enigma_ledger_of_ancestry", "enigma", "meridian_pathway", "zen_tamer_of_purpose", "zen", "twelve_petal_kasaya", "truths_retold", "uphold_tradition", "aqua_seeing_shell",
-    "skycrest_keikoi", "skybody_keikoi", "skyhold_keikoi", "skywalker_keikoi", "restless_coalescence_yellow", "longdraw_halfglove", "enigma_new_moon" => "I",
+    "skycrest_keikoi", "skybody_keikoi", "skyhold_keikoi", "skywalker_keikoi", "restless_coalescence_yellow", "longdraw_half_glove", "enigma_new_moon" => "I",
     "beckoning_mistblade", "tiger_taming_khakkara" => "AA",
     "mask_of_recurring_nightmares", "arousing_wave", "undertow_stilettos", "waves_of_aqua_marine", "aqua_laps" => "AR",
     default => ""
@@ -35,7 +35,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
     "prismatic_leyline_yellow-RED" => ColorContains($attackID, 1, $mainPlayer),
     "prismatic_leyline_yellow-YELLOW" => ColorContains($attackID, 2, $mainPlayer),
     "water_the_seeds_red", "water_the_seeds_yellow", "water_the_seeds_blue" => $combatChainState[$CCS_LinkBaseAttack] <= 1,
-    "longdraw_halfglove" => CardSubType($attackID) == "Arrow",
+    "longdraw_half_glove" => CardSubType($attackID) == "Arrow",
     "tide_chakra_red-1", "tide_chakra_yellow-1", "tide_chakra_blue-1", "tide_chakra_red-2", "tide_chakra_yellow-2", "tide_chakra_blue-2", "hiss_red", "hiss_yellow", "hiss_blue", "intimate_inducement_red-BUFF",
     "intimate_inducement_yellow-BUFF", "intimate_inducement_blue-BUFF", "venomous_bite_red", "venomous_bite_yellow", "venomous_bite_blue", "fang_strike", "slither", "tooth_and_claw_red-BUFF", "waves_of_aqua_marine", "attune_with_cosmic_vibrations_blue",
     "levels_of_enlightenment_blue", "dense_blue_mist_blue-HITPREVENTION", "dense_blue_mist_blue-DEBUFF", "deep_blue_sea_blue", "wide_blue_yonder_blue", "big_blue_sky_blue", "a_drop_in_the_ocean_blue", "the_grain_that_tips_the_scale_blue", "just_a_nick_red-BUFF",
@@ -54,7 +54,7 @@ function MSTEffectAttackModifier($cardID): int
     "mistcloak_gully", "dense_blue_mist_blue-DEBUFF" => IsHeroAttackTarget() ? -1 : 0,
     "deep_blue_sea_blue", "wide_blue_yonder_blue" => SearchPitchForColor($mainPlayer, 3),
     "tide_chakra_red-2", "wind_chakra_red-2", "just_a_nick_red-BUFF" => 5,
-    "tide_chakra_yellow-2", "wind_chakra_yellow-2", "longdraw_halfglove" => 4,
+    "tide_chakra_yellow-2", "wind_chakra_yellow-2", "longdraw_half_glove" => 4,
     "tide_chakra_red-1", "tide_chakra_blue-2", "hiss_red", "venomous_bite_red", "wind_chakra_red-1", "wind_chakra_blue-2", "tiger_form_incantation_red", "attune_with_cosmic_vibrations_blue", "chase_the_tail_red", "maul_yellow-BUFF",
     "prismatic_leyline_yellow-BLUE" => 3,
     "tide_chakra_yellow-1", "hiss_yellow", "venomous_bite_yellow", "wind_chakra_yellow-1", "tiger_form_incantation_yellow", "levels_of_enlightenment_blue", "first_tenet_of_chi_tide_blue", "prismatic_leyline_yellow-YELLOW", "emissary_of_tides_red" => 2,
@@ -584,7 +584,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "water_the_seeds_red":
     case "water_the_seeds_yellow":
-    case "longdraw_halfglove":
+    case "longdraw_half_glove":
     case "water_the_seeds_blue":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";

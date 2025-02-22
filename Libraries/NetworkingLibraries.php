@@ -2919,7 +2919,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
-    case "longdraw_halfglove":
+    case "longdraw_half_glove":
       $myHand = &GetHand($currentPlayer);
       $myArsenal = &GetArsenal($currentPlayer);
       if(count($myHand) + count($myArsenal) < 2) {

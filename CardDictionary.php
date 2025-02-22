@@ -2372,7 +2372,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CardNameContains($CombatChain->AttackCard()->ID(), "Crouching Tiger", $player)) return false;
       if ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
-    case "longdraw_halfglove":
+    case "longdraw_half_glove":
       return (count($myHand) + count($myArsenal)) < 2;
     case "shadowrealm_horror_red":
       return $discard->NumCards() < 3;
@@ -2890,7 +2890,7 @@ function HasBattleworn($cardID)
     case "arousing_wave":
     case "undertow_stilettos":
       return true;
-    case "longdraw_halfglove":
+    case "longdraw_half_glove":
       return true;
     case "hide_tanner":
       return true;
@@ -3433,7 +3433,7 @@ function CharacterDefaultActiveState($cardID)
       return 1;
     case "grains_of_bloodspill":
     case "meridian_pathway":
-    case "longdraw_halfglove":
+    case "longdraw_half_glove":
       return 1;
     case "aether_crackers":
     case "hard_knuckle":
