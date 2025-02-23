@@ -885,7 +885,7 @@ function AttackValue($cardID, $index=-1, $base=false)
 
 function HasGoAgain($cardID): bool|int
 {
-  switch ($cardID) {
+  switch ($cardID) { //cards that may have missed go again in the generated script
     case "spiders_bite":
     case "nerve_scalpel":
     case "orbitoclast":
@@ -1050,6 +1050,19 @@ function HasGoAgain($cardID): bool|int
       return true;
     case "war_cry_of_themis_yellow":
       return GetResolvedAbilityType($cardID) == "A";
+    case "healing_potion_blue": // cards with activated abilities with go again, but don't themselves have it
+    case "potion_of_strength_blue":
+    case "imperial_seal_of_command_red":
+    case "optekal_monocle_blue":
+    case "imperial_edict_red":
+    case "induction_chamber_red":
+    case "convection_amplifier_red":
+    case "stasis_cell_blue":
+    case "crazy_brew_blue":
+    case "plasma_purifier_red":
+    case "aether_sink_yellow":
+    case "cognition_nodes_blue":
+      return false;
   }
   $set = CardSet($cardID);
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
