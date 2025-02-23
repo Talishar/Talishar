@@ -405,7 +405,9 @@ if ($matchup == "") {
   WriteGameFile();
   SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
   SetCachePiece($gameName, $playerID + 3, "0");
-  SetCachePiece($gameName, $playerID + 6, $character);
+  // I'm not 100% sure what this does, but it seems to have been breaking with longer character names
+  // for now truncate hero names
+  SetCachePiece($gameName, $playerID + 6, substr($character,0,10));
   SetCachePiece($gameName, 14, $gameStatus);
   GamestateUpdated($gameName);
 
