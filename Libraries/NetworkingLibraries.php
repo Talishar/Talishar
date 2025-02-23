@@ -1470,6 +1470,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $cardType = CardType($cardID);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);  
   $mod = "";
+  WriteLog("HERE: $cardID, $index");
   //manual tunic ticking
   if ($playingCard && $cardID == "fyendals_spring_tunic" && ManualTunicSetting($currentPlayer) && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
     $character = &GetPlayerCharacter($currentPlayer);
@@ -1677,7 +1678,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
           --$actionPoints;
         }
-        elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
+        elseif(!$canPlayAsInstant && GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
           --$actionPoints;
         }
       }
