@@ -322,7 +322,7 @@
         LoadArrow($currentPlayer);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
-      case "trishot_blue":
+      case "tri_shot_blue":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
