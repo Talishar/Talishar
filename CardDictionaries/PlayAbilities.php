@@ -831,9 +831,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "quickfire_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "re-charge_red":
-    case "re-charge_yellow":
-    case "re-charge_blue":
+    case "re_charge_red":
+    case "re_charge_yellow":
+    case "re_charge_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to get a steam counter", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
