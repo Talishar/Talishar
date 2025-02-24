@@ -1324,7 +1324,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
     if ($from == "HAND") {
       if (!DelimStringContains($abilityTypes, "I", true) && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) return false;
-      if (CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if (!DelimStringContains($abilityTypes, "I", true) && CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
     }
     if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
       if (DelimStringContains($cardType, "A") || $cardType == "AA") return false;
@@ -2611,6 +2611,7 @@ function IsDefenseReactionPlayable($cardID, $from)
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
   if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("imperial_seal_of_command_red", $mainPlayer) && CardType($cardID) == "DR") return false;
+  if ($from == "HAND" && CachedTotalAttack() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
   return true;
 }
 
