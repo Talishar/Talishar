@@ -544,11 +544,9 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $damage = PermanentTakeDamageAbilities($player, $damage, $type, $source);
   $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
-  if ($damage == 1 && $preventable && SearchItemsForCard("dissolution_sphere_yellow", $player) != "") $damage = 0;//Must be last
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damage . "," . $type . "," . $source);
-  PrependDecisionQueue("DISSOLUTIONSHIELD", $player, $preventable, 1);
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
@@ -2444,7 +2442,6 @@ function BaseAttackModifiers($attackID, $attackValue)
 function GetDamagePreventionIndices($player, $type, $damage)
 {
   $rv = "";
-
   $auras = &GetAuras($player);
   $indices = "";
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
