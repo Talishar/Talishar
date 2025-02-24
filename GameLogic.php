@@ -1757,7 +1757,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
-      $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult);
+      $index = GetAbilityIndex($parameter, GetClassState($player, $CS_PlayIndex), $lastResult);
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
       if($names[$index] == "-") $names[$index] = "Ability";
