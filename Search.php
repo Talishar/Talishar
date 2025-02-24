@@ -242,8 +242,9 @@ function SearchHandForCardName($player, $name)
 {
   $hand = &GetHand($player);
   $indices = "";
+  if (SearchCurrentTurnEffects("amnesia_red", $player)) return $indices;
   for ($i = 0; $i < count($hand); $i += HandPieces()) {
-    if (CardNameContains($hand[$i], $name, $player)) {
+    if (ShareName(CardName($hand[$i]), $name)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
@@ -284,7 +285,7 @@ function SearchDeckByName($player, $name)
   $cardList = "";
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($deck); $i += DeckPieces()) {
-    if (CardName($deck[$i]) == $name) {
+    if (ShareName(CardName($deck[$i]), $name)) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -298,7 +299,7 @@ function SearchDiscardByName($player, $name)
   $cardList = "";
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($discard); $i += DeckPieces()) {
-    if (CardName($discard[$i]) == $name) {
+    if (ShareName(CardName($discard[$i]), $name)) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
