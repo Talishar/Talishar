@@ -150,6 +150,27 @@ function ARCWizardHitEffect($cardID)
   return "";
 }
 
+function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False) {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
+  AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
+  AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $targetType, ($isPassable ? 1 : 0));
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
+  $allies = GetAllies($player);
+  $theirAllies = GetAllies($otherPlayer);
+  if(ShouldAutotargetOpponent($player) && $targetType == 0) {
+    AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+  }
+  elseif (ShouldAutotargetOpponent($player) && ($targetType == 2 || $targetType == 3) && count($allies) <= 0 && count($theirAllies) <= 0) {
+    AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+  }
+  else{
+    if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  }
+  AddDecisionQueue("SETDQVAR", $player, "0", 1);
+}
+
 //Parameters:
 //Player = Player controlling the arcane effects
 //target =

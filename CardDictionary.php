@@ -1075,6 +1075,17 @@ function HasGoAgain($cardID): bool|int
   else return GeneratedGoAgain($cardID);
 }
 
+function TriggerTargets($cardID)
+{
+  return match($cardID) {
+    "blast_to_oblivion_red" => "aura_permanent",
+    "blast_to_oblivion_yellow" => "aura_permanent",
+    "blast_to_oblivion_blue" => "aura_permanent",
+    "figment_of_ravages_yellow" => "any_arcane",
+    default => ""
+  };
+}
+
 function GetAbilityType($cardID, $index = -1, $from = "-")
 {
   global $currentPlayer, $mainPlayer;

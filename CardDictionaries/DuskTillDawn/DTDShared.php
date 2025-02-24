@@ -193,7 +193,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("spectral_shield", $currentPlayer);
       return "";
     case "figment_of_ravages_yellow":
-      DealArcane(1, 2, "PLAYCARD", $cardID, false, $currentPlayer);
+      SetArcaneTarget($currentPlayer, "figment_of_ravages_yellow", 2);
+      AddDecisionQueue("ADDTRIGGER", $currentPlayer, "figment_of_ravages_yellow", 1);
       return "";
     case "figment_of_rebirth_yellow":
       MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2&MYDISCARD:type=AA;pitch=2", "MYTOPDECK", may:true);

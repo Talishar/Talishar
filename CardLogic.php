@@ -2277,6 +2277,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PLAYABILITY", $player, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       break;
+    case "figment_of_ravages_yellow":
+      DealArcane(1, 2, "PLAYCARD", "figment_of_ravages_yellow", false, $player, resolvedTarget: $target);
+      break;
     case "soulbond_resolve":
       Charge();
       break;

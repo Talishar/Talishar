@@ -2315,8 +2315,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       if (count($params) < 2) $target = $lastResult;
       else $target = $params[1];
-      // for now only do this for blast to oblivion
-      if ($params[0] == "blast_to_oblivion_red" || $params[0] == "blast_to_oblivion_yellow" || $params[0] == "blast_to_oblivion_blue") {
+      $targetClass = TriggerTargets($params[0]);
+      if ($targetClass != "") {
         if (DelimStringContains($lastResult, "THEIR", true)) $targettedPlayer = $player == 1 ? 2 : 1;
         else $targettedPlayer = $player;
         WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
