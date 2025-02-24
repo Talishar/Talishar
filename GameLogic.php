@@ -1757,7 +1757,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
-      $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), $lastResult);
+      // restless coalescence using play index rather than character index
+      $piece = match($parameter) {
+        "restless_coalescence_yellow" => $CS_PlayIndex,
+        default => $CS_CharacterIndex
+      };
+      $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
       if($names[$index] == "-") $names[$index] = "Ability";
