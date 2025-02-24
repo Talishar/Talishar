@@ -502,7 +502,7 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "encore_yellow":
       MZMoveCard($currentPlayer, "MYDISCARD:class=BARD;type=AA", "MYHAND", may: false, isSubsequent: false);
       return "";
-    case "song_of_jackbequick_blue":
+    case "song_of_jack_be_quick_blue":
       PlayAura("quicken", $otherPlayer);
       return "";
     case "song_of_sweet_nectar_blue":
