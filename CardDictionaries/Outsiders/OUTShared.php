@@ -126,7 +126,7 @@ function OUTAbilityCost($cardID)
     $dashArr = explode("-", $cardID);
     $commaArr = explode(",", $cardID);
     $cardID = $dashArr[0];
-    // if(strlen($cardID) > 6) $cardID = $commaArr[0];
+    if(count($commaArr) > 1) $cardID = $commaArr[0];
     switch ($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return true;
