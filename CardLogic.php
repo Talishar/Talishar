@@ -1629,6 +1629,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SETDQVAR", $player, "1", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "you drew <1> and placed it back on top", 1);
         AddDecisionQueue("OK", $player, "-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "-");
       }
       break;
     case "tripwire_trap_red":
