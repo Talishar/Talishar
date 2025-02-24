@@ -200,7 +200,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     OnBoostedEffects($player, $boostedCardID);
     $skipBanish = false;
     if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-      $skipBanish = EquipmentBoostEffect($player, "hyperx3", $boostedCardID);
+      $skipBanish = EquipmentBoostEffect($player, "hyper_x3", $boostedCardID);
     }
     if(CardSubType($boostedCardID) == "Item" && SearchCurrentTurnEffects("bios_update_red-2", $player, true)) {
       $skipBanish = true;
@@ -286,7 +286,7 @@ function ItemBoostEffects()
 }
 
 function EquipmentBoostEffect($player, $charID, $cardID) {
-  if (!FindCharacterIndex($player, "hyperx3")) return false;
+  if (!FindCharacterIndex($player, "hyper_x3")) return false;
   if (SearchCharacterForCard($player, $charID)) {
     $chars = &GetPlayerCharacter($player);
     $index = FindCharacterIndex($player, $charID);
@@ -299,7 +299,7 @@ function EquipmentBoostEffect($player, $charID, $cardID) {
 
 function OnBoostCardPutUnderCharacter(&$chars, $index, $charID, $player) {
   switch ($charID) {
-    case "hyperx3":
+    case "hyper_x3":
       if ($chars[$index+1] != 1 && $chars[$index+2] >= 3) {
         Draw($player, true, true);
         $chars[$index+1] = 1;

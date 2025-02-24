@@ -2888,7 +2888,7 @@ function HasBattleworn($cardID)
     case "evo_scatter_shot_blue_equip":
     case "evo_rapid_fire_blue_equip":
       return true;
-    case "hyperx3":
+    case "hyper_x3":
       return true;
     case "teklovossen_the_mechropotentb":
     case "evo_tekloscope_blue_equip":
