@@ -290,7 +290,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffect($cardID, $otherPlayer);
       return "";
-    case "slaphappy_red":
+    case "slap_happy_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "vigorous_windup_red":

@@ -1220,7 +1220,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           $remove = true;
           break;
-        case "slaphappy_red":
+        case "slap_happy_red":
           if ($preventable) {
             $preventedDamage += 2;
             PlayAura("vigor", $player); //Vigor
