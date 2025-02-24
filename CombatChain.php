@@ -576,10 +576,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       break;
     case "heavy_industry_surveillance":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
-        break;
+      break;
     case "heavy_industry_ram_stop":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
-        break;
+      break;
     case "red_alert_visor":
     case "red_alert_vest":
     case "red_alert_gloves":
