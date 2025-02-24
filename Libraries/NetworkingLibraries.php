@@ -1669,6 +1669,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
+      // there's a bug here where the $index is getting reset if you need to pitch, and I can't figure out why
       if($from == "BANISH") $mod = GetBanishModifier($index);
       if ($actionPoints > 0) {
         if(!$canPlayAsInstant) --$actionPoints;
