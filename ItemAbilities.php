@@ -44,6 +44,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
+  if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
   PlayAbility($item, $from, 0);
 }
 
