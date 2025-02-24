@@ -954,6 +954,9 @@ function CurrentEffectCostModifiers($cardID, $from)
           if (TalentContains($cardID, "DRACONIC", $currentPlayer)) {
             $costModifier -= 1;
             $remove = true;
+            if ($cardID == "fealty") {
+              WriteLog("Ignite is discounting your fealty, this is not a bug. You need to use the fealty in response to your ignite");
+            }
           }
           break;
         case "wrath_of_retribution_red":
