@@ -407,7 +407,7 @@ if ($matchup == "") {
   SetCachePiece($gameName, $playerID + 3, "0");
   // I'm not 100% sure what this does, but it seems to have been breaking with longer character names
   // for now truncate hero names
-  SetCachePiece($gameName, $playerID + 6, substr($character,0,10));
+  SetCachePiece($gameName, $playerID + 6, TruncateHeroName($character));
   SetCachePiece($gameName, 14, $gameStatus);
   GamestateUpdated($gameName);
 
@@ -430,6 +430,19 @@ $response->authKey = $playerID == 1 ? $p1Key : ($playerID == 2 ? $p2Key : '');
 echo (json_encode($response));
 
 session_write_close();
+
+function TruncateHeroName($cardID) {
+  switch ($cardID) {
+    case "dorinthea_quicksilver_prodigy":
+      return 'dori_qsp';
+    case "teklovossen_esteemed_magnate":
+      return 'teklo_mag';
+    case "victor_goldmane_high_and_mighty":
+      return 'victor_high';
+    default:
+      return substr($cardID,0,10);
+  }
+}
 
 function GetAltCardID($cardID)
 {
