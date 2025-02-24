@@ -755,6 +755,8 @@ function PitchValue($cardID)
   }
   if ($set == "LGS") {
     switch ($cardID) {
+      case "jack_o_lantern_red":
+        return 1;
       case "jack_o_lantern_yellow":
         return 2;
       case "jack_o_lantern_blue":
@@ -1047,6 +1049,9 @@ function HasGoAgain($cardID): bool|int
     case "money_where_ya_mouth_is_red":
     case "money_where_ya_mouth_is_yellow":
     case "money_where_ya_mouth_is_blue":
+    case "jack_o_lantern_red":
+    case "jack_o_lantern_yellow":
+    case "jack_o_lantern_blue":
       return true;
     case "war_cry_of_themis_yellow":
       return GetResolvedAbilityType($cardID) == "A";
