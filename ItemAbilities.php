@@ -284,6 +284,9 @@ function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
       if ($preventable) $damage -= ItemDamagePeventionAmount($player, $index);
       DestroyItemForPlayer($player, $index);
       break;
+    case "dissolution_sphere_yellow":
+      if ($preventable) $damage -= ItemDamagePeventionAmount($player, $index, $damage);
+      break;
     default:
       break;
   }
@@ -432,7 +435,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
   return $counters;
 }
 
-function ItemDamagePeventionAmount($player, $index)
+function ItemDamagePeventionAmount($player, $index, $damage=0)
 {
   $items = &GetItems($player);
   switch ($items[$index]) {
@@ -440,6 +443,9 @@ function ItemDamagePeventionAmount($player, $index)
     case "mini_forcefield_yellow":
     case "mini_forcefield_blue":
       return $items[$index + 1];
+    case "dissolution_sphere_yellow":
+      if ($damage == 1) return 1;
+      else return 0;
     default:
       return 0;
   }

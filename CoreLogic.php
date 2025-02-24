@@ -548,6 +548,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
   PrependDecisionQueue("FINALIZEDAMAGE", $player, $damage . "," . $type . "," . $source);
+  PrependDecisionQueue("DISSOLUTIONSHIELD", $player, $preventable, 1);
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
@@ -602,7 +603,7 @@ function AddDamagePreventionSelection($player, $damage, $type, $preventable)
   PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
-  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION," . $type);
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage");
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
@@ -2440,7 +2441,7 @@ function BaseAttackModifiers($attackID, $attackValue)
   return $attackValue;
 }
 
-function GetDamagePreventionIndices($player, $type)
+function GetDamagePreventionIndices($player, $type, $damage)
 {
   $rv = "";
 
@@ -2454,7 +2455,7 @@ function GetDamagePreventionIndices($player, $type)
   }
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
 
-  $char = &GetPlayerCharacter($player);
+  $char = &GetPlayerCharacter($player); 
   $indices = "";
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     if ($char[$i + 1] != 0 && WardAmount($char[$i], $player) > 0 && $char[$i + 12] == "UP") {
@@ -2469,7 +2470,7 @@ function GetDamagePreventionIndices($player, $type)
   $itemCount = count($items);
   $indices = "";
   for ($i = 0; $i < $itemCount; $i += ItemPieces()) {
-    if (ItemDamagePeventionAmount($player, $i) > 0) {
+    if (ItemDamagePeventionAmount($player, $i, $damage) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
