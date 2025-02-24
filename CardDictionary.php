@@ -1062,6 +1062,7 @@ function HasGoAgain($cardID): bool|int
     case "plasma_purifier_red":
     case "aether_sink_yellow":
     case "cognition_nodes_blue":
+    case "teklo_plasma_pistol":
       return false;
   }
   $set = CardSet($cardID);
