@@ -431,6 +431,7 @@ echo (json_encode($response));
 
 session_write_close();
 
+//makes sure the hero name can fit in cache, a few heroes with long name need a special truncation
 function TruncateHeroName($cardID) {
   switch ($cardID) {
     case "dorinthea_quicksilver_prodigy":
