@@ -482,10 +482,9 @@ function ResetCombatChainState()
   $chainLinkSummary = [];
 }
 
-//we will likely need to check layer continuous effects here
 function AttackReplaced($cardID, $player)
 {
-  global $combatChainState;
+  global $combatChainState, $currentTurnEffects, $mainPlayer;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack, $combatChain;
   global $CS_NumStealthAttacks;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -499,6 +498,14 @@ function AttackReplaced($cardID, $player)
   $combatChain[7] = GetUniqueId($cardID, $player); //new unique id
   $combatChain[9] = $cardID; //new original id
   $combatChain[10] = "-"; // get rid of any layer continuous buffs
+  //1.8.10 in the CR
+  for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      if ($combatChain[10] == "-") $combatChain[10] = $currentTurnEffects[$i];
+      else $combatChain[10] .= "," . $currentTurnEffects[$i];
+      RemoveCurrentTurnEffect($i);
+    }
+  }
   CleanUpCombatEffects(true);
 }
 
