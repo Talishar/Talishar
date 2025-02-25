@@ -1280,6 +1280,14 @@ function SearchMultizone($player, $searches)
                 else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
                 else WriteLog("Items multizone search only supports 3 cards -- report bug.");
                 break;
+              case "MYAURAS":
+                if (count($cards) == 1) $searchResult = SearchAurasForCard($cards[0], $player);
+                else WriteLog("aura multizone search only supports 1 card -- report bug.");
+                break;
+              case "THEIRAURAS":
+                if (count($cards) == 1) $searchResult = SearchAurasForCard($cards[0], $otherPlayer);
+                else WriteLog("aura multizone search only supports 1 card -- report bug.");
+                break;
               case "MYCHAR":
                 if (count($cards) == 1) $searchResult = SearchCharacterForCardMulti($player, $cards[0]);
                 else if (count($cards) == 2) $searchResult = SearchCharacterForCardMulti($player, $cards[0], $cards[1]);
