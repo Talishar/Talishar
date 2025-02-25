@@ -433,16 +433,17 @@ session_write_close();
 
 //makes sure the hero name can fit in cache, a few heroes with long name need a special truncation
 function TruncateHeroName($cardID) {
-  switch ($cardID) {
-    case "dorinthea_quicksilver_prodigy":
-      return 'dori_qsp';
-    case "teklovossen_esteemed_magnate":
-      return 'teklo_mag';
-    case "victor_goldmane_high_and_mighty":
-      return 'victor_high';
-    default:
-      return substr($cardID,0,10);
-  }
+  return SetID($cardID);
+  // switch ($cardID) {
+  //   case "dorinthea_quicksilver_prodigy":
+  //     return 'dori_qsp';
+  //   case "teklovossen_esteemed_magnate":
+  //     return 'teklo_mag';
+  //   case "victor_goldmane_high_and_mighty":
+  //     return 'victor_high';
+  //   default:
+  //     return substr($cardID,0,10);
+  // }
 }
 
 function GetAltCardID($cardID)
