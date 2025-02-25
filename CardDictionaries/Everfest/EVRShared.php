@@ -408,7 +408,7 @@
       case "cash_out_blue":
         PutItemIntoPlayForPlayer("silver", $currentPlayer, 0, intval($additionalCosts));
         return "";
-      case "knick_knack_bricabrac_red":
+      case "knick_knack_bric_a_brac_red":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "KNICKKNACK");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");  

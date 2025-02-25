@@ -2655,7 +2655,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CASHOUTCONTINUE", 1);
       break;
-    case "knick_knack_bricabrac_red":
+    case "knick_knack_bric_a_brac_red":
       $numCopper = CountItem("copper", $currentPlayer);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");

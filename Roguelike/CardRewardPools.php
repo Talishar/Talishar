@@ -710,7 +710,7 @@ function GetPoolGeneric($arrayParameters){
     array("bingo_red", "Majestic"), //Bingo
     array("firebreathing_red", "Majestic"), //Firebreathing
     array("cash_out_blue", "Majestic"), //Cash Out
-    array("knick_knack_bricabrac_red", "Majestic"), //Knick Knack Bric-a-brac
+    array("knick_knack_bric_a_brac_red", "Majestic"), //Knick Knack Bric-a-brac
     array("this_rounds_on_me_blue", "Majestic"), //This Round's on Me
     array("life_of_the_party_red", "Rare"), //Life of the Party
     array("life_of_the_party_yellow", "Rare"),
@@ -722,7 +722,7 @@ function GetPoolGeneric($arrayParameters){
     array("bingo_red", "Rare"), //Smashing Good Time
     array("firebreathing_red", "Rare"),
     array("cash_out_blue", "Rare"),
-    array("knick_knack_bricabrac_red", "Rare"), //Even Bigger Than That
+    array("knick_knack_bric_a_brac_red", "Rare"), //Even Bigger Than That
     array("this_rounds_on_me_blue", "Rare"),
     array("life_of_the_party_red", "Rare"),
     //EVER176 through EVER193 are all potions.
