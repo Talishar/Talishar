@@ -257,6 +257,19 @@ function LoadFavoriteDecks($userID)
 	return $output;
 }
 
+function ConvertDeck($deck) {
+	$ret = "";
+	foreach(explode("\n", $deck) as $line) {
+		foreach (explode(" ", $line) as $card) {
+			$ret .= SetID($card) . " ";
+		}
+        $ret = substr($ret, 0, -1);
+		$ret .= "\n";
+	}
+    $ret = substr($ret, 0, -1);
+	return $ret;
+}
+
 //Challenge ID 1 = sigil of solace blue
 //Challenge ID 2 = Talishar no dash
 //Challenge ID 3 = Moon Wish
@@ -273,6 +286,11 @@ function logCompletedGameStats()
 	$winHero = &GetPlayerCharacter($winner);
 	$loseHero = &GetPlayerCharacter($loser);
 
+	$winHeroID = SetID($winHero[0]);
+	$loseHeroID = SetID($loseHero[0]);
+	$winIDDeck = ConvertDeck($winnerDeck);
+	$loseIDDeck = ConvertDeck($loserDeck);
+
 	$conn = GetDBConnection();
 
 	if ($p1id != "" && $p1id != "-") {
@@ -288,7 +306,7 @@ function logCompletedGameStats()
 	$stmt = mysqli_stmt_init($conn);
 	$gameResultID = 0;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "sssssss", $winHero[0], $loseHero[0], $currentTurn, $winnerDeck, $loserDeck, GetHealth($winner), $firstPlayer);
+		mysqli_stmt_bind_param($stmt, "sssssss", $winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer);
 		mysqli_stmt_execute($stmt);
 		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);
