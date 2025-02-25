@@ -2022,8 +2022,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $momIndex = FindCharacterIndex($mainPlayer, "mask_of_momentum");
       if($momIndex != -1 && $mainChar[$momIndex + 5] > 0){
         --$mainChar[$momIndex + 5];
-        $count = CountCurrentTurnEffects($characterID, $mainPlayer);
-        if($mainCharacter[$momIndex + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
+        $count = CountCurrentTurnEffects($mainChar, $mainPlayer);
+        if($mainChar[$momIndex + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
           AddCurrentTurnEffect("mask_of_momentum", $mainPlayer);
         }
       }
