@@ -770,13 +770,13 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       case "blizzard_bolt_yellow":
       case "blizzard_bolt_blue":
         if (IsHeroAttackTarget() && CardType($source) == "AA")
-          PlayAura("frostbite", $target, effectController:$otherPlayer);
+          AddLayer("TRIGGER", $otherPlayer, $currentTurnEffects[$i], $target);
         break;
       case "chilling_icevein_red":
       case "chilling_icevein_yellow":
       case "chilling_icevein_blue":
         if (IsHeroAttackTarget() && CardType($source) == "AA")
-          PayOrDiscard($target, 1);
+          AddLayer("TRIGGER", $otherPlayer, $currentTurnEffects[$i], $target);
         break;
       case "blossoming_spellblade_red":
         if ($source == "blossoming_spellblade_red" && (IsHeroAttackTarget() || $type != "COMBAT"))

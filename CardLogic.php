@@ -1827,6 +1827,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "stalagmite_bastion_of_isenloft":
       PlayAura("frostbite", $player, effectController: $defPlayer);
       break;
+    case "blizzard_bolt_red":
+    case "blizzard_bolt_yellow":
+    case "blizzard_bolt_blue":
+      PlayAura("frostbite", $target, effectController:$player);
+      break;
+    case "chilling_icevein_red":
+    case "chilling_icevein_yellow":
+    case "chilling_icevein_blue":
+      PayOrDiscard($target, 1);
+      break;
     case "dissolution_sphere_yellow":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       --$items[$index + 1];
