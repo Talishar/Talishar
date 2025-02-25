@@ -1,5 +1,5 @@
 <?php
-$filename = "../jp_ajv_image_locs.json";
+$filename = "../jp_rap_image_locs.json";
 $jsonObject = file_get_contents($filename);
 $imageLocs = json_decode($jsonObject, true);
 

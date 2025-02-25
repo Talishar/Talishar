@@ -234,9 +234,9 @@ if ($decklink != "") {
         $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
 
-      if($character != "brevant,_civic_protector" && $id != "chivalry_3") { //Exclude Brevant and Chivalry
+      if($character != "brevant,_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "blitz" || $format == "compblitz" || $format == "openformatblitz" || $format == "clash") && $cardCounts[$id] > 2) {
+        if (($format == "blitz" || $format == "compblitz" || $format == "clash") && $cardCounts[$id] > 2) {
           if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
           $isDeckBlitzLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
@@ -460,51 +460,51 @@ function GetAltCardID($cardID)
     case "spell_fray_cloak": return "MON400";
     case "the_librarian": return "the_librarian";
     case "spell_fray_leggings": return "MON402";
-    case "scar_for_a_scar_1": return "scar_for_a_scar_1";
-    case "crazy_brew_3": return "crazy_brew_3";
-    case "boneyard_marauder_1": return "boneyard_marauder_1";
-    case "fate_foreseen_1": return "fate_foreseen_1";
-    case "herald_of_protection_2": return "shield_bash_1";
-    case "in_the_swing_1": return "in_the_swing_1";
-    case "flock_of_the_feather_walkers_1": return "flock_of_the_feather_walkers_1";
-    case "alpha_rampage_1": return "alpha_rampage_1";
+    case "scar_for_a_scar_red": return "scar_for_a_scar_red";
+    case "crazy_brew_blue": return "crazy_brew_blue";
+    case "boneyard_marauder_red": return "boneyard_marauder_red";
+    case "fate_foreseen_red": return "fate_foreseen_red";
+    case "herald_of_protection_yellow": return "shield_bash_red";
+    case "in_the_swing_red": return "in_the_swing_red";
+    case "flock_of_the_feather_walkers_red": return "flock_of_the_feather_walkers_red";
+    case "alpha_rampage_red": return "alpha_rampage_red";
     case "iyslander": return "iyslander";
-    case "scar_for_a_scar_1": return "scar_for_a_scar_1";
-    case "scar_for_a_scar_2": return "scar_for_a_scar_2";
-    case "scar_for_a_scar_3": return "scar_for_a_scar_3";
+    case "scar_for_a_scar_red": return "scar_for_a_scar_red";
+    case "scar_for_a_scar_yellow": return "scar_for_a_scar_yellow";
+    case "scar_for_a_scar_blue": return "scar_for_a_scar_blue";
     case "yoji,_royal_protector": return "yoji,_royal_protector";
     case "quicksilver_dagger": return "quicksilver_dagger";
-    case "blessing_of_aether_1": return "blessing_of_aether_1";
-    case "blessing_of_aether_2": return "blessing_of_aether_2";
-    case "blessing_of_aether_3": return "blessing_of_aether_3";
-    case "cracked_bauble_2": case "cracked_bauble_2": case "cracked_bauble_2": case "cracked_bauble_2": return "cracked_bauble_2";
+    case "blessing_of_aether_red": return "blessing_of_aether_red";
+    case "blessing_of_aether_yellow": return "blessing_of_aether_yellow";
+    case "blessing_of_aether_blue": return "blessing_of_aether_blue";
+    case "cracked_bauble_yellow": case "cracked_bauble_yellow": case "cracked_bauble_yellow": case "cracked_bauble_yellow": return "cracked_bauble_yellow";
     case "spell_fray_gloves": return "MON401";
-    case "vantom_banshee_1": return "vantom_banshee_1";
-    case "vantom_banshee_2": return "vantom_banshee_2";
-    case "vantom_banshee_3": return "vantom_banshee_3";
+    case "vantom_banshee_red": return "vantom_banshee_red";
+    case "vantom_banshee_yellow": return "vantom_banshee_yellow";
+    case "vantom_banshee_blue": return "vantom_banshee_blue";
     case "vynnset": return "vynnset";
-    case "herald_of_judgment_2": return "herald_of_judgment_2";
-    case "banneret_of_courage_2": return "banneret_of_courage_2";
-    case "banneret_of_gallantry_2": return "banneret_of_gallantry_2";
-    case "banneret_of_protection_2": return "banneret_of_protection_2";
-    case "banneret_of_resilience_2": return "banneret_of_resilience_2";
-    case "banneret_of_salvation_2": return "banneret_of_salvation_2";
-    case "banneret_of_vigor_2": return "banneret_of_vigor_2";
-    case "evo_tekloscope_3": return "evo_tekloscope_3";
-    case "evo_energy_matrix_3": return "evo_energy_matrix_3";
-    case "evo_scatter_shot_3": return "evo_scatter_shot_3";
-    case "evo_rapid_fire_3": return "evo_rapid_fire_3";
-    case "liquid-cooled_mayhem_1"; return "liquid-cooled_mayhem_1";
-    case "hyper_driver_1": return "hyper_driver_1";
-    case "firewall_1": return "firewall_1";
-    case "firewall_2": return "firewall_2";
-    case "firewall_3": return "firewall_3";
-    case "under_loop_1": return "under_loop_1";
+    case "herald_of_judgment_yellow": return "herald_of_judgment_yellow";
+    case "banneret_of_courage_yellow": return "banneret_of_courage_yellow";
+    case "banneret_of_gallantry_yellow": return "banneret_of_gallantry_yellow";
+    case "banneret_of_protection_yellow": return "banneret_of_protection_yellow";
+    case "banneret_of_resilience_yellow": return "banneret_of_resilience_yellow";
+    case "banneret_of_salvation_yellow": return "banneret_of_salvation_yellow";
+    case "banneret_of_vigor_yellow": return "banneret_of_vigor_yellow";
+    case "evo_tekloscope_blue": return "evo_tekloscope_blue";
+    case "evo_energy_matrix_blue": return "evo_energy_matrix_blue";
+    case "evo_scatter_shot_blue": return "evo_scatter_shot_blue";
+    case "evo_rapid_fire_blue": return "evo_rapid_fire_blue";
+    case "liquid-cooled_mayhem_red"; return "liquid-cooled_mayhem_red";
+    case "hyper_driver_red": return "hyper_driver_red";
+    case "firewall_red": return "firewall_red";
+    case "firewall_yellow": return "firewall_yellow";
+    case "firewall_blue": return "firewall_blue";
+    case "under_loop_red": return "under_loop_red";
     case "proto_base_head": return "proto_base_head";
     case "proto_base_chest": return "proto_base_chest";
     case "proto_base_arms": return "proto_base_arms";
     case "proto_base_legs": return "proto_base_legs";
-    case "sigil_of_solace_1": return "sigil_of_solace_1";
+    case "sigil_of_solace_red": return "sigil_of_solace_red";
     case "star_fall": return "star_fall";
     case "heavy_industry_power_plant": return "heavy_industry_power_plant";
     case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
@@ -529,7 +529,7 @@ function isClashLegal($cardID, $character) {
   }
   if(IsSpecialization($cardID)) return true;
   if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return true;
-  if(($character == "emperor,_dracai_of_aesir" || $character == "") && $cardID == "command_and_conquer_1") return true; //C&C is legal for Emperor in Clash
+  if(($character == "emperor,_dracai_of_aesir" || $character == "") && $cardID == "command_and_conquer_red") return true; //C&C is legal for Emperor in Clash
   if(($character == "prism,_advent_of_thrones" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash
   return false;
 }
@@ -538,7 +538,7 @@ function IsCardBanned($cardID, $format, $character)
 {
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
-  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "springboard_somersault_2") return true;
+  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "springboard_somersault_yellow") return true;
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
@@ -551,8 +551,8 @@ function isCardRestricted($cardID, $format, $count) {
 
   $restrictedCards = [
     "llcc" => [
-      "crippling_crush_1", "oaken_old_1", "awakening_3", "hypothermia_3", "warmonger's_diplomacy_3", "bonds_of_ancestry_1", "bonds_of_ancestry_2", "bonds_of_ancestry_3", 
-      "open_the_flood_gates_1", "open_the_flood_gates_2", "open_the_flood_gates_3", 
+      "crippling_crush_red", "oaken_old_red", "awakening_blue", "hypothermia_blue", "warmonger's_diplomacy_blue", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", 
+      "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue", 
     ]
   ];
 
@@ -562,8 +562,8 @@ function isCardRestricted($cardID, $format, $count) {
 function isSpecialUsePromo($cardID) {
   $specialUsePromos = [
       "taipanis,_dracai_of_judgement", "taipanis,_dracai_of_judgement", "proclamation_of_requisition", "proclamation_of_requisition", "gavel_of_natural_order", "theryon,_magister_of_justice", "theryon,_magister_of_justice", "proclamation_of_abundance",
-      "proclamation_of_production", "brutus,_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di,_gem_keeper", "go_bananas_2", "taylor", "yorick,_weaver_of_tales", "tales_of_adventure_3",
-      "good_deeds_don't_go_unnoticed_2", "pink_visor", "diamond_hands", "hummingbird,_call_of_adventure", "shitty_xmas_present_2", "squizzy_&_floof"
+      "proclamation_of_production", "brutus,_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di,_gem_keeper", "go_bananas_yellow", "taylor", "yorick,_weaver_of_tales", "tales_of_adventure_blue",
+      "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird,_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof"
   ];
   return in_array($cardID, $specialUsePromos);
 }
@@ -574,22 +574,22 @@ function isBannedInFormat($cardID, $format) {
 
   $bannedCards = [
       "blitz" => [
-          "rhinar", "tome_of_fyendal_2", "drone_of_brutality_1", "drone_of_brutality_2", "drone_of_brutality_3", "dash", "teklo_plasma_pistol", "viserai", "nebula_blade",
-          "tome_of_aetherwind_1", "art_of_war_2", "awakening_3", "briar", "ball_lightning_1", "ball_lightning_2", "ball_lightning_3", "rosetta_thorn", "duskblade",
-          "heartened_cross_strap", "bloodsheath_skeleta", "snapback_1", "snapback_2", "snapback_3", "cash_in_2", "tome_of_divinity_2", "stubby_hammerers", "mask_of_the_pouncing_lynx",
-          "tome_of_firebrand_1", "iyslander", "iyslander", "kraken's_aethervein", "oldhim", "winter's_wail", "chane", "galaxxi_black", "kano",
-          "crucible_of_aetherweave", "crucible_of_aetherweave", "kassai,_cintari_sellsword", "ira,_crimson_haze", "edge_of_autumn", "berserk_2", "bonds_of_ancestry_1", "bonds_of_ancestry_2", "bonds_of_ancestry_3",
-          "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_3", "belittle_1", "belittle_2", "belittle_3"
+          "rhinar", "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "dash", "teklo_plasma_pistol", "viserai", "nebula_blade",
+          "tome_of_aetherwind_red", "art_of_war_yellow", "awakening_blue", "briar", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "rosetta_thorn", "duskblade",
+          "heartened_cross_strap", "bloodsheath_skeleta", "snapback_red", "snapback_yellow", "snapback_blue", "cash_in_yellow", "tome_of_divinity_yellow", "stubby_hammerers", "mask_of_the_pouncing_lynx",
+          "tome_of_firebrand_red", "iyslander", "iyslander", "kraken's_aethervein", "oldhim", "winter's_wail", "chane", "galaxxi_black", "kano",
+          "crucible_of_aetherweave", "crucible_of_aetherweave", "kassai,_cintari_sellsword", "ira,_crimson_haze", "edge_of_autumn", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
+          "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_blue", "belittle_red", "belittle_yellow", "belittle_blue"
       ],
       "cc" => [
-          "tome_of_fyendal_2", "drone_of_brutality_1", "drone_of_brutality_2", "drone_of_brutality_3", "tome_of_aetherwind_1", "art_of_war_2", "plunder_run_1", "plunder_run_2", "plunder_run_3",
-          "bloodsheath_skeleta", "cash_in_2", "prism,_sculptor_of_arc_light", "luminaris", "tome_of_divinity_2", "chane,_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_1",
-          "belittle_2", "belittle_3", "awakening_3", "ball_lightning_1", "ball_lightning_2", "ball_lightning_3", "duskblade", "crown_of_seeds", "lexi,_livewire",
-          "voltaire,_strike_twice", "briar,_warden_of_thorns", "rosetta_thorn", "oldhim,_grandfather_of_eternity", "winter's_wail", "bravo,_star_of_the_show", "dromai,_ash_artist", "storm_of_sandikai", "tome_of_firebrand_1",
-          "iyslander,_stormbind", "kraken's_aethervein", "berserk_2", "bonds_of_ancestry_1", "bonds_of_ancestry_2", "bonds_of_ancestry_3", "orihon_of_mystic_tenets_3", "high_octane_1", "count_your_blessings_3"
+          "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
+          "bloodsheath_skeleta", "cash_in_yellow", "prism,_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane,_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
+          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi,_livewire",
+          "voltaire,_strike_twice", "briar,_warden_of_thorns", "rosetta_thorn", "oldhim,_grandfather_of_eternity", "winter's_wail", "bravo,_star_of_the_show", "dromai,_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
+          "iyslander,_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue"
       ],
       "commoner" => [
-          "amulet_of_ice_3", "ball_lightning_1", "ball_lightning_2", "ball_lightning_3", "belittle_1", "belittle_2", "belittle_3", "aether_ironweave"
+          "amulet_of_ice_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave"
       ],
       "llcc" => [
           "kraken's_aethervein"
