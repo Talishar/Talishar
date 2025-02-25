@@ -789,9 +789,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "deadly_duo_red":
     case "deadly_duo_yellow":
     case "deadly_duo_blue":
-    case "onetwo_punch_red":
-    case "onetwo_punch_yellow":
-    case "onetwo_punch_blue":
+    case "one_two_punch_red":
+    case "one_two_punch_yellow":
+    case "one_two_punch_blue":
     case "barbed_undertow_red":
     case "infecting_shot_red":
     case "infecting_shot_yellow":

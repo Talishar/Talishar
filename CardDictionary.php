@@ -3632,9 +3632,9 @@ function HasCombo($cardID)
     case "descendent_gustwave_red":
     case "descendent_gustwave_yellow":
     case "descendent_gustwave_blue":
-    case "onetwo_punch_red":
-    case "onetwo_punch_yellow":
-    case "onetwo_punch_blue":
+    case "one_two_punch_red":
+    case "one_two_punch_yellow":
+    case "one_two_punch_blue":
     case "mauling_qi_red":
       return true;
     case "chase_the_tail_red":
@@ -3772,9 +3772,9 @@ function ComboActive($cardID = "")
       case "descendent_gustwave_blue":
         if ($lastAttackName == "Surging Strike") return true;
         break;
-      case "onetwo_punch_red":
-      case "onetwo_punch_yellow":
-      case "onetwo_punch_blue":
+      case "one_two_punch_red":
+      case "one_two_punch_yellow":
+      case "one_two_punch_blue":
         if ($lastAttackName == "Head Jab") return true;
         break;
       case "mauling_qi_red":

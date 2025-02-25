@@ -602,7 +602,7 @@ function OUTAbilityCost($cardID)
       case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue":
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
-      case "onetwo_punch_red": case "onetwo_punch_yellow": case "onetwo_punch_blue":
+      case "one_two_punch_red": case "one_two_punch_yellow": case "one_two_punch_blue":
         if(ComboActive() && IsHeroAttackTarget())
         {
           AddDecisionQueue("DEALDAMAGE", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
