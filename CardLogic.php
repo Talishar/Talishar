@@ -2946,6 +2946,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       if (!IsAllyAttacking()) TrapTriggered($parameter);
       break;
+    case "war_cry_of_bellona_yellow":
+      $attackGoAgain = DoesAttackHaveGoAgain() && HasWard($combatChain[0], $mainPlayer);
+      DealDamageAsync($mainPlayer, $target, "DAMAGE", "war_cry_of_bellona_yellow");
+      if ($attackGoAgain) GainActionPoints(1, $mainPlayer); //handles the attack getting destroyed, LKI applies
+      break;
     case "douse_in_runeblood_red":
       $startingRunechants = CountAura("runechant", $player);
       PlayAura("runechant", $player, GetClassState($player, $CS_NumNonAttackCards), isToken:true);

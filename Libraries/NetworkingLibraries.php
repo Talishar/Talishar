@@ -1062,7 +1062,7 @@ function ResolveCombatDamage($damageDone)
         $amount = $params[1];
         $uniqueID = $params[2];
         if($damageDone <= $amount && $uniqueID == $combatChain[8]) {
-          DealDamageAsync($mainPlayer, $amount, "DAMAGE", "war_cry_of_bellona_yellow");
+          AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
           RemoveCurrentTurnEffect($index);
         }
       }
