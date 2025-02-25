@@ -382,7 +382,6 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 
 	$result = curl_exec($ch);
 
-	/*
 	//Uncomment to log fabrary stats reporting
 	$logfile = "./BugReports/FabraryStatsLogging.txt";
 	$logHandler = fopen($logfile, "a");
@@ -391,7 +390,6 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	$logText = "Game log sent to fabrary for game $gameName at $logDate. $p1deckbuilderID as $p1Hero with $p1Decklink vs $p2deckbuilderID as $p2Hero with $p2Decklink. API Response: $result";
 	fwrite($logHandler, $logText . "\r\n");
 	fclose($logHandler);
-	*/
 
 	curl_close($ch);
 }
@@ -774,15 +772,15 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 function GetNormalCardID($cardID)
 {
 	switch ($cardID) {
-		case "MON405": return "BOL002";
-		case "MON400": return "BOL006";
-		case "MON407": return "CHN002";
-		case "MON401": return "CHN006";
-		case "MON406": return "LEV002";
-		case "MON400": return "LEV005";
-		case "MON404": return "PSM002";
-		case "MON402": return "PSM007";
-		case "HNT407": return "ARK007";
+		case "minerva_themis": return "minerva_themis";
+		case "MON400": return "spell_fray_cloak";
+		case "lord_sutcliffe": return "lord_sutcliffe";
+		case "MON401": return "spell_fray_gloves";
+		case "lady_barthimont": return "lady_barthimont";
+		case "MON400": return "spell_fray_cloak";
+		case "the_librarian": return "the_librarian";
+		case "MON402": return "spell_fray_leggings";
+		case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
 	}
 	return $cardID;
 }
