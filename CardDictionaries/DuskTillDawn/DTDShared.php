@@ -257,7 +257,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $modes = explode(",", $additionalCosts);
         for($i=0; $i<count($modes); ++$i)
         {
-          BanishFromSoul($currentPlayer);
           switch($modes[$i])
           {
             case "+2_Attack": AddCurrentTurnEffect("lumina_lance_yellow-1", $currentPlayer); break;

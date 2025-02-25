@@ -2757,6 +2757,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-+2_Attack,Draw_on_hit,Go_again_on_hit");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "LUMINALANCECOST", 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "expendable_limbs_blue":

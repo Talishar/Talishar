@@ -819,6 +819,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         }
       }
       return $lastResult;
+    case "LUMINALANCECOST":
+      $numModes = count($lastResult);
+      for($i=0; $i<$numModes; ++$i) BanishFromSoul($player);
+      return $lastResult;
     default: return "";
   }
 
