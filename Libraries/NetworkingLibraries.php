@@ -1827,7 +1827,8 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero for <0>", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);  
+      // AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCOURTARGETTING", 1);
       break;
     case "rewind_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A");

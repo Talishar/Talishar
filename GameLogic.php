@@ -1439,42 +1439,47 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETLAYERTARGET":
       global $layers;
-      $target = $lastResult;
-      $targetArr = explode("-", $target);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      if ($targetArr[0] == "LAYER") $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
-      if ($targetArr[0] == "THEIRDISCARD") {
-        $discard = GetDiscard($otherPlayer);
-        $target = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
-      }
-      if ($targetArr[0] == "MYDISCARD") {
-        $discard = GetDiscard($player);
-        $target = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
-      }
-      if ($targetArr[0] == "THEIRAURAS") {
-        $auras = GetAuras($otherPlayer);
-        $target = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
-      }
-      if ($targetArr[0] == "MYAURAS") {
-        $auras = GetAuras($player);
-        $target = "MYAURASUID-" . $auras[$targetArr[1] + 6];
-      }
-      if ($targetArr[0] == "THEIRCHAR") {
-        $char = GetPlayerCharacter($otherPlayer);
-        $target = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
-      }
-      if ($targetArr[0] == "MYCHAR") {
-        $char = GetPlayerCharacter($player);
-        $target = "MYCHAR-" . $char[$targetArr[1] + 11];
-      }
-      if ($targetArr[0] == "COMBATCHAINATTACKS") {
-        // It's not possible for this index to get messed up before resolution
-        $target = $lastResult;
-      }
-      if ($targetArr[0] == "COMBATCHAIN") {
-        $char = GetPlayerCharacter($otherPlayer);
-        //right now only support targetting the active chain link
-        $target = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+      $allTargets = explode(",", $lastResult);
+      $target = "";
+      foreach ($allTargets as $targ) {
+        $targetArr = explode("-", $targ);
+        $otherPlayer = ($player == 1 ? 2 : 1);
+        if ($targetArr[0] == "LAYER") $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+        if ($targetArr[0] == "THEIRDISCARD") {
+          $discard = GetDiscard($otherPlayer);
+          $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
+        }
+        if ($targetArr[0] == "MYDISCARD") {
+          $discard = GetDiscard($player);
+          $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
+        }
+        if ($targetArr[0] == "THEIRAURAS") {
+          $auras = GetAuras($otherPlayer);
+          $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
+        }
+        if ($targetArr[0] == "MYAURAS") {
+          $auras = GetAuras($player);
+          $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+        }
+        if ($targetArr[0] == "THEIRCHAR") {
+          $char = GetPlayerCharacter($otherPlayer);
+          $cleanTarget = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
+        }
+        if ($targetArr[0] == "MYCHAR") {
+          $char = GetPlayerCharacter($player);
+          $tarcleanTargetget = "MYCHAR-" . $char[$targetArr[1] + 11];
+        }
+        if ($targetArr[0] == "COMBATCHAINATTACKS") {
+          // It's not possible for this index to get messed up before resolution
+          $cleanTarget = $lastResult;
+        }
+        if ($targetArr[0] == "COMBATCHAIN") {
+          $char = GetPlayerCharacter($otherPlayer);
+          //right now only support targetting the active chain link
+          $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+        }
+        if ($target == "") $target = $cleanTarget;
+        else $target .= ",$cleanTarget";
       }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
         if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
