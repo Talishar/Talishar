@@ -163,13 +163,17 @@
           $equippedID = $cardID . "_equip";
           PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $equippedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true);
         }
+        if (ReverseID($cardID) != "") {
+          $reversedID = $cardID . "_r";
+          PopulateAssociativeArray($cardArray, ReverseID($cardID), $associativeArray, $propertyName, $reversedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true, true);
+        }
       }
     }
     TraverseAssociativeArray($associativeArray, $handler, $isString, $defaultValue);
     fwrite($handler, "};\r\n}\r\n");
   }
 
-  function PopulateAssociativeArray($cardArray, $setID, &$AA, $propertyName, $cardID, $i, $isBool, $isString, $defaultValue, $cardRarity, $isDuplicate=false) {
+  function PopulateAssociativeArray($cardArray, $setID, &$AA, $propertyName, $cardID, $i, $isBool, $isString, $defaultValue, $cardRarity, $isDuplicate=false, $getImage=True) {
     if (!isset($AA[$cardID])) {
       switch ($propertyName) {
         case "type":
@@ -198,7 +202,7 @@
           break;
         case "health":
           $data = $cardArray[$i]->health;
-          CheckImage($setID, $cardID, $isDuplicate);
+          if ($getImage) CheckImage($setID, $cardID, $isDuplicate);
           break;
         case "rarity":
           $data = $cardRarity;
@@ -377,4 +381,36 @@
       else if($card->types[$i] == "Instant") $hasInstant = true;
     }
     return ($hasAction && $hasEquipment) || ($hasInstant && $hasEquipment);
+  }
+
+  function ReverseID($cardID)
+  {
+    switch ($cardID) {
+      case "harmonized_kodachi":
+        return "CRU049";
+      case "mandible_claw":
+        return "CRU005";
+      case "zephyr_needle":
+        return "CRU052";
+      case "cintari_saber":
+        return "CRU080";
+      case "quicksilver_dagger":
+        return "DYN070";
+      case "spider's_bite":
+        return "DYN116";
+      case "nerve_scalpel":
+        return "OUT006";
+      case "orbitoclast":
+        return "OUT008";
+      case "scale_peeler":
+        return "OUT010";
+      case "kunai_of_retribution":
+        return "GEM003";
+      case "obsidian_fire_vein":
+        return "GEM005";
+      case "mark_of_the_huntsman":
+        return "GEM007";
+      default:
+        return "";
+    }
   }

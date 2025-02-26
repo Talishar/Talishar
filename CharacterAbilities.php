@@ -625,7 +625,7 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
         case "biting_blade_yellow":
         case "biting_blade_blue":
         case "cintari_saber":
-        case "cintari_saber":
+        case "cintari_saber_r":
         case "hatchet_of_body":
         case "hatchet_of_mind":
         case "plow_through_red":

@@ -216,7 +216,7 @@ if ($decklink != "") {
         $id = $cards[$i]->{'cardIdentifier'};
       }
       if ($id == "") continue;   
-      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format, $character);
+      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards);
 
       if (IsCardBanned($id, $format, $character) && $format != "draft") {
         if ($bannedCard != "") $bannedCard .= ", ";
@@ -446,73 +446,6 @@ function TruncateHeroName($cardID) {
   // }
 }
 
-function GetAltCardID($cardID)
-{
-  switch ($cardID) {
-    case "ironrot_helm": return "ironrot_helm";
-    case "ironrot_plate": return "ironrot_plate";
-    case "ironrot_gauntlet": return "ironrot_gauntlet";
-    case "ironrot_legs": return "ironrot_legs";
-    case "minerva_themis": return "minerva_themis";
-    case "spell_fray_cloak": return "MON400";
-    case "lord_sutcliffe": return "lord_sutcliffe";
-    case "spell_fray_gloves": return "MON401";
-    case "lady_barthimont": return "lady_barthimont";
-    case "spell_fray_cloak": return "MON400";
-    case "the_librarian": return "the_librarian";
-    case "spell_fray_leggings": return "MON402";
-    case "scar_for_a_scar_red": return "scar_for_a_scar_red";
-    case "crazy_brew_blue": return "crazy_brew_blue";
-    case "boneyard_marauder_red": return "boneyard_marauder_red";
-    case "fate_foreseen_red": return "fate_foreseen_red";
-    case "herald_of_protection_yellow": return "shield_bash_red";
-    case "in_the_swing_red": return "in_the_swing_red";
-    case "flock_of_the_feather_walkers_red": return "flock_of_the_feather_walkers_red";
-    case "alpha_rampage_red": return "alpha_rampage_red";
-    case "iyslander": return "iyslander";
-    case "scar_for_a_scar_red": return "scar_for_a_scar_red";
-    case "scar_for_a_scar_yellow": return "scar_for_a_scar_yellow";
-    case "scar_for_a_scar_blue": return "scar_for_a_scar_blue";
-    case "yoji,_royal_protector": return "yoji,_royal_protector";
-    case "quicksilver_dagger": return "quicksilver_dagger";
-    case "blessing_of_aether_red": return "blessing_of_aether_red";
-    case "blessing_of_aether_yellow": return "blessing_of_aether_yellow";
-    case "blessing_of_aether_blue": return "blessing_of_aether_blue";
-    case "cracked_bauble_yellow": case "cracked_bauble_yellow": case "cracked_bauble_yellow": case "cracked_bauble_yellow": return "cracked_bauble_yellow";
-    case "spell_fray_gloves": return "MON401";
-    case "vantom_banshee_red": return "vantom_banshee_red";
-    case "vantom_banshee_yellow": return "vantom_banshee_yellow";
-    case "vantom_banshee_blue": return "vantom_banshee_blue";
-    case "vynnset": return "vynnset";
-    case "herald_of_judgment_yellow": return "herald_of_judgment_yellow";
-    case "banneret_of_courage_yellow": return "banneret_of_courage_yellow";
-    case "banneret_of_gallantry_yellow": return "banneret_of_gallantry_yellow";
-    case "banneret_of_protection_yellow": return "banneret_of_protection_yellow";
-    case "banneret_of_resilience_yellow": return "banneret_of_resilience_yellow";
-    case "banneret_of_salvation_yellow": return "banneret_of_salvation_yellow";
-    case "banneret_of_vigor_yellow": return "banneret_of_vigor_yellow";
-    case "evo_tekloscope_blue": return "evo_tekloscope_blue";
-    case "evo_energy_matrix_blue": return "evo_energy_matrix_blue";
-    case "evo_scatter_shot_blue": return "evo_scatter_shot_blue";
-    case "evo_rapid_fire_blue": return "evo_rapid_fire_blue";
-    case "liquid-cooled_mayhem_red"; return "liquid-cooled_mayhem_red";
-    case "hyper_driver_red": return "hyper_driver_red";
-    case "firewall_red": return "firewall_red";
-    case "firewall_yellow": return "firewall_yellow";
-    case "firewall_blue": return "firewall_blue";
-    case "under_loop_red": return "under_loop_red";
-    case "proto_base_head": return "proto_base_head";
-    case "proto_base_chest": return "proto_base_chest";
-    case "proto_base_arms": return "proto_base_arms";
-    case "proto_base_legs": return "proto_base_legs";
-    case "sigil_of_solace_red": return "sigil_of_solace_red";
-    case "star_fall": return "star_fall";
-    case "heavy_industry_power_plant": return "heavy_industry_power_plant";
-    case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
-  }
-  return $cardID;
-}
-
 function isClashLegal($cardID, $character) {
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
@@ -603,15 +536,19 @@ function isBannedInFormat($cardID, $format) {
 function ReverseArt($cardID)
 {
   switch ($cardID) {
-    case "harmonized_kodachi": return "harmonized_kodachi";
-    case "mandible_claw": return "mandible_claw";
-    case "zephyr_needle": return "zephyr_needle";
-    case "cintari_saber": return "cintari_saber";
-    case "quicksilver_dagger": return "quicksilver_dagger";
-    case "spider's_bite": return "spider's_bite";
-    case "nerve_scalpel": return "nerve_scalpel";
-    case "orbitoclast": return "orbitoclast";
-    case "scale_peeler": return "scale_peeler";
+    // leave this out while reverse art is still  a work in progress
+    // case "harmonized_kodachi": return "harmonized_kodachi_r";
+    // case "mandible_claw": return "mandible_claw_r";
+    // case "zephyr_needle": return "zephyr_needle_r";
+    // case "cintari_saber": return "cintari_saber_r";
+    // case "quicksilver_dagger": return "quicksilver_dagger_r";
+    // case "spider's_bite": return "spider's_bite_r";
+    // case "nerve_scalpel": return "nerve_scalpel_r";
+    // case "orbitoclast": return "orbitoclast_r";
+    // case "scale_peeler": return "scale_peeler_r";
+    // case "kunai_of_retribution": return "kunai_of_retribution_r";
+    // case "obsidian_fire_vein": return "obsidian_fire_vein_r";
+    // case "mark_of_the_huntsman": return "mark_of_the_huntsman_r";
     default:
       return $cardID;
   }

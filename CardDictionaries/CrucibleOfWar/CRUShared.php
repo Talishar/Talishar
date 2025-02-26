@@ -3,12 +3,12 @@
   function CRUAbilityCost($cardID) {
     global $CS_PlayIndex, $currentPlayer;
     switch($cardID) {
-      case "mandible_claw": case "mandible_claw": return 2;
+      case "mandible_claw": case "mandible_claw_r": return 2;
       case "sledge_of_anvilheim": return 4;
       case "crater_fist": return 3;
-      case "harmonized_kodachi": return 1;
-      case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle": return 1;
-      case "cintari_saber": case "cintari_saber": return 1;
+      case "harmonized_kodachi_r": return 1;
+      case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle_r": return 1;
+      case "cintari_saber": case "cintari_saber_r": return 1;
       case "plasma_barrel_shot": return (GetResolvedAbilityType($cardID) == "A" ? 2 : 0);
       case "plasma_purifier_red": 
         $items = &GetItems($currentPlayer); 
@@ -27,13 +27,13 @@
 
   function CRUAbilityType($cardID, $index=-1) {
     switch($cardID) {
-      case "mandible_claw": case "mandible_claw": return "AA";
+      case "mandible_claw": case "mandible_claw_r": return "AA";
       case "skullhorn": return "A";
       case "sledge_of_anvilheim": return "AA";
       case "crater_fist": return "A";
-      case "harmonized_kodachi": return "AA";
-      case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle": return "AA";
-      case "cintari_saber": case "cintari_saber": return "AA";
+      case "harmonized_kodachi_r": return "AA";
+      case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle_r": return "AA";
+      case "cintari_saber": case "cintari_saber_r": return "AA";
       case "courage_of_bladehold": return "A";
       case "plasma_barrel_shot": return "A";
       case "viziertronic_model_i": return "A";
@@ -182,7 +182,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "blessing_of_serenity_red": case "blessing_of_serenity_yellow": case "blessing_of_serenity_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "harmonized_kodachi":
+    case "harmonized_kodachi_r":
       if(SearchCount(SearchPitch($currentPlayer, minCost:0, maxCost:0)) > 0) GiveAttackGoAgain();
       return "";
     case "find_center_blue":

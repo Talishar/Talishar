@@ -1588,7 +1588,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;  
     case "zephyr_needle":
-    case "zephyr_needle":
+    case "zephyr_needle_r":
       EvaluateCombatChain($totalAttack, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);

@@ -639,7 +639,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   }
   switch ($combatChain[0]) {
     case "zephyr_needle":
-    case "zephyr_needle":
+    case "zephyr_needle_r":
       EvaluateCombatChain($totalAttack, $totalBlock);
       break;
     case "decimator_great_axe":
@@ -755,7 +755,7 @@ function OnBlockResolveEffects($cardID = "")
   if ($CombatChain->HasCurrentLink()) {
     switch ($combatChain[0]) {
       case "zephyr_needle":
-      case "zephyr_needle":
+      case "zephyr_needle_r":
         EvaluateCombatChain($totalAttack, $totalBlock);
         break;
       case "endless_winter_red":
@@ -1144,7 +1144,7 @@ function OnBlockEffects($index, $from)
   $currentTurnEffects = array_values($currentTurnEffects);
   switch ($CombatChain->AttackCard()->ID()) {
     case "cintari_saber":
-    case "cintari_saber":
+    case "cintari_saber_r":
       if ($cardType == "AA" && NumAttacksBlocking() == 1) {
         AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
         WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");

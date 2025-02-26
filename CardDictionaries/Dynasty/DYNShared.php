@@ -8,8 +8,8 @@ function DYNAbilityCost($cardID)
     case "yoji_royal_protector": return 3;
     case "jubeel_spellbane": return 1;
     case "merciless_battleaxe": return 3;
-    case "quicksilver_dagger": case "quicksilver_dagger": return 1;
-    case "spiders_bite": case "spiders_bite": return 2;
+    case "quicksilver_dagger": case "quicksilver_dagger_r": return 1;
+    case "spiders_bite": case "spiders_bite_r": return 2;
     case "sandscour_greatbow": return 1;
     case "annals_of_sutcliffe": return 3;
     case "surgent_aethertide": return 2;
@@ -30,10 +30,10 @@ function DYNAbilityType($cardID, $index = -1)
     case "tearing_shuko": return "I";
     case "jubeel_spellbane": return "AA";
     case "merciless_battleaxe": return "AA";
-    case "quicksilver_dagger": case "quicksilver_dagger": return "AA";
+    case "quicksilver_dagger": case "quicksilver_dagger_r": return "AA";
     case "hanabi_blaster": return "AA";
     case "yoji_royal_protector": return "I";
-    case "spiders_bite": case "spiders_bite": return "AA";
+    case "spiders_bite": case "spiders_bite_r": return "AA";
     case "blacktek_whisperers": return "AR";
     case "mask_of_perdition": return "AR";
     case "sandscour_greatbow": return "A";
