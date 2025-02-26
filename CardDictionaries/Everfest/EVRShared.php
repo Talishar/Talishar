@@ -359,12 +359,10 @@
         return "";
       case "scour_blue":
         $targetPlayer = substr($target, 0, 5) == "THEIR";
-        $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
-        for($i=0; $i<$resourcesPaid; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $parameter);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        $allTargets = explode(",", $target);
+        $numDestroyed = 0;
+        for ($i = 1; $i < count($allTargets); $i++) {
+          
         }
         AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
         return "";
