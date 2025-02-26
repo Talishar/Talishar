@@ -358,13 +358,24 @@
         }
         return "";
       case "scour_blue":
-        $targetPlayer = substr($target, 0, 5) == "THEIR";
+        $targetPlayer = substr($target, 0, 5) == "THEIR" ? $otherPlayer: $currentPlayer;
+        $damageTarget = substr($target, 0, 5) == "THEIR" ? "THERICHAR-0": "MYCHAR-0";
+        $auras = GetAuras($targetPlayer);
         $allTargets = explode(",", $target);
+        WriteLog("HERE: $target");
         $numDestroyed = 0;
         for ($i = 1; $i < count($allTargets); $i++) {
-          
+          $index = -1;
+          for ($j = 0; $j < count($auras); $j += AuraPieces()) {
+            if ($auras[$j + 6] == $allTargets[$i]) $index = $j;
+          }
+          if ($index != -1) {
+            DestroyAura($targetPlayer, $index);
+            ++$numDestroyed;
+          }
         }
-        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
+        DealArcane($numDestroyed, source:"scour_blue", resolvedTarget:$damageTarget);
+        // AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
         return "";
       case "emeritus_scolding_red": case "emeritus_scolding_yellow": case "emeritus_scolding_blue":
         $oppTurn = $currentPlayer != $mainPlayer;
