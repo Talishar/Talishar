@@ -634,9 +634,9 @@ function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
 }
 
 function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
-  // $id = GetAltCardID($id);
+  $unimplementedCards = ["cap_of_quick_thinking", "shock_frock", "zap_clappers", "starlight_striders", "skyzyk_red", "spark_spray_red", "skyward_serenade_yellow", "written_in_the_stars_blue", "bank_breaker", "clamp_press_blue"];
   $cardName = CardName($id); 
-  if ($cardName == "") {
+  if ($cardName == "" || in_array($id, $unimplementedCards)) {
       if ($unsupportedCards != "") $unsupportedCards .= " ";
       $unsupportedCards .= $id;
       return;
