@@ -37,6 +37,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $subparam = "";
       if (count($parameters) > 2) $subparam2 = $parameters[2];
       else $subparam2 = "";
+      if (count($parameters) > 3) $subparam3 = $parameters[3];
+      else $subparam3 = true;
       switch ($parameter) {
         case "TRAPS":
           $rv = GetTrapIndices($player);
@@ -48,7 +50,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
         case "DAMAGEPREVENTION":
-          $rv = GetDamagePreventionIndices($player, $subparam, $subparam2);
+          $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3);
           break;
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();

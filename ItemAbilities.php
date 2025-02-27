@@ -436,7 +436,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
   return $counters;
 }
 
-function ItemDamagePeventionAmount($player, $index, $damage=0)
+function ItemDamagePeventionAmount($player, $index, $damage=0, $preventable=true)
 {
   $items = &GetItems($player);
   switch ($items[$index]) {
@@ -445,7 +445,7 @@ function ItemDamagePeventionAmount($player, $index, $damage=0)
     case "mini_forcefield_blue":
       return $items[$index + 1];
     case "dissolution_sphere_yellow":
-      if ($damage == 1) return 1;
+      if ($damage == 1 && $preventable) return 1;
       else return 0;
     default:
       return 0;
