@@ -898,6 +898,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
       break;
     case "hunters_klaive":
     case "mark_of_the_huntsman":
+    case "mark_of_the_huntsman_r":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "find_center_blue":

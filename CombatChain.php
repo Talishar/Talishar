@@ -1453,7 +1453,8 @@ function CombatChainClosedTriggers()
   }
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if (explode("-", $currentTurnEffects[$i])[0] == "kunai_of_retribution" && $currentTurnEffects[$i + 1] == $mainPlayer) {
+    $effectID = explode("-", $currentTurnEffects[$i])[0];
+    if (($effectID == "kunai_of_retribution" || $effectID == "kunai_of_retribution_r") && $currentTurnEffects[$i + 1] == $mainPlayer) {
       $uniqueID = explode("-", $currentTurnEffects[$i])[1];
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);
