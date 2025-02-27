@@ -3033,14 +3033,13 @@ function HasPiercing($cardID, $from = "")
   // $cardID = substr($cardID, 0, 6);
   switch ($cardID) {
     case "spiders_bite":
-    case "spiders_bite":
-    case "spiders_bite":
+    case "spiders_bite_r":
     case "nerve_scalpel":
-    case "nerve_scalpel":
+    case "nerve_scalpel_r":
     case "orbitoclast":
-    case "orbitoclast":
+    case "orbitoclast_r":
     case "scale_peeler":
-    case "scale_peeler": //Weapons with Piercing
+    case "scale_peeler_r": //Weapons with Piercing
     case "graven_call":
     case "hunters_klaive":
       return true;

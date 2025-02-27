@@ -759,11 +759,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "hemorrhage_bore_yellow":
     case "hemorrhage_bore_blue":
     case "nerve_scalpel":
-    case "nerve_scalpel":
+    case "nerve_scalpel_r":
     case "orbitoclast":
-    case "orbitoclast":
+    case "orbitoclast_r":
     case "scale_peeler":
-    case "scale_peeler":
+    case "scale_peeler_r":
     case "infiltrate_red":
     case "shake_down_red":
     case "infect_red":

@@ -987,22 +987,22 @@ function OnBlockResolveEffects($cardID = "")
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "spiders_bite":
-        case "spiders_bite":
+        case "spiders_bite_r":
           $count = ModifyBlockForType("AA", 0);
           $remove = $count > 0;
           break;
         case "nerve_scalpel":
-        case "nerve_scalpel":
+        case "nerve_scalpel_r":
           $count = ModifyBlockForType("AR", 0); //DR could not possibly be blocking at this time, see OnDefenseReactionResolveEffects
           $remove = $count > 0;
           break;
         case "orbitoclast":
-        case "orbitoclast":
+        case "orbitoclast_r":
           $count = ModifyBlockForType("A", 0);
           $remove = $count > 0;
           break;
         case "scale_peeler":
-        case "scale_peeler":
+        case "scale_peeler_r":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
           break;
@@ -1095,15 +1095,15 @@ function OnBlockEffects($index, $from)
           }
           break;
         case "spiders_bite":
-        case "spiders_bite":
+        case "spiders_bite_r":
           if ($cardType == "AA") $chainCard->ModifyDefense(-1);
           break;
         case "nerve_scalpel":
-        case "nerve_scalpel":
+        case "nerve_scalpel_r":
           if ($cardType == "AR") $chainCard->ModifyDefense(-1);
           break;
         case "orbitoclast":
-        case "orbitoclast":
+        case "orbitoclast_r":
           if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
           $splitCard = explode("_", $chainCard->ID());
           if ($splitCard[count($splitCard) - 1] == "equip") {
@@ -1113,7 +1113,7 @@ function OnBlockEffects($index, $from)
           }
           break;
         case "scale_peeler":
-        case "scale_peeler":
+        case "scale_peeler_r":
           if ($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
