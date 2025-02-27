@@ -1069,6 +1069,7 @@ function HasGoAgain($cardID): bool|int
     case "cognition_nodes_blue":
     case "teklo_plasma_pistol":
     case "great_library_of_solana":
+    case "plasma_barrel_shot":
       return false;
   }
   $set = CardSet($cardID);
