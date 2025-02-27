@@ -2607,6 +2607,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true)) return true;
       return false;
+    case "quickdodge_flexors":
+      if (!IsHeroAttackTarget()) return true;
+      return false;
     case "the_hand_that_pulls_the_strings":
       return ArsenalFaceDownCard($player) == "";
     default:
