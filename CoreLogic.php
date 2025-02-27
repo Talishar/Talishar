@@ -601,7 +601,7 @@ function AddDamagePreventionSelection($player, $damage, $type, $preventable)
   PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
-  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage");
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage,$preventable");
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
@@ -2440,7 +2440,7 @@ function BaseAttackModifiers($attackID, $attackValue)
   return $attackValue;
 }
 
-function GetDamagePreventionIndices($player, $type, $damage)
+function GetDamagePreventionIndices($player, $type, $damage, $preventable=true)
 {
   $rv = "";
   $auras = &GetAuras($player);
@@ -2468,7 +2468,7 @@ function GetDamagePreventionIndices($player, $type, $damage)
   $itemCount = count($items);
   $indices = "";
   for ($i = 0; $i < $itemCount; $i += ItemPieces()) {
-    if (ItemDamagePeventionAmount($player, $i, $damage) > 0) {
+    if (ItemDamagePeventionAmount($player, $i, $damage, $preventable) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }

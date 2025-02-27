@@ -58,7 +58,7 @@ $CID_TekloLegs = "teklo_base_legs";
 function CardType($cardID, $from="")
 {
   global $CS_AdditionalCosts, $currentPlayer;
-  if (!$cardID || $cardID == "TRIGGER" || $cardID == "-") return "";
+  if (!$cardID || $cardID == "TRIGGER" || $cardID == "-" || $cardID == "FINALIZECHAINLINK") return "";
   switch ($cardID) {
     case "parry_blade":
       return "W,E";
@@ -1069,6 +1069,7 @@ function HasGoAgain($cardID): bool|int
     case "cognition_nodes_blue":
     case "teklo_plasma_pistol":
     case "great_library_of_solana":
+    case "plasma_barrel_shot":
       return false;
   }
   $set = CardSet($cardID);
@@ -2606,6 +2607,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from == "HAND") return false;
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true)) return true;
+      return false;
+    case "quickdodge_flexors":
+      if (!IsHeroAttackTarget()) return true;
       return false;
     case "the_hand_that_pulls_the_strings":
       return ArsenalFaceDownCard($player) == "";
