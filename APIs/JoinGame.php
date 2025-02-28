@@ -521,7 +521,8 @@ function isBannedInFormat($cardID, $format) {
           "bloodsheath_skeleta", "cash_in_yellow", "prism,_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane,_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
           "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi,_livewire",
           "voltaire,_strike_twice", "briar,_warden_of_thorns", "rosetta_thorn", "oldhim,_grandfather_of_eternity", "winter's_wail", "bravo,_star_of_the_show", "dromai,_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
-          "iyslander,_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue"
+          "iyslander,_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
+          "viserai_rune_blood", "nebula_blade"
       ],
       "commoner" => [
           "amulet_of_ice_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave"
