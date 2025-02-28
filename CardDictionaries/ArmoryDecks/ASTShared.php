@@ -41,13 +41,13 @@ function ASTAbilityCost($cardID): int
   };
 }
 
-// function DoCapQuickThinking($targetPlayer, $damage)
-// {
-//   PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1);
-//   AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard", 1);
-//   AddDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I");
-//   AddDecisionQueue("MAYCHOOSEMULTIZONE", $targetPlayer, "<-", 1);
-// }
+function DoCapQuickThinking($targetPlayer, $damage)
+{
+  // PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1);
+  // AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard", 1);
+  // AddDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I");
+  // AddDecisionQueue("MAYCHOOSEMULTIZONE", $targetPlayer, "<-", 1);
+}
 
 function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
