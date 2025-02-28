@@ -497,7 +497,8 @@ function isSpecialUsePromo($cardID) {
   $specialUsePromos = [
       "taipanis,_dracai_of_judgement", "taipanis,_dracai_of_judgement", "proclamation_of_requisition", "proclamation_of_requisition", "gavel_of_natural_order", "theryon,_magister_of_justice", "theryon,_magister_of_justice", "proclamation_of_abundance",
       "proclamation_of_production", "brutus,_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di,_gem_keeper", "go_bananas_yellow", "taylor", "yorick,_weaver_of_tales", "tales_of_adventure_blue",
-      "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird,_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof"
+      "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird,_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
+      "cap_of_quick_thinking", "shock_frock", "zap_clappers", "starlight_striders", "skyzyk_red", "spark_spray_red", "skyward_serenade_yellow", "written_in_the_stars_blue", "bank_breaker", "clamp_press_blue",
   ];
   return in_array($cardID, $specialUsePromos);
 }
