@@ -41,6 +41,14 @@ function ASTAbilityCost($cardID): int
   };
 }
 
+// function DoCapQuickThinking($targetPlayer, $damage)
+// {
+//   PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1);
+//   AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard", 1);
+//   AddDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I");
+//   AddDecisionQueue("MAYCHOOSEMULTIZONE", $targetPlayer, "<-", 1);
+// }
+
 function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_PlayIndex, $CS_ArcaneDamageTaken;
@@ -57,6 +65,9 @@ function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "shock_frock":
       GainResources($currentPlayer, 1);
+      return "";
+    case "cap_of_quick_thinking":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     default:
       return "";

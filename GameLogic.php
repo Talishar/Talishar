@@ -1158,6 +1158,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
         DoQuell($targetPlayer, $damage);
+        if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
       return $damage;
