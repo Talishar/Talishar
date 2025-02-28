@@ -15,7 +15,7 @@ function HNTAbilityType($cardID): string
     "cindra_dracai_of_retribution" => "I",
     "cindra" => "I",
     "kunai_of_retribution" => "AA",
-    "kunai_of_retribution_" => "AA",
+    "kunai_of_retribution_r" => "AA",
     "obsidian_fire_vein" => "AA",
     "obsidian_fire_vein_r" => "AA",
     "dragonscaler_flight_path" => "I",
