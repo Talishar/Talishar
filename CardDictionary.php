@@ -424,8 +424,15 @@ function CardSet($cardID)
   if (!$cardID) return "";
   if (substr($cardID, 0, 3) == "ROG") return "ROG";
   if (substr($cardID, 0, 3) == "DUM") return "DUM";
-  $setID = SetID(ExtractCardID($cardID));
-  return substr($setID, 0, 3);
+  switch ($cardID) {
+    case "kunai_of_retribution_r"://these cards are from promo packs, this is needed to find their code
+    case "obsidian_fire_vein_r":
+    case "mark_of_the_huntsman_r":
+      return "HNT";
+    default:
+      $setID = SetID(ExtractCardID($cardID));
+      return substr($setID, 0, 3);
+  }
 }
 
 function CardClass($cardID)
@@ -849,7 +856,7 @@ function AttackValue($cardID, $index=-1, $base=false)
     if ($cardID == "ball_breaker") return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? 4 : 3;
     if ($cardID == "high_riser") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
     if ($cardID == "rotwood_reaper") return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2);
-    if ($cardID == "mark_of_the_huntsman") {
+    if ($cardID == "mark_of_the_huntsman" || $cardID == "mark_of_the_huntsman_r") {
       if (!IsHeroAttackTarget()) return 1;
       else return CheckMarked($defPlayer) ? 2 : 1;
     }
@@ -974,10 +981,12 @@ function HasGoAgain($cardID): bool|int
     case "channel_mount_isen_blue":
     case "hunters_klaive":
     case "mark_of_the_huntsman":
+    case "mark_of_the_huntsman_r":
     case "orb_weaver_spinneret_red":
     case "orb_weaver_spinneret_yellow":
     case "orb_weaver_spinneret_blue":
     case "kunai_of_retribution":
+    case "kunai_of_retribution_r":
     case "ignite_red":
     case "wrath_of_retribution_red":
     case "blood_drop_red":
@@ -3038,14 +3047,13 @@ function HasPiercing($cardID, $from = "")
   // $cardID = substr($cardID, 0, 6);
   switch ($cardID) {
     case "spiders_bite":
-    case "spiders_bite":
-    case "spiders_bite":
+    case "spiders_bite_r":
     case "nerve_scalpel":
-    case "nerve_scalpel":
+    case "nerve_scalpel_r":
     case "orbitoclast":
-    case "orbitoclast":
+    case "orbitoclast_r":
     case "scale_peeler":
-    case "scale_peeler": //Weapons with Piercing
+    case "scale_peeler_r": //Weapons with Piercing
     case "graven_call":
     case "hunters_klaive":
       return true;

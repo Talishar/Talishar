@@ -1612,9 +1612,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
       }
     }
-    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "obsidian_fire_vein" && $currentPlayer == $mainPlayer && !SearchCurrentTurnEffects("obsidian_fire_vein", $currentPlayer)) {
+    $isFireVein = ($CombatChain->AttackCard()->ID() == "obsidian_fire_vein" || $CombatChain->AttackCard()->ID() == "obsidian_fire_vein_r");
+    if($CombatChain->HasCurrentLink() && $isFireVein && $currentPlayer == $mainPlayer && !SearchCurrentTurnEffects("obsidian_fire_vein", $currentPlayer) && !SearchCurrentTurnEffects("obsidian_fire_vein_r", $currentPlayer)) {
       if (!IsStaticType($cardType, $from, $cardID) && (TalentContains($cardID, "DRACONIC", $currentPlayer)) && GetResolvedAbilityType($cardID, $from) != "I") {
-        AddCurrentTurnEffect("obsidian_fire_vein", $currentPlayer);
+        AddCurrentTurnEffect($CombatChain->AttackCard()->ID(), $currentPlayer);
         GiveAttackGoAgain();
       }
     }
@@ -2268,6 +2269,7 @@ function PayAbilityAdditionalCosts($cardID, $index)
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
       break;
     case "kunai_of_retribution":
+    case "kunai_of_retribution_r":
       $character = GetPlayerCharacter($currentPlayer);
       $uniqueID = $character[$index + 11];
       AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);

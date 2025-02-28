@@ -100,7 +100,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   if (!$secondNeedleCheck) {
     switch ($combatChain[0]) {
       case "zephyr_needle":
-      case "zephyr_needle":
+      case "zephyr_needle_r":
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
           $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
           if ($totalDefense > 0 && $blockVal > $totalAttack && $combatChain[$i + 1] == $defPlayer) {
@@ -1113,7 +1113,7 @@ function CombatChainClosedMainCharacterEffects()
       if ($charIndex == -1) continue;
       switch ($chainLinks[$i][$j]) {
         case "zephyr_needle":
-        case "zephyr_needle":
+        case "zephyr_needle_r":
           if ($character[$charIndex + 7] == "1") DestroyCharacter($mainPlayer, $charIndex);
           break;
         default:
@@ -1757,6 +1757,7 @@ function DoesAttackHaveGoAgain()
   $mainPitch = &GetPitch($mainPlayer);
   switch ($attackID) {
     case "harmonized_kodachi":
+    case "harmonized_kodachi_r":
       return SearchCount(SearchPitch($mainPlayer, minCost: 0, maxCost: 0)) > 0;
     case "mugenshi_release_yellow":
     case "hurricane_technique_yellow":
@@ -1781,7 +1782,7 @@ function DoesAttackHaveGoAgain()
     case "vigor_rush_blue":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
     case "mandible_claw":
-    case "mandible_claw":
+    case "mandible_claw_r":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0;
     case "barraging_big_horn_red":
     case "barraging_big_horn_yellow":
@@ -1855,7 +1856,7 @@ function DoesAttackHaveGoAgain()
     case "pouncing_qi_blue":
       return (ComboActive($attackID));
     case "quicksilver_dagger":
-    case "quicksilver_dagger":
+    case "quicksilver_dagger_r":
       return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
     case "teklo_leveler":
       return EvoUpgradeAmount($mainPlayer) >= 3;
