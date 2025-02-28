@@ -22,6 +22,7 @@ function ASTEffectAttackModifier($cardID): int
   global $currentPlayer, $defPlayer;
   return match ($cardID) {
     "skyward_serenade_yellow" => 1,
+    "spark_spray_red" => 1,
     default => 0
   };
 }
@@ -30,6 +31,7 @@ function ASTCombatEffectActive($cardID, $attackID): bool
 {
   return match($cardID) {
     "skyward_serenade_yellow" => true,
+    "spark_spray_red" => true,
     default => false
   };
 }

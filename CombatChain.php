@@ -789,6 +789,7 @@ function OnBlockResolveEffects($cardID = "")
           AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC", $character[$combatChainState[$CCS_WeaponIndex] + 11]);
         }
         break;
+      case "spark_spray_red":
       case "spark_spray_yellow":
       case "spark_spray_blue":
         AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_buff_".CardLink($cardID, $cardID), 0, 1);

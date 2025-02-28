@@ -2825,6 +2825,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "hard_knuckle", 1);
       break;
+    case "spark_spray_red":
     case "spark_spray_yellow":
     case "spark_spray_blue":
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $parameter, 1);
