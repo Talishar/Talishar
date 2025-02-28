@@ -639,7 +639,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   }
   switch ($combatChain[0]) {
     case "zephyr_needle":
-    case "zephyr_needle":
+    case "zephyr_needle_r":
       EvaluateCombatChain($totalAttack, $totalBlock);
       break;
     case "decimator_great_axe":
@@ -755,7 +755,7 @@ function OnBlockResolveEffects($cardID = "")
   if ($CombatChain->HasCurrentLink()) {
     switch ($combatChain[0]) {
       case "zephyr_needle":
-      case "zephyr_needle":
+      case "zephyr_needle_r":
         EvaluateCombatChain($totalAttack, $totalBlock);
         break;
       case "endless_winter_red":
@@ -987,22 +987,22 @@ function OnBlockResolveEffects($cardID = "")
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "spiders_bite":
-        case "spiders_bite":
+        case "spiders_bite_r":
           $count = ModifyBlockForType("AA", 0);
           $remove = $count > 0;
           break;
         case "nerve_scalpel":
-        case "nerve_scalpel":
+        case "nerve_scalpel_r":
           $count = ModifyBlockForType("AR", 0); //DR could not possibly be blocking at this time, see OnDefenseReactionResolveEffects
           $remove = $count > 0;
           break;
         case "orbitoclast":
-        case "orbitoclast":
+        case "orbitoclast_r":
           $count = ModifyBlockForType("A", 0);
           $remove = $count > 0;
           break;
         case "scale_peeler":
-        case "scale_peeler":
+        case "scale_peeler_r":
           $count = ModifyBlockForType("E", 0);
           $remove = $count > 0;
           break;
@@ -1095,15 +1095,15 @@ function OnBlockEffects($index, $from)
           }
           break;
         case "spiders_bite":
-        case "spiders_bite":
+        case "spiders_bite_r":
           if ($cardType == "AA") $chainCard->ModifyDefense(-1);
           break;
         case "nerve_scalpel":
-        case "nerve_scalpel":
+        case "nerve_scalpel_r":
           if ($cardType == "AR") $chainCard->ModifyDefense(-1);
           break;
         case "orbitoclast":
-        case "orbitoclast":
+        case "orbitoclast_r":
           if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
           $splitCard = explode("_", $chainCard->ID());
           if ($splitCard[count($splitCard) - 1] == "equip") {
@@ -1113,7 +1113,7 @@ function OnBlockEffects($index, $from)
           }
           break;
         case "scale_peeler":
-        case "scale_peeler":
+        case "scale_peeler_r":
           if ($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
@@ -1144,7 +1144,7 @@ function OnBlockEffects($index, $from)
   $currentTurnEffects = array_values($currentTurnEffects);
   switch ($CombatChain->AttackCard()->ID()) {
     case "cintari_saber":
-    case "cintari_saber":
+    case "cintari_saber_r":
       if ($cardType == "AA" && NumAttacksBlocking() == 1) {
         AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
         WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
@@ -1453,7 +1453,8 @@ function CombatChainClosedTriggers()
   }
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if (explode("-", $currentTurnEffects[$i])[0] == "kunai_of_retribution" && $currentTurnEffects[$i + 1] == $mainPlayer) {
+    $effectID = explode("-", $currentTurnEffects[$i])[0];
+    if (($effectID == "kunai_of_retribution" || $effectID == "kunai_of_retribution_r") && $currentTurnEffects[$i + 1] == $mainPlayer) {
       $uniqueID = explode("-", $currentTurnEffects[$i])[1];
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);

@@ -525,20 +525,19 @@ function EffectHasBlockModifier($cardID)
     case "amulet_of_earth_blue":
     case "rampart_of_the_rams_head":
     case "spiders_bite":
-    case "spiders_bite":
+    case "spiders_bite_r":
     case "nerve_scalpel":
-    case "nerve_scalpel":
+    case "nerve_scalpel_r":
     case "orbitoclast":
-    case "orbitoclast":
+    case "orbitoclast_r":
     case "scale_peeler":
-    case "scale_peeler":
+    case "scale_peeler_r":
     case "fletch_a_red_tail_red":
     case "fletch_a_yellow_tail_yellow":
     case "fletch_a_blue_tail_blue":
     case "defender_of_daybreak_red":
     case "defender_of_daybreak_yellow":
     case "defender_of_daybreak_blue":
-    case "lay_down_the_law_red":
     case "lay_down_the_law_red":
     case "stonewall_impasse":
     case "headliner_helm":

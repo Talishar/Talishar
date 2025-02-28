@@ -10,11 +10,14 @@ function HNTAbilityType($cardID): string
     "arakni_tarantula" => "AR",
     "hunters_klaive" => "AA",
     "mark_of_the_huntsman" => "AA",
+    "mark_of_the_huntsman_r" => "AA",
     "graphene_chelicera" => "AA",
     "cindra_dracai_of_retribution" => "I",
     "cindra" => "I",
     "kunai_of_retribution" => "AA",
+    "kunai_of_retribution_r" => "AA",
     "obsidian_fire_vein" => "AA",
+    "obsidian_fire_vein_r" => "AA",
     "dragonscaler_flight_path" => "I",
     "vow_of_vengeance" => "AR",
     "heart_of_vengeance" => "I",
@@ -41,11 +44,14 @@ function HNTAbilityCost($cardID): int
   return match ($cardID) {
     "hunters_klaive" => 2,
     "mark_of_the_huntsman" => 2,
+    "mark_of_the_huntsman_r" => 2,
     "graphene_chelicera" => 1,
     "cindra_dracai_of_retribution" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "cindra" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "kunai_of_retribution" => 1,
+    "kunai_of_retribution_r" => 1,
     "obsidian_fire_vein" => 1,
+    "obsidian_fire_vein_r" => 1,
     "dragonscaler_flight_path" => 3 - ($mainPlayer == $currentPlayer ? NumDraconicChainLinks() : 0),
     "quickdodge_flexors" => 1,
     default => 0
@@ -886,6 +892,7 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
       MarkHero($defPlayer);
       break;
     case "mark_of_the_huntsman":
+    case "mark_of_the_huntsman_r":
       AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy " . CardLink($cardID, $cardID) . " and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);

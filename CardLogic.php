@@ -759,11 +759,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "hemorrhage_bore_yellow":
     case "hemorrhage_bore_blue":
     case "nerve_scalpel":
-    case "nerve_scalpel":
+    case "nerve_scalpel_r":
     case "orbitoclast":
-    case "orbitoclast":
+    case "orbitoclast_r":
     case "scale_peeler":
-    case "scale_peeler":
+    case "scale_peeler_r":
     case "infiltrate_red":
     case "shake_down_red":
     case "infect_red":
@@ -898,6 +898,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
       break;
     case "hunters_klaive":
     case "mark_of_the_huntsman":
+    case "mark_of_the_huntsman_r":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "find_center_blue":
@@ -1588,7 +1589,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;  
     case "zephyr_needle":
-    case "zephyr_needle":
+    case "zephyr_needle_r":
       EvaluateCombatChain($totalAttack, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);

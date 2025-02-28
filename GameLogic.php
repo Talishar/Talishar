@@ -341,7 +341,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $combatChain[$lastResult + 6] += $parameter;
         switch ($combatChain[0]) {
           case "zephyr_needle":
-          case "zephyr_needle":
+          case "zephyr_needle_r":
           EvaluateCombatChain($totalAttack, $totalBlock);
         }
         if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");

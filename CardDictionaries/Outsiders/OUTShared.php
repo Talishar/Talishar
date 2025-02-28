@@ -4,9 +4,9 @@ function OUTAbilityCost($cardID)
 {
   switch($cardID)
   {
-    case "nerve_scalpel": case "nerve_scalpel": return 2;
-    case "orbitoclast": case "orbitoclast": return 2;
-    case "scale_peeler": case "scale_peeler": return 2;
+    case "nerve_scalpel": case "nerve_scalpel_r": return 2;
+    case "orbitoclast": case "orbitoclast_r": return 2;
+    case "scale_peeler": case "scale_peeler_r": return 2;
     case "redback_shroud": return 0;
     case "mask_of_many_faces": return 1;
     case "silverwind_shuriken_blue": return 0;
@@ -35,9 +35,9 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "uzuri_switchblade": case "uzuri": return "AR";
-      case "nerve_scalpel": case "nerve_scalpel": return "AA";
-      case "orbitoclast": case "orbitoclast": return "AA";
-      case "scale_peeler": case "scale_peeler": return "AA";
+      case "nerve_scalpel": case "nerve_scalpel_r": return "AA";
+      case "orbitoclast": case "orbitoclast_r": return "AA";
+      case "scale_peeler": case "scale_peeler_r": return "AA";
       case "redback_shroud": return "AR";
       case "mask_of_many_faces": return "I";
       case "silverwind_shuriken_blue": return "AR";
@@ -509,17 +509,17 @@ function OUTAbilityCost($cardID)
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_FlickedDamage;
     switch ($cardID)
     {
-      case "nerve_scalpel": case "nerve_scalpel":
+      case "nerve_scalpel": case "nerve_scalpel_r":
         if (IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
         }
         break;
-      case "orbitoclast": case "orbitoclast":
+      case "orbitoclast": case "orbitoclast_r":
         if (IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
         }
         break;
-      case "scale_peeler": case "scale_peeler":
+      case "scale_peeler": case "scale_peeler_r":
         if (IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
         }
