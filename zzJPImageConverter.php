@@ -1,5 +1,5 @@
 <?php
-$filename = "../jp_rap_image_locs.json";
+$filename = "../jp_image_locs.json";
 $jsonObject = file_get_contents($filename);
 $imageLocs = json_decode($jsonObject, true);
 
@@ -9,10 +9,10 @@ foreach ($imageLocs as $cardID => $imageURL) {
 
 function CheckImageJP($cardID, $imageURL, $isDuplicate=false)
 {
-  $filename = "./WebpImages/" . $cardID . ".webp";
+  $filename = "../WebpImages/jp/" . $cardID . ".webp";
   $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  if (true)
+  if(!file_exists($filename))
   {
     echo("Image for " . $cardID . " does not exist.<BR>");
     echo("Downloading image from $imageURL <BR>");
@@ -34,10 +34,10 @@ function CheckImageJP($cardID, $imageURL, $isDuplicate=false)
       imagedestroy($image);
     }
   }
-  $concatFilename = "./concat/" . $cardID . ".webp";
+  $concatFilename = "../concat/jp/" . $cardID . ".webp";
   $cardSquaresUploadedFolder = "../CardImages/media/uploaded/public/cardsquares/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   $cardSquaresMissingFolder = "../CardImages/media/missing/cardsquares/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  if (true)
+  if(!file_exists($concatFilename))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
