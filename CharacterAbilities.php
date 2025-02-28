@@ -1104,6 +1104,8 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "misfire_dampener":
     case "enchanted_quiver":
     case "magrar":
+    case "shock_frock":
+    case "cap_of_quick_thinking":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":

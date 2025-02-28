@@ -3042,6 +3042,12 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       }  
       break;
+    case "skyward_serenade_yellow":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2;");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-create_embodiment_of_lightning,search_for_skyzyk,buff_next_attack-2");
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }

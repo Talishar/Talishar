@@ -448,6 +448,8 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "outed_red": return CheckMarked($defPlayer) ? 1 : 0;
     case "retrace_the_past_blue":
       return (SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1 ? 2 : 0);
+    case "skyzyk_red":
+      return DoesAttackHaveGoAgain() ? 1 : 0;
     default:
       return 0;
   }
@@ -918,6 +920,8 @@ function OnBlockResolveEffects($cardID = "")
       case "mask_of_deceit":
       case "kabuto_of_imperial_authority"://Kabuto of Imperial Authority
       case "thick_hide_hunter_yellow"://Thick Hide Hunter
+      case "zap_clappers":
+      case "starlight_striders":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":

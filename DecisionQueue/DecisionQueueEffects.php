@@ -337,6 +337,29 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         }
       }
       return $lastResult;
+    case "SKYWARDSERENADE":
+      $params = explode(",", $lastResult);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "create_embodiment_of_lightning":
+            PlayAura("embodiment_of_lightning", $player, isToken:true, effectController:$player, effectSource:"skyward_serenade_yellow");
+            break;
+          case "search_for_skyzyk":
+            $search = "MYDECK:isSameName=skyzyk_red";
+            $fromMod = "Deck,TT"; //pull it out of the deck, playable "This Turn"
+            AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
+            AddDecisionQueue("MZREMOVE", $player, "-", 1);
+            AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+            break;
+          case "buff_next_attack":
+            AddCurrentTurnEffectNextAttack("skyward_serenade_yellow", $player);
+            break;
+          default: break;
+        }
+      }
+      return $lastResult;
     default: return "";
   }
 }
