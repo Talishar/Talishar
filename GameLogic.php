@@ -1157,8 +1157,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return $damage;
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
-        DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
+        DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
       return $damage;
@@ -1560,6 +1560,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $parameter . $lastResult;
     case "APPENDLASTRESULT":
       return $lastResult . $parameter;
+    case "ADDTOLASTRESULT":
+      return $lastResult + $parameter;
     case "LASTRESULTPIECE":
       $pieces = explode("-", $lastResult);
       return $pieces[$parameter];

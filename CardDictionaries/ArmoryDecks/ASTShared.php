@@ -44,11 +44,16 @@ function ASTAbilityCost($cardID): int
 }
 
 function DoCapQuickThinking($targetPlayer, $damage)
-{
-  // PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1);
-  // AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard", 1);
-  // AddDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I");
-  // AddDecisionQueue("MAYCHOOSEMULTIZONE", $targetPlayer, "<-", 1);
+{ 
+  PrependDecisionQueue("ADDTOLASTRESULT", $targetPlayer, "{0}", 1);
+  PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1, 1); //prevent 1 damage
+  PrependDecisionQueue("DRAW", $targetPlayer, 1, 1);
+  PrependDecisionQueue("MZREMOVE", $targetPlayer, "HAND", 1);
+  PrependDecisionQueue("MZDISCARD", $targetPlayer, "HAND", 1);
+  PrependDecisionQueue("MAYCHOOSEMULTIZONE", $targetPlayer, "<-", 1);
+  PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard to " . CardLink("cap_of_quick_thinking", "cap_of_quick_thinking"), 1);
+  PrependDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I", 1);
+  PrependDecisionQueue("SETDQVAR", $targetPlayer, "0", 1); // current damage prevention
 }
 
 function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
