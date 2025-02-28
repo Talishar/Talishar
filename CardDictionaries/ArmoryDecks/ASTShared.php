@@ -4,6 +4,7 @@ function ASTAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "shock_frock" => "A",
+    "cap_of_quick_thinking" => "I",
     default => ""
   };
 }
@@ -11,6 +12,7 @@ function ASTAbilityType($cardID, $index = -1, $from = "-"): string
 function ASTAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "shock_frock" => true,
     default => false
   };
 }
@@ -52,6 +54,9 @@ function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "written_in_the_stars_blue":
       PlayAura("embodiment_of_lightning", $currentPlayer);
       if (GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) Draw($currentPlayer, effectSource:$cardID);
+      return "";
+    case "shock_frock":
+      GainResources($currentPlayer, 1);
       return "";
     default:
       return "";

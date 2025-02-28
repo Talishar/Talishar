@@ -2970,6 +2970,26 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ring_of_roses_yellow":
       GainHealth(1, $player);
       break;
+    case "zap_clappers":
+      if (CanRevealCards($player) && !IsAllyAttacking()) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
+        AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+        AddDecisionQueue("DEALARCANE", $player, "1-zap_clappers-TRIGGER", 1);
+      }
+      break;
+    case "starlight_striders":
+      if (CanRevealCards($player)) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
+        AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+        AddDecisionQueue("PLAYAURA", $player, "embodiment_of_lightning", 1);
+      }
+      break;
     default:
       break;
   }

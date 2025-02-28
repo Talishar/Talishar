@@ -783,6 +783,15 @@ function BlockValue($cardID)
 {
   global $defPlayer;
   if (!$cardID) return "";
+  switch ($cardID) { // cards currently have the wrong data on fabcube, can be removed when that gets fixed
+    case "shock_frock":
+    case "starlight_striders":
+      return 1;
+    case "zap_clappers":
+      return 2;
+    default:
+      break;
+  }
   $set = CardSet($cardID);
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($defPlayer) * 2;
   if ($cardID == "fractal_replication_red") return FractalReplicationStats("Block");
@@ -1134,6 +1143,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
   else if ($set == "AJV") return AJVAbilityType($cardID);
   else if ($set == "HNT") return HNTAbilityType($cardID);
+  else if ($set == "AST") return ASTAbilityType($cardID);
   else if ($cardID == "blaze_firemind") return "I";
   else if ($cardID == "magrar") return "A";
 }
@@ -2623,6 +2633,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "the_hand_that_pulls_the_strings":
       return ArsenalFaceDownCard($player) == "";
+    case "shock_frock":
+      return GetClassState($player, $CS_NumLightningPlayed) == 0;
     default:
       return false;
   }
@@ -2872,6 +2884,9 @@ function HasBladeBreak($cardID)
     case "tremorshield_sabatons":
     case "misfire_dampener":
       return true;
+    case "zap_clappers":
+    case "starlight_striders":
+      return true;
     default:
       return false;
   }
@@ -2959,6 +2974,8 @@ function HasBattleworn($cardID)
     case "aether_bindings_of_the_third_age"://Aether Bindings
       return true;
     case "dragonscaler_flight_path":
+      return true;
+    case "shock_frock":
       return true;
     default:
       return false;
@@ -3287,6 +3304,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
   else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
+  else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "blossom_of_spring":
