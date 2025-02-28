@@ -546,9 +546,9 @@ function ReverseArt($cardID)
     case "nerve_scalpel": return "nerve_scalpel_r";
     case "orbitoclast": return "orbitoclast_r";
     case "scale_peeler": return "scale_peeler_r";
-    case "kunai_of_retribution": return "kunai_of_retribution_r";
-    case "obsidian_fire_vein": return "obsidian_fire_vein_r";
-    case "mark_of_the_huntsman": return "mark_of_the_huntsman_r";
+    // case "kunai_of_retribution": return "kunai_of_retribution_r";
+    // case "obsidian_fire_vein": return "obsidian_fire_vein_r";
+    // case "mark_of_the_huntsman": return "mark_of_the_huntsman_r";
     default:
       return $cardID;
   }
