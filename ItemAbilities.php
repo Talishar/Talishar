@@ -357,6 +357,7 @@ function ItemStartTurnAbility($index)
     case "autosave_script_blue":
     case "cerebellum_processor_blue":
     case "null_time_zone_blue":
+    case "clamp_press_blue":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
@@ -499,6 +500,13 @@ function ItemAttackModifiers(&$attackModifiers)
           array_push($attackModifiers, "Item Ability");
           array_push($attackModifiers, 1);
         }
+      case "clamp_press_blue":
+        $attackID = $CombatChain->AttackCard()->ID();
+        if (SubtypeContains($attackID, "Wrench")) {
+          $modifier += 2;
+          array_push($attackModifiers, "Item Ability");
+          array_push($attackModifiers, 2);
+        }
       default:
         break;
     }
@@ -514,6 +522,8 @@ function ItemsAttackModifiers($cardID, $player, $from)
     switch ($items[$i]) {
       case "penetration_script_yellow":
         if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$attackModifier;
+      case "clamp_press_blue":
+        if (SubtypeContains($cardID, "Wrench")) $attackModifier += 2;
       default:
         break;
     }

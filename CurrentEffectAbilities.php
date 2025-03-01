@@ -1660,6 +1660,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "the_hand_that_pulls_the_strings":
           return true;
+        case "bank_breaker":
+          return true;
         default:
           break;
       }
@@ -1847,6 +1849,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "AJV") return AJVCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck, $flicked);
   else if ($set == "AST") return ASTCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "AMX") return AMXCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);

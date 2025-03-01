@@ -1,5 +1,7 @@
 <?php
-$filename = "../jp_image_locs.json";
+$lang = "jp";
+$langName = "japanese";
+$filename = "../{$lang}_image_locs.json";
 $jsonObject = file_get_contents($filename);
 $imageLocs = json_decode($jsonObject, true);
 
@@ -9,9 +11,10 @@ foreach ($imageLocs as $cardID => $imageURL) {
 
 function CheckImageJP($cardID, $imageURL, $isDuplicate=false)
 {
+  global $langName;
   $filename = "../WebpImages/jp/" . $cardID . ".webp";
-  $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/{$langName}/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/{$langName}/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($filename))
   {
     echo("Image for " . $cardID . " does not exist.<BR>");
@@ -35,8 +38,8 @@ function CheckImageJP($cardID, $imageURL, $isDuplicate=false)
     }
   }
   $concatFilename = "../concat/jp/" . $cardID . ".webp";
-  $cardSquaresUploadedFolder = "../CardImages/media/uploaded/public/cardsquares/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  $cardSquaresMissingFolder = "../CardImages/media/missing/cardsquares/japanese/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardSquaresUploadedFolder = "../CardImages/media/uploaded/public/cardsquares/{$langName}/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardSquaresMissingFolder = "../CardImages/media/missing/cardsquares/{$langName}/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($concatFilename))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");
