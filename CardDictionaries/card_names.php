@@ -4,6 +4,12 @@ function CardName($cardID)
 {
     if($cardID == NULL) return "";
     if($cardID == "ATKCOU") return "+1 Attack Counter";
+    switch ($cardID) {
+      case "valda_seismic_impact":
+        return "Valda, Seismic Impact";
+      default:
+        break;
+    }
     $setID = SetID($cardID);
     $arr = str_split($setID, 3);
     if(count($arr) < 2) return "";

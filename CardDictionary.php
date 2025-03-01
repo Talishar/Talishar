@@ -82,6 +82,8 @@ function CardType($cardID, $from="")
       return "W";
     case "graphene_chelicera":
       return "W,T";
+    case "valda_seismic_impact": //hardcoding before fabcube update
+      return "C";
     default:
       break;
   }
@@ -200,6 +202,8 @@ function SetID($cardID)
       return GeneratedSetID(substr($cardID, 0, strlen($cardID) - 1));
     case "the_hand_that_pulls_the_strings":
       return "HNT407";
+    case "valda_seismic_impact":
+      return "HER135";
     default:
       return GeneratedSetID($cardID);
   }
@@ -292,6 +296,12 @@ function CardSubType($cardID, $uniqueID = -1)
 
 function CharacterHealth($cardID)
 {
+  switch ($cardID) {
+    case "valda_seismic_impact":
+      return 40;
+    default:
+      break;
+  }
   $set = CardSet($cardID);
   if ($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
   switch ($cardID) {
@@ -429,6 +439,8 @@ function CardSet($cardID)
     case "obsidian_fire_vein_r":
     case "mark_of_the_huntsman_r":
       return "HNT";
+    case "valda_seismic_impact": //not true, but makes code organization easier
+      return "EVR";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);
@@ -461,6 +473,8 @@ function CardClass($cardID)
         if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
       }
       return "RUNEBLADE";
+    case "valda_seismic_impact":
+      return "GUARDIAN";
     default:
       break;
   }
@@ -3387,6 +3401,7 @@ function DoesEffectGrantDominate($cardID): bool
     case "tear_asunder_blue":
     case "bravo_star_of_the_show":
     case "valda_brightaxe":
+    case "valda_seismic_impact":
     case "rise_up_red":
     case "buckle_blue":
     case "ROGUE710-DO":
