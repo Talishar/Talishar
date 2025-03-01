@@ -805,6 +805,8 @@ function BlockValue($cardID)
       return 1;
     case "zap_clappers":
       return 2;
+    case "valda_seismic_impact":
+      return -1;
     default:
       break;
   }
