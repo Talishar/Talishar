@@ -500,6 +500,7 @@ function ItemAttackModifiers(&$attackModifiers)
           array_push($attackModifiers, "Item Ability");
           array_push($attackModifiers, 1);
         }
+        break;
       case "clamp_press_blue":
         $attackID = $CombatChain->AttackCard()->ID();
         if (SubtypeContains($attackID, "Wrench")) {
@@ -507,6 +508,7 @@ function ItemAttackModifiers(&$attackModifiers)
           array_push($attackModifiers, "Item Ability");
           array_push($attackModifiers, 2);
         }
+        break;
       default:
         break;
     }
