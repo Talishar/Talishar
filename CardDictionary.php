@@ -44,6 +44,7 @@ include "CardDictionaries/ArmoryDecks/AIOShared.php";
 include "CardDictionaries/ArmoryDecks/AJVShared.php";
 include "CardDictionaries/Hunted/HNTShared.php";
 include "CardDictionaries/ArmoryDecks/ASTShared.php";
+include "CardDictionaries/ArmoryDecks/AMXShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 
@@ -689,6 +690,7 @@ function AbilityCost($cardID)
   else if ($set == "AIO") return AIOAbilityCost($cardID);
   else if ($set == "AJV") return AJVAbilityCost($cardID);
   else if ($set == "HNT") return HNTAbilityCost($cardID);
+  else if ($set == "AMX") return AMXAbilityCost($cardID);
   return 0;
 }
 
@@ -1158,7 +1160,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AJV") return AJVAbilityType($cardID);
   else if ($set == "HNT") return HNTAbilityType($cardID);
   else if ($set == "AST") return ASTAbilityType($cardID);
-  else if ($set == "AST") return AMXAbilityType($cardID);
+  else if ($set == "AMX") return AMXAbilityType($cardID);
   else if ($cardID == "blaze_firemind") return "I";
   else if ($cardID == "magrar") return "A";
 }
@@ -3337,6 +3339,7 @@ function DoesEffectGrantOverpower($cardID): bool
   $cardID = ShiyanaCharacter($cardID);
   return match ($cardID) {
     "betsy_skin_in_the_game", "betsy", "the_golden_son_yellow", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "log_fall_red", "log_fall_yellow", "machinations_of_dominion_blue" => true,
+    "bank_breaker" => true,
     default => false,
   };
 }

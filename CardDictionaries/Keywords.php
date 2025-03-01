@@ -16,6 +16,7 @@
       case "overload_script_red": case "mhz_script_yellow": case "autosave_script_blue":
       case "cerebellum_processor_blue":
       case "null_time_zone_blue":
+      case "clamp_press_blue":
         return true;
       default: return false;
     }

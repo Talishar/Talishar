@@ -502,10 +502,10 @@ function ItemAttackModifiers(&$attackModifiers)
         }
       case "clamp_press_blue":
         $attackID = $CombatChain->AttackCard()->ID();
-        if (TypeContains($attackID, "wrench")) {
+        if (SubtypeContains($attackID, "Wrench")) {
           $modifier += 2;
           array_push($attackModifiers, "Item Ability");
-          array_push($attackModifiers, 1);
+          array_push($attackModifiers, 2);
         }
       default:
         break;
@@ -523,7 +523,7 @@ function ItemsAttackModifiers($cardID, $player, $from)
       case "penetration_script_yellow":
         if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$attackModifier;
       case "clamp_press_blue":
-        if (TypeContains($cardID, "wrench")) $attackModifier += 2;
+        if (SubtypeContains($cardID, "Wrench")) $attackModifier += 2;
       default:
         break;
     }

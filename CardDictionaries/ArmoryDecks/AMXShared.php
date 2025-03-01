@@ -2,8 +2,9 @@
 
 function AMXAbilityType($cardID, $index = -1, $from = "-"): string
 {
+  global $currentPlayer, $CS_NumCranked;
   return match ($cardID) {
-    "bank_breaker" => "AA",
+    "bank_breaker" => GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "",
     default => ""
   };
 }
@@ -26,6 +27,7 @@ function AMXEffectAttackModifier($cardID): int
 function AMXCombatEffectActive($cardID, $attackID): bool
 {
   return match($cardID) {
+    "bank_breaker" => true,
     default => false
   };
 }
@@ -33,6 +35,7 @@ function AMXCombatEffectActive($cardID, $attackID): bool
 function AMXAbilityCost($cardID): int
 {
   return match($cardID) {
+    "bank_breaker" => 1,
     default => 0
   };
 }
@@ -45,20 +48,16 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "bank_breaker":
       $character = &GetPlayerCharacter($currentPlayer);
       $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-      if (count(explode(",", $character[$index + 10])) > 0) {
-        CharacterChooseSubcard($currentPlayer, $index, isMandatory: false);
+      $character[$index + 10] = "cracked_bauble_yellow";
+      if (count(explode(",", $character[$index + 10])) > 0 && $character[$index + 10] != "-") {
+        CharacterChooseSubcard($currentPlayer, $index, isMandatory:false);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
-        AddDecisionQueue("GIVEATTACKGOAGAIN", $currentPlayer, 1);
-        AddDecisionQueue("GIVEATTACKOVERPOWER", $currentPlayer, 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "bank_breaker", 1);
       }
       return "";
     case "clamp_press_blue":
-      if ($currentPlayer == $defPlayer) {
-        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
-          if ($combatChain[$j + 1] != $currentPlayer) continue;
-          if (CardType($combatChain[$j]) == "AA" && ClassContains($combatChain[$j], "MECHANOLOGIST", $currentPlayer)) CombatChainPowerModifier($j, 1);
-        }
-      }
+      // penetration script has something here, and I don't know why
+      // leaving it blank for now
       return "";
     default:
       return "";
