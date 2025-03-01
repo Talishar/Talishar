@@ -1934,6 +1934,7 @@ function IsCombatEffectPersistent($cardID)
       return true;
     case "skull_crushers":
     case "valda_brightaxe":
+    case "valda_seismic_impact":
     case "outland_skirmish_red-1":
     case "outland_skirmish_yellow-1":
     case "outland_skirmish_blue-1":

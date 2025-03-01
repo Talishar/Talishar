@@ -499,6 +499,7 @@ function isSpecialUsePromo($cardID) {
       "proclamation_of_production", "brutus,_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di,_gem_keeper", "go_bananas_yellow", "taylor", "yorick,_weaver_of_tales", "tales_of_adventure_blue",
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird,_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "cap_of_quick_thinking", "shock_frock", "zap_clappers", "starlight_striders", "skyzyk_red", "spark_spray_red", "skyward_serenade_yellow", "written_in_the_stars_blue", "bank_breaker", "clamp_press_blue",
+      "valda_seismic_impact",
   ];
   return in_array($cardID, $specialUsePromos);
 }
