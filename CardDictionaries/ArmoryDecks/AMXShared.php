@@ -48,7 +48,6 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "bank_breaker":
       $character = &GetPlayerCharacter($currentPlayer);
       $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-      $character[$index + 10] = "cracked_bauble_yellow";
       if (count(explode(",", $character[$index + 10])) > 0 && $character[$index + 10] != "-") {
         CharacterChooseSubcard($currentPlayer, $index, isMandatory:false);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
