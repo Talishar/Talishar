@@ -2300,7 +2300,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
         case "coat_of_allegiance":
         case "oath_of_loyalty_red":
           if (!$resolutionCheck) {
-            if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC") && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
+            if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
               if (TypeContains($cardID, "AA")) {
                 // this case is needed because brand with cinderclaw isn't set to become active until after the attack is played
                 $restrict = true;

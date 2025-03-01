@@ -56,6 +56,7 @@ function CheckImageJP($cardID, $imageURL, $isDuplicate=false)
       imagecopy($dest, $imageBottom, 0, $topHeight, 0, 0, $width, $botHeight);
 
       imagewebp($dest, $cardSquaresMissingFolder);
+      imagewebp($dest, $concatFilename);
       // Free up memory
       imagedestroy($image);
       imagedestroy($dest);
