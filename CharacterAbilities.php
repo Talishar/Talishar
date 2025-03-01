@@ -170,9 +170,10 @@ function CharacterStartTurnAbility($index)
       AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);
       break;
     case "valda_brightaxe":
+    case "valda_seismic_impact":
       if (CountAura("seismic_surge", $mainPlayer) >= 3) {
         WriteLog(CardLink($char->cardID, $char->cardID) . " gives Crush attacks Dominate this turn");
-        AddCurrentTurnEffect("valda_brightaxe", $mainPlayer);
+        AddCurrentTurnEffect($cardID, $mainPlayer);
       }
       break;
     case "blasmophet_levia_consumed":
