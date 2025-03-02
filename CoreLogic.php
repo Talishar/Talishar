@@ -1043,17 +1043,15 @@ function ChainLinkResolvedEffects()
 
 function ResolutionStepEffectTriggers()
 {
-  global $currentTurnEffects, $chainLinks;
+  global $currentTurnEffects, $chainLinks, $combatChain, $turn;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     switch ($currentEffect[0]) {
       case "electromagnetic_somersault_red":
       case "electromagnetic_somersault_yellow":
       case "electromagnetic_somersault_blue":
-        // if (count($chainLinks) > 0) { //only do this if the chain wasn't forced closed
         $player = $currentTurnEffects[$i + 1];
         AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
-        // }
         RemoveCurrentTurnEffect($i);
         break;
       default:
