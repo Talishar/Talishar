@@ -4,7 +4,7 @@ function ROSAbilityType($cardID): string
 {
   return match ($cardID) {
     "aurora_shooting_star", "aurora", "oscilio_constella_intelligence", "oscilio", "volzar_the_lightning_rod", "sanctuary_of_aria",
-    "well_grounded", "lightning_greaves", "twinkle_toes", "inklined_cloak", "hood_of_second_thoughts", "bruised_leather",
+    "well_grounded", "lightning_greaves", "twinkle_toes", "ink_lined_cloak", "hood_of_second_thoughts", "bruised_leather",
     "four_finger_gloves", "calming_cloak", "calming_gesture", "aether_bindings_of_the_third_age" => "I",
     "staff_of_verdant_shoots", "bloodtorn_bodice", "runehold_release", "hold_focus" => "A",
     "rotwood_reaper", "star_fall" => "AA",
@@ -362,7 +362,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "aether_bindings_of_the_third_age":
       AddCurrentTurnEffect("aether_bindings_of_the_third_age", $currentPlayer);
       return "";
-    case "inklined_cloak":
+    case "ink_lined_cloak":
       GainResources($currentPlayer, 1);
       return "";
     case "hold_focus":

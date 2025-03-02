@@ -1084,7 +1084,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "bloodtorn_bodice":
     case "runehold_release":
     case "aether_bindings_of_the_third_age":
-    case "inklined_cloak":
+    case "ink_lined_cloak":
     case "hold_focus":
     case "hood_of_second_thoughts": 
     case "bruised_leather": 

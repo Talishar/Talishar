@@ -2480,7 +2480,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "bruised_leather":
     case "four_finger_gloves":
       return !HasTakenDamage($player);
-    case "inklined_cloak":
+    case "ink_lined_cloak":
       return !HasAuraWithSigilInName($currentPlayer);
     case "cerebellum_processor_blue":
       if ($from == "PLAY") return $myItems[$index + 2] != 2;
