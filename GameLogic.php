@@ -1236,6 +1236,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
       CheckSpellvoid($target, $damage);
       PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+      if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
       DoQuell($target, $damage);
       PrependDecisionQueue("INCDQVAR", $target, "1", 1);
       PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
