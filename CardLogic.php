@@ -1678,6 +1678,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "BLOODDEBT":
       $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
+      $totalBloodDebt = $numBloodDebt;
       $char = &GetPlayerCharacter($mainPlayer);
       if ($char[0] == "blasmophet_levia_consumed" && +$char[1] == 2) {
         $deck = new Deck($mainPlayer);
@@ -1699,7 +1700,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
         AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
-        AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $numBloodDebt life due to Blood Debt ", 1);
+        AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $totalBloodDebt life due to Blood Debt ", 1);
       }
       break;
     case "merciful_retribution_yellow":
