@@ -758,7 +758,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false, $target = "-")
+  function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false, $target = "-", $sourceUID=-1)
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -799,7 +799,8 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
+    if ($sourceUID != -1) AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source,$sourceUID", 1);
+    else AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
     if ($onHitDraw) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);

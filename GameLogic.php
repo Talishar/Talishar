@@ -2003,6 +2003,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ONHITEFFECT":
       $cardID = $lastResult;
       $location = $dqVars[2];
+      if (count(explode(",", $parameter)) > 1) $sourceUID = $parameter[1];
       AddOnHitTrigger($cardID);
       if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
         $index = intval(explode("-", $location)[1]) / ChainLinksPieces();
