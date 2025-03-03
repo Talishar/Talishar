@@ -2577,7 +2577,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = $hand[$handInd];
       //Right now it's unclear what happens to action cards selected when they can't be blocked with (eg dominate)
       //I'm implementing it right now as the effect failing
-      if (CardType($cardID) == "A" | CardType($cardID) == "AA") {
+      if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
         if (CanBlock($cardID)) {
           AddCombatChain($cardID, $player, "HAND", 0, -1);
           OnBlockResolveEffects($cardID);
