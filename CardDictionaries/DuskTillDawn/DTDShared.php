@@ -398,7 +398,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, $cardID . ",", 1);
+      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULTNEXTATTACK", $currentPlayer, $cardID . ",", 1);
       return "";
     case "tear_through_the_portal_red": case "tear_through_the_portal_yellow": case "tear_through_the_portal_blue":
       $pitch = "";

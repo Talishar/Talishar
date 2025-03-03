@@ -887,6 +887,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       AddCurrentTurnEffect($params[0] . $lastResult, $player, (count($params) > 1 ? $params[1] : ""));
       return $lastResult;
+    case "ADDCURRENTEFFECTLASTRESULTNEXTATTACK":
+        $params = explode("!", $parameter);
+        AddCurrentTurnEffectNextAttack($params[0] . $lastResult, $player, (count($params) > 1 ? $params[1] : ""));
+        return $lastResult;
     case "ADDSTASISTURNEFFECT":
       $character = &GetPlayerCharacter($player);
       WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " can't be activated this turn.");
