@@ -79,8 +79,8 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 
 function AddEffectToCurrentAttack($cardID) {
   global $combatChain;
-  WriteLog("HERE: $combatChain[10]");
-  // array_push($combatChain[10], $cardID);
+  if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($cardID); //saving them as set ids saves space
+  else $combatChain[10] .= "," . ConvertToSetID($cardID);
 }
 
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)

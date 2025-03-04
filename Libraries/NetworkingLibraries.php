@@ -1101,7 +1101,8 @@ function ResolveCombatDamage($damageDone)
         AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
       }
     }
-    foreach($combatChain[10] as $effect) {
+    foreach(explode(",", $combatChain[10]) as $effectSetID) {
+      $effect = ConvertToCardID($effectSetID);
       if (IsCombatEffectActive($effect) && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
         AddEffectHitTrigger($effect); // Effects that do gives their effect to the attack
       }
@@ -1207,7 +1208,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks;
   $effectsToRemove = [];
   $CLIndex = count($chainLinks) - 1;
-  $addedOnHits = $combatChain[10];
+  $addedEffects = $combatChain[10];
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0])) {
@@ -1216,7 +1217,8 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       if ($currentTurnEffects[$i + 3] == 0) array_push($effectsToRemove, $i);
       if (AddedOnHit($currentTurnEffects[$i])) {
         //adding onhits after chain resolution
-        array_push($addedOnHits, $currentTurnEffects[$i]);
+        if ($addedEffects == "-") $addedEffects = ConvertToSetID($currentTurnEffects[$i]);
+        else $addedEffects .= "," . ConvertToSetID($currentTurnEffects[$i]);
       }
     }
     if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") array_push($effectsToRemove, $i);
@@ -1237,9 +1239,8 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
     }
   }
   if (isset($chainLinks[$CLIndex])) {
-    if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedOnHits;
+    if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedEffects;
   }
-  WriteLog("HERE: " . implode(",", $chainLinks[$CLIndex][6]));
   for ($i = 0; $i < count($effectsToRemove); ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
 }
 
@@ -3145,7 +3146,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($index == 0) {//if adding an attacking card
         for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
           if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-            array_push($combatChain[10], $currentTurnEffects[$i]);
+            if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($currentTurnEffects[$i]);
+            else $combatChain[10] .= "," . ConvertToSetID($currentTurnEffects[$i]);
             RemoveCurrentTurnEffect($i);
           }
         }

@@ -51,9 +51,8 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   }
   // check layer continuous buffs
   if(isset($combatChain[10])) {
-    // $layerContBuffs = $combatChain[10];
-    // WriteLog("HERE: " . count($combatChain[10]));
-    foreach ($combatChain[10] as $buff) {
+    foreach (explode(",", $combatChain[10]) as $buffSetID) {
+      $buff = ConvertToCardID($buffSetID);
       $attack = EffectAttackModifier($buff);
       if (($canGainAttack || $attack < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
         array_push($attackModifiers, $buff);
@@ -181,7 +180,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
   array_push($combatChain, $cardID); //original cardID in case it becomes a copy
-  array_push($combatChain, []); //Added static buffs
+  array_push($combatChain, "-"); //Added static buffs
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
