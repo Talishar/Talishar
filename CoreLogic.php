@@ -180,7 +180,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
   array_push($combatChain, $cardID); //original cardID in case it becomes a copy
-  array_push($combatChain, "-"); //Added static buffs
+  array_push($combatChain, "-"); //Added static buffs (comma separated list of SetIDs, see ConvertToSetID/ConvertToCardID)
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility();
   return $index;
