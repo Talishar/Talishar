@@ -1663,11 +1663,11 @@ function TalentContainsAny($cardID, $talents, $player = "", $zone="-")
   return false;
 }
 
-function RevealCards($cards, $player = "")
+function RevealCards($cards, $player = "", $look=false)
 {
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
-  if (!CanRevealCards($player)) return false;
+  if (!$look && !CanRevealCards($player)) return false;
   if ($cards == "") return true;
   $cardArray = explode(",", $cards);
   $string = "";
@@ -1679,7 +1679,7 @@ function RevealCards($cards, $player = "")
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed";
   WriteLog($string);
-  if ($player != "" && SearchLandmark("korshem_crossroad_of_elements")) {
+  if ($player != "" && SearchLandmark("korshem_crossroad_of_elements") && !$look) {
     KorshemRevealAbility($player);
   }
   return true;
@@ -2123,7 +2123,7 @@ function RemoveArsenalEffects($player, $cardToReturn, $uniqueID)
   }
 }
 
-function LookAtHand($player)
+function LookAtHand($player, $look=true)
 {
   $hand = &GetHand($player);
   $cards = "";
@@ -2131,15 +2131,15 @@ function LookAtHand($player)
     if ($cards != "") $cards .= ",";
     $cards .= $hand[$i];
   }
-  RevealCards($cards, $player);
+  RevealCards($cards, $player, look:$look);
 }
 
-function LookAtArsenal($player)
+function LookAtArsenal($player, $look=true)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($arsenal[$i + 1] == "DOWN") {
-      RevealCards($arsenal[$i], $player);
+      RevealCards($arsenal[$i], $player, look:$look);
     }
   }
 }
