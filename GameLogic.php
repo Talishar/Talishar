@@ -2007,6 +2007,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ONHITEFFECT":
       $cardID = $lastResult;
       $location = $dqVars[2];
+      WriteLog("HERE: $parameter");
       $mainChar = &GetPlayerCharacter($mainPlayer);
       if(DelimStringContains($location, "MYCHAR", true)) {
         $ind = intval(explode("-", $location)[1]);
@@ -2020,7 +2021,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         foreach ($activeEffects as $effect) {
           AddEffectHitTrigger($effect, $cardID);
           AddOnHitTrigger($effect, source:$cardID);
-          AddCardEffectHitTrigger($effect, $cardID);
+          AddCardEffectHitTrigger($effect, $cardID); // this probably doesn't need to be here
         }
       }
       for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
