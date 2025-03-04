@@ -1925,7 +1925,7 @@ function DoesAttackHaveGoAgain()
       $numDaggerHits = 0;
         for($i=0; $i<count($chainLinks); ++$i)
         {
-          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+          if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
       return $numDaggerHits > 0;
