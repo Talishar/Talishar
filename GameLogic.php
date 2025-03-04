@@ -2007,7 +2007,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ONHITEFFECT":
       $cardID = $lastResult;
       $location = $dqVars[2];
-      AddOnHitTrigger($cardID);
+      $mainChar = &GetPlayerCharacter($mainPlayer);
+      if(DelimStringContains($location, "MYCHAR", true)) {
+        $ind = intval(explode("-", $location)[1]);
+        $sourceUID = $mainChar[$ind + 11];
+      }
+      else $sourceUID = -1;
+      AddOnHitTrigger($cardID, $sourceUID);
       if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
         $index = intval(explode("-", $location)[1]) / ChainLinksPieces();
         $activeEffects = explode(",", $chainLinks[$index][6]);
@@ -2028,7 +2034,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
       //mask of momentum
-      $mainChar = &GetPlayerCharacter($mainPlayer);
       $momIndex = FindCharacterIndex($mainPlayer, "mask_of_momentum");
       if($momIndex != -1 && $mainChar[$momIndex + 5] > 0){
         --$mainChar[$momIndex + 5];
