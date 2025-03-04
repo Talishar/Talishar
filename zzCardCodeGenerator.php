@@ -44,6 +44,7 @@
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
   GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "");
   GenerateFunction($cardArray, $handler, "SetID", "setID", "");
+  GenerateFunction($cardArray, $handler, "SetIDtoCardID", "SIDtoCID", "");
   GenerateFunction($cardArray, $handler, "GoAgain", "goAgain", "false");
 
   fwrite($handler, "?>");
@@ -264,6 +265,9 @@
         case "setID":
           $data = $setID;
           break;
+        case "SIDtoCID":
+          $data = $cardID;
+          break;
         case "goAgain":
           $data = "false";
           if (isset($cardArray[$i]->functional_text)) {
@@ -277,7 +281,8 @@
       else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
       if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
       {
-        $AA[$cardID] = $data;
+        if ($propertyName != "SIDtoCID") $AA[$cardID] = $data;
+        else $AA[$setID] = $cardID;
       }
     }
   }

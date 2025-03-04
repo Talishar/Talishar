@@ -308,8 +308,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   switch ($cardID) {
     case "arakni_black_widow":
     case "arakni_funnel_web":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("$cardID-HIT", $currentPlayer);
+      AddEffectToCurrentAttack($cardID);
+      if (HasStealth($CombatChain->AttackCard()->ID())) AddEffectToCurrentAttack("$cardID-HIT");
       break;
     case "arakni_orb_weaver":
       EquipWeapon($currentPlayer, "graphene_chelicera");

@@ -210,6 +210,24 @@ function SetID($cardID)
   }
 }
 
+//converts cardIDs to setIDs, retaining any trailing tags
+function ConvertToSetID($cardID) {
+  $bareCardID = ExtractCardID($cardID);
+  $tags = substr($cardID, strlen($bareCardID));
+  return SetID($bareCardID) . $tags;
+}
+
+function SetIDtoCardID($setID)
+{
+  return GeneratedSetIDtoCardID($setID);
+}
+
+function ConvertToCardID($setID) {
+  $bareSetID = substr($setID, 0, 6);
+  $tags = substr($setID, strlen($bareSetID));
+  return SetIDtoCardID($bareSetID) . $tags;
+}
+
 function CardSubType($cardID, $uniqueID = -1)
 {
   if (!$cardID) return "";

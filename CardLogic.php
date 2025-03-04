@@ -77,6 +77,12 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
   array_push($currentTurnEffects, CurrentTurnEffectUses($cardID));
 }
 
+function AddEffectToCurrentAttack($cardID) {
+  global $combatChain;
+  if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($cardID); //saving them as set ids saves space
+  else $combatChain[10] .= "," . ConvertToSetID($cardID);
+}
+
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $afterResolveEffects, $combatChain;
@@ -1085,18 +1091,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
     case "hack_to_reality_yellow-HIT":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
-    case "arakni_black_widow-HIT":
-      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      }
-      break;
-    case "arakni_funnel_web-HIT":
-      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($sourceID, "AA", $mainPlayer) || (IsHeroAttackTarget() && $sourceID == "-")) {
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      }
-      break;
     case "burn_up__shock_red":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
@@ -1253,6 +1247,18 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;
+    case "arakni_black_widow-HIT":
+      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
+      if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $source == "-")) {
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
+    case "arakni_funnel_web-HIT":
+      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
+      if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $source == "-")) {
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
       break;
     default:
       break;
