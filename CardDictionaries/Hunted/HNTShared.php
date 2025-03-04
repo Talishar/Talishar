@@ -67,7 +67,7 @@ function HNTAbilityHasGoAgain($cardID): bool
   };
 }
 
-function HNTEffectAttackModifier($cardID): int
+function HNTEffectAttackModifier($cardID, $attached=False): int
 {
   global $currentPlayer, $defPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -142,7 +142,7 @@ function HNTEffectAttackModifier($cardID): int
     "up_sticks_and_run_red" => 4,
     "up_sticks_and_run_yellow" => 3,
     "up_sticks_and_run_blue" => 2,
-    "savor_bloodshed_red" => 4,
+    "savor_bloodshed_red" => $attached ? 4 : 0,
     "cut_from_the_same_cloth_red" => 4,
     "cut_from_the_same_cloth_yellow" => 3,
     "cut_from_the_same_cloth_blue" => 2,
@@ -183,6 +183,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   }
   if ($cardID == "arakni_black_widow" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "arakni_funnel_web" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
+  // if ($cardID == "savor_bloodshed_red" && count($dashArr) > 1 && $dashArr[1] == "HIT") return SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked;
   if ($cardID == "fealty" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
