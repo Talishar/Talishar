@@ -486,7 +486,8 @@ function isCardRestricted($cardID, $format, $count) {
   $restrictedCards = [
     "llcc" => [
       "crippling_crush_red", "oaken_old_red", "awakening_blue", "hypothermia_blue", "warmonger's_diplomacy_blue", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", 
-      "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue", 
+      "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue",
+      "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
     ]
   ];
 
@@ -515,7 +516,10 @@ function isBannedInFormat($cardID, $format) {
           "heartened_cross_strap", "bloodsheath_skeleta", "snapback_red", "snapback_yellow", "snapback_blue", "cash_in_yellow", "tome_of_divinity_yellow", "stubby_hammerers", "mask_of_the_pouncing_lynx",
           "tome_of_firebrand_red", "iyslander", "iyslander", "kraken's_aethervein", "oldhim", "winter's_wail", "chane", "galaxxi_black", "kano",
           "crucible_of_aetherweave", "crucible_of_aetherweave", "kassai,_cintari_sellsword", "ira,_crimson_haze", "edge_of_autumn", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
-          "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_blue", "belittle_red", "belittle_yellow", "belittle_blue"
+          "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_blue", "belittle_red", "belittle_yellow", "belittle_blue",
+          "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_wildfire",
+          "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue",
+          "traverse_the_universe", "zephyr_needle"
       ],
       "cc" => [
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
@@ -526,7 +530,8 @@ function isBannedInFormat($cardID, $format) {
           "viserai_rune_blood", "nebula_blade"
       ],
       "commoner" => [
-          "amulet_of_ice_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave"
+          "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
+          "waning_moon", "zephyr_needle"
       ],
       "llcc" => [
           "kraken's_aethervein"
