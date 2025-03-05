@@ -689,8 +689,6 @@ function ResetCardPlayed($cardID, $from="-")
   }
   if (SubtypeContains($cardID, "Evo")) {
     //Section below helps with visualization and removing used effects
-    SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer, true);
-    SearchCurrentTurnEffects("teklovossen", $currentPlayer, true);
     SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer, true);
     SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer, true);
     SearchCurrentTurnEffects("scrap_compactor_blue", $currentPlayer, true);
