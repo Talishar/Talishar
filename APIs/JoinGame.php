@@ -208,6 +208,11 @@ if ($decklink != "") {
   $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT"];
 
   if (is_countable($cards)) {
+    // need to get the character first to check legality
+    for ($i = 0; $i < count($cards); ++$i) {
+      $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
+      if (TypeContains($id, "C")) $character = $id;
+    }
     for ($i = 0; $i < count($cards); ++$i) {
       $count = $cards[$i]->{'total'};
       $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
@@ -451,11 +456,20 @@ function isClashLegal($cardID, $character) {
   $set = substr($setID, 0, 3);
   $number = intval(substr($setID, 3, 3));
   switch ($cardID) { //Special Use Promos
-    case "taipanis,_dracai_of_judgement": case "proclamation_of_requisition": case "theryon,_magister_of_justice": case "proclamation_of_abundance": case "proclamation_of_abundance": case "proclamation_of_production": case "brutus,_summa_rudis": case "proclamation_of_combat": case "magrar":
+    case "taipanis,_dracai_of_judgement": case "proclamation_of_requisition": case "theryon,_magister_of_justice":
+    case "proclamation_of_abundance": case "proclamation_of_production":
+    case "brutus,_summa_rudis": case "proclamation_of_combat": case "magrar":
       return true;
-      default:
+    case "drone_of_brutality_red": case "drone_of_brutality_yellow": case "drone_of_brutality_blue": //banned cards
+    case "amulet_of_ice": case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
+    case "belittle_red": case "belittle_yellow": case "belittle_blue":
+    case "stubby_hammerers": case "duskblade": case "zephyr_needle":
+      return false;
+    default:
       break;
     }
+  if($character != "briar" && $cardID == "rosetta_thorn") return false; //rosetta thorn restricted to briar
+  if($character == "ira_crimson_haze" && $cardID == "harmonized_kodachi") return false; // ira can't run kodachis
   switch (CardType($cardID)) {
     case "C": case "M": case "W":
       return true;
@@ -463,8 +477,8 @@ function isClashLegal($cardID, $character) {
   }
   if(IsSpecialization($cardID)) return true;
   if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return true;
-  if(($character == "emperor,_dracai_of_aesir" || $character == "") && $cardID == "command_and_conquer_red") return true; //C&C is legal for Emperor in Clash
-  if(($character == "prism,_advent_of_thrones" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash
+  if(($character == "emperor_dracai_of_aesir" || $character == "") && $cardID == "command_and_conquer_red") return true; //C&C is legal for Emperor in Clash
+  if(($character == "prism_advent_of_thrones" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash
   return false;
 }
 
