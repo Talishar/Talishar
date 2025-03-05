@@ -1311,7 +1311,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
 function CurrentEffectAttackAbility()
 {
   global $currentTurnEffects, $CombatChain, $mainPlayer;
-  global $CS_PlayIndex;
+  global $CS_PlayIndex, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return;
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -1336,6 +1336,11 @@ function CurrentEffectAttackAbility()
             DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true, $mainPlayer);
             $remove = true;
           }
+          break;
+        case "knife_through_butter_red-GOAGAIN":
+        case "knife_through_butter_yellow-GOAGAIN":
+        case "knife_through_butter_blue-GOAGAIN":
+          if (IsHeroAttackTarget() && CheckMarked($defPlayer)) GiveAttackGoAgain();
           break;
         default:
           break;
@@ -1649,10 +1654,6 @@ function CurrentEffectGrantsGoAgain()
           else break;
         case "agility_stance_yellow":
           return true;
-        case "knife_through_butter_red-GOAGAIN":
-        case "knife_through_butter_yellow-GOAGAIN":
-        case "knife_through_butter_blue-GOAGAIN":
-          return IsHeroAttackTarget() && CheckMarked($defPlayer);
         case "dragonscaler_flight_path":
         case "path_of_vengeance":
           return true;
