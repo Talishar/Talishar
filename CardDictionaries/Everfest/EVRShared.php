@@ -373,8 +373,7 @@
             ++$numDestroyed;
           }
         }
-        DealArcane($numDestroyed, source:"scour_blue", resolvedTarget:$damageTarget);
-        // AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
+        DealArcane($numDestroyed, source:"scour_blue", type:"PLAYCARD", resolvedTarget:$damageTarget);
         return "";
       case "emeritus_scolding_red": case "emeritus_scolding_yellow": case "emeritus_scolding_blue":
         $oppTurn = $currentPlayer != $mainPlayer;

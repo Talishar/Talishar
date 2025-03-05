@@ -1783,12 +1783,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MELD":
       MeldCards($player, $parameter, $lastResult);
       return $lastResult;
-    case "SCOUR":
-      $params = explode(",", $parameter);
-      if($params[1] == "MY") $target = 4;
-      else $target = 1;
-      DealArcane($params[0], $target, "PLAYCARD", "scour_blue");
-      return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
       // restless coalescence using play index rather than character index
