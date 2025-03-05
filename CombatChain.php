@@ -729,7 +729,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "nerve_scalpel":
-        case "nerve_scalpel":
+        case "nerve_scalpel_r":
           $count = ModifyBlockForType("DR", -1); //AR is handled in OnBlockResolveEffects
           $remove = $count > 0;
           break;
