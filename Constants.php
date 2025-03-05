@@ -687,6 +687,14 @@ function ResetCardPlayed($cardID, $from="-")
     SearchCurrentTurnEffects("chain_lightning_yellow", $currentPlayer, true);
     $effectRemoved = true;
   }
+  if (SubtypeContains($cardID, "Evo")) {
+    //Section below helps with visualization and removing used effects
+    SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer, true);
+    SearchCurrentTurnEffects("teklovossen", $currentPlayer, true);
+    SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer, true);
+    SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer, true);
+    SearchCurrentTurnEffects("scrap_compactor_blue", $currentPlayer, true);
+  }
   if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "") && GetClassState($currentPlayer, $CS_NextNAAInstant) == 1) {
     SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
     $effectRemoved = true;
