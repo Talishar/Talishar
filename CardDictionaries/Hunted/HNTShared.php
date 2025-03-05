@@ -183,7 +183,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   }
   if ($cardID == "arakni_black_widow" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "arakni_funnel_web" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
-  // if ($cardID == "savor_bloodshed_red" && count($dashArr) > 1 && $dashArr[1] == "HIT") return SubtypeContains($attackID, "Dagger", $mainPlayer) || $flicked;
   if ($cardID == "fealty" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
