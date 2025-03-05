@@ -656,6 +656,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $target = $lastResult;
       $targetPlayer = substr($target, 0, 5) == "THEIR";
       $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
+      AddDecisionQueue("PASSPARAMETER", $player, $resourcesPaid, 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
       for($i=0; $i<$resourcesPaid; ++$i) {
