@@ -61,8 +61,8 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "TWOSIDES":
       switch($lastResult) {
-        case "Buff_Dagger": AddCurrentTurnEffect("two_sides_to_the_blade_red-DAGGER", $player); break;
-        case "Buff_Stealth": AddCurrentTurnEffect("two_sides_to_the_blade_red-ATTACK", $player); break;
+        case "Buff_Dagger": AddEffectToCurrentAttack("two_sides_to_the_blade_red-DAGGER"); break;
+        case "Buff_Stealth": AddEffectToCurrentAttack("two_sides_to_the_blade_red-ATTACK"); break;
       }
       return $lastResult;
     case "LONGWHISKER":
