@@ -483,7 +483,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
   return 0;
 }
 
-function EffectAttackModifier($cardID)
+function EffectAttackModifier($cardID, $attached=false)
 {
   $set = CardSet($cardID);
   if ($set == "WTR") return WTREffectAttackModifier($cardID);
@@ -496,7 +496,7 @@ function EffectAttackModifier($cardID)
   else if ($set == "RVD") return RVDEffectAttackModifier($cardID);
   else if ($set == "UPR") return UPREffectAttackModifier($cardID);
   else if ($set == "DYN") return DYNEffectAttackModifier($cardID);
-  else if ($set == "OUT") return OUTEffectAttackModifier($cardID);
+  else if ($set == "OUT") return OUTEffectAttackModifier($cardID, $attached);
   else if ($set == "DTD") return DTDEffectAttackModifier($cardID);
   else if ($set == "TCC") return TCCEffectAttackModifier($cardID);
   else if ($set == "EVO") return EVOEffectAttackModifier($cardID);
@@ -508,7 +508,7 @@ function EffectAttackModifier($cardID)
   else if ($set == "AUR") return AUREffectAttackModifier($cardID);
   else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
   else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
-  else if ($set == "HNT") return HNTEffectAttackModifier($cardID);
+  else if ($set == "HNT") return HNTEffectAttackModifier($cardID, $attached);
   else if ($set == "AST") return ASTEffectAttackModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":

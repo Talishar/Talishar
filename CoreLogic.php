@@ -53,7 +53,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   if(isset($combatChain[10])) {
     foreach (explode(",", $combatChain[10]) as $buffSetID) {
       $buff = ConvertToCardID($buffSetID);
-      $attack = EffectAttackModifier($buff);
+      $attack = EffectAttackModifier($buff, attached: true);
       if (($canGainAttack || $attack < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
         array_push($attackModifiers, $buff);
         array_push($attackModifiers, $attack);
