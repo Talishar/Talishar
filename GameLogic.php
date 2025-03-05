@@ -1504,7 +1504,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             //right now only support targetting the active chain link
             $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
           }
-          $target = $cleanTarget;
+          $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
           break;
       }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
