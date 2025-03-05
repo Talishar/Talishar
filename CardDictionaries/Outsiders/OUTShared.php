@@ -72,7 +72,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function OUTEffectAttackModifier($cardID)
+  function OUTEffectAttackModifier($cardID, $attached=false)
   {
     $idArr = explode("-", $cardID);
     $idArr2 = explode(",", $idArr[0]);
@@ -104,7 +104,7 @@ function OUTAbilityCost($cardID)
       case "blade_cuff": return 1;
       case "concealed_blade_blue": return 1;
       case "knives_out_blue": return 1;
-      case "plunge_red": case "plunge_yellow": case "plunge_blue": return 1;
+      case "plunge_red": case "plunge_yellow": case "plunge_blue": return $attached ? 1 : 0;
       case "short_and_sharp_red": return 3;
       case "short_and_sharp_yellow": return 2;
       case "short_and_sharp_blue": return 1;

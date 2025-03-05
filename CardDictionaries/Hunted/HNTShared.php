@@ -139,13 +139,13 @@ function HNTEffectAttackModifier($cardID, $attached=False): int
     "rake_over_the_coals_red" => 1,
     "tooth_of_the_dragon_red" => 3,
     "blessing_of_vynserakai_red" => 3,
-    "up_sticks_and_run_red" => 4,
-    "up_sticks_and_run_yellow" => 3,
-    "up_sticks_and_run_blue" => 2,
+    "up_sticks_and_run_red" => $attached ? 4 : 0,
+    "up_sticks_and_run_yellow" => $attached ? 3 : 0,
+    "up_sticks_and_run_blue" => $attached ? 2 : 0,
     "savor_bloodshed_red" => $attached ? 4 : 0,
-    "cut_from_the_same_cloth_red" => 4,
-    "cut_from_the_same_cloth_yellow" => 3,
-    "cut_from_the_same_cloth_blue" => 2,
+    "cut_from_the_same_cloth_red" => $attached ? 4 : 0,
+    "cut_from_the_same_cloth_yellow" => $attached ? 3 : 0,
+    "cut_from_the_same_cloth_blue" => $attached ? 2 : 0,
     "scar_tissue_red" => 3,
     "scar_tissue_yellow" => 2,
     "scar_tissue_blue" => 1,
@@ -1089,12 +1089,16 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
   //for now only tracking dagger buffs, ideally we'd want to track all static buffs
   return match($cardID) {
     "plunge_red" => true,
+    "plunge_yellow" => true,
+    "plunge_blue" => true,
     "two_sides_to_the_blade_red-ATTACK" => true,
     "up_sticks_and_run_red" => true,
     "up_sticks_and_run_yellow" => true,
     "up_sticks_and_run_blue" => true,
     "savor_bloodshed_red" => true,
     "cut_from_the_same_cloth_red" => true,
+    "cut_from_the_same_cloth_yellow" => true,
+    "cut_from_the_same_cloth_blue" => true,
     default => false
   };
 }
