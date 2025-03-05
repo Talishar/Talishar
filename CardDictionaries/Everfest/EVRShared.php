@@ -359,15 +359,22 @@
         }
         return "";
       case "scour_blue":
-        $targetPlayer = substr($target, 0, 5) == "THEIR";
-        $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
-        for($i=0; $i<$resourcesPaid; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $parameter);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+        $targetPlayer = substr($target, 0, 1) == "O" ? $otherPlayer: $currentPlayer;
+        $damageTarget = substr($target, 0, 1) == "O" ? "THERICHAR-0": "MYCHAR-0";
+        $auras = &GetAuras($targetPlayer);
+        $allTargets = explode(",", $target);
+        $numDestroyed = 0;
+        for ($i = 1; $i < count($allTargets); $i++) {
+          $index = -1;
+          for ($j = 0; $j < count($auras); $j += AuraPieces()) {
+            if ($auras[$j + 6] == $allTargets[$i]) $index = $j;
+          }
+          if ($index != -1) {
+            DestroyAura($targetPlayer, $index);
+            ++$numDestroyed;
+          }
         }
-        AddDecisionQueue("SCOUR", $currentPlayer, $resourcesPaid.",".$targetPlayer, 1);
+        DealArcane($numDestroyed, source:"scour_blue", type:"PLAYCARD", resolvedTarget:$damageTarget);
         return "";
       case "emeritus_scolding_red": case "emeritus_scolding_yellow": case "emeritus_scolding_blue":
         $oppTurn = $currentPlayer != $mainPlayer;

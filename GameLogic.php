@@ -1447,52 +1447,85 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETLAYERTARGET":
       global $layers;
-      $target = $lastResult;
-      $targetArr = explode("-", $target);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      if ($targetArr[0] == "LAYER") $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
-      if ($targetArr[0] == "THEIRDISCARD") {
-        $discard = GetDiscard($otherPlayer);
-        $target = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
-      }
-      if ($targetArr[0] == "MYDISCARD") {
-        $discard = GetDiscard($player);
-        $target = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
-      }
-      if ($targetArr[0] == "THEIRAURAS") {
-        $auras = GetAuras($otherPlayer);
-        $target = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
-      }
-      if ($targetArr[0] == "MYAURAS") {
-        $auras = GetAuras($player);
-        $target = "MYAURASUID-" . $auras[$targetArr[1] + 6];
-      }
-      if ($targetArr[0] == "THEIRCHAR") {
-        $char = GetPlayerCharacter($otherPlayer);
-        $target = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
-      }
-      if ($targetArr[0] == "MYCHAR") {
-        $char = GetPlayerCharacter($player);
-        $target = "MYCHAR-" . $char[$targetArr[1] + 11];
-      }
-      if ($targetArr[0] == "COMBATCHAINATTACKS") {
-        // It's not possible for this index to get messed up before resolution
-        $target = $lastResult;
-      }
-      if ($targetArr[0] == "COMBATCHAIN") {
-        $char = GetPlayerCharacter($otherPlayer);
-        //right now only support targetting the active chain link
-        $target = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+      $target = "";
+      $cleanTarget = "";
+      switch ($parameter) {
+        case "scour_blue": //handle scour differently so it can have multiple targets
+          // the target string is compressed so it's better able to fit in 30 characters
+          // formatted as PLAYERTARGET,UID1,UID2,...
+          // PLAYERTARGET is an O for opponent and M for myself
+          // "MYAURAS" is omitted as it can be understood
+          $allTargets = explode(",", $lastResult);
+          // targetting opponent or targetting self
+          if (substr($lastResult, 0, 5) == "THEIR") {
+            $target .= "O";
+            $cleanTarget .= "THEIRCHAR-0";
+            $auras = GetAuras($otherPlayer);
+            $prefix = "THEIR";
+          }
+          else {
+            $target .= "M";
+            $cleanTarget .= "MYCHAR-0";
+            $auras = GetAuras($player);
+            $prefix = "MY";
+          }
+          foreach (array_slice($allTargets, 1) as $targ) {
+            $index = intval(explode("-", $targ)[1]);
+            $target .= "," . $auras[$index + 6];
+            $cleanTarget .= ",{$prefix}AURASUID-" . $auras[$index + 6];
+          }
+          break;
+        default:
+          $targetArr = explode("-", $lastResult);
+          $otherPlayer = ($player == 1 ? 2 : 1);
+          if ($targetArr[0] == "LAYER") $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+          if ($targetArr[0] == "THEIRDISCARD") {
+            $discard = GetDiscard($otherPlayer);
+            $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
+          }
+          if ($targetArr[0] == "MYDISCARD") {
+            $discard = GetDiscard($player);
+            $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
+          }
+          if ($targetArr[0] == "THEIRAURAS") {
+            $auras = GetAuras($otherPlayer);
+            $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
+          }
+          if ($targetArr[0] == "MYAURAS") {
+            $auras = GetAuras($player);
+            $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+          }
+          if ($targetArr[0] == "THEIRCHAR") {
+            $char = GetPlayerCharacter($otherPlayer);
+            $cleanTarget = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
+          }
+          if ($targetArr[0] == "MYCHAR") {
+            $char = GetPlayerCharacter($player);
+            $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
+          }
+          if ($targetArr[0] == "COMBATCHAINATTACKS") {
+            // It's not possible for this index to get messed up before resolution
+            $cleanTarget = $lastResult;
+          }
+          if ($targetArr[0] == "COMBATCHAIN") {
+            $char = GetPlayerCharacter($otherPlayer);
+            //right now only support targetting the active chain link
+            $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+          }
+          $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
+          break;
       }
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
         if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
           $layers[$i + 3] = $target;
         }
       }
-      return $target;
+      return $cleanTarget;
     case "SHOWSELECTEDTARGET":
-      $targetPlayer = (substr($lastResult, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player);
-      WriteLog("Player " . $targetPlayer . " targeted " . GetMZCardLink($targetPlayer, $lastResult));
+      foreach (explode(",", $lastResult) as $targ) {
+        $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+        WriteLog("Player " . $targetPlayer . " targeted " . GetMZCardLink($targetPlayer, $targ));
+      }
       return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
@@ -1760,12 +1793,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MELD":
       MeldCards($player, $parameter, $lastResult);
       return $lastResult;
-    case "SCOUR":
-      $params = explode(",", $parameter);
-      if($params[1] == "MY") $target = 4;
-      else $target = 1;
-      DealArcane($params[0], $target, "PLAYCARD", "scour_blue");
-      return "";
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
       // restless coalescence using play index rather than character index
