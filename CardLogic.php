@@ -2884,7 +2884,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "ollin_ice_cap":
-      //check how this works with allies
       PlayAura("frostbite", $player, effectController: $defPlayer);
       break;
     case "tectonic_crust":

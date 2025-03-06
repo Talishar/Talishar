@@ -841,7 +841,7 @@ function OnBlockResolveEffects($cardID = "")
     switch ($defendingCard) {//code for Jarl's armor
       case "ollin_ice_cap":
         $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
-        if ($blockedWithIce - $sub > 0) AddLayer("TRIGGER", $mainPlayer, $defendingCard, $i);
+        if ($blockedWithIce - $sub > 0 && !IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard, $i);
         break;
       case "tectonic_crust":
         $sub = TalentContains($defendingCard, "EARTH", $defPlayer) == true ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
