@@ -2704,7 +2704,7 @@ function IsDefenseReactionPlayable($cardID, $from)
 
 function IsAction($cardID, $from="")
 {
-  if(IsStaticType($cardID, $from)) {
+  if(IsStaticType(CardType($cardID), $from, $cardID)) {
     $abilityType = GetAbilityType($cardID, from: $from);
     if ($abilityType == "A" || $abilityType == "AA") return true;
   }
