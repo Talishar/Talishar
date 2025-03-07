@@ -1239,7 +1239,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_blue":
     case "ripple_away_blue":
-    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
@@ -1254,6 +1253,19 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
           if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names .= ",Attack";
         }
       }
+      return $names;
+    case "under_the_trap_door_blue":
+      // can't use the ability if there are no traps in graveyard
+      if (SearchDiscard($currentPlayer, subtype: "Trap") != "") $names = "Ability";
+      else $names = "";
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
+        $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
+        $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
+        if (!$warmongersPeace && !$underEdict) {
+          if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names .= ",Attack";
+        }
+      }
+      WriteLog("HERE: $names");
       return $names;
     case "haunting_rendition_red": case "mental_block_blue":
       return "Block,Ability";

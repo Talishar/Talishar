@@ -1455,7 +1455,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "photon_splicing_red":
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
-    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
@@ -1466,6 +1465,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "war_cry_of_themis_yellow":
     case "war_cry_of_bellona_yellow":
       return $from == "HAND";
+    case "under_the_trap_door_blue":
+      return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
     case "astral_etchings_red":
     case "astral_etchings_yellow":
     case "astral_etchings_blue":
