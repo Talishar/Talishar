@@ -2745,6 +2745,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "war_cry_of_bellona_yellow":
       return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
     case "quickdodge_flexors":
+      if (!CanBlockWithEquipment()) return false;
       for ($i = 0; $i < count(value: $combatChain); $i += CombatChainPieces()) {
         if ($combatChain[$i] == $cardID) return false;
       }
