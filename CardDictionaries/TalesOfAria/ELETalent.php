@@ -178,7 +178,7 @@
         if($from == "ARS") GiveAttackGoAgain();
         return "";
       case "shock_striker_red": case "shock_striker_yellow": case "shock_striker_blue":
-        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, "", 1);
+        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, "");
         return "";
       case "electrify_red": case "electrify_yellow": case "electrify_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
