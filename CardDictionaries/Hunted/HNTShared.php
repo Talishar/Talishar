@@ -686,26 +686,28 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "quickdodge_flexors":
-      $char = &GetPlayerCharacter($currentPlayer);
-      // remove flexors from its previous link
-      for ($i = 0; $i < count($chainLinks); ++$i) {
-        for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-          if ($chainLinks[$i][$j] == "quickdodge_flexors") {
-            $chainLinks[$i][$j+2] = 0;
+      if (CanBlockWithEquipment()) {
+        $char = &GetPlayerCharacter($currentPlayer);
+        // remove flexors from its previous link
+        for ($i = 0; $i < count($chainLinks); ++$i) {
+          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+            if ($chainLinks[$i][$j] == "quickdodge_flexors") {
+              $chainLinks[$i][$j+2] = 0;
+            }
           }
         }
-      }
-      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-        if ($char[$i] == "quickdodge_flexors") {
-          $ind = $i;
-          break;
+        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+          if ($char[$i] == "quickdodge_flexors") {
+            $ind = $i;
+            break;
+          }
         }
+        if (!SearchCurrentTurnEffects("quickdodge_flexors", $currentPlayer)) {
+          AddCurrentTurnEffect("quickdodge_flexors", $currentPlayer);
+          AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);
+        }
+        $char[$ind + 6] = 1;
       }
-      if (!SearchCurrentTurnEffects("quickdodge_flexors", $currentPlayer)) {
-        AddCurrentTurnEffect("quickdodge_flexors", $currentPlayer);
-        AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);
-      }
-      $char[$ind + 6] = 1;
       break;
     case "bunker_beard":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");

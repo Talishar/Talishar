@@ -2048,7 +2048,6 @@ function IsCombatEffectPersistent($cardID)
     case "poisoned_blade_yellow":
     case "poisoned_blade_blue":
     case "savor_bloodshed_red-HIT":
-    case "quickdodge_flexors":
     case "imperial_seal_of_command_red":
     case "imperial_seal_of_command_red-HIT":
     case "war_cry_of_bellona_yellow-BUFF":
