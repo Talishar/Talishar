@@ -2734,9 +2734,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if (count(explode(",", $hand)) > 0) {
         AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a lightning card from your hand to discard.", 1);
-        MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", may:true, isReveal:true, isSubsequent:true);
+        MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", may:true, logText:"Card discarded: <0>", isSubsequent:true);
         AddDecisionQueue("SETDQCONTEXT", $player, "Return an Aura to your hand.", 1);
-        MZMoveCard($player, "MYAURAS", "MYHAND", isReveal:true, isSubsequent:true);
+        MZMoveCard($player, "MYAURAS", "MYHAND", logText:"Aura returned: <0>", isSubsequent:true);
       }
       break;
     case "gone_in_a_flash_red":

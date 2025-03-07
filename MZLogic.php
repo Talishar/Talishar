@@ -469,9 +469,10 @@ function MZStartTurnAbility($player, $MZIndex)
   }
 }
 
-function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "")
+function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "", $logText = "")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
+  if ($logText == "") $logText = "Card chosen: <0>";
   if (str_contains($search, "DECK") && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
@@ -484,7 +485,7 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
 
   if ($silent);
   else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-  else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+  else AddDecisionQueue("WRITELOG", $player, $logText, 1);
 
   if ($where != "") AddDecisionQueue("MZADDZONE", $player, $where, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
