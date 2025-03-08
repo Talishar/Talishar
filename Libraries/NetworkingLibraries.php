@@ -625,6 +625,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10011:
       WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
+      if (SetIDtoCardID($cardID) != "") $cardID = SetIDtoCardID($cardID);
+      $cardID = str_replace(" ", "_", $cardID);
       $hand = &GetHand($playerID);
       array_push($hand, $cardID);
       break;
