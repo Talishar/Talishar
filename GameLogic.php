@@ -2661,7 +2661,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       # check if it's already there
       $onCombatChain = false;
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-        if ($combatChain[$i+8] == $originUniqueID) {
+        if ($combatChain[$i+8] == $originUniqueID && $combatChain[$i + 1] == $player && $combatChain[$i] == $parameter) {
           $onCombatChain = true;
           break;
         }
