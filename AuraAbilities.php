@@ -800,7 +800,7 @@ function AuraBeginEndPhaseTriggers()
       case "channel_mount_isen_blue":
       case "channel_thunder_steppe_yellow":
       case "channel_lightning_valley_yellow":
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], $i, "CHANNEL");
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], $auras[$i+6], "CHANNEL");
           break;
       case "fealty":
         $fealtySurvives = GetClassState($mainPlayer, $CS_FealtyCreated) + GetClassState($mainPlayer, $CS_NumDraconicPlayed);
@@ -852,7 +852,7 @@ function AuraBeginEndPhaseAbilities()
         }
         break;
       case "channel_the_bleak_expanse_blue":
-        ChannelTalent($i, "ICE");
+        ChannelTalent($auras[$i+6], "ICE");
         break;
       case "frostbite":
         FrostHexEndTurnAbility($mainPlayer);
@@ -891,10 +891,13 @@ function AuraBeginEndPhaseAbilities()
   $mainCharacter = array_values($mainCharacter);
 }
 
-function ChannelTalent($index, $talent)
+function ChannelTalent($uniqueID, $talent)
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if ($auras[$i + 6] == $uniqueID) $index = $i;
+  }
   $toBottom = ++$auras[$index + 2];
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
