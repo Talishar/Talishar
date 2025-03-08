@@ -627,6 +627,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
       if (SetIDtoCardID($cardID) != "") $cardID = SetIDtoCardID($cardID);
       $cardID = str_replace(" ", "_", $cardID);
+      if (CardName($cardID) == "") {
+        if (CardName($cardID . "_red") != "") $cardID .= "_red";
+        elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
+        elseif (CardName($cardID . "_blue") != "") $cardID .= "_blue";
+      }
       $hand = &GetHand($playerID);
       array_push($hand, $cardID);
       break;
