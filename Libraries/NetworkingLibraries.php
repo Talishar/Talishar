@@ -1263,6 +1263,7 @@ function EndStep()
   global $mainPlayer, $turn;
   $turn[0] = "ENDPHASE";
   AddLayer("ENDPHASE", $mainPlayer, "-");
+  MainCharacterBeginEndPhaseTriggers();
   AuraBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();

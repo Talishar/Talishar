@@ -1806,11 +1806,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
       break;
     case "channel_thunder_steppe_yellow":
-      AddDecisionQueue("YESNO", $player, "do_you_want_to_pay_1_to_give_your_action_go_again", 0, 1);
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("GIVEACTIONGOAGAIN", $player, $target, 1);
+      if ($additionalCosts == "CHANNEL") {
+        ChannelTalent($target, "LIGHTNING");
+      }
+      else {
+        AddDecisionQueue("YESNO", $player, "do_you_want_to_pay_1_to_give_your_action_go_again", 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("GIVEACTIONGOAGAIN", $player, $target, 1);
+      }
       break;
     case "rampart_of_the_rams_head":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
@@ -2710,7 +2715,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Decompose($player, "CADAVEROUSTILLING");
       break;
     case "channel_the_millennium_tree_red":
-      AddCurrentTurnEffect($parameter, $player);
+      if ($additionalCosts == "CHANNEL") {
+        ChannelTalent($target, "EARTH");
+      }
+      else AddCurrentTurnEffect($parameter, $player);
       break;
     case "earths_embrace_blue":
       PlayAura("embodiment_of_earth", $player);
@@ -2749,8 +2757,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "channel_lightning_valley_yellow":
-      WriteLog(CardLink($parameter, $parameter) . " draws a card");
-      Draw($player);
+      if ($additionalCosts == "CHANNEL") {
+        ChannelTalent($target, "LIGHTNING");
+      }
+      else {
+        WriteLog(CardLink($parameter, $parameter) . " draws a card");
+        Draw($player);
+      }
       break;
     case "blast_to_oblivion_red":
     case "blast_to_oblivion_yellow":
@@ -2998,6 +3011,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("REVEALCARDS", $player, "-", 1);
         AddDecisionQueue("PLAYAURA", $player, "embodiment_of_lightning", 1);
       }
+      break;
+    case "channel_mount_heroic_red":
+      ChannelTalent($target, "EARTH");
+      break;
+    case "channel_lake_frigid_blue":
+    case "channel_mount_isen_blue":
+      ChannelTalent($target, "ICE");
+      break;
+    case "terra":
+      TerraEndPhaseAbility($characterID, $player);
       break;
     default:
       break;

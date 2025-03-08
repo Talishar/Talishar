@@ -394,10 +394,6 @@ function MainCharacterBeginEndPhaseAbilities()
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch ($characterID) {
-      case "terra":
-        if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndPhaseAbility($characterID, $mainPlayer);
-        break;
       case "arakni_marionette":
       case "arakni_web_of_deceit":
         if (CheckMarked($defPlayer) && $mainCharacter[$i + 1] < 3) ChaosTransform($characterID, $mainPlayer);
@@ -419,9 +415,35 @@ function MainCharacterBeginEndPhaseAbilities()
   for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $characterID = ShiyanaCharacter($defCharacter[$i]);
     switch ($characterID) {
+      default:
+        break;
+    }
+  }
+}
+
+function MainCharacterBeginEndPhaseTriggers()
+{
+  global $mainPlayer, $defPlayer;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+    $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    switch ($characterID) {
+      case "terra":
+        if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        AddLayer("TRIGGER", $mainPlayer, $characterID);
+        break;
+      default:
+        break;
+    }
+  }
+
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
+    $characterID = ShiyanaCharacter($defCharacter[$i]);
+    switch ($characterID) {
       case "terra":
         if ($defCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
-        TerraEndPhaseAbility($characterID, $defPlayer);
+        AddLayer("TRIGGER", $defPlayer, $characterID);
         break;
       default:
         break;

@@ -794,6 +794,14 @@ function AuraBeginEndPhaseTriggers()
       case "sharpened_senses_yellow":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
+      case "channel_mount_heroic_red":
+      case "channel_the_millennium_tree_red":
+      case "channel_lake_frigid_blue":
+      case "channel_mount_isen_blue":
+      case "channel_thunder_steppe_yellow":
+      case "channel_lightning_valley_yellow":
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], $i, "CHANNEL");
+          break;
       case "fealty":
         $fealtySurvives = GetClassState($mainPlayer, $CS_FealtyCreated) + GetClassState($mainPlayer, $CS_NumDraconicPlayed);
         if (!$fealtySurvives) {
@@ -829,18 +837,6 @@ function AuraBeginEndPhaseAbilities()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
-      case "channel_mount_heroic_red":
-      case "channel_the_millennium_tree_red":
-        ChannelTalent($i, "EARTH");
-        break;
-      case "channel_lake_frigid_blue":
-      case "channel_mount_isen_blue":
-        ChannelTalent($i, "ICE");
-        break;
-      case "channel_thunder_steppe_yellow":
-      case "channel_lightning_valley_yellow":
-        ChannelTalent($i, "LIGHTNING");
-        break;
       case "burn_them_all_red":
         $toBanish = ++$auras[$i + 2];
         $discardReds = SearchCount(SearchDiscard($mainPlayer, pitch: 1));
