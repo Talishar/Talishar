@@ -758,7 +758,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIADDDECK":
       $deck = new Deck($player);
       $cards = explode(",", $lastResult);
-      for ($i = 0; $i < count($cards); ++$i) $deck->AddBottom($cards[$i]);
+      for ($i = 0; $i < count($cards); ++$i) {
+        if (CardName($cards[$i]) != "") $deck->AddBottom($cards[$i]);
+        else WriteLog("There was an error adding a card to your deck, please submit a bug report");
+      }
       return $lastResult;
     case "MULTIADDTOPDECK":
       $deck = new Deck($player);
