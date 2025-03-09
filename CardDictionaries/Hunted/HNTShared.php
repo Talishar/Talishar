@@ -825,7 +825,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "misfire_dampener":
-      if(GetClassState($currentPlayer, $CS_NumBoosted) > 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_NumBoosted) >= 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       else AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       break;
     case "null_time_zone_blue":
