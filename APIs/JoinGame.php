@@ -239,7 +239,7 @@ if ($decklink != "") {
         $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
 
-      if($character != "brevant,_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
+      if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
         if (($format == "blitz" || $format == "compblitz" || $format == "clash") && $cardCounts[$id] > 2) {
           if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
@@ -456,9 +456,9 @@ function isClashLegal($cardID, $character) {
   $set = substr($setID, 0, 3);
   $number = intval(substr($setID, 3, 3));
   switch ($cardID) { //Special Use Promos
-    case "taipanis,_dracai_of_judgement": case "proclamation_of_requisition": case "theryon,_magister_of_justice":
+    case "taipanis_dracai_of_judgement": case "proclamation_of_requisition": case "theryon_magister_of_justice":
     case "proclamation_of_abundance": case "proclamation_of_production":
-    case "brutus,_summa_rudis": case "proclamation_of_combat": case "magrar":
+    case "brutus_summa_rudis": case "proclamation_of_combat": case "magrar":
       return true;
     case "drone_of_brutality_red": case "drone_of_brutality_yellow": case "drone_of_brutality_blue": //banned cards
     case "amulet_of_ice": case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
@@ -510,9 +510,9 @@ function isCardRestricted($cardID, $format, $count) {
 
 function isSpecialUsePromo($cardID) {
   $specialUsePromos = [
-      "taipanis,_dracai_of_judgement", "taipanis,_dracai_of_judgement", "proclamation_of_requisition", "proclamation_of_requisition", "gavel_of_natural_order", "theryon,_magister_of_justice", "theryon,_magister_of_justice", "proclamation_of_abundance",
-      "proclamation_of_production", "brutus,_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di,_gem_keeper", "go_bananas_yellow", "taylor", "yorick,_weaver_of_tales", "tales_of_adventure_blue",
-      "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird,_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
+      "taipanis_dracai_of_judgement", "taipanis_dracai_of_judgement", "proclamation_of_requisition", "proclamation_of_requisition", "gavel_of_natural_order", "theryon_magister_of_justice", "theryon_magister_of_justice", "proclamation_of_abundance",
+      "proclamation_of_production", "brutus_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di_gem_keeper", "go_bananas_yellow", "taylor", "yorick_weaver_of_tales", "tales_of_adventure_blue",
+      "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "cap_of_quick_thinking", "shock_frock", "zap_clappers", "starlight_striders", "skyzyk_red", "spark_spray_red", "skyward_serenade_yellow", "written_in_the_stars_blue", "bank_breaker", "clamp_press_blue",
       "valda_seismic_impact",
   ];
@@ -529,7 +529,7 @@ function isBannedInFormat($cardID, $format) {
           "tome_of_aetherwind_red", "art_of_war_yellow", "awakening_blue", "briar", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "rosetta_thorn", "duskblade",
           "heartened_cross_strap", "bloodsheath_skeleta", "snapback_red", "snapback_yellow", "snapback_blue", "cash_in_yellow", "tome_of_divinity_yellow", "stubby_hammerers", "mask_of_the_pouncing_lynx",
           "tome_of_firebrand_red", "iyslander", "iyslander", "kraken's_aethervein", "oldhim", "winter's_wail", "chane", "galaxxi_black", "kano",
-          "crucible_of_aetherweave", "crucible_of_aetherweave", "kassai,_cintari_sellsword", "ira,_crimson_haze", "edge_of_autumn", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
+          "crucible_of_aetherweave", "crucible_of_aetherweave", "kassai_cintari_sellsword", "ira_crimson_haze", "edge_of_autumn", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
           "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_blue", "belittle_red", "belittle_yellow", "belittle_blue",
           "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_wildfire",
           "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue",
@@ -537,10 +537,10 @@ function isBannedInFormat($cardID, $format) {
       ],
       "cc" => [
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
-          "bloodsheath_skeleta", "cash_in_yellow", "prism,_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane,_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
-          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi,_livewire",
-          "voltaire,_strike_twice", "briar,_warden_of_thorns", "rosetta_thorn", "oldhim,_grandfather_of_eternity", "winter's_wail", "bravo,_star_of_the_show", "dromai,_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
-          "iyslander,_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
+          "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
+          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lex_livewire",
+          "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
+          "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade"
       ],
       "commoner" => [
