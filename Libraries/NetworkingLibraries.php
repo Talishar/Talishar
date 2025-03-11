@@ -2278,7 +2278,8 @@ function PayAbilityAdditionalCosts($cardID, $index)
     case "arakni_orb_weaver":
     case "arakni_redback":
     case "arakni_tarantula":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDCLASS,ASSASSIN");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDCLASS,ASSASSIN,NOPASS");
+      AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any assassin cards in hand to discard!", 1);
       AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);

@@ -1265,7 +1265,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
           if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names .= ",Attack";
         }
       }
-      WriteLog("HERE: $names");
       return $names;
     case "haunting_rendition_red": case "mental_block_blue":
       return "Block,Ability";

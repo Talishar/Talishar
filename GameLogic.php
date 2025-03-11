@@ -266,6 +266,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = "";
           break;
       }
+      if ($subparam2 == "NOPASS") return $rv;
       return ($rv == "" ? "PASS" : $rv);
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
