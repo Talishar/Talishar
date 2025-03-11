@@ -1674,8 +1674,12 @@ function RevealCards($cards, $player = "", $look=false)
   $string = "";
   for ($i = 0; $i < count($cardArray); ++$i) {
     if ($string != "") $string .= ", ";
-    $string .= CardLink($cardArray[$i], $cardArray[$i]);
-    AddEvent("REVEAL", $cardArray[$i]);
+    if (CardName($cardArray[$i]) == "") { //in case the card gets passed as an MZIndex
+      $card = GetMZCard($player, $cardArray[$i]);
+    }
+    else $card = $cardArray[$i];
+    $string .= CardLink($card, $card);
+    AddEvent("REVEAL", $card);
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed";
