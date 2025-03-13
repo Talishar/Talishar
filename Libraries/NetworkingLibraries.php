@@ -1890,8 +1890,8 @@ function GetLayerTarget($cardID, $from)
     case "oasis_respite_red":
     case "oasis_respite_yellow":
     case "oasis_respite_blue":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to grant respite");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);

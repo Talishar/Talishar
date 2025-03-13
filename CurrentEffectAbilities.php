@@ -1118,7 +1118,8 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-            if (TypeContains($source, "AA") || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+            if (TypeContains($source, "AA") && !SubtypeContains($source, "Dagger")) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+            if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
         case "seekers_hood":
