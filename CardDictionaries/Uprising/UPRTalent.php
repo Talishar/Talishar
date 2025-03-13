@@ -161,8 +161,15 @@
         GainHealth($amount, $currentPlayer);
         return "";
       case "oasis_respite_red": case "oasis_respite_yellow": case "oasis_respite_blue":
-        if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
-        if(PlayerHasLessHealth($currentPlayer)) GainHealth(1, $currentPlayer);
+        $targetHero = substr($target,0,2) == "MY" ? $currentPlayer : $otherPlayer;
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{$cardID}!{$from}!", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $targetHero, "<-", 1);
+        if(PlayerHasLessHealth($targetHero)) GainHealth(1, $targetHero);
         return "";
       default: return "";
     }
