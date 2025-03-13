@@ -9,6 +9,7 @@ function HNTAbilityType($cardID): string
     "arakni_redback" => "AR",
     "arakni_tarantula" => "AR",
     "hunters_klaive" => "AA",
+    "hunters_klaive_r" => "AA",
     "mark_of_the_huntsman" => "AA",
     "mark_of_the_huntsman_r" => "AA",
     "graphene_chelicera" => "AA",
@@ -43,6 +44,7 @@ function HNTAbilityCost($cardID): int
   global $currentPlayer, $mainPlayer;
   return match ($cardID) {
     "hunters_klaive" => 2,
+    "hunters_klaive_r" => 2,
     "mark_of_the_huntsman" => 2,
     "mark_of_the_huntsman_r" => 2,
     "graphene_chelicera" => 1,
@@ -893,6 +895,7 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
   $cardID = $dashArr[0];
   switch ($cardID) {
     case "hunters_klaive":
+    case "hunters_klaive_r":
       MarkHero($defPlayer);
       break;
     case "mark_of_the_huntsman":

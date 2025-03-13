@@ -415,6 +415,8 @@
         return "GEM005";
       case "mark_of_the_huntsman":
         return "GEM007";
+      case "hunters_klaive":
+        return "TAL000"; //manually added the art
       default:
         return "";
     }

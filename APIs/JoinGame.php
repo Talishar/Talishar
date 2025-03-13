@@ -571,6 +571,7 @@ function ReverseArt($cardID)
     case "kunai_of_retribution": return "kunai_of_retribution_r";
     case "obsidian_fire_vein": return "obsidian_fire_vein_r";
     case "mark_of_the_huntsman": return "mark_of_the_huntsman_r";
+    case "hunters_klaive": return "hunters_klaive_r";
     default:
       return $cardID;
   }

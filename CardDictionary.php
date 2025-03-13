@@ -457,6 +457,7 @@ function CardSet($cardID)
     case "kunai_of_retribution_r"://these cards are from promo packs, this is needed to find their code
     case "obsidian_fire_vein_r":
     case "mark_of_the_huntsman_r":
+    case "hunters_klaive_r":
       return "HNT";
     case "valda_seismic_impact": //not true, but makes code organization easier
       return "EVR";
@@ -1024,7 +1025,7 @@ function HasGoAgain($cardID): bool|int
     case "regrowth__shock_blue":
     case "heavy_industry_power_plant":
     case "channel_mount_isen_blue":
-    case "hunters_klaive":
+    case "hunters_klaive_r":
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
     case "orb_weaver_spinneret_red":
@@ -3122,6 +3123,7 @@ function HasPiercing($cardID, $from = "")
     case "scale_peeler_r": //Weapons with Piercing
     case "graven_call":
     case "hunters_klaive":
+    case "hunters_klaive_r":
       return true;
     case "precision_press_red":
     case "precision_press_yellow":
