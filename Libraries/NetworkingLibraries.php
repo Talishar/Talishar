@@ -1183,6 +1183,7 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
     array_push($chainLinks[$CLIndex], "-"); //Added On-hits (comma separated)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 8]); //Original card ID, differs from CardID in case of copies
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 7]); //Origin unique ID
   }
 
   //Clean up combat effects that were used and are one-time
@@ -1957,6 +1958,12 @@ function GetLayerTarget($cardID, $from)
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       }
       break;
+    case "dragonscaler_flight_path":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC&COMBATCHAINLINK:talent=DRACONIC");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a draconic attack");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
     default:
       break;
   }

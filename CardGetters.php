@@ -341,7 +341,7 @@ function GetCombatChainAttacks()
   global $chainLinks;
   $attacks = [];
   foreach ($chainLinks as $link) {
-    if ($link[2] == 1) {
+    if ($link[2] == 1 || $link[3] == "PLAY" || $link[3] == "EQUIP") {
       for ($j = 0; $j < ChainLinksPieces(); ++$j) {
         array_push($attacks, $link[$j]);
       }
