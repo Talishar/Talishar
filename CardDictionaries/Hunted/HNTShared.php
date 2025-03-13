@@ -551,6 +551,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "dragonscaler_flight_path":
+      
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $type = TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer);
       $subtype = SubtypeContains($CombatChain->AttackCard()->ID(), "Ally", $currentPlayer);

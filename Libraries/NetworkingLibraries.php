@@ -1957,6 +1957,15 @@ function GetLayerTarget($cardID, $from)
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       }
       break;
+    case "dragonscaler_flight_path":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC");
+      if (TalentContains($CombatChain->AttackCard(), "DRACONIC", $currentPlayer)) {
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "COMBATCHAINLINK-0,", 1);
+      }
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a draconic attack");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
     default:
       break;
   }

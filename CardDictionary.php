@@ -2600,7 +2600,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "dragonscaler_flight_path":
       if(!$CombatChain->HasCurrentLink()) return true;
-      if(!TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer)) return true;
+      $previousLink = SearchCombatChainAttacks($currentPlayer, talent:"DRACONIC") == "";
+      $currentLink = !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer);
+      if ($previousLink && $currentLink) return true;
       return false;
     case "vow_of_vengeance":
       $otherChar = &GetPlayerCharacter($otherPlayer);
