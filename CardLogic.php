@@ -197,7 +197,6 @@ function IsCombatEffectLimited($index)
     if (count($allies) < $combatChainState[$CCS_WeaponIndex] + 5) return false;
     if ($allies[$combatChainState[$CCS_WeaponIndex] + 5] != $currentTurnEffects[$index + 2]) return true;
   } else {
-    if ($currentTurnEffects[$index + 2] == "") return false;
     return $combatChainState[$CCS_AttackUniqueID] != $currentTurnEffects[$index + 2];
   }
   return false;

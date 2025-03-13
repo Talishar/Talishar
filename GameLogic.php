@@ -877,7 +877,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDCURRENTEFFECT":
       $params = explode("!", $parameter);
       $from = count($params) > 1 ? $params[1] : "";
-      $uniqueID = $from = count($params) > 2 ? $params[2] : "";
+      $uniqueID = $from = count($params) > 2 ? $params[2] : -1;
       AddCurrentTurnEffect($params[0], $player, $from, $uniqueID);
       return "1";
     case "ADDCURRENTEFFECTNEXTATTACK":
