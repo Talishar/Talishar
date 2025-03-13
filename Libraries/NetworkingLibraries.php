@@ -1771,7 +1771,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer, $CombatChain, $mainPlayer;
+  global $currentPlayer, $CombatChain;
   switch ($cardID) {
     case "rattle_bones_red":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=AA;class=RUNEBLADE");
@@ -1959,7 +1959,7 @@ function GetLayerTarget($cardID, $from)
       }
       break;
     case "dragonscaler_flight_path":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC&COMBATCHAINLINK:talent=DRACONIC;controller=$mainPlayer");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC&COMBATCHAINLINK:talent=DRACONIC");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a draconic attack");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
