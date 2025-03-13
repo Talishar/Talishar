@@ -2512,6 +2512,7 @@ function GetDamagePreventionTargetIndices()
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($otherPlayer), "THEIRITEMS"));
   if (ArsenalHasFaceUpCard($otherPlayer)) $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR"));
+  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCombatChainAttacks($otherPlayer), "COMBATCHAINATTACKS"));
   return $rv;
 }
 
