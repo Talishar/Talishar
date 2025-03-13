@@ -551,18 +551,31 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "dragonscaler_flight_path":
-      
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      $type = TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer);
-      $subtype = SubtypeContains($CombatChain->AttackCard()->ID(), "Ally", $currentPlayer);
+      if (substr($target, 0, strlen("COMBATCHAINLINK")) == "COMBATCHAINLINK") {
+        if (intval(explode("-", $target)[1]) != 0) {
+          WriteLog("Please don't target that with dragonscaler flight path");
+          return "";
+        }
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      $targetID = GetMZCard($currentPlayer, $target);
+      $targetUID = GetMZUID($currentPlayer, $target);
+      $type = TypeContains($targetID, "W", $currentPlayer);
+      $subtype = SubtypeContains($targetID, "Ally", $currentPlayer);
       if($type) {
         $character = &GetPlayerCharacter($currentPlayer);
-        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
-        if($character[$combatChainState[$CCS_WeaponIndex] + 1] == 1) $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        $index = -1;
+        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          if ($character[$i + 11] == $targetUID) $index = $i;
+        }
+        if ($index != -1) {
+          ++$character[$index + 5];
+          if($character[$index + 1] == 1) $character[$index + 1] = 2;
+        }
       }
       elseif ($subtype) {
         $ally = &GetAllies($currentPlayer);
-        $allyIndex = SearchAlliesForUniqueID($combatChain[8], $currentPlayer);
+        $allyIndex = SearchAlliesForUniqueID($targetUID, $currentPlayer);
         if($allyIndex != -1) {
           $ally[$allyIndex + 1] = 2;
         }

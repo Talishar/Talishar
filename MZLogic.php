@@ -445,6 +445,42 @@ function GetMZCard($player, $MZIndex)
   return $zoneDS[$index];
 }
 
+function GetMZUID($player, $MZIndex)
+{
+  $mzArr = explode("-", $MZIndex);
+  $zone = &GetMZZone($player, $mzArr[0]);
+  switch ($mzArr[0]) {
+    case "ALLY":
+    case "MYALLY":
+    case "THEIRALLY":
+      return $zone[$mzArr[1] + 5];
+    case "BANISH":
+    case "MYBANISH":
+    case "THEIRBANISH":
+      return $zone[$mzArr[1] + 2];
+    case "AURAS":
+    case "MYAURAS":
+    case "THEIRAURAS":
+      return $zone[$mzArr[1] + 4];
+    case "LAYER":
+      return $zone[$mzArr[1] + 5];
+    case "COMBATCHAINATTACKS":
+      return $zone[$mzArr[1] + 8]; // CHECK THIS
+    case "COMBATCHAINLINK":
+      return $zone[$mzArr[1] + 8]; // CHECK THIS
+    case "CHAR":
+    case "MYCHAR":
+    case "THEIRCHAR":
+      return $zone[$mzArr[1] + 11];
+    case "ITEMS":
+    case "MYITEMS":
+    case "THEIRITEMS":
+      return $zone[$mzArr[1] + 4];
+    default:
+      return "-1";
+  }
+}
+
 function MZStartTurnAbility($player, $MZIndex)
 {
   $cardID = GetMZCard($player, $MZIndex);

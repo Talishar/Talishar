@@ -210,9 +210,10 @@ function InventoryPieces()
 //5 - Defense Modifier
 //6 - Added On-hits (comma separated)
 //7 - Original Card ID (in case of copies)
+//8 - Origin Unique ID
 function ChainLinksPieces()
 {
-  return 8;
+  return 9;
 }
 
 //0 - Damage Dealt
