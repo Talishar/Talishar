@@ -2261,7 +2261,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ArsenalHasFaceDownCard($player);
     case "flick_knives":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, subtype:"Dagger") == "") {
+      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, subtype:"Dagger", type:"AA") == "") {
         $restriction = "No dagger to throw";
         return true;
       }
