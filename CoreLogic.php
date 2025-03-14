@@ -1620,7 +1620,8 @@ function TalentOverride($cardID, $player = "", $zone="-")
         $talentToAdd = "DRACONIC";
         break;
       case "fealty": //Fealty
-        if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA")) { // We'll need to add cases for Allies and Emperor Attacking
+        $cardType = CardType($cardID);
+        if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA") && !IsStaticType($cardType)) { // We'll need to add cases for Allies and Emperor Attacking
           $talentToAdd = "DRACONIC";
         }
         break;
