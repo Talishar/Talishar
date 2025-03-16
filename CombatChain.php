@@ -510,10 +510,6 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "yinti_yanti_yellow":
     case "yinti_yanti_blue":
       return count($defAuras) >= 1 ? 1 : 0;
-    case "sigil_of_suffering_red":
-    case "sigil_of_suffering_yellow":
-    case "sigil_of_suffering_blue":
-      return GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0 ? 1 : 0;
     case "wax_on_red":
     case "wax_on_yellow":
     case "wax_on_blue":

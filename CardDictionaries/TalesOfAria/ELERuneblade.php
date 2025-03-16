@@ -3,7 +3,7 @@
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $otherPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
-    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt;
+    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt, $mainPlayer;
     $rv = "";
     switch($cardID)
     {
@@ -53,6 +53,7 @@
         return "";
       case "sigil_of_suffering_red": case "sigil_of_suffering_yellow": case "sigil_of_suffering_blue":
         if(!IsAllyAttacking()) DealArcane(1, 1, "PLAYCARD", $cardID);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIGILOFSUFFERING", 1);
         return "";
       case "singeing_steelblade_red": case "singeing_steelblade_yellow": case "singeing_steelblade_blue":
         DealArcane(1, 0, "PLAYCARD", $cardID);

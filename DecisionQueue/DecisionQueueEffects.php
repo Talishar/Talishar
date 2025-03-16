@@ -437,6 +437,7 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
+  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -865,6 +866,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "LUMINALANCECOST":
       $numModes = count($lastResult);
       for($i=0; $i<$numModes; ++$i) BanishFromSoul($player);
+      return $lastResult;
+    case "SIGILOFSUFFERING":
+      if (GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0) {
+        $index = count($combatChain) - CombatChainPieces();
+        CombatChainDefenseModifier($index, 1);
+      }
       return $lastResult;
     default: return "";
   }

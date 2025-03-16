@@ -334,20 +334,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " power");
       else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " power");
       return $lastResult;
-      case "COMBATCHAINDEFENSEMODIFIER":
-        if ($parameter < 0) {
-          $defense = BlockingCardDefense($lastResult);
-          if ($parameter < $defense * -1) $parameter = $defense * -1;
-        }
-        $combatChain[$lastResult + 6] += $parameter;
-        switch ($combatChain[0]) {
-          case "zephyr_needle":
-          case "zephyr_needle_r":
-          EvaluateCombatChain($totalAttack, $totalBlock);
-        }
-        if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " defense");
-        else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " defense");
-        return $lastResult;
+    case "COMBATCHAINDEFENSEMODIFIER":
+      return CombatChainDefenseModifier($lastResult, $parameter);
     case "HALVEBASEDEFENSE":
       $combatChain[$lastResult + 6] -= floor(BlockValue($combatChain[$lastResult]) / 2);
       return $lastResult;
