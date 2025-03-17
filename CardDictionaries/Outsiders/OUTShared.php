@@ -205,7 +205,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddEffectToCurrentAttack($cardID);
         return "";
       case "prowl_red": case "prowl_yellow": case "prowl_blue":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
