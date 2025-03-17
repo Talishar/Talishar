@@ -868,6 +868,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
     if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
     else $itemTileMap[$myItems[$i]] = $gem;
+    $rustCounters = null;
+    $verseCounters = null;
+    $flowCounters = null;
+    if ($myItems[$i] == "micro_processor_blue") {
+      if (DelimStringContains($myItems[$i + 8], "Opt", true)) $verseCounters = 1;
+      if (DelimStringContains($myItems[$i + 8], "Draw_then_top_deck", true)) $rustCounters = 1;
+      if (DelimStringContains($myItems[$i + 8], "Banish_top_deck", true)) $flowCounters = 1;
+    }
     array_push($myItemsOutput, 
     JSONRenderedCard(
       cardNumber: $myItems[$i], 
@@ -881,7 +889,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       sType: $sType, 
       isFrozen: $myItems[$i + 7] == 1, //Frozen
       gem: $gem, 
-      restriction: $restriction));
+      restriction: $restriction,
+      rustCounters: $rustCounters,
+      verseCounters: $verseCounters,
+      flowCounters: $flowCounters));
   }
   $response->playerItems = $myItemsOutput;
 
@@ -1355,6 +1366,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $counters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2]) : null;
       //Show Steam Counters on items
       $steamCounters = ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") ? ($option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1]) : null;
+      //Show counters on microprocessor for uses left
+      // print("HERE");
+      // if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
+        
+      //   $items = $option[0] == "THEIRITEMS" ? $theirItems : $myItems;
+      //   if ($items[$index] == "micro_processor_blue") {
+      //     if (DelimStringContains($items[$index + 8], "Opt", true)) $atkCounters = 1;
+      //     if (DelimStringContains($items[$index + 8], "Draw_then_top_deck", true)) $counters = 1;
+      //     if (DelimStringContains($items[$index + 8], "Banish_top_deck", true)) $steamCounters = 1;
+      //   }
+      // }
       //Show Subtitles on MyDeck
       if(substr($turn[2], 0, 6) === "MYDECK"){
         $subtitles = "(You can click your deck to see its content during this card resolution)";
