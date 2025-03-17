@@ -1959,11 +1959,21 @@ function GetLayerTarget($cardID, $from)
       }
       break;
     case "dragonscaler_flight_path":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC&COMBATCHAINLINK:talent=DRACONIC");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC&ACTIVEATTACK:talent=DRACONIC");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a draconic attack");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "a_drop_in_the_ocean_blue":
+    case "path_well_traveled_blue":
+    case "the_grain_that_tips_the_scale_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS&ACTIVEATTACK");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack (pass to target an attack in layer step)");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }

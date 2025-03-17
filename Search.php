@@ -47,6 +47,13 @@ function SearchCombatChainLink($player, $type = "", $subtype = "", $maxCost = -1
   return SearchInner($combatChain, $player, "CC", CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
 }
 
+function SearchActiveAttack($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
+{
+  global $combatChain;
+  $activeAttack = array_slice($combatChain, 0, CombatChainPieces());
+  return SearchInner($activeAttack, $player, "CC", CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+}
+
 function SearchCombatChainAttacks($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
 {
   global $chainLinks;
@@ -497,6 +504,7 @@ function SearchCount($search)
 function SearchMultizoneFormat($search, $zone)
 {
   if ($search == "") return "";
+  if ($zone == "ACTIVEATTACK") $zone = "COMBATCHAINLINK";
   $searchArr = explode(",", $search);
   for ($i = 0; $i < count($searchArr); ++$i) {
     $searchArr[$i] = $zone . "-" . $searchArr[$i];
@@ -1426,6 +1434,9 @@ function SearchMultizone($player, $searches)
           break;
         case "COMBATCHAINLINK":
           $searchResult = SearchCombatChainLink($player, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
+          break;
+        case "ACTIVEATTACK":
+          $searchResult = SearchActiveAttack($player, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);
           break;
         case "LAYER":
           $searchResult = SearchLayer($player, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank);

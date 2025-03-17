@@ -381,8 +381,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") Draw($currentPlayer);
       return "";
     case "a_drop_in_the_ocean_blue":
-      if ($CombatChain->HasCurrentLink() || HasAttackLayer()) {
-        AddCurrentTurnEffect($cardID, $mainPlayer);
+      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) AddCurrentTurnEffect($cardID, $mainPlayer);
+      elseif ($target == "-" && !HasAttackLayer()) {
+        WriteLog("⚠️You need to select a target⚠️");
+        RevertGamestate();
       }
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST095_inner_chi_blue," . $from);
       return "";
@@ -404,7 +406,11 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "path_well_traveled_blue":
-      GiveAttackGoAgain();
+      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) GiveAttackGoAgain();
+      elseif ($target == "-" && !HasAttackLayer()) {
+        WriteLog("⚠️You need to select a target⚠️");
+        RevertGamestate();
+      }
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST098_inner_chi_blue," . $from);
       return "";
     case "preserve_tradition_blue":
@@ -434,8 +440,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST101_inner_chi_blue," . $from);
       return "";
     case "the_grain_that_tips_the_scale_blue":
-      if ($CombatChain->HasCurrentLink() || HasAttackLayer()) {
-        AddCurrentTurnEffect($cardID, $mainPlayer);
+      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) AddCurrentTurnEffect($cardID, $mainPlayer);
+      elseif ($target == "-" && !HasAttackLayer()) {
+        WriteLog("⚠️You need to select a target⚠️");
+        RevertGamestate();
       }
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST102_inner_chi_blue," . $from);
       return "";
