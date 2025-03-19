@@ -221,5 +221,5 @@ function InventoryStartGameAbilities($player)
         break;
     }
   }
-  AddDecisionQueue("CLEARNONES", $player, "-");
+  // AddDecisionQueue("CLEARNONES", $player, "-");
 }
