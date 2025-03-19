@@ -2092,24 +2092,26 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
   global $CombatChain;
   $char = &GetPlayerCharacter($player);
   $cardID = $char[$index];
-  if ($char[0] == "teklovossen_the_mechropotent") AddSoul($cardID, $player, "-");
-  if ($char[$index + 6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
-  if (!isSubcardEmpty($char, $index)) {
-    $subcards = explode(',', $char[$index + 10]);
-    $subcardsCount = count($subcards);
-    for ($i = 0; $i < $subcardsCount; $i++) {
-      if ($char[0] == "teklovossen_the_mechropotent") AddSoul($subcards[$i], $player, "-");
-      if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $subcards[$i];
-      else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $subcards[$i];
+  if ($cardID != "NONE00") { //bit of a bandaid fix
+    if ($char[0] == "teklovossen_the_mechropotent") AddSoul($cardID, $player, "-");
+    if ($char[$index + 6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
+    if (!isSubcardEmpty($char, $index)) {
+      $subcards = explode(',', $char[$index + 10]);
+      $subcardsCount = count($subcards);
+      for ($i = 0; $i < $subcardsCount; $i++) {
+        if ($char[0] == "teklovossen_the_mechropotent") AddSoul($subcards[$i], $player, "-");
+        if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $subcards[$i];
+        else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $subcards[$i];
+      }
     }
+    CharacterDestroyEffect($cardID, $player);
+    if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $cardID;
+    else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $cardID;
+    $characterPieces = CharacterPieces();
+    if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
+    for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
+    UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
   }
-  CharacterDestroyEffect($cardID, $player);
-  if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $cardID;
-  else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $cardID;
-  $characterPieces = CharacterPieces();
-  if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
-  for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
-  UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
 }
 
 function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharactersSubcardIndex)
