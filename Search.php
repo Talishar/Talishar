@@ -484,6 +484,15 @@ function CombineSearches($search1, $search2)
   return $search1 . "," . $search2;
 }
 
+// function DeDupeSearches($search)
+// {
+//   if ($search == "") return $search;
+//   $searchArr = explode(",", $search);
+//   for ($i = count($searchArr); $i >= 0; --$i) {
+
+//   }
+// }
+
 function SearchRemoveDuplicates($search)
 {
   $indices = explode(",", $search);

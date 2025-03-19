@@ -2521,10 +2521,11 @@ function GetDamagePreventionTargetIndices()
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $rv = "";
   $rv = SearchMultizone($otherPlayer, "LAYER");
-  if (count($combatChain) > 0) $rv = CombineSearches($rv, "CC-0");
-  if (SearchLayer($otherPlayer, "W") == "" && (count($combatChain) == 0 || CardType($combatChain[0]) != "W")) {
-    $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR"));
+  if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
+    //don't find weapons here, they're handled in SearchCharacter
+    $rv = CombineSearches($rv, "CC-0");
   }
+  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAllies($otherPlayer), "THEIRALLY"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($otherPlayer), "THEIRAURAS"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchAura($currentPlayer), "MYAURAS"));
