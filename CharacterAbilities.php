@@ -554,7 +554,8 @@ function MainCharacterHitTrigger($cardID = "-")
         break;
       case "briar_warden_of_thorns":
       case "briar":
-        if (IsHeroAttackTarget() && $isAA && !SearchAuras("embodiment_of_earth", $mainPlayer)) {
+        if (IsHeroAttackTarget() && $isAA && $mainCharacter[$i + 1] == 2) {
+          $mainCharacter[$i + 1] = 1;
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;

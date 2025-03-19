@@ -634,7 +634,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       $characterID = ShiyanaCharacter($otherCharacter[0]);
       DamageDealtAbilities($player, $damage, $type, $source);
       if ($source == "dread_scythe" && !SearchNextTurnEffects("dread_scythe", $player)) AddNextTurnEffect("dread_scythe", $player);
-      if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA" && !SearchAuras("embodiment_of_earth", $otherPlayer)) {
+      if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA") {
+        $otherCharacter[1] = 1;
         PlayAura("embodiment_of_earth", $otherPlayer);
       }
       if ($source == "cryptic_crossing_yellow" && SearchCurrentTurnEffects("cryptic_crossing_yellow", $mainPlayer, true)) {
