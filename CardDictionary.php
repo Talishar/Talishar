@@ -1492,7 +1492,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && $phase != "B") return true;
+  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && CanPlayInstant($phase)) return true;
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
