@@ -86,6 +86,8 @@ function CardType($cardID, $from="")
       return "W,T";
     case "valda_seismic_impact": //hardcoding before fabcube update
       return "C";
+    case "chum_friendly_first_mate_yellow":
+      return "A";
     default:
       break;
   }
@@ -309,6 +311,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Arms,Evo";
     case "evo_speedslip_blue_equip":
       return "Legs,Evo";
+    case "chum_friendly_first_mate_yellow":
+      return "Ally";
     default:
       return "";
   }
@@ -1201,6 +1205,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
+    "chum_friendly_first_mate_yellow" => "I,AA",
     default => "",
   };
 }
@@ -1313,6 +1318,16 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($from != "HAND") $names = "-,Attack Reaction";
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
+    case "chum_friendly_first_mate_yellow":
+      if (CheckWaved("MYALLIES-$index", $currentPlayer)) return "";
+      if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
+      $allies = &GetAllies($currentPlayer);
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        return $names;
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+        $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      }
+      return $names;
     default:
       return "";
   }
@@ -1351,6 +1366,11 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
   $abilityNames = explode(",", $abilityNames);
   if (isset($abilityNames[$abilityIndex])) return $abilityNames[$abilityIndex];
   else return "";
+}
+
+function CanAttack($cardID): bool
+{
+  return true;
 }
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
@@ -1489,6 +1509,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($auras[$index + 1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
+  }
+  if ($cardID == "chum_friendly_first_mate_yellow" && $from == "PLAY") {
+    if (CheckWaved("MYALLIES-$index", $currentPlayer)) return false;
+    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
+    else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
+    else return false;
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
@@ -2758,6 +2784,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "tip_off_blue":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
+    case "chum_friendly_first_mate_yellow":
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "shelter_from_the_storm_red":
       return GetResolvedAbilityType($cardID, $from) == "DR";

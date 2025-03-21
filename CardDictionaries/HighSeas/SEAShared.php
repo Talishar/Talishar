@@ -4,6 +4,7 @@ function SEAAbilityType($cardID): string
 {
   return match ($cardID) {
     "gravy_bones_shipwrecked_looter" => "I",
+    "chum_friendly_first_mate_yellow" => "I",
     default => ""
   };
 }
@@ -38,11 +39,15 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-	global $currentPlayer;
+  global $currentPlayer;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     case "gravy_bones_shipwrecked_looter":
-			Draw($currentPlayer, effectSource:$cardID);
-			PummelHit($currentPlayer);
+      Draw($currentPlayer, effectSource:$cardID);
+      PummelHit($currentPlayer);
+      break;
+    case "chum_friendly_first_mate_yellow":
+      AddCurrentTurnEffect($cardID, $otherPlayer, $target);
       break;
     default:
       break;
@@ -63,16 +68,16 @@ function Wave($MZindex): string
   return "";
 }
 
-function CheckWaved($player): bool
+function CheckWaved($MZindex, $player): bool
 {
   return false;
 }
 
 function HasWateryGrave($cardID): bool
 {
-	return match($cardID) {
-		"chum_friendly_first_mate" => true,
-		"riggermortis" => true,
-		default => false
-	};
+  return match($cardID) {
+    "chum_friendly_first_mate_yellow" => true,
+    "riggermortis_yellow" => true,
+    default => false
+  };
 }

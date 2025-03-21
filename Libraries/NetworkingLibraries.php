@@ -1637,7 +1637,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex));
+      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
       if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
@@ -2278,7 +2278,7 @@ function GetTargetOfAttack($cardID = "")
   AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
 
-function PayAbilityAdditionalCosts($cardID, $index)
+function PayAbilityAdditionalCosts($cardID, $index, $from="-")
 {
   global $currentPlayer;
   switch ($cardID) {
@@ -2306,6 +2306,18 @@ function PayAbilityAdditionalCosts($cardID, $index)
       $character = GetPlayerCharacter($currentPlayer);
       $uniqueID = $character[$index + 11];
       AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
+      break;
+    case "chum_friendly_first_mate_yellow":
+      $allies = GetAllies($currentPlayer);
+      if (GetResolvedAbilityType($cardID, $from) == "I") {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDGRAVE,-,NOPASS");
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any assassin cards in hand to discard!", 1);
+        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $allies[$index + 5], 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
       break;
     default:
       break;
@@ -3233,6 +3245,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   } else if ($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
+    else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if (DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from: $from);

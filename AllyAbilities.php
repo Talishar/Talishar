@@ -70,10 +70,16 @@ function AllyAddGraveyard($player, $cardID)
       "vynserakai" => "invoke_vynserakai_red",
       "yendurai" => "invoke_yendurai_red",
       "suraya_archangel_of_knowledge" => "invoke_suraya",
-      default => ""
+      default => $cardID
     };
     if (!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player)) return;
     AddGraveyard($id, $player, "PLAY", $player);
+    if (HasWateryGrave($id)) {
+      $discard = &GetDiscard($player);
+      $index = count($discard) - DiscardPieces();
+      TurnDiscardFaceDown($player, $index);
+      // flip it face down
+    }
   }
 }
 
@@ -130,6 +136,8 @@ function AllyHealth($cardID)
       return 4;
     case "cintari_sellsword":
       return 2;
+    case "chum_friendly_first_mate_yellow":
+      return 6;
     default:
       return 1;
   }

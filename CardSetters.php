@@ -159,6 +159,12 @@ function TurnBanishFaceDown($player, $index)
   $banish[$index + 1] = "FACEDOWN";
 }
 
+function TurnDiscardFaceDown($player, $index)
+{
+  $discard = &GetDiscard($player);
+  $discard[$index + 2] = "FACEDOWN";
+}
+
 function AddBottomDeck($cardID, $player, $from)
 {
   if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
@@ -650,13 +656,14 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
     default:
       break;
   }
+  $mods = (HasWateryGrave($cardID) && $from == "PLAY") ? "FACEDOWN" : "-";
   IncrementClassState($player, $CS_CardsEnteredGY);
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
-    else AddSpecificGraveyard($cardID, $defDiscard, $from);
+    if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from, $mods);
+    else AddSpecificGraveyard($cardID, $defDiscard, $from, $mods);
   } else {
-    if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
-    else AddSpecificGraveyard($cardID, $theirDiscard, $from);
+    if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from, $mods);
+    else AddSpecificGraveyard($cardID, $theirDiscard, $from, $mods);
   }
 }
 
@@ -666,8 +673,9 @@ function RemoveGraveyard($player, $index)
   $cardID = "";
   if (isset($discard[$index])) {
     $cardID = $discard[$index];
-    unset($discard[$index + 1]);
-    unset($discard[$index]);
+    for ($i = DiscardPieces() - 1; $i >= 0; --$i) {
+      unset($discard[$index + $i]);
+    }
     $discard = array_values($discard);
   }
   return $cardID;
@@ -707,10 +715,11 @@ function RemoveCharacterEffects($player, $index, $effect)
   return false;
 }
 
-function AddSpecificGraveyard($cardID, &$graveyard, $from)
+function AddSpecificGraveyard($cardID, &$graveyard, $from, $mods="-")
 {
   array_push($graveyard, $cardID);
   array_push($graveyard, GetUniqueId());
+  array_push($graveyard, $mods);
 }
 
 function NegateLayer($MZIndex, $goesWhere = "GY")

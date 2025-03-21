@@ -22,9 +22,10 @@ function HandPieces()
 
 //0 - Card ID
 //1 - Unique ID
+//2 - Mods "FACEDOWN" = Face Down
 function DiscardPieces()
 {
-  return 2;
+  return 3;
 }
 
 //0 - Card ID
