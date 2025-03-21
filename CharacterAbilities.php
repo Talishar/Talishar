@@ -1406,16 +1406,8 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i + 1] != 2) {
-      switch ($character[$i]) {
-        case "hanabi_blaster":// don't turn off hanabi blaster counting if it has fired that turn
-          break;
-        case "briar": // don't turn off briar's lightning if she's made an earth, but do turn off if she's asleep
-        case "briar_warden_of_thorns":
-          if ($character[$i] != 1) continue;
-          break;
-        default:
-          continue;
-      } 
+      if (($character[$i] == "briar" || $character[$i] == "briar_warden_of_thorns") && $character[$i] != 1) continue;
+      elseif ($character[$i] != "hanabi_blaster") continue;
     }
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
