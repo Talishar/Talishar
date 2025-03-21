@@ -2689,6 +2689,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return ArsenalFaceDownCard($player) == "";
     case "shock_frock":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
+    case "gravy_bones_shipwrecked_looter":
+      return CountItem("gold", $currentPlayer) == 0;
     default:
       return false;
   }
@@ -4196,6 +4198,8 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
 
 function PlayableFromGraveyard($cardID)
 {
+  global $currentPlayer;
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer)) return true;
   switch ($cardID) {
     case "graven_call":
       return true;

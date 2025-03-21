@@ -3,6 +3,7 @@
 function SEAAbilityType($cardID): string
 {
   return match ($cardID) {
+    "gravy_bones_shipwrecked_looter" => "I",
     default => ""
   };
 }
@@ -37,7 +38,12 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
+	global $currentPlayer;
   switch ($cardID) {
+    case "gravy_bones_shipwrecked_looter":
+			Draw($currentPlayer, effectSource:$cardID);
+			PummelHit($currentPlayer);
+      break;
     default:
       break;
   }
@@ -62,3 +68,11 @@ function CheckWaved($player): bool
   return false;
 }
 
+function HasWateryGrave($cardID): bool
+{
+	return match($cardID) {
+		"chum_friendly_first_mate" => true,
+		"riggermortis" => true,
+		default => false
+	};
+}
