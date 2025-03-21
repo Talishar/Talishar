@@ -510,6 +510,7 @@ function EffectAttackModifier($cardID, $attached=false)
   else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
   else if ($set == "HNT") return HNTEffectAttackModifier($cardID, $attached);
   else if ($set == "AST") return ASTEffectAttackModifier($cardID);
+  else if ($set == "SEA") return SEAEffectAttackModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":
       return 1;
@@ -1852,6 +1853,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "HNT") return HNTCombatEffectActive($cardID, $cardToCheck, $flicked);
   else if ($set == "AST") return ASTCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AMX") return AMXCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "SEA") return SEACombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);

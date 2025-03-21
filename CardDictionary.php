@@ -45,6 +45,7 @@ include "CardDictionaries/ArmoryDecks/AJVShared.php";
 include "CardDictionaries/Hunted/HNTShared.php";
 include "CardDictionaries/ArmoryDecks/ASTShared.php";
 include "CardDictionaries/ArmoryDecks/AMXShared.php";
+include "CardDictionaries/HighSeas/SEAShared.php";
 
 include "GeneratedCode/GeneratedCardDictionaries.php";
 
@@ -710,6 +711,7 @@ function AbilityCost($cardID)
   else if ($set == "AJV") return AJVAbilityCost($cardID);
   else if ($set == "HNT") return HNTAbilityCost($cardID);
   else if ($set == "AMX") return AMXAbilityCost($cardID);
+  else if ($set == "SEA") return SEAAbilityCost($cardID);
   return 0;
 }
 
@@ -1182,6 +1184,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "HNT") return HNTAbilityType($cardID);
   else if ($set == "AST") return ASTAbilityType($cardID);
   else if ($set == "AMX") return AMXAbilityType($cardID);
+  else if ($set == "SEA") return SEAAbilityType($cardID);
   else if ($cardID == "blaze_firemind") return "I";
   else if ($cardID == "magrar") return "A";
 }
@@ -3360,6 +3363,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
   else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
   else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
+  else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "blossom_of_spring":
