@@ -3,12 +3,15 @@
   include './zzImageConverter.php';
   include './Libraries/Trie.php';
 
-  $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER", "FAB", "JDG"];
+  $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
+                   "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
+                   "FAB", "JDG", "SEA"];
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v6.1.1/json/english/card.json";
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/bright-lights/json/english/card.json";
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/the-hunters/json/english/card.json"; //!HNT
+  // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/the-hunters/json/english/card.json"; //!HNT
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json"; 
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/high-seas/json/english/card.json"; //!HNT
   $curl = curl_init();
   $headers = array(
     "Content-Type: application/json",
@@ -90,7 +93,7 @@
   function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="")
   {
     global $originalSets;
-    $rarityDict = ["T"=>0, "C"=>1, "R"=>2, "M"=>3, "L"=>4, "F"=>5, "V"=>6, "P"=>7, "S"=>8, "-"=>9];
+    $rarityDict = ["T"=>0, "B"=>0, "C"=>1, "R"=>2, "M"=>3, "L"=>4, "F"=>5, "V"=>6, "P"=>7, "S"=>8, "-"=>9];
     echo("<BR>" . $functionName . "<BR>");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $isString = true;
@@ -203,7 +206,7 @@
           break;
         case "health":
           $data = $cardArray[$i]->health;
-          if ($getImage) CheckImage($setID, $cardID, $isDuplicate);
+          if ($getImage && $cardID != "hunters_klaive_r") CheckImage($setID, $cardID, $isDuplicate);
           break;
         case "rarity":
           $data = $cardRarity;

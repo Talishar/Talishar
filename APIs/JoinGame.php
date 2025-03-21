@@ -594,7 +594,13 @@ function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
 }
 
 function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
-  $unimplementedCards = [""];
+  $unimplementedCards = ["big_game_trophy_shot_yellow", "board_the_ship_red",
+                         "chart_the_high_seas_blue", "chum_friendly_first_mate_yellow",
+                         "compass_of_sunken_depths", "golden_cog", "golden_skywarden_yellow",
+                         "goldfin_harpoon_yellow", "gravy_bones_shipwrecked_looter",
+                         "hoist_em_up_red", "king_shark_harpoon_red", "marlynn_treasure_hunter",
+                         "paddle_faster_red", "puffin_hightail", "sky_skimmer_blue",
+                         "sky_skimmer_red", "sky_skimmer_yellow", "treasure_island"];
   $cardName = CardName($id); 
   if ($cardName == "" || in_array($id, $unimplementedCards)) {
       if ($unsupportedCards != "") $unsupportedCards .= " ";
