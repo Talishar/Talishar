@@ -2704,8 +2704,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HUNTSMANMARK":
       if ($lastResult != "PASS") {
         $otherPlayer = $player == 1 ? 2 : 1;
-        // the parameter should only be -1 if passed by flick knives
-        // in which case we don't need to destroy the dagger
         $index = $parameter == -1 ? -1 : SearchCharacterForUniqueID($parameter, $player);
         if ($index != -1) DestroyCharacter($player, $index);
         MarkHero($otherPlayer);

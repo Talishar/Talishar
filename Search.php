@@ -883,7 +883,7 @@ function SearchCharacterForUniqueID($uniqueID, $player)
 {
   $char = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if ($char[$i + 11] == $uniqueID) return $i;
+    if ($char[$i + 11] == $uniqueID && $char[$i + 1] != 0) return $i;
   }
   return -1;
 }
