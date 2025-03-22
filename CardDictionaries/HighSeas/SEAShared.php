@@ -63,6 +63,31 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       WaveAlly($currentPlayer);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
+    case "chart_the_high_seas_blue":
+      $deck = GetDeck($currentPlayer);
+      $foundBlues = [];
+      $topTwo = [];
+      for ($i = 0; $i < 2; ++$i) {
+        $val = CardLink($deck[$i], $deck[$i]);
+        array_push($topTwo, $val);
+        if (ColorContains($deck[$i], 3, $currentPlayer)) array_push($foundBlues, $val);
+      }
+      $foundBlues = implode(" and ", $foundBlues);
+      $topTwo = implode(" and ", $topTwo);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardName($cardID) . " shows the top two cards of your deck are $topTwo", 1);
+      AddDecisionQueue("OK", $currentPlayer, "-", 1);
+      if ($foundBlues > 0){
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "would you like to pitch a blue card from among $foundBlues?");
+        AddDecisionQueue("YESNO", $currentPlayer, "");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "chart_the_high_seas_blue_1,2,NOPASS", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS", 1);
+        AddDecisionQueue("ELSE", $currentPlayer, "-");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS", 1);
+      }
+      else AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS", 1);
+      break;
     default:
       break;
   }

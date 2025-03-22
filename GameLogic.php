@@ -265,6 +265,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "sacred_art_undercurrent_desires_blue":
           $rv = UpTo2FromOpposingGraveyardIndices($player);
           break;
+        case "chart_the_high_seas_blue_1":
+          $deck = new Deck($player);
+          $amount = ($subparam > $deck->RemainingCards() ? $deck->RemainingCards() : $subparam);
+          $topX = explode(",", $deck->Top(amount:2));
+          $rv = [];
+          for ($i = 0; $i < $amount; ++$i) {
+            if (ColorContains($topX[$i], 3, $player)) array_push($rv, "MYDECK-$i");
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;
@@ -810,6 +820,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return ($rv == "" ? "PASS" : $rv);
+    case "DECKCARDNAMES":
+      $indices = explode(",", $parameter);
+      $deck = &GetDeck($player);
+      $rv = [];
+      for ($i = 0; $i < count($indices); ++$i) {
+        if (count($deck) <= $i) continue;
+        array_push($rv, CardLink($deck[$i], $deck[$i]));
+      }
+      return ($rv == [] ? "PASS" : implode(", ", $rv));
     case "DESTROYTOPCARD":
       $deck = new Deck($player);
       WriteLog("Destroyed " . CardLink($deck->Top(), $deck->Top()) . " on top of Player " . $player . " deck");
@@ -1781,6 +1800,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETDQCONTEXT":
       $dqState[4] = implode("_", explode(" ", $parameter));
       return $lastResult;
+    // case "SHOWTOPCARDS":
+    //   $text = CardName($lastResult) . " shows you're top $parameter cards are";
+    //   for ($i = 0; $i < $parameter; ++$i) $text .= " "
+    //   $dqState[4] = implode("_", explode(" ", $text));
+    //   return $lastResult;
     case "AFTERDIEROLL":
       AfterDieRoll($player);
       return $lastResult;
