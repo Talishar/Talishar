@@ -2326,7 +2326,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-")
       $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "I") {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDWATERYGRAVE,-,NOPASS");
-        AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any assassin cards in hand to discard!", 1);
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any watery grave cards in hand to discard!", 1);
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
