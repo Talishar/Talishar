@@ -86,7 +86,6 @@ function AllyAddGraveyard($player, $cardID)
       default => $cardID
     };
     if (IsTokenAlly($id)) return;
-    WriteLog("HERE: $id");
     AddGraveyard($id, $player, "PLAY", $player);
   }
 }
