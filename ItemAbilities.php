@@ -98,7 +98,8 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "backup_protocol_red_red":
     case "backup_protocol_yel_yellow":
     case "backup_protocol_blu_blue":
-    case "imperial_seal_of_command_red";
+    case "imperial_seal_of_command_red":
+    case "gold":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "dissipation_shield_yellow":

@@ -243,6 +243,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ash";
     case "kiss_of_death_red":
       return "Dagger,Attack";
+    case "compass_of_sunken_depths":
+      return "Off-Hand";
     default:
       break;
   }

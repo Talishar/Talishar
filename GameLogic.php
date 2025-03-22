@@ -103,8 +103,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDCLASS":
           $rv = SearchHand($player, class:$subparam);
           break;
-        case "HANDGRAVE":
+        case "HANDWATERYGRAVE":
           $rv = SearchHand($player, hasWateryGrave: true);
+          break;
         case "HANDMINPOWER":
           $rv = SearchHand($player, minAttack: $subparam);
           break;

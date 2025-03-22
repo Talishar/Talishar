@@ -486,7 +486,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "gold":
       $rv = "";
       if($from == "PLAY") {
-        DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         Draw($currentPlayer);
       }
       return $rv;

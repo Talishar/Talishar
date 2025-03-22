@@ -1215,8 +1215,9 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       BanishFromSoul($currentPlayer);
       break;
     case "gravy_bones_shipwrecked_looter":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold-1", 1);
-      AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
+      $goldIndex = GetItemIndex("gold", $currentPlayer);
+      DestroyItemForPlayer($currentPlayer, $goldIndex);
+      Wave("MYCHAR-$cardIndex", $currentPlayer);
       break;
     default:
       --$character[$cardIndex + 5];

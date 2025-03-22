@@ -47,7 +47,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PummelHit($currentPlayer);
       break;
     case "chum_friendly_first_mate_yellow":
-      AddCurrentTurnEffect($cardID, $otherPlayer, $target);
+      AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
       break;
     default:
       break;
@@ -63,7 +63,7 @@ function SEAHitEffect($cardID): void
   }
 }
 
-function Wave($MZindex): string
+function Wave($MZindex, $player): string
 {
   return "";
 }

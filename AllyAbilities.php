@@ -44,6 +44,19 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   return $cardID;
 }
 
+function IsTokenAlly($cardID)
+{
+  return match($cardID) {
+    "aether_ashwing" => true,
+    "blasmophet_the_soul_harvester" => true,
+    "nasreth_the_soul_harrower" => true,
+    "ursur_the_soul_reaper" => true,
+    "cintari_sellsword" => true,
+    "-" => true,
+    default => false
+  };
+}
+
 function AllyAddGraveyard($player, $cardID)
 {
   if (CardType($cardID) != "T") {
@@ -72,14 +85,9 @@ function AllyAddGraveyard($player, $cardID)
       "suraya_archangel_of_knowledge" => "invoke_suraya",
       default => $cardID
     };
-    if (!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player)) return;
+    if (IsTokenAlly($id)) return;
+    WriteLog("HERE: $id");
     AddGraveyard($id, $player, "PLAY", $player);
-    if (HasWateryGrave($id)) {
-      $discard = &GetDiscard($player);
-      $index = count($discard) - DiscardPieces();
-      TurnDiscardFaceDown($player, $index);
-      // flip it face down
-    }
   }
 }
 

@@ -2245,7 +2245,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 
 function GetTargetOfAttack($cardID = "")
 {
-  global $mainPlayer, $combatChainState, $CCS_AttackTarget;
+  global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 1;
   $targets = "THEIRCHAR-0";
@@ -2253,20 +2253,31 @@ function GetTargetOfAttack($cardID = "")
     $combatChainState[$CCS_AttackTarget] = $targets;
   } else {
     $auras = &GetAuras($defPlayer);
-    $arcLightIndex = -1;
+    $mandatoryTargets = [];
     for ($i = 0; $i < count($auras); $i += AuraPieces()) {
       if (HasSpectra($auras[$i])) {
         $targets .= ",THEIRAURAS-" . $i;
         ++$numTargets;
-        if ($auras[$i] == "arc_light_sentinel_yellow") $arcLightIndex = $i;
+        if ($auras[$i] == "arc_light_sentinel_yellow") array_push($mandatoryTargets, "THEIRAURAS-$i");
       }
     }
     $allies = &GetAllies($defPlayer);
     for ($i = 0; $i < count($allies); $i += AllyPieces()) {
       $targets .= ",THEIRALLY-" . $i;
       ++$numTargets;
+      if ($allies[$i] == "chum_friendly_first_mate_yellow") {
+        for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
+          if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
+            if ($currentTurnEffects[$j+2] == $allies[$i+5]) {
+              array_push($mandatoryTargets, "THEIRALLY-$i");
+            }
+          }
+        }
+      }
     }
-    if ($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
+    if (count($mandatoryTargets) > 0) {
+      $targets = implode(",", $mandatoryTargets);
+    }
     if ($numTargets > 1) {
       PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
       PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
@@ -2310,7 +2321,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-")
     case "chum_friendly_first_mate_yellow":
       $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "I") {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDGRAVE,-,NOPASS");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDWATERYGRAVE,-,NOPASS");
         AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any assassin cards in hand to discard!", 1);
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
