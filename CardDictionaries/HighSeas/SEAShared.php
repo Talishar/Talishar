@@ -34,6 +34,8 @@ function SEAEffectAttackModifier($cardID): int
 function SEACombatEffectActive($cardID, $attackID): bool
 {
   return match ($cardID) {
+    "board_the_ship_red" => true,
+    "hoist_em_up_red" => true,
     default => false,
   };
 }
@@ -53,6 +55,14 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
       break;
+    case "paddle_faster_red":
+      WaveAlly($currentPlayer);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
+      break;
+    case "board_the_ship_red":
+      WaveAlly($currentPlayer);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
@@ -65,6 +75,14 @@ function SEAHitEffect($cardID): void
     default:
       break;
   }
+}
+
+function WaveAlly($player, $may=true) {
+  AddDecisionQueue("SETDQCONTEXT", $player, "choose an ally to TEMPNAME or pass");
+  AddDecisionQueue("MULTIZONEINDICES", $player, "MYALLY", 1);
+  if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZWAVE", $player, "<-", 1);
 }
 
 function Wave($MZindex, $player): string

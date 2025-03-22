@@ -3023,6 +3023,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "terra":
       TerraEndPhaseAbility($characterID, $player);
       break;
+    case "hoist_em_up_red":
+      WaveAlly($defPlayer);
+      AddDecisionQueue("PASSPARAMETER", $defPlayer, $target, 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $defPlayer, 1, 1);
+      break;
     default:
       break;
   }

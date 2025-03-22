@@ -935,6 +935,7 @@ function OnBlockResolveEffects($cardID = "")
       case "thick_hide_hunter_yellow"://Thick Hide Hunter
       case "zap_clappers":
       case "starlight_striders":
+      case "hoist_em_up_red":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":

@@ -2743,6 +2743,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "MZWAVE":
+      Wave($lastResult, $player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
