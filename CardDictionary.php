@@ -4635,6 +4635,7 @@ function HasGalvanize($cardID)
     case "infuse_titanium_yellow":
     case "infuse_titanium_blue":
     case "steel_street_hoons_blue":
+    case "golden_skywarden_yellow":
       return true;
     default:
       return false;

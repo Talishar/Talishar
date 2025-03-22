@@ -1576,6 +1576,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($charIndex != -1) DestroyCharacter($player, $charIndex);
       }
       return $lastResult;
+    case "PLAYITEM":
+      PutItemIntoPlayForPlayer("gold", $player);
+      return $lastResult;
     case "COUNTPARAM":
       $array = explode(",", $parameter);
       return count($array) . "-" . $parameter;
