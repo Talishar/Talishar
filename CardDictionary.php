@@ -1370,6 +1370,8 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
   else return "";
 }
 
+// I intend to fill this out later, this can be where we throw a bunch of attack restrictions instead of rechecking everywhere
+// link with IsAttackRestricted?
 function CanAttack($cardID): bool
 {
   return true;
