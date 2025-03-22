@@ -1091,7 +1091,8 @@ function ProcessSurge($cardID, $player, $target)
       break;
     case "destructive_aethertide_blue":
       if (MZIsPlayer($target)) {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+        $search = DelimStringContains($target, "THEIR", true) ? "THEIRARS" : "MYARS";
+        AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card you want to destroy from their arsenal", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, false, 1);
