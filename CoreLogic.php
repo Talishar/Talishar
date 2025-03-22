@@ -1605,7 +1605,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
       if ($effect[0] == "adaptive_dissolver-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
     }
   }
-  return DelimStringContains($cardSubtype, $subtype);
+  return DelimStringContains($cardSubtype, $subtype, true);
 }
 
 function CardNameContains($cardID, $name, $player = "", $partial = false) // This isn't actually a contains operation. It's an equals unless you turn partial to true.

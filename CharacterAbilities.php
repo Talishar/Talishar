@@ -1215,6 +1215,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       BanishFromSoul($currentPlayer);
       break;
     case "gravy_bones_shipwrecked_looter":
+    case "puffin_hightail":
       $goldIndex = GetItemIndex("gold", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $goldIndex);
       Wave("MYCHAR-$cardIndex", $currentPlayer);

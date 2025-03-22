@@ -1,11 +1,13 @@
 <?php
 
-function SEAAbilityType($cardID): string
+function SEAAbilityType($cardID, $from="-"): string
 {
   return match ($cardID) {
     "gravy_bones_shipwrecked_looter" => "I",
     "chum_friendly_first_mate_yellow" => "I",
     "compass_of_sunken_depths" => "I",
+    "puffin_hightail" => "A",
+    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
     default => ""
   };
 }
@@ -27,6 +29,7 @@ function SEAAbilityHasGoAgain($cardID): bool
 function SEAEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
+    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     default => 0,
   };
 }
@@ -36,6 +39,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
+    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     default => false,
   };
 }
@@ -45,6 +49,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
+    // Gravy cards
     case "gravy_bones_shipwrecked_looter":
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
@@ -56,11 +61,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
       break;
     case "paddle_faster_red":
-      WaveAlly($currentPlayer);
+      WavePermanent($currentPlayer, "MYALLY");
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "board_the_ship_red":
-      WaveAlly($currentPlayer);
+      WavePermanent($currentPlayer, "MYALLY");
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chart_the_high_seas_blue":
@@ -88,6 +93,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS", 1);
       break;
+    // Puffin cards
+    case "puffin_hightail":
+      PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, isToken: true);
+      break;
+    case "sky_skimmer_red":
+    case "sky_skimmer_yellow":
+    case "sky_skimmer_blue":
+      if ($from == "PLAY") {
+        GiveAttackGoAgain();
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
     default:
       break;
   }
@@ -102,9 +119,43 @@ function SEAHitEffect($cardID): void
   }
 }
 
-function WaveAlly($player, $may=true) {
-  AddDecisionQueue("SETDQCONTEXT", $player, "choose an ally to TEMPNAME or pass");
-  AddDecisionQueue("MULTIZONEINDICES", $player, "MYALLY", 1);
+function GetUnwaved($player, $zone, $cond="-")
+{
+  switch ($zone) {
+    case "MYALLY":
+      $arr = GetAllies($player);
+      $count = AllyPieces();
+      break;
+    case "MYITEMS":
+      $arr = GetItems($player);
+      $count = ItemPieces();
+      break;
+    default:
+      return "";
+  }
+  $unwavedInds = [];
+  $allowedInds = -1;
+  if ($cond != "-") {
+    $allowedInds = explode(",", SearchMultizone($player, "$zone:$cond"));
+  }
+  else $allowedInds = [];
+  for ($i = 0; $i < count($arr); $i += $count) {
+    $ind = "$zone-$i";
+    if ($cond != "-" && !in_array($ind, $allowedInds)) continue;
+    if (!CheckWaved($ind, $player)) array_push($unwavedInds, $ind);
+  }
+  return implode(",", $unwavedInds);
+}
+
+function WavePermanent($player, $zone, $may=true) {
+  $obj = match($zone) {
+    "MYALLY" => "an ally",
+    "MYITEMS" => "an item",
+    default => "something"
+  };
+  $inds = GetUnwaved($player, $zone);
+  AddDecisionQueue("SETDQCONTEXT", $player, "choose $obj to TEMPNAME or pass");
+  AddDecisionQueue("PASSPARAMETER", $player, $inds, 1);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZWAVE", $player, "<-", 1);

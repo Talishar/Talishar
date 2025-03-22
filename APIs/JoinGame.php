@@ -520,7 +520,7 @@ function isSpecialUsePromo($cardID) {
 }
 
 function isUnimplemented($cardID) {
-  // return false;
+  return false;
   $unimplementedCards = ["big_game_trophy_shot_yellow", "board_the_ship_red",
   "chart_the_high_seas_blue", "chum_friendly_first_mate_yellow",
   "compass_of_sunken_depths", "golden_cog", "golden_skywarden_yellow",

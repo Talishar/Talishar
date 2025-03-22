@@ -359,6 +359,7 @@ function ItemStartTurnAbility($index)
     case "cerebellum_processor_blue":
     case "null_time_zone_blue":
     case "clamp_press_blue":
+    case "golden_cog":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;

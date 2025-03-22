@@ -317,6 +317,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
+        CombatChainPayAdditionalCosts($index, "PLAY");
         PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7]);
       }
       break;

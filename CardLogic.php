@@ -3024,9 +3024,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       TerraEndPhaseAbility($characterID, $player);
       break;
     case "hoist_em_up_red":
-      WaveAlly($defPlayer);
+      WavePermanent($defPlayer, "MYALLY");
       AddDecisionQueue("PASSPARAMETER", $defPlayer, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $defPlayer, 1, 1);
+      break;
+    case "puffin_hightail":
+      Draw($player, effectSource:$parameter);
       break;
     default:
       break;

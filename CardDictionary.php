@@ -1190,7 +1190,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "HNT") return HNTAbilityType($cardID);
   else if ($set == "AST") return ASTAbilityType($cardID);
   else if ($set == "AMX") return AMXAbilityType($cardID);
-  else if ($set == "SEA") return SEAAbilityType($cardID);
+  else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($cardID == "blaze_firemind") return "I";
   else if ($cardID == "magrar") return "A";
 }
@@ -2720,10 +2720,19 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "shock_frock":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "gravy_bones_shipwrecked_looter":
+    case "puffin_hightail":
       if (CheckWaved("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
       return CheckWaved("MYCHAR-$index", $currentPlayer);
+    case "sky_skimmer_red":
+    case "sky_skimmer_yellow":
+    case "sky_skimmer_blue":
+      if ($from != "PLAY") return false;
+      if (GetUnwaved($player, "MYITEMS", "subtype=Cog") == "") return true;
+      if (SearchCurrentTurnEffects($cardID, $player)) return true;
+      if (SearchLayersForPhase($cardID) != -1) return true;
+      return false;
     default:
       return false;
   }
@@ -3364,6 +3373,8 @@ function ETASteamCounters($cardID)
       return 2;
     case "clamp_press_blue":
       return 2;
+    case "golden_cog":
+      return 1;
     default:
       return 0;
   }
@@ -4283,7 +4294,9 @@ function Is1H($cardID): bool|int
 function AbilityPlayableFromCombatChain($cardID): bool
 {
   return match ($cardID) {
-    "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue", "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
+    "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => true,
+    "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
+    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     default => false
   };
 }
