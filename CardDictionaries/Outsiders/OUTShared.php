@@ -844,14 +844,17 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function LookAtTopCard($player, $source, $showHand=false)
+  function LookAtTopCard($player, $source, $showHand=false, $setPlayer="-")
   {
     $otherPlayer = ($player == 1 ? 2 : 1);
-    AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
-    AddDecisionQueue("SETDQVAR", $player, "1");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
-    AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
-    AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
+    if ($setPlayer == "-") {
+      AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
+      AddDecisionQueue("SETDQVAR", $player, "1");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");
+      AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
+      AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
+    }
+    else AddDecisionQueue("PASSPARAMETER", $player, $setPlayer);
     AddDecisionQueue("WRITELOG", $player, "Shows your top deck", 1);
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);

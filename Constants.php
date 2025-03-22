@@ -351,6 +351,7 @@ $CS_OriginalHero = 92;
 $CS_NumTimesAttacked = 93; //number of attacks that reached the attack step, distinct from $CS_NumAttacks
 $CS_DamageDealtToOpponent = 94; //Damage dealt specifically to the opposing hero (for anaphylactic shock)
 $CS_NumStealthAttacks = 95; //for slippy
+$CS_NumWateryGrave = 96;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -579,7 +580,7 @@ function ResetMainClassState()
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
   global $CS_PowDamageDealt, $CS_NumTimesAttacked;
-  global $CS_TunicTicks, $CS_OriginalHero, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent;
+  global $CS_TunicTicks, $CS_OriginalHero, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -674,6 +675,7 @@ function ResetMainClassState()
   $mainClassState[$CS_TunicTicks] = 0;
   $mainClassState[$CS_NumTimesAttacked] = 0;
   $mainClassState[$CS_NumStealthAttacks] = 0;
+  $mainClassState[$CS_NumWateryGrave] = 0;
   $mainClassState[$CS_DamageDealtToOpponent] = 0;
 }
 

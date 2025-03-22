@@ -2718,7 +2718,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "shock_frock":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "gravy_bones_shipwrecked_looter":
+      if (CheckWaved("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
+    case "compass_of_sunken_depths":
+      return CheckWaved("MYCHAR-$index", $currentPlayer);
     default:
       return false;
   }

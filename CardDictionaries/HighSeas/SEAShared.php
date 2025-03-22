@@ -5,6 +5,7 @@ function SEAAbilityType($cardID): string
   return match ($cardID) {
     "gravy_bones_shipwrecked_looter" => "I",
     "chum_friendly_first_mate_yellow" => "I",
+    "compass_of_sunken_depths" => "I",
     default => ""
   };
 }
@@ -48,6 +49,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "chum_friendly_first_mate_yellow":
       AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
+      break;
+    case "compass_of_sunken_depths":
+      LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
       break;
     default:
       break;
