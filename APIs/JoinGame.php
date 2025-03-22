@@ -520,14 +520,8 @@ function isSpecialUsePromo($cardID) {
 }
 
 function isUnimplemented($cardID) {
-  return false;
-  $unimplementedCards = ["big_game_trophy_shot_yellow", "board_the_ship_red",
-  "chart_the_high_seas_blue", "chum_friendly_first_mate_yellow",
-  "compass_of_sunken_depths", "golden_cog", "golden_skywarden_yellow",
-  "goldfin_harpoon_yellow", "gravy_bones_shipwrecked_looter",
-  "hoist_em_up_red", "king_shark_harpoon_red", "marlynn_treasure_hunter",
-  "paddle_faster_red", "puffin_hightail", "sky_skimmer_blue",
-  "sky_skimmer_red", "sky_skimmer_yellow", "treasure_island"];
+  // return false;
+  $unimplementedCards = ["treasure_island", "riggermortis_yellow"];
   return in_array($cardID, $unimplementedCards);
 }
 

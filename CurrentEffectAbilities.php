@@ -477,6 +477,9 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "imperial_seal_of_command_red-HIT":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
+    case "big_game_trophy_shot_yellow":
+      PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+      return 1;
     default:
       break;
   }

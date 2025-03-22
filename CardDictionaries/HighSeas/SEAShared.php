@@ -6,8 +6,11 @@ function SEAAbilityType($cardID, $from="-"): string
     "gravy_bones_shipwrecked_looter" => "I",
     "chum_friendly_first_mate_yellow" => "I",
     "compass_of_sunken_depths" => "I",
+
     "puffin_hightail" => "A",
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
+
+    "marlynn_treasure_hunter" => "A",
     default => ""
   };
 }
@@ -22,6 +25,7 @@ function SEAAbilityCost($cardID): int
 function SEAAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "marlynn_treasure_hunter" => true,
     default => false,
   };
 }
@@ -30,16 +34,19 @@ function SEAEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
+    "big_game_trophy_shot_yellow" => 4,
     default => 0,
   };
 }
 
 function SEACombatEffectActive($cardID, $attackID): bool
 {
+  global $mainPlayer;
   return match ($cardID) {
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     default => false,
   };
 }
@@ -105,6 +112,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
+    // Marlynn cards
+    case "marlynn_treasure_hunter":
+      AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
+      break;
+    case "big_game_trophy_shot_yellow":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      Draw($currentPlayer, effectSource:$cardID);
+      PummelHit($currentPlayer);
+      break;
     default:
       break;
   }
@@ -113,7 +129,22 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function SEAHitEffect($cardID): void
 {
+  global $CS_NumCannonsActivated, $mainPlayer, $defPlayer;
   switch ($cardID) {
+    case "king_shark_harpoon_red":
+      if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
+        AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, action card will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $defPlayer, "KINGSHARKHARPOON", 1);
+      }
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, action card will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "KINGSHARKHARPOON", 1);
+      }
+      break;
     default:
       break;
   }

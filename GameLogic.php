@@ -2760,16 +2760,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       $items[$params[0]+8] = $params[1];
       return $lastResult;
-    case "CLEARNONES":
-      $character = &GetPlayerCharacter($player);
-      for ($i = count($character) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
-        if ($character[$i] == "NONE00") {
-          for ($j = CharacterPieces()-1; $j >= 0; $j--) {
-            unset($character[$i+$j]);
-          } 
-        }
-      }
-      return $lastResult;
     case "MZWAVE":
       Wave($lastResult, $player);
       return $lastResult;

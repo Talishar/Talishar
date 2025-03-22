@@ -974,6 +974,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "pain_in_the_backside_red":
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
+    case "king_shark_harpoon_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
     case "stone_rain_red":
@@ -1123,7 +1124,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
 
 function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
-  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer;
+  global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
   switch ($effects[0]) {
@@ -1259,6 +1260,11 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $source == "-")) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
+    case "big_game_trophy_shot_yellow":
+      if (CardNameContains($combatChain[0], "Harpoon", $mainPlayer, true)){
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       }
       break;
     default:
@@ -3046,6 +3052,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "puffin_hightail":
       Draw($player, effectSource:$parameter);
+      break;
+    case "marlynn_treasure_hunter":
+      LoadArrow($player);
       break;
     default:
       break;

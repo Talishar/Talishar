@@ -245,6 +245,9 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Dagger,Attack";
     case "compass_of_sunken_depths":
       return "Off-Hand";
+    case "goldfin_harpoon_yellow":
+    case "king_shark_harpoon_red":
+      return "Arrow";
     default:
       break;
   }
@@ -786,6 +789,7 @@ function PitchValue($cardID)
 {
   if (!$cardID) return "";
   $set = CardSet($cardID);
+  if ($cardID == "goldfin_harpoon_yellow") return -1;
   if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
   switch ($cardID) {
     case "MST000_inner_chi_blue":
@@ -2721,6 +2725,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "gravy_bones_shipwrecked_looter":
     case "puffin_hightail":
+    case "marlynn_treasure_hunter":
       if (CheckWaved("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":

@@ -1564,6 +1564,7 @@ function NameOverride($cardID, $player = "")
 function ColorOverride($cardID, $player = "")
 {
   $pitch = PitchValue($cardID);
+  if ($cardID == "goldfin_harpoon_yellow") $pitch = 2;
   if (SearchCurrentTurnEffects("blanch_red", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_yellow", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_blue", $player)) $pitch = 0;
@@ -1605,7 +1606,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
       if ($effect[0] == "adaptive_dissolver-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
     }
   }
-  return DelimStringContains($cardSubtype, $subtype, true);
+  return DelimStringContains($cardSubtype, $subtype);
 }
 
 function CardNameContains($cardID, $name, $player = "", $partial = false) // This isn't actually a contains operation. It's an equals unless you turn partial to true.
@@ -3080,6 +3081,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
+  if ($mainPhase && $player == $mainPlayer && SearchCharacterActive($player, "marlynn_treasure_hunter")) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
   if (SearchCharacterActive($player, "earthlore_bounty")) {
     $context = $effectSource != "-" ? $effectSource : $EffectContext;
     if ($context != "-") {
