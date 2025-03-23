@@ -57,7 +57,13 @@ function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $con
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $combatChain, $layers;
-  if (count($layers) > 0 && (CardType($layers[0]) == "AA" || CardType($layers[0]) == "W" || SubtypeContains($layers[0], "Ally"))) {
+  // check if a weapon layer is actually an attack
+  $isWeaponAttackLayer = false;
+  if (CardType($layers[0]) == "W"){
+    if (GetAbilityTypes($layers[0]) == "") $isWeaponAttack = GetAbilityType($layers[0]) == "AA";
+    else $isWeaponAttack = GetResolvedAbilityType($layers[0]);
+  } 
+  if (count($layers) > 0 && (CardType($layers[0]) == "AA" || $isWeaponAttackLayer || SubtypeContains($layers[0], "Ally"))) {
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   } else if (count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
