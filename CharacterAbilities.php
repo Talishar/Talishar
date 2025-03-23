@@ -1406,7 +1406,9 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i + 1] != 2) {
-      if (($character[$i] == "briar" || $character[$i] == "briar_warden_of_thorns") && $character[$i] != 1) continue;
+      if ($character[$i] == "briar" || $character[$i] == "briar_warden_of_thorns") {
+        if ($character[$i+1] != 1) continue; //briar is destroyed, sleeeping, dishonered, etc.
+      }
       elseif ($character[$i] != "hanabi_blaster") continue;
     }
     $characterID = ShiyanaCharacter($character[$i]);
