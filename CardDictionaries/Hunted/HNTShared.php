@@ -340,11 +340,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:hasStealth=1");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
-        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-        AddDecisionQueue("CURRENTATTACKBECOMES", $currentPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("CURRENTATTACKBECOMES", $currentPlayer, "-", 1);
       }
       else AddCurrentTurnEffect("$cardID", $currentPlayer);
       break;
