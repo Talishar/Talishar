@@ -1564,6 +1564,7 @@ function NameOverride($cardID, $player = "")
 function ColorOverride($cardID, $player = "")
 {
   $pitch = PitchValue($cardID);
+  if ($cardID == "goldfin_harpoon_yellow") $pitch = 2;
   if (SearchCurrentTurnEffects("blanch_red", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_yellow", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_blue", $player)) $pitch = 0;
@@ -1759,10 +1760,11 @@ function DoesAttackHaveGoAgain()
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
-      case "arakni_solitary_confinement": case "arakni_5lp3d_7hru_7h3_cr4x": case "arakni_5lp3d_7hru_7h3_cr4x":
+      case "arakni_solitary_confinement": case "arakni_5lp3d_7hru_7h3_cr4x":
         if (HasStealth($attackID) && GetClassState($mainPlayer, piece: $CS_NumStealthAttacks) == 1) {
           return true;
         }
+        break;
       default:
         break;
     }
@@ -1771,10 +1773,11 @@ function DoesAttackHaveGoAgain()
   for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
-      case "arakni_5lp3d_7hru_7h3_cr4x": case "arakni_5lp3d_7hru_7h3_cr4x":
+      case "arakni_5lp3d_7hru_7h3_cr4x":
         if (HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1) {
           return true;
         }
+        break;
       default:
         break;
     }
@@ -2302,7 +2305,7 @@ function EndTurnPitchHandling($player)
 
 function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
 {
-  global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts;
+  global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumWateryGrave;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from);
@@ -2314,6 +2317,18 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
+    }
+    $character = GetPlayerCharacter($player);
+    for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+      switch ($character[$i]) {
+        case "compass_of_sunken_depths":
+          if (GetClassState($player, $CS_NumWateryGrave) == 1 && HasWateryGrave($cardID) && $from=="GY") {
+            $hasGoAgain = true;
+          }
+          break;
+        default:
+          break;
+      }
     }
     $numActionsPlayed = count($actionsPlayed);
     if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "current_funnel_blue" && DelimStringContains($cardType, "A")) {
@@ -3066,6 +3081,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
+  if ($mainPhase && $player == $mainPlayer && SearchCharacterActive($player, "marlynn_treasure_hunter")) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
   if (SearchCharacterActive($player, "earthlore_bounty")) {
     $context = $effectSource != "-" ? $effectSource : $EffectContext;
     if ($context != "-") {

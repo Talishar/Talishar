@@ -355,7 +355,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display their discard, pitch, deck, and banish
   $opponentDiscardArray = array();
   for ($i = 0; $i < count($theirDiscard); $i += DiscardPieces()) {
-    array_push($opponentDiscardArray, JSONRenderedCard($theirDiscard[$i]));
+    $mod = $theirDiscard[$i + 2];
+    $cardID = isFaceDownMod($mod) ? "CardBack" : $theirDiscard[$i];
+    array_push($opponentDiscardArray, JSONRenderedCard($cardID));
   }
   $response->opponentDiscard = $opponentDiscardArray;
 
@@ -513,9 +515,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //my discard
   $playerDiscardArr = array();
   for($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
+    $overlay = 0;
     $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
-    $border = CardBorderColor($myDiscard[$i], "GY", ($action == 36));
-    array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i], action: $action, borderColor: $border, actionDataOverride: strval($i)));
+    $mod = explode("-", $myDiscard[$i + 2])[0];
+    $border = CardBorderColor($myDiscard[$i], "GY", ($action == 36), $mod);
+    if($mod == "FACEDOWN") {
+      $overlay = 1;
+      $border = 0;
+    }
+    elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = "CardBack";
+    array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i], action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i)));
   }
   $myBlessingsCount = SearchCount(SearchDiscardForCard($playerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
   if ($myBlessingsCount > 0) {

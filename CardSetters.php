@@ -159,6 +159,12 @@ function TurnBanishFaceDown($player, $index)
   $banish[$index + 1] = "FACEDOWN";
 }
 
+function TurnDiscardFaceDown($player, $index)
+{
+  $discard = &GetDiscard($player);
+  $discard[$index + 2] = "FACEDOWN";
+}
+
 function AddBottomDeck($cardID, $player, $from)
 {
   if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
@@ -619,6 +625,10 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       GainActionPoints(1);
     }
   }
+  $char = GetPlayerCharacter($player);
+  if (ColorContains($cardID, 3, $player) && $char[0] == "gravy_bones_shipwrecked_looter") {
+    AddCurrentTurnEffect("gravy_bones_shipwrecked_looter", $player);
+  }
   //Code for equipped evos+ going to GY, then Scrapped and it makes them unplayable.
   // this may not be required anymore
   if ($from == "CHAR") {
@@ -627,7 +637,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       $cardID = GetCardIDBeforeTransform($cardID);
     }
   }
-  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player)) return;
+  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow") return;
   switch ($cardID) {
     case "mark_of_the_beast_yellow":
       BanishCardForPlayer($cardID, $player, $from, "NA");
@@ -646,13 +656,14 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
     default:
       break;
   }
+  $mods = (HasWateryGrave($cardID) && $from == "PLAY") ? "FACEDOWN" : "-";
   IncrementClassState($player, $CS_CardsEnteredGY);
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from);
-    else AddSpecificGraveyard($cardID, $defDiscard, $from);
+    if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from, $mods);
+    else AddSpecificGraveyard($cardID, $defDiscard, $from, $mods);
   } else {
-    if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from);
-    else AddSpecificGraveyard($cardID, $theirDiscard, $from);
+    if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from, $mods);
+    else AddSpecificGraveyard($cardID, $theirDiscard, $from, $mods);
   }
 }
 
@@ -662,8 +673,9 @@ function RemoveGraveyard($player, $index)
   $cardID = "";
   if (isset($discard[$index])) {
     $cardID = $discard[$index];
-    unset($discard[$index + 1]);
-    unset($discard[$index]);
+    for ($i = DiscardPieces() - 1; $i >= 0; --$i) {
+      unset($discard[$index + $i]);
+    }
     $discard = array_values($discard);
   }
   return $cardID;
@@ -703,10 +715,11 @@ function RemoveCharacterEffects($player, $index, $effect)
   return false;
 }
 
-function AddSpecificGraveyard($cardID, &$graveyard, $from)
+function AddSpecificGraveyard($cardID, &$graveyard, $from, $mods="-")
 {
   array_push($graveyard, $cardID);
   array_push($graveyard, GetUniqueId());
+  array_push($graveyard, $mods);
 }
 
 function NegateLayer($MZIndex, $goesWhere = "GY")

@@ -317,6 +317,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
+        CombatChainPayAdditionalCosts($index, "PLAY");
         PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7]);
       }
       break;
@@ -1473,7 +1474,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
-  global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed;
+  global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $currentTurnEffects, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -1620,6 +1621,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
+    if (HasWateryGrave($cardID)) IncrementClassState($currentPlayer, $CS_NumWateryGrave);
     if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
       if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
@@ -1637,7 +1639,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex));
+      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
       if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         ResetCombatChainState();
@@ -1745,6 +1747,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $banish = new Banish($otherPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "THEIRDISCARD";
+  } else if ($from == "GY") {
+    $discard = new Discard($currentPlayer);
+    $discard->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
   }
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if ($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
@@ -2245,7 +2250,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 
 function GetTargetOfAttack($cardID = "")
 {
-  global $mainPlayer, $combatChainState, $CCS_AttackTarget;
+  global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 1;
   $targets = "THEIRCHAR-0";
@@ -2253,20 +2258,31 @@ function GetTargetOfAttack($cardID = "")
     $combatChainState[$CCS_AttackTarget] = $targets;
   } else {
     $auras = &GetAuras($defPlayer);
-    $arcLightIndex = -1;
+    $mandatoryTargets = [];
     for ($i = 0; $i < count($auras); $i += AuraPieces()) {
       if (HasSpectra($auras[$i])) {
         $targets .= ",THEIRAURAS-" . $i;
         ++$numTargets;
-        if ($auras[$i] == "arc_light_sentinel_yellow") $arcLightIndex = $i;
+        if ($auras[$i] == "arc_light_sentinel_yellow") array_push($mandatoryTargets, "THEIRAURAS-$i");
       }
     }
     $allies = &GetAllies($defPlayer);
     for ($i = 0; $i < count($allies); $i += AllyPieces()) {
       $targets .= ",THEIRALLY-" . $i;
       ++$numTargets;
+      if ($allies[$i] == "chum_friendly_first_mate_yellow") {
+        for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
+          if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
+            if ($currentTurnEffects[$j+2] == $allies[$i+5]) {
+              array_push($mandatoryTargets, "THEIRALLY-$i");
+            }
+          }
+        }
+      }
     }
-    if ($arcLightIndex > -1) $targets = "THEIRAURAS-" . $arcLightIndex;
+    if (count($mandatoryTargets) > 0) {
+      $targets = implode(",", $mandatoryTargets);
+    }
     if ($numTargets > 1) {
       PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
       PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
@@ -2278,7 +2294,7 @@ function GetTargetOfAttack($cardID = "")
   AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
 
-function PayAbilityAdditionalCosts($cardID, $index)
+function PayAbilityAdditionalCosts($cardID, $index, $from="-")
 {
   global $currentPlayer;
   switch ($cardID) {
@@ -2306,6 +2322,18 @@ function PayAbilityAdditionalCosts($cardID, $index)
       $character = GetPlayerCharacter($currentPlayer);
       $uniqueID = $character[$index + 11];
       AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
+      break;
+    case "chum_friendly_first_mate_yellow":
+      $allies = GetAllies($currentPlayer);
+      if (GetResolvedAbilityType($cardID, $from) == "I") {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDWATERYGRAVE,-,NOPASS");
+        AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any watery grave cards in hand to discard!", 1);
+        AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $allies[$index + 5], 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
       break;
     default:
       break;
@@ -3233,6 +3261,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   } else if ($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
+    else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if (DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from: $from);

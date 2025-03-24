@@ -437,7 +437,7 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
-  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken;
+  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -871,6 +871,36 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if (GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0) {
         $index = count($combatChain) - CombatChainPieces();
         CombatChainDefenseModifier($index, 1);
+      }
+      return $lastResult;
+    case "CHARTTHEHIGHSEAS":
+      if (DelimStringContains($lastResult, "MYDECK", true)) {
+        $cardID = MZRemove($player, $lastResult);
+        $pitch = &GetPitch($player);
+        WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
+        array_push($pitch, $cardID);
+        PitchAbility($cardID);
+        $resources = &GetResources($player);
+        $resources[0] += PitchValue($cardID);
+        $remainingInds = 1;
+      }
+      else $remainingInds = 2;
+      $deck = new Deck($player);
+      for ($i = 0; $i < $remainingInds; ++$i) {
+        $cardID = $deck->Top(true, 1);
+        AddGraveyard($cardID, $player, "chart_the_high_seas_blue", $player);
+        if (ColorContains($cardID, 2, $player)) PutItemIntoPlayForPlayer("gold", $player, isToken:true);
+      }
+      return $lastResult;
+    case "KINGSHARKHARPOON":
+      $index = intval(explode("-", $lastResult)[1]);
+      $cardID = GetMZCard($player, $lastResult);
+      if (CanRevealCards($defPlayer)) {
+        RevealCards($cardID);
+        if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
+          DiscardCard($defPlayer, $index, "king_shark_harpoon_red", $mainPlayer);
+          PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+        }
       }
       return $lastResult;
     default: return "";

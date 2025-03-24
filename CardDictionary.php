@@ -86,6 +86,8 @@ function CardType($cardID, $from="")
       return "W,T";
     case "valda_seismic_impact": //hardcoding before fabcube update
       return "C";
+    case "chum_friendly_first_mate_yellow":
+      return "A";
     default:
       break;
   }
@@ -241,6 +243,11 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ash";
     case "kiss_of_death_red":
       return "Dagger,Attack";
+    case "compass_of_sunken_depths":
+      return "Off-Hand";
+    case "goldfin_harpoon_yellow":
+    case "king_shark_harpoon_red":
+      return "Arrow";
     default:
       break;
   }
@@ -309,6 +316,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Arms,Evo";
     case "evo_speedslip_blue_equip":
       return "Legs,Evo";
+    case "chum_friendly_first_mate_yellow":
+      return "Ally";
     default:
       return "";
   }
@@ -780,6 +789,7 @@ function PitchValue($cardID)
 {
   if (!$cardID) return "";
   $set = CardSet($cardID);
+  if ($cardID == "goldfin_harpoon_yellow") return -1;
   if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
   switch ($cardID) {
     case "MST000_inner_chi_blue":
@@ -1184,7 +1194,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "HNT") return HNTAbilityType($cardID);
   else if ($set == "AST") return ASTAbilityType($cardID);
   else if ($set == "AMX") return AMXAbilityType($cardID);
-  else if ($set == "SEA") return SEAAbilityType($cardID);
+  else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($cardID == "blaze_firemind") return "I";
   else if ($cardID == "magrar") return "A";
 }
@@ -1201,6 +1211,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
+    "chum_friendly_first_mate_yellow" => "I,AA",
     default => "",
   };
 }
@@ -1313,6 +1324,16 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($from != "HAND") $names = "-,Attack Reaction";
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
+    case "chum_friendly_first_mate_yellow":
+      if (CheckWaved("MYALLIES-$index", $currentPlayer)) return "";
+      if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
+      $allies = &GetAllies($currentPlayer);
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        return $names;
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+        $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      }
+      return $names;
     default:
       return "";
   }
@@ -1351,6 +1372,13 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
   $abilityNames = explode(",", $abilityNames);
   if (isset($abilityNames[$abilityIndex])) return $abilityNames[$abilityIndex];
   else return "";
+}
+
+// I intend to fill this out later, this can be where we throw a bunch of attack restrictions instead of rechecking everywhere
+// link with IsAttackRestricted?
+function CanAttack($cardID): bool
+{
+  return true;
 }
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
@@ -1490,6 +1518,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($auras[$index + 1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
+  }
+  if ($cardID == "chum_friendly_first_mate_yellow" && $from == "PLAY") {
+    if (CheckWaved("MYALLIES-$index", $currentPlayer)) return false;
+    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
+    else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
+    else return false;
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
@@ -2690,6 +2724,21 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return ArsenalFaceDownCard($player) == "";
     case "shock_frock":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
+    case "gravy_bones_shipwrecked_looter":
+    case "puffin_hightail":
+    case "marlynn_treasure_hunter":
+      if (CheckWaved("MYCHAR-$index", $currentPlayer)) return true;
+      return CountItem("gold", $currentPlayer) == 0;
+    case "compass_of_sunken_depths":
+      return CheckWaved("MYCHAR-$index", $currentPlayer);
+    case "sky_skimmer_red":
+    case "sky_skimmer_yellow":
+    case "sky_skimmer_blue":
+      if ($from != "PLAY") return false;
+      if (GetUnwaved($player, "MYITEMS", "subtype=Cog") == "") return true;
+      if (SearchCurrentTurnEffects($cardID, $player)) return true;
+      if (SearchLayersForPhase($cardID) != -1) return true;
+      return false;
     default:
       return false;
   }
@@ -2757,6 +2806,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "tip_off_blue":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
+    case "chum_friendly_first_mate_yellow":
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "shelter_from_the_storm_red":
       return GetResolvedAbilityType($cardID, $from) == "DR";
@@ -3329,6 +3379,8 @@ function ETASteamCounters($cardID)
       return 2;
     case "clamp_press_blue":
       return 2;
+    case "golden_cog":
+      return 1;
     default:
       return 0;
   }
@@ -3380,7 +3432,7 @@ function DoesEffectGrantOverpower($cardID): bool
   $cardID = ShiyanaCharacter($cardID);
   return match ($cardID) {
     "betsy_skin_in_the_game", "betsy", "the_golden_son_yellow", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "log_fall_red", "log_fall_yellow", "machinations_of_dominion_blue" => true,
-    "bank_breaker" => true,
+    "bank_breaker", "board_the_ship_red" => true,
     default => false,
   };
 }
@@ -4197,6 +4249,8 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
 
 function PlayableFromGraveyard($cardID)
 {
+  global $currentPlayer;
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer)) return true;
   switch ($cardID) {
     case "graven_call":
       return true;
@@ -4246,7 +4300,9 @@ function Is1H($cardID): bool|int
 function AbilityPlayableFromCombatChain($cardID): bool
 {
   return match ($cardID) {
-    "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue", "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
+    "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => true,
+    "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
+    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     default => false
   };
 }
@@ -4585,6 +4641,7 @@ function HasGalvanize($cardID)
     case "infuse_titanium_yellow":
     case "infuse_titanium_blue":
     case "steel_street_hoons_blue":
+    case "golden_skywarden_yellow":
       return true;
     default:
       return false;

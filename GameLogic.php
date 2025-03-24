@@ -103,6 +103,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDCLASS":
           $rv = SearchHand($player, class:$subparam);
           break;
+        case "HANDWATERYGRAVE":
+          $rv = SearchHand($player, hasWateryGrave: true);
+          break;
         case "HANDMINPOWER":
           $rv = SearchHand($player, minAttack: $subparam);
           break;
@@ -261,6 +264,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "sacred_art_undercurrent_desires_blue":
           $rv = UpTo2FromOpposingGraveyardIndices($player);
+          break;
+        case "chart_the_high_seas_blue_1":
+          $deck = new Deck($player);
+          $amount = ($subparam > $deck->RemainingCards() ? $deck->RemainingCards() : $subparam);
+          $topX = explode(",", $deck->Top(amount:2));
+          $rv = [];
+          for ($i = 0; $i < $amount; ++$i) {
+            if (ColorContains($topX[$i], 3, $player)) array_push($rv, "MYDECK-$i");
+          }
+          $rv = implode(",", $rv);
           break;
         default:
           $rv = "";
@@ -807,6 +820,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $rv .= $deck[$i];
       }
       return ($rv == "" ? "PASS" : $rv);
+    case "DECKCARDNAMES":
+      $indices = explode(",", $parameter);
+      $deck = &GetDeck($player);
+      $rv = [];
+      for ($i = 0; $i < count($indices); ++$i) {
+        if (count($deck) <= $i) continue;
+        array_push($rv, CardLink($deck[$i], $deck[$i]));
+      }
+      return ($rv == [] ? "PASS" : implode(", ", $rv));
     case "DESTROYTOPCARD":
       $deck = new Deck($player);
       WriteLog("Destroyed " . CardLink($deck->Top(), $deck->Top()) . " on top of Player " . $player . " deck");
@@ -1554,6 +1576,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($charIndex != -1) DestroyCharacter($player, $charIndex);
       }
       return $lastResult;
+    case "PLAYITEM":
+      PutItemIntoPlayForPlayer("gold", $player);
+      return $lastResult;
     case "COUNTPARAM":
       $array = explode(",", $parameter);
       return count($array) . "-" . $parameter;
@@ -1778,6 +1803,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETDQCONTEXT":
       $dqState[4] = implode("_", explode(" ", $parameter));
       return $lastResult;
+    // case "SHOWTOPCARDS":
+    //   $text = CardName($lastResult) . " shows you're top $parameter cards are";
+    //   for ($i = 0; $i < $parameter; ++$i) $text .= " "
+    //   $dqState[4] = implode("_", explode(" ", $text));
+    //   return $lastResult;
     case "AFTERDIEROLL":
       AfterDieRoll($player);
       return $lastResult;
@@ -2728,15 +2758,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       $items[$params[0]+8] = $params[1];
       return $lastResult;
-    case "CLEARNONES":
-      $character = &GetPlayerCharacter($player);
-      for ($i = count($character) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
-        if ($character[$i] == "NONE00") {
-          for ($j = CharacterPieces()-1; $j >= 0; $j--) {
-            unset($character[$i+$j]);
-          } 
-        }
-      }
+    case "MZWAVE":
+      Wave($lastResult, $player);
       return $lastResult;
     default:
       return "NOTSTATIC";

@@ -44,6 +44,19 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   return $cardID;
 }
 
+function IsTokenAlly($cardID)
+{
+  return match($cardID) {
+    "aether_ashwing" => true,
+    "blasmophet_the_soul_harvester" => true,
+    "nasreth_the_soul_harrower" => true,
+    "ursur_the_soul_reaper" => true,
+    "cintari_sellsword" => true,
+    "-" => true,
+    default => false
+  };
+}
+
 function AllyAddGraveyard($player, $cardID)
 {
   if (CardType($cardID) != "T") {
@@ -70,9 +83,9 @@ function AllyAddGraveyard($player, $cardID)
       "vynserakai" => "invoke_vynserakai_red",
       "yendurai" => "invoke_yendurai_red",
       "suraya_archangel_of_knowledge" => "invoke_suraya",
-      default => ""
+      default => $cardID
     };
-    if (!SubtypeContains($id, "Invocation", $player) && !SubtypeContains($id, "Figment", $player)) return;
+    if (IsTokenAlly($id)) return;
     AddGraveyard($id, $player, "PLAY", $player);
   }
 }
@@ -130,6 +143,8 @@ function AllyHealth($cardID)
       return 4;
     case "cintari_sellsword":
       return 2;
+    case "chum_friendly_first_mate_yellow":
+      return 6;
     default:
       return 1;
   }

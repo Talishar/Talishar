@@ -98,7 +98,8 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "backup_protocol_red_red":
     case "backup_protocol_yel_yellow":
     case "backup_protocol_blu_blue":
-    case "imperial_seal_of_command_red";
+    case "imperial_seal_of_command_red":
+    case "gold":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "dissipation_shield_yellow":
@@ -358,6 +359,7 @@ function ItemStartTurnAbility($index)
     case "cerebellum_processor_blue":
     case "null_time_zone_blue":
     case "clamp_press_blue":
+    case "golden_cog":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;

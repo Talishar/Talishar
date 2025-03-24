@@ -1214,6 +1214,16 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       DestroyCharacter($currentPlayer, $cardIndex);
       BanishFromSoul($currentPlayer);
       break;
+    case "gravy_bones_shipwrecked_looter":
+    case "puffin_hightail":
+    case "marlynn_treasure_hunter":
+      $goldIndex = GetItemIndex("gold", $currentPlayer);
+      DestroyItemForPlayer($currentPlayer, $goldIndex);
+      Wave("MYCHAR-$cardIndex", $currentPlayer);
+      break;
+    case "compass_of_sunken_depths":
+      Wave("MYCHAR-$cardIndex", $currentPlayer);
+      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

@@ -17,6 +17,7 @@
       case "cerebellum_processor_blue":
       case "null_time_zone_blue":
       case "clamp_press_blue":
+      case "golden_cog":
         return true;
       default: return false;
     }
@@ -43,6 +44,16 @@
     if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
+    $char = GetPlayerCharacter($player);
+    for ($i = 0; $i < count($char); $i += CharacterPieces()){
+      switch ($char[$i]) {
+        case "puffin_hightail":
+          if (GetClassState($player, $CS_NumCranked) == 2) AddLayer("TRIGGER", $player, $char[$i]);
+          break;
+        default:
+          break;
+      }
+    }
     if(CardName($items[$index]) == "Hyper Driver" && ($items[$index+1] <= 0)) DestroyItemForPlayer($player, $index);
   }
 
