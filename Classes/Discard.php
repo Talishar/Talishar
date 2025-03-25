@@ -28,8 +28,9 @@ class Discard {
       $index = (GetRandom() % $this->NumCards()) * DiscardPieces();
       if($cards != "") $cards .= ",";
       $cards .= $this->discard[$index];
-      unset($this->discard[$index+1]);
-      unset($this->discard[$index]);
+      for ($j = DiscardPieces() - 1; $j >= 0; --$j) {
+        unset($this->discard[$index + $j]);
+      }
       $this->discard = array_values($this->discard);
     }
     return $cards;
@@ -44,8 +45,9 @@ class Discard {
     return $cardID;
   }
 
-  function Add($cardID, $from="GY") {
+  function Add($cardID, $from="GY", $mods="-") {
     array_push($this->discard, $cardID);
     array_push($this->discard, GetUniqueId());
+    array_push($this->discard, "-");
   }
 }
