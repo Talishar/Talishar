@@ -73,7 +73,8 @@
       $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
       if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
       elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
-      $cardID = RemoveDiscard($currentPlayer, $index);
+      // $cardID = RemoveDiscard($currentPlayer, $index);
+      $cardID = RemoveGraveyard($currentPlayer, $index);
       BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
       $discard = array_values($discard);
     }

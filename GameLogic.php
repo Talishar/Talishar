@@ -401,8 +401,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($cards != "") $cards .= ",";
         $cards .= $discard[$lastResult[$i]];
         if ($parameter == "1") WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]));
-        unset($discard[$lastResult[$i] + 1]);
-        unset($discard[$lastResult[$i]]);
+        RemoveGraveyard($player, $lastResult[$i]);
       }
       $discard = array_values($discard);
       return $cards;
