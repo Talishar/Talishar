@@ -426,7 +426,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "hand_of_vengeance":
       return 1;
     case "hunt_to_the_ends_of_rathe_red":
-      return CheckMarked($defPlayer) ? 2 : 0;
+      return (!IsAllyAttackTarget() && CheckMarked($defPlayer)) ? 2 : 0;
     case "cut_through_red":
     case "cut_through_yellow":
     case "cut_through_blue":
