@@ -2937,7 +2937,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
       if ($numModes == 1) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-" . $modalities);
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       } else {
@@ -2951,7 +2951,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
       if ($numModes == 1) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-" . $modalities);
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       } else {
@@ -2965,7 +2965,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
       if ($numModes == 1) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-" . $modalities);
+        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       } else {
