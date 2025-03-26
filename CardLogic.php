@@ -2865,7 +2865,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       else {
         DestroyAuraUniqueID($defPlayer, $uniqueID);
-        Draw($defPlayer, false);
+        Draw($defPlayer, true);
       }
       break;
     case "hard_knuckle":
