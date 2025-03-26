@@ -818,9 +818,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "roiling_fissure_blue":
       $maxSeismicCount = count(explode(",", SearchAurasForCard("seismic_surge", $currentPlayer)))+1;
+      $maxCost = $resourcesPaid - 1;
       for($i=0; $i < $maxSeismicCount; ++$i) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$resourcesPaid."&MYAURAS:minCost=0;maxCost=".$resourcesPaid, 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura with cost " . $resourcesPaid . " or less to destroy", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$maxCost."&MYAURAS:minCost=0;maxCost=".$maxCost, 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura with cost " . $maxCost . " or less to destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:cardID=seismic_surge", 1);
