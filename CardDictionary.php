@@ -1223,6 +1223,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   switch ($cardID) {
     case "teklo_plasma_pistol":
@@ -1261,6 +1263,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "tip_off_yellow":
     case "tip_off_blue":
       $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
@@ -1273,6 +1276,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       // can't use the ability if there are no traps in graveyard
       if (SearchDiscard($currentPlayer, subtype: "Trap") != "") $names = "Ability";
       else $names = "";
+      if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
@@ -1302,6 +1306,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "photon_splicing_blue":
     case "war_cry_of_themis_yellow":
       $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
       elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
@@ -1309,6 +1314,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       return $names;
     case "shelter_from_the_storm_red":
       $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $effectRestricted = $from == "HAND" && !IsDefenseReactionPlayable($cardID, $from);
       if ($from != "HAND") $names = "-,Defense Reaction";
@@ -1316,6 +1322,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       return $names;
     case "war_cry_of_bellona_yellow":
       $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
       $hasRaydn = false;//CardNameContains($combatChain[0], "Raydn", $mainPlayer, true);
       $char = GetPlayerCharacter($currentPlayer);
       for ($i = 0; $i < count($char); $i += CharacterPieces()) {
