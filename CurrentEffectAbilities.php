@@ -597,6 +597,7 @@ function EffectBlockModifier($cardID, $index, $from)
       return SearchPitchForColor($mainPlayer, 3);
     case "heavy_industry_surveillance":
     case "heavy_industry_ram_stop":
+    case "breaker_helm_protos":
       return 1;
     default:
       return 0;

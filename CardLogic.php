@@ -3062,6 +3062,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "marlynn_treasure_hunter":
       LoadArrow($player);
       break;
+    case "breaker_helm_protos":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to discard (or pass)");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:isSameName=hyper_driver_red", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "-", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+      AddDecisionQueue("DRAW", $player, "", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, "breaker_helm_protos", 1);
+      break;
+    case "drive_brake":
+      $char = &GetPlayerCharacter($player);
+      if ($char[$target + 4] < 0) ++$char[$target + 4];
+      break;
     default:
       break;
   }

@@ -209,7 +209,23 @@ function DoBoost($player, $cardID, $boostCount=1)
     if(SearchCurrentTurnEffects("viziertronic_model_i", $player)) {
       AddLayer("TRIGGER", $player, "viziertronic_model_i");
     }
-    if (!$skipBanish) BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+    if (!$skipBanish) {
+      BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+      $char = GetPlayerCharacter($player);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        switch ($char[$i]) {
+          case "drive_brake":
+            AddLayer("TRIGGER", $player, $char[$i], $i);
+            break;
+          case "fist_pump":
+            // there should only ever be one wrench equipped
+            $wrenchInd = SearchCharacter($player, subtype:"Wrench");
+            if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$i], GetMZCard($player, $wrenchInd));
+          default:
+            break;
+        }
+      }
+    }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
     IncrementClassState($player, $CS_NumBoosted);

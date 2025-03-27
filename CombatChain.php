@@ -594,6 +594,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "quickdodge_flexors":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
       break;
+    case "breaker_helm_protos":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
+      break;
     default:
       break;
   }
@@ -936,6 +939,7 @@ function OnBlockResolveEffects($cardID = "")
       case "zap_clappers":
       case "starlight_striders":
       case "hoist_em_up_red":
+      case "breaker_helm_protos":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":
