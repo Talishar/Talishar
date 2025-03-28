@@ -134,13 +134,13 @@ function SEAHitEffect($cardID): void
     case "king_shark_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
         AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, action card will be discarded");
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, attack action card will be discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $defPlayer, "KINGSHARKHARPOON", 1);
       }
       else {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, action card will be discarded");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, attack action card will be discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "KINGSHARKHARPOON", 1);
       }

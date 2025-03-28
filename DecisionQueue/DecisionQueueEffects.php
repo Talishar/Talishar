@@ -897,7 +897,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
-        if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
+        if (TypeContains($cardID, "AA")) {
           DiscardCard($defPlayer, $index, "king_shark_harpoon_red", $mainPlayer);
           PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
         }
