@@ -2802,14 +2802,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "blast_to_oblivion_yellow":
     case "blast_to_oblivion_blue":
       $otherPlayer = ($player == 1 ? 2 : 1);
-      $targetedPlayer = DelimStringContains($target, "THEIR") ? $otherPlayer : $player;
+      $targetedPlayer = intval(explode("-", $target)[0]);
       $uID = explode("-", $target)[1];
       $auras = &GetAuras($targetedPlayer);
       for ($i = 0; $i < count($auras); $i += AuraPieces()) {
         if ($auras[$i + 6] == $uID) {
           $cardID = $auras[$i];
           $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR"? $otherPlayer : $player;
-          $lastResult = RemoveAura($player, $i);
+          $lastResult = RemoveAura($targetedPlayer, $i);
           AddPlayerHand($cardID, $cardOwner, "-");
           return $lastResult;
         }

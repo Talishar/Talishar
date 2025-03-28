@@ -2402,7 +2402,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "blast_to_oblivion_red": //these targetting effects need UID
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
-          AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($player, $target));
+          AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($targettedPlayer, $target));
           break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
