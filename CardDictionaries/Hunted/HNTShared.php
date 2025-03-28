@@ -843,12 +843,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBoosted) >= 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       else AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       break;
-    case "null_time_zone_blue":
-      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
-      AddDecisionQueue("NULLTIMEZONE", $currentPlayer, SearchItemForLastIndex($cardID, $currentPlayer).",{0}");
-      return "";
     case "enchanted_quiver":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);

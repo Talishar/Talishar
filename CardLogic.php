@@ -2823,7 +2823,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         if ($index != -1)
         {
-          AddPlayerHand($target, $prevLink[$index + 1], "CC");
+          $player = $prevLink[$index + 1];
+          // if it was played from an opponent's zone
+          if (DelimStringContains($prevLink[$index+3], "THEIR", true)) {
+            $player = $player == 1 ? 2 : 1;
+          }
+          AddPlayerHand($target, $player, "CC");
           $chainLinks[count($chainLinks) - 1][$index + 2] = 0;
         }
       }
@@ -3020,6 +3025,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "ring_of_roses_yellow":
       GainHealth(1, $player);
+      break;
+    case "null_time_zone_blue":
+      AddDecisionQueue("INPUTCARDNAME", $player, "-");
+      AddDecisionQueue("SETDQVAR", $player, "0");
+      AddDecisionQueue("WRITELOG", $player, "📣<b>{0}</b> was chosen");
+      AddDecisionQueue("NULLTIMEZONE", $player, SearchItemForLastIndex($parameter, $player).",{0}");
       break;
     case "zap_clappers":
       if (CanRevealCards($player) && !IsAllyAttacking()) {

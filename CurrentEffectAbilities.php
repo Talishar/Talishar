@@ -2339,8 +2339,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
       }
     }
   }
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $currentPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = FindNullTime(GamestateSanitize(NameOverride($cardID)));
   // handle discarded modal cards elsewhere
   if($foundNullTime && $from == "HAND" && GetAbilityTypes($cardID, from:$from) == ""){
     $restrictedBy = "null_time_zone_blue";

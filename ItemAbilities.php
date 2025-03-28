@@ -44,7 +44,17 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
-  if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
+  //enters the arean triggers
+  switch ($item) {
+    case "stasis_cell_blue":
+    case "null_time_zone_blue":
+      AddLayer("TRIGGER", $player, $item);
+      break;
+    default:
+      break;
+  }
+  // if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
+  // if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
   PlayAbility($item, $from, 0);
 }
 
@@ -535,3 +545,12 @@ function ItemsAttackModifiers($cardID, $player, $from)
   return $attackModifier;
 }
 
+//checks if a cardname is blocked by null time zone
+function FindNullTime($cardName) 
+{
+  global $mainPlayer, $defPlayer;
+  
+  $foundNullTime = SearchItemForModalities($cardName, $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities($cardName, $defPlayer, "null_time_zone_blue") != -1;
+  return $foundNullTime;
+}

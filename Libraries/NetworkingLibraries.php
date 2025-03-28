@@ -2001,7 +2001,8 @@ function GetLayerTarget($cardID, $from)
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
 {
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
-  global $actionPoints, $mainPlayer;
+  global $actionPoints, $mainPlayer, $currentTurnEffects;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $mod = "";
   if($from == "BANISH") $mod = GetBanishModifier($index);
@@ -2016,9 +2017,33 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
   }
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
-    $option = $names[0].",".$names[1].",Both";
+    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+      if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+        $effectArr = explode(",", $currentTurnEffects[$i]);
+        $effectID = $effectArr[0];
+        switch ($effectID) {
+          case "censor_red":
+            if (!SearchCurrentTurnEffects("amnesia_red", $currentPlayer)) {
+              if (GamestateSanitize($names[0]) == $effectArr[1]) {
+                $names[0] = "-";
+              }
+              elseif (GamestateSanitize($names[1]) == $effectArr[1]) {
+                $names[1] = "-";
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    if (!SearchCurrentTurnEffects("amnesia_red", $currentPlayer)) {
+      if (FindNullTime(GamestateSanitize($names[0]))) $names[0] = "-";
+      if (FindNullTime(GamestateSanitize($names[1]))) $names[1] = "-";
+    }
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-      $option = $names[1];
+      $names[0] = "-";
+      // $option = $names[1];
     } elseif (
       $mod != "INST" && $mod != "blossoming_spellblade_red" 
       && $cardType != "I"
@@ -2028,8 +2053,15 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A")
       || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
     ) {
-        $option = $names[1];
+        $names[0] = "-";
     }
+    if ($names[0] == "-" && $names[1] == "-") {
+      WriteLog("Both sides of the meld card are blocked, reverting play");
+      RevertGamestate();
+    }
+    elseif ($names[0] == "-") $option = $names[1];
+    elseif ($names[1] == "-") $option = $names[0];
+    else $option = $names[0].",".$names[1].",Both";
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
     AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
     AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);

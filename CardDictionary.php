@@ -1875,8 +1875,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     return true;
   }
   if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $playerID, "null_time_zone_blue") != -1;
+  $foundNullTime = FindNullTime(GamestateSanitize(NameOverride($cardID)));
   if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && $foundNullTime){
     $restrictedBy = "null_time_zone_blue";
     return true;
