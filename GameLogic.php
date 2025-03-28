@@ -2398,7 +2398,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         else $targettedPlayer = $player;
         WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
-      AddLayer("TRIGGER", $player, $params[0], $target);
+      switch ($params[0]) {
+        case "blast_to_oblivion_red": //these targetting effects need UID
+        case "blast_to_oblivion_yellow":
+        case "blast_to_oblivion_blue":
+          AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($player, $target));
+          break;
+        default:
+          AddLayer("TRIGGER", $player, $params[0], $target);
+          break;
+      }
       return $lastResult;
     case "UNDERCURRENTDESIRES":
       if ($lastResult == "") {

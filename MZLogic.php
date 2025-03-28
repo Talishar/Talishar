@@ -461,7 +461,7 @@ function GetMZUID($player, $MZIndex)
     case "AURAS":
     case "MYAURAS":
     case "THEIRAURAS":
-      return $zone[$mzArr[1] + 4];
+      return $zone[$mzArr[1] + 6];
     case "LAYER":
       return $zone[$mzArr[1] + 5];
     case "COMBATCHAINATTACKS":
