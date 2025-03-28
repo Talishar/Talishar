@@ -470,9 +470,12 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "take_a_stab_red":
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
-      $character = &GetPlayerCharacter($mainPlayer);
-      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      //don't add attacks if it wasn't a weapon
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+        $character = &GetPlayerCharacter($mainPlayer);
+        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      }
       return 1;
     case "imperial_seal_of_command_red-HIT":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
