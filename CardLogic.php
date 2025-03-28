@@ -1071,9 +1071,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
   switch ($effects[0]) {
-    case "plunder_run_red-1":
-    case "plunder_run_yellow-1":
-    case "plunder_run_blue-1":
     case "spoils_of_war_red-2":
     case "eclipse_existence_blue":
     case "ice_quake_red-HIT":
@@ -1098,6 +1095,13 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
     case "target_totalizer":
     case "hack_to_reality_yellow-HIT":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      break;
+    case "plunder_run_red-1": //triggers that won't apply on flick
+    case "plunder_run_yellow-1":
+    case "plunder_run_blue-1":
+      if (TypeContains($source, "AA")) {
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
       break;
     case "burn_up__shock_red":
       if (IsHeroAttackTarget()) {
