@@ -486,7 +486,16 @@ function IsCardBanned($cardID, $format, $character)
 {
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
-  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "springboard_somersault_yellow") return true;
+  if ($format == "commoner") {
+    $rarity = Rarity($cardID);
+    $cardType = CardType($cardID);
+    // springboard somersault has weird printings
+    if ($cardID == "springboard_somersault_yellow") return false;
+    // ban all rares that aren't heroes, equipment, or weapons
+    if ($rarity == "R" && $cardType != "C" && $cardType != "E" && $cardType != "W") return true;
+    // ban everything above rare
+    if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
+  }
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
