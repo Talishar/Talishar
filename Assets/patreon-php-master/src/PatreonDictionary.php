@@ -365,7 +365,7 @@ enum PatreonCampaign : string
       case "14": return "82,83";
       case "15": return "84";
       case "16": return "87";
-      case "17": return "88";
+      case "17": return "88,100";
       case "18": return "96";
       case "7198186": return "1,2,3,4,5,6,7,8,82,83";
       case "7579026": return "9";
