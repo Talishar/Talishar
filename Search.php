@@ -948,6 +948,20 @@ function SearchItemsForCard($cardID, $player)
   return $indices;
 }
 
+function SearchItemsForCardName($cardName, $player)
+{
+  if (SearchCurrentTurnEffects("amnesia_red", $player)) return "";
+  $items = &GetItems($player);
+  $indices = "";
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    if (CardName($items[$i]) == $cardName) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchItemForIndex($cardID, $player)
 {
   $items = &GetItems($player);

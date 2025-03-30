@@ -437,7 +437,7 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
-  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer;
+  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -721,28 +721,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       DamageTrigger($player, $dqVars[0]+1, "DAMAGE", "tick_tock_clock_red");
       return $lastResult;
     case "EVOBREAKER":
-      if($lastResult == "PASS") {
-        if($dqVars[0] != "-") {
-          $char = &GetPlayerCharacter($player);
-          $hyperdriverArr = explode(",", $dqVars[0]);
-          $index = $hyperdriverArr[0];
-          $count = count($hyperdriverArr);
-          for($i=1; $i<$count; ++$i) {
-            CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
-          }
-          AddCurrentTurnEffect($char[$index] . "-" . (($count-1)*2), $player);
-        }
-        return $lastResult;
+      $char = &GetPlayerCharacter($player);
+      $index = $dqVars[0];
+      CharacterAddSubcard($player, $index, $lastResult);
+      $effectInd = SearchCurrentTurnEffectsForUniqueID($char[$index+11]);
+      if ($effectInd == -1) AddCurrentTurnEffect($char[$index] . "-2", $player, uniqueID: $char[$index+11]);
+      else {
+        $prevVal = intval(explode("-", $currentTurnEffects[$effectInd])[1]);
+        $currentTurnEffects[$effectInd] = $char[$index] . "-" . $prevVal + 2;
       }
-      else if($lastResult != "-") {
-        if($dqVars[0] == "-") $dqVars[0] = $lastResult;
-        else $dqVars[0] .= "," . $lastResult;
-      }
-      PrependDecisionQueue("SPECIFICCARD", $player, "EVOBREAKER");
-      PrependDecisionQueue("MZREMOVE", $player, "-", 1);
-      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
-      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red", 1);
       return $lastResult;
     case "HYPERSCRAPPER":
       global $CombatChain;
