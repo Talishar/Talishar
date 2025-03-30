@@ -440,8 +440,11 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "twist_and_turn_yellow":
     case "twist_and_turn_blue":
       $character = &GetPlayerCharacter($mainPlayer);
-      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      if ($combatChainState[$CCS_WeaponIndex] != -1) {
+        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      }
+      else WriteLog("A strange error has happened with twist and turn. Please submit a bug report");
       return 0;
     case "hunt_a_killer_red":
     case "hunt_a_killer_yellow":
