@@ -1990,11 +1990,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "demolition_crew_red":
     case "demolition_crew_yellow":
     case "demolition_crew_blue":
-      return SearchCount(SearchHand($currentPlayer, "", "", -1, 2)) < 2;
+      return SearchCount(SearchHand($currentPlayer, "", "", -1, 2)) < 1;
     case "flock_of_the_feather_walkers_red":
     case "flock_of_the_feather_walkers_yellow":
     case "flock_of_the_feather_walkers_blue":    
-      return SearchCount(SearchHand($currentPlayer, "", "", -1, 0)) < 2;
+      return SearchCount(SearchHand($currentPlayer, "", "", 1, 0)) < 1;
     case "pummel_red":
     case "pummel_yellow":
     case "pummel_blue":
