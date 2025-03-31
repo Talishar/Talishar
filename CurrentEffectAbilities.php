@@ -2267,7 +2267,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   return $restrictedBy;
 }
 
-function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase)
+function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase, $modalCheck = false)
 {
   global $currentTurnEffects, $currentPlayer, $turn;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -2276,7 +2276,10 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
       $effectID = $effectArr[0];
       switch ($effectID) {
         case "burdens_of_the_past_blue":
-          if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+          // handle modal cards separately
+          if ($modalCheck || GetAbilityTypes($cardID) == "") {
+            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+          }
           break;
         default:
           break;

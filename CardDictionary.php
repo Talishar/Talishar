@@ -1316,9 +1316,12 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
-      $effectRestricted = $from == "HAND" && !IsDefenseReactionPlayable($cardID, $from);
-      if ($from != "HAND") $names = "-,Defense Reaction";
-      elseif ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase()) $names .= ",Defense Reaction";
+      $restriction = "";
+      $effectRestricted = !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
+      if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase()) {
+        $names .= ",Defense Reaction";
+        if ($from != "HAND") $names = "-,Defense Reaction";
+      }
       return $names;
     case "war_cry_of_bellona_yellow":
       $names = "Ability";
