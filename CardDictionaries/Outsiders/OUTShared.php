@@ -811,7 +811,7 @@ function OUTAbilityCost($cardID)
     $damage = 0;
     for($i=0; $i<count($chainLinks); ++$i)
     {
-      if(CardSubType($chainLinks[$i][0]) == $subtype) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
+      if(SubtypeContains($chainLinks[$i][0], $subtype)) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
     }
     if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
     return $damage;
