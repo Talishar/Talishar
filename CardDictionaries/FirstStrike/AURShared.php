@@ -49,7 +49,7 @@ function AURHitEffect($cardID): void
   switch ($cardID) {
     case "static_shock_red": case "static_shock_yellow":
     if (GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0) {
-      DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
+      DealArcane(1, 1, "PLAYCARD", $cardID, false, $mainPlayer);
     }
     break;
     default:
