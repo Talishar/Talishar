@@ -1213,8 +1213,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
         case "evo_atom_breaker_red_equip":
         case "evo_face_breaker_red_equip":
         case "evo_mach_breaker_red_equip": //Equipment
-          if ($preventable) $preventedDamage += intval($effects[1]);
-          $remove = true;
+          if (!isset($effects[1]) || $effects[1] != "BUFF") {
+            if ($preventable) $preventedDamage += intval($effects[1]);
+            $remove = true;
+          }
           break;
         case "no_fear_red":
           if ($preventable) $preventedDamage += 2 + intval($effects[1]);

@@ -1623,7 +1623,7 @@ function CharacterBoostAbilities($player)
         break;
       case "evo_face_breaker_red_equip":
         if ($char[$i + 9] == 1 && EvoHasUnderCard($player, $i)) {
-          AddCurrentTurnEffect($char[$i], $player);
+          AddCurrentTurnEffect($char[$i] . "-BUFF", $player);
           CharacterChooseSubcard($player, $i, fromDQ: false);
           AddDecisionQueue("ADDDISCARD", $player, "-", 1);
         }
