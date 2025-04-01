@@ -484,6 +484,7 @@ function ResetCombatChainState()
   }
   $chainLinks = [];
   $chainLinkSummary = [];
+  EndResolutionStep();
 }
 
 function AttackReplaced($cardID, $player)

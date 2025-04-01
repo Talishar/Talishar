@@ -734,7 +734,9 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
     unset($layers[$i]);
   }
   $layers = array_values($layers);
-  ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
+  if ($goesWhere != "-") {
+    ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
+  }
 }
 
 function AddAdditionalCost($player, $value)
