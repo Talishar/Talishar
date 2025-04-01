@@ -493,11 +493,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100: //Break Chain
-      // if ($currentPlayer == $mainPlayer && count($combatChain) == 0) {
-      //   ResetCombatChainState();
-      //   ProcessDecisionQueue();
-      // }
-      WriteLog("Breaking the chain this way is deprecated, instead pass priority to break the chain");
+      WriteLog("$playerID passes priority in the Resolution Step");
+      PassInput(false);
       break;
     case 101: //Pass block and Reactions
       ChangeSetting($playerID, $SET_PassDRStep, 1);
@@ -1507,16 +1504,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     else $abilityType = "-";
     if (CardType($cardID, $from) == "AA" || $abilityType == "AA") EndResolutionStep();
-    elseif (SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
-      $foundNAALayer = false;
-      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-        if (CardType($layers[$i]) == "A") $foundNAALayer = true;
-      }
-      if ($foundNAALayer) {
-        WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
-        RevertGamestate();
-        return "";
-      }
+    elseif (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
+      WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
+      RevertGamestate();
+      return "";
     }
     if ($playingCard) {
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
@@ -1662,9 +1653,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
-      // if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
-      //   ResetCombatChainState();
-      // }
+      if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
+        $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
+        $layers[$resolutionIndex] = "CLOSINGCHAIN";
+      }
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
@@ -1672,9 +1664,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
       }
-      // if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
-      //   ResetCombatChainState();
-      // }
+      if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
+        $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
+        $layers[$resolutionIndex] = "CLOSINGCHAIN";
+      }
       $remorselessCount = CountCurrentTurnEffects("remorseless_red-DMG", $playerID);
       if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
         WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
@@ -3178,10 +3171,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
-  // there may be some issues with losing track of index
-  $couldPlayAsInstant = CanPlayAsInstant($cardID, index: -1, from: $from) || (DelimStringContains($cardType, "I"));
-  $isAction = (GetResolvedAbilityType($cardID, $from) == "A" || CardType($cardID) == "A");
-  if ($layers[0] == "RESOLUTIONSTEP" && $isAction && !$couldPlayAsInstant) {
+  if ($layers[0] == "CLOSINGCHAIN") {
     WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
     ResetCombatChainState();
   }
@@ -3523,6 +3513,10 @@ function ReportBug()
 function EndResolutionStep()
 {
   $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
+  if ($resolutionIndex != -1) {
+    NegateLayer("LAYER-$resolutionIndex", "-");
+  }
+  $resolutionIndex = SearchLayersForPhase("CLOSINGCHAIN");
   if ($resolutionIndex != -1) {
     NegateLayer("LAYER-$resolutionIndex", "-");
   }
