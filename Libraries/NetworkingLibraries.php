@@ -1501,22 +1501,24 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
-    if ($playingCard) {
-      WriteLog("HERE0: $layers[0] - " . count($layers));
-      if (CardType($cardID, $from) == "AA") EndResolutionStep();
-      elseif (SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
-        $foundNAALayer = false;
-        WriteLog("HERE1: $layers[0] - " . count($layers));
-        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-          WriteLog("HERE2: $layers[0] - " . count($layers));
-          if (CardType($layers[$i]) == "A") $foundNAALayer = true;
-        }
-        if ($foundNAALayer) {
-          WriteLog("$currentPlayer wants to interrupt your shortcut, reverting to the beginning of the resolution step");
-          RevertGamestate();
-          return "";
-        }
+    if (IsStaticType($cardType, $from, $cardID)) {
+      $playType = GetResolvedAbilityType($cardID, $from);
+      $abilityType = $playType;
+    }
+    else $abilityType = "-";
+    if (CardType($cardID, $from) == "AA" || $abilityType == "AA") EndResolutionStep();
+    elseif (SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
+      $foundNAALayer = false;
+      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        if (CardType($layers[$i]) == "A") $foundNAALayer = true;
       }
+      if ($foundNAALayer) {
+        WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
+        RevertGamestate();
+        return "";
+      }
+    }
+    if ($playingCard) {
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
       WriteLog("Layer count: " . count($layers));
@@ -1530,7 +1532,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
       ClearAdditionalCosts($currentPlayer);
-      // if ($layers[0] != "RESOLUTIONSTEP" || CardType($cardID) != "A") MakeGamestateBackup();
+      if ($layers[0] != "RESOLUTIONSTEP" || CardType($cardID) != "A") MakeGamestateBackup();
       $lastPlayed = [];
       $lastPlayed[0] = $cardID;
       $lastPlayed[1] = $currentPlayer;
