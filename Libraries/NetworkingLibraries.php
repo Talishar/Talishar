@@ -1653,7 +1653,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
-      if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
+      if ($CombatChain->HasCurrentLink() && GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         //shortcut for playing a NAA closing the chain
         $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
         $layers[$resolutionIndex] = "CLOSINGCHAIN";
@@ -1665,7 +1665,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
       }
-      if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
+      if ($CombatChain->HasCurrentLink() && DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
         //shortcut for playing a NAA closing the chain
         $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
         $layers[$resolutionIndex] = "CLOSINGCHAIN";
