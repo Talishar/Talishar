@@ -415,6 +415,11 @@ function ContinueDecisionQueue($lastResult = "")
           ResetCombatChainState();
           ProcessDecisionQueue();
         }
+        else if ($cardID == "CLOSINGCHAIN") {
+          WriteLog("I didn't think this code was reachable, please submit a bug report");
+          ResetCombatChainState();
+          ProcessDecisionQueue();
+        }
         else if ($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
           $currentPlayer = $defPlayer;
