@@ -411,6 +411,10 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
+        else if ($cardID == "RESOLUTIONSTEP") {
+          ResetCombatChainState();
+          ProcessDecisionQueue();
+        }
         else if ($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
           $currentPlayer = $defPlayer;
@@ -2784,7 +2788,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 || SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
         //only close the chain if removed before the resolution step
         CloseCombatChain(false);
       }

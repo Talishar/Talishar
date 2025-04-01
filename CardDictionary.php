@@ -61,7 +61,7 @@ $CID_TekloLegs = "teklo_base_legs";
 function CardType($cardID, $from="")
 {
   global $CS_AdditionalCosts, $currentPlayer;
-  if (!$cardID || $cardID == "TRIGGER" || $cardID == "-" || $cardID == "FINALIZECHAINLINK" || $cardID == "ENDTURN") return "";
+  if (!$cardID || $cardID == "TRIGGER" || $cardID == "-" || $cardID == "FINALIZECHAINLINK" || $cardID == "RESOLUTIONSTEP" || $cardID == "ENDTURN") return "";
   switch ($cardID) {
     case "parry_blade":
       return "W,E";

@@ -493,10 +493,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100: //Break Chain
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0) {
-        ResetCombatChainState();
-        ProcessDecisionQueue();
-      }
+      // if ($currentPlayer == $mainPlayer && count($combatChain) == 0) {
+      //   ResetCombatChainState();
+      //   ProcessDecisionQueue();
+      // }
+      WriteLog("Breaking the chain this way is deprecated, instead pass priority to break the chain");
       break;
     case 101: //Pass block and Reactions
       ChangeSetting($playerID, $SET_PassDRStep, 1);
@@ -888,7 +889,7 @@ function HasCard($cardID)
 
 function PassInput($autopass = true)
 {
-  global $turn, $currentPlayer, $mainPlayer;
+  global $turn, $currentPlayer, $mainPlayer, $layers;
   if ($turn[0] == "B") {
     $uniqueID = SearchCurrentTurnEffects("meganetic_lockwave_blue", $mainPlayer, returnUniqueID: true);
     if ($uniqueID != -1) {
@@ -910,12 +911,13 @@ function PassInput($autopass = true)
         BeginTurnPass();
       } else PassTurn();
     }
+    if ($layers[0] == "RESOLUTIONSTEP" && count($layers) == LayerPieces() && $currentPlayer == $mainPlayer) PassInput($autopass);
   }
 }
 
 function Pass(&$turn, &$currentPlayer)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $layers;
   if ($turn[0] == "M" || $turn[0] == "ARS") {
     return 1;
   } else if ($turn[0] == "B") {
@@ -1210,6 +1212,8 @@ function FinalizeChainLink($chainClosed = false)
     ResetChainLinkState();
   }
   ProcessDecisionQueue();
+  PrependLayer("RESOLUTIONSTEP", $mainPlayer, "-");
+  MakeGamestateBackup();
 }
 
 function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
@@ -1256,10 +1260,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
 function BeginTurnPass()
 {
   global $mainPlayer, $layers;
-  ResetCombatChainState(); // The combat chain must be closed prior to the turn ending. The close step is outlined in 7.8 - specifically: CR 2.1 - 7.8.7. Fifth and finally, the Close Step ends, and the Action Phase continues. The Action Phase will always continue after the combat chain is closed - so there is another round of priority windows
 
   // Only attempt to end turn if no triggers remain on stack
-  if (count($layers) == 0 || $layers[0] != 'TRIGGER') {
+  if ($layers[0] != "RESOLUTIONSTEP" && (count($layers) == 0 || $layers[0] != 'TRIGGER')) {
     WriteLog("Main player passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }
@@ -1499,8 +1502,24 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if ($playingCard) {
+      WriteLog("HERE0: $layers[0] - " . count($layers));
+      if (CardType($cardID, $from) == "AA") EndResolutionStep();
+      elseif (SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
+        $foundNAALayer = false;
+        WriteLog("HERE1: $layers[0] - " . count($layers));
+        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+          WriteLog("HERE2: $layers[0] - " . count($layers));
+          if (CardType($layers[$i]) == "A") $foundNAALayer = true;
+        }
+        if ($foundNAALayer) {
+          WriteLog("$currentPlayer wants to interrupt your shortcut, reverting to the beginning of the resolution step");
+          RevertGamestate();
+          return "";
+        }
+      }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
+      WriteLog("Layer count: " . count($layers));
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
     }
     //CR 5.1.2 Announce (CR 2.0)
@@ -1511,7 +1530,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
       ClearAdditionalCosts($currentPlayer);
-      MakeGamestateBackup();
+      // if ($layers[0] != "RESOLUTIONSTEP" || CardType($cardID) != "A") MakeGamestateBackup();
       $lastPlayed = [];
       $lastPlayed[0] = $cardID;
       $lastPlayed[1] = $currentPlayer;
@@ -1641,9 +1660,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
-      if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
-        ResetCombatChainState();
-      }
+      // if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
+      //   ResetCombatChainState();
+      // }
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
@@ -1651,9 +1670,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
       }
-      if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
-        ResetCombatChainState();
-      }
+      // if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
+      //   ResetCombatChainState();
+      // }
       $remorselessCount = CountCurrentTurnEffects("remorseless_red-DMG", $playerID);
       if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
         WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
@@ -3156,6 +3175,14 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentTurnEffects;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $cardType = CardType($cardID);
+  // there may be some issues with losing track of index
+  $couldPlayAsInstant = CanPlayAsInstant($cardID, index: -1, from: $from) || (DelimStringContains($cardType, "I"));
+  $isAction = (GetResolvedAbilityType($cardID, $from) == "A" || CardType($cardID) == "A");
+  if ($layers[0] == "RESOLUTIONSTEP" && $isAction && !$couldPlayAsInstant) {
+    WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
+    ResetCombatChainState();
+  }
   if ($additionalCosts == "-" || $additionalCosts == "") $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
   if ($layerIndex > -1) SetClassState($currentPlayer, $CS_PlayIndex, $layerIndex);
   $index = SearchForUniqueID($uniqueID, $currentPlayer);
@@ -3489,4 +3516,12 @@ function ReportBug()
   copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
   copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
   WriteLog("🐛 Thank you for reporting a bug. Please report it on Discord with the game number as reference ($gameName).");
+}
+
+function EndResolutionStep()
+{
+  $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
+  if ($resolutionIndex != -1) {
+    NegateLayer("LAYER-$resolutionIndex", "-");
+  }
 }
