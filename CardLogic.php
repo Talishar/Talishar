@@ -2240,11 +2240,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "spike_pit_trap_blue":
       $deck = new Deck($mainPlayer);
-      $topDeck = $deck->Top(remove: true);
-      AddGraveyard($topDeck, $mainPlayer, "DECK");
-      $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
-      LoseHealth($numName, $mainPlayer);
-      WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
+      if (!$deck->Empty()) {
+        $topDeck = $deck->Top(remove: true);
+        AddGraveyard($topDeck, $mainPlayer, "DECK");
+        $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
+        LoseHealth($numName, $mainPlayer);
+        WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
+      }
+      else WriteLog("No card from deck to put into graveyayrd");
       TrapTriggered($parameter);
       break;
     case "boulder_trap_yellow":
