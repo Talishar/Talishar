@@ -1522,6 +1522,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
       ClearAdditionalCosts($currentPlayer);
+      // don't create backups in the resolution step to allow for rewinding if the shortcut is rejected
       if ($layers[0] != "RESOLUTIONSTEP" || CardType($cardID) != "A") MakeGamestateBackup();
       $lastPlayed = [];
       $lastPlayed[0] = $cardID;
