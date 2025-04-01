@@ -1653,10 +1653,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
-      if ($CombatChain->HasCurrentLink() && GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
+      if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         //shortcut for playing a NAA closing the chain
         $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
-        $layers[$resolutionIndex] = "CLOSINGCHAIN";
+        if ($resolutionIndex != -1) $layers[$resolutionIndex] = "CLOSINGCHAIN";
       }
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
@@ -1665,10 +1665,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
       }
-      if ($CombatChain->HasCurrentLink() && DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
+      if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
         //shortcut for playing a NAA closing the chain
         $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
-        $layers[$resolutionIndex] = "CLOSINGCHAIN";
+        if ($resolutionIndex != -1) $layers[$resolutionIndex] = "CLOSINGCHAIN";
       }
       $remorselessCount = CountCurrentTurnEffects("remorseless_red-DMG", $playerID);
       if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
