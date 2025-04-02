@@ -1498,14 +1498,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
-    if (IsStaticType($cardType, $from, $cardID) || GetAbilityTypes($cardID, $index, $from) != "") {
-      $playType = GetResolvedAbilityType($cardID, $from);
-      $abilityType = $playType;
+    if (IsStaticType($cardType, $from, $cardID)) {
+      $abilityType = GetResolvedAbilityType($cardID, $from);
     }
     else $abilityType = "-";
     if ($playingCard) {
-      if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
-      elseif (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
+      // handle modal elsewhere
+      if (GetAbilityTypes($cardID, $index, $from) == "") {
+        if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
+      }
+      if (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
         WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
         RevertGamestate();
         return "";
@@ -1653,6 +1655,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
+      //modal activated attacks wrapping up resolution step
+      if (GetAbilityTypes($cardID, $index, $from) != "" && $abilityType == "AA") {
+        $layerIndex = GetClassState($currentPlayer, $CS_LayerPlayIndex);
+        $layerIndex -= EndResolutionStep();
+        SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+      }
       if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
         //shortcut for activating a NAA closing the chain
         $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
@@ -1664,6 +1672,15 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (DelimStringContains($cardType, "A") || $cardType == "AA"){
         if (GetClassState($currentPlayer, $CS_ActionsPlayed) == "-") SetClassState($currentPlayer, $CS_ActionsPlayed, $cardID);
         else SetClassState($currentPlayer, $CS_ActionsPlayed, GetClassState($currentPlayer, $CS_ActionsPlayed) . "," . $cardID);
+      }
+      //modal played attacks wrapping up resolution step
+      if (GetAbilityTypes($cardID, $index, $from) != "") {
+        $playType = GetResolvedAbilityType($cardID, $from);
+        if ($playType == "AA") {
+          $layerIndex = GetClassState($currentPlayer, $CS_LayerPlayIndex);
+          $layerIndex -= EndResolutionStep();
+          SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+        }
       }
       if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
         //shortcut for playing a NAA closing the chain
@@ -3514,12 +3531,17 @@ function ReportBug()
 
 function EndResolutionStep()
 {
+  global $layers;
+  $layerIndex = 0;
   $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
   if ($resolutionIndex != -1) {
     NegateLayer("LAYER-$resolutionIndex", "-");
+    $layerIndex += LayerPieces();
   }
   $resolutionIndex = SearchLayersForPhase("CLOSINGCHAIN");
   if ($resolutionIndex != -1) {
     NegateLayer("LAYER-$resolutionIndex", "-");
+    $layerIndex += LayerPieces();
   }
+  return $layerIndex;
 }

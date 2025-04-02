@@ -1226,6 +1226,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
   $names = "";
   $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
   $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  $layerCount = count($layers);
+  //don't count resolution step as a layer blocking actions
+  if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   switch ($cardID) {
     case "teklo_plasma_pistol":
@@ -1265,7 +1268,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "tip_off_blue":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
         if (!$warmongersPeace && !$underEdict) {
@@ -1278,7 +1281,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if (SearchDiscard($currentPlayer, subtype: "Trap") != "") $names = "Ability";
       else $names = "";
       if($foundNullTime && $from == "HAND") return $names;
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0){
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
         if (!$warmongersPeace && !$underEdict) {
@@ -1292,7 +1295,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($auras[$index + 3] > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) {
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
@@ -1310,7 +1313,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if($foundNullTime && $from == "HAND") return $names;
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
-      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
+      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
       if($from != "HAND") $names = "-,Action";
       return $names;
     case "shelter_from_the_storm_red":
@@ -1341,7 +1344,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && count($layers) <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
