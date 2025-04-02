@@ -3360,11 +3360,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   SetClassState($currentPlayer, $CS_PlayIndex, -1);
   SetClassState($currentPlayer, $CS_CharacterIndex, -1);
   ProcessDecisionQueue();
-  if ($layers[0] == "RESOLUTIONSTEP") {
-    // this is hacky, does it work?
-    // if the top layer is the Resolution step, allow for actions to be played
-    $turn[0] = "M";
-  }
 }
 
 function ProcessAttackTarget()
