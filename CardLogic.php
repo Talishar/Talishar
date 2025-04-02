@@ -506,6 +506,7 @@ function ContinueDecisionQueue($lastResult = "")
   $makeCheckpoint = array_shift($decisionQueue);
   if ($layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
     // turn player can play actions in the resolution step
+    // still a little buggy, chain closes if turn player passes here
     $phase = "M";
   }
   $turn[0] = $phase;
