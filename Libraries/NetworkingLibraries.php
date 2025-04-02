@@ -1503,13 +1503,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $abilityType = $playType;
     }
     else $abilityType = "-";
-    if (CardType($cardID, $from) == "AA" || $abilityType == "AA") EndResolutionStep();
-    elseif (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
-      WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
-      RevertGamestate();
-      return "";
-    }
     if ($playingCard) {
+      if (CardType($cardID, $from) == "AA" || $abilityType == "AA") EndResolutionStep();
+      elseif (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
+        WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
+        RevertGamestate();
+        return "";
+      }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
@@ -1523,7 +1523,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($playingCard) {
       ClearAdditionalCosts($currentPlayer);
       // don't create backups in the resolution step to allow for rewinding if the shortcut is rejected
-      if ($layers[0] != "RESOLUTIONSTEP" || CardType($cardID) != "A") MakeGamestateBackup();
+      if ($layers[0] != "RESOLUTIONSTEP" || (CardType($cardID) != "A" && $abilityType != "A")) MakeGamestateBackup();
       $lastPlayed = [];
       $lastPlayed[0] = $cardID;
       $lastPlayed[1] = $currentPlayer;
@@ -1654,7 +1654,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
       ActivateAbilityEffects();
       if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
-        //shortcut for playing a NAA closing the chain
+        //shortcut for activating a NAA closing the chain
         $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
         if ($resolutionIndex != -1) $layers[$resolutionIndex] = "CLOSINGCHAIN";
       }
