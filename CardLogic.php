@@ -2900,8 +2900,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if($target == "truce_blue-1") {
       WriteLog("Congrats! You didn't kill each other!🤝");
       DestroyAuraUniqueID($defPlayer, $uniqueID);
-      GainHealth(3, $defPlayer);
+      // turn player performs the instruction first
       GainHealth(3, $mainPlayer);
+      GainHealth(3, $defPlayer);
       }
       else {
         DestroyAuraUniqueID($defPlayer, $uniqueID);
