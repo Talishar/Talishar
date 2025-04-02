@@ -1498,13 +1498,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
-    if (IsStaticType($cardType, $from, $cardID)) {
+    if (IsStaticType($cardType, $from, $cardID) || GetAbilityTypes($cardID, $index, $from) != "") {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
     }
     else $abilityType = "-";
     if ($playingCard) {
-      if (CardType($cardID, $from) == "AA" || $abilityType == "AA") EndResolutionStep();
+      if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
       elseif (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
         WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please pass priority instead of replaying your card.");
         RevertGamestate();
