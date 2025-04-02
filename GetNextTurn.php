@@ -1591,6 +1591,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
   }
 
+  // Prompt the player if they want to close the combat chain.
+  if ((CanPassPhase($turn[0]) && $currentPlayer == $playerID) || (IsReplay() && $playerID == 3)) {
+    if ($turn[0] == "M" && SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $actionPoints > 0 && !IsReplay()) {
+      $response->preventPassPrompt = "Are you sure you want to close the combat chain?";
+    }
+  }
+
   // If both players have enabled chat, is true, else false
   $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 && intval(GetCachePiece($gameName, 16)) == 1 ? true : false;
 
