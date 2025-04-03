@@ -535,6 +535,15 @@ function ArcaneModifierAmount($source, $player, $index)
   return 0;
 }
 
+// meld cards that generate delayed triggers that deal arcane on the left side
+function MeldTriggersDealingArcane($source)
+{
+  return match($source) {
+    "burn_up__shock_red" => true,
+    default => false
+  };
+}
+
 function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|string
 {
   global $currentTurnEffects;
@@ -544,9 +553,12 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
     $effectArr = explode(",", $currentTurnEffects[$i]);
     switch ($effectArr[0]) {
       case "aether_wildfire_red":
-        $cardType = CardType($source);
-        if ((DelimStringContains($cardType, "A") || $cardType == "AA")
-          && (!HasMeld($source) || DelimStringContains($meldState, "A"))) $modifier += $effectArr[1];
+        if ($meldState == "-" && MeldTriggersDealingArcane($source)) $modifier += $effectArr[1];
+        else {
+          $cardType = CardType($source);
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA")
+            && (!HasMeld($source) || DelimStringContains($meldState, "A"))) $modifier += $effectArr[1];
+        }
         break;
       case "rampant_growth__life_yellow":
         if ($currentTurnEffects[$i + 1] != $player) break;
