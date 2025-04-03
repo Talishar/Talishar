@@ -908,7 +908,7 @@ function PassInput($autopass = true)
         BeginTurnPass();
       } else PassTurn();
     }
-    if ($layers[0] == "RESOLUTIONSTEP" && count($layers) == LayerPieces() && $currentPlayer == $mainPlayer) PassInput($autopass);
+    if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer) PassInput($autopass);
   }
 }
 

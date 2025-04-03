@@ -504,7 +504,7 @@ function ContinueDecisionQueue($lastResult = "")
   if (count($dqVars) > 1) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
   $subsequent = array_shift($decisionQueue);
   $makeCheckpoint = array_shift($decisionQueue);
-  if ($layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
+  if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
     // turn player can play actions in the resolution step
     // still a little buggy, chain closes if turn player passes here
     $phase = "M";
