@@ -107,8 +107,8 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           if(!$deck->Empty()) {
             WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " let you draw a card then put one on top");
             Draw($player);
-            HandToTopDeck($player);
-          }
+            }
+          HandToTopDeck($player);
           break;
         case "Banish_top_deck":
           if(!$deck->Empty()) {
