@@ -2263,7 +2263,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
           }
           break;
         case "WarmongersPeace":
-          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I" && $resolvedAbilityType != "A"))) $restrictedBy = "warmongers_diplomacy_blue";
+          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "warmongers_diplomacy_blue";
           break;
         default:
           break;
@@ -2322,7 +2322,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
         case "WarmongersPeace":
           // !str_contains(GetAbilityTypes($cardID), "I") should allow discarding attack actions for instant abilities under peace
-          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I" && GetResolvedAbilityType($cardID) != "A")) $restrictedBy = "warmongers_diplomacy_blue";
+          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "warmongers_diplomacy_blue";
           break;
         case "kabuto_of_imperial_authority":
           if (IsWeapon($cardID, $from) && !WeaponWithNonAttack($cardID, $from)) $restrictedBy = "kabuto_of_imperial_authority";
