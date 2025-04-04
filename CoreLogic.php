@@ -1717,14 +1717,15 @@ function DoesAttackHaveGoAgain()
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
-  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
   $attackID = $CombatChain->AttackCard()->ID();
+  $from = isset($combatChain[2]) ? $combatChain[2] : "CC";
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
 
   //Prevention Natural Go Again
-  if (CurrentEffectPreventsGoAgain($attackID, "CC")) return false;
+  if (CurrentEffectPreventsGoAgain($attackID, $from)) return false;
   if (SearchCurrentTurnEffects("blizzard_blue", $mainPlayer)) return false;
 
   //Natural Go Again
