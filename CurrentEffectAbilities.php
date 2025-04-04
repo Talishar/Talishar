@@ -265,13 +265,22 @@ function EffectHitEffect($cardID, $from, $source = "-")
       }
       break;
     case "spike_with_bloodrot_red":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
+      // The spikes *give* the ability to the attack
+      if ($source == "-") $atkSource = $CombatChain->AttackCard()->ID();
+      else $atkSource = $source;
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer, isToken:true, effectSource:$atkSource);
       break;
     case "spike_with_frailty_red":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
+      // The spikes *give* the ability to the attack
+      if ($source == "-") $atkSource = $CombatChain->AttackCard()->ID();
+      else $atkSource = $source;
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer, isToken:true, effectSource:$atkSource);
       break;
     case "spike_with_inertia_red":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
+      // The spikes *give* the ability to the attack
+      if ($source == "-") $atkSource = $CombatChain->AttackCard()->ID();
+      else $atkSource = $source;
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer, isToken:true, effectSource:$atkSource);
       break;
     case "melting_point_red":
       if (IsHeroAttackTarget() && HasAimCounter()) {
