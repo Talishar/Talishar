@@ -284,6 +284,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "DEDUPEMULTIZONEINDS":
+      // only allows for choosing the first of a stack of tokens
+      // right now only takes into account cardID for deduping
+      // carving out an exception for spectral shields as you may want to hit ones with counters
+      $inds = explode(",", $lastResult);
+      $foundMine = [];
+      $foundTheirs = [];
+      $dedupedInds = [];
+      foreach($inds as $index) {
+        if (str_contains($index, "THEIR")) {
+          $cardID = GetMZCard($player, $index);
+          if (!TypeContains($cardID, "T") || !in_array($cardID, $foundTheirs) || $cardID == "spectral_shield") {
+            array_push($foundTheirs, $cardID);
+            array_push($dedupedInds, $index);
+          }
+        }
+        else {
+          $cardID = GetMZCard($player, $index);
+          if (!TypeContains($cardID, "T") || !in_array($cardID, $foundMine) || $cardID == "spectral_shield") {
+            array_push($foundMine, $cardID);
+            array_push($dedupedInds, $index);
+          }
+        }
+      }
+      $dedupedInds = implode(",", $dedupedInds);
+      return $dedupedInds;
     case "BLOCKLESS0HAND":
       $hand = &GetHand($player);
       $countHand = count($hand);

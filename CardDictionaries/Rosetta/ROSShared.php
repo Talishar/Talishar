@@ -191,6 +191,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS&MYAURAS", 1);
+        AddDecisionQueue("DEDUPEMULTIZONEINDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SUMMERSFALL", $currentPlayer, $cardID.",NONE");
