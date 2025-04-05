@@ -469,6 +469,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "alluring_inducement_yellow":
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=AA");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
