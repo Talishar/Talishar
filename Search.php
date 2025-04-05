@@ -411,7 +411,7 @@ function SearchCharacterForCard($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == $cardID && $character[$i + 12] != "DOWN") return true;
+    if ($character[$i] == $cardID && $character[$i + 12] != "DOWN" && $character[$i + 1] != 0) return true;
   }
   return false;
 }
