@@ -676,7 +676,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "SCOURTARGETTING":
       global $CS_LastDynCost;
-      $resourcesPaid = GetClassState($player, $CS_LastDynCost);
+      $dynCost = explode(",", GetClassState($player, $CS_LastDynCost));
+      $resourcesPaid = intval($dynCost[0]) + intval($dynCost[1]);
+      $resourcesPaid = $resourcesPaid < 0 ? 0 : $resourcesPaid;
       $target = $lastResult;
       $targetPlayer = substr($target, 0, 5) == "THEIR";
       $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
@@ -684,9 +686,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      for($i=0; $i<$resourcesPaid; ++$i) {
+      for($i=0; $i<$dynCost[0]; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, $parameter, 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $dynCost[0]-$i . " aura(s) to destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
         AddDecisionQueue("SETDQVAR", $player, "0");
