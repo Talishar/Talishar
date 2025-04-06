@@ -374,7 +374,6 @@
             ++$numDestroyed;
           }
         }
-        WriteLog("HERE in scour: $numDestroyed, $damageTarget");
         DealArcane($numDestroyed, source:"scour_blue", type:"PLAYCARD", resolvedTarget:$damageTarget);
         return "";
       case "emeritus_scolding_red": case "emeritus_scolding_yellow": case "emeritus_scolding_blue":
