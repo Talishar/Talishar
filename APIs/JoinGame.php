@@ -524,13 +524,15 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "bank_breaker", "clamp_press_blue",
       "valda_seismic_impact",
+      "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle"
   ];
-  return in_array($cardID, $specialUsePromos);
+  return in_array($cardID, $specialUsePromos) || str_contains(SetID($cardID), "SEA");
 }
 
 function isUnimplemented($cardID) {
   // return false;
   return match ($cardID) {
+    "venomback_fabric_yellow" => true, //missing image
     "treasure_island", "riggermortis_yellow" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "gravy_bones_shipwrecked_looter", "compass_of_sunken_depths" => true,
@@ -616,8 +618,9 @@ function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
 
 function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
   
-  $cardName = CardName($id); 
+  $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
+      echo "$id - $cardName";
       if ($unsupportedCards != "") $unsupportedCards .= " ";
       $unsupportedCards .= $id;
       return;

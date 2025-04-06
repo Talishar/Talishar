@@ -291,6 +291,13 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
       }
       break;
+    case "taylor":
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to swap (pass to decline)");
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "TAYLOR", 1);
+      break;
     default:
       break;
   }

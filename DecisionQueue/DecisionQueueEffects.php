@@ -890,6 +890,29 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         }
       }
       return $lastResult;
+    case "TAYLOR":
+      $cardID = GetMZCard($player, $lastResult);
+      if (SubtypeContains($cardID, "Head")) $subtype = "Head";
+      elseif (SubtypeContains($cardID, "Legs")) $subtype = "Legs";
+      elseif (SubtypeContains($cardID, "Arms")) $subtype = "Arms";
+      elseif (SubtypeContains($cardID, "Chest")) $subtype = "Chest";
+      $inventory = &GetInventory($player);
+      $choices = [];
+      foreach ($inventory as $cardID) {
+        if (SubtypeContains($cardID, $subtype)) {
+          array_push($choices, $cardID);
+        }
+      }
+      if (count($choices) == 0) {
+        WriteLog("Player " . $player . " doesn't have any $subtype equipment in their inventory");
+        return;
+      }
+      $choices = implode(",", $choices);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a $subtype equipment to equip");
+      AddDecisionQueue("CHOOSECARD", $mainPlayer, $choices);
+      AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
+      AddDecisionQueue("EQUIPCARDINVENTORY", $mainPlayer, "<-");
+      return $cardID;
     default: return "";
   }
 

@@ -7,6 +7,14 @@ function CardName($cardID)
     switch ($cardID) {
       case "valda_seismic_impact":
         return "Valda, Seismic Impact";
+      case "silversheen_needle":
+        return "Silversheen Needle";
+      case "fabric_of_spring_yellow":
+        return "Fabric of Spring";
+      case "venomback_fabric_yellow":
+        return "Venomback Fabric";
+      case "taylor":
+        return "Taylor";
       default:
         break;
     }

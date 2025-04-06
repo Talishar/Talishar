@@ -2321,6 +2321,9 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     $character = GetPlayerCharacter($player);
     for ($i = 0; $i < count($character); $i += CharacterPieces()) {
       switch ($character[$i]) {
+        case "silversheen_needle":
+          if (CardNameContains($cardID, "Fabric", $player, true)) $hasGoAgain = true;
+          break;
         case "compass_of_sunken_depths":
           if (GetClassState($player, $CS_NumWateryGrave) == 1 && HasWateryGrave($cardID) && $from=="GY") {
             $hasGoAgain = true;
@@ -2943,6 +2946,18 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       case "magrar";
           PlayAura("zen_state", $currentPlayer);
           PlayAura("inertia", $currentPlayer);
+        return "";
+      case "fabric_of_spring_yellow":
+        if (!SearchCharacterAliveSubtype($currentPlayer, "Chest")) {
+          //I'm not bothering with the double sided stuff
+          EquipEquipment($currentPlayer, "fyendals_spring_tunic", "Chest");
+        }
+        return "";
+      case "venomback_fabric_yellow":
+        if (!SearchCharacterAliveSubtype($currentPlayer, "Legs")) {
+          //I'm not bothering with the double sided stuff
+          EquipEquipment($currentPlayer, "scabskin_leathers", "Legs");
+        }
         return "";
       default:
         break;
