@@ -3139,6 +3139,8 @@ function FinalizeAction()
         $turn[2] = "";
       } else {
         $currentPlayer = $mainPlayer;
+        //may be needed if the player is on always pass priority
+        ResetCombatChainState();
         BeginTurnPass();
       }
     }
