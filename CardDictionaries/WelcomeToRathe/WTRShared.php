@@ -135,7 +135,7 @@
       case "sharpen_steel_red": case "sharpen_steel_yellow": case "sharpen_steel_blue": return TypeContains($attackID, "W", $mainPlayer);
       case "driving_blade_red": case "driving_blade_yellow": case "driving_blade_blue": return TypeContains($attackID, "W", $mainPlayer);
       case "natures_path_pilgrimage_red": case "natures_path_pilgrimage_yellow": case "natures_path_pilgrimage_blue": return TypeContains($attackID, "W", $mainPlayer);
-      case "goliath_gauntlet": return CardType($attackID) == "AA" && (CardCost($attackID) >= 2 || GetClassState($mainPlayer, $CS_LastDynCost) >= 2);
+      case "goliath_gauntlet": return CardType($attackID) == "AA" && (CardCost($attackID) >= 2 || intval(explode(",", GetClassState($mainPlayer, $CS_LastDynCost))[0]) >= 2);
       case "snapdragon_scalers": return true;
       case "enlightened_strike_red": return true;
       case "last_ditch_effort_blue": return true;

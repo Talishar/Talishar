@@ -22,7 +22,7 @@
         return "";
       case "ice_eternal_blue":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
+        $numFrostBite = intval(explode(",", GetClassState($currentPlayer, $CS_LastDynCost))[0])/2;
         PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $currentPlayer);
         $amountArcane = SearchCount(SearchAurasForCard("frostbite", $otherPlayer));
         if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
