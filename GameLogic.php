@@ -1728,15 +1728,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $targetType = 0;
       $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0));
       $otherPlayerCount = SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0));
-      $numTargets = intval(explode(",", $lastResult)[0]);
-      if($numTargets > $myCount) {
+      if($lastResult > $myCount) {
         $targetType = 1;
       }
-      elseif ($numTargets > $otherPlayerCount) {
+      elseif ($lastResult > $otherPlayerCount) {
         $targetType = 4;
       }
+      WriteLog($lastResult . " " . $targetType . " " . $myCount . " " . $otherPlayerCount);
       $dqVars[$parameter] = $targetType;
-      return $numTargets;
+      return $lastResult;
     case "SETDQVAR":
       $dqVars[$parameter] = $lastResult;
       return $lastResult;

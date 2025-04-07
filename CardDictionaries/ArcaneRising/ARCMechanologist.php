@@ -31,9 +31,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "spark_of_genius_yellow":
-      $cost = intval(explode(",", GetClassState($currentPlayer, $CS_LastDynCost))[0]);
-      $Xval = $cost / 2;
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:subtype=Item;class=MECHANOLOGIST;minCost=$Xval;maxCost=$Xval");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:subtype=Item;class=MECHANOLOGIST;minCost=" . (GetClassState($currentPlayer, $CS_LastDynCost) / 2) . ";maxCost=" . (GetClassState($currentPlayer, $CS_LastDynCost) / 2));
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, 0, 1);
