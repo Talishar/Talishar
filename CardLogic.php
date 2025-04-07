@@ -467,7 +467,6 @@ function ContinueDecisionQueue($lastResult = "")
       $player = $decisionQueue[1];
       $params = explode("-", $decisionQueue[2]); //Parameter
       if ($lastResult == "") $lastResult = 0;
-      else $lastResult = intval(explode(",", $lastResult)[0]);
       CloseDecisionQueue();
       if ($currentPlayer != $player) {
         $currentPlayer = $player;

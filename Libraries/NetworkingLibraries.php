@@ -1574,10 +1574,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       else $dynCost = "";
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "" || ($dynCost == 0 && substr($from, 0, 5) != "THEIR")) {
-        $dynCostModifier = CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $dynCost) + BanishCostModifier($from, $index, $dynCost);
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
-        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",$dynCostModifier", 1);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost, 1);
+        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       }
       //CR 5.1.4. Declare Modes and Targets
       //CR 5.1.4a Declare targets for resolution abilities
@@ -1619,8 +1617,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $from = $turn[4];
     $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
-  $lastDynCost = intval(explode(",", GetClassState($currentPlayer, $CS_LastDynCost))[0]);
-  if ($lastDynCost != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . $lastDynCost . ".");
+  if (GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost) . ".");
   $cardType = CardType($cardID);
   $abilityType = "";
   $playType = $cardType;
@@ -2970,7 +2967,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "up_the_ante_blue":
       global $CS_LastDynCost;
-      $dynCost = intval(explode(",", GetClassState($currentPlayer, $CS_LastDynCost))[0]);
+      $dynCost = GetClassState($currentPlayer, $CS_LastDynCost);
       $max = $dynCost > 4 ? 4 : $dynCost + 1;
       $modalities = "Wager_Agility,Wager_Gold,Wager_Vigor,Buff_Attack";
       if ($max < 4) {
