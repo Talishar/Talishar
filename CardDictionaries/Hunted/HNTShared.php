@@ -697,7 +697,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "take_a_stab_red":
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) AddEffectToCurrentAttack($cardID);
       break;
     case "quickdodge_flexors":
       if (CanBlockWithEquipment()) {
