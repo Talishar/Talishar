@@ -623,7 +623,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
-      WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
       if (SetIDtoCardID($cardID) != "") $cardID = SetIDtoCardID($cardID);
       $cardID = str_replace(" ", "_", $cardID);
       if (CardName($cardID) == "") {
@@ -631,8 +630,17 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
         elseif (CardName($cardID . "_blue") != "") $cardID .= "_blue";
       }
-      $hand = &GetHand($playerID);
-      array_push($hand, $cardID);
+      if (!TypeContains($cardID, "T")) {
+        WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
+        $hand = &GetHand($playerID);
+        array_push($hand, $cardID);
+      }
+      else {
+        WriteLog("Player " . $playerID . " manually created a token", highlight: true);
+        if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID);
+        elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID);
+        else PutPermanentIntoPlay($playerID, $cardID);
+      }
       break;
     case 10012:
       WriteLog("Player " . $playerID . " manually added a resource to their pool", highlight: true);
