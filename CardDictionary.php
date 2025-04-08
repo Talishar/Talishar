@@ -1890,6 +1890,23 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
   return false;
 }
 
+function ChainBreakTriggerLive()
+{
+  global $chainLinks;
+  //find some way to communicate this
+  return false;
+  $chainBreakTriggerCards = ["widespread_annihilation_blue", "widespread_destruction_yellow",
+  "widespread_ruin_red", "deathly_wail_red", "deathly_wail_yellow", "deathly_wail_blue",
+  "deathly_delight_red", "deathly_delight_yellow", "deathly_delight_blue",
+  "eloquent_eulogy_red"];
+  for ($i = 0; $i < count($chainLinks); $i++) {
+    if (in_array($chainLinks[$i][0], $chainBreakTriggerCards)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
@@ -1954,6 +1971,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   }
   if (EffectAttackRestricted($cardID, $type, $from, index:$index) != "" && $currentPlayer == $mainPlayer) {
     $restriction = true;
+    return true;
+  }
+  // block NAAs if a chain break trigger is active
+  if (CardType($cardID) == "A" && ChainBreakTriggerLive() && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
+    $restriction = "Close the Chain first";
     return true;
   }
   switch ($cardID) {
