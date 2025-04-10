@@ -7,10 +7,10 @@ function SEAAbilityType($cardID, $from="-"): string
     "chum_friendly_first_mate_yellow" => "I",
     "compass_of_sunken_depths" => "I",
 
-    // "puffin_hightail" => "A", disabling for now
+    "puffin_hightail" => "A",
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
 
-    // "marlynn_treasure_hunter" => "A", disabling for now
+    "marlynn_treasure_hunter" => "A",
     default => ""
   };
 }
