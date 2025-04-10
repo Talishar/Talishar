@@ -68,11 +68,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
       break;
     case "paddle_faster_red":
-      WavePermanent($currentPlayer, "MYALLY");
+      TapPermanent($currentPlayer, "MYALLY");
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "board_the_ship_red":
-      WavePermanent($currentPlayer, "MYALLY");
+      TapPermanent($currentPlayer, "MYALLY");
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chart_the_high_seas_blue":
@@ -173,12 +173,12 @@ function GetUnwaved($player, $zone, $cond="-")
   for ($i = 0; $i < count($arr); $i += $count) {
     $ind = "$zone-$i";
     if ($cond != "-" && !in_array($ind, $allowedInds)) continue;
-    if (!CheckWaved($ind, $player)) array_push($unwavedInds, $ind);
+    if (!CheckTapped($ind, $player)) array_push($unwavedInds, $ind);
   }
   return implode(",", $unwavedInds);
 }
 
-function WavePermanent($player, $zone, $may=true) {
+function TapPermanent($player, $zone, $may=true) {
   $obj = match($zone) {
     "MYALLY" => "an ally",
     "MYITEMS" => "an item",
@@ -189,16 +189,27 @@ function WavePermanent($player, $zone, $may=true) {
   AddDecisionQueue("PASSPARAMETER", $player, $inds, 1);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZWAVE", $player, "<-", 1);
+  AddDecisionQueue("MZTAP", $player, "<-", 1);
 }
 
-function Wave($MZindex, $player): string
+function Tap($MZindex, $player, $tapState=1)
 {
-  return "";
+  $zoneName = explode("-", $MZindex)[0];
+  $zone = &GetMZZone($player, $zoneName);
+  $ind = intval(explode("-", $MZindex)[1]);
+  if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
+  elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
+  elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
 }
 
-function CheckWaved($MZindex, $player): bool
+function CheckTapped($MZindex, $player): bool
 {
+  $zoneName = explode("-", $MZindex)[0];
+  $zone = &GetMZZone($player, $zoneName);
+  $ind = intval(explode("-", $MZindex)[1]);
+  if (str_contains($zoneName, "CHAR")) return $zone[$ind + 14] == 1;
+  elseif (str_contains($zoneName, "ALLY")) return $zone[$ind + 11] == 1;
+  elseif (str_contains($zoneName, "ITEM")) return $zone[$ind + 10] == 1;
   return false;
 }
 

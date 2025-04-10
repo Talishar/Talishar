@@ -29,6 +29,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, 0);
     array_push($items, ItemModalities($item));
     array_push($items, $from);
+    array_push($items, 0); //enters untapped
     if (HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {

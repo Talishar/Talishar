@@ -1339,7 +1339,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "chum_friendly_first_mate_yellow":
-      if (CheckWaved("MYALLIES-$index", $currentPlayer)) return "";
+      if (CheckTapped("MYALLIES-$index", $currentPlayer)) return "";
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -1534,7 +1534,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
   if ($cardID == "chum_friendly_first_mate_yellow" && $from == "PLAY") {
-    if (CheckWaved("MYALLIES-$index", $currentPlayer)) return false;
+    if (CheckTapped("MYALLIES-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
     else return false;
@@ -2762,10 +2762,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "gravy_bones_shipwrecked_looter":
     case "puffin_hightail":
     case "marlynn_treasure_hunter":
-      if (CheckWaved("MYCHAR-$index", $currentPlayer)) return true;
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
-      return CheckWaved("MYCHAR-$index", $currentPlayer);
+      return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
