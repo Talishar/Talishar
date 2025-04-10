@@ -494,7 +494,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100: //Break Chain
       WriteLog("$playerID passes priority in the Resolution Step");
-      PassInput(false);
+      PassInput(false, doublePass:true);
       break;
     case 101: //Pass block and Reactions
       ChangeSetting($playerID, $SET_PassDRStep, 1);
@@ -892,7 +892,7 @@ function HasCard($cardID)
   return -1;
 }
 
-function PassInput($autopass = true)
+function PassInput($autopass = true, $doublePass=false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
   if ($turn[0] == "B") {
@@ -916,9 +916,12 @@ function PassInput($autopass = true)
         BeginTurnPass();
       } else PassTurn();
     }
-    // without this line the turn player needs to pass twice to break the chain
-    // but including the line makes auto-passers automatically pass through the resolution step
-    // if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer) PassInput($autopass);
+    if (HoldPrioritySetting($currentPlayer) != 4 || $doublePass) {
+      // without this line the turn player needs to pass twice to break the chain
+      // but including the line makes auto-passers automatically pass through the resolution step
+      // for now only turn enable this line if you aren't on always pass
+      if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer) PassInput($autopass);
+    }
   }
 }
 
