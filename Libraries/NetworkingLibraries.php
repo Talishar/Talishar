@@ -916,6 +916,9 @@ function PassInput($autopass = true)
         BeginTurnPass();
       } else PassTurn();
     }
+    // without this line the turn player needs to pass twice to break the chain
+    // but including the line makes auto-passers automatically pass through the resolution step
+    // if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer) PassInput($autopass);
   }
 }
 
