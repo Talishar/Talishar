@@ -747,7 +747,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
     if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Buffed";
-    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, atkCounters:$theirAllies[$i+9], label: $label, tapped: $theirAllies[$i+11]==1));
+    array_push($theirAlliesOutput, 
+      JSONRenderedCard(
+        cardNumber: $theirAllies[$i], 
+        overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), 
+        counters: $theirAllies[$i + 6], 
+        lifeCounters: $theirAllies[$i + 2], 
+        controller: $otherPlayer, 
+        type: $type, 
+        sType: $sType, 
+        isFrozen: ($theirAllies[$i + 3] == 1), 
+        subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, 
+        atkCounters:$theirAllies[$i+9], 
+        label: $label, 
+        tapped: $theirAllies[$i+11] == 1));
   }
   $response->opponentAllies = $theirAlliesOutput;
 
