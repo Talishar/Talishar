@@ -530,14 +530,9 @@ function isSpecialUsePromo($cardID) {
 }
 
 function isUnimplemented($cardID) {
-  return false;
   return match ($cardID) {
     "venomback_fabric_yellow" => true, //missing image
     "treasure_island", "riggermortis_yellow" => true,
-    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
-    "gravy_bones_shipwrecked_looter", "compass_of_sunken_depths" => true,
-    "chart_the_high_seas_blue", "chum_friendly_first_mate_yellow" => true,
-    "board_the_ship_red", "paddle_faster_red", "hoist_em_up_red" => true,
     default => false
   };
 }
