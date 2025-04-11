@@ -844,7 +844,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
       atkCounters: $myAllies[$i+9],
       label: $label,
-      tapped: $myAllies[$i + 11]
+      tapped: $myAllies[$i + 11] == 1
     ));
   }
   $response->playerAllies = $myAlliesOutput;
@@ -920,7 +920,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       rustCounters: $rustCounters,
       verseCounters: $verseCounters,
       flowCounters: $flowCounters,
-      tapped: $myItems[$i + 10]));
+      tapped: $myItems[$i + 10] == 1));
   }
   $response->playerItems = $myItemsOutput;
 
