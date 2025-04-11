@@ -199,6 +199,7 @@ function GetCardBack($player)
     case 99: return "CBDazzyfizzle8";
     case 100: return "CBSmilingFleshBag";
     case 101: return "CBDashciples";
+    case 102: return "CBBlitzkriegMeph";
     default: return "CardBack";
   }
 }
