@@ -21,6 +21,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     array_push($allies, 1); //Ability/effect uses
     array_push($allies, 0); //Attack Counters
     array_push($allies, 0); //Damage dealt to the opponent
+    array_push($allies, 0); //tapped
     if ($cardID == "ouvia") {
       WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
       Transform($player, "Ash", "aether_ashwing", true);
@@ -407,6 +408,8 @@ function AllyEndTurnAbilities()
   global $mainPlayer;
   $allies = &GetAllies($mainPlayer);
   for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
+    //untap
+    Tap("MYALLY-$i", $mainPlayer, 0);
     switch ($allies[$i]) {
       case "UPR551":
         DestroyAlly($mainPlayer, $i, true);

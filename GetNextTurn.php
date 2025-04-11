@@ -462,7 +462,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         facing: $theirCharacter[$i + 12],
         numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-        marked: $theirCharacter[$i + 13] == 1
+        marked: $theirCharacter[$i + 13] == 1,
+        tapped: $theirCharacter[$i + 14] == 1
         ));
       }
     } else {
@@ -478,7 +479,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           label: $label,
           facing: $theirCharacter[$i + 12],
           subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-          marked: $theirCharacter[$i + 13] == 1
+          marked: $theirCharacter[$i + 13] == 1,
+          tapped: $theirCharacter[$i + 14] == 1
           ));
     } 
   }
@@ -660,7 +662,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           facing: $myCharacter[$i + 12],
           numUses: $myCharacter[$i + 5], //Number of Uses
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10],
-          marked: $myCharacter[$i + 13] == 1));
+          marked: $myCharacter[$i + 13] == 1,
+          tapped: $myCharacter[$i + 14] == 1));
       }
     }
   }
@@ -744,7 +747,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
     if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Buffed";
-    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, atkCounters:$theirAllies[$i+9], label: $label));
+    array_push($theirAlliesOutput, JSONRenderedCard(cardNumber: $theirAllies[$i], overlay: ($theirAllies[$i + 1] != 2 ? 1 : 0), counters: $theirAllies[$i + 6], lifeCounters: $theirAllies[$i + 2], controller: $otherPlayer, type: $type, sType: $sType, isFrozen: ($theirAllies[$i + 3] == 1), subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, atkCounters:$theirAllies[$i+9], label: $label, tapped: $theirAllies[$i+11]==1));
   }
   $response->opponentAllies = $theirAlliesOutput;
 
@@ -784,7 +787,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       type: $type, 
       sType: $sType, 
       isFrozen: $theirItems[$i + 7] == 1,
-      gem: $gem));
+      gem: $gem,
+      tapped: $theirItems[$i + 10] == 1));
   }
   $response->opponentItems = $theirItemsOutput;
 
@@ -826,7 +830,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       isFrozen: ($myAllies[$i+3] == 1),
       subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
       atkCounters: $myAllies[$i+9],
-      label: $label
+      label: $label,
+      tapped: $myAllies[$i + 11]
     ));
   }
   $response->playerAllies = $myAlliesOutput;
@@ -901,7 +906,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       restriction: $restriction,
       rustCounters: $rustCounters,
       verseCounters: $verseCounters,
-      flowCounters: $flowCounters));
+      flowCounters: $flowCounters,
+      tapped: $myItems[$i + 10]));
   }
   $response->playerItems = $myItemsOutput;
 

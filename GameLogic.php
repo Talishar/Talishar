@@ -2792,8 +2792,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       $items[$params[0]+8] = $params[1];
       return $lastResult;
-    case "MZWAVE":
-      Wave($lastResult, $player);
+    case "MZTAP":
+      Tap($lastResult, $player);
       return $lastResult;
     default:
       return "NOTSTATIC";

@@ -30,6 +30,7 @@ class Character
   public $uniqueID = 0;
   public $facing = "UP";
   public $marked = 0;
+  public $tapped = 0;
 
 
   private $player = null;
@@ -55,6 +56,7 @@ class Character
     $this->uniqueID = $array[$index + 11];
     $this->facing = $array[$index + 12];
     $this->marked = $array[$index + 13];
+    $this->tapped = $array[$index + 14];
   }
 
   public function Finished()
@@ -74,6 +76,7 @@ class Character
     $array[$this->arrIndex + 11] = $this->uniqueID;
     $array[$this->arrIndex + 12] = $this->facing;
     $array[$this->arrIndex + 13] = $this->marked;
+    $array[$this->arrIndex + 14] = $this->tapped;
   }
 }
 
@@ -94,7 +97,8 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
   array_push($char, HasCloaked($cardID, $player));
-  array_push($char, 0);
+  array_push($char, 0); //marked
+  array_push($char, 0); //tapped
   return $index;
 }
 
@@ -416,6 +420,8 @@ function MainCharacterBeginEndPhaseAbilities()
       default:
         break;
     }
+    //untap
+    Tap("MYCHAR-$i", $mainPlayer, 0);
   }
 
   $defCharacter = &GetPlayerCharacter($defPlayer);
@@ -840,6 +846,7 @@ function EquipEquipment($player, $card, $slot = "")
       $char[$i + 11] = $uniqueID;
       $char[$i + 12] = HasCloaked($card, $player);
       $char[$i + 13] = 0;
+      $char[$i + 14] = 0;
       $replaced = 1;
     }
   }
@@ -920,6 +927,7 @@ function EquipWeapon($player, $card, $source = "-")
           $char[$i + 11] = $uniqueID;
           $char[$i + 12] = HasCloaked($card, $player);
           $char[$i + 13] = 0;
+          $char[$i + 14] = 0;
           $replaced = 1;
         }
       }
@@ -1226,10 +1234,10 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "marlynn_treasure_hunter":
       $goldIndex = GetItemIndex("gold", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $goldIndex);
-      Wave("MYCHAR-$cardIndex", $currentPlayer);
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "compass_of_sunken_depths":
-      Wave("MYCHAR-$cardIndex", $currentPlayer);
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     default:
       --$character[$cardIndex + 5];

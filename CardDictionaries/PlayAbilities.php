@@ -578,6 +578,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char[9] = 2;
       $char[11] = GetUniqueId("teklovossen_the_mechropotent", $currentPlayer);
       $char[13] = 0;
+      $char[14] = 0; //assuming transforming untaps
       $mechropotentIndex = 0; // we pushed it, so should be the last element
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
         if ($char[$i] != "teklovossen_the_mechropotent" && $char[$i] != "NONE00") {

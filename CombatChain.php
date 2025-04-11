@@ -1489,8 +1489,8 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
       //for some reason DQs aren't working here, for now just automatically choose the first cog
-      $inds = GetUnwaved($currentPlayer, "MYITEMS", "subtype=Cog");
-      Wave(explode(",", $inds)[0], $currentPlayer);
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      Tap(explode(",", $inds)[0], $currentPlayer);
       break;
     default:
       break;

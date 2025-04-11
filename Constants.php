@@ -42,9 +42,10 @@ function DiscardPieces()
 //11 - Unique ID
 //12 - Face up/down
 //13 - Marked (1 = yes, 0 = no)
+//14 - Tapped (1 = yes, 0 = no)
 function CharacterPieces()
 {
-  return 14;
+  return 15;
 }
 
 //0 - Card ID
@@ -96,9 +97,10 @@ function AuraPieces()
 //7 - Frozen (1 = yes, 0 = no)
 //8 - Modalities (eg. Micro-Processor)
 //9 - Where it's played from
+//10 - Tapped (0 = no, 1 = yes)
 function ItemPieces()
 {
-  return 10;
+  return 11;
 }
 
 function PitchPieces()
@@ -164,9 +166,10 @@ function ArsenalPieces()
 //8 - Ability/effect Uses
 //9 - Attack Counters
 //10 - Dealt Damage to opposing hero
+//11 - Tapped (0 = no, 1 = yes)
 function AllyPieces()
 {
-  return 11;
+  return 12;
 }
 
 //0 - Card ID

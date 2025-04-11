@@ -29,6 +29,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, 0);
     array_push($items, ItemModalities($item));
     array_push($items, $from);
+    array_push($items, 0); //enters untapped
     if (HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
@@ -391,6 +392,8 @@ function ItemEndTurnAbilities()
   global $mainPlayer;
   $items = &GetItems($mainPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    //untap
+    Tap("MYITEMS-$i", $mainPlayer, 0);
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_balance_blue":
