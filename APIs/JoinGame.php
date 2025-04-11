@@ -530,6 +530,31 @@ function isSpecialUsePromo($cardID) {
 }
 
 function isUnimplemented($cardID) {
+  // by default cards from new sets are unimplemented
+  switch (CardSet($cardID)) {
+    case "SEA":
+      return match($cardID) {
+        "puffin_hightail" => false,
+        "golden_skywarden_yellow" => false,
+        "gravy_bones_shipwrecked_looter" => false,
+        "compass_of_sunken_depths" => false,
+        "chart_the_high_seas_blue" => false,
+        "chum_friendly_first_mate_yellow" => false,
+        "board_the_ship_red" => false,
+        "marlynn_treasure_hunter" => false,
+        "king_shark_harpoon_red" => false,
+        "goldfin_harpoon_yellow" => false,
+        "big_game_trophy_shot_yellow" => false,
+        default => true
+      };
+    case "AGB":
+      return match($cardID) {
+        default => true
+      };
+    default:
+      break;
+  }
+  //cards that aren't associated with an unreleased set
   return match ($cardID) {
     "venomback_fabric_yellow" => true, //missing image
     "treasure_island", "riggermortis_yellow" => true,
