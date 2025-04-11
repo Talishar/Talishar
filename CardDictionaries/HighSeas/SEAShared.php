@@ -150,7 +150,7 @@ function SEAHitEffect($cardID): void
   }
 }
 
-function GetUnwaved($player, $zone, $cond="-")
+function GetUntapped($player, $zone, $cond="-")
 {
   switch ($zone) {
     case "MYALLY":
@@ -184,12 +184,14 @@ function TapPermanent($player, $zone, $may=true) {
     "MYITEMS" => "an item",
     default => "something"
   };
-  $inds = GetUnwaved($player, $zone);
-  AddDecisionQueue("SETDQCONTEXT", $player, "choose $obj to TEMPNAME or pass");
-  AddDecisionQueue("PASSPARAMETER", $player, $inds, 1);
-  if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-  else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("MZTAP", $player, "<-", 1);
+  $inds = GetUntapped($player, $zone);
+  if (strlen($inds) > 0) {
+    AddDecisionQueue("SETDQCONTEXT", $player, "choose $obj to tap or pass");
+    AddDecisionQueue("PASSPARAMETER", $player, $inds, 1);
+    if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("MZTAP", $player, "<-", 1);
+  }
 }
 
 function Tap($MZindex, $player, $tapState=1)

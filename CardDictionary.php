@@ -1212,7 +1212,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
-    "chum_friendly_first_mate_yellow" => "I,AA",
+    "chum_friendly_first_mate_yellow" => ($from == "HAND") ? "" : "I,AA",
     default => "",
   };
 }
@@ -1339,7 +1339,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "chum_friendly_first_mate_yellow":
-      if (CheckTapped("MYALLIES-$index", $currentPlayer)) return "";
+      if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -1367,6 +1367,7 @@ function GetAbilityIndex($cardID, $index, $abilityName)
 function GetResolvedAbilityType($cardID, $from = "-")
 {
   global $currentPlayer, $CS_AbilityIndex;
+
 
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
@@ -1534,7 +1535,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
   if ($cardID == "chum_friendly_first_mate_yellow" && $from == "PLAY") {
-    if (CheckTapped("MYALLIES-$index", $currentPlayer)) return false;
+    if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
     else return false;
@@ -2770,7 +2771,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
       if ($from != "PLAY") return false;
-      if (GetUnwaved($player, "MYITEMS", "subtype=Cog") == "") return true;
+      if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (SearchCurrentTurnEffects($cardID, $player)) return true;
       if (SearchLayersForPhase($cardID) != -1) return true;
       return false;
