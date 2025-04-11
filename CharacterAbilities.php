@@ -866,6 +866,7 @@ function EquipEquipment($player, $card, $slot = "")
     array_splice($char, $insertIndex + 11, 0, $uniqueID);
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
+    array_splice($char, $insertIndex + 14, 0, 0); //tapped
   }
   if ($card == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
   if ($card == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
