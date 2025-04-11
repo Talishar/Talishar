@@ -3028,6 +3028,7 @@ function HasBladeBreak($cardID)
       return true;
     case "zap_clappers":
     case "starlight_striders":
+    case "peg_leg":
       return true;
     default:
       return false;

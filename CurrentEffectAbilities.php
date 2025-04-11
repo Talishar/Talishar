@@ -1685,6 +1685,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "bank_breaker":
           return true;
+        case "peg_leg":
+          return true;
         default:
           break;
       }

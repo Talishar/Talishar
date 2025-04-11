@@ -3098,7 +3098,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       ChannelTalent($target, "ICE");
       break;
     case "terra":
-      TerraEndPhaseAbility($characterID, $player);
+      TerraEndPhaseAbility($parameter, $player);
       break;
     case "hoist_em_up_red":
       TapPermanent($defPlayer, "MYALLY");

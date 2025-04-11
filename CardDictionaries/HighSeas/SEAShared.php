@@ -3,6 +3,8 @@
 function SEAAbilityType($cardID, $from="-"): string
 {
   return match ($cardID) {
+    "peg_leg" => "A",
+
     "gravy_bones_shipwrecked_looter" => "I",
     "chum_friendly_first_mate_yellow" => "I",
     "compass_of_sunken_depths" => "I",
@@ -19,6 +21,7 @@ function SEAAbilityType($cardID, $from="-"): string
 function SEAAbilityCost($cardID): int
 {
   return match ($cardID) {
+    "peg_leg" => 3,
     default => 0
   };
 }
@@ -26,6 +29,7 @@ function SEAAbilityCost($cardID): int
 function SEAAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "peg_leg" => true,
     "marlynn_treasure_hunter" => true,
     default => false,
   };
@@ -44,6 +48,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
   return match ($cardID) {
+    "peg_leg" => true,
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
@@ -57,6 +62,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
+    case "peg_leg":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     // Gravy cards
     case "gravy_bones_shipwrecked_looter":
       Draw($currentPlayer, effectSource:$cardID);

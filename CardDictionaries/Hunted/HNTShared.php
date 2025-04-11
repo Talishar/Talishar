@@ -71,7 +71,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 
 function HNTEffectAttackModifier($cardID, $attached=False): int
 {
-  global $currentPlayer, $defPlayer;
+  global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
     "arakni_black_widow" => 3,
@@ -172,7 +172,7 @@ function HNTEffectAttackModifier($cardID, $attached=False): int
 
 function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $combatChain;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "long_whisker_loyalty_red" & count($dashArr) > 1) {
@@ -304,7 +304,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent, $combatChainState, $CCS_WeaponIndex;
+  global $CS_NumBoosted, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   global $chainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
@@ -897,7 +897,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HNTHitEffect($cardID, $uniqueID = -1): void
 {
-  global $mainPlayer, $defPlayer, $CS_LastAttack, $CCS_GoesWhereAfterLinkResolves, $chainLinkSummary, $combatChainState;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
