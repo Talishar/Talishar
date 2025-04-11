@@ -111,6 +111,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "backup_protocol_blu_blue":
     case "imperial_seal_of_command_red":
     case "gold":
+    case "diamond_amulet_blue":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "dissipation_shield_yellow":

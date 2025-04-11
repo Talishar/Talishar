@@ -11,6 +11,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
 
     "marlynn_treasure_hunter" => "A",
+    "diamond_amult" => "I",
     default => ""
   };
 }
@@ -99,6 +100,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS", 1);
       }
       else AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS", 1);
+      break;
+    case "diamond_amulet_blue":
+      if($from == "PLAY") GainActionPoints(1, $currentPlayer);
       break;
     // Puffin cards
     case "puffin_hightail":
@@ -220,6 +224,7 @@ function HasWateryGrave($cardID): bool
   return match($cardID) {
     "chum_friendly_first_mate_yellow" => true,
     "riggermortis_yellow" => true,
+    "diamond_amulet_blue" => true,
     default => false
   };
 }
