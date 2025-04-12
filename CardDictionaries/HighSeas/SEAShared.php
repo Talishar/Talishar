@@ -127,6 +127,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     // Marlynn cards
+    case "redspine_manta":
+      LoadArrow($currentPlayer);
+      return "";
     case "marlynn_treasure_hunter":
       AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
       break;
