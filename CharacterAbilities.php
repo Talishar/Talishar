@@ -1239,6 +1239,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "compass_of_sunken_depths":
+    case "redspine_manta":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     default:

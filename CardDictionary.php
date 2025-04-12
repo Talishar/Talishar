@@ -2766,6 +2766,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
+    case "redspine_manta":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":

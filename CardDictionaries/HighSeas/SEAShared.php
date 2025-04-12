@@ -12,6 +12,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "puffin_hightail" => "A",
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
 
+    "redspine_manta" => "A",
     "marlynn_treasure_hunter" => "A",
     "diamond_amult" => "I",
     default => ""
@@ -30,6 +31,7 @@ function SEAAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
     "peg_leg" => true,
+    "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
     default => false,
   };
