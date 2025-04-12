@@ -502,6 +502,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($source == "rok" || $source == "malign_red" || $source == "malign_yellow" || $source == "malign_blue" || $source == "murkmire_grapnel_red" || $source == "murkmire_grapnel_yellow" || $source == "murkmire_grapnel_blue") return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
+  if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
   return true;
 }
 
@@ -2661,6 +2662,8 @@ function SelfCostModifier($cardID, $from)
     case "bubble_to_the_surface_red":
     case "drop_of_dragon_blood_red":
       return (-1 * NumDraconicChainLinks());
+    case "solid_ground_blue":
+      return (-1 * NumSeismicSurge($currentPlayer));
     default:
       return 0;
   }
@@ -2930,6 +2933,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if ($set == "AST") return ASTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "AMX") return AMXPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "SEA") return SEAPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "MPG") return MPGPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else {
     switch ($cardID) {
       case "jack_o_lantern_red":
@@ -3500,4 +3504,15 @@ function isPreviousLinkDraconic()
     if ($talents[$i] == "DRACONIC") $isDraconic = true;
   }
   return $isDraconic;
+}
+
+function NumSeismicSurge($player)
+{
+  $auras = &GetAuras($player);
+  $count = 0;
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if(CardNameContains($auras[$i], "seismic_surge", $player)) ++$count;
+  }
+  return $count;
 }

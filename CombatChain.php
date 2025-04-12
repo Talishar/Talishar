@@ -594,6 +594,15 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "quickdodge_flexors":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
       break;
+    case "testament_of_valahai":
+      $countSeismic = CountAura("seismic_surge", $defPlayer);
+      if ($countSeismic >= 6) {
+        $blockModifier += 4;
+      }
+      elseif ($countSeismic >= 3) {
+        $blockModifier += 2;
+      }
+      break;
     default:
       break;
   }

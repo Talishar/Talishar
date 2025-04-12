@@ -3185,6 +3185,7 @@ function HasTemper($cardID)
     case "barkskin_of_the_millennium_tree":
       return true;
     case "tectonic_crust":
+    case "helm_of_the_arknight":
       return true;
     default:
       return false;
@@ -3200,6 +3201,7 @@ function HasGuardwell($cardID)
     case "blade_beckoner_plating":
     case "blade_beckoner_gauntlets":
     case "blade_beckoner_boots":
+    case "testament_of_valahai":
       return true;
     default:
       return false;
@@ -4320,7 +4322,7 @@ function SpellVoidAmount($cardID, $player): int
   if ($cardID == "runechant" && SearchCurrentTurnEffects("amethyst_tiara", $player)) return 1;
   return match ($cardID) {
     "arcanite_fortress" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
-    "shock_charmers", "ebon_fold", "halo_of_illumination" => 2,
+    "shock_charmers", "ebon_fold", "halo_of_illumination", "halo_of_lumina_light" => 2,
     "dream_weavers", "talisman_of_dousing_yellow", "MON400", "MON401", "MON402", "spellbane_aegis", "spell_fray_tiara", "spell_fray_cloak", "spell_fray_gloves", "spell_fray_leggings" => 1,
     "widow_veil_respirator", "widow_back_abdomen", "widow_claw_tarsus", "widow_web_crawler" => 1,
     default => 0

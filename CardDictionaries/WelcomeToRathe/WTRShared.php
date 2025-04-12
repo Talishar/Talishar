@@ -538,7 +538,12 @@
       case "debilitate_red": case "debilitate_yellow": case "debilitate_blue": case "disable_blue": case "disable_yellow": case "disable_red":
       case "mangle_red": case "righteous_cleansing_yellow": case "crush_the_weak_red": case "crush_the_weak_yellow": case "crush_the_weak_blue": case "chokeslam_red":
       case "chokeslam_yellow": case "chokeslam_blue": case "boulder_drop_yellow": case "boulder_drop_blue":
-      case "star_struck_yellow":
+      case "star_struck_yellow": 
+      case "put_em_in_their_place_red":
+      case "batter_to_a_pulp_red":
+      case "blinding_of_the_old_ones_red": 
+      case "smelting_of_the_old_ones_red": 
+      case "disenchantment_of_the_old_ones_red":
         return true;
       default:
         return false;
@@ -555,7 +560,7 @@
 
   function ProcessCrushEffect($cardID)
   {
-    global $mainPlayer, $defPlayer, $defCharacter, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers;
+    global $mainPlayer, $defPlayer, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers;
     if(!IsHeroAttackTarget()) return;
     if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
       WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
@@ -588,11 +593,9 @@
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":
-        if(IsHeroAttackTarget()) {
-          $char = &GetPlayerCharacter($defPlayer);
-          $char[1] = 3;
-          AddNextTurnEffect($cardID, $defPlayer);
-        }
+        $char = &GetPlayerCharacter($defPlayer);
+        $char[1] = 3;
+        AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "debilitate_red": case "debilitate_yellow": case "debilitate_blue":
         AddNextTurnEffect($cardID, $defPlayer);
@@ -623,6 +626,29 @@
         break;
       case "boulder_drop_yellow": case "boulder_drop_blue":
         MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
+        break;
+      case "put_em_in_their_place_red":
+        $hand = &GetHand($defPlayer);
+        $numDraw = count($hand);
+        DiscardHand($defPlayer);
+        for ($i = 0; $i < $numDraw; ++$i) Draw($defPlayer);
+        if ($numDraw > 0) WriteLog("Player $defPlayer discarded their hand and drew $numDraw cards");
+        break;
+      case "batter_to_a_pulp_red":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;maxDef=-1");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+        break;
+      case "blinding_of_the_old_ones_red":
+        $char = &GetPlayerCharacter($defPlayer);
+        $char[1] = 3;
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "smelting_of_the_old_ones_red": 
+        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true"), $mainPlayer); 
+        break;
+      case "disenchantment_of_the_old_ones_red":
+        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS"), $mainPlayer); 
         break;
       default: return;
     }

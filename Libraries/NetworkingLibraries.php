@@ -1092,7 +1092,7 @@ function ResolveCombatDamage($damageDone)
         if ($combatChain[$i + 1] == $mainPlayer) {
           $EffectContext = $combatChain[$i]; 
           AddOnHitTrigger($combatChain[$i], $combatChain[$i+8]);
-          if ($damageDone >= 4) AddCrushEffectTrigger($combatChain[$i]);
+          if ($damageDone >= 4 && IsHeroAttackTarget()) AddCrushEffectTrigger($combatChain[$i]);
           if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
       }
