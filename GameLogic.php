@@ -620,6 +620,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $mzArr = explode("-", $lastResult);
           TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
           break;
+        case "TURNDISCARDFACEDOWN":
+          $mzArr = explode("-", $lastResult);
+          TurnDiscardFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
+          break;
+        case "SUNKENTREASURE":
+          $target = GetMZCard($player, $lastResult);
+          if(PitchValue($target) == 2) {
+            PutItemIntoPlayForPlayer("gold", $player);
+          }
+          break;
         case "ADDITIONALUSE":
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
