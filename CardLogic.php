@@ -2872,7 +2872,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "face_purgatory":
-      PummelHit($otherPlayer);
+      if(!IsAllyAttacking()) PummelHit($otherPlayer);
       Draw($player);
       break;
     case "malefic_incantation_red":
