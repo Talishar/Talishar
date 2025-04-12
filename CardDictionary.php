@@ -3201,6 +3201,7 @@ function HasGuardwell($cardID)
     case "blade_beckoner_plating":
     case "blade_beckoner_gauntlets":
     case "blade_beckoner_boots":
+    case "testament_of_valahai":
       return true;
     default:
       return false;
