@@ -624,6 +624,13 @@
       case "boulder_drop_yellow": case "boulder_drop_blue":
         MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
+      case "put_em_in_their_place_red":
+        $hand = &GetHand($defPlayer);
+        $numDraw = count($hand);
+        DiscardHand($defPlayer);
+        for ($i = 0; $i < $numDraw; ++$i) Draw($defPlayer);
+        if ($numDraw > 0) WriteLog("Player $defPlayer discarded their hand and drew $numDraw cards");
+        break;
       case "batter_to_a_pulp_red":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;maxDef=-1");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
