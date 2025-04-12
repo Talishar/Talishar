@@ -624,6 +624,11 @@
       case "boulder_drop_yellow": case "boulder_drop_blue":
         MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
+      case "batter_to_a_pulp_red":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;maxDef=-1");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+        break;
       default: return;
     }
   }

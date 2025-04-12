@@ -502,6 +502,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($source == "rok" || $source == "malign_red" || $source == "malign_yellow" || $source == "malign_blue" || $source == "murkmire_grapnel_red" || $source == "murkmire_grapnel_yellow" || $source == "murkmire_grapnel_blue") return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
+  if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
   return true;
 }
 
