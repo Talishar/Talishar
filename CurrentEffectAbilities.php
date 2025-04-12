@@ -1685,6 +1685,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "bank_breaker":
           return true;
+        case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
+          return true;
         case "peg_leg":
           return true;
         default:

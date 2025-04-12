@@ -1121,6 +1121,9 @@ function HasGoAgain($cardID): bool|int
     case "jack_o_lantern_red":
     case "jack_o_lantern_yellow":
     case "jack_o_lantern_blue":
+    case "flying_high_red":
+    case "flying_high_yellow":
+    case "flying_high_blue":
       return true;
     case "war_cry_of_themis_yellow":
       return GetResolvedAbilityType($cardID) == "A";

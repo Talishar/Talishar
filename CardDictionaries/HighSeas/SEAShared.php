@@ -39,9 +39,14 @@ function SEAAbilityHasGoAgain($cardID): bool
 
 function SEAEffectAttackModifier($cardID): int
 {
+  global $CombatChain;
+  $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "big_game_trophy_shot_yellow" => 4,
+    "flying_high_red" => PitchValue($attackID) == 1 ? 1 : 0,
+    "flying_high_yellow" => PitchValue($attackID) == 2 ? 1 : 0,
+    "flying_high_blue"  => PitchValue($attackID) == 3 ? 1 : 0,
     default => 0,
   };
 }
@@ -55,6 +60,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     default => false,
   };
 }
@@ -64,7 +70,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
+    // Generic cards
     case "peg_leg":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     // Gravy cards
