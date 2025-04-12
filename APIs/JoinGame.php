@@ -547,7 +547,7 @@ function isUnimplemented($cardID) {
         "big_game_trophy_shot_yellow" => false,
         default => true
       };
-    case "AGB":
+    case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
       return match($cardID) {
         default => true
       };
