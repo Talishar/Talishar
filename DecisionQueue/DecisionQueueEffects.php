@@ -879,6 +879,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if (ColorContains($cardID, 2, $player)) PutItemIntoPlayForPlayer("gold", $player, isToken:true);
       }
       return $lastResult;
+    case "KINGKRAKENHARPOON":
+      $index = intval(explode("-", $lastResult)[1]);
+      $cardID = GetMZCard($player, $lastResult);
+      if (CanRevealCards($defPlayer)) {
+        RevealCards($cardID);
+        if (TypeContains($cardID, "A")) {
+          DiscardCard($defPlayer, $index, "king_kraken_harpoon_red", $mainPlayer);
+          PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+        }
+      }
+      return $lastResult;
     case "KINGSHARKHARPOON":
       $index = intval(explode("-", $lastResult)[1]);
       $cardID = GetMZCard($player, $lastResult);

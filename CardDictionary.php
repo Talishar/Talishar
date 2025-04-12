@@ -247,6 +247,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "compass_of_sunken_depths":
       return "Off-Hand";
     case "goldfin_harpoon_yellow":
+    case "king_kraken_harpoon_red":
     case "king_shark_harpoon_red":
       return "Arrow";
     default:

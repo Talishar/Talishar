@@ -996,6 +996,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "pain_in_the_backside_red":
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
+    case "king_kraken_harpoon_red":
     case "king_shark_harpoon_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
