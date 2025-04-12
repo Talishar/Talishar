@@ -2662,6 +2662,8 @@ function SelfCostModifier($cardID, $from)
     case "bubble_to_the_surface_red":
     case "drop_of_dragon_blood_red":
       return (-1 * NumDraconicChainLinks());
+    case "solid_ground_blue":
+      return (-1 * NumSeismicSurge($currentPlayer));
     default:
       return 0;
   }
@@ -3502,4 +3504,15 @@ function isPreviousLinkDraconic()
     if ($talents[$i] == "DRACONIC") $isDraconic = true;
   }
   return $isDraconic;
+}
+
+function NumSeismicSurge($player)
+{
+  $auras = &GetAuras($player);
+  $count = 0;
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if(CardNameContains($auras[$i], "seismic_surge", $player)) ++$count;
+  }
+  return $count;
 }
