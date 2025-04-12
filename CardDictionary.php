@@ -3185,6 +3185,7 @@ function HasTemper($cardID)
     case "barkskin_of_the_millennium_tree":
       return true;
     case "tectonic_crust":
+    case "helm_of_the_arknight":
       return true;
     default:
       return false;
