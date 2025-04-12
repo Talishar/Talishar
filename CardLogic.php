@@ -3111,7 +3111,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "marlynn_treasure_hunter":
       LoadArrow($player);
       break;
-    case "sunken_treasure":
+    case "sunken_treasure_blue":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRDISCARD&MYDISCARD");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to turn face-down");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
