@@ -351,6 +351,7 @@ function DefCharacterStartTurnAbilities()
 
 function CharacterDestroyEffect($cardID, $player)
 {
+  global $mainPlayer;
   switch ($cardID) {
     case "new_horizon":
       WriteLog(Cardlink($cardID, $cardID) . " destroys your arsenal");
@@ -892,6 +893,21 @@ function AddEquipTrigger($cardID, $player)
   }
 }
 
+function NumOccupiedHands($player)
+{
+  $char = &GetPlayerCharacter($player);
+  $numHands = 0;
+  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
+    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) {
+      if ($char[$i + 1] != 0) {
+        if (Is1H($char[$i])) ++$numHands;
+        else $numHands += 2;
+      }
+    }
+  }
+  return $numHands;
+}
+
 function EquipWeapon($player, $card, $source = "-")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -904,16 +920,8 @@ function EquipWeapon($player, $card, $source = "-")
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;
   $replaced = 0;
-  $numHands = 0;
+  $numHands = NumOccupiedHands($player);
   $uniqueID = GetUniqueId($card, $player);
-  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
-    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) {
-      if ($char[$i + 1] != 0) {
-        if (Is1H($char[$i])) ++$numHands;
-        else $numHands += 2;
-      }
-    }
-  }
   //check if you have enough hands to equip it
   if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
     //Replace the first destroyed weapon; if none you can't re-equip
