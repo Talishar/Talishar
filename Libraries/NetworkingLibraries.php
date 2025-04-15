@@ -3204,7 +3204,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
-  if ($layers[0] == "CLOSINGCHAIN") {
+  if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
     WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
     ResetCombatChainState();
   }
