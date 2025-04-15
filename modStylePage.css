@@ -1,9 +1,9 @@
 .mod-page {
     position: absolute;
-    top: 15%;
-    left: 35%;
-    width: 500px;
-    height: 650px;
+    top: 10%;
+    left: 25%;
+    width: 50%;
+    height: 75%;
     background-color: #1a1a1a;
     border: 2px solid #1a1a1a;
     border-radius: 5px;
@@ -14,6 +14,7 @@
   
   .mod-page h1 {
     color: #ff0000;
+    font-weight: bold;
     margin-top: 0;
   }
   
@@ -24,6 +25,7 @@
   label {
     display: block;
     margin-bottom: 10px;
+    color: #fff;
   }
   
   input[type="text"] {
@@ -35,13 +37,13 @@
   }
   
   input[type="submit"] {
-    width: 100%;
+    width: auto;
     height: 30px;
     padding: 10px;
     box-sizing: border-box;
-    border: 1px solid #1a1a1a;
-    background-color: #ff0000;
-    color: #1a1a1a;
+    border: 1px solid #fff;
+    background-color: #1a1a1a;
+    color: #fff;
     cursor: pointer;
   }
   
@@ -51,7 +53,7 @@
     margin: 0;
   }
   
-  .banned-players-list li, .recent-accounts-list li, .banned-ips-list li {
+  .banned-players-list li, .recent-accounts-list li, .button {
     background-color: #333;
     color: #fff;
     padding: 10px;

@@ -1,3 +1,9 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="modStylePage.css">
+</head>
+<body>
+  
 <?php
 include_once 'MenuBar.php';
 include_once './includes/functions.inc.php';
@@ -13,10 +19,6 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpay
   exit;
 }
 ?>
-
-<head>
-  <link rel="stylesheet" type="text/css" href="modPageStyle.css">
-</head>
 
 <div class="mod-page">
   <h1>Mod Panel</h1>
@@ -48,7 +50,7 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpay
     ?>
   </ul>
 
-  <br>
+  <br><br>
 
   <form class="ban-player-form">
     <label for="playerToBan">Player to ban:</label>
@@ -95,3 +97,5 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpay
     ?>
   </ul>
 </div>
+</body>
+</html>
