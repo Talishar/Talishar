@@ -344,6 +344,9 @@ function ItemStartTurnAbility($index)
     case "signal_jammer_blue":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
+    case "null_time_zone_blue":
+      AddLayer("TRIGGER", $mainPlayer, "$mainItems[$index]", "START", "-", $mainItems[$index + 4]);
+      break;
     case "grinding_gears_blue":
     case "prismatic_lens_yellow":
     case "quantum_processor_yellow":
@@ -369,7 +372,6 @@ function ItemStartTurnAbility($index)
     case "mhz_script_yellow":
     case "autosave_script_blue":
     case "cerebellum_processor_blue":
-    case "null_time_zone_blue":
     case "clamp_press_blue":
     case "golden_cog":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
