@@ -1,6 +1,6 @@
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="modStylePage.css">
+  <link rel="stylesheet" type="text/css" href="ModPage.css">
 </head>
 <body>
   
