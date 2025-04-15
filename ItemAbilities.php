@@ -350,7 +350,7 @@ function ItemStartTurnAbility($index)
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $mainPlayer, $index, 1);
       } else {
         WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
-        DestroyItemForPlayer($mainItems, $index);
+        DestroyItemForPlayer($mainPlayer, $index);
       }
       break;
     case "grinding_gears_blue":
