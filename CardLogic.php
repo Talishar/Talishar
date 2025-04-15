@@ -1126,6 +1126,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       }
       break;
     case "burn_up__shock_red":
+    case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
@@ -1274,7 +1275,6 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
     case "scar_tissue_red":
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
-    case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
