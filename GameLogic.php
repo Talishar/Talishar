@@ -2134,6 +2134,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $params = explode(",", $currentTurnEffects[$warcryIndex]);
         $amount = isset($params[1]) ? $params[1] : 0;
         $uniqueID = isset($params[2]) ? $params[2] : "-";
+        $damageDone = 1; // hacky for now, should only hit this line on flicks
         if($damageDone <= $amount && $uniqueID == $sourceUID) {
           AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
           RemoveCurrentTurnEffect($warcryIndex);
