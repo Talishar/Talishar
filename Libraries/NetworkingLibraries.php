@@ -770,7 +770,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
       }
       if ($reportCount == 3) {
-        WriteLog("⚠️Report file is full for this game. Please use discord for further reports.", highlight: true);
+        WriteLog("⚠️ Report file is full for this game. Please use discord for further reports.", highlight: true);
       }
       mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
@@ -780,7 +780,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
       WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
       break;
-    case 100015: // request to enable chat
+    case 100015: //Request to enable chat
       include "MenuFiles/ParseGamefile.php";
       $myName = ($playerID == 1 ? $p1uid : $p2uid);
       if ($playerID == 1) SetCachePiece($gameName, 15, 1);
@@ -790,8 +790,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           AddEvent("REQUESTCHAT", $playerID);
         }
         $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-        if ($theirChar[0] == "DUMMY") WriteLog("The dummy beeps at you");
-        else WriteLog($myName . " wants to enable chat");
+        if ($theirChar[0] == "DUMMY") WriteLog("🤖 The dummy beeps at you 🤖");
+        else WriteLog("🗣️ Player " . $playerID . " wants to enable chat");
       }
       break;
     case 100016://Confirm Undo
@@ -810,6 +810,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       RevertGamestate("lastTurnGamestate.txt");
       WriteLog("Player " . $playerID . " reverted to the last turn");
       break;
+    case 100020://Decline chat request
+      WriteLog("🚫 Player " . $playerID . " declined the invitation to chat");
     default:
       break;
   }
@@ -847,13 +849,16 @@ function IsModeAsync($mode)
       return true;
     case 100012:
       return true;
-    case 100015:
+    case 100015: //Request chat
       return true;
     case 100016://Confirm Undo
     case 100017://Decline Undo
     case 100018://Confirm This Turn Undo
     case 100019://Confirm Last Turn Undo
       return true;
+    case 100020: //Decline chat request
+      return true;
+  
   }
   return false;
 }
