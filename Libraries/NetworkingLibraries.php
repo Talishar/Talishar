@@ -1273,7 +1273,7 @@ function BeginTurnPass()
   global $mainPlayer, $layers;
 
   // Only attempt to end turn if no triggers remain on stack
-  if (isset($layers[0]) && $layers[0] != "RESOLUTIONSTEP" && (count($layers) == 0 || $layers[0] != 'TRIGGER')) {
+  if ($layers[0] != "RESOLUTIONSTEP" && (count($layers) == 0 || $layers[0] != 'TRIGGER')) {
     WriteLog("Main player passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }
@@ -3204,7 +3204,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
-  if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
+  if ($layers[0] == "CLOSINGCHAIN") {
     WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
     ResetCombatChainState();
   }
