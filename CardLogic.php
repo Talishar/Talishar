@@ -1897,7 +1897,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if ($items[$index + 1] < 0) DestroyItemForPlayer($player, $index);
       break;
     case "signal_jammer_blue":
-    // case "null_time_zone_blue":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       if ($items[$index + 1] > 0) {
         AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
@@ -3074,22 +3073,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       GainHealth(1, $player);
       break;
     case "null_time_zone_blue":
-      if ($target == "START") {
-        $index = SearchItemsForUniqueID($uniqueID, $player);
-        if ($items[$index + 1] > 0) {
-          AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_(chosen_name:_" . $items[$index+8] . ")", 1);
-          AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
-        } else {
-          WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
-          DestroyItemForPlayer($player, $index);
-        }
-      }
-      else {
-        AddDecisionQueue("INPUTCARDNAME", $player, "-");
-        AddDecisionQueue("SETDQVAR", $player, "0");
-        AddDecisionQueue("WRITELOG", $player, "📣<b>{0}</b> was chosen");
-        AddDecisionQueue("NULLTIMEZONE", $player, SearchItemForLastIndex($parameter, $player).",{0}");
-      }
+      AddDecisionQueue("INPUTCARDNAME", $player, "-");
+      AddDecisionQueue("SETDQVAR", $player, "0");
+      AddDecisionQueue("WRITELOG", $player, "📣<b>{0}</b> was chosen");
+      AddDecisionQueue("NULLTIMEZONE", $player, SearchItemForLastIndex($parameter, $player).",{0}");
       break;
     case "zap_clappers":
       if (CanRevealCards($player) && !IsAllyAttacking()) {

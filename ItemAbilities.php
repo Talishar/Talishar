@@ -345,7 +345,13 @@ function ItemStartTurnAbility($index)
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
     case "null_time_zone_blue":
-      AddLayer("TRIGGER", $mainPlayer, "$mainItems[$index]", "START", "-", $mainItems[$index + 4]);
+      if ($mainItems[$index + 1] > 0) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index], $mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
+        AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $mainPlayer, $index, 1);
+      } else {
+        WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
+        DestroyItemForPlayer($mainItems, $index);
+      }
       break;
     case "grinding_gears_blue":
     case "prismatic_lens_yellow":
