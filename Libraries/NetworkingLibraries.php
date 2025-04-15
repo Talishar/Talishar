@@ -1273,11 +1273,10 @@ function BeginTurnPass()
   global $mainPlayer, $layers;
 
   // Only attempt to end turn if no triggers remain on stack
-  if ($layers[0] != "RESOLUTIONSTEP" && (count($layers) == 0 || $layers[0] != 'TRIGGER')) {
+  if (empty($layers) || ($layers[0] != "RESOLUTIONSTEP" && $layers[0] != 'TRIGGER')) {
     WriteLog("Main player passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
-  }
-
+  }  
   ProcessDecisionQueue("");
 }
 
@@ -1767,7 +1766,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       elseif($from != "MELD") IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
     }
     if(DelimStringContains($cardType, "AR") || DelimStringContains($abilityType, "AR")) {
-      ++$combatChainState[$CCS_NumReactionPlayedActivated];
+      if(isset($combatChainState[$CCS_NumReactionPlayedActivated])) ++$combatChainState[$CCS_NumReactionPlayedActivated];
     }
     if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];

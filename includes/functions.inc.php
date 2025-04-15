@@ -442,7 +442,7 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr['player1Name'] = $hashedP1Name;
     $payloadArr['player2Name'] = $hashedP2Name;
     $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1DeckLink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2DeckLink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 
     // Initialize cURL
@@ -782,8 +782,6 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
 	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
 
-	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
-	
 	return json_encode($deck);
 }
 

@@ -2132,8 +2132,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
       if ($warcryIndex != -1 && $sourceUID != -1) {
         $params = explode(",", $currentTurnEffects[$warcryIndex]);
-        $amount = $params[1];
-        $uniqueID = $params[2];
+        $amount = isset($params[1]) ? $params[1] : 0;
+        $uniqueID = isset($params[2]) ? $params[2] : "-";
         if($damageDone <= $amount && $uniqueID == $sourceUID) {
           AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
           RemoveCurrentTurnEffect($warcryIndex);
