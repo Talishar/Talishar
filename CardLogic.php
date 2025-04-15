@@ -59,7 +59,7 @@ function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID 
   global $combatChain, $layers;
   // check if a weapon layer is actually an attack
   $isWeaponAttackLayer = false;
-  if (CardType($layers[0]) == "W"){
+  if (isset($layers[0]) && CardType($layers[0]) == "W"){
     if (GetAbilityTypes($layers[0]) == "") $isWeaponAttack = GetAbilityType($layers[0]) == "AA";
     else $isWeaponAttack = GetResolvedAbilityType($layers[0]);
   } 

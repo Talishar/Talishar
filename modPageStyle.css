@@ -1,0 +1,60 @@
+.mod-page {
+    position: absolute;
+    top: 15%;
+    left: 35%;
+    width: 500px;
+    height: 650px;
+    background-color: #1a1a1a;
+    border: 2px solid #1a1a1a;
+    border-radius: 5px;
+    overflow-y: scroll;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .mod-page h1 {
+    color: #ff0000;
+    margin-top: 0;
+  }
+  
+  .ban-player-form, .close-game-form {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    height: 30px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #1a1a1a;
+  }
+  
+  input[type="submit"] {
+    width: 100%;
+    height: 30px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #1a1a1a;
+    background-color: #ff0000;
+    color: #1a1a1a;
+    cursor: pointer;
+  }
+  
+  .banned-players-list, .recent-accounts-list, .banned-ips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .banned-players-list li, .recent-accounts-list li, .banned-ips-list li {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+  }

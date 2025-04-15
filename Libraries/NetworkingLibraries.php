@@ -1079,8 +1079,8 @@ function ResolveCombatDamage($damageDone)
       if (SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer) != -1) {
         $index = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
         $params = explode(",", $currentTurnEffects[$index]);
-        $amount = $params[1];
-        $uniqueID = $params[2];
+        $amount = isset($params[1]) ? $params[1] : 0;
+        $uniqueID = isset($params[2]) ? $params[2] : "-";
         if($damageDone <= $amount && $uniqueID == $combatChain[8]) {
           AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
           RemoveCurrentTurnEffect($index);
@@ -1273,7 +1273,7 @@ function BeginTurnPass()
   global $mainPlayer, $layers;
 
   // Only attempt to end turn if no triggers remain on stack
-  if ($layers[0] != "RESOLUTIONSTEP" && (count($layers) == 0 || $layers[0] != 'TRIGGER')) {
+  if (isset($layers[0]) && $layers[0] != "RESOLUTIONSTEP" && (count($layers) == 0 || $layers[0] != 'TRIGGER')) {
     WriteLog("Main player passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }
@@ -3204,7 +3204,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
-  if ($layers[0] == "CLOSINGCHAIN") {
+  if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
     WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
     ResetCombatChainState();
   }
