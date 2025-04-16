@@ -2112,6 +2112,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
     AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
     AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+    AddDecisionQueue("MELDTARGETTING", $currentPlayer, $cardID, 1);
   }
   switch ($cardID) {
     case "lord_of_wind_blue":

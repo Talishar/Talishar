@@ -426,7 +426,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $cardID);
+          ProcessMeld($player, $parameter, $cardID, target:$target);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
@@ -3539,7 +3539,7 @@ function HasSteamCounter($array, $index, $player)
   return false;
 }
 
-function ProcessMeld($player, $parameter, $additionalCosts="")
+function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
@@ -3572,7 +3572,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="")
       break;
     case "pulsing_aether__life_red":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
-      DealArcane(4, 2, "PLAYCARD", $parameter, player:$player, meldState:$meldState);
+      DealArcane(4, 2, "PLAYCARD", $parameter, player:$player, meldState:$meldState, resolvedTarget:$target);
       break;
     case "null__shock_yellow":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {

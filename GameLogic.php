@@ -1848,8 +1848,27 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODAL":
       $params = explode(",", $parameter);
       return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
+    case "MELDTARGETTING":
+      switch ($parameter) {
+        case "pulsing_aether__life_red":
+          if ($lastResult == "Both" || $lastResult == "Pulsing_Aether") {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+          }
+          break;
+        default:
+          break;
+      }
+      break;
     case "MELD":
-      MeldCards($player, $parameter, $lastResult);
+      $lastResultArr = explode("-", $lastResult);
+      MeldCards($player, $parameter, $lastResultArr[0], target:$lastResultArr[1]);
       return $lastResult;
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;

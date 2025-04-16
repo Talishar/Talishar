@@ -940,11 +940,11 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
 }
 
-function MeldCards($player, $cardID, $lastResult){
+function MeldCards($player, $cardID, $lastResult, $target="-"){
   if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
   else $names[] = GamestateUnsanitize($lastResult);
   if($lastResult == "Both") {
-    AddLayer("MELD", $player, $cardID);
+    AddLayer("MELD", $player, $cardID, target:$target);
     $meldState = CardType($cardID);
   }
   else $meldState = "I";
@@ -959,7 +959,7 @@ function MeldCards($player, $cardID, $lastResult){
         break;
       default:
         if($lastResult != "Both") {
-          ProcessMeld($player, $cardID, additionalCosts:$lastResult);
+          ProcessMeld($player, $cardID, additionalCosts:$lastResult, target:$target);
         }
       break;
     }
