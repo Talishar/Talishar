@@ -1416,7 +1416,8 @@ function CharacterPlayCardAbilities($cardID, $from)
         $resources = &GetResources($currentPlayer);
         ++$resources[0];
         break;
-      case "melody_singalong"://Melody, Sing-Along
+      case "melody_sing_along"://Melody, Sing-Along
+        // WriteLog("Here! $cardID");
         if (SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("copper", $currentPlayer);
         break;
       default:
