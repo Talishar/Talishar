@@ -124,6 +124,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "well_grounded":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "felling_of_the_crown_red":
@@ -164,6 +165,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "seeds_of_tomorrow_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
     case "summers_fall_red":
@@ -233,6 +235,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "twinkle_toes":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "current_funnel_blue":
@@ -293,6 +296,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
         return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
       }

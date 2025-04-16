@@ -148,7 +148,6 @@ function CurrentTurnEffectPieces()
 
 function CurrentTurnEffectUses($cardID)
 {
-  // TODO see what breaks this
   $effectID = ExtractCardID($cardID);
   switch ($effectID) {
     case "steadfast_red":
