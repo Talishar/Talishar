@@ -250,7 +250,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "lumina_lance_yellow":
@@ -491,7 +490,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "hold_the_line_blue":
       if(GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2)
       {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 3);
         WriteLog("Prevents the next 3 damage");
       }

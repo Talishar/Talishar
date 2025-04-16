@@ -266,12 +266,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = CardName(GetMZCard($mainPlayer, GetAttackTarget()));
-  if (count($combatChain) > 0) {
-    $activeChainLink->damagePrevention = GetDamagePrevention($defPlayer) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true);
-  } 
-  else  {
-      $activeChainLink->damagePrevention = GetDamagePrevention($defPlayer);
-  }
+  $activeChainLink->damagePrevention = GetDamagePrevention($defPlayer);
   $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();

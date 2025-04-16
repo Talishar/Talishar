@@ -1020,27 +1020,28 @@ function CurrentEffectCostModifiers($cardID, $from)
   return CostCantBeModified($cardID) ? 0 : $costModifier;
 }
 
-function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=false) //$skip is used to check the damage prevention without using it. Mostly for Front-end and UI work
+function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
 {
   global $currentTurnEffects;
   $preventedDamage = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    $remove = false;
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "essence_of_ancestry_body_red":
-          if (PitchValue($source) == 1 && !$skip) {
+          if (PitchValue($source) == 1) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "essence_of_ancestry_soul_yellow":
-          if (PitchValue($source) == 2 && !$skip) {
+          if (PitchValue($source) == 2) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "essence_of_ancestry_mind_blue":
-          if (PitchValue($source) == 3 && !$skip) {
+          if (PitchValue($source) == 3) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
@@ -1048,23 +1049,21 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
         case "shelter_from_the_storm_red":
         case "calming_breeze_red":
           $preventedDamage += 1;
-          if (!$skip) --$currentTurnEffects[$i + 3];
+          --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] == 0) $remove = true;
           break;
         default:
           break;
       }
     }
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
-  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "" && !$skip) {
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
     $preventedDamage -= 1;
     SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   }
-  if($skip) return $preventedDamage;
-  else {
-    $damage -= $preventedDamage;
-    return $damage;  
-  }
+  $damage -= $preventedDamage;
+  return $damage;
 }
 
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)

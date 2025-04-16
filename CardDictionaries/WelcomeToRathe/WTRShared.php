@@ -196,7 +196,6 @@
         return "";
       case "bone_head_barrier_yellow":
         $roll = GetDieRoll($currentPlayer);
-        AddCurrentTurnEffect($cardID, $currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
         return "Prevents the next $roll damage that will be dealt to you this turn";
       case "breakneck_battery_red": case "breakneck_battery_yellow": case "breakneck_battery_blue":
