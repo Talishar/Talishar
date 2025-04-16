@@ -1024,6 +1024,7 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
 {
   global $currentTurnEffects;
   $preventedDamage = 0;
+  $remove = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
@@ -1055,6 +1056,7 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
           break;
       }
     }
+    if ($remove) RemoveCurrentTurnEffect($i);
   }
   if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "" && !$skip) {
     $preventedDamage -= 1;
