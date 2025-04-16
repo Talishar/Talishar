@@ -789,7 +789,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (!str_contains($myName, "Omegaeclipse") && !str_contains($myName, "OmegaEclipse")) {
           AddEvent("REQUESTCHAT", $playerID);
         }
-        if (IsPlayerAI($playerID == 1 ? 2 : 1)) WriteLog("🤖 The dummy beeps at you 🤖");
+        if (IsPlayerAI($playerID == 1 ? 2 : 1)) WriteLog("🤖 The dummy beeps at you");
         else WriteLog("🗣️ Player " . $playerID . " wants to enable chat");
       }
       break;
