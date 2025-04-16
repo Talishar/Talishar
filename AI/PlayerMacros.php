@@ -2,13 +2,12 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants, $defPlayer;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
     PassInput();
   }
-
   if (!IsGameOver()) {
     for ($i = 0; $i < 10 && $somethingChanged; ++$i) {
       if ($lastPhase != $turn[0]) $i = 0;

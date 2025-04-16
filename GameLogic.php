@@ -1343,7 +1343,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult > 0) {
         $hand = &GetHand($player);
         $char = &GetPlayerCharacter($player);
-        if (count($hand) == 0 && $char[0] != "DUMMY") {
+        if (count($hand) == 0 && !IsPlayerAI($player)) {
           WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
           RevertGamestate();
         }
@@ -2387,7 +2387,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CHANGESHIYANA":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $otherChar = GetPlayerCharacter($otherPlayer);
-      if ($lastResult != "shiyana_diamond_gemini" && $otherChar[0] != "DUMMY") {
+      if ($lastResult != "shiyana_diamond_gemini" && !IsPlayerAI($player)) {
         $lifeDifference = GeneratedCharacterHealth("shiyana_diamond_gemini") - GeneratedCharacterHealth($otherChar[0]);
         if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
         elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $player, true, false);

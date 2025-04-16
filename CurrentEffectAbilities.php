@@ -2248,14 +2248,13 @@ function EffectDefenderAttackModifiers($cardID)
 
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1)
 {
-  global $mainPlayer, $currentTurnEffects;
-  $mainChar = &GetPlayerCharacter($mainPlayer);
+  global $mainPlayer, $currentTurnEffects, $p2IsAI;
   $attackValue = AttackValue($cardID, $index);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = GetResolvedAbilityType($cardID);
   $abilityType = GetAbilityType($cardID, from: $from);
 
-  if ($mainChar[0] == "DUMMY") return false;
+  if ($p2IsAI) return false;
   $restrictedBy = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {

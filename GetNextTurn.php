@@ -124,7 +124,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include "WriteGamestate.php";
   } else if ($currentPlayerActivity != 2 && $opponentInactive && !IsGameOver() ) {
     $currentPlayerActivity = 2;
-    WriteLog("⌛The current player is inactive.");
+    WriteLog("⌛Player " . $playerID . " is inactive.");
     include "WriteGamestate.php";
     GamestateUpdated($gameName);
   }
