@@ -560,7 +560,6 @@ function ROGUE027IronsongPrio()
 
 function ROG031Blaze()
 {
-  //TODO: Get Combat Chain
   return 0.4;
 }
 

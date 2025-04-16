@@ -230,7 +230,7 @@ function GetPoolClass($arrayParameters){
     array("embolden_red", "Class", "Rare", "Anothos", "TitanFist", "Sledge"), //Embolden
     array("embolden_yellow", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
     array("embolden_blue", "Class", "Rare", "Anothos", "TitanFist", "Sledge"),
-    //thump_red - Thump - Can the AI handle this? I haven't tested it yet. TODO Test it
+    //thump_red - Thump - Can the AI handle this? I haven't tested it yet.
 
     array("seek_and_destroy_red", "Class", "Common", "Shiver", "Voltaire", "DeathDealer", "RedLiner"), //Seek and Destroy
     array("boltn_shot_red", "Class", "Common", "Shiver", "Voltaire", "RedLiner"), //Bolt'n' Shot
@@ -879,7 +879,6 @@ function GetPoolTalent($arrayParameters){
   return ProcessPool($CardRewardPool, $arrayParameters);
 }
 
-//TODO: Add slot (head, chest etc)
 function GetPoolEquipment($arrayParameters){
   $CardRewardPool = array(
   array("tectonic_plating", "Bravo", "Legendary", "Chest"), //Tectonic Plating

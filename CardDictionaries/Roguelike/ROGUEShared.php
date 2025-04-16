@@ -162,7 +162,7 @@ function ROGUECombatEffectActive($cardID, $attackID)
 }
 
 
-function ROGUECardTalent($cardID) // TODO
+function ROGUECardTalent($cardID)
 {
   $number = intval(substr($cardID, 3));
   if($number <= 0) return "";

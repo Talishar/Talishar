@@ -2039,9 +2039,6 @@ function GetLayerTarget($cardID, $from)
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>");
     AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET," . $targetType);
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>");
-    //TODO - Below two lines for may effects like Singe - too complicated for now but here it is for later
-    //if($mayAbility) { AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1); }
-    //else { AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1); }
     AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
     AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
