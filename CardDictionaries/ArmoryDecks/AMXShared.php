@@ -47,7 +47,6 @@ function AMXAbilityCost($cardID): int
 function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_CharacterIndex;
-
   switch ($cardID) {
     case "bank_breaker":
       $character = &GetPlayerCharacter($currentPlayer);

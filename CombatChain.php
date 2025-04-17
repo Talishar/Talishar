@@ -78,6 +78,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1)
   else if ($set == "AJV") return AJVHitEffect($cardID);
   else if ($set == "HNT") return HNTHitEffect($cardID, $uniqueID);
   else if ($set == "SEA") return SEAHitEffect($cardID);
+  else if ($set == "ASR") return ASRHitEffect($cardID);
   else return -1;
 }
 

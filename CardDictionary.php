@@ -3859,7 +3859,8 @@ function HasCombo($cardID)
       return true;
     case "gustwave_of_the_second_wind_red":
       return true;
-    case "retrace_the_past_blue"://retrace the past
+    case "retrace_the_past_blue":
+    case "enact_vengeance_red":
       return true;
     default:
       return false;
@@ -4011,6 +4012,9 @@ function ComboActive($cardID = "")
         break;
       case "retrace_the_past_blue":
         if (str_contains($lastAttackName, "Gustwave")) return true;
+        break;
+      case "enact_vengeance_red":
+        if ($lastAttackName == "Edge of Autumn") return true;
         break;
       default:
         break;

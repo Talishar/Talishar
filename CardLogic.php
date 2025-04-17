@@ -690,9 +690,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "icy_encounter_yellow":
     case "icy_encounter_blue":
     case "pulverize_red":
-    case "break_tide_yellow":
     case "spring_tidings_yellow":
-    case "winds_of_eternity_blue":
     case "ride_the_tailwind_red":
     case "ride_the_tailwind_yellow":
     case "ride_the_tailwind_blue":
@@ -738,7 +736,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "stoke_the_flames_red":
     case "erase_face_red":
     case "vipox_red":
-    case "tiger_swipe_red":
     case "flex_claws_red":
     case "flex_claws_yellow":
     case "flex_claws_blue":
@@ -800,21 +797,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "wither_blue":
     case "dishonor_blue":
     case "wander_with_purpose_yellow":
-    case "recoil_red":
-    case "recoil_yellow":
-    case "recoil_blue":
-    case "spinning_wheel_kick_red":
-    case "spinning_wheel_kick_yellow":
-    case "spinning_wheel_kick_blue":
     case "be_like_water_red":
     case "be_like_water_yellow":
     case "be_like_water_blue":
     case "deadly_duo_red":
     case "deadly_duo_yellow":
     case "deadly_duo_blue":
-    case "one_two_punch_red":
-    case "one_two_punch_yellow":
-    case "one_two_punch_blue":
     case "barbed_undertow_red":
     case "infecting_shot_red":
     case "infecting_shot_yellow":
@@ -855,7 +843,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "nasreth_the_soul_harrower":
     case "censor_red":
     case "mischievous_meeps_red":
-    case "mauling_qi_red":
     case "under_loop_red":
     case "jinglewood_smash_hit":
     case "bittering_thorns_red":
@@ -926,7 +913,23 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "find_center_blue":
+    case "break_tide_yellow":
+    case "winds_of_eternity_blue":
+    case "tiger_swipe_red": 
+    case "mauling_qi_red":
+    case "spinning_wheel_kick_red":
+    case "spinning_wheel_kick_yellow":
+    case "spinning_wheel_kick_blue":
       if (ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      break;
+    case "one_two_punch_red":
+    case "one_two_punch_yellow":
+    case "one_two_punch_blue": 
+    case "recoil_red":
+    case "recoil_yellow":
+    case "recoil_blue":
+    case "enact_vengeance_red":
+      if (ComboActive($cardID) && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
     case "winters_wail":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
