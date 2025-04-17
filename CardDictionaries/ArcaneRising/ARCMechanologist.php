@@ -212,15 +212,20 @@ function DoBoost($player, $cardID, $boostCount=1)
     if (!$skipBanish) {
       BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
       $char = GetPlayerCharacter($player);
-      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-        switch ($char[$i]) {
+      for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+        switch ($char[$j]) {
           case "drive_brake":
-            AddLayer("TRIGGER", $player, $char[$i], $i);
+            if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+              AddLayer("TRIGGER", $player, $char[$j], $j);
+            }
             break;
           case "fist_pump":
-            // there should only ever be one wrench equipped
-            $wrenchInd = SearchCharacter($player, subtype:"Wrench");
-            if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$i], GetMZCard($player, $wrenchInd));
+            if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+              // there should only ever be one wrench equipped
+              $wrenchInd = SearchCharacter($player, subtype:"Wrench");
+              if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$j], GetMZCard($player, $wrenchInd));
+            }
+            break;
           default:
             break;
         }

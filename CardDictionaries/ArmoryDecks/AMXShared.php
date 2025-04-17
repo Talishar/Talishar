@@ -82,16 +82,17 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
       $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
       $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
-      AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-" . $hyperDrivers. "-3");
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTBANKBREAKER," . $bankBreakerIndex, 1);
+      AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-$hyperDrivers-3");
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID,$bankBreakerIndex", 1);
       return "";
     case "twintek_charging_station_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=hyper_driver_red");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDTOPDECK", $currentPlayer, "", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "", 1);
+      AddDecisionQueue("GAINRESOURCES", $currentPlayer, 1, 1);
       return "";
     default:
       return "";
