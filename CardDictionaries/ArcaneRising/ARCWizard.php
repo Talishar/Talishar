@@ -159,10 +159,10 @@ function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $ma
   $allies = GetAllies($player);
   $theirAllies = GetAllies($otherPlayer);
   if(ShouldAutotargetOpponent($player) && $targetType == 0) {
-    AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
   }
   elseif (ShouldAutotargetOpponent($player) && ($targetType == 2 || $targetType == 3) && count($allies) <= 0 && count($theirAllies) <= 0) {
-    AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
   }
   else{
     if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
@@ -218,10 +218,10 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         $allies = GetAllies($player);
         $theirAllies = GetAllies($otherPlayer);
         if(ShouldAutotargetOpponent($player) && $target == 0) {
-          AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+          AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
         }
         elseif (ShouldAutotargetOpponent($player) && ($target == 2 || $target == 3) && count($allies) <= 0 && count($theirAllies) <= 0) {
-          AddDecisionQueue("PASSPARAMETER", $player, "THERICHAR-0", 1);
+          AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
         }
         else{
           if ($mayAbility) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);

@@ -360,7 +360,7 @@
         return "";
       case "scour_blue":
         $targetPlayer = substr($target, 0, 1) == "O" ? $otherPlayer: $currentPlayer;
-        $damageTarget = substr($target, 0, 1) == "O" ? "THERICHAR-0": "MYCHAR-0";
+        $damageTarget = substr($target, 0, 1) == "O" ? "THEIRCHAR-0": "MYCHAR-0";
         $auras = &GetAuras($targetPlayer);
         $allTargets = explode(",", $target);
         $numDestroyed = 0;
