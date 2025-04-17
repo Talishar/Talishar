@@ -528,6 +528,7 @@ function EffectAttackModifier($cardID, $attached=false)
   else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
   else if ($set == "HNT") return HNTEffectAttackModifier($cardID, $attached);
   else if ($set == "AST") return ASTEffectAttackModifier($cardID);
+  else if ($set == "AMX") return AMXEffectAttackModifier($cardID);
   else if ($set == "SEA") return SEAEffectAttackModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":
@@ -612,6 +613,7 @@ function EffectBlockModifier($cardID, $index, $from)
       return SearchPitchForColor($mainPlayer, 3);
     case "heavy_industry_surveillance":
     case "heavy_industry_ram_stop":
+    case "breaker_helm_protos":
       return 1;
     default:
       return 0;
@@ -2082,6 +2084,8 @@ function IsCombatEffectPersistent($cardID)
     case "imperial_seal_of_command_red-HIT":
     case "war_cry_of_bellona_yellow-BUFF":
     case "war_cry_of_bellona_yellow-DMG":
+      return true;
+    case "fist_pump":
       return true;
     //Roguelike
     case "ROGUE018":

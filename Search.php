@@ -1362,6 +1362,9 @@ function SearchMultizone($player, $searches)
               case "MYBANISH":
                 $searchResult = SearchBanishByName($player, $name);
                 break;
+              case "MYHAND":
+                $searchResult = SearchHandForCardName($player, $name);
+                break;
               case "THEIRHAND":
                 $searchResult = SearchHandForCardName($otherPlayer, $name);
                 break;

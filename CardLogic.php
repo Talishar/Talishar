@@ -3119,6 +3119,22 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("MZOP", $player, "TURNDISCARDFACEDOWN", 1);
       AddDecisionQueue("SUNKENTREASURE", $player, "-", 1);
       break;
+    case "breaker_helm_protos":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to discard (or pass)");
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:isSameName=hyper_driver_red", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+      AddDecisionQueue("DRAW", $player, "", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $player, "breaker_helm_protos", 1);
+      break;
+    case "drive_brake":
+      $char = &GetPlayerCharacter($player);
+      if ($char[$target + 4] < 0) ++$char[$target + 4];
+      break;
+    case "fist_pump":
+      AddCurrentTurnEffect($parameter, $player);
+      break;
     default:
       break;
   }

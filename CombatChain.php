@@ -594,6 +594,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "quickdodge_flexors":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
       break;
+    case "breaker_helm_protos":
+      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
+      break;
     case "testament_of_valahai":
       $countSeismic = CountAura("seismic_surge", $defPlayer);
       if ($countSeismic >= 6) {
@@ -945,6 +948,7 @@ function OnBlockResolveEffects($cardID = "")
       case "zap_clappers":
       case "starlight_striders":
       case "hoist_em_up_red":
+      case "breaker_helm_protos":
       case "sunken_treasure_blue":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;

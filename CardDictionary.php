@@ -3124,6 +3124,9 @@ function HasBattleworn($cardID)
       return true;
     case "shock_frock":
       return true;
+    case "drive_brake":
+    case "fist_pump":
+      return true;
     default:
       return false;
   }
@@ -3185,6 +3188,9 @@ function HasTemper($cardID)
       return true;
     case "tectonic_crust":
     case "helm_of_the_arknight":
+      return true;
+    case "breaker_helm_protos":
+    case "puffer_jacket":
       return true;
     default:
       return false;
@@ -3346,14 +3352,13 @@ function HasBeatChest($cardID)
 
 function ETASteamCounters($cardID)
 {
+  global $currentPlayer;
   switch ($cardID) {
     case "aether_sink_yellow":
       return 1;
     case "teklo_core_blue":
     case "convection_amplifier_red":
       return 2;
-    case "hyper_driver_red":
-      return 3;
     case "dissipation_shield_yellow":
       return 4;
     case "optekal_monocle_blue":
@@ -3371,11 +3376,14 @@ function ETASteamCounters($cardID)
     case "plasma_mainline_red":
       return 5;
     case "hyper_driver_red":
-      return 3;
+      if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 4;
+      else return 3;
     case "hyper_driver_yellow":
-      return 2;
+      if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 3;
+      else return 2;
     case "hyper_driver_blue":
-      return 1;
+      if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 2;
+      else return 1;
     case "prismatic_lens_yellow":
       return 1;
     case "quantum_processor_yellow":
