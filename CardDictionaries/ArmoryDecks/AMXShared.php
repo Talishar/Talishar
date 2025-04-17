@@ -74,7 +74,7 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $bankBreakerIndex = $charCount - $charPieces; // we pushed it, so should be the last element
       //Congrats, you have met the requirement to build the wrench! Let's remove the old stuff
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if(CardType($char[$i]) == "W" && SubtypeContains($char[$i], "Wrench") && $char[$i] != "bank_breaker") {
+        if(CardType($char[$i]) == "W" && SubtypeContains($char[$i], "Wrench") && $i != $bankBreakerIndex) {
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $bankBreakerIndex);
         }
       }
