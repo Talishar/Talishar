@@ -20,7 +20,7 @@ function AMXEffectAttackModifier($cardID): int
 {
   return match ($cardID) {
     "twintek_charging_station_red" => 3,
-    "first_pump" => 1,
+    "fist_pump" => 1,
     default => 0
   };
 }
@@ -31,7 +31,7 @@ function AMXCombatEffectActive($cardID, $attackID): bool
   return match($cardID) {
     "bank_breaker" => true,
     "twintek_charging_station_red" => $combatChainState[$CCS_IsBoosted],
-    "first_pump" => SubtypeContains($attackID, "Wrench"),
+    "fist_pump" => SubtypeContains($attackID, "Wrench"),
     default => false
   };
 }

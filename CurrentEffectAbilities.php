@@ -2094,7 +2094,7 @@ function IsCombatEffectPersistent($cardID)
     case "war_cry_of_bellona_yellow-BUFF":
     case "war_cry_of_bellona_yellow-DMG":
       return true;
-    case "first_pump":
+    case "fist_pump":
       return true;
     //Roguelike
     case "ROGUE018":
