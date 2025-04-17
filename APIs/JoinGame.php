@@ -522,8 +522,6 @@ function isSpecialUsePromo($cardID) {
       "taipanis_dracai_of_judgement", "taipanis_dracai_of_judgement", "proclamation_of_requisition", "proclamation_of_requisition", "gavel_of_natural_order", "theryon_magister_of_justice", "theryon_magister_of_justice", "proclamation_of_abundance",
       "proclamation_of_production", "brutus_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di_gem_keeper", "go_bananas_yellow", "taylor", "yorick_weaver_of_tales", "tales_of_adventure_blue",
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
-      "bank_breaker", "clamp_press_blue",
-      "valda_seismic_impact",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle"
   ];
   $unreleasedSets = ["SEA", "AGB", "APR", "AVS", "MPG", "BDD"];
