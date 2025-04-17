@@ -3131,7 +3131,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $char = &GetPlayerCharacter($player);
       if ($char[$target + 4] < 0) ++$char[$target + 4];
       break;
-    case "fist_pump":
+    case "first_pump":
       AddCurrentTurnEffect($parameter, $player);
       break;
     default:

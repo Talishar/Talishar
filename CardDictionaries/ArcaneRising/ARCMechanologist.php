@@ -219,7 +219,7 @@ function DoBoost($player, $cardID, $boostCount=1)
               AddLayer("TRIGGER", $player, $char[$j], $j);
             }
             break;
-          case "fist_pump":
+          case "first_pump":
             if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
               // there should only ever be one wrench equipped
               $wrenchInd = SearchCharacter($player, subtype:"Wrench");

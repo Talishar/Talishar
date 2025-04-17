@@ -3125,7 +3125,7 @@ function HasBattleworn($cardID)
     case "shock_frock":
       return true;
     case "drive_brake":
-    case "fist_pump":
+    case "first_pump":
       return true;
     default:
       return false;
