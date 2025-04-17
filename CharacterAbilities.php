@@ -1075,7 +1075,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "crown_of_reflection":
     case "blossom_of_spring":
     case "gallantry_gold":
-    case "blossom_of_spring":
     case "silken_form":
     case "heat_wave":
     case "sash_of_sandikai":
@@ -1130,7 +1129,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "sharp_shooters":
     case "flight_path":
     case "heavy_industry_gear_shift":
-    case "blossom_of_spring":
     case "well_grounded":
     case "harvest_season_blue":
     case "lightning_greaves":
@@ -1255,6 +1253,7 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "compass_of_sunken_depths":
     case "redspine_manta":
+    case "bravo_flattering_showman":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     default:

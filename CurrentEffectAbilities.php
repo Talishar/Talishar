@@ -533,6 +533,8 @@ function EffectAttackModifier($cardID, $attached=false)
   switch ($cardID) {
     case "ira_scarlet_revenger":
       return 1;
+    case "bravo_flattering_showman":
+      return 2;
     default:
       return 0;
   }
@@ -1889,6 +1891,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
     case "banneret_of_vigor_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);
     case "ira_scarlet_revenger":
+    case "bravo_flattering_showman":
       return true;
     default:
       return;

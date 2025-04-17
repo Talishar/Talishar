@@ -2962,6 +2962,14 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
           EquipEquipment($currentPlayer, "scabskin_leathers", "Legs");
         }
         return "";
+      case "bravo_flattering_showman":
+        $arsenalCardID = "";
+        $arsenal = &GetArsenal($currentPlayer);
+        if(ArsenalHasFaceDownCard($currentPlayer)) $arsenalCardID = SetArsenalFacing("UP", $currentPlayer);
+        if(HasCrush($arsenalCardID)) {
+          AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$arsenal[SearchArsenalForCard($currentPlayer, $arsenalCardID)+5]);
+        }
+        return "";
       default:
         break;
     }

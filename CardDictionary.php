@@ -722,7 +722,12 @@ function AbilityCost($cardID)
   else if ($set == "HNT") return HNTAbilityCost($cardID);
   else if ($set == "AMX") return AMXAbilityCost($cardID);
   else if ($set == "SEA") return SEAAbilityCost($cardID);
-  else if ($cardID == "riggermortis_yellow") return 1;
+  else switch ($cardID) {
+    case "riggermortis_yellow": return 1;
+    case "bravo_flattering_showman": return 2;
+    default:
+      return 0;
+  }
   return 0;
 }
 
@@ -1200,9 +1205,14 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AST") return ASTAbilityType($cardID);
   else if ($set == "AMX") return AMXAbilityType($cardID);
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
-  else if ($cardID == "blaze_firemind") return "I";
-  else if ($cardID == "magrar") return "A";
-  else if ($cardID == "riggermortis_yellow") return "A";
+  else switch ($cardID) {
+    case "blaze_firemind": return "I";
+    case "magrar": return "A";
+    case "riggermortis_yellow": return "AA";
+    case "bravo_flattering_showman": return "A";
+    default:
+      return "";
+  }
 }
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
@@ -3471,8 +3481,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
-    case "blossom_of_spring":
-    case "blossom_of_spring":
+    case "bravo_flattering_showman":
       return true;
     default:
       return false;
@@ -3559,6 +3568,7 @@ function DoesEffectGrantDominate($cardID): bool
     case "figment_of_tenacity_yellow":
     case "metis_archangel_of_tenacity":
     case "crumble_to_eternity_blue":
+    case "bravo_flattering_showman":
       return true;
     case "weave_ice_red":
     case "weave_ice_yellow":
@@ -3606,6 +3616,8 @@ function CharacterNumUsesPerTurn($cardID)
       return 999;
     case "bank_breaker":
       return 2;
+    case "bravo_flattering_showman":
+      return 999;
     default:
       return 1;
   }
