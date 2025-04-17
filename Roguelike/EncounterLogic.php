@@ -146,7 +146,7 @@ function GetRandomCards($inputString)
   }
 }
 
-function GetRandomDeckCard($player, $special = "") //TODO add in a seperate special call to remove random cards instead of any card and a special call to remove powers.
+function GetRandomDeckCard($player, $special = "")
 {
 
   $deck = &GetZone($player, "Deck");

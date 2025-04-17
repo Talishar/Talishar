@@ -58,7 +58,7 @@ function DoCapQuickThinking($targetPlayer, $damage)
 
 function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_ArcaneDamageTaken;
+  global $currentPlayer, $CS_PlayIndex, $CS_ArcaneDamageDealt;
 
   $otherPlayer = $currentPlayer == 1 ? 0 : 1;
   switch ($cardID) {
@@ -68,7 +68,7 @@ function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "written_in_the_stars_blue":
       PlayAura("embodiment_of_lightning", $currentPlayer);
-      if (GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) Draw($currentPlayer, effectSource:$cardID);
+      if (GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) Draw($currentPlayer, effectSource:$cardID);
       return "";
     case "shock_frock":
       GainResources($currentPlayer, 1);

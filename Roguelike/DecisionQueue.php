@@ -910,7 +910,7 @@ function ResetHero($player, $hero="Dorinthea")
   {
   $heroFileArray = file("Heroes/" . $hero . ".txt", FILE_IGNORE_NEW_LINES);
   $health = &GetZone($player, "Health");
-  array_push($health, 20); //TODO: Base on hero health
+  array_push($health, 20); 
   $character = &GetZone($player, "Character");
   $character = explode(" ", $heroFileArray[0]);
   $deck = &GetZone($player, "Deck");

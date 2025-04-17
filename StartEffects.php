@@ -33,7 +33,7 @@ StatsStartTurn();
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
 
-if ($p2Char[0] == "DUMMY") {
+if (IsPlayerAI($currentPlayer)) {
   SetCachePiece($gameName, 3, "99999999999999");
 }
 

@@ -67,12 +67,12 @@
     }
     switch($cardID)
     {
-      case "colossal_bearing_red": case "colossal_bearing_red":
+      case "colossal_bearing_red":
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP1", 1);
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
         break;
-      case "smack_of_reality_red": case "smack_of_reality_red":
+      case "smack_of_reality_red":
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"), $mainPlayer);
       default: break;
     }

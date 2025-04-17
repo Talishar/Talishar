@@ -7,7 +7,11 @@
     switch($cardID)
     {
       case "oldhim_grandfather_of_eternity": case "oldhim":
-        if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "") IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+        if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "")
+        { 
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+        }
         if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "")
         {
           if(IsAllyAttacking()) $rv .= "<span style='color:red;'>No card is put on top because there is no attacking hero when allies attack.</span>";

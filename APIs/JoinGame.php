@@ -486,7 +486,16 @@ function IsCardBanned($cardID, $format, $character)
 {
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
-  if ($format == "commoner" && (Rarity($cardID) != "C" && Rarity($cardID) != "T" && Rarity($cardID) != "R") && CardType($cardID) != "C" && $cardID != "springboard_somersault_yellow") return true;
+  if ($format == "commoner") {
+    $rarity = Rarity($cardID);
+    $cardType = CardType($cardID);
+    // springboard somersault has weird printings
+    if ($cardID == "springboard_somersault_yellow") return false;
+    // ban all rares that aren't heroes, equipment, or weapons
+    if ($rarity == "R" && $cardType != "C" && $cardType != "E" && $cardType != "W") return true;
+    // ban everything above rare
+    if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
+  }
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
@@ -515,18 +524,40 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "bank_breaker", "clamp_press_blue",
       "valda_seismic_impact",
+      "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle"
   ];
-  return in_array($cardID, $specialUsePromos);
+  return in_array($cardID, $specialUsePromos) || str_contains(SetID($cardID), "SEA");
 }
 
 function isUnimplemented($cardID) {
-  // return false;
+  // by default cards from new sets are unimplemented
+  switch (CardSet($cardID)) {
+    case "SEA":
+      return match($cardID) {
+        "puffin_hightail" => false,
+        "golden_skywarden_yellow" => false,
+        "gravy_bones_shipwrecked_looter" => false,
+        "compass_of_sunken_depths" => false,
+        "chart_the_high_seas_blue" => false,
+        "chum_friendly_first_mate_yellow" => false,
+        "board_the_ship_red" => false,
+        "marlynn_treasure_hunter" => false,
+        "king_shark_harpoon_red" => false,
+        "goldfin_harpoon_yellow" => false,
+        "big_game_trophy_shot_yellow" => false,
+        default => true
+      };
+    case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
+      return match($cardID) {
+        default => true
+      };
+    default:
+      break;
+  }
+  //cards that aren't associated with an unreleased set
   return match ($cardID) {
+    "venomback_fabric_yellow" => true, //missing image
     "treasure_island", "riggermortis_yellow" => true,
-    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
-    "gravy_bones_shipwrecked_looter", "compass_of_sunken_depths" => true,
-    "chart_the_high_seas_blue", "chum_friendly_first_mate_yellow" => true,
-    "board_the_ship_red", "paddle_faster_red", "hoist_em_up_red" => true,
     default => false
   };
 }
@@ -607,8 +638,9 @@ function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
 
 function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
   
-  $cardName = CardName($id); 
+  $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
+      echo "$id - $cardName";
       if ($unsupportedCards != "") $unsupportedCards .= " ";
       $unsupportedCards .= $id;
       return;

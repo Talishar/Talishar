@@ -35,7 +35,7 @@ function EVOEffectAttackModifier($cardID): int|string
     "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue" => $idArr[1],
     "gigawatt_red", "gas_up_red", "quickfire_red", "re_charge_red" => 4,
     "moonshot_yellow", "gigawatt_yellow", "gas_up_yellow", "quickfire_yellow", "re_charge_yellow" => 3,
-    "steel_street_hoons_blue", "big_shot_red", "burn_rubber_red", "smash_and_grab_red", "gigawatt_blue", "gas_up_blue", "quickfire_blue", "re_charge_blue", "evo_face_breaker_red_equip" => 2,
+    "steel_street_hoons_blue", "big_shot_red", "burn_rubber_red", "smash_and_grab_red", "gigawatt_blue", "gas_up_blue", "quickfire_blue", "re_charge_blue", "evo_face_breaker_red_equip-BUFF" => 2,
     "cogwerx_base_arms", "evo_whizz_bang_yellow", "junkyard_dogg_red", "junkyard_dogg_yellow", "junkyard_dogg_blue", "emboldened_blade_blue", "evo_smoothbore_yellow_equip", "sprocket_rocket_red", "sprocket_rocket_yellow", "sprocket_rocket_blue", "dumpster_dive_red",
     "dumpster_dive_yellow", "dumpster_dive_blue" => 1,
     default => 0,
@@ -53,7 +53,7 @@ function EVOCombatEffectActive($cardID, $attackID)
     "emboldened_blade_blue", "evo_command_center_yellow_equip", "evo_smoothbore_yellow_equip" => TypeContains($attackID, "W", $mainPlayer),
     "evo_whizz_bang_yellow", "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue", "hydraulic_press_red", "hydraulic_press_yellow", "hydraulic_press_blue", "ratchet_up_red", "ratchet_up_yellow", "ratchet_up_blue", "junkyard_dogg_red",
     "junkyard_dogg_yellow", "junkyard_dogg_blue", "moonshot_yellow", "steel_street_hoons_blue", "fabricate_red", "big_shot_red", "burn_rubber_red", "smash_and_grab_red", "sprocket_rocket_red", "sprocket_rocket_yellow", "sprocket_rocket_blue",
-    "dumpster_dive_red", "dumpster_dive_yellow", "dumpster_dive_blue", "evo_face_breaker_red_equip" => true,
+    "dumpster_dive_red", "dumpster_dive_yellow", "dumpster_dive_blue", "evo_face_breaker_red_equip-BUFF" => true,
     default => false
   };
 }

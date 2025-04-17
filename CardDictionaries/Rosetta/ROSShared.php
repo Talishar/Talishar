@@ -124,6 +124,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "well_grounded":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "felling_of_the_crown_red":
@@ -164,6 +165,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "seeds_of_tomorrow_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
     case "summers_fall_red":
@@ -191,6 +193,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS&MYAURAS", 1);
+        AddDecisionQueue("DEDUPEMULTIZONEINDS", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target aura", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SUMMERSFALL", $currentPlayer, $cardID.",NONE");
@@ -232,6 +235,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "twinkle_toes":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "current_funnel_blue":
@@ -272,14 +276,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
-        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1} was chosen.", 1);
+        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "-{1}", 1);
         if($max > 1) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
           AddDecisionQueue("REMOVEPREVIOUSCHOICES", $currentPlayer, "{0}", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
-          AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1} was chosen.", 1);
+          AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
           AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "-{1}", 1);  
         }
       }
@@ -292,6 +296,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
         return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
       }

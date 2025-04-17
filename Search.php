@@ -216,6 +216,8 @@ function isPriorityStep($cardID)
     case "DEFENDSTEP":
     case "ENDPHASE":
     case "ATTACKSTEP":
+    case "RESOLUTIONSTEP":
+    case "CLOSINGCHAIN":
       return true;
     default:
       return false;
@@ -409,7 +411,7 @@ function SearchCharacterForCard($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i] == $cardID && $character[$i + 12] != "DOWN") return true;
+    if ($character[$i] == $cardID && $character[$i + 12] != "DOWN" && $character[$i + 1] != 0) return true;
   }
   return false;
 }
@@ -948,6 +950,20 @@ function SearchItemsForCard($cardID, $player)
   return $indices;
 }
 
+function SearchItemsForCardName($cardName, $player)
+{
+  if (SearchCurrentTurnEffects("amnesia_red", $player)) return "";
+  $items = &GetItems($player);
+  $indices = "";
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    if (CardName($items[$i]) == $cardName) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchItemForIndex($cardID, $player)
 {
   $items = &GetItems($player);
@@ -1138,8 +1154,11 @@ function GetMZCardLink($player, $MZ)
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
   if ($index == "") return "";
-  if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD") $index += 2;
-  return CardLink($zoneDS[$index], $zoneDS[$index]);
+  if (isset($zoneDS[$index]) && is_string($zoneDS[$index])) {
+    if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD") $index += 2;
+    return CardLink($zoneDS[$index], $zoneDS[$index]);
+  } 
+  return "";
 }
 
 //$searches is the following format:

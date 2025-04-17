@@ -265,13 +265,22 @@ function EffectHitEffect($cardID, $from, $source = "-")
       }
       break;
     case "spike_with_bloodrot_red":
-      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
+      // The spikes *give* the ability to the attack
+      if ($source == "-") $atkSource = $CombatChain->AttackCard()->ID();
+      else $atkSource = $source;
+      if (IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer, isToken:true, effectSource:$atkSource);
       break;
     case "spike_with_frailty_red":
-      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer);
+      // The spikes *give* the ability to the attack
+      if ($source == "-") $atkSource = $CombatChain->AttackCard()->ID();
+      else $atkSource = $source;
+      if (IsHeroAttackTarget()) PlayAura($CID_Frailty, $defPlayer, effectController: $mainPlayer, isToken:true, effectSource:$atkSource);
       break;
     case "spike_with_inertia_red":
-      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
+      // The spikes *give* the ability to the attack
+      if ($source == "-") $atkSource = $CombatChain->AttackCard()->ID();
+      else $atkSource = $source;
+      if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer, isToken:true, effectSource:$atkSource);
       break;
     case "melting_point_red":
       if (IsHeroAttackTarget() && HasAimCounter()) {
@@ -440,8 +449,11 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "twist_and_turn_yellow":
     case "twist_and_turn_blue":
       $character = &GetPlayerCharacter($mainPlayer);
-      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      if ($combatChainState[$CCS_WeaponIndex] != -1) {
+        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      }
+      else WriteLog("A strange error has happened with twist and turn. Please submit a bug report");
       return 0;
     case "hunt_a_killer_red":
     case "hunt_a_killer_yellow":
@@ -470,9 +482,12 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "take_a_stab_red":
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
-      $character = &GetPlayerCharacter($mainPlayer);
-      $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-      ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      //don't add attacks if it wasn't a weapon
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+        $character = &GetPlayerCharacter($mainPlayer);
+        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      }
       return 1;
     case "imperial_seal_of_command_red-HIT":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
@@ -1006,28 +1021,28 @@ function CurrentEffectCostModifiers($cardID, $from)
   return CostCantBeModified($cardID) ? 0 : $costModifier;
 }
 
-function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
+function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=false) //$skip is used to check the damage prevention without using it. Mostly for Front-end and UI work
 {
   global $currentTurnEffects;
   $preventedDamage = 0;
+  $remove = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-    $remove = false;
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "essence_of_ancestry_body_red":
-          if (PitchValue($source) == 1) {
+          if (PitchValue($source) == 1 && !$skip) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "essence_of_ancestry_soul_yellow":
-          if (PitchValue($source) == 2) {
+          if (PitchValue($source) == 2 && !$skip) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "essence_of_ancestry_mind_blue":
-          if (PitchValue($source) == 3) {
+          if (PitchValue($source) == 3 && !$skip) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
@@ -1035,7 +1050,7 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
         case "shelter_from_the_storm_red":
         case "calming_breeze_red":
           $preventedDamage += 1;
-          --$currentTurnEffects[$i + 3];
+          if (!$skip) --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] == 0) $remove = true;
           break;
         default:
@@ -1044,12 +1059,15 @@ function CurrentEffectPreventDamagePrevention($player, $type, $damage, $source)
     }
     if ($remove) RemoveCurrentTurnEffect($i);
   }
-  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "" && !$skip) {
     $preventedDamage -= 1;
     SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   }
-  $damage -= $preventedDamage;
-  return $damage;
+  if($skip) return $preventedDamage;
+  else {
+    $damage -= $preventedDamage;
+    return $damage;  
+  }
 }
 
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
@@ -1208,8 +1226,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
         case "evo_atom_breaker_red_equip":
         case "evo_face_breaker_red_equip":
         case "evo_mach_breaker_red_equip": //Equipment
-          if ($preventable) $preventedDamage += intval($effects[1]);
-          $remove = true;
+          if (!isset($effects[1]) || $effects[1] != "BUFF") {
+            if ($preventable) $preventedDamage += intval($effects[1]);
+            $remove = true;
+          }
           break;
         case "no_fear_red":
           if ($preventable) $preventedDamage += 2 + intval($effects[1]);
@@ -1668,6 +1688,10 @@ function CurrentEffectGrantsGoAgain()
         case "the_hand_that_pulls_the_strings":
           return true;
         case "bank_breaker":
+          return true;
+        case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
+          return true;
+        case "peg_leg":
           return true;
         default:
           break;
@@ -2227,14 +2251,13 @@ function EffectDefenderAttackModifiers($cardID)
 
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1)
 {
-  global $mainPlayer, $currentTurnEffects;
-  $mainChar = &GetPlayerCharacter($mainPlayer);
+  global $mainPlayer, $currentTurnEffects, $p2IsAI;
   $attackValue = AttackValue($cardID, $index);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = GetResolvedAbilityType($cardID);
   $abilityType = GetAbilityType($cardID, from: $from);
 
-  if ($mainChar[0] == "DUMMY") return false;
+  if ($p2IsAI) return false;
   $restrictedBy = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
@@ -2262,7 +2285,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   return $restrictedBy;
 }
 
-function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase)
+function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase, $modalCheck = false)
 {
   global $currentTurnEffects, $currentPlayer, $turn;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -2271,7 +2294,10 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
       $effectID = $effectArr[0];
       switch ($effectID) {
         case "burdens_of_the_past_blue":
-          if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+          // handle modal cards separately
+          if ($modalCheck || GetAbilityTypes($cardID) == "") {
+            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+          }
           break;
         default:
           break;
@@ -2337,8 +2363,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
       }
     }
   }
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $otherPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $currentPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = FindNullTime(GamestateSanitize(NameOverride($cardID)));
   // handle discarded modal cards elsewhere
   if($foundNullTime && $from == "HAND" && GetAbilityTypes($cardID, from:$from) == ""){
     $restrictedBy = "null_time_zone_blue";

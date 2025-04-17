@@ -502,6 +502,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($source == "rok" || $source == "malign_red" || $source == "malign_yellow" || $source == "malign_blue" || $source == "murkmire_grapnel_red" || $source == "murkmire_grapnel_yellow" || $source == "murkmire_grapnel_blue") return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
+  if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
   return true;
 }
 
@@ -516,7 +517,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   if ($preventable) {
-    if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $type, $damage, $source);
+    if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $damage, $source);
     if (ConsumeDamagePrevention($player)) return 0;//I damage can be prevented outright, don't use up your limited damage prevention
     if ($type == "ARCANE") {
       if ($damage <= $classState[$CS_ArcaneDamagePrevention]) {
@@ -868,10 +869,9 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  $p2Char = &GetPlayerCharacter(2);//Use only for single player for the dummy to be "invincible"
-  if (!$silent && $p2Char[0] != "DUMMY") WriteLog("Player " . $player . " gained " . $amount . " life");
+  if (!$silent && IsPlayerAI($player)) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
-  if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
+  if(!IsPlayerAI($player) || $player == 1) $health += $amount;
   LogHealthGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {
@@ -904,10 +904,9 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
 function PlayerLoseHealth($player, $amount)
 {
   global $CS_HealthLost;
-  $p2Char = &GetPlayerCharacter(2);//Use only for single player for the dummy to be "invincible"
   $health = &GetHealth($player);
   $amount = AuraLoseHealthAbilities($player, $amount);
-  if($p2Char[0] != "DUMMY" || $player == 1) $health -= $amount;
+  if(!IsPlayerAI($player) || $player == 1) $health -= $amount;
   IncrementClassState($player, $CS_HealthLost, $amount);
   if ($health <= 0 && !IsGameOver()) {
     PlayerWon(($player == 1 ? 2 : 1));
@@ -1717,14 +1716,15 @@ function DoesAttackHaveGoAgain()
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
-  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
   $attackID = $CombatChain->AttackCard()->ID();
+  $from = isset($combatChain[2]) ? $combatChain[2] : "CC";
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
 
   //Prevention Natural Go Again
-  if (CurrentEffectPreventsGoAgain($attackID, "CC")) return false;
+  if (CurrentEffectPreventsGoAgain($attackID, $from)) return false;
   if (SearchCurrentTurnEffects("blizzard_blue", $mainPlayer)) return false;
 
   //Natural Go Again
@@ -2035,7 +2035,6 @@ function CloseCombatChain($chainClosed = "true")
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
 
-
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
   elseif (in_array("DEFENDSTEP", $layers)) PopLayer();
   if(!$chainClosed) FinalizeChainLink(!$chainClosed);
@@ -2321,6 +2320,9 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     $character = GetPlayerCharacter($player);
     for ($i = 0; $i < count($character); $i += CharacterPieces()) {
       switch ($character[$i]) {
+        case "silversheen_needle":
+          if (CardNameContains($cardID, "Fabric", $player, true)) $hasGoAgain = true;
+          break;
         case "compass_of_sunken_depths":
           if (GetClassState($player, $CS_NumWateryGrave) == 1 && HasWateryGrave($cardID) && $from=="GY") {
             $hasGoAgain = true;
@@ -2658,6 +2660,8 @@ function SelfCostModifier($cardID, $from)
     case "bubble_to_the_surface_red":
     case "drop_of_dragon_blood_red":
       return (-1 * NumDraconicChainLinks());
+    case "solid_ground_blue":
+      return (-1 * NumSeismicSurge($currentPlayer));
     default:
       return 0;
   }
@@ -2856,6 +2860,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if (IsCardNamed($currentPlayer, $cardID, "Crouching Tiger")) IncrementClassState($currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn);
   if (HasMeld($cardID)) {
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-$target", 1);
     AddDecisionQueue("MELD", $currentPlayer, $cardID, 1);
     return "";
   }
@@ -2927,6 +2932,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if ($set == "AST") return ASTPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "AMX") return AMXPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "SEA") return SEAPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "MPG") return MPGPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else {
     switch ($cardID) {
       case "jack_o_lantern_red":
@@ -2943,6 +2949,18 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       case "magrar";
           PlayAura("zen_state", $currentPlayer);
           PlayAura("inertia", $currentPlayer);
+        return "";
+      case "fabric_of_spring_yellow":
+        if (!SearchCharacterAliveSubtype($currentPlayer, "Chest")) {
+          //I'm not bothering with the double sided stuff
+          EquipEquipment($currentPlayer, "fyendals_spring_tunic", "Chest");
+        }
+        return "";
+      case "venomback_fabric_yellow":
+        if (!SearchCharacterAliveSubtype($currentPlayer, "Legs")) {
+          //I'm not bothering with the double sided stuff
+          EquipEquipment($currentPlayer, "scabskin_leathers", "Legs");
+        }
         return "";
       default:
         break;
@@ -3485,4 +3503,15 @@ function isPreviousLinkDraconic()
     if ($talents[$i] == "DRACONIC") $isDraconic = true;
   }
   return $isDraconic;
+}
+
+function NumSeismicSurge($player)
+{
+  $auras = &GetAuras($player);
+  $count = 0;
+  for($i=0; $i<count($auras); $i+=AuraPieces())
+  {
+    if(CardNameContains($auras[$i], "seismic_surge", $player)) ++$count;
+  }
+  return $count;
 }

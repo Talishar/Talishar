@@ -39,7 +39,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $hero = "";
   for ($i = 0; $i < count($charEquip); ++$i) {
     if(TypeContains($charEquip[$i], "C")) $hero = $charEquip[$i];
-    fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0" . ($i < count($charEquip) - 1 ? " " : "\r\n"));
+    fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0" . ($i < count($charEquip) - 1 ? " " : "\r\n"));
   }
   //Character and equipment. First is ID. Four numbers each. First is status (0=Destroy/unavailable, 1=Used, 2=Unused, 3=Disabled). Second is num counters
   //Third is attack modifier, fourth is block modifier

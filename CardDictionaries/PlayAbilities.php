@@ -577,6 +577,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char[8] = 0;
       $char[9] = 2;
       $char[11] = GetUniqueId("teklovossen_the_mechropotent", $currentPlayer);
+      $char[13] = 0;
+      $char[14] = 0; //assuming transforming untaps
       $mechropotentIndex = 0; // we pushed it, so should be the last element
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
         if ($char[$i] != "teklovossen_the_mechropotent" && $char[$i] != "NONE00") {
@@ -606,9 +608,18 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "evo_atom_breaker_red":
     case "evo_face_breaker_red":
     case "evo_mach_breaker_red":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
+      // I'm assuming we'll never have multiple copies of the same evo breaker equipped
+      $index = intval(explode(",", SearchCharacterForCards($cardID . "_equip", $currentPlayer))[0]);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $index);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER");
+      $maxRepeats = SearchCount(SearchItemsForCardName("Hyper Driver", $currentPlayer));
+      for ($i = 0; $i < $maxRepeats; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to transform (or pass)", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER", 1);
+      }
       return "Light up the gem under the equipment when you want to use the conditional effect❗";
     case "demolition_protocol_red":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {

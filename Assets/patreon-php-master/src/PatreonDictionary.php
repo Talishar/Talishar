@@ -133,6 +133,8 @@ enum PatreonCampaign : string
   case ChantsAndDaggers = "10956423";
   case Dazzyfizzle = "12977197";
   case Nikobru = "13586904";
+  case Dashciples = "13136013";
+  case BlitzkriegMeph = "13969806";
 
   public function SessionID(): string
   {
@@ -180,6 +182,8 @@ enum PatreonCampaign : string
       case "10956423": return "isChantsAndDaggersPatron";
       case "12977197": return "isDazzyfizzlePatron";
       case "13586904": return "isNikobruPatron";
+      case "13136013": return "isDashciplesPatron";
+      case "13969806": return "isBlitzkriegMephPatron";
       default: return "";
     }
   }
@@ -250,6 +254,8 @@ enum PatreonCampaign : string
       case "10956423": return "Chants and Daggers";
       case "12977197": return "Dazzyfizzle";
       case "13586904": return "Nikobru";
+      case "13136013": return "Dashciples";
+      case "13969806": return "Blitzkrieg Meph";
       default: return "";
     }
   }
@@ -318,8 +324,10 @@ enum PatreonCampaign : string
       case "12245100": return ($userName == "PvtVoid" || $userName == "Smithel" || $userName == "Poopking" || $userName == "HeyLookItsBrice");
       case "12300349": return ($userName == "PvtVoid");
       case "10956423": return ($userName == "ChantsAndDaggers" || $userName == "OotTheMonk");
-      case "12977197": return ($userName == "PvtVoid" || $userName == "dazzyfizzle" || $userName == "OotTheMonk");
-      case "13586904": return ($userName == "PvtVoid" || $userName == "Nikobru");
+      case "12977197": return $userName == "dazzyfizzle";
+      case "13586904": return $userName == "Nikobru";
+      case "13136013": return $userName == "WuntrikAkali";
+      case "13969806": return ($userName == "PvtVoid" || $userName == "BlitzkriegMeph");
       default: return "";
     }
   }
@@ -365,7 +373,7 @@ enum PatreonCampaign : string
       case "14": return "82,83";
       case "15": return "84";
       case "16": return "87";
-      case "17": return "88";
+      case "17": return "88,100";
       case "18": return "96";
       case "7198186": return "1,2,3,4,5,6,7,8,82,83";
       case "7579026": return "9";
@@ -410,6 +418,8 @@ enum PatreonCampaign : string
       case "10956423": return "85,86";
       case "12977197": return "89,90,91,92,93,94,95,98,99";
       case "13586904": return "97";
+      case "13136013": return "101";
+      case "13969806": return "102";
       default: return "";
     }
   }

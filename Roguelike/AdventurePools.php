@@ -1,6 +1,6 @@
 <?php
 
-function GetNextEncounter() //TODO overhaul this whole function and children
+function GetNextEncounter()
 {
   $encounter = &GetZone(1, "Encounter");
   // WriteLog("hijacked GetNextEncounter");

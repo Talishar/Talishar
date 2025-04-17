@@ -107,8 +107,8 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           if(!$deck->Empty()) {
             WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " let you draw a card then put one on top");
             Draw($player);
-            HandToTopDeck($player);
-          }
+            }
+          HandToTopDeck($player);
           break;
         case "Banish_top_deck":
           if(!$deck->Empty()) {
@@ -437,7 +437,7 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
-  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer;
+  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -721,28 +721,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       DamageTrigger($player, $dqVars[0]+1, "DAMAGE", "tick_tock_clock_red");
       return $lastResult;
     case "EVOBREAKER":
-      if($lastResult == "PASS") {
-        if($dqVars[0] != "-") {
-          $char = &GetPlayerCharacter($player);
-          $hyperdriverArr = explode(",", $dqVars[0]);
-          $index = $hyperdriverArr[0];
-          $count = count($hyperdriverArr);
-          for($i=1; $i<$count; ++$i) {
-            CharacterAddSubcard($player, $index, $hyperdriverArr[$i]);
-          }
-          AddCurrentTurnEffect($char[$index] . "-" . (($count-1)*2), $player);
-        }
-        return $lastResult;
+      $char = &GetPlayerCharacter($player);
+      $index = $dqVars[0];
+      CharacterAddSubcard($player, $index, $lastResult);
+      $effectInd = SearchCurrentTurnEffectsForUniqueID($char[$index+11]);
+      if ($effectInd == -1) AddCurrentTurnEffect($char[$index] . "-2", $player, uniqueID: $char[$index+11]);
+      else {
+        $prevVal = intval(explode("-", $currentTurnEffects[$effectInd])[1]);
+        $currentTurnEffects[$effectInd] = $char[$index] . "-" . $prevVal + 2;
       }
-      else if($lastResult != "-") {
-        if($dqVars[0] == "-") $dqVars[0] = $lastResult;
-        else $dqVars[0] .= "," . $lastResult;
-      }
-      PrependDecisionQueue("SPECIFICCARD", $player, "EVOBREAKER");
-      PrependDecisionQueue("MZREMOVE", $player, "-", 1);
-      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to transform (or pass)", 1);
-      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red", 1);
       return $lastResult;
     case "HYPERSCRAPPER":
       global $CombatChain;
@@ -892,17 +879,51 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if (ColorContains($cardID, 2, $player)) PutItemIntoPlayForPlayer("gold", $player, isToken:true);
       }
       return $lastResult;
+    case "KINGKRAKENHARPOON":
+      $index = intval(explode("-", $lastResult)[1]);
+      $cardID = GetMZCard($player, $lastResult);
+      if (CanRevealCards($defPlayer)) {
+        RevealCards($cardID);
+        if (TypeContains($cardID, "A")) {
+          DiscardCard($defPlayer, $index, "king_kraken_harpoon_red", $mainPlayer);
+          PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+        }
+      }
+      return $lastResult;
     case "KINGSHARKHARPOON":
       $index = intval(explode("-", $lastResult)[1]);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
-        if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
+        if (TypeContains($cardID, "AA")) {
           DiscardCard($defPlayer, $index, "king_shark_harpoon_red", $mainPlayer);
           PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
         }
       }
       return $lastResult;
+    case "TAYLOR":
+      $cardID = GetMZCard($player, $lastResult);
+      if (SubtypeContains($cardID, "Head")) $subtype = "Head";
+      elseif (SubtypeContains($cardID, "Legs")) $subtype = "Legs";
+      elseif (SubtypeContains($cardID, "Arms")) $subtype = "Arms";
+      elseif (SubtypeContains($cardID, "Chest")) $subtype = "Chest";
+      $inventory = &GetInventory($player);
+      $choices = [];
+      foreach ($inventory as $cardID) {
+        if (SubtypeContains($cardID, $subtype)) {
+          array_push($choices, $cardID);
+        }
+      }
+      if (count($choices) == 0) {
+        WriteLog("Player " . $player . " doesn't have any $subtype equipment in their inventory");
+        return;
+      }
+      $choices = implode(",", $choices);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a $subtype equipment to equip");
+      AddDecisionQueue("CHOOSECARD", $mainPlayer, $choices);
+      AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
+      AddDecisionQueue("EQUIPCARDINVENTORY", $mainPlayer, "<-");
+      return $cardID;
     default: return "";
   }
 
@@ -919,11 +940,11 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
 }
 
-function MeldCards($player, $cardID, $lastResult){
+function MeldCards($player, $cardID, $lastResult, $target="-"){
   if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
   else $names[] = GamestateUnsanitize($lastResult);
   if($lastResult == "Both") {
-    AddLayer("MELD", $player, $cardID);
+    AddLayer("MELD", $player, $cardID, target:$target);
     $meldState = CardType($cardID);
   }
   else $meldState = "I";
@@ -938,7 +959,7 @@ function MeldCards($player, $cardID, $lastResult){
         break;
       default:
         if($lastResult != "Both") {
-          ProcessMeld($player, $cardID, additionalCosts:$lastResult);
+          ProcessMeld($player, $cardID, additionalCosts:$lastResult, target:$target);
         }
       break;
     }

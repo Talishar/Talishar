@@ -29,6 +29,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, 0);
     array_push($items, ItemModalities($item));
     array_push($items, $from);
+    array_push($items, 0); //enters untapped
     if (HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
@@ -44,7 +45,17 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
-  if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
+  //enters the arean triggers
+  switch ($item) {
+    case "stasis_cell_blue":
+    case "null_time_zone_blue":
+      AddLayer("TRIGGER", $player, $item);
+      break;
+    default:
+      break;
+  }
+  // if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
+  // if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
   PlayAbility($item, $from, 0);
 }
 
@@ -100,6 +111,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "backup_protocol_blu_blue":
     case "imperial_seal_of_command_red":
     case "gold":
+    case "diamond_amulet_blue":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "dissipation_shield_yellow":
@@ -332,6 +344,15 @@ function ItemStartTurnAbility($index)
     case "signal_jammer_blue":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
+    case "null_time_zone_blue":
+      if ($mainItems[$index + 1] > 0) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index], $mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
+        AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $mainPlayer, $index, 1);
+      } else {
+        WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
+        DestroyItemForPlayer($mainPlayer, $index);
+      }
+      break;
     case "grinding_gears_blue":
     case "prismatic_lens_yellow":
     case "quantum_processor_yellow":
@@ -357,7 +378,6 @@ function ItemStartTurnAbility($index)
     case "mhz_script_yellow":
     case "autosave_script_blue":
     case "cerebellum_processor_blue":
-    case "null_time_zone_blue":
     case "clamp_press_blue":
     case "golden_cog":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
@@ -381,6 +401,8 @@ function ItemEndTurnAbilities()
   global $mainPlayer;
   $items = &GetItems($mainPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    //untap
+    Tap("MYITEMS-$i", $mainPlayer, 0);
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_balance_blue":
@@ -535,3 +557,12 @@ function ItemsAttackModifiers($cardID, $player, $from)
   return $attackModifier;
 }
 
+//checks if a cardname is blocked by null time zone
+function FindNullTime($cardName) 
+{
+  global $mainPlayer, $defPlayer;
+  
+  $foundNullTime = SearchItemForModalities($cardName, $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities($cardName, $defPlayer, "null_time_zone_blue") != -1;
+  return $foundNullTime;
+}

@@ -250,6 +250,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "lumina_lance_yellow":
@@ -469,6 +470,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "alluring_inducement_yellow":
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=AA");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
@@ -488,6 +491,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "hold_the_line_blue":
       if(GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2)
       {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 3);
         WriteLog("Prevents the next 3 damage");
       }
@@ -649,6 +653,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[8] = 0;
   $char[9] = CharacterDefaultActiveState($cardID);
   $char[13] = 0;
+  $char[14] = 0; //assuming transform untaps
   AddEvent("HERO_TRANSFORM", $cardID);
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);

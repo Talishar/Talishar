@@ -109,7 +109,7 @@ function EncounterDescription()
       if($encounter->subphase == "BeforeFight") return "As you cross the bridge, a man bigger than a mountain yells a battlecry.";
       else if($encounter->subphase == "AfterFight") return "The defeated man falls. His eyes do not change, for nothing was ever behind his eyes.";
     case 130:
-      if($encounter->subphase == "BeforeFight") return "As you travel, a wandering thug carrying a spiked club jumps out from behind a large boulder and ambushes you. His size is impressive, yet he seems limber... keep your guard up against him."; //TODO
+      if($encounter->subphase == "BeforeFight") return "As you travel, a wandering thug carrying a spiked club jumps out from behind a large boulder and ambushes you. His size is impressive, yet he seems limber... keep your guard up against him.";
       else if($encounter->subphase == "AfterFight") return "The man runs away, with the pieces of his club on the ground. You were too clever for him!";
     case 131:
       if($encounter->subphase == "BeforeFight") return "Despite keeping an eye on your surroundings, you're caught by surprise when a giant winged creature made of crackling lightning suddenly attacks you.";

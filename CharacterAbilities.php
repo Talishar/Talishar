@@ -30,6 +30,7 @@ class Character
   public $uniqueID = 0;
   public $facing = "UP";
   public $marked = 0;
+  public $tapped = 0;
 
 
   private $player = null;
@@ -55,6 +56,7 @@ class Character
     $this->uniqueID = $array[$index + 11];
     $this->facing = $array[$index + 12];
     $this->marked = $array[$index + 13];
+    $this->tapped = $array[$index + 14];
   }
 
   public function Finished()
@@ -74,6 +76,7 @@ class Character
     $array[$this->arrIndex + 11] = $this->uniqueID;
     $array[$this->arrIndex + 12] = $this->facing;
     $array[$this->arrIndex + 13] = $this->marked;
+    $array[$this->arrIndex + 14] = $this->tapped;
   }
 }
 
@@ -94,7 +97,8 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, "-");
   array_push($char, GetUniqueId($cardID, $player));
   array_push($char, HasCloaked($cardID, $player));
-  array_push($char, 0);
+  array_push($char, 0); //marked
+  array_push($char, 0); //tapped
   return $index;
 }
 
@@ -291,6 +295,13 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
       }
       break;
+    case "taylor":
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to swap (pass to decline)");
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "TAYLOR", 1);
+      break;
     default:
       break;
   }
@@ -340,6 +351,7 @@ function DefCharacterStartTurnAbilities()
 
 function CharacterDestroyEffect($cardID, $player)
 {
+  global $mainPlayer;
   switch ($cardID) {
     case "new_horizon":
       WriteLog(Cardlink($cardID, $cardID) . " destroys your arsenal");
@@ -362,6 +374,13 @@ function CharacterDestroyEffect($cardID, $player)
       break;
     case "meridian_pathway":
       SearchCurrentTurnEffects("MERIDIANWARD", $player, true);
+      break;
+    case "halo_of_lumina_light":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYBANISH:pitch=2;subtype=aura");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a yellow aura to put into play");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
       break;
     default:
       break;
@@ -409,6 +428,8 @@ function MainCharacterBeginEndPhaseAbilities()
       default:
         break;
     }
+    //untap
+    Tap("MYCHAR-$i", $mainPlayer, 0);
   }
 
   $defCharacter = &GetPlayerCharacter($defPlayer);
@@ -833,6 +854,7 @@ function EquipEquipment($player, $card, $slot = "")
       $char[$i + 11] = $uniqueID;
       $char[$i + 12] = HasCloaked($card, $player);
       $char[$i + 13] = 0;
+      $char[$i + 14] = 0;
       $replaced = 1;
     }
   }
@@ -852,6 +874,7 @@ function EquipEquipment($player, $card, $slot = "")
     array_splice($char, $insertIndex + 11, 0, $uniqueID);
     array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
+    array_splice($char, $insertIndex + 14, 0, 0); //tapped
   }
   if ($card == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
   if ($card == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
@@ -870,6 +893,21 @@ function AddEquipTrigger($cardID, $player)
   }
 }
 
+function NumOccupiedHands($player)
+{
+  $char = &GetPlayerCharacter($player);
+  $numHands = 0;
+  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
+    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) {
+      if ($char[$i + 1] != 0) {
+        if (Is1H($char[$i])) ++$numHands;
+        else $numHands += 2;
+      }
+    }
+  }
+  return $numHands;
+}
+
 function EquipWeapon($player, $card, $source = "-")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -882,16 +920,8 @@ function EquipWeapon($player, $card, $source = "-")
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;
   $replaced = 0;
-  $numHands = 0;
+  $numHands = NumOccupiedHands($player);
   $uniqueID = GetUniqueId($card, $player);
-  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
-    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) {
-      if ($char[$i + 1] != 0) {
-        if (Is1H($char[$i])) ++$numHands;
-        else $numHands += 2;
-      }
-    }
-  }
   //check if you have enough hands to equip it
   if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
     //Replace the first destroyed weapon; if none you can't re-equip
@@ -913,6 +943,7 @@ function EquipWeapon($player, $card, $source = "-")
           $char[$i + 11] = $uniqueID;
           $char[$i + 12] = HasCloaked($card, $player);
           $char[$i + 13] = 0;
+          $char[$i + 14] = 0;
           $replaced = 1;
         }
       }
@@ -1130,6 +1161,7 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "magrar":
     case "shock_frock":
     case "cap_of_quick_thinking":
+    case "peg_leg":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
@@ -1219,10 +1251,11 @@ function EquipPayAdditionalCosts($cardIndex, $from)
     case "marlynn_treasure_hunter":
       $goldIndex = GetItemIndex("gold", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $goldIndex);
-      Wave("MYCHAR-$cardIndex", $currentPlayer);
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "compass_of_sunken_depths":
-      Wave("MYCHAR-$cardIndex", $currentPlayer);
+    case "redspine_manta":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     default:
       --$character[$cardIndex + 5];
@@ -1383,7 +1416,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         $resources = &GetResources($currentPlayer);
         ++$resources[0];
         break;
-      case "melody_singalong"://Melody, Sing-Along
+      case "melody_sing_along"://Melody, Sing-Along
         if (SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("copper", $currentPlayer);
         break;
       default:
@@ -1623,7 +1656,7 @@ function CharacterBoostAbilities($player)
         break;
       case "evo_face_breaker_red_equip":
         if ($char[$i + 9] == 1 && EvoHasUnderCard($player, $i)) {
-          AddCurrentTurnEffect($char[$i], $player);
+          AddCurrentTurnEffect($char[$i] . "-BUFF", $player);
           CharacterChooseSubcard($player, $i, fromDQ: false);
           AddDecisionQueue("ADDDISCARD", $player, "-", 1);
         }

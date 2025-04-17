@@ -347,7 +347,7 @@ function DestroyArsenal($player, $index = -1, $effectController = "", $allArsena
 {
   $arsenal = &GetArsenal($player);
   $cardIDs = "";
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
     if ($index > -1 && $index != $i) continue;
     if ($cardIDs != "") $cardIDs .= ",";
     $cardIDs .= $arsenal[$i];
@@ -734,7 +734,9 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
     unset($layers[$i]);
   }
   $layers = array_values($layers);
-  ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
+  if ($goesWhere != "-") {
+    ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
+  }
 }
 
 function AddAdditionalCost($player, $value)

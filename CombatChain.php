@@ -597,6 +597,15 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "breaker_helm_protos":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
       break;
+    case "testament_of_valahai":
+      $countSeismic = CountAura("seismic_surge", $defPlayer);
+      if ($countSeismic >= 6) {
+        $blockModifier += 4;
+      }
+      elseif ($countSeismic >= 3) {
+        $blockModifier += 2;
+      }
+      break;
     default:
       break;
   }
@@ -940,6 +949,7 @@ function OnBlockResolveEffects($cardID = "")
       case "starlight_striders":
       case "hoist_em_up_red":
       case "breaker_helm_protos":
+      case "sunken_treasure_blue":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":
@@ -984,7 +994,7 @@ function OnBlockResolveEffects($cardID = "")
             break;
           }
         }
-        if ($conditionsMet == 2 && !IsAllyAttacking()) {
+        if ($conditionsMet == 2) {
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         }
         break;
@@ -1396,12 +1406,6 @@ function IsOverpowerActive()
   return false;
 }
 
-function CanBlock($cardID)//checks if a block is legal, used for cards that force blocks
-{
-  // TODO;
-  return true;
-}
-
 function IsWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
@@ -1493,8 +1497,8 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
       //for some reason DQs aren't working here, for now just automatically choose the first cog
-      $inds = GetUnwaved($currentPlayer, "MYITEMS", "subtype=Cog");
-      Wave(explode(",", $inds)[0], $currentPlayer);
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      Tap(explode(",", $inds)[0], $currentPlayer);
       break;
     default:
       break;

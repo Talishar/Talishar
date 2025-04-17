@@ -57,13 +57,7 @@ function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $con
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $combatChain, $layers;
-  // check if a weapon layer is actually an attack
-  $isWeaponAttackLayer = false;
-  if (CardType($layers[0]) == "W"){
-    if (GetAbilityTypes($layers[0]) == "") $isWeaponAttack = GetAbilityType($layers[0]) == "AA";
-    else $isWeaponAttack = GetResolvedAbilityType($layers[0]);
-  } 
-  if (count($layers) > 0 && (CardType($layers[0]) == "AA" || $isWeaponAttackLayer || SubtypeContains($layers[0], "Ally"))) {
+  if (count($layers) > 0 && (CardType($layers[0]) == "AA" || SubtypeContains($layers[0], "Ally"))) {
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   } else if (count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
@@ -154,7 +148,6 @@ function CurrentTurnEffectPieces()
 
 function CurrentTurnEffectUses($cardID)
 {
-  // TODO see what breaks this
   $effectID = ExtractCardID($cardID);
   switch ($effectID) {
     case "steadfast_red":
@@ -411,6 +404,15 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
+        else if ($cardID == "RESOLUTIONSTEP") {
+          ResetCombatChainState();
+          ProcessDecisionQueue();
+        }
+        else if ($cardID == "CLOSINGCHAIN") {
+          WriteLog("I didn't think this code was reachable, please submit a bug report");
+          ResetCombatChainState();
+          ProcessDecisionQueue();
+        }
         else if ($cardID == "ATTACKSTEP") {
           $turn[0] = "B";
           $currentPlayer = $defPlayer;
@@ -424,13 +426,15 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         } else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $cardID);
+          ProcessMeld($player, $parameter, $cardID, target:$target);
           ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], isset($params[1]) ? $params[1] : 0, $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
           ClearDieRoll($player);
         }
+        //main player should hold priority in resolution step always
+        if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") $layerPriority[$mainPlayer - 1] = "1";
       }
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY") {
       if ($currentPlayer != $decisionQueue[1]) {
@@ -492,9 +496,16 @@ function ContinueDecisionQueue($lastResult = "")
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
     if (count($dqVars) > 1 && str_contains($parameter, "{1}")) $parameter = str_replace("{1}", $dqVars[1], $parameter);
   }
-  if (count($dqVars) > 1) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
+  if (count($dqVars) > 1) {
+    $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
+  }  
   $subsequent = array_shift($decisionQueue);
   $makeCheckpoint = array_shift($decisionQueue);
+  if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
+    // turn player can play actions in the resolution step
+    // still a little buggy, chain closes if turn player passes here
+    $phase = "M";
+  }
   $turn[0] = $phase;
   $turn[1] = $player;
   $currentPlayer = $player;
@@ -980,6 +991,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "pain_in_the_backside_red":
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
+    case "king_kraken_harpoon_red":
     case "king_shark_harpoon_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
@@ -1041,6 +1053,11 @@ function AddCrushEffectTrigger($cardID)
     case "star_struck_yellow":
     case "boulder_drop_yellow":
     case "boulder_drop_blue":
+    case "put_em_in_their_place_red":
+    case "batter_to_a_pulp_red":
+    case "blinding_of_the_old_ones_red": 
+    case "smelting_of_the_old_ones_red": 
+    case "disenchantment_of_the_old_ones_red":
       AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
       break;
     default:
@@ -1071,9 +1088,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
   switch ($effects[0]) {
-    case "plunder_run_red-1":
-    case "plunder_run_yellow-1":
-    case "plunder_run_blue-1":
     case "spoils_of_war_red-2":
     case "eclipse_existence_blue":
     case "ice_quake_red-HIT":
@@ -1099,7 +1113,15 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
     case "hack_to_reality_yellow-HIT":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
+    case "plunder_run_red-1": //triggers that won't apply on flick
+    case "plunder_run_yellow-1":
+    case "plunder_run_blue-1":
+      if (TypeContains($source, "AA")) {
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
     case "burn_up__shock_red":
+    case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
@@ -1248,7 +1270,6 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
     case "scar_tissue_red":
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
-    case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
@@ -2236,11 +2257,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "spike_pit_trap_blue":
       $deck = new Deck($mainPlayer);
-      $topDeck = $deck->Top(remove: true);
-      AddGraveyard($topDeck, $mainPlayer, "DECK");
-      $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
-      LoseHealth($numName, $mainPlayer);
-      WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
+      if (!$deck->Empty()) {
+        $topDeck = $deck->Top(remove: true);
+        AddGraveyard($topDeck, $mainPlayer, "DECK");
+        $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
+        LoseHealth($numName, $mainPlayer);
+        WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
+      }
+      else WriteLog("No card from deck to put into graveyayrd");
       TrapTriggered($parameter);
       break;
     case "boulder_trap_yellow":
@@ -2780,7 +2804,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       CleanUpCombatEffects();
       AddPlayerHand($combatChain[0], $mainPlayer, "CC");
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
         //only close the chain if removed before the resolution step
         CloseCombatChain(false);
       }
@@ -2797,7 +2821,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "blast_to_oblivion_red":
     case "blast_to_oblivion_yellow":
     case "blast_to_oblivion_blue":
-      MZBounce($player, $target);
+      $otherPlayer = ($player == 1 ? 2 : 1);
+      $targetedPlayer = intval(explode("-", $target)[0]);
+      $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
+      $uID = explode("-", $target)[1];
+      $auras = &GetAuras($targetedPlayer);
+      for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+        if ($auras[$i + 6] == $uID) {
+          $cardID = $auras[$i];
+          $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
+          $lastResult = RemoveAura($targetedPlayer, $i);
+          AddPlayerHand($cardID, $cardOwner, "-");
+          return $lastResult;
+        }
+      }
+      WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
       break;
     case "electromagnetic_somersault_red":
     case "electromagnetic_somersault_yellow":
@@ -2823,13 +2861,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         if ($index != -1)
         {
-          AddPlayerHand($target, $prevLink[$index + 1], "CC");
+          $player = $prevLink[$index + 1];
+          // if it was played from an opponent's zone
+          if (DelimStringContains($prevLink[$index+3], "THEIR", true)) {
+            $player = $player == 1 ? 2 : 1;
+          }
+          AddPlayerHand($target, $player, "CC");
           $chainLinks[count($chainLinks) - 1][$index + 2] = 0;
         }
       }
       break;
     case "face_purgatory":
-      PummelHit($otherPlayer);
+      if(!IsAllyAttacking()) PummelHit($otherPlayer);
       Draw($player);
       break;
     case "malefic_incantation_red":
@@ -2860,6 +2903,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if($target == "truce_blue-1") {
       WriteLog("Congrats! You didn't kill each other!🤝");
       DestroyAuraUniqueID($defPlayer, $uniqueID);
+      // effect controller performs the instruction first
       GainHealth(3, $defPlayer);
       GainHealth(3, $mainPlayer);
       }
@@ -3021,6 +3065,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ring_of_roses_yellow":
       GainHealth(1, $player);
       break;
+    case "null_time_zone_blue":
+      AddDecisionQueue("INPUTCARDNAME", $player, "-");
+      AddDecisionQueue("SETDQVAR", $player, "0");
+      AddDecisionQueue("WRITELOG", $player, "📣<b>{0}</b> was chosen");
+      AddDecisionQueue("NULLTIMEZONE", $player, SearchItemForLastIndex($parameter, $player).",{0}");
+      break;
     case "zap_clappers":
       if (CanRevealCards($player) && !IsAllyAttacking()) {
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
@@ -3049,10 +3099,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       ChannelTalent($target, "ICE");
       break;
     case "terra":
-      TerraEndPhaseAbility($characterID, $player);
+      TerraEndPhaseAbility($parameter, $player);
       break;
     case "hoist_em_up_red":
-      WavePermanent($defPlayer, "MYALLY");
+      TapPermanent($defPlayer, "MYALLY");
       AddDecisionQueue("PASSPARAMETER", $defPlayer, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $defPlayer, 1, 1);
       break;
@@ -3061,6 +3111,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "marlynn_treasure_hunter":
       LoadArrow($player);
+      break;
+    case "sunken_treasure_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRDISCARD&MYDISCARD");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to turn face-down");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZOP", $player, "TURNDISCARDFACEDOWN", 1);
+      AddDecisionQueue("SUNKENTREASURE", $player, "-", 1);
       break;
     case "breaker_helm_protos":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to discard (or pass)");
@@ -3105,6 +3162,8 @@ function FinalizeAction()
         $turn[2] = "";
       } else {
         $currentPlayer = $mainPlayer;
+        //may be needed if the player is on always pass priority
+        ResetCombatChainState();
         BeginTurnPass();
       }
     }
@@ -3493,7 +3552,7 @@ function HasSteamCounter($array, $index, $player)
   return false;
 }
 
-function ProcessMeld($player, $parameter, $additionalCosts="")
+function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
@@ -3526,7 +3585,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="")
       break;
     case "pulsing_aether__life_red":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
-      DealArcane(4, 2, "PLAYCARD", $parameter, player:$player, meldState:$meldState);
+      DealArcane(4, 2, "PLAYCARD", $parameter, player:$player, meldState:$meldState, resolvedTarget:$target);
       break;
     case "null__shock_yellow":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {

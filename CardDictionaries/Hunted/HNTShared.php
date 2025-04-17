@@ -71,7 +71,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 
 function HNTEffectAttackModifier($cardID, $attached=False): int
 {
-  global $currentPlayer, $defPlayer;
+  global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   return match ($cardID) {
     "arakni_black_widow" => 3,
@@ -172,7 +172,7 @@ function HNTEffectAttackModifier($cardID, $attached=False): int
 
 function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $combatChain;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   if ($cardID == "long_whisker_loyalty_red" & count($dashArr) > 1) {
@@ -304,7 +304,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
-  global $CS_NumNonAttackCards, $CS_NumBoosted, $combatChain, $CS_AdditionalCosts, $CS_DamageDealtToOpponent, $combatChainState, $CCS_WeaponIndex;
+  global $CS_NumBoosted, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   global $chainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
@@ -697,7 +697,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "take_a_stab_red":
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) AddEffectToCurrentAttack($cardID);
       break;
     case "quickdodge_flexors":
       if (CanBlockWithEquipment()) {
@@ -843,12 +843,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumBoosted) >= 1) AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       else AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       break;
-    case "null_time_zone_blue":
-      AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
-      AddDecisionQueue("NULLTIMEZONE", $currentPlayer, SearchItemForLastIndex($cardID, $currentPlayer).",{0}");
-      return "";
     case "enchanted_quiver":
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
@@ -903,7 +897,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HNTHitEffect($cardID, $uniqueID = -1): void
 {
-  global $mainPlayer, $defPlayer, $CS_LastAttack, $CCS_GoesWhereAfterLinkResolves, $chainLinkSummary, $combatChainState;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
@@ -1146,7 +1140,8 @@ function BubbleToTheSurface()
 
   function Retrieve($player, $subtype)
   {
-    if (SearchDiscard($player, subtype:$subtype, type:"W") != "") {
+    $numHands = NumOccupiedHands($player);
+    if (SearchDiscard($player, subtype:$subtype, type:"W") != "" && $numHands < 2) {
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);

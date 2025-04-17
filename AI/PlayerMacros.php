@@ -2,13 +2,12 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants, $defPlayer;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
     PassInput();
   }
-
   if (!IsGameOver()) {
     for ($i = 0; $i < 10 && $somethingChanged; ++$i) {
       if ($lastPhase != $turn[0]) $i = 0;
@@ -32,7 +31,7 @@ function ProcessMacros()
         }
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
-          if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
+          if(($layers[0] == "FINALIZECHAINLINK" || $layers[0] == "RESOLUTIONSTEP" || $layers[0] == "CLOSINGCHAIN") && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
           else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[0] == "ATTACKSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID

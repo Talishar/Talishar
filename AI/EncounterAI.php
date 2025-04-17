@@ -248,6 +248,11 @@ function EncounterAI()
         ProcessInput($currentPlayer, 12, $options[0], 0, 0, "");
         CacheCombatResult();
       }
+      else if($turn[0] == "CHOOSEBOTTOM"){
+        if($AIDebug) WriteLog("AI Branch - Hand Choose Bottom");
+        $options = explode(",", $turn[2]);
+        ContinueDecisionQueue($options[0]);//Just pick the first option
+      }
       else
       {
         if($AIDebug) WriteLog("AI Branch - Pass");

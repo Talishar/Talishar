@@ -19,8 +19,10 @@ function &GetMZZone($player, $zone)
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
-  else if ($zone == "COMBATCHAINATTACKS") return GetCombatChainAttacks();
-  return $rv;
+  else if ($zone == "COMBATCHAINATTACKS") {
+    $attacks = GetCombatChainAttacks();
+    return $attacks;
+  }  return $rv;
 }
 
 function &GetRelativeMZZone($player, $zone)

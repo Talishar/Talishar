@@ -284,6 +284,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "DEDUPEMULTIZONEINDS":
+      // only allows for choosing the first of a stack of tokens
+      // right now only takes into account cardID for deduping
+      // carving out an exception for spectral shields as you may want to hit ones with counters
+      $inds = explode(",", $lastResult);
+      $foundMine = [];
+      $foundTheirs = [];
+      $dedupedInds = [];
+      foreach($inds as $index) {
+        if (str_contains($index, "THEIR")) {
+          $cardID = GetMZCard($player, $index);
+          if (!TypeContains($cardID, "T") || !in_array($cardID, $foundTheirs) || $cardID == "spectral_shield") {
+            array_push($foundTheirs, $cardID);
+            array_push($dedupedInds, $index);
+          }
+        }
+        else {
+          $cardID = GetMZCard($player, $index);
+          if (!TypeContains($cardID, "T") || !in_array($cardID, $foundMine) || $cardID == "spectral_shield") {
+            array_push($foundMine, $cardID);
+            array_push($dedupedInds, $index);
+          }
+        }
+      }
+      $dedupedInds = implode(",", $dedupedInds);
+      return $dedupedInds;
     case "BLOCKLESS0HAND":
       $hand = &GetHand($player);
       $countHand = count($hand);
@@ -594,6 +620,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $mzArr = explode("-", $lastResult);
           TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
           break;
+        case "TURNDISCARDFACEDOWN":
+          $mzArr = explode("-", $lastResult);
+          TurnDiscardFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
+          break;
+        case "SUNKENTREASURE":
+          $target = GetMZCard($player, $lastResult);
+          if(PitchValue($target) == 2) {
+            PutItemIntoPlayForPlayer("gold", $player);
+          }
+          break;
         case "ADDITIONALUSE":
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
@@ -877,8 +913,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(GamestateUnsanitize($parameter));
       return $lastResult;
     case "WRITELOGCARDLINK":
-      $params = explode("_", $parameter);
-      Writelog(CardLink($params[0], $params[0]) . " was choosen");
+      Writelog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGLASTRESULT":
       WriteLog("<b>" . $lastResult . "<b> was selected.");
@@ -1308,7 +1343,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult > 0) {
         $hand = &GetHand($player);
         $char = &GetPlayerCharacter($player);
-        if (count($hand) == 0 && $char[0] != "DUMMY") {
+        if (count($hand) == 0 && !IsPlayerAI($player)) {
           WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
           RevertGamestate();
         }
@@ -1813,8 +1848,27 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MODAL":
       $params = explode(",", $parameter);
       return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
+    case "MELDTARGETTING":
+      switch ($parameter) {
+        case "pulsing_aether__life_red":
+          if ($lastResult == "Both" || $lastResult == "Pulsing_Aether") {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+          }
+          break;
+        default:
+          break;
+      }
+      break;
     case "MELD":
-      MeldCards($player, $parameter, $lastResult);
+      $lastResultArr = explode("-", $lastResult);
+      MeldCards($player, $parameter, $lastResultArr[0], target:$lastResultArr[1]);
       return $lastResult;
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
@@ -2096,8 +2150,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
       if ($warcryIndex != -1 && $sourceUID != -1) {
         $params = explode(",", $currentTurnEffects[$warcryIndex]);
-        $amount = $params[1];
-        $uniqueID = $params[2];
+        $amount = isset($params[1]) ? $params[1] : 0;
+        $uniqueID = isset($params[2]) ? $params[2] : "-";
+        $damageDone = 1; // hacky for now, should only hit this line on flicks
         if($damageDone <= $amount && $uniqueID == $sourceUID) {
           AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
           RemoveCurrentTurnEffect($warcryIndex);
@@ -2351,7 +2406,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CHANGESHIYANA":
       $otherPlayer = ($player == 1 ? 2 : 1);
       $otherChar = GetPlayerCharacter($otherPlayer);
-      if ($lastResult != "shiyana_diamond_gemini" && $otherChar[0] != "DUMMY") {
+      if ($lastResult != "shiyana_diamond_gemini" && !IsPlayerAI($player)) {
         $lifeDifference = GeneratedCharacterHealth("shiyana_diamond_gemini") - GeneratedCharacterHealth($otherChar[0]);
         if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
         elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $player, true, false);
@@ -2398,7 +2453,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         else $targettedPlayer = $player;
         WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
-      AddLayer("TRIGGER", $player, $params[0], $target);
+      switch ($params[0]) {
+        case "blast_to_oblivion_red": //these targetting effects need UID
+        case "blast_to_oblivion_yellow":
+        case "blast_to_oblivion_blue":
+          AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($targettedPlayer, $target));
+          break;
+        default:
+          AddLayer("TRIGGER", $player, $params[0], $target);
+          break;
+      }
       return $lastResult;
     case "UNDERCURRENTDESIRES":
       if ($lastResult == "") {
@@ -2648,12 +2712,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       //Right now it's unclear what happens to action cards selected when they can't be blocked with (eg dominate)
       //I'm implementing it right now as the effect failing
       if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
-        if (CanBlock($cardID)) {
-          AddCombatChain($cardID, $player, "HAND", 0, -1);
-          OnBlockResolveEffects($cardID);
-          unset($hand[$handInd]);
-          $hand = array_values($hand);
-        }
+        AddCombatChain($cardID, $player, "HAND", 0, -1);
+        OnBlockResolveEffects($cardID);
+        unset($hand[$handInd]);
+        $hand = array_values($hand);
       }
       else {
         AddGraveyard($cardID, $player, "HAND");
@@ -2757,8 +2819,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       $items[$params[0]+8] = $params[1];
       return $lastResult;
-    case "MZWAVE":
-      Wave($lastResult, $player);
+    case "MZTAP":
+      Tap($lastResult, $player);
       return $lastResult;
     default:
       return "NOTSTATIC";

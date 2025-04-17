@@ -137,7 +137,7 @@ $cardIconTop = intval($cardSize / 4.2); //30
       $encounterContent .= "<BR>";
       break;
     }
-    /*case "CHOOSEHERO": //TODO: hero choices should have the hero card and not just the name
+    /*case "CHOOSEHERO":
     {
       $options = explode(",", $myDQ[1]);
       //$encounterContent .= "<div style='position:absolute; text-align:center; top:30%; left: 250%; width:" . count($options)*155 . "; background-color: rgba(255,255,255,0.8); border: 3px solid black; border-radius: 5px;'>";

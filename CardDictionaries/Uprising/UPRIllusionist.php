@@ -4,13 +4,16 @@
   {
     global $currentPlayer;
     $permanents = &GetPermanents($currentPlayer);
-    $targetIndex = explode("-", $target)[1];
-    $matID = $permanents[$targetIndex];
-    if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
-      $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
-      DestroyPermanent($currentPlayer, $targetIndex);
-      $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
-      $target = "MYPERM-$targetIndex";
+    $targetArray = explode("-", $target);
+    if (count($targetArray) > 1) {
+      $targetIndex = $targetArray[1];
+      $matID = $permanents[$targetIndex];
+      if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
+        $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
+        DestroyPermanent($currentPlayer, $targetIndex);
+        $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
+        $target = "MYPERM-$targetIndex";
+      }
     }
     switch($cardID)
     {
