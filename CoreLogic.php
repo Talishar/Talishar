@@ -3389,7 +3389,7 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer)
     }
   }
   if (!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
-  if (SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver_red")) < 3) return "You do not meet the Hyper Driver requirement";
+  if (SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver")) < 3) return "You don't meet the ".CardLink("hyper_driver", "hyper_driver_red")." requirement";
   return "";
 }
 
