@@ -526,7 +526,7 @@ function isSpecialUsePromo($cardID) {
       "valda_seismic_impact",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle"
   ];
-  $unreleasedSets = ["SEA", "AMX", "AGB", "APR", "AVS", "MPG", "BDD"];
+  $unreleasedSets = ["SEA", "AGB", "APR", "AVS", "MPG", "BDD"];
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
 
