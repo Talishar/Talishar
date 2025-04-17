@@ -15747,6 +15747,7 @@ return match($cardID) {
 "prism_sculptor_of_arc_light" => 40,
 "puffin_hightail" => 40,
 "rhinar_reckless_rampage" => 40,
+"riggormortis_yellow" => 1,
 "riptide" => 19,
 "riptide_lurker_of_the_deep" => 38,
 "ruudi_gem_keeper" => 40,

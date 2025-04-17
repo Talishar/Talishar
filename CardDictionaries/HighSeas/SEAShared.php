@@ -83,7 +83,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PummelHit($currentPlayer);
       break;
     case "chum_friendly_first_mate_yellow":
-      AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
       break;
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
@@ -251,7 +252,7 @@ function CheckTapped($MZindex, $player): bool
   $zone = &GetMZZone($player, $zoneName);
   $ind = intval(explode("-", $MZindex)[1]);
   if (str_contains($zoneName, "CHAR")) return $zone[$ind + 14] == 1;
-  elseif (str_contains($zoneName, "ALLY")) return $zone[$ind + 11] == 1;
+  elseif (str_contains($zoneName, "ALLY")) return $zone[$ind + 1] == 2 && $zone[$ind + 11] == 1;
   elseif (str_contains($zoneName, "ITEM")) return $zone[$ind + 10] == 1;
   return false;
 }

@@ -722,6 +722,7 @@ function AbilityCost($cardID)
   else if ($set == "HNT") return HNTAbilityCost($cardID);
   else if ($set == "AMX") return AMXAbilityCost($cardID);
   else if ($set == "SEA") return SEAAbilityCost($cardID);
+  else if ($cardID == "riggermortis_yellow") return 1;
   return 0;
 }
 
@@ -1201,6 +1202,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($cardID == "blaze_firemind") return "I";
   else if ($cardID == "magrar") return "A";
+  else if ($cardID == "riggermortis_yellow") return "A";
 }
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
@@ -1349,8 +1351,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
         return $names;
       } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
-      }
-      return $names;
+      }      return $names;
     default:
       return "";
   }
@@ -1370,8 +1371,6 @@ function GetAbilityIndex($cardID, $index, $abilityName)
 function GetResolvedAbilityType($cardID, $from = "-")
 {
   global $currentPlayer, $CS_AbilityIndex;
-
-
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
   if ($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
@@ -2771,6 +2770,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "compass_of_sunken_depths":
     case "redspine_manta":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
+    case "riggermortis_yellow":
+      return CheckTapped("MYALLY-$index", $currentPlayer);
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":

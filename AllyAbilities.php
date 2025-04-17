@@ -93,62 +93,7 @@ function AllyAddGraveyard($player, $cardID)
 
 function AllyHealth($cardID)
 {
-  switch ($cardID) {
-    case "blasmophet_the_soul_harvester":
-      return 6;
-    case "ursur_the_soul_reaper":
-      return 6;
-    case "dracona_optimai":
-      return 6;
-    case "tomeltai":
-      return 5;
-    case "dominia":
-      return 4;
-    case "azvolai":
-      return 3;
-    case "cromai":
-      return 2;
-    case "kyloria":
-      return 2;
-    case "miragai":
-      return 4;
-    case "nekria":
-      return 7;
-    case "ouvia":
-      return 6;
-    case "themai":
-      return 4;
-    case "vynserakai":
-      return 1;
-    case "yendurai":
-      return 3;
-    case "suraya_archangel_of_knowledge":
-      return 4;
-    case "nasreth_the_soul_harrower":
-      return 6;
-    case "suraya_archangel_of_erudition":
-      return 4;
-    case "themis_archangel_of_judgment":
-      return 4;
-    case "aegis_archangel_of_protection":
-      return 4;
-    case "sekem_archangel_of_ravages":
-      return 4;
-    case "avalon_archangel_of_rebirth":
-      return 4;
-    case "metis_archangel_of_tenacity":
-      return 4;
-    case "victoria_archangel_of_triumph":
-      return 4;
-    case "bellona_archangel_of_war":
-      return 4;
-    case "cintari_sellsword":
-      return 2;
-    case "chum_friendly_first_mate_yellow":
-      return 6;
-    default:
-      return 1;
-  }
+  return GeneratedCharacterHealth($cardID);
 }
 
 function AllyDestroyedAbility($player, $index)
@@ -383,13 +328,13 @@ function AllyBeginEndTurnEffects()
   global $mainPlayer, $defPlayer;
   //CR 2.0 4.4.3a Reset life for all allies
   $mainAllies = &GetAllies($mainPlayer);
-  updateAllyHealth($mainAllies);
+  UpdateAllyHealth($mainAllies);
 
   $defAllies = &GetAllies($defPlayer);
-  updateAllyHealth($defAllies);
+  UpdateAllyHealth($defAllies);
 }
 
-function updateAllyHealth(&$allies)
+function UpdateAllyHealth(&$allies)
 {
   $pieces = AllyPieces();
   $count = count($allies);
@@ -417,5 +362,19 @@ function AllyEndTurnAbilities()
       default:
         break;
     }
+  }
+}
+
+function AllyPayAdditionalCosts($cardIndex)
+{
+  global $currentPlayer;
+  $ally = &GetAllies($currentPlayer);
+  $cardID = $ally[$cardIndex];
+  switch ($cardID) {
+    case "chum_friendly_first_mate_yellow":
+    case "riggermortis_yellow":
+    case "polly_cranka":
+      Tap("MYALLY-$cardIndex", $currentPlayer);
+    default: break;
   }
 }

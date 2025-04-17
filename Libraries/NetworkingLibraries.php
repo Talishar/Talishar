@@ -27,7 +27,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $character[$index + 1] = 1;
           $character[$index + 6] = 1;
         }
-        else EquipPayAdditionalCosts($index, "EQUIP");
+        else EquipPayAdditionalCosts($index);
         PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11]);
       } else {
         echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
@@ -356,6 +356,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Ally not playable
       $allies[$index + 1] = 1;
       SetClassState($playerID, $CS_PlayIndex, $index);
+      AllyPayAdditionalCosts($index);
       PlayCard($cardID, "PLAY", -1, $index, $allies[$index + 5]);
       break;
     case 25: //Landmark Ability

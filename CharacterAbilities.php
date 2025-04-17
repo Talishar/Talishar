@@ -981,7 +981,7 @@ function ShiyanaCharacter($cardID, $player = "")
   return $cardID;
 }
 
-function EquipPayAdditionalCosts($cardIndex, $from)
+function EquipPayAdditionalCosts($cardIndex)
 {
   global $currentPlayer, $CS_TunicTicks;
   $character = &GetPlayerCharacter($currentPlayer);
