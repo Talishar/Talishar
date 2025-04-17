@@ -82,6 +82,7 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
       $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
       $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Select 3 Hyper Driver to put under " . CardLink("bank_breaker", "bank_breaker"));
       AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-$hyperDrivers-3");
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID,$bankBreakerIndex", 1);
       return "";
@@ -109,6 +110,6 @@ function CheckIfConstructBankBreakerConditionsAreMet($player)
     if (CardType($characterCardID) == "W" && SubtypeContains($characterCardID, "Wrench")) $hasWrench = true;
   }
   if (!$hasWrench) return "You do not meet the wrench requirement";
-  if (SearchCount(SearchMultizone($player, "MYITEMS:isSameName=hyper_driver_red")) < 3) return "You do not meet the Hyper Driver requirement";
+  if (SearchCount(SearchMultizone($player, "MYITEMS:isSameName=hyper_driver")) < 3) return "You don't meet the ".CardLink("hyper_driver", "hyper_driver_red")." requirement";
   return "";
 }

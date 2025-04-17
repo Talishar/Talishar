@@ -84,21 +84,21 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
 {
   $char = &GetPlayerCharacter($player);
   $index = count($char);
-  array_push($char, $cardID);
-  array_push($char, 2);
-  array_push($char, CharacterCounters($cardID));
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, 1);
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, 0);
-  array_push($char, CharacterDefaultActiveState($cardID));
-  array_push($char, "-");
-  array_push($char, GetUniqueId($cardID, $player));
-  array_push($char, HasCloaked($cardID, $player));
-  array_push($char, 0); //marked
-  array_push($char, 0); //tapped
+  array_push($char, $cardID); //0 - Card ID
+  array_push($char, 2); //1 - Status (2=ready, 1=unavailable, 0=destroyed, 3=Sleeping (Sleep Dart, Crush Confidance, etc)), 4=Dishonored
+  array_push($char, CharacterCounters($cardID)); //2 - Num counters
+  array_push($char, 0); //3 - Num attack counters
+  array_push($char, 0); //4 - Num defense counters
+  array_push($char, CharacterNumUsesPerTurn($cardID)); //5 - Num uses
+  array_push($char, 0); //6 - On chain (1 = yes, 0 = no)
+  array_push($char, 0); //7 - Flagged for destruction (1 = yes, 0 = no)
+  array_push($char, 0); //8 - Frozen (1 = yes, 0 = no)
+  array_push($char, CharacterDefaultActiveState($cardID)); //9 - Is Active (2 = always active, 1 = yes, 0 = no)
+  array_push($char, "-"); //10 - Subcards , delimited
+  array_push($char, GetUniqueId($cardID, $player)); //11 - Unique ID
+  array_push($char, HasCloaked($cardID, $player)); //12 - Face up/down
+  array_push($char, 0); //13 - Marked (1 = yes, 0 = no)
+  array_push($char, 0); //14 - Tapped (1 = yes, 0 = no)
   return $index;
 }
 

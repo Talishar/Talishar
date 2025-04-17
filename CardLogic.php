@@ -2116,7 +2116,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
     case "hyper_driver_red":
-    case "hyper_driver_red":
     case "hyper_driver_yellow":
     case "hyper_driver_blue":
     case "hyper_driver":
