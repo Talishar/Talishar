@@ -263,6 +263,7 @@ function HasWateryGrave($cardID): bool
     "chum_friendly_first_mate_yellow" => true,
     "riggermortis_yellow" => true,
     "diamond_amulet_blue" => true,
+    "sawbones_dock_hand_yellow" => true,
     default => false
   };
 }

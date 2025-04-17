@@ -2391,6 +2391,14 @@ function IsAllyAttackTarget()
   return $target[0] == "THEIRALLY";
 }
 
+function IsAllyPirateAttackTarget()
+{
+  global $defPlayer;
+  $target = explode("-", GetAttackTarget());
+  $cardID = GetMZCard($defPlayer, $target[0] ."-". $target[1]);
+  return SubtypeContains($cardID, "Pirate") && $target[0] == "THEIRALLY";
+}
+
 function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
 {
   global $combatChainState, $CCS_AttackTargetUID;
@@ -2934,6 +2942,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if ($set == "SEA") return SEAPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "MPG") return MPGPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "ASR") return ASRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "AGB") return AGBPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else {
     switch ($cardID) {
       case "jack_o_lantern_red":

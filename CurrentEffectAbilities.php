@@ -1056,6 +1056,12 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
           if (!$skip) --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] == 0) $remove = true;
           break;
+        case "sawbones_dock_hand_yellow":
+          if(IsHeroAttackTarget() || IsAllyPirateAttackTarget()) {
+            $preventedDamage += 1;
+            RemoveCurrentTurnEffect($i);
+          }
+          break;
         default:
           break;
       }

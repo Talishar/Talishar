@@ -145,26 +145,45 @@ function AllyEnduranceCounters($cardID)
 
 function AllyDamagePrevention($player, $index, $damage, $type = "")
 {
+  global $currentTurnEffects;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
   $preventedDamage = 0;
   $canBePrevented = CanDamageBePrevented($player, $damage, $type);
+  //checking for effects that prevent damage on allies
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
+      switch ($currentTurnEffects[$i]) {
+        case "sawbones_dock_hand_yellow":
+          if(SubtypeContains($cardID, "Pirate")) {
+            $preventedDamage -= 1;
+            RemoveCurrentTurnEffect($i);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  //checking for allies that can prevent damage
   switch ($cardID) {
     case "yendurai":
       if ($allies[$index + 6] > 0) {
         if ($damage > 0) --$allies[$index + 6];
         if ($canBePrevented) $preventedDamage += 3;
-        if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
-          $preventedDamage -= 1;
-          SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
-        }
+
         $damage -= $preventedDamage;
         if ($damage < 0) $damage = 0;
       }
-      return $damage;
+      break;
     default:
-      return $damage;
+      break;
   }
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
+  }
+  return $damage;
 }
 
 //NOTE: This is for ally abilities that trigger when any ally attacks (for example miragai GRANTS an ability)
@@ -374,6 +393,7 @@ function AllyPayAdditionalCosts($cardIndex)
     case "chum_friendly_first_mate_yellow":
     case "riggermortis_yellow":
     case "polly_cranka":
+    case "sawbones_dock_hand_yellow":
       Tap("MYALLY-$cardIndex", $currentPlayer);
     default: break;
   }

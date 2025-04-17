@@ -87,6 +87,7 @@ function CardType($cardID, $from="")
     case "valda_seismic_impact": //hardcoding before fabcube update
       return "C";
     case "chum_friendly_first_mate_yellow":
+    case "sawbones_dock_hand_yellow":
       return "A";
     default:
       break;
@@ -318,6 +319,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "evo_speedslip_blue_equip":
       return "Legs,Evo";
     case "chum_friendly_first_mate_yellow":
+    case "sawbones_dock_hand_yellow":
       return "Ally";
     default:
       return "";
@@ -722,6 +724,8 @@ function AbilityCost($cardID)
   else if ($set == "HNT") return HNTAbilityCost($cardID);
   else if ($set == "AMX") return AMXAbilityCost($cardID);
   else if ($set == "SEA") return SEAAbilityCost($cardID);
+  else if ($set == "AST") return ASTAbilityCost($cardID);
+  else if ($set == "AGB") return AGBAbilityCost($cardID);
   else switch ($cardID) {
     case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
@@ -1205,6 +1209,8 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AST") return ASTAbilityType($cardID);
   else if ($set == "AMX") return AMXAbilityType($cardID);
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
+  else if ($set == "ASR") return ASRAbilityType($cardID);
+  else if ($set == "AGB") return AGBAbilityType($cardID);
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
@@ -1228,6 +1234,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
     "chum_friendly_first_mate_yellow" => ($from == "HAND") ? "" : "I,AA",
+    "sawbones_dock_hand_yellow" => ($from == "HAND") ? "" : "I,AA",
     default => "",
   };
 }
@@ -1354,6 +1361,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "chum_friendly_first_mate_yellow":
+    case "sawbones_dock_hand_yellow":
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
@@ -1546,7 +1554,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if ($cardID == "chum_friendly_first_mate_yellow" && $from == "PLAY") {
+  if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "sawbones_dock_hand_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
@@ -2858,6 +2866,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":
+    case "sawbones_dock_hand_yellow":
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "shelter_from_the_storm_red":
       return GetResolvedAbilityType($cardID, $from) == "DR";
