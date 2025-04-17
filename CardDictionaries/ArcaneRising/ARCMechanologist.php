@@ -209,27 +209,27 @@ function DoBoost($player, $cardID, $boostCount=1)
     if(SearchCurrentTurnEffects("viziertronic_model_i", $player)) {
       AddLayer("TRIGGER", $player, "viziertronic_model_i");
     }
+    $char = GetPlayerCharacter($player);
+    for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+      switch ($char[$j]) {
+        case "drive_brake":
+          if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+            AddLayer("TRIGGER", $player, $char[$j], $j);
+          }
+          break;
+        case "first_pump":
+          if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+            // there should only ever be one wrench equipped
+            $wrenchInd = SearchCharacter($player, subtype:"Wrench");
+            if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$j], GetMZCard($player, $wrenchInd));
+          }
+          break;
+        default:
+          break;
+      }
+    }
     if (!$skipBanish) {
       BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
-      $char = GetPlayerCharacter($player);
-      for ($j = 0; $j < count($char); $j += CharacterPieces()) {
-        switch ($char[$j]) {
-          case "drive_brake":
-            if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-              AddLayer("TRIGGER", $player, $char[$j], $j);
-            }
-            break;
-          case "first_pump":
-            if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-              // there should only ever be one wrench equipped
-              $wrenchInd = SearchCharacter($player, subtype:"Wrench");
-              if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$j], GetMZCard($player, $wrenchInd));
-            }
-            break;
-          default:
-            break;
-        }
-      }
     }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
