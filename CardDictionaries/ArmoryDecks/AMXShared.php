@@ -18,7 +18,6 @@ function AMXAbilityHasGoAgain($cardID): bool
 
 function AMXEffectAttackModifier($cardID): int
 {
-  global $currentPlayer, $defPlayer;
   return match ($cardID) {
     "twintek_charging_station_red" => 3,
     "first_pump" => 1,
@@ -32,7 +31,7 @@ function AMXCombatEffectActive($cardID, $attackID): bool
   return match($cardID) {
     "bank_breaker" => true,
     "twintek_charging_station_red" => $combatChainState[$CCS_IsBoosted],
-    "first_pump" => SubtypeContains($attackID, "Wrench"), //need to check if it was the targeted wrench
+    "first_pump" => SubtypeContains($attackID, "Wrench"),
     default => false
   };
 }

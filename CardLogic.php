@@ -3132,7 +3132,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if ($char[$target + 4] < 0) ++$char[$target + 4];
       break;
     case "first_pump":
-      AddCurrentTurnEffect($parameter, $player);
+      $char = &GetPlayerCharacter($player);
+      $index = SearchCharacterIndexSubtype($player, "Wrench");
+      AddCurrentTurnEffect($parameter, $player, "", $char[$index + 11]);
       break;
     default:
       break;
