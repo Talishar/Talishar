@@ -558,6 +558,7 @@ function isUnimplemented($cardID) {
   return match ($cardID) {
     "venomback_fabric_yellow" => true, //missing image
     "treasure_island", "riggermortis_yellow" => true,
+    "construct_bank_breaker_yellow" => true,
     default => false
   };
 }
