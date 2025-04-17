@@ -526,7 +526,8 @@ function isSpecialUsePromo($cardID) {
       "valda_seismic_impact",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle"
   ];
-  return in_array($cardID, $specialUsePromos) || str_contains(SetID($cardID), "SEA");
+  $unreleasedSets = ["SEA", "AMX", "AGB", "APR", "AVS", "MPG", "BDD"];
+  return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
 
 function isUnimplemented($cardID) {
