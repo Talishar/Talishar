@@ -774,17 +774,17 @@ function OUTAbilityCost($cardID)
       $targetWeapon = $targets[1];
       $targetHero = $targets[2];
       $targetHeroUniqueID = $targets[3];
-      $index = SearchCharacterForUniqueID($targetWeapon, $currentPlayer);
       //Target Weapon
       if ($targets[0] == "COMBATCHAINATTACKS") {
         $ccAttacks = GetCombatChainAttacks();
-        if ($ccAttacks[$index[1] + 2] != 1) {
+        if ($ccAttacks[$targetWeapon + 2] != 1) {
           WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
           return;
         }
-        $weaponTargetInd = $targetWeapon;
+        $weaponTargetInd = "COMBATCHAINATTACKS-" . $targetWeapon;
       }
       else {
+        $index = SearchCharacterForUniqueID($targetWeapon, $currentPlayer);
         $char = GetPlayerCharacter($currentPlayer);
         if ($index == -1 || $char[$index + 1] == 0) {
           WriteLog("The targetted dagger is no longer there, the layer fails to resolve");

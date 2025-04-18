@@ -1540,6 +1540,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
                   $cleanTarget .= "MYCHAR," . $character[$index + 11] 
                 : $cleanTarget .= ",MYCHAR," . $character[$index + 11];
             }
+            elseif ($location == "CO")
+            {
+              $cleanTarget == "" ? 
+                $cleanTarget .= "COMBATCHAINATTACKS," . $index 
+              : $cleanTarget .= ",COMBATCHAINATTACKS," .$index;
+            }
             else {
               $cleanTarget == "" ? 
                 $cleanTarget .= "THEIRCHAR," . $otherPlayerCharacter[$index + 11] 
