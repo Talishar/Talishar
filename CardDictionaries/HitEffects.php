@@ -188,15 +188,15 @@ function HVYHitEffect($cardID)
     case "down_but_not_out_yellow":
     case "down_but_not_out_blue":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer, true)) {
-        PlayAura("agility", $mainPlayer); //Agility
-        PlayAura("might", $mainPlayer); //Might
-        PlayAura("vigor", $mainPlayer); //Vigor
+        PlayAura("agility", $mainPlayer); 
+        PlayAura("might", $mainPlayer); 
+        PlayAura("vigor", $mainPlayer); 
       }
       break;
     case "performance_bonus_red":
     case "performance_bonus_yellow":
     case "performance_bonus_blue":
-      PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController: $mainPlayer);//Gold
+      PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController: $mainPlayer);
       return "";
     case "judge_jury_executioner_red":
       if (HasAimCounter() && IsHeroAttackTarget()) {

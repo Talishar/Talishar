@@ -600,7 +600,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PutItemIntoPlayForPlayer("gold", $currentPlayer, effectController: $currentPlayer);
       $numGold = CountItem("gold", $currentPlayer);
       if ($numGold >= 3 && !SearchCurrentTurnEffects("amnesia_red", $currentPlayer)) {
-        PlayAura("might", $currentPlayer, $numGold); //Might
+        PlayAura("might", $currentPlayer, $numGold); 
         WriteLog(CardLink($cardID, $cardID) . " created a Gold token and " . $numGold . " Might tokens");
       } else WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
       return "";

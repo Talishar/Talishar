@@ -1077,8 +1077,6 @@ function AddTowerEffectTrigger($cardID)
   global $mainPlayer;
   switch ($cardID) {
     case "colossal_bearing_red":
-    case "colossal_bearing_red":
-    case "smack_of_reality_red":
     case "smack_of_reality_red":
       AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "TOWEREFFECT");
       break;
@@ -1415,7 +1413,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
     case "arakni_marionette":
-    case "arakni_web_of_deceit": //arakni
+    case "arakni_web_of_deceit":
       GiveAttackGoAgain();
       break;
     case "arakni_tarantula":
@@ -1425,7 +1423,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
     case "cindra_dracai_of_retribution":
     case "cindra":
     case "fang_dracai_of_blades":
-    case "fang"://Fang and Cindra
+    case "fang":
       PlayAura("fealty", $player);
       break;
     case "blood_splattered_vest":
@@ -1531,7 +1529,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if (PlayerHasLessHealth($player)) GainHealth(1, $player);
       break;
     case "rhinar_reckless_rampage":
-    case "rhinar":
     case "rhinar":
       Intimidate();
       break;
@@ -1810,8 +1807,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "ironhide_plate":
     case "ironhide_gauntlet":
     case "ironhide_legs":
-    case "ironhide_gauntlet":
-    case "ironhide_legs":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
@@ -1939,7 +1934,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "iyslander":
     case "iyslander_stormbind":
-    case "iyslander":
       PlayAura("frostbite", $otherPlayer, effectController: $player);
       break;
     case "pyroglyphic_protection_red":
@@ -2455,7 +2449,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "civic_steps":
       PlayAura("quicken", $otherPlayer);
-      break;//Quicken
+      break;
     case "crowd_control_red":
     case "crowd_control_yellow":
     case "crowd_control_blue":
@@ -2525,7 +2519,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "kayo_armed_and_dangerous":
     case "kayo":
     case "canopy_shelter_blue":
-      PlayAura("might", $player); //Might
+      PlayAura("might", $player);
       break;
     case "apex_bonebreaker":
       $num6Block = 0;
@@ -2533,7 +2527,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (ModifiedAttackValue($combatChain[$i], $player, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
       }
       if ($num6Block) {
-        PlayAura("might", $player);//Might
+        PlayAura("might", $player);
         WriteLog(CardLink("apex_bonebreaker", "apex_bonebreaker") . " created a " . CardLink("might", "might") . " token");
       }
       break;
@@ -2572,13 +2566,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "thunk_red":
     case "thunk_yellow":
     case "thunk_blue":
-      PlayAura("might", $player); //Vigor
+      PlayAura("might", $player); 
       WriteLog(CardLink($parameter, $parameter) . " created a Might Token for Player " . $player);
       break;
     case "wallop_red":
     case "wallop_yellow":
     case "wallop_blue":
-      PlayAura("vigor", $player); //Vigor
+      PlayAura("vigor", $player); 
       WriteLog(CardLink($parameter, $parameter) . " created a Vigor Token for Player " . $player);
       break;
     case "commanding_performance_red":
@@ -2627,9 +2621,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Clash($parameter, effectController: $player);
       break;
     case "nasty_surprise_blue":
-      PlayAura("agility", $player);//Agility
-      PlayAura("might", $player);//Might
-      PlayAura("vigor", $player);//Vigor
+      PlayAura("agility", $player);
+      PlayAura("might", $player);
+      PlayAura("vigor", $player);
       WriteLog(CardLink($parameter, $parameter) . " created an " . CardLink("agility", "agility") . ", " . CardLink("might", "might") . " and " . CardLink("vigor", "vigor") . " tokens.");
       break;
     case "standing_order_red":
@@ -2705,7 +2699,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "battlefront_bastion_blue":
     case "battlefront_bastion_red":
     case "battlefront_bastion_yellow":
-    case "battlefront_bastion_blue":
       AddCurrentTurnEffect($parameter, $player, "CC");
       IncrementClassState($player, $CS_DamagePrevention, 1);
       break;
@@ -2737,7 +2730,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "arc_lightning_yellow":
       DealArcane(1, 2, "PLAYCARD", "arc_lightning_yellow");
       break;
-    case "verdance_thorn_of_the_rose": case "verdance":
+    case "verdance_thorn_of_the_rose": 
+    case "verdance":
       if(GetCharacterGemState($player, $parameter) != 0) {
         AddDecisionQueue("YESNO", $player, "if you want " . CardLink($parameter, $parameter) . " to deal arcane damage");
         AddDecisionQueue("NOPASS", $player, "-");
@@ -2815,7 +2809,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       AddCurrentTurnEffect($parameter, $player, "PLAY");
       break;
-    case "flash_of_brilliance": //flash of brilliance
+    case "flash_of_brilliance":
       $hand = SearchHand($player, talent: "LIGHTNING");
       if (count(explode(",", $hand)) > 0) {
         AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
@@ -2919,8 +2913,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "aether_bindings_of_the_third_age":
       WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " is amping 1");
-      AddCurrentTurnEffect("aether_bindings_of_the_third_age-AMP", $player);//amp for aether bindings
-    case "sigil_of_aether_blue"://Sigil of aether
+      AddCurrentTurnEffect("aether_bindings_of_the_third_age-AMP", $player);
+    case "sigil_of_aether_blue":
       if($additionalCosts == "Arcane") DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $player);
       else DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
       break;

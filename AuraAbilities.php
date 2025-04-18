@@ -571,13 +571,11 @@ function AuraStartTurnAbilities()
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     case "might":
-    case "might": //Might
       AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
       break;
     case "vigor":
-    case "vigor": //Vigor
       GainResources($mainPlayer, 1);
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
@@ -606,7 +604,7 @@ function AuraStartTurnAbilities()
       AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
-    case "agility": //Agility
+    case "agility":
       if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
@@ -620,7 +618,7 @@ function AuraStartTurnAbilities()
       $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
       if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
-    case "channel_mount_isen_blue": // Channel Mount Isen
+    case "channel_mount_isen_blue":
       $character = &GetPlayerCharacter($mainPlayer);
       $eqFrostbiteCount = 0;
       for ($k = 0; $k < count($character); $k += CharacterPieces()) {
@@ -671,7 +669,7 @@ function AuraStartTurnAbilities()
       case "restless_coalescence_yellow":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
         break;
-      case "channel_mount_isen_blue": // Channel Mount Isen
+      case "channel_mount_isen_blue":
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
         for ($k = 0; $k < count($character); $k += CharacterPieces()) {
@@ -759,7 +757,7 @@ function AuraBeginningActionPhaseAbilities(){
       case "sigil_of_lightning_blue":
       case "sigil_of_the_arknight_blue":
       case "sigil_of_deadwood_blue":
-      case "sigil_of_aether_blue":// Sigil of aether
+      case "sigil_of_aether_blue":
       case "sigil_of_temporal_manipulation_blue":
       case "sigil_of_forethought_blue":
       case "sigil_of_cycles_blue":

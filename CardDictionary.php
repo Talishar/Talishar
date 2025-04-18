@@ -2930,9 +2930,6 @@ function HasBladeBreak($cardID)
     case "mask_of_the_pouncing_lynx":
     case "silver_palms":
       return true;
-    case "ironrot_helm":
-    case "ironrot_legs":
-      return true;
     case "bone_vizier":
       return true;
     case "coronet_peak":

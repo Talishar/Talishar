@@ -1247,21 +1247,21 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
         case "battered_not_broken_red":
           if ($preventable) {
             $preventedDamage += 2;
-            PlayAura("might", $player); //Might
+            PlayAura("might", $player); 
           }
           $remove = true;
           break;
         case "take_it_on_the_chin_red":
           if ($preventable) {
             $preventedDamage += 2;
-            PlayAura("agility", $player); //Agility
+            PlayAura("agility", $player); 
           }
           $remove = true;
           break;
         case "slap_happy_red":
           if ($preventable) {
             $preventedDamage += 2;
-            PlayAura("vigor", $player); //Vigor
+            PlayAura("vigor", $player); 
           }
           $remove = true;
           break;
@@ -1269,7 +1269,6 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           if ($preventable) $preventedDamage += 2;
           $remove = true;
           break;
-        case "battlefront_bastion_blue":
         case "battlefront_bastion_red":
         case "battlefront_bastion_yellow":
         case "battlefront_bastion_blue":

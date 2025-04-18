@@ -815,7 +815,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         if (CardNameContains($cardID, "Graphene Chelicera", $currentPlayer)) --$modifier;
         break;
       case "fang_dracai_of_blades":
-      case "fang": // Fang
+      case "fang":
         $fealties = SearchAurasForCardName("Fealty", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
         break;
@@ -1472,7 +1472,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "iyslander":
       case "iyslander_stormbind":
-      case "iyslander": //Iyslander
         if ($currentPlayer != $mainPlayer && TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }

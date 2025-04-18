@@ -813,7 +813,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "shift_the_tide_of_battle_yellow":
         if (IsHeroAttackTarget()) {
-          PlayAura("agility", $otherPlayer); //Agility
+          PlayAura("agility", $otherPlayer); 
           $remove = 1;
         }
         break;

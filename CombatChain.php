@@ -539,15 +539,15 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       if (CachedOverpowerActive()) $blockModifier += 2;
       break;
     case "raw_meat":
-      CountAura("agility", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
-      CountAura("might", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
+      CountAura("agility", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
+      CountAura("might", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
       break;
     case "stonewall_impasse":
       $blockModifier += SearchCurrentTurnEffects($cardID, $defPlayer);
       break;
     case "stand_ground":
-      CountAura("might", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Might
-      CountAura("vigor", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
+      CountAura("might", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
+      CountAura("vigor", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
       break;
     case "boast_blue":
       $blockModifier += (2 * GetClassState($defPlayer, $CS_NumClashesWon));
@@ -556,8 +556,8 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       if (IsWeaponAttack()) $blockModifier += 2;
       break;    
     case "beckon_applause":
-      CountAura("agility", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Agility
-      CountAura("vigor", $defPlayer) > 0 ? $blockModifier += 1 : 0; //Vigor
+      CountAura("agility", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
+      CountAura("vigor", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
       break;
     case "standing_order_red":
       if (SearchCurrentTurnEffects($cardID, $defPlayer, true)) $blockModifier += 2;
@@ -872,8 +872,6 @@ function OnBlockResolveEffects($cardID = "")
       case "ironhide_plate":
       case "ironhide_gauntlet":
       case "ironhide_legs":
-      case "ironhide_gauntlet":
-      case "ironhide_legs"://Ironhide
       case "pack_call_yellow"://Pack Call
       case "rampart_of_the_rams_head"://Rampart of the Ram's Head
       case "phantasmal_footsteps"://Phantasmal Footsteps
@@ -975,7 +973,6 @@ function OnBlockResolveEffects($cardID = "")
           }
         }
         break;
-      case "battlefront_bastion_blue": // Battlefront Bastion
       case "battlefront_bastion_red":
       case "battlefront_bastion_yellow":
       case "battlefront_bastion_blue":

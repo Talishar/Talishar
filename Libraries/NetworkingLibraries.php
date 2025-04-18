@@ -2149,7 +2149,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "cash_in_yellow", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("silver", "silver") . "_alternative_cost_was_paid.", 1);
       }
-      if (CountItem("gold", $currentPlayer) >= 1) //Gold
+      if (CountItem("gold", $currentPlayer) >= 1) 
       {
         AddDecisionQueue("SEARCHCURRENTEFFECTPASS", $currentPlayer, "cash_in_yellow");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
@@ -2230,7 +2230,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       }
       break;
     case "double_down_red":
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); //Gold
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); 
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
