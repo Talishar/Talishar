@@ -2,7 +2,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $CS_DamagePrevention, $combatChain, $layers;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $CS_DamagePrevention, $combatChain, $layers, $CombatChain;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -168,7 +168,10 @@
         if($cardID == "lightning_press_yellow") $amount = 2;
         else if($cardID == "lightning_press_blue") $amount = 1;
         $targetIndex = intval(explode("-", $target)[1]);
-        if($targetIndex != 0) CombatChainPowerModifier($targetIndex, $amount);
+        if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+          if ($CombatChain->HasCurrentLink()) CombatChainPowerModifier($targetIndex, $amount);
+        }
+        //only add current turn effect if there's no target (ie. played in layer step)
         else AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":

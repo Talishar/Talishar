@@ -3201,7 +3201,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
-  global $currentTurnEffects;
+  global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
@@ -3380,7 +3380,34 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     {
       if ($from != "EQUIP" && $from != "PLAY") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
       else if ($from == "EQUIP" || $from == "PLAY") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-      if (!$openedChain) ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts);
+      if (!$openedChain) {
+        // check for fizzling
+        $fizzled = false;
+        switch ($cardID) {
+          case "lightning_press_red":
+          case "lightning_press_yellow":
+          case "lightning_press_blue":
+            if ($target != "-") {
+              if (!$CombatChain->HasCurrentLink()) {
+                //chain link closed prematurely
+                WriteLog("Lightning Press fizzles due to missing target");
+                $fizzled = true;
+              }
+              else {
+                //chain link didn't close but target is still gone
+                $targetIndex = intval(explode("-", $target)[1]);
+                if ($targetIndex == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+                  WriteLog("Lightning Press fizzles due to missing target");
+                  $fizzled = true;
+                }
+              }
+            }
+            break;
+          default:
+            break;
+        }
+        if (!$fizzled) ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts);
+      }
     }
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
