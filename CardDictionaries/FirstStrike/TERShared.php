@@ -48,7 +48,7 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       GainResources($currentPlayer, 1);
       return "";
     case "bracken_rap_red": case "bracken_rap_yellow":
-      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("might", $currentPlayer); //Might
+      if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("might", $currentPlayer); 
       return "";
     case "log_fall_red":
     case "log_fall_yellow":

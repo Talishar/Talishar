@@ -67,8 +67,8 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         for ($i = 0; $i < count($cards); ++$i) {
           if (ModifiedAttackValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
         }
-        PlayAura("might", $currentPlayer, $numSixes); //Might
-        if (CountAura("might", $currentPlayer) >= 6) PlayAura("agility", $currentPlayer); //Agility
+        PlayAura("might", $currentPlayer, $numSixes); 
+        if (CountAura("might", $currentPlayer) >= 6) PlayAura("agility", $currentPlayer); 
 
         $zone = &GetDeck($currentPlayer);
         $topDeck = array_slice($zone, 0, 6);
@@ -95,12 +95,12 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "assault_and_battery_red":
     case "assault_and_battery_yellow":
     case "assault_and_battery_blue":
-      if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("agility", $currentPlayer);//Agility
+      if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("agility", $currentPlayer);
       return "";
     case "pound_town_red":
     case "pound_town_yellow":
     case "pound_town_blue":
-      if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("might", $currentPlayer);//Might
+      if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("might", $currentPlayer);
       return "";
     case "bonebreaker_bellow_red":
     case "bonebreaker_bellow_yellow":
@@ -112,8 +112,8 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID . "," . $amount, $currentPlayer);
       return "";
     case "smashback_alehorn_blue":
-      PlayAura("agility", $currentPlayer);//Agility
-      PlayAura("might", $currentPlayer);//Might
+      PlayAura("agility", $currentPlayer);
+      PlayAura("might", $currentPlayer);
       return "";
     case "good_time_chapeau":
       AddCurrentTurnEffect($cardID . "-PAID", $currentPlayer);
@@ -128,12 +128,12 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $defPlayer);
       return "";
     case "pint_of_strong_and_stout_blue":
-      PlayAura("might", $currentPlayer);//Might
-      PlayAura("vigor", $currentPlayer);//Vigor
+      PlayAura("might", $currentPlayer);
+      PlayAura("vigor", $currentPlayer);
       return "";
     case "goblet_of_bloodrun_wine_blue":
-      PlayAura("agility", $currentPlayer);//Agility
-      PlayAura("vigor", $currentPlayer);//Vigor
+      PlayAura("agility", $currentPlayer);
+      PlayAura("vigor", $currentPlayer);
       return "";
     case "kassai_of_the_golden_sand":
     case "kassai":
@@ -193,13 +193,13 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "agile_engagement_yellow":
     case "agile_engagement_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (NumAttacksBlocking() > 0) PlayAura("agility", $currentPlayer); //Agility
+      if (NumAttacksBlocking() > 0) PlayAura("agility", $currentPlayer); 
       return "";
     case "vigorous_engagement_red":
     case "vigorous_engagement_yellow":
     case "vigorous_engagement_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (NumAttacksBlocking() > 0) PlayAura("vigor", $currentPlayer); //Vigor
+      if (NumAttacksBlocking() > 0) PlayAura("vigor", $currentPlayer); 
       return "";
     case "draw_swords_red":
     case "draw_swords_yellow":
@@ -223,7 +223,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "gauntlet_of_might":
-      PlayAura("might", $currentPlayer); //Might
+      PlayAura("might", $currentPlayer); 
       return "";
     case "talk_a_big_game_blue":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a number");
@@ -239,7 +239,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "mighty_windup_yellow":
     case "mighty_windup_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        PlayAura("might", $currentPlayer); //Might
+        PlayAura("might", $currentPlayer); 
         CardDiscarded($currentPlayer, $cardID, source: $cardID);
       }
       return "";
@@ -252,13 +252,13 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "lead_with_power_yellow":
     case "lead_with_power_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      PlayAura("might", $currentPlayer); //Might
+      PlayAura("might", $currentPlayer); 
       return "";
     case "flat_trackers":
-      PlayAura("agility", $currentPlayer); //Agility
+      PlayAura("agility", $currentPlayer); 
       return "";
     case "runner_runner_red":
-      if (DoesAttackHaveGoAgain()) PlayAura("agility", $currentPlayer); //Agility
+      if (DoesAttackHaveGoAgain()) PlayAura("agility", $currentPlayer); 
       return "";
     case "take_it_on_the_chin_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -267,7 +267,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "agile_windup_yellow":
     case "agile_windup_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        PlayAura("agility", $currentPlayer); //Agility
+        PlayAura("agility", $currentPlayer); 
         CardDiscarded($currentPlayer, $cardID, source: $cardID);
       }
       return "";
@@ -280,10 +280,10 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "lead_with_speed_yellow":
     case "lead_with_speed_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      PlayAura("agility", $currentPlayer); //Agility
+      PlayAura("agility", $currentPlayer); 
       return "";
     case "vigor_girth":
-      PlayAura("vigor", $currentPlayer); //Vigor
+      PlayAura("vigor", $currentPlayer); 
       return "";
     case "double_down_red":
       AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
@@ -297,7 +297,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "vigorous_windup_yellow":
     case "vigorous_windup_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        PlayAura("vigor", $currentPlayer); //Vigor
+        PlayAura("vigor", $currentPlayer); 
         CardDiscarded($currentPlayer, $cardID, source: $cardID);
       }
       return "";
@@ -310,7 +310,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "lead_with_heart_yellow":
     case "lead_with_heart_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      PlayAura("vigor", $currentPlayer); //Vigor
+      PlayAura("vigor", $currentPlayer); 
       return "";
     case "balance_of_justice":
       Draw($currentPlayer);

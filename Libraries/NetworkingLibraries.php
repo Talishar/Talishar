@@ -1902,7 +1902,6 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero for <0>", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      // AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCOURTARGETTING", 1);
       break;
     case "rewind_blue":
@@ -2153,7 +2152,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "cash_in_yellow", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("silver", "silver") . "_alternative_cost_was_paid.", 1);
       }
-      if (CountItem("gold", $currentPlayer) >= 1) //Gold
+      if (CountItem("gold", $currentPlayer) >= 1) 
       {
         AddDecisionQueue("SEARCHCURRENTEFFECTPASS", $currentPlayer, "cash_in_yellow");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
@@ -2234,7 +2233,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       }
       break;
     case "double_down_red":
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); //Gold
+      AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); 
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
@@ -2855,8 +2854,19 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
       AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      if(!ShouldAutotargetOpponent($currentPlayer)) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,0", 1); //Arcane Target isn't used for arcane only. Should be renamed to something else.
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($cardID, $cardID), 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
+      }
+      else {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
+      }
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, "flick_knives", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "hurl_red":
     case "hurl_yellow":

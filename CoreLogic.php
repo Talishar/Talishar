@@ -486,7 +486,8 @@ function HasIncreasedAttack()
 
 function DamageTrigger($player, $damage, $type, $source = "NA")
 {
-  PrependDecisionQueue("DEALDAMAGE", $player, $damage . "-" . $source . "-" . $type);
+  PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0");
+  PrependDecisionQueue("PASSPARAMETER", $player, $damage . "-" . $source . "-" . $type, 1);
   return $damage;
 }
 
@@ -812,7 +813,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "shift_the_tide_of_battle_yellow":
         if (IsHeroAttackTarget()) {
-          PlayAura("agility", $otherPlayer); //Agility
+          PlayAura("agility", $otherPlayer); 
           $remove = 1;
         }
         break;
@@ -869,7 +870,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  if (!$silent && IsPlayerAI($player)) WriteLog("Player " . $player . " gained " . $amount . " life");
+  if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if(!IsPlayerAI($player) || $player == 1) $health += $amount;
   LogHealthGainedStats($player, $amount);
