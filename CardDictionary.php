@@ -1578,7 +1578,10 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   switch ($cardType) {
     case "A":
-      return $phase == "M";
+      if (ChainBreakTriggerLive() && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
+        return false;
+      }
+      else return $phase == "M";
     case "AA":
       return $phase == "M";
     case "AR":
@@ -1915,7 +1918,7 @@ function ChainBreakTriggerLive()
 {
   global $chainLinks;
   //find some way to communicate this
-  return false;
+  // return false;
   $chainBreakTriggerCards = ["widespread_annihilation_blue", "widespread_destruction_yellow",
   "widespread_ruin_red", "deathly_wail_red", "deathly_wail_yellow", "deathly_wail_blue",
   "deathly_delight_red", "deathly_delight_yellow", "deathly_delight_blue",
@@ -1995,10 +1998,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     return true;
   }
   // block NAAs if a chain break trigger is active
-  if (CardType($cardID) == "A" && ChainBreakTriggerLive() && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
-    $restriction = "Close the Chain first";
-    return true;
-  }
   switch ($cardID) {
     case "breaking_scales":
       return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
