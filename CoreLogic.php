@@ -870,7 +870,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life");
     return false;
   }
-  if (!$silent && !IsPlayerAI($player)) WriteLog("Player " . $player . " gained " . $amount . " life");
+  if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if(!IsPlayerAI($player) || $player == 1) $health += $amount;
   LogHealthGainedStats($player, $amount);
