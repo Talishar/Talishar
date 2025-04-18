@@ -1526,6 +1526,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           break;
         case "flick_knives":
+        case "throw_dagger_blue":
+        case "danger_digits":
           $allTargets = explode(",", $lastResult);
           $otherPlayerCharacter = GetPlayerCharacter($otherPlayer);
           $character = GetPlayerCharacter($player);
