@@ -347,7 +347,7 @@ function ItemStartTurnAbility($index)
     case "null_time_zone_blue":
       if ($mainItems[$index + 1] > 0) {
         AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index], $mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
-        AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $mainPlayer, $index, 1);
+        AddDecisionQueue("REMOVECOUNTERITEMORDESTROYUID", $mainPlayer, $mainItems[$index+4], 1);
       } else {
         WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
         DestroyItemForPlayer($mainPlayer, $index);

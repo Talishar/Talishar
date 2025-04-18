@@ -2353,6 +2353,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
       }
       return "";
+    case "REMOVECOUNTERITEMORDESTROYUID":
+      $items = &GetItems($player);
+      $index = -1;
+      for ($i = 0; $i < count($items); $i += ItemPieces()) {
+        if ($items[$i+4] == $parameter) $index = $i;
+      }
+      if ($index == -1) {
+        WriteLog("There was an error trying to remove a steam counter, please submit a bug report");
+        return "";
+      }
+      if ($lastResult == "YES") --$items[$index + 1];
+      else {
+        DestroyItemForPlayer($player, $index);
+        WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
+      }
+      return "";
     case "ADDBOTTOMREMOVETOP":
       $deck = new Deck($player);
       $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
