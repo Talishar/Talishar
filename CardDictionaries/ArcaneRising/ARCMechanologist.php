@@ -201,7 +201,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     $banish = GetBanish($player);
     $topInd = count($banish) - BanishPieces(); // index of card that just got banished
-    if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+    if (CardNameContains($boostedCardID, "Hyper Driver", $player) && SearchCharacterActive($player, "hyper_x3")) {
       //give it the uid of the banished card as a target
       AddLayer("TRIGGER", $player, "hyper_x3", $banish[$topInd + 2]);
     }
