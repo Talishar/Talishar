@@ -48,6 +48,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "ARCANETARGET":
           $rv = GetArcaneTargetIndices($player, $subparam);
+          WriteLog("Arcane target indices: " . $rv);
           break;
         case "DAMAGEPREVENTION":
           $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3);
@@ -1192,9 +1193,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (CardType($EffectContext) == "AA" || CardType($layers[0]) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
-      $target = (is_array($lastResult) ? $lastResult : explode("-", $lastResult));
-      $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 1 : 2));
-      $parameters = explode("-", $parameter);
+      $target = (is_array($parameter) ? $parameter : explode("-", $parameter));
+      $targetPlayer = ($target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1));
+      $parameters = explode("-", $lastResult);
       $damage = $parameters[0];
       $source = $parameters[1];
       $type = $parameters[2];
@@ -1210,7 +1211,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
         return $damage;
       } else {
-        PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $parameter);
+        PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $lastResult);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);

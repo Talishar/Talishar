@@ -605,7 +605,8 @@ function OUTAbilityCost($cardID)
       case "one_two_punch_red": case "one_two_punch_yellow": case "one_two_punch_blue":
         if(ComboActive() && IsHeroAttackTarget())
         {
-          AddDecisionQueue("DEALDAMAGE", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
+          AddDecisionQueue("DEALDAMAGE", $defPlayer, "THEIRCHAR-0", 1);
         }
         break;
       case "barbed_undertow_red":
@@ -793,9 +794,20 @@ function OUTAbilityCost($cardID)
     if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
+    if(!ShouldAutotargetOpponent($currentPlayer)) {;
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($source, $source), 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
+    }
+    else {
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
+    }
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
-    AddDecisionQueue("DEALDAMAGE", $otherPlayer, "<-", 1);
+    AddDecisionQueue("DEALDAMAGE", $currentPlayer, "{2}", 1);
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);

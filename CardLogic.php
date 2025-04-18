@@ -495,9 +495,13 @@ function ContinueDecisionQueue($lastResult = "")
     if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
     if (count($dqVars) > 1 && str_contains($parameter, "{1}")) $parameter = str_replace("{1}", $dqVars[1], $parameter);
+    if (count($dqVars) > 2 && str_contains($parameter, "{2}")) $parameter = str_replace("{2}", $dqVars[2], $parameter);
   }
   if (count($dqVars) > 1) {
     $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
+  }  
+  if (count($dqVars) > 2) {
+    $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
   }  
   $subsequent = array_shift($decisionQueue);
   $makeCheckpoint = array_shift($decisionQueue);
@@ -1858,7 +1862,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("DEALDAMAGE", $otherPlayer, 1 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, 1 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+      AddDecisionQueue("DEALDAMAGE", $otherPlayer, "THEIRCHAR-0", 1);
       break;
     case "channel_thunder_steppe_yellow":
       if ($additionalCosts == "CHANNEL") {
