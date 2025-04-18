@@ -1676,6 +1676,24 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "-");
       }
       break;
+    case "hyper_x3":
+      $banish = GetBanish($player);
+      $index = SearchBanishForUID($player, $target);
+      if ($index == -1) WriteLog("Hyper X3's trigger fails");
+      else {
+        EquipmentBoostEffect($player, "hyper_x3", $banish[$index]);
+        RemoveBanish($player, $index);
+      }
+      break;
+    case "bios_update_red":
+      $banish = GetBanish($player);
+      $index = SearchBanishForUID($player, $target);
+      if ($index == -1) WriteLog("Bios Update's trigger fails");
+      else {
+        PutItemIntoPlayForPlayer($banish[$index], $player);
+        RemoveBanish($player, $index);
+      }
+      break;
     case "tripwire_trap_red":
       TrapTriggered($parameter);
       AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);

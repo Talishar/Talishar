@@ -658,6 +658,15 @@ function SearchBanishForCard($playerID, $cardID)
   return -1;
 }
 
+function SearchBanishForUID($playerID, $UID)
+{
+  $banish = GetBanish($playerID);
+  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+    if ($banish[$i + 2] == $UID && $banish[$i + 1] != "FACEDOWN") return $i;
+  }
+  return -1;
+}
+
 function SearchBanishForCardName($playerID, $cardID)
 {
   $banish = GetBanish($playerID);

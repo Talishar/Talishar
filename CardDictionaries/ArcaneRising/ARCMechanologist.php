@@ -198,13 +198,16 @@ function DoBoost($player, $cardID, $boostCount=1)
     SelfBoostEffects($player, $boostedCardID, $cardID);
     CharacterBoostAbilities($player);
     OnBoostedEffects($player, $boostedCardID);
-    $skipBanish = false;
+    BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+    $banish = GetBanish($player);
+    $topInd = count($banish) - BanishPieces(); // index of card that just got banished
     if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-      $skipBanish = EquipmentBoostEffect($player, "hyper_x3", $boostedCardID);
+      //give it the uid of the banished card as a target
+      AddLayer("TRIGGER", $player, "hyper_x3", $banish[$topInd + 2]);
     }
     if(CardSubType($boostedCardID) == "Item" && SearchCurrentTurnEffects("bios_update_red-2", $player, true)) {
-      $skipBanish = true;
-      PutItemIntoPlayForPlayer($boostedCardID, $player);
+      //give it the uid of the banished card as a target
+      AddLayer("TRIGGER", $player, "bios_update_red", $banish[$topInd + 2]);
     }
     if(SearchCurrentTurnEffects("viziertronic_model_i", $player)) {
       AddLayer("TRIGGER", $player, "viziertronic_model_i");
@@ -227,9 +230,6 @@ function DoBoost($player, $cardID, $boostCount=1)
         default:
           break;
       }
-    }
-    if (!$skipBanish) {
-      BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
