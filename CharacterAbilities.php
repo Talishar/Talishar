@@ -513,11 +513,11 @@ function MainCharacterEndTurnAbilities()
   }
 }
 
-function MainCharacterHitTrigger($cardID = "-")
+function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
 {
-  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $chainLinks;
+  global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $chainLinks, $defPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
-  $defPlayer = ($mainPlayer == 1 ? 2 : 1);
+  $targetPlayer = $targetPlayer == -1 ? ($mainPlayer == 1 ? 2 : 1) : $targetPlayer;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $isAA = ($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA");
   $damageSource = $cardID != "-" ? $cardID : $attackID;
@@ -615,7 +615,7 @@ function MainCharacterHitTrigger($cardID = "-")
       case "fang_dracai_of_blades":
       case "fang":
         if ($mainCharacter[$i+1] < 3) {
-          if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+          if (IsHeroAttackTarget() && CheckMarked($targetPlayer)) {
             AddLayer("TRIGGER", $mainPlayer, $characterID,$damageSource, "MAINCHARHITEFFECT");
           }
         }

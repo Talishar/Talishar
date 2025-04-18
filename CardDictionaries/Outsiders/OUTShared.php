@@ -770,40 +770,45 @@ function OUTAbilityCost($cardID)
       else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
     }
     else {
-      $targetArr = explode("-", $target);
-      if ($targetArr[0] == "COMBATCHAINATTACKS") {
+      $targets = explode(",", $target);
+      $targetWeapon = $targets[1];
+      $targetHero = $targets[2];
+      $targetHeroUniqueID = $targets[3];
+      $index = SearchCharacterForUniqueID($targetWeapon, $currentPlayer);
+      //Target Weapon
+      if ($targets[0] == "COMBATCHAINATTACKS") {
         $ccAttacks = GetCombatChainAttacks();
-        if ($ccAttacks[$targetArr[1] + 2] != 1) {
+        if ($ccAttacks[$index[1] + 2] != 1) {
           WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
           return;
         }
-        $targetInd = $target;
+        $weaponTargetInd = $targetWeapon;
       }
       else {
         $char = GetPlayerCharacter($currentPlayer);
-        $ind = SearchCharacterForUniqueID($targetArr[1], $currentPlayer);
-        if ($ind == -1 || $char[$ind + 1] == 0) {
+        if ($index == -1 || $char[$index + 1] == 0) {
           WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
           return;
         }
-        $targetInd = "MYCHAR-$ind";
+        $weaponTargetInd = "MYCHAR-$index";
       }
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targetInd, 1);
+      //Target Hero
+      if(substr($targetHero, 0, 5) == "THEIR") {
+        $index = SearchCharacterForUniqueID($targetHeroUniqueID, $otherPlayer);
+        $heroTargetInd = "$targetHero-$index";
+      }
+      else {
+        $index = SearchCharacterForUniqueID($targetHeroUniqueID, $currentPlayer);
+        $heroTargetInd = "$targetHero-$index";
+      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $weaponTargetInd, 1);
+
     }
-    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
     if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
-    if(!ShouldAutotargetOpponent($currentPlayer)) {;
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($source, $source), 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
-    }
-    else {
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
-    }
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $heroTargetInd, 1);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
     AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
@@ -811,7 +816,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source", 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source,$weaponTargetInd,{2}", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
     if ($onHitDraw) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);

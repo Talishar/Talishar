@@ -48,7 +48,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "ARCANETARGET":
           $rv = GetArcaneTargetIndices($player, $subparam);
-          WriteLog("Arcane target indices: " . $rv);
           break;
         case "DAMAGEPREVENTION":
           $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3);
@@ -1526,6 +1525,27 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $cleanTarget .= ",{$prefix}AURASUID-" . $auras[$index + 6];
           }
           break;
+        case "flick_knives":
+          $allTargets = explode(",", $lastResult);
+          $otherPlayerCharacter = GetPlayerCharacter($otherPlayer);
+          $character = GetPlayerCharacter($player);
+          foreach (array_slice($allTargets, 0) as $targ) {
+            $index = intval(explode("-", $targ)[1]);
+            $location = substr(explode("-", $targ)[0], 0, 2);
+            if($location == "MY")
+            {
+              $cleanTarget == "" ? 
+                  $cleanTarget .= "MYCHAR," . $character[$index + 11] 
+                : $cleanTarget .= ",MYCHAR," . $character[$index + 11];
+            }
+            else {
+              $cleanTarget == "" ? 
+                $cleanTarget .= "THEIRCHAR," . $otherPlayerCharacter[$index + 11] 
+              : $cleanTarget .= ",THEIRCHAR," . $otherPlayerCharacter[$index + 11];
+            }
+          }
+          $target = $cleanTarget;
+          break;
         default:
           $targetArr = explode("-", $lastResult);
           $otherPlayer = ($player == 1 ? 2 : 1);
@@ -2110,8 +2130,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "";
     case "ONHITEFFECT":
+      $parameters = explode(",", $parameter);
       $cardID = $lastResult;
-      $location = $dqVars[2];
+      $location = $parameters[1];
+      if(DelimStringContains($parameters[2], "THEIR", true) || $parameters[2] == "") {
+        $targetPlayer = $player;
+      }
+      else {
+        $targetPlayer = $player == 1 ? 2 : 1;
+      }
       $mainChar = &GetPlayerCharacter($mainPlayer);
       if(DelimStringContains($location, "MYCHAR", true)) {
         $ind = intval(explode("-", $location)[1]);
@@ -2135,7 +2162,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddCardEffectHitTrigger($currentTurnEffects[$i], $cardID); // Effects that do not gives it's effect to the attack
         }
       }
-      MainCharacterHitTrigger($cardID);
+      MainCharacterHitTrigger($cardID, $targetPlayer);
       ArsenalHitEffects(); // should be reworked to add a triggered-layer, but not urgent
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
@@ -2163,7 +2190,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (CheckMarked($defPlayer)) {
         RemoveMark($defPlayer);
       }
-      return $parameter;
+      return $parameters[0];
     case "AWAKEN":
       $mzArr = explode("-", $parameter);
       $permanents = &GetPermanents($player);
