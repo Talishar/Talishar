@@ -631,16 +631,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
         elseif (CardName($cardID . "_blue") != "") $cardID .= "_blue";
       }
-      if (!TypeContains($cardID, "T")) {
+      if (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
         WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
         $hand = &GetHand($playerID);
         array_push($hand, $cardID);
       }
       else {
         WriteLog("Player " . $playerID . " manually created a token", highlight: true);
-        if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID);
-        elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID);
-        else PutPermanentIntoPlay($playerID, $cardID);
+        if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID, from:"MANUAL");
+        elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID, from:"MANUAL");
+        else PutPermanentIntoPlay($playerID, $cardID, from:"MANUAL");
       }
       break;
     case 10012:
