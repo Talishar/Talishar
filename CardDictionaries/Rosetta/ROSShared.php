@@ -107,10 +107,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return CardLink($cardID, $cardID) . " is amping " . $ampAmount .".";
     case "sanctuary_of_aria":
-      if($from == "HAND") {
-        PutItemIntoPlayForPlayer("sanctuary_of_aria", $otherPlayer); //Work around for player to put it in play themselves (Mostly for Blitz LSS precons)
-      }
-      else{
+      if($from != "MANUAL") { //"MANUAL" is used for the ability to put this macro into play
         $params = explode("-", $target);
         if(str_contains($params[0], "AURAS")) {
           $index = SearchAurasForUniqueID($params[1], $otherPlayer);
