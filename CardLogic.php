@@ -3580,6 +3580,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($parameter) {
     case "thistle_bloom__life_yellow":
       PlayAura("runechant", $player, GetClassState($player, $CS_HealthGained));
@@ -3609,6 +3610,12 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       break;
     case "pulsing_aether__life_red":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
+      $targetArr = explode("-", $target);
+      if (str_contains($targetArr[0], "ALLY")) {
+        $targetPlayer = $targetArr[0] == "MYALLY" ? $player : $otherPlayer;
+        $allyInd = SearchAlliesForUniqueID($targetArr[1], $targetPlayer);
+        $target = "$targetArr[0]-$allyInd";
+      }
       DealArcane(4, 2, "PLAYCARD", $parameter, player:$player, meldState:$meldState, resolvedTarget:$target);
       break;
     case "null__shock_yellow":

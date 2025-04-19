@@ -1591,6 +1591,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             //right now only support targetting the active chain link
             $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
           }
+          if ($targetArr[0] == "MYALLY") {
+            $allies = GetAllies($player);
+            $cleanTarget = "MYALLY-" . $allies[$targetArr[1] + 5];
+          }
+          if ($targetArr[0] == "THEIRALLY") {
+            $allies = GetAllies($otherPlayer);
+            $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
+          }
           $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
           break;
       }
@@ -1897,7 +1905,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       break;
     case "MELD":
       $lastResultArr = explode("-", $lastResult);
-      MeldCards($player, $parameter, $lastResultArr[0], target:$lastResultArr[1]);
+      if (isset($lastResultArr[2])) $target = "$lastResultArr[1]-$lastResultArr[2]";
+      else $target = $lastResultArr[1];
+      MeldCards($player, $parameter, $lastResultArr[0], target:$target);
       return $lastResult;
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
