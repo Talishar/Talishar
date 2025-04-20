@@ -1578,7 +1578,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   switch ($cardType) {
     case "A":
-      if (ChainBreakTriggerLive() && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
+      if (ChainBreakTriggerLive() != "" && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
         return false;
       }
       else return $phase == "M";
@@ -1919,16 +1919,24 @@ function ChainBreakTriggerLive()
   global $chainLinks;
   //find some way to communicate this
   // return false;
-  $chainBreakTriggerCards = ["widespread_annihilation_blue", "widespread_destruction_yellow",
+  $chainBreakTriggerAttackCards = ["widespread_annihilation_blue", "widespread_destruction_yellow",
   "widespread_ruin_red", "deathly_wail_red", "deathly_wail_yellow", "deathly_wail_blue",
   "deathly_delight_red", "deathly_delight_yellow", "deathly_delight_blue",
   "eloquent_eulogy_red"];
+  $chainBreakTriggerDefCards = ["that_all_you_got_yellow"];
   for ($i = 0; $i < count($chainLinks); $i++) {
-    if (in_array($chainLinks[$i][0], $chainBreakTriggerCards)) {
-      return true;
+    if (in_array($chainLinks[$i][0], $chainBreakTriggerAttackCards)) {
+      return $chainLinks[$i][0];
+    }
+    for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces())
+    {
+      
+      if (in_array($chainLinks[$i][$j], $chainBreakTriggerDefCards)) {
+        return $chainLinks[$i][$j];
+      }
     }
   }
-  return false;
+  return "";
 }
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)

@@ -1228,8 +1228,10 @@ function FinalizeChainLink($chainClosed = false)
     ResetChainLinkState();
   }
   ProcessDecisionQueue();
-  if (ChainBreakTriggerLive() && $actionPoints >  0) {
-    WriteLog("<b>You have an attack on the chain that will trigger when the chain breaks. Break the chain if you want to do a Non-Attack Action!</b>");
+  $triggerCard = ChainBreakTriggerLive();
+  if ($triggerCard != "" && $actionPoints >  0) {
+    $triggerName = CardLink($triggerCard, $triggerCard);
+    WriteLog("<b>$triggerName may trigger when the chain breaks. Break the chain if you want to do a Non-Attack Action!</b>");
   }
   PrependLayer("RESOLUTIONSTEP", $mainPlayer, "-");
   MakeGamestateBackup();
