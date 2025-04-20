@@ -108,6 +108,7 @@ if($handler) {
       $handItem->is1H = Is1H($handItem->id);
       $numHands = 2;
       if(SubtypeContains($cardID, "Quiver")) $numHands = 0;
+      else if(HasPerched($cardID)) $numHands = 0;
       else if(SubtypeContains($cardID, "Off-Hand")) $numHands = 1;
       else if(Is1H($handItem->id)) $numHands = 1;
       $handItem->numHands = $numHands;

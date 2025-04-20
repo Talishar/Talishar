@@ -167,6 +167,10 @@
           $equippedID = $cardID . "_equip";
           PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $equippedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true);
         }
+        if (HasPerched($$cardArray[$i])) {
+          $unperchedID = $cardID . "_ally";
+          PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $unperchedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true);
+        }
         if (ReverseID($cardID) != "") {
           $reversedID = $cardID . "_r";
           PopulateAssociativeArray($cardArray, ReverseID($cardID), $associativeArray, $propertyName, $reversedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true, true);

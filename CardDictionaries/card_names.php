@@ -15,6 +15,8 @@ function CardName($cardID)
         return "Venomback Fabric";
       case "taylor":
         return "Taylor";
+      case "polly_cranka":
+        return "Polly Cranka";
       default:
         break;
     }

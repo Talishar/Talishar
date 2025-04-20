@@ -167,9 +167,10 @@ function ArsenalPieces()
 //9 - Attack Counters
 //10 - Dealt Damage to opposing hero
 //11 - Tapped (0 = no, 1 = yes)
+//12 - Steam Counters
 function AllyPieces()
 {
-  return 12;
+  return 13;
 }
 
 //0 - Card ID

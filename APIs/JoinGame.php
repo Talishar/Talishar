@@ -671,7 +671,7 @@ function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
           if ($weaponSideboard != "") $weaponSideboard .= " ";
           $weaponSideboard .= $id;
       }
-  } elseif (TypeContains($id, "E")) {
+  } elseif (TypeContains($id, "E") || TypeContains($id, "Comp")) {
       ++$totalCards;
       ProcessEquipment($id, $numMainBoard, $numSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard);
   } else {

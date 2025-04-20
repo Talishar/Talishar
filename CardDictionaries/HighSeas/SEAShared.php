@@ -11,6 +11,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "puffin_hightail" => "A",
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
+    "polly_cranka", "polly_cranka_ally" => "A",
 
     "redspine_manta" => "A",
     "marlynn_treasure_hunter" => "A",
@@ -128,6 +129,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     // Puffin cards
     case "puffin_hightail":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, isToken: true);
+      break;
+    case "polly_cranka": case "polly_cranka_ally":
+      $index = SearchBanishForCard($currentPlayer, "polly_cranka");
+      if ($index != -1) {
+        PlayAlly("polly_cranka_ally", $currentPlayer, tapped:true);
+        RemoveBanish($currentPlayer, $index);
+      }
       break;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
@@ -264,6 +272,14 @@ function HasWateryGrave($cardID): bool
     "riggermortis_yellow" => true,
     "diamond_amulet_blue" => true,
     "sawbones_dock_hand_yellow" => true,
+    default => false
+  };
+}
+
+function HasPerched($cardID): bool
+{
+  return match($cardID) {
+    "polly_cranka" => true,
     default => false
   };
 }

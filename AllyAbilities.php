@@ -1,6 +1,6 @@
 <?php
 
-function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true)
+function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true, $tapped = 0)
 {
   global $EffectContext;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -10,6 +10,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player)) && $firstTransform) $number -= $numMinusTokens;
   $allies = &GetAllies($player);
   for ($i = 0; $i < $number; ++$i) {
+    $index = count($allies);
     array_push($allies, $cardID);
     array_push($allies, 2);
     array_push($allies, AllyHealth($cardID));
@@ -21,16 +22,18 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     array_push($allies, 1); //Ability/effect uses
     array_push($allies, 0); //Attack Counters
     array_push($allies, 0); //Damage dealt to the opponent
-    array_push($allies, 0); //tapped
+    array_push($allies, $tapped); //tapped
+    array_push($allies, AllySteamCounters($cardID)); //steam counters
     if ($cardID == "ouvia") {
       WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
       Transform($player, "Ash", "aether_ashwing", true);
     }
+    if (HasCrank($cardID, $player)) Crank($player, $index, zone:"MYALLY");
   }
   return count($allies) - AllyPieces();
 }
 
-function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "")
+function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
 {
   $allies = &GetAllies($player);
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
@@ -38,8 +41,8 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
     CloseCombatChain();
   }
   $cardID = $allies[$index];
-  AllyAddGraveyard($player, $cardID);
-  AllyAddGraveyard($player, $allies[$index + 4]);
+  AllyAddGraveyard($player, $cardID, toBanished:$toBanished);
+  AllyAddGraveyard($player, $allies[$index + 4], toBanished:$toBanished);
   for ($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
   return $cardID;
@@ -58,7 +61,7 @@ function IsTokenAlly($cardID)
   };
 }
 
-function AllyAddGraveyard($player, $cardID)
+function AllyAddGraveyard($player, $cardID, $toBanished=false)
 {
   if (CardType($cardID) != "T") {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
@@ -84,16 +87,21 @@ function AllyAddGraveyard($player, $cardID)
       "vynserakai" => "invoke_vynserakai_red",
       "yendurai" => "invoke_yendurai_red",
       "suraya_archangel_of_knowledge" => "invoke_suraya",
+      "polly_cranka_ally" => "polly_cranka",
       default => $cardID
     };
     if (IsTokenAlly($id)) return;
-    AddGraveyard($id, $player, "PLAY", $player);
+    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player);
+    else BanishCardForPlayer($id, $player, "PLAY");
   }
 }
 
 function AllyHealth($cardID)
 {
-  return GeneratedCharacterHealth($cardID);
+  return match($cardID) {
+    "polly_cranka_ally" => 1,
+    default => GeneratedCharacterHealth($cardID)
+  };
 }
 
 function AllyDestroyedAbility($player, $index)
@@ -137,6 +145,16 @@ function AllyEnduranceCounters($cardID)
 {
   switch ($cardID) {
     case "yendurai":
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+function AllySteamCounters($cardID)
+{
+  switch ($cardID) {
+    case "polly_cranka_ally":
       return 1;
     default:
       return 0;

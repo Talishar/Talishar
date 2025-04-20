@@ -17,30 +17,41 @@
       case "cerebellum_processor_blue":
       case "null_time_zone_blue":
       case "clamp_press_blue":
-      case "golden_cog":
+      case "polly_cranka_ally": case "golden_cog":
         return true;
       default: return false;
     }
   }
 
-  function Crank($player, $index, $mainPhase="True")
+  function Crank($player, $index, $mainPhase="True", $zone="MYITEMS")
   {
-    $items = GetItems($player);
+    $MZZone = match($zone) {
+      "MYITEMS" => GetItems($player),
+      "MYALLY" => GetAllies($player),
+      default => GetItems($player)
+    };
     PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
-    PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
+    PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase$mainPhase-$zone", 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");
     PrependDecisionQueue("DOCRANK", $player, "-");
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($items[$index], $items[$index]) ."?", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($MZZone[$index], $MZZone[$index]) ."?", 1);
     PrependDecisionQueue("SETDQVAR", $player, "0");
   }
 
-  function DoCrank($player, $index, $mainPhase=true)
+  function DoCrank($player, $index, $mainPhase=true, $zone="MYITEMS")
   {
     global $CS_NumCranked;
-    $items = &GetItems($player);
-    if($items[$index+1] <= 0) return;
-    --$items[$index+1];
+    if ($zone == "MYALLY") {
+      $MZZone = &GetAllies($player);
+      $steamInd = 12;
+    }
+    else {
+      $MZZone = &GetItems($player);
+      $steamInd = 1;
+    }
+    if($MZZone[$index+$steamInd] <= 0) return;
+    --$MZZone[$index+$steamInd];
     if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
@@ -54,7 +65,7 @@
           break;
       }
     }
-    if(CardName($items[$index]) == "Hyper Driver" && ($items[$index+1] <= 0)) DestroyItemForPlayer($player, $index);
+    if(CardName($MZZone[$index]) == "Hyper Driver" && ($MZZone[$index+$steamInd] <= 0)) DestroyItemForPlayer($player, $index);
   }
 
   function ProcessTowerEffect($cardID)
