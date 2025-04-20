@@ -159,6 +159,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrouchingTigerPlayedThisTurn;
+  global $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -315,7 +316,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if($cardID == "shred_red") $amount = -4;
       else if($cardID == "shred_yellow") $amount = -3;
       else $amount = -2;
-      Shred($currentPlayer, $amount);
+      $targetCard = GetMZCard($currentPlayer, $target);
+      $targetInd = explode("-", $target)[1];
+      if (TypeContains($targetCard, "E")) {
+        // I'm going to assume that a player can't have two copies of the same blocking equipment
+        AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd]);
+      }
+      else {
+        CombatChainDefenseModifier($targetInd, $amount);
+      }
       return "";
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);

@@ -460,12 +460,27 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
-  global $CS_NumBluePlayed;
+  global $CS_NumBluePlayed, $currentTurnEffects;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE802", $defPlayer);
+  if ($cardType == "E") {
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+      switch ($currentTurnEffects[$i]) {
+        case "shred_red":
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 4;
+          break;
+        case "shred_yellow":
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 3;
+          break;
+        case "shred_blue":
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 2;
+          break;
+      }
+    }
+  }
   if ((DelimStringContains($cardType, "E") || SubtypeContains($cardID, "Evo")) && (SearchCurrentTurnEffects("scramble_pulse_red", $mainPlayer) || SearchCurrentTurnEffects("scramble_pulse_yellow", $mainPlayer) || SearchCurrentTurnEffects("scramble_pulse_blue", $mainPlayer))) {
     $countScramblePulse = 0 + CountCurrentTurnEffects("scramble_pulse_red", $mainPlayer);
     $countScramblePulse += CountCurrentTurnEffects("scramble_pulse_yellow", $mainPlayer);
