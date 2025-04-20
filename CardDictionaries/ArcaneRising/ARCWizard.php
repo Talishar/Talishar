@@ -1007,7 +1007,7 @@ function ArcaneBarrierChoices($playerID, $max)
 
 function CheckSpellvoid($player, $damage)
 {
-  $spellvoidChoices = SearchSpellvoidIndices($player);
+  $spellvoidChoices = SearchSpellvoidIndices($player, $damage);
   if ($spellvoidChoices != "") {
     PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $spellvoidChoices);

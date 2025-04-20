@@ -1099,7 +1099,7 @@ function SearchArsenalReadyCard($player, $cardID)
   return -1;
 }
 
-function SearchArcaneReplacement($player, $zone)
+function SearchArcaneReplacement($player, $zone, $damage)
 {
   $cardList = "";
   switch ($zone) {
@@ -1116,16 +1116,26 @@ function SearchArcaneReplacement($player, $zone)
       $count = AuraPieces();
       break;
   }
+  $addedRunechants = 0; //tracks how many runechants are displayed, only display up to the amount of damage
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
     if ($zone == "MYAURAS" && $array[$i + 7] == 0) continue;
-    if (SpellVoidAmount($cardID, $player) > 0 && IsCharacterActive($player, $i)) {
+    if (SpellVoidAmount($cardID, $player) > 0 && IsCharacterActive($player, $i) && $zone == "MYCHAR") {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     } elseif (SpellVoidAmount($cardID, $player) > 0 && $zone != "MYCHAR") {
-      if ($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
+      if ($cardID == "runechant") {
+        if ($addedRunechants < $damage) {
+          if ($cardList != "") $cardList = $cardList . ",";
+          $cardList = $cardList . $i;
+          ++$addedRunechants;
+        }
+      }
+      else {
+        if ($cardList != "") $cardList = $cardList . ",";
+        $cardList = $cardList . $i;
+      }
     }
   }
   return $cardList;
@@ -1529,14 +1539,14 @@ function FrozenCount($player)
   return $numFrozen;
 }
 
-function SearchSpellvoidIndices($player)
+function SearchSpellvoidIndices($player, $damage)
 {
-  $search = SearchArcaneReplacement($player, "MYCHAR");
+  $search = SearchArcaneReplacement($player, "MYCHAR", $damage);
   $charIndices = SearchMultizoneFormat($search, "MYCHAR");
-  $search = SearchArcaneReplacement($player, "MYITEMS");
+  $search = SearchArcaneReplacement($player, "MYITEMS", $damage);
   $itemsIndices = SearchMultizoneFormat($search, "MYITEMS");
   $indices = CombineSearches($charIndices, $itemsIndices);
-  $search = SearchArcaneReplacement($player, "MYAURAS");
+  $search = SearchArcaneReplacement($player, "MYAURAS", $damage);
   $auraIndices = SearchMultizoneFormat($search, "MYAURAS");
   $indices = CombineSearches($indices, $auraIndices);
 
