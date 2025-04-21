@@ -479,7 +479,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "imperial_ledger_red":
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), true);
-        PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "gold": "copper"), $currentPlayer);
+        PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "gold": "copper"), $currentPlayer, effectController:$currentPlayer);
         $deck = new Deck($currentPlayer);
         $deck->AddBottom("imperial_ledger_red", "PLAY");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
