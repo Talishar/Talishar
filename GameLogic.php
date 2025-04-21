@@ -284,6 +284,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "SCOURINDICES":
+      $targPlayer = explode("|", $parameter)[0];
+      $currentTargets = explode(",", explode("|", $parameter)[1]);
+      $search = "$targPlayer:maxCost=0";
+      $rvOrig = explode(",", SearchMultizone($player, $search));
+      $rv = [];
+      //remove any choices that have already been targetted
+      foreach ($rvOrig as $ind) {
+        if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
+      }
+      $rv = implode(",", $rv);
+      return ($rv == "" ? "PASS" : $rv);
     case "DEDUPEMULTIZONEINDS":
       // only allows for choosing the first of a stack of tokens
       // right now only takes into account cardID for deduping
