@@ -46,6 +46,7 @@ include "CardDictionaries/Hunted/HNTShared.php";
 include "CardDictionaries/ArmoryDecks/ASTShared.php";
 include "CardDictionaries/ArmoryDecks/AMXShared.php";
 include "CardDictionaries/HighSeas/SEAShared.php";
+include "CardDictionaries/MasteryPacks/MPGShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
@@ -472,8 +473,8 @@ function CardSet($cardID)
     case "mark_of_the_huntsman_r":
     case "hunters_klaive_r":
       return "HNT";
-    case "valda_seismic_impact": //not true, but makes code organization easier
-      return "EVR";
+    case "valda_seismic_impact":
+      return "MPG";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);

@@ -1890,6 +1890,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "AST") return ASTCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AMX") return AMXCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "SEA") return SEACombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "MPG") return MPGCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);

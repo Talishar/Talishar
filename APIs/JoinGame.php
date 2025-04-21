@@ -548,6 +548,7 @@ function isUnimplemented($cardID) {
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
       return match($cardID) {
+        "valda_seismic_impact" => false,
         default => true
       };
     default:
