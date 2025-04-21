@@ -1168,7 +1168,8 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "runechant":
-        if (($cardType == "AA" && GetResolvedAbilityType($cardID) != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY") || ((TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) == "AA")) && GetResolvedAbilityType($cardID) != "I") {
+        $abilityType = GetResolvedAbilityType($cardID, $from);
+        if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
