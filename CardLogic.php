@@ -939,7 +939,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
       if (SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
     case "blacktek_whisperers":
-    case "mask_of_perdition":
       if(IsHeroAttackTarget() && ClassContains($combatChain[0], "ASSASSIN", $mainPlayer)) {
         AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       }
@@ -1216,6 +1215,7 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
     case "high_striker_yellow":
     case "high_striker_blue":
     case "buckle_blue":
+    case "mask_of_perdition":
     case "cleave_red":
     case "dead_eye_yellow":
     case "runic_reaping_red-HIT":

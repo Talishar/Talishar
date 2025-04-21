@@ -254,6 +254,11 @@ function EffectHitEffect($cardID, $from, $source = "-")
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
+    case "mask_of_perdition":
+      $deck = new Deck($defPlayer);
+      if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
+      $deck->BanishTop("Source-" . $attackID, banishedBy:$attackID);
+      break;
     case "runic_reaping_red-HIT":
     case "runic_reaping_yellow-HIT":
     case "runic_reaping_blue-HIT":
