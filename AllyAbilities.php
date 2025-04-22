@@ -412,9 +412,11 @@ function AllyPayAdditionalCosts($cardIndex)
     case "riggermortis_yellow":
     case "sawbones_dock_hand_yellow":
       Tap("MYALLY-$cardIndex", $currentPlayer);
+      break;
     case "polly_cranka_ally":
       Tap("MYALLY-$cardIndex", $currentPlayer);
       DestroyAlly($currentPlayer, $cardIndex, skipDestroy:true, toBanished:true);
+      break;
     default: break;
   }
 }
