@@ -1869,7 +1869,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, 1 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
-      AddDecisionQueue("DEALDAMAGE", $otherPlayer, "THEIRCHAR-0", 1);
+      AddDecisionQueue("DEALDAMAGE", $otherPlayer, "MYCHAR-0", 1);
       break;
     case "channel_thunder_steppe_yellow":
       if ($additionalCosts == "CHANNEL") {
