@@ -84,6 +84,7 @@
     if(!in_array($set, $originalSets)) return false;
     if($set == "LSS" && $cardNumber != 004) return false;
     if($set == "LGS" && $cardNumber < 176) return false;
+    if($set == "LGS" && $cardNumber == 406) return true;
     if($set == "LGS" && $cardNumber > 178) return false;
     if($set == "HER" && $cardNumber != 117 && $cardNumber != 100 && $cardNumber != 123 && $cardNumber != 130) return false;
     if($set == "FAB" && $cardNumber < 500) return false;
@@ -366,6 +367,7 @@
     {
       case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
       case "Ice": case "Lightning": case "Earth": case "Mystic": return true;
+      case "Pirate": return true;
       default: return false;
     }
   }
