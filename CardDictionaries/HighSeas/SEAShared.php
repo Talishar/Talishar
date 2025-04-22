@@ -15,7 +15,10 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "redspine_manta" => "A",
     "marlynn_treasure_hunter" => "A",
+    "hammerhead_harpoon_cannon" => "A",
+
     "diamond_amult" => "I",
+    "goldkiss_rum" => "I",
     default => ""
   };
 }
@@ -24,6 +27,7 @@ function SEAAbilityCost($cardID): int
 {
   return match ($cardID) {
     "peg_leg" => 3,
+    "hammerhead_harpoon_cannon" => 4,
     default => 0
   };
 }
@@ -34,13 +38,14 @@ function SEAAbilityHasGoAgain($cardID): bool
     "peg_leg" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
+    "hammerhead_harpoon_cannon" => true,
     default => false,
   };
 }
 
 function SEAEffectAttackModifier($cardID): int
 {
-  global $CombatChain;
+  global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
@@ -48,6 +53,7 @@ function SEAEffectAttackModifier($cardID): int
     "flying_high_red" => PitchValue($attackID) == 1 ? 1 : 0,
     "flying_high_yellow" => PitchValue($attackID) == 2 ? 1 : 0,
     "flying_high_blue"  => PitchValue($attackID) == 3 ? 1 : 0,
+    "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer) ? 4 : 0,
     default => 0,
   };
 }
@@ -62,6 +68,8 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
+    "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "goldkiss_rum" => true,
     default => false,
   };
 }
@@ -152,10 +160,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "marlynn_treasure_hunter":
       AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
       break;
+    case "hammerhead_harpoon_cannon":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "big_game_trophy_shot_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
+      break;
+    case "goldkiss_rum":
+      if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     default:
       break;
@@ -194,6 +208,14 @@ function SEAHitEffect($cardID): void
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "KINGSHARKHARPOON", 1);
       }
+      break;
+    case "conqueror_of_the_high_seas_red":
+      if(IsHeroAttackTarget()) {
+        $arsenal = GetArsenal($defPlayer);
+        $count = count($arsenal);
+        DestroyArsenal($defPlayer, effectController:$mainPlayer);
+        PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
+      }     
       break;
     default:
       break;
@@ -249,9 +271,18 @@ function Tap($MZindex, $player, $tapState=1)
   $zoneName = explode("-", $MZindex)[0];
   $zone = &GetMZZone($player, $zoneName);
   $ind = intval(explode("-", $MZindex)[1]);
-  if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
-  elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
-  elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  //Untap
+  if($tapState == 0 && !isUntappedPrevented($zone[$ind], $zoneName, $player)) {
+    if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
+    elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
+    elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  }
+  //Tap
+  elseif ($tapState == 1) {
+    if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
+    elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
+    elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  }
 }
 
 function CheckTapped($MZindex, $player): bool
@@ -265,6 +296,15 @@ function CheckTapped($MZindex, $player): bool
   return false;
 }
 
+function isUntappedPrevented($cardID, $zoneName, $player): bool
+{
+  $untapPrevented = false;
+  if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains($cardID, "PIRATE", $player)) {
+    $untapPrevented = true;
+  }
+  return $untapPrevented;
+}
+
 function HasWateryGrave($cardID): bool
 {
   return match($cardID) {
@@ -274,6 +314,24 @@ function HasWateryGrave($cardID): bool
     "sawbones_dock_hand_yellow" => true,
     default => false
   };
+}
+
+function HasHighTide($cardID): bool
+{
+  return match($cardID) {
+    "conqueror_of_the_high_seas_red" => true,
+    default => false
+  };
+}
+
+function HighTideConditionMet($player) 
+{
+  $blueCount = SearchCount(SearchPitch($player, pitch: 3));
+  if($blueCount >= 2)
+    return true;
+  else {
+    return false;
+  }
 }
 
 function HasPerched($cardID): bool

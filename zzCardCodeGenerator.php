@@ -5,7 +5,7 @@
 
   $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
-                   "FAB", "JDG", "SEA"];
+                   "FAB", "JDG", "SEA", "AGB", "MPG", "ASR", "APR", "ASV"];
 
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/v6.1.1/json/english/card.json";
   //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/bright-lights/json/english/card.json";
@@ -84,6 +84,7 @@
     if(!in_array($set, $originalSets)) return false;
     if($set == "LSS" && $cardNumber != 004) return false;
     if($set == "LGS" && $cardNumber < 176) return false;
+    if($set == "LGS" && $cardNumber == 406) return true;
     if($set == "LGS" && $cardNumber > 178) return false;
     if($set == "HER" && $cardNumber != 117 && $cardNumber != 100 && $cardNumber != 123 && $cardNumber != 130) return false;
     if($set == "FAB" && $cardNumber < 500) return false;
@@ -370,6 +371,7 @@
     {
       case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
       case "Ice": case "Lightning": case "Earth": case "Mystic": return true;
+      case "Pirate": return true;
       default: return false;
     }
   }

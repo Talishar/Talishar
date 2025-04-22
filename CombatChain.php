@@ -91,6 +91,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   if (HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
+  if (HasHighTide($cardID) && HighTideConditionMet($mainPlayer)) return 1;
   switch ($cardID) {
     case "romping_club":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -1612,4 +1613,10 @@ function IsTowerActive()
 {
   global $combatChain;
   return (CachedTotalAttack() >= 13 && HasTower($combatChain[0]));
+}
+
+function IsHighTideActive()
+{
+  global $combatChain, $mainPlayer;
+  return (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer));
 }
