@@ -964,9 +964,6 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "trap_and_release_blue":
       MarkHero($defPlayer);
       break;
-    case "pain_in_the_backside_red":
-      ThrowWeapon("Dagger", $cardID, destroy: false);
-      break;
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
       MarkHero($defPlayer);

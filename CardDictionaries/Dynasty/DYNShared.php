@@ -151,6 +151,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "deathly_duet_red": case "deathly_duet_yellow": case "deathly_duet_blue": return true;
     case "runic_reaping_red-BUFF": case "runic_reaping_yellow-BUFF": case "runic_reaping_blue-BUFF": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "runic_reaping_red-HIT": case "runic_reaping_yellow-HIT": case "runic_reaping_blue-HIT": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
+    case "mask_of_perdition": return true;
     default:
       return false;
   }
@@ -478,7 +479,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "imperial_ledger_red":
       if($from == "PLAY") {
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), true);
-        PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "gold": "copper"), $currentPlayer);
+        PutItemIntoPlayForPlayer((IsRoyal($currentPlayer) ? "gold": "copper"), $currentPlayer, effectController:$currentPlayer);
         $deck = new Deck($currentPlayer);
         $deck->AddBottom("imperial_ledger_red", "PLAY");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
@@ -508,6 +509,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("THREATENARCANE", $currentPlayer, $cardID, 1);
       }
       return "";
+    case "mask_of_perdition":
+      AddEffectToCurrentAttack($cardID);
+      return "";
     default: return "";
   }
 }
@@ -529,11 +533,6 @@ function DYNHitEffect($cardID, $from, $attackID)
       break;
     case "spiders_bite": case "spiders_bite": if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer); break;
     case "blacktek_whisperers": GiveAttackGoAgain(); break;
-    case "mask_of_perdition":
-      $deck = new Deck($defPlayer);
-      if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-      $deck->BanishTop("Source-" . $attackID, banishedBy:$attackID);
-      break;
     case "eradicate_yellow":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);

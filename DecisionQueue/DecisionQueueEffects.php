@@ -679,13 +679,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $resourcesPaid = GetClassState($player, $CS_LastDynCost);
       $target = $lastResult;
       $targetPlayer = substr($target, 0, 5) == "THEIR";
-      $parameter = $targetPlayer ? "THEIRAURAS:maxCost=0" : "MYAURAS:maxCost=0";
+      $parameter = $targetPlayer ? "THEIRAURAS" : "MYAURAS";
       AddDecisionQueue("PASSPARAMETER", $player, $resourcesPaid, 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
       for($i=0; $i<$resourcesPaid; ++$i) {
-        AddDecisionQueue("MULTIZONEINDICES", $player, $parameter, 1);
+        AddDecisionQueue("SCOURINDICES", $player, "$parameter|{0}", 1);
+        AddDecisionQueue("DEDUPEMULTIZONEINDS", $player, "-", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);

@@ -144,7 +144,6 @@
       case "bad_beats_red": case "bad_beats_yellow": case "bad_beats_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "bravo_star_of_the_show": return CardCost($attackID) >= 3;
       case "valda_brightaxe": return HasCrush($attackID);
-      case "valda_seismic_impact": return HasCrush($attackID);
       case "pulverize_red": return true;
       case "ride_the_tailwind_red": case "ride_the_tailwind_yellow": case "ride_the_tailwind_blue": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;//Base attack
       case "twin_twisters_red-1": case "twin_twisters_yellow-1": case "twin_twisters_blue-1": return true;

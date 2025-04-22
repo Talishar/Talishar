@@ -284,6 +284,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       $rv = SearchMultizone($player, $parameter);
       return ($rv == "" ? "PASS" : $rv);
+    case "SCOURINDICES":
+      $targPlayer = explode("|", $parameter)[0];
+      $currentTargets = explode(",", explode("|", $parameter)[1]);
+      $search = "$targPlayer:maxCost=0";
+      $rvOrig = explode(",", SearchMultizone($player, $search));
+      $rv = [];
+      //remove any choices that have already been targetted
+      foreach ($rvOrig as $ind) {
+        if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
+      }
+      $rv = implode(",", $rv);
+      return ($rv == "" ? "PASS" : $rv);
     case "DEDUPEMULTIZONEINDS":
       // only allows for choosing the first of a stack of tokens
       // right now only takes into account cardID for deduping
@@ -2520,6 +2532,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
           AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($targettedPlayer, $target));
+          break;
+        case "pain_in_the_backside_red":
+          $targetLoc = explode("-", $target)[0];
+          $targetInd = explode("-", $target)[1];
+          if ($targetLoc == "MYCHAR") {
+            $targetInd = GetMZUID($player, $target);
+          }
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
           break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
