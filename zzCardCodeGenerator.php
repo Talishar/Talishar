@@ -167,7 +167,7 @@
           $equippedID = $cardID . "_equip";
           PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $equippedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true);
         }
-        if (HasPerched($$cardArray[$i])) {
+        if (PerchDuplicate($cardID)) {
           $unperchedID = $cardID . "_ally";
           PopulateAssociativeArray($cardArray, $set . ($cardNumber + 400), $associativeArray, $propertyName, $unperchedID, $i, $isBool, $isString, $defaultValue, $cardRarity, true);
         }
@@ -393,6 +393,14 @@
       else if($card->types[$i] == "Instant") $hasInstant = true;
     }
     return ($hasAction && $hasEquipment) || ($hasInstant && $hasEquipment);
+  }
+
+  function PerchDuplicate($cardID)
+  {
+    return match($cardID) {
+      "polly_cranka" =>  true,
+      default => false
+    };
   }
 
   function ReverseID($cardID)
