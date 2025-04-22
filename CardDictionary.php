@@ -1244,8 +1244,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
-    "chum_friendly_first_mate_yellow" => ($from == "HAND") ? "" : "I,AA",
-    "sawbones_dock_hand_yellow" => ($from == "HAND") ? "" : "I,AA",
+    "chum_friendly_first_mate_yellow" => ($from != "PLAY") ? "" : "I,AA",
+    "sawbones_dock_hand_yellow" => ($from != "PLAY") ? "" : "I,AA",
     default => "",
   };
 }
