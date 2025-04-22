@@ -1499,6 +1499,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
+  global $CS_NumCannonsActivated;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1741,6 +1742,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (HasStealth($cardID) && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
       IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
+    }
+    if (SubtypeContains($cardID, "Cannon", $currentPlayer) && IsStaticType($cardType, $from, $cardID)) {
+      IncrementClassState($currentPlayer, piece: $CS_NumCannonsActivated);
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       // there's a bug here where the $index is getting reset if you need to pitch, and I can't figure out why
