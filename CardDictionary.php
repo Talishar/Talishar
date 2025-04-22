@@ -2810,7 +2810,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
     case "polly_cranka_ally":
-      if($from == "PLAY") CheckTapped("MYALLY-$index", $currentPlayer);
+      WriteLog("HERE!" . CheckTapped("MYALLY-$index", $currentPlayer));
+      if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
