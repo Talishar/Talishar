@@ -17,6 +17,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "hammerhead_harpoon_cannon" => "A",
 
     "diamond_amult" => "I",
+    "goldkiss_rum" => "I",
     default => ""
   };
 }
@@ -67,6 +68,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "goldkiss_rum" => true,
     default => false,
   };
 }
@@ -157,6 +159,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
+      break;
+    case "goldkiss_rum":
+      if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     default:
       break;
@@ -258,9 +263,18 @@ function Tap($MZindex, $player, $tapState=1)
   $zoneName = explode("-", $MZindex)[0];
   $zone = &GetMZZone($player, $zoneName);
   $ind = intval(explode("-", $MZindex)[1]);
-  if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
-  elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
-  elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  //Untap
+  if($tapState == 0 && !isUntappedPrevented($zone[$ind], $zoneName, $player)) {
+    if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
+    elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
+    elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  }
+  //Tap
+  elseif ($tapState == 1) {
+    if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
+    elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
+    elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  }
 }
 
 function CheckTapped($MZindex, $player): bool
@@ -272,6 +286,15 @@ function CheckTapped($MZindex, $player): bool
   elseif (str_contains($zoneName, "ALLY")) return $zone[$ind + 1] == 2 && $zone[$ind + 11] == 1;
   elseif (str_contains($zoneName, "ITEM")) return $zone[$ind + 10] == 1;
   return false;
+}
+
+function isUntappedPrevented($cardID, $zoneName, $player): bool
+{
+  $untapPrevented = false;
+  if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains($cardID, "PIRATE", $player)) {
+    $untapPrevented = true;
+  }
+  return $untapPrevented;
 }
 
 function HasWateryGrave($cardID): bool

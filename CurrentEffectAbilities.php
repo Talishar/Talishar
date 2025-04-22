@@ -1561,6 +1561,10 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
             if ($cardID != "arc_lightning_yellow") $remove = true;
           }
           break;
+        case "goldkiss_rum":
+          $hasGoAgain = true;
+          $remove = true;
+          break;
         default:
           break;
       }
@@ -1704,7 +1708,7 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
           return true;
-        case "peg_leg":
+        case "peg_leg": case "goldkiss_rum":
           return true;
         default:
           break;

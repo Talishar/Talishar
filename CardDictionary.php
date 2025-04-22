@@ -2798,7 +2798,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "hammerhead_harpoon_cannon":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
-      return CheckTapped("MYALLY-$index", $currentPlayer);
+      if($from == "PLAY") CheckTapped("MYALLY-$index", $currentPlayer);
+      return false;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
@@ -2807,6 +2808,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (SearchCurrentTurnEffects($cardID, $player)) return true;
       if (SearchLayersForPhase($cardID) != -1) return true;
       return false;
+    case "goldkiss_rum":
+      return CheckTapped("MYCHAR-0", $currentPlayer);
     default:
       return false;
   }

@@ -1754,6 +1754,7 @@ function DoesAttackHaveGoAgain()
   if (SearchCurrentTurnEffects("first_tenet_of_chi_wind_blue", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
   if ((SearchCurrentTurnEffects("arc_lightning_yellow-GOAGAIN", $mainPlayer) || SearchCurrentTurnEffects("current_funnel_blue", $mainPlayer)) && $CombatChain->AttackCard()->From() != "PLAY" && $attackType == "AA") return true;
   if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("sharpened_senses_yellow", $mainPlayer) && IsWeaponAttack()) return true;
+  if (SearchCurrentTurnEffects("goldkiss_rum", $mainPlayer)) return true;
   //the last action in numActions is going to be the current chain link
   //so we want the second to last to be current funnel, and 3rd to last to be lightning
   $character = &GetPlayerCharacter($mainPlayer);

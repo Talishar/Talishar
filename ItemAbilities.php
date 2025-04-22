@@ -160,6 +160,9 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
         $items[$index + 2] = 1;
       }
       break;
+    case "goldkiss_rum":
+      Tap("MYCHAR-0", $currentPlayer);
+      DestroyItemForPlayer($currentPlayer, $index);
     default:
       break;
   }
