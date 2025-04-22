@@ -1257,6 +1257,11 @@ function EquipPayAdditionalCosts($cardIndex)
     case "bravo_flattering_showman":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
+    case "polly_cranka":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      BanishCardForPlayer("polly_cranka", $currentPlayer, "EQUIP");
+      DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
+      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

@@ -721,10 +721,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DOCRANK":
           switch ($params[1]) {
             case "MainPhaseTrue":
-              DoCrank($player, $lastResult, true);
+              DoCrank($player, $lastResult, true, zone:$params[2]);
               return $lastResult;
             case "MainPhaseFalse":
-              DoCrank($player, $lastResult, false);
+              DoCrank($player, $lastResult, false, zone:$params[2]);
               return $lastResult;
             default:
               return $lastResult;

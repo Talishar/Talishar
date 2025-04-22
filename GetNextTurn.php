@@ -766,7 +766,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, 
         atkCounters:$theirAllies[$i+9], 
         label: $label, 
-        tapped: $theirAllies[$i+11] == 1));
+        tapped: $theirAllies[$i+11] == 1,
+        steamCounters: $theirAllies[$i + 12]));
   }
   $response->opponentAllies = $theirAlliesOutput;
 
@@ -850,7 +851,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
       atkCounters: $myAllies[$i+9],
       label: $label,
-      tapped: $myAllies[$i + 11] == 1
+      tapped: $myAllies[$i + 11] == 1,
+      steamCounters: $myAllies[$i + 12]
     ));
   }
   $response->playerAllies = $myAlliesOutput;

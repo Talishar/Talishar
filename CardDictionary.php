@@ -90,6 +90,8 @@ function CardType($cardID, $from="")
     case "chum_friendly_first_mate_yellow":
     case "sawbones_dock_hand_yellow":
       return "A";
+    case "polly_cranka":
+      return "Comp";//companion
     default:
       break;
   }
@@ -251,6 +253,10 @@ function CardSubType($cardID, $uniqueID = -1)
     case "king_kraken_harpoon_red":
     case "king_shark_harpoon_red":
       return "Arrow";
+    case "polly_cranka":
+      return "Off-Hand"; //handle being an ally elsewhere
+    case "polly_cranka_ally":
+      return "Ally";
     default:
       break;
   }
@@ -475,6 +481,8 @@ function CardSet($cardID)
       return "HNT";
     case "valda_seismic_impact":
       return "MPG";
+    case "polly_cranka": case "polly_cranka_ally":
+      return "SEA";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);
@@ -2796,8 +2804,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "compass_of_sunken_depths":
     case "redspine_manta":
     case "hammerhead_harpoon_cannon":
+    case "polly_cranka":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
+    case "polly_cranka_ally":
       if($from == "PLAY") CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
     case "sky_skimmer_red":
@@ -2910,7 +2920,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
-  if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "D")) return true;
+  if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "D") || DelimStringContains($cardType, "Comp")) return true;
   if ($from == "PLAY") return true;
   if ($from == "ARS" && DelimStringContains($cardType, "M")) return true;
   if ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
