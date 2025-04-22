@@ -544,11 +544,29 @@ function isUnimplemented($cardID) {
         "king_shark_harpoon_red" => false,
         "goldfin_harpoon_yellow" => false,
         "big_game_trophy_shot_yellow" => false,
+        "hammerhead_harpoon_cannon" => false,
+        "king_kraken_harpoon_red" => false,
+        "redspine_manta" => false,
+        "peg_leg" => false,
+        "conqueror_of_the_high_seas_red" => false,
+        "sunken_treasure_blue" => false,
+        "diamond_amulet_blue" => false,
+        "flying_high_red" => false,
+        "flying_high_yellow" => false,
+        "flying_high_blue" => false,
+        "goldkiss_rum" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
       return match($cardID) {
         "valda_seismic_impact" => false,
+        "testament_of_valahai" => false,
+        "put_em_in_their_place_red" => false,
+        "seismic_eruption_yellow" => false,
+        "solid_ground_blue" => false,
+        "blinding_of_the_old_ones_red" => false,
+        "smelting_of_the_old_ones_red" => false,
+        "disenchantment_of_the_old_ones_red" => false,
         default => true
       };
     default:
@@ -557,7 +575,6 @@ function isUnimplemented($cardID) {
   //cards that aren't associated with an unreleased set
   return match ($cardID) {
     "venomback_fabric_yellow" => true, //missing image
-    "treasure_island", "riggermortis_yellow" => true,
     default => false
   };
 }
