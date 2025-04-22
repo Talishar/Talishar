@@ -909,6 +909,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
       }
       break;
+    case "SKYSKIMMER":
+      switch ($lastResult) {
+        case "Go_Again": 
+          GiveAttackGoAgain();
+          break;
+        case "+1_Power":
+          AddCurrentTurnEffect("sky_skimmer_red", $player);
+          break;
+        default: break;
+      }
+      break;
     case "TAYLOR":
       $cardID = GetMZCard($player, $lastResult);
       if (SubtypeContains($cardID, "Head")) $subtype = "Head";

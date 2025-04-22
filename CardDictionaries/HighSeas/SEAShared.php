@@ -149,8 +149,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
       if ($from == "PLAY") {
-        GiveAttackGoAgain();
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "Go Again,+1 Power");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SKYSKIMMER", 1);
       }
       break;
     // Marlynn cards

@@ -558,6 +558,9 @@ function isUnimplemented($cardID) {
         "flying_high_blue" => false,
         "goldkiss_rum" => false,
         "polly_cranka" => false,
+        "sky_skimmer_red" => false,
+        "sky_skimmer_yellow" => false,
+        "sky_skimmer_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
