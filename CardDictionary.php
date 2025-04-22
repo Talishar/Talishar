@@ -2795,6 +2795,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
     case "redspine_manta":
+    case "hammerhead_harpoon_cannon":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
       return CheckTapped("MYALLY-$index", $currentPlayer);
@@ -3505,9 +3506,12 @@ function AbilityHasGoAgain($cardID)
 function DoesEffectGrantOverpower($cardID): bool
 {
   $cardID = ShiyanaCharacter($cardID);
+  global $CombatChain, $mainPlayer;
+  $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "betsy_skin_in_the_game", "betsy", "the_golden_son_yellow", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "log_fall_red", "log_fall_yellow", "machinations_of_dominion_blue" => true,
     "bank_breaker", "board_the_ship_red" => true,
+     "hammerhead_harpoon_cannon" => CardNameContains($attackID, "Harpoon", $mainPlayer, true),
     default => false,
   };
 }

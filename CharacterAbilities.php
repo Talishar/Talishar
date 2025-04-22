@@ -1253,6 +1253,7 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "compass_of_sunken_depths":
     case "redspine_manta":
+    case "hammerhead_harpoon_cannon":
     case "bravo_flattering_showman":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;

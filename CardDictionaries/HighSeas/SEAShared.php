@@ -14,6 +14,8 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "redspine_manta" => "A",
     "marlynn_treasure_hunter" => "A",
+    "hammerhead_harpoon_cannon" => "A",
+
     "diamond_amult" => "I",
     default => ""
   };
@@ -23,6 +25,7 @@ function SEAAbilityCost($cardID): int
 {
   return match ($cardID) {
     "peg_leg" => 3,
+    "hammerhead_harpoon_cannon" => 4,
     default => 0
   };
 }
@@ -33,13 +36,14 @@ function SEAAbilityHasGoAgain($cardID): bool
     "peg_leg" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
+    "hammerhead_harpoon_cannon" => true,
     default => false,
   };
 }
 
 function SEAEffectAttackModifier($cardID): int
 {
-  global $CombatChain;
+  global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
@@ -47,6 +51,7 @@ function SEAEffectAttackModifier($cardID): int
     "flying_high_red" => PitchValue($attackID) == 1 ? 1 : 0,
     "flying_high_yellow" => PitchValue($attackID) == 2 ? 1 : 0,
     "flying_high_blue"  => PitchValue($attackID) == 3 ? 1 : 0,
+    "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer) ? 4 : 0,
     default => 0,
   };
 }
@@ -61,6 +66,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
+    "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     default => false,
   };
 }
@@ -143,6 +149,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "marlynn_treasure_hunter":
       AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
+      break;
+    case "hammerhead_harpoon_cannon":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "big_game_trophy_shot_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
