@@ -524,7 +524,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerDiscardArr = array();
   for($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
     $overlay = 0;
-    $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
+    $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
     $mod = explode("-", $myDiscard[$i + 2])[0];
     $border = CardBorderColor($myDiscard[$i], "GY", ($action == 36), $mod);
     if($mod == "FACEDOWN") {

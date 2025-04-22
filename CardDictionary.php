@@ -1457,7 +1457,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $theirBanish = new Banish($otherPlayer);
     $banishCard = $theirBanish->Card($index);
     if (!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID)) return false;
+  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2])) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
@@ -4348,9 +4348,10 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
   else return false;
 }
 
-function PlayableFromGraveyard($cardID)
+function PlayableFromGraveyard($cardID, $mod="-")
 {
   global $currentPlayer;
+  if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer)) return true;
   switch ($cardID) {
     case "graven_call":
