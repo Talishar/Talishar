@@ -519,6 +519,10 @@ function CardClass($cardID)
       return "RUNEBLADE";
     case "valda_seismic_impact":
       return "GUARDIAN";
+    case "sawbones_dock_hand_yellow":
+    case "riggermortis_yellow":
+    case "chum_friendly_first_mate_yellow":
+      return "PIRATE,NECROMANCER";
     default:
       break;
   }
@@ -1372,7 +1376,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "chum_friendly_first_mate_yellow":
-    case "sawbones_dock_hand_yellow":
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
@@ -1380,7 +1383,18 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
         return $names;
       } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
-      }      return $names;
+      }
+      return $names;
+      case "sawbones_dock_hand_yellow":
+        if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
+        $names = "Instant";
+        $allies = &GetAllies($currentPlayer);
+        if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+          return $names;
+        } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+          $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+        }
+        return $names;
     default:
       return "";
   }

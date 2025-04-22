@@ -43,7 +43,7 @@ function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     switch ($cardID) {
       case "sawbones_dock_hand_yellow":
         $abilityType = GetResolvedAbilityType($cardID, $from);
-        if ($abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
+        if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
         break;
     default:
       return "";

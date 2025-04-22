@@ -1678,7 +1678,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from);
+      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from, $index);
       ActivateAbilityEffects();
       //modal activated attacks wrapping up resolution step
       if (GetAbilityTypes($cardID, $index, $from) != "" && $abilityType == "AA") {
@@ -2398,7 +2398,7 @@ function GetTargetOfAttack($cardID = "")
   AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
 
-function PayAbilityAdditionalCosts($cardID, $index, $from="-")
+function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 {
   global $currentPlayer;
   switch ($cardID) {
@@ -2435,7 +2435,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-")
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $allies[$index + 5], 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $allies[$zoneIndex + 5], 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       }
       break;

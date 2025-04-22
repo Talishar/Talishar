@@ -173,7 +173,7 @@ function AllyDamagePrevention($player, $index, $damage, $type = "")
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "sawbones_dock_hand_yellow":
-          if(SubtypeContains($cardID, "Pirate")) {
+          if(ClassContains($cardID, "PIRATE", $player)) {
             $preventedDamage += 1;
             RemoveCurrentTurnEffect($i);
           }
