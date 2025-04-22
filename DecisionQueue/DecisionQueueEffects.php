@@ -902,6 +902,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         }
       }
       return $lastResult;
+    case "SUNKENTREASURE":
+      $target = GetMZCard($player, $lastResult);
+      if(ColorContains($target, 2, $player)) {
+        WriteLog("You found some sunken treasure!");
+        PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
+      }
+      break;
     case "TAYLOR":
       $cardID = GetMZCard($player, $lastResult);
       if (SubtypeContains($cardID, "Head")) $subtype = "Head";

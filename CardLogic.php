@@ -3150,7 +3150,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to turn face-down");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "TURNDISCARDFACEDOWN", 1);
-      AddDecisionQueue("SUNKENTREASURE", $player, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "SUNKENTREASURE", 1);
       break;
     case "breaker_helm_protos":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to discard (or pass)");
