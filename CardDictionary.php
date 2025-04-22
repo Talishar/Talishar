@@ -88,6 +88,7 @@ function CardType($cardID, $from="")
     case "valda_seismic_impact": //hardcoding before fabcube update
       return "C";
     case "chum_friendly_first_mate_yellow":
+    case "riggermortis_yellow":
     case "sawbones_dock_hand_yellow":
       return "A";
     case "polly_cranka":
