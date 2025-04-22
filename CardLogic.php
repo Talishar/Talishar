@@ -994,12 +994,22 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "trap_and_release_red":
     case "trap_and_release_yellow":
     case "trap_and_release_blue":
-    case "pain_in_the_backside_red":
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
     case "king_kraken_harpoon_red":
     case "king_shark_harpoon_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      break;
+    case "pain_in_the_backside_red":
+      if (IsHeroAttackTarget()) {
+        $subtype = "Dagger";
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
+        AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $cardID, "<-", 1);
+      }
       break;
     case "stone_rain_red":
       if (IsHeroAttackTarget() && HasAimCounter()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
@@ -2855,6 +2865,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
       }
       WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
+      break;
+    case "pain_in_the_backside_red":
+      $target = str_replace("-", ",", $target);
+      ThrowWeapon("Dagger", $cardID, destroy: false, target:$target);
       break;
     case "electromagnetic_somersault_red":
     case "electromagnetic_somersault_yellow":
