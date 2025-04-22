@@ -538,6 +538,8 @@ function isUnimplemented($cardID) {
         "gravy_bones_shipwrecked_looter" => false,
         "compass_of_sunken_depths" => false,
         "chart_the_high_seas_blue" => false,
+        "hoist_em_up_red" => false,
+        "paddle_faster_red" => false,
         "chum_friendly_first_mate_yellow" => false,
         "board_the_ship_red" => false,
         "marlynn_treasure_hunter" => false,
@@ -568,6 +570,7 @@ function isUnimplemented($cardID) {
         "blinding_of_the_old_ones_red" => false,
         "smelting_of_the_old_ones_red" => false,
         "disenchantment_of_the_old_ones_red" => false,
+        "sawbones_dock_hand_yellow" => false,
         default => true
       };
     default:
