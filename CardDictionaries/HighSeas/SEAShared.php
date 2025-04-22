@@ -212,7 +212,7 @@ function SEAHitEffect($cardID): void
     case "conqueror_of_the_high_seas_red":
       if(IsHeroAttackTarget()) {
         $arsenal = GetArsenal($defPlayer);
-        $count = count($arsenal);
+        $count = count($arsenal) / ArsenalPieces();
         DestroyArsenal($defPlayer, effectController:$mainPlayer);
         PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
       }     
