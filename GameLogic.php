@@ -2533,6 +2533,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "blast_to_oblivion_blue":
           AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($targettedPlayer, $target));
           break;
+        case "pain_in_the_backside_red":
+          $targetLoc = explode("-", $target)[0];
+          $targetInd = explode("-", $target)[1];
+          if ($targetLoc == "MYCHAR") {
+            $targetInd = GetMZUID($player, $target);
+          }
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
+          break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
           break;

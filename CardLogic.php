@@ -2867,7 +2867,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
       break;
     case "pain_in_the_backside_red":
-      $target = str_replace("-", ",", $target);
       ThrowWeapon("Dagger", $cardID, destroy: false, target:$target);
       break;
     case "electromagnetic_somersault_red":
