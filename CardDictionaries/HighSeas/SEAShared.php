@@ -17,7 +17,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "marlynn_treasure_hunter" => "A",
     "hammerhead_harpoon_cannon" => "A",
 
-    "diamond_amult" => "I",
+    "diamond_amulet_blue" => "I",
     "goldkiss_rum" => "I",
     default => ""
   };
