@@ -1509,7 +1509,7 @@ return match($cardID) {
 "rewind_blue" => "I",
 "rhinar" => "C",
 "rhinar_reckless_rampage" => "C",
-"riggermortis_yellow" => "ALLY",
+"riggermortis_yellow" => "A",
 "ring_of_roses_yellow" => "A",
 "riptide" => "C",
 "riptide_lurker_of_the_deep" => "C",
