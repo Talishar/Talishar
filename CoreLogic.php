@@ -1784,6 +1784,7 @@ function DoesAttackHaveGoAgain()
     }
   }
   $mainPitch = &GetPitch($mainPlayer);
+  if (HasHighTide($attackID) && HighTideConditionMet($mainPlayer)) return true;
   switch ($attackID) {
     case "harmonized_kodachi":
     case "harmonized_kodachi_r":

@@ -196,6 +196,14 @@ function SEAHitEffect($cardID): void
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "KINGSHARKHARPOON", 1);
       }
       break;
+    case "conqueror_of_the_high_seas_red":
+      if(IsHeroAttackTarget()) {
+        $arsenal = GetArsenal($defPlayer);
+        $count = count($arsenal);
+        DestroyArsenal($defPlayer, effectController:$mainPlayer);
+        PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
+      }     
+      break;
     default:
       break;
   }
@@ -275,4 +283,22 @@ function HasWateryGrave($cardID): bool
     "sawbones_dock_hand_yellow" => true,
     default => false
   };
+}
+
+function HasHighTide($cardID): bool
+{
+  return match($cardID) {
+    "conqueror_of_the_high_seas_red" => true,
+    default => false
+  };
+}
+
+function HighTideConditionMet($player) 
+{
+  $blueCount = SearchCount(SearchPitch($player, pitch: 3));
+  if($blueCount >= 2)
+    return true;
+  else {
+    return false;
+  }
 }

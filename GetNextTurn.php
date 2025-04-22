@@ -283,6 +283,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($CombatChain->HasCurrentLink()) $activeChainLink->tower = IsTowerActive();
   if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
   if ($CombatChain->HasCurrentLink()) $activeChainLink->combo = ComboActive();
+  if ($CombatChain->HasCurrentLink()) $activeChainLink->highTide = IsHighTideActive();
 
   $activeChainLink->fused = false;
 
