@@ -1674,6 +1674,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         GiveAttackGoAgain();
       }
     }
+
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
@@ -1745,6 +1746,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (SubtypeContains($cardID, "Cannon", $currentPlayer) && IsStaticType($cardType, $from, $cardID)) {
       IncrementClassState($currentPlayer, piece: $CS_NumCannonsActivated);
+    }
+    if (!IsStaticType($cardType, $from, $cardID) && $playType == "AA" && SearchCurrentTurnEffects("current_funnel_blue", $currentPlayer, true)) {
+      GiveAttackGoAgain();
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       // there's a bug here where the $index is getting reset if you need to pitch, and I can't figure out why
