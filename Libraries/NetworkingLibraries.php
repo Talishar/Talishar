@@ -673,7 +673,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($turn[0] != "OVER") break;
       $otherPlayer = ($playerID == 1 ? 2 : 1);
       $char = &GetPlayerCharacter($otherPlayer);
-      if (IsPlayerAI($otherPlayer)) {
+      if (!IsPlayerAI($otherPlayer)) {
         AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Quick Rematch</b>?");
         AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
         AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
