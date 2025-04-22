@@ -50,9 +50,9 @@ function SEAEffectAttackModifier($cardID): int
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "big_game_trophy_shot_yellow" => 4,
-    "flying_high_red" => PitchValue($attackID) == 1 ? 1 : 0,
-    "flying_high_yellow" => PitchValue($attackID) == 2 ? 1 : 0,
-    "flying_high_blue"  => PitchValue($attackID) == 3 ? 1 : 0,
+    "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
+    "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
+    "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer) ? 4 : 0,
     default => 0,
   };
