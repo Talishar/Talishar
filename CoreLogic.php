@@ -2672,6 +2672,7 @@ function SelfCostModifier($cardID, $from)
     case "drop_of_dragon_blood_red":
       return (-1 * NumDraconicChainLinks());
     case "solid_ground_blue":
+      WriteLog("HERE: " . NumSeismicSurge($currentPlayer));
       return (-1 * NumSeismicSurge($currentPlayer));
     default:
       return 0;
@@ -3532,7 +3533,7 @@ function NumSeismicSurge($player)
   $count = 0;
   for($i=0; $i<count($auras); $i+=AuraPieces())
   {
-    if(CardNameContains($auras[$i], "seismic_surge", $player)) ++$count;
+    if(CardNameContains($auras[$i], "Seismic Surge", $player)) ++$count;
   }
   return $count;
 }
