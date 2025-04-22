@@ -47,6 +47,7 @@ include "CardDictionaries/ArmoryDecks/ASTShared.php";
 include "CardDictionaries/ArmoryDecks/AMXShared.php";
 include "CardDictionaries/HighSeas/SEAShared.php";
 include "CardDictionaries/MasteryPacks/MPGShared.php";
+include "CardDictionaries/ArmoryDecks/AGBShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
