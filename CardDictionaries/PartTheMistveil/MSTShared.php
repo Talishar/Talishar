@@ -193,7 +193,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       elseif ($cardID == "intimate_inducement_blue") $amount = 2;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
       AddDecisionQueue("FINDINDICES", $otherPlayer, "DECKTOPXINDICES," . $amount);
-      AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+      AddDecisionQueue("DECKCARDS", $otherPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("CHOOSETHEIRDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "DECK", 1);
