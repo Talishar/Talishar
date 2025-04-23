@@ -624,7 +624,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
-      if (SetIDtoCardID($cardID) != "") $cardID = SetIDtoCardID($cardID);
+      if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
       $cardID = str_replace(" ", "_", $cardID);
       if (CardName($cardID) == "") {
         if (CardName($cardID . "_red") != "") $cardID .= "_red";
