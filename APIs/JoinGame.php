@@ -561,6 +561,7 @@ function isUnimplemented($cardID) {
         "sky_skimmer_red" => false,
         "sky_skimmer_yellow" => false,
         "sky_skimmer_blue" => false,
+        "palantir_aeronought_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

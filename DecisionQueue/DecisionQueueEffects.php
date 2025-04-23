@@ -920,6 +920,23 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         default: break;
       }
       break;
+    case "AERONOUGHT":
+      $ind = intval(explode("-", $lastResult)[1]);
+      $targetCard = $combatChain[$ind];
+      if (TypeContains($targetCard, "E")) {
+        $defChar = GetPlayerCharacter($defPlayer);
+        for ($i = 0; $i < count($defChar); $i += CharacterPieces()) {
+          if ($defChar[$i + 11] == $combatChain[$ind + 8]) DestroyCharacter($defPlayer, $i);
+        }
+      }
+      else {
+        AddGraveyard($targetCard, $defPlayer, "COMBATCHAINLINK", $player);
+        for ($i = CombatChainPieces()-1; $i >= 0; --$i) unset($combatChain[$ind+$i]);
+        $combatChain = array_values($combatChain);
+      }
+      $cardID = "palantir_aeronought_red";
+      WriteLog("The " . CardLink($cardID, $cardID) . " shot down " . CardLink($targetCard, $targetCard));
+      break;
     case "TAYLOR":
       $cardID = GetMZCard($player, $lastResult);
       if (SubtypeContains($cardID, "Head")) $subtype = "Head";

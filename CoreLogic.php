@@ -2672,7 +2672,6 @@ function SelfCostModifier($cardID, $from)
     case "drop_of_dragon_blood_red":
       return (-1 * NumDraconicChainLinks());
     case "solid_ground_blue":
-      WriteLog("HERE: " . NumSeismicSurge($currentPlayer));
       return (-1 * NumSeismicSurge($currentPlayer));
     default:
       return 0;

@@ -2834,6 +2834,17 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (SearchCurrentTurnEffects($cardID, $player)) return true;
       if (SearchLayersForPhase($cardID) != -1) return true;
       return false;
+    case "palantir_aeronought_red":
+      if ($from != "PLAY") return false;
+      if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
+      $numResolved = CountCurrentTurnEffects($cardID, $currentPlayer);
+      $numUnresolved = 0;
+      global $layers;
+      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        if ($layers[$i] == $cardID) $numUnresolved++;
+      }
+      if ($numResolved + $numUnresolved == 3) return true;
+      return false;
     case "goldkiss_rum":
       return CheckTapped("MYCHAR-0", $currentPlayer);
     default:
@@ -4419,6 +4430,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => true,
     "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "palantir_aeronought_red" => true,
     default => false
   };
 }

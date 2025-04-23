@@ -11,6 +11,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "puffin_hightail" => "A",
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
+    "palantir_aeronought_red" => $from == "PLAY" ? "I": "AA",
     "polly_cranka", "polly_cranka_ally" => "A",
 
     "redspine_manta" => "A",
@@ -49,6 +50,7 @@ function SEAEffectAttackModifier($cardID): int
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
+    "palantir_aeronought_red" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
@@ -66,6 +68,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "palantir_aeronought_red" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
@@ -76,7 +79,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer;
+  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $defPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -153,6 +156,24 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SKYSKIMMER", 1);
       }
       break;
+    case "palantir_aeronought_red":
+      if($from != "PLAY" && !IsAllyAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+      else {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $numResolved = CountCurrentTurnEffects($cardID, $currentPlayer);
+        //technically inaccurate, but should be functionally mostly the same
+        if ($numResolved == 3) {
+          $indices = [];
+          for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+            if ($combatChain[$i + 1] == $defPlayer) array_push($indices, "COMBATCHAINLINK-$i");
+          }
+          $indices = implode(",", $indices);
+          // AddDecisionQueue("PASSPARAMETER", $currentPlayer, $indices);
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $indices);
+          AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
+        }
+      }
+      return "";
     // Marlynn cards
     case "redspine_manta":
       LoadArrow($currentPlayer);
