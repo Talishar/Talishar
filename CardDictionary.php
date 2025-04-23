@@ -1392,7 +1392,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "sawbones_dock_hand_yellow":
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
       $names = "Instant";
-      WriteLog("HERE!");
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
