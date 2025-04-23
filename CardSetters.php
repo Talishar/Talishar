@@ -272,7 +272,6 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
     if ($from == "DECK" && CardSubType($cardID) == "Arrow" && SearchCharacterActive($player, "crows_nest")) {
       AddLayer("TRIGGER", $player, "crows_nest", "-", "-", -1);
     }
-    WriteLog("HERE: $cardID");
     switch ($cardID) {
       case "head_shot_red":
       case "head_shot_yellow":
