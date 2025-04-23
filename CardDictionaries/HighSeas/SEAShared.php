@@ -108,12 +108,24 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
       break;
     case "paddle_faster_red":
-      TapPermanent($currentPlayer, "MYALLY");
-      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
+      $inds = GetUntapped($defPlayer, "MYALLY");
+      if (strlen($inds) > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "choose an ally to tap or pass");
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $inds, 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
+        AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
+      }
       break;
     case "board_the_ship_red":
-      TapPermanent($currentPlayer, "MYALLY");
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      $inds = GetUntapped($defPlayer, "MYALLY");
+      if (strlen($inds) > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "choose an ally to tap or pass");
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $inds, 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      }
       break;
     case "chart_the_high_seas_blue":
       $deck = GetDeck($currentPlayer);
