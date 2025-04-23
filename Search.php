@@ -311,7 +311,7 @@ function SearchDiscardByName($player, $name)
   $cardList = "";
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($discard); $i += DeckPieces()) {
-    if (ShareName(CardName($discard[$i]), $name)) {
+    if (ShareName(CardName($discard[$i]), $name) && !isFaceDownMod($discard[$i+2])) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
