@@ -158,7 +158,7 @@ function SearchInner(
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
-    if ($zone == "GY" && isFaceDownMod($array[$i + 2])) continue;
+    if ($zone == "DISCARD" && isFaceDownMod($array[$i + 2])) continue;
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D") || ($type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone)))
