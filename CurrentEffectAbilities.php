@@ -497,6 +497,13 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "imperial_seal_of_command_red-HIT":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
+    case "gold_baited_hook":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+      AddDecisionQueue("ELSE", $mainPlayer, "-");
+      AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
+      break;
     case "big_game_trophy_shot_yellow":
       PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
       return 1;

@@ -4,6 +4,7 @@ function SEAAbilityType($cardID, $from="-"): string
 {
   return match ($cardID) {
     "peg_leg" => "A",
+    "gold_baited_hook" => "A",
 
     "gravy_bones_shipwrecked_looter" => "I",
     "chum_friendly_first_mate_yellow" => "I",
@@ -37,6 +38,7 @@ function SEAAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
     "peg_leg" => true,
+    "gold_baited_hook" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
     "hammerhead_harpoon_cannon" => true,
@@ -65,6 +67,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
   global $mainPlayer;
   return match ($cardID) {
     "peg_leg" => true,
+    "gold_baited_hook" => TalentContains($attackID, "PIRATE", $mainPlayer),
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
@@ -84,6 +87,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   switch ($cardID) {
     // Generic cards
     case "peg_leg":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "gold_baited_hook":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
@@ -264,9 +270,9 @@ function GetUntapped($player, $zone, $cond="-")
   }
   else $allowedInds = [];
   for ($i = 0; $i < count($arr); $i += $count) {
-    $ind = "$zone-$i";
-    if ($cond != "-" && !in_array($ind, $allowedInds)) continue;
-    if (!CheckTapped($ind, $player)) array_push($unwavedInds, $ind);
+    $index = "$zone-$i";
+    if ($cond != "-" && !in_array($index, $allowedInds)) continue;
+    if (!CheckTapped($index, $player)) array_push($unwavedInds, $index);
   }
   return implode(",", $unwavedInds);
 }
@@ -289,20 +295,22 @@ function TapPermanent($player, $zone, $may=true) {
 
 function Tap($MZindex, $player, $tapState=1)
 {
+  global $CS_NumGoldCreated;
   $zoneName = explode("-", $MZindex)[0];
   $zone = &GetMZZone($player, $zoneName);
-  $ind = intval(explode("-", $MZindex)[1]);
+  $index = intval(explode("-", $MZindex)[1]);
   //Untap
-  if($tapState == 0 && !isUntappedPrevented($zone[$ind], $zoneName, $player)) {
-    if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
-    elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
-    elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+  if($tapState == 0 && !isUntappedPrevented($zone[$index], $zoneName, $player)) {
+    if($zone[$index] == "gold_baited_hook" && GetClassState($player, $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1) DestroyCharacter($player, $index);
+    elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
+    elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
+    elseif (str_contains($zoneName, "ITEM")) $zone[$index + 10] = $tapState;
   }
   //Tap
   elseif ($tapState == 1) {
-    if (str_contains($zoneName, "CHAR")) $zone[$ind + 14] = $tapState;
-    elseif (str_contains($zoneName, "ALLY")) $zone[$ind + 11] = $tapState;
-    elseif (str_contains($zoneName, "ITEM")) $zone[$ind + 10] = $tapState;
+    if (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
+    elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
+    elseif (str_contains($zoneName, "ITEM")) $zone[$index + 10] = $tapState;
   }
 }
 
@@ -310,10 +318,10 @@ function CheckTapped($MZindex, $player): bool
 {
   $zoneName = explode("-", $MZindex)[0];
   $zone = &GetMZZone($player, $zoneName);
-  $ind = intval(explode("-", $MZindex)[1]);
-  if (str_contains($zoneName, "CHAR")) return $zone[$ind + 14] == 1;
-  elseif (str_contains($zoneName, "ALLY")) return $zone[$ind + 1] == 2 && $zone[$ind + 11] == 1;
-  elseif (str_contains($zoneName, "ITEM")) return $zone[$ind + 10] == 1;
+  $index = intval(explode("-", $MZindex)[1]);
+  if (str_contains($zoneName, "CHAR")) return $zone[$index + 14] == 1;
+  elseif (str_contains($zoneName, "ALLY")) return $zone[$index + 1] == 2 && $zone[$index + 11] == 1;
+  elseif (str_contains($zoneName, "ITEM")) return $zone[$index + 10] == 1;
   return false;
 }
 

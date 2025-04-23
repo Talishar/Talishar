@@ -562,6 +562,7 @@ function isUnimplemented($cardID) {
         "sky_skimmer_yellow" => false,
         "sky_skimmer_blue" => false,
         "palantir_aeronought_red" => false,
+        "gold_baited_hook" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
@@ -606,10 +607,12 @@ function isBannedInFormat($cardID, $format) {
       "cc" => [
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
           "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
-          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lex_livewire",
+          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi_livewire",
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade"
+          //to uncomment Friday 25th April 2025
+          //, "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara"
       ],
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
@@ -626,7 +629,7 @@ function isBannedInFormat($cardID, $format) {
 function ReverseArt($cardID)
 {
   switch ($cardID) {
-    // leave this out while reverse art is still  a work in progress
+    // leave this out while reverse art is still a work in progress
     case "harmonized_kodachi": return "harmonized_kodachi_r";
     case "mandible_claw": return "mandible_claw_r";
     case "zephyr_needle": return "zephyr_needle_r";

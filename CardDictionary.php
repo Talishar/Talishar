@@ -2818,6 +2818,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
+    case "gold_baited_hook":
     case "redspine_manta":
     case "hammerhead_harpoon_cannon":
     case "polly_cranka":
@@ -3192,6 +3193,7 @@ function HasBattleworn($cardID)
       return true;
     case "drive_brake":
     case "fist_pump":
+    case "gold_baited_hook":
       return true;
     default:
       return false;

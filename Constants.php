@@ -357,6 +357,7 @@ $CS_DamageDealtToOpponent = 94; //Damage dealt specifically to the opposing hero
 $CS_NumStealthAttacks = 95; //for slippy
 $CS_NumWateryGrave = 96;
 $CS_NumCannonsActivated = 97;
+$CS_NumGoldCreated = 98; //for gold token creation/stolen
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -586,7 +587,7 @@ function ResetMainClassState()
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
   global $CS_PowDamageDealt, $CS_NumTimesAttacked;
-  global $CS_TunicTicks, $CS_OriginalHero, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
+  global $CS_TunicTicks, $CS_NumGoldCreated, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -684,6 +685,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumWateryGrave] = 0;
   $mainClassState[$CS_DamageDealtToOpponent] = 0;
   $mainClassState[$CS_NumCannonsActivated] = 0;
+  $mainClassState[$CS_NumGoldCreated] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

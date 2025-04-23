@@ -3,7 +3,7 @@
 
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
-  global $turn, $EffectContext;
+  global $turn, $EffectContext, $CS_NumGoldCreated;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
   if (TypeContains($item, "T", $player)) $isToken = true;
@@ -39,13 +39,14 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   if ($item == "gold") {
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
+    IncrementClassState($player, $CS_NumGoldCreated);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
       $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
     }
   }
-  //enters the arean triggers
+  //enters the arena triggers
   switch ($item) {
     case "stasis_cell_blue":
     case "null_time_zone_blue":
@@ -54,8 +55,6 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     default:
       break;
   }
-  // if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
-  // if ($item == "stasis_cell_blue") AddLayer("TRIGGER", $player, $item);
   PlayAbility($item, $from, 0);
 }
 
