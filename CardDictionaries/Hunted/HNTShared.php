@@ -1015,8 +1015,9 @@ function ListDracDaggersGraveyard($player) {
   $weapons = "";
   $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
-  foreach ($graveyard as $cardID) {
-    if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger")) {
+  for ($i = 0; $i < count($graveyard); $i += DiscardPieces()) {
+    $cardID = $graveyard[$i];
+    if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger") && !isFaceDownMod($graveyard[$i+2])) {
       if (TalentContains($cardID, "DRACONIC")) {
         if ($weapons != "") $weapons .= ",";
         $weapons .= $cardID;
