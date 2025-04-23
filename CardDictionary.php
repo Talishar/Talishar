@@ -1168,6 +1168,10 @@ function HasGoAgain($cardID): bool|int
     case "great_library_of_solana":
     case "plasma_barrel_shot":
       return false;
+    case "performance_bonus_red": //cards that the script just messed up
+    case "performance bonus_yellow":
+    case "performance_bonus_blue":
+      return false;
   }
   $set = CardSet($cardID);
   if ($set == "ROG") return ROGUEHasGoAgain($cardID);
