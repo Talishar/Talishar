@@ -151,7 +151,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "tear_through_the_portal_red": case "tear_through_the_portal_yellow": case "tear_through_the_portal_blue":
       return SearchCurrentTurnEffects($cardID . "," . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
     case "ironsong_versus": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
-    case "chorus_of_ironsong_yellow": return true;
+    case "chorus_of_ironsong_yellow": return CardNameContains($attackID, "Dawnblade", $mainPlayer);
     case "runic_reckoning_red": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "hack_to_reality_yellow": return true;
     case "hack_to_reality_yellow-HIT": return true;
