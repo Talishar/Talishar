@@ -2512,6 +2512,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyItemForPlayer($player, SearchItemForIndex("powder_keg_blue", $player));
       return $lastResult;
     case "ADDTRIGGER":
+      if (count(explode("|", $parameter)) > 1) {
+        $additional = explode("|", $parameter)[1];
+        $parameter = explode("|", $parameter)[0];
+      }
+      else $additional = "";
       $params = explode(",", $parameter);
       if (count($params) < 2) $target = $lastResult;
       else $target = $params[1];
@@ -2533,7 +2538,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($targetLoc == "MYCHAR") {
             $targetInd = GetMZUID($player, $target);
           }
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd", $additional);
           break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);

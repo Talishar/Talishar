@@ -540,7 +540,7 @@ function ProcessLayer($player, $parameter)
 
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
 {
-  global $mainPlayer, $combatChain;
+  global $mainPlayer, $combatChain, $layers;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
   switch ($cardID) {
     case "mugenshi_release_yellow":
@@ -1009,7 +1009,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $cardID, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
       }
       break;
     case "stone_rain_red":
@@ -1507,7 +1507,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $EffectContext = $parameter;
   $otherPlayer = ($player == 1 ? 2 : 1);
   if ($additionalCosts == "ONHITEFFECT") {
-    ProcessHitEffect($target, $combatChain[2], $uniqueID);
+    ProcessHitEffect($parameter, $combatChain[2], $uniqueID, target:$target);
     return;
   }
   if ($additionalCosts == "CRUSHEFFECT") {
@@ -2867,9 +2867,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
       }
       WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
-      break;
-    case "pain_in_the_backside_red":
-      ThrowWeapon("Dagger", $cardID, destroy: false, target:$target);
       break;
     case "electromagnetic_somersault_red":
     case "electromagnetic_somersault_yellow":

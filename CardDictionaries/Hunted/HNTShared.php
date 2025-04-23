@@ -895,7 +895,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   return "";
 }
 
-function HNTHitEffect($cardID, $uniqueID = -1): void
+function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
 {
   global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
   $dashArr = explode("-", $cardID);
@@ -967,6 +967,9 @@ function HNTHitEffect($cardID, $uniqueID = -1): void
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
       MarkHero($defPlayer);
+      break;
+    case "pain_in_the_backside_red":
+      ThrowWeapon("Dagger", $cardID, destroy: false, target:$target);
       break;
     default:
       break;
