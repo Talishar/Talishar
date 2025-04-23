@@ -3135,9 +3135,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       TerraEndPhaseAbility($parameter, $player);
       break;
     case "hoist_em_up_red":
-      TapPermanent($defPlayer, "MYALLY");
-      AddDecisionQueue("PASSPARAMETER", $defPlayer, $target, 1);
-      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $defPlayer, 1, 1);
+      $inds = GetUntapped($defPlayer, "MYALLY");
+      if (strlen($inds) > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "choose an ally to tap or pass");
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $inds, 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, $target, 1);
+        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $defPlayer, 1, 1);
+      }
       break;
     case "puffin_hightail":
       Draw($player, effectSource:$parameter);
