@@ -831,6 +831,8 @@ function PitchValue($cardID)
     case "MST101_inner_chi_blue":
     case "MST102_inner_chi_blue":
       return 3;
+    case "nitro_mechanoida":
+      return -1;
     default:
       break;
   }
