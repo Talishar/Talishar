@@ -1389,16 +1389,17 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
-      case "sawbones_dock_hand_yellow":
-        if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
-        $names = "Instant";
-        $allies = &GetAllies($currentPlayer);
-        if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-          return $names;
-        } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
-          $names != "" ? $names .= ",Attack" : $names = "-,Attack";
-        }
+    case "sawbones_dock_hand_yellow":
+      if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
+      $names = "Instant";
+      WriteLog("HERE!");
+      $allies = &GetAllies($currentPlayer);
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+        $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      }
+      return $names;
     default:
       return "";
   }
@@ -1583,10 +1584,16 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "sawbones_dock_hand_yellow") && $from == "PLAY") {
+  if (($cardID == "chum_friendly_first_mate_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
+    else return false;
+  }
+  if (($cardID == "sawbones_dock_hand_yellow") && $from == "PLAY") {
+    if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
+    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
+    else if (CanPlayInstant($phase)) return true;
     else return false;
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
