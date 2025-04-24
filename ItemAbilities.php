@@ -205,8 +205,10 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   $items = &GetItems($player);
   if (!$skipDestroy) {
+    if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
+    else $destPlayer = $player;
     if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
-      AddGraveyard($items[$index], $player, "PLAY");
+      AddGraveyard($items[$index], $destPlayer, "PLAY");
     IncrementClassState($player, $CS_NumItemsDestroyed);
   }
   $cardID = $items[$index];
