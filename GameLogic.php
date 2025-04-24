@@ -593,7 +593,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           MZGainControl($player, $lastResult);
           break;
         case "GETCARDID":
-          return GetMZCard($player, $lastResult);
+          $ret = GetMZCard($player, $lastResult);
+          if ($ret == "runechant_batch") return "runechant";
+          else return $ret;
         case "GETCARDINDEX":
           $mzArr = explode("-", $lastResult);
           return $mzArr[1];
