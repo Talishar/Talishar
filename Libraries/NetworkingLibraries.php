@@ -624,6 +624,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
+      if (str_contains($cardID, "|")) {
+        $num = explode("|", $cardID)[1];
+        $cardID =  explode("|", $cardID)[0];
+      }
+      else $num = 1;
       if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
       $cardID = str_replace(" ", "_", $cardID);
       if (CardName($cardID) == "") {
@@ -638,8 +643,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       else {
         WriteLog("Player " . $playerID . " manually created a token", highlight: true);
-        if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID, from:"MANUAL");
-        elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID, from:"MANUAL");
+        if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID, $num, from:"MANUAL");
+        elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID, number:$num, from:"MANUAL");
         else PutPermanentIntoPlay($playerID, $cardID, from:"MANUAL");
       }
       break;
