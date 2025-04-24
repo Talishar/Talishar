@@ -1564,7 +1564,8 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           break;
         case "arc_lightning_yellow-GOAGAIN":
           if(SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer) && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) && (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
-            $hasGoAgain = true;
+            // this is a bandaid fix, go again is getting checked twice for meld cards when only the left side is played
+            if (!HasMeld($cardID)) $hasGoAgain = true;
             if ($cardID != "arc_lightning_yellow") $remove = true;
           }
           break;
