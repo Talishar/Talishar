@@ -313,7 +313,7 @@ function Tap($MZindex, $player, $tapState=1)
   $index = intval(explode("-", $MZindex)[1]);
   //Untap
   if($tapState == 0 && !isUntappedPrevented($zone[$index], $zoneName, $player)) {
-    if($zone[$index] == "gold_baited_hook" && GetClassState($player, $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1) DestroyCharacter($player, $index);
+    if($zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1) DestroyCharacter($player, $index);
     elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
     elseif (str_contains($zoneName, "ITEM")) $zone[$index + 10] = $tapState;
@@ -381,4 +381,14 @@ function HasPerched($cardID): bool
     "polly_cranka" => true,
     default => false
   };
+}
+
+function UndestroyHook($player)
+{
+  if (SearchCurrentTurnEffects("gold_baited_hook", $player)) {
+    $char = GetPlayerCharacter($player);
+    for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+      if ($char[$i] == "gold_baited_hook") UndestroyCharacter($player, $i);
+    }
+  }
 }

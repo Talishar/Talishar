@@ -40,6 +40,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
     IncrementClassState($player, $CS_NumGoldCreated);
+    UndestroyHook($player);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
       $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
@@ -226,7 +227,12 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
 
 function StealItem($srcPlayer, $index, $destPlayer)
 {
+  global $CS_NumGoldCreated;
   $srcItems = &GetItems($srcPlayer);
+  if ($srcItems[$index] == "gold") {
+    UndestroyHook($destPlayer);
+    IncrementClassState($destPlayer, $CS_NumGoldCreated);
+  }
   $destItems = &GetItems($destPlayer);
   for ($i = 0; $i < ItemPieces(); ++$i) {
     if ($srcItems[$i] == "nitro_mechanoidc") {
