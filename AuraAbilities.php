@@ -1176,12 +1176,6 @@ function AuraPlayAbilities($cardID, $from = "")
           $remove = 1;
         }
         break;
-      // case "runechant":
-      //   $abilityType = GetResolvedAbilityType($cardID, $from);
-      //   if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
-      //     AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-      //   }
-      //   break;
       case "dimenxxional_crossroads_yellow":
         DimenxxionalCrossroadsPassive($cardID, $from);
         break;
@@ -1229,6 +1223,7 @@ function AuraPlayAbilities($cardID, $from = "")
     }
     if ($remove == 1) DestroyAura($currentPlayer, $i);
   }
+  // handle runechants separately so we can batch them
   $runechantCount = CountAura("runechant", $currentPlayer);
   if ($runechantCount > 0) {
     $abilityType = GetResolvedAbilityType($cardID, $from);
