@@ -876,7 +876,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $deck = new Deck($player);
       for ($i = 0; $i < $remainingInds; ++$i) {
         $cardID = $deck->Top(true, 1);
-        AddGraveyard($cardID, $player, "chart_the_high_seas_blue", $player);
+        AddGraveyard($cardID, $player, "DECK", $player);
         if (ColorContains($cardID, 2, $player)) PutItemIntoPlayForPlayer("gold", $player, isToken:true);
       }
       return $lastResult;
