@@ -2047,11 +2047,11 @@ function CloseCombatChain($chainClosed = "true")
   $combatChainState[$CCS_AttackTarget] = "NA";
 }
 
-function UndestroyCharacter($player, $index)
+function UndestroyCharacter($player, $index, $resetCounters=true)
 {
   $char = &GetPlayerCharacter($player);
   $char[$index + 1] = 2;
-  $char[$index + 4] = 0;
+  if ($resetCounters) $char[$index + 4] = 0;
 }
 
 function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = false)
