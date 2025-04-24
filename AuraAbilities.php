@@ -286,6 +286,15 @@ function DestroyAuraUniqueID($player, $uniqueID, $location = "AURAS")
   if ($index != -1) DestroyAura($player, $index, $uniqueID, $location);
 }
 
+function DestroyAuraByID($player, $cardID)
+{
+  $inds = SearchAurasForCard($cardID, $player);
+  if ($inds != "") {
+    $index = explode(",", $inds)[0];
+    DestroyAura($player, $index);
+  }
+}
+
 function AuraLocationConstants($location)
 {
   switch ($location) {
@@ -1167,12 +1176,6 @@ function AuraPlayAbilities($cardID, $from = "")
           $remove = 1;
         }
         break;
-      case "runechant":
-        $abilityType = GetResolvedAbilityType($cardID, $from);
-        if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
-          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        }
-        break;
       case "dimenxxional_crossroads_yellow":
         DimenxxionalCrossroadsPassive($cardID, $from);
         break;
@@ -1220,7 +1223,20 @@ function AuraPlayAbilities($cardID, $from = "")
     }
     if ($remove == 1) DestroyAura($currentPlayer, $i);
   }
+  // handle runechants separately so we can batch them
+  $runechantCount = CountAura("runechant", $currentPlayer);
+  if ($runechantCount > 0) {
+    $abilityType = GetResolvedAbilityType($cardID, $from);
+    if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
+      $batchSize = 10;
+      $numBatches = intdiv($runechantCount, $batchSize);
+      $remainder = $runechantCount % $batchSize;
+      for ($i = 0; $i < $remainder; $i++) AddLayer("TRIGGER", $currentPlayer, "runechant");
+      for ($i = 0; $i < $numBatches; $i++) AddLayer("TRIGGER", $currentPlayer, "runechant_batch", additionalCosts:$batchSize);
+    }
+  }
 }
+
 
 function AuraAttackAbilities($attackID)
 {

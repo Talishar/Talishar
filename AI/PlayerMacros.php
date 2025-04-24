@@ -58,7 +58,7 @@ function ProcessMacros()
         $somethingChanged = true; 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
-      else if (!IsGameOver() && isset($layers[2]) && $layers[2] == "runechant" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+      else if (!IsGameOver() && isset($layers[2]) && ($layers[2] == "runechant" || $layers[2] == "runechant_batch") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
       }
