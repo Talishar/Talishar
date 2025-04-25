@@ -905,8 +905,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "SUNKENTREASURE":
       $target = GetMZCard($player, $lastResult);
+      WriteLog("Player " . $player . " turned " . CardLink($target, $target) . " face-down");
       if(ColorContains($target, 2, $player)) {
-        WriteLog("You found some sunken treasure!");
+        WriteLog("🪙Player " . $player . " found some sunken treasure!");
         PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
       }
       break;
