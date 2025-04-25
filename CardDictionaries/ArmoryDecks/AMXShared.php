@@ -16,7 +16,7 @@ function AMXAbilityHasGoAgain($cardID): bool
   };
 }
 
-function AMXEffectAttackModifier($cardID): int
+function AMXEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "twintek_charging_station_red" => 3,

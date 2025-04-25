@@ -90,7 +90,7 @@
     }
   }
 
-  function ARCEffectAttackModifier($cardID)
+  function ARCEffectPowerModifier($cardID)
   {
     switch($cardID)
     {

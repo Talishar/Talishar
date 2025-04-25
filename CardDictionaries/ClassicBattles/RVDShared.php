@@ -1,6 +1,6 @@
 <?php
 
-  function RVDEffectAttackModifier($cardID) {
+  function RVDEffectPowerModifier($cardID) {
     switch($cardID) {
       default: return 0;
     }
@@ -34,7 +34,7 @@ function RVDPlayAbility($cardID)
       Draw($currentPlayer);
       $card = DiscardRandom();
       $rv = "Discarded " . CardLink($card, $card);
-      if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:"wrecking_ball_red") >= 6) {
+      if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:"wrecking_ball_red") >= 6) {
         Intimidate();
       }
       return "";

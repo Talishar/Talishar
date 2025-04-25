@@ -288,13 +288,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->fused = false;
 
   // current chain link attack
-  $totalAttack = 0;
+  $totalPower = 0;
   $totalDefense = 0;
   if (count($combatChain) > 0) {
-    $chainAttackModifiers = [];
-    EvaluateCombatChain($totalAttack, $totalDefense, $chainAttackModifiers);
+    $chainPowerModifiers = [];
+    EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
-  $activeChainLink->totalAttack = $totalAttack;
+  $activeChainLink->totalPower = $totalPower;
 
   // current chain link defence
   $activeChainLink->totalDefence = $totalDefense;
@@ -423,7 +423,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = 0;
     $theirChar = $theirCharacter[$i];
     if ($theirCharacter[$i + 1] == 4) $theirChar = "DUMMYDISHONORED";
-    $atkCounters = 0;
+    $powerCounters = 0;
     $counters = 0;
     $type = CardType($theirChar);
     if (TypeContains($theirChar, "D")) $type = "C";
@@ -442,9 +442,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $sType = "Off-Hand";
       }
       $label = WeaponHasGoAgainLabel($i, $otherPlayer) ? "Go Again" : "";
-      $weaponAttackModifiers = [];
-      $atkCounters = $theirCharacter[$i + 3];
-      if(MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $otherPlayer) > 0) $border = 5;
+      $weaponPowerModifiers = [];
+      $powerCounters = $theirCharacter[$i + 3];
+      if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0) $border = 5;
     }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
@@ -457,7 +457,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
         counters: $counters,
         defCounters: $theirCharacter[$i + 4],
-        atkCounters: $atkCounters,
+        powerCounters: $powerCounters,
         controller: $otherPlayer,
         type: $type,
         sType: $sType,
@@ -478,7 +478,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           overlay: ($theirCharacter[$i + 1] != 2 ? 1 : 0),
           counters: $counters,
           defCounters: $theirCharacter[$i + 4],
-          atkCounters: $atkCounters,
+          powerCounters: $powerCounters,
           controller: $otherPlayer,
           type: $type,
           sType: $sType,
@@ -600,7 +600,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i < count($myCharacter); $i += CharacterPieces()) {
     $restriction = "";
     $counters = 0;
-    $atkCounters = 0;
+    $powerCounters = 0;
     $gem = 0;
     $label = "";
     $border = 0;
@@ -626,14 +626,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $sType = "Off-Hand";
       }
       $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
-      $weaponAttackModifiers = [];
+      $weaponPowerModifiers = [];
     if (!$playable) {
-        if (MainCharacterAttackModifiers($weaponAttackModifiers, $i, true, $playerID) > 0 ||
+        if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
             SearchCurrentTurnEffectsForPartielID($myCharacter[$i + 11])) {
             $border = 5;
         }
     }
-      $atkCounters = $myCharacter[$i + 3];
+      $powerCounters = $myCharacter[$i + 3];
     }
     if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3 && $myCharacter[$i + 12] != "DOWN") {
       $gem = ($myCharacter[$i + 9] == 1 ? 1 : 2);
@@ -655,7 +655,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           strval($i), //Action Data Override
           0, //Life Counters
           $myCharacter[$i + 4], //Def Counters
-          $atkCounters,
+          $powerCounters,
           $playerID,
           $type,
           $sType,
@@ -764,7 +764,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         sType: $sType, 
         isFrozen: ($theirAllies[$i + 3] == 1), 
         subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL, 
-        atkCounters:$theirAllies[$i+9], 
+        powerCounters:$theirAllies[$i+9], 
         label: $label, 
         tapped: $theirAllies[$i+11] == 1,
         steamCounters: $theirAllies[$i + 12]));
@@ -782,7 +782,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       actionDataOverride: strval($i),
       overlay: ($theirAuras[$i + 1] != 2 ? 1 : 0),
       counters: $theirAuras[$i + 2], 
-      atkCounters: $theirAuras[$i + 3],
+      powerCounters: $theirAuras[$i + 3],
       controller: $otherPlayer,
       type: $type,
       sType: $sType,
@@ -849,7 +849,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       sType: $sType,
       isFrozen: ($myAllies[$i+3] == 1),
       subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
-      atkCounters: $myAllies[$i+9],
+      powerCounters: $myAllies[$i+9],
       label: $label,
       tapped: $myAllies[$i + 11] == 1,
       steamCounters: $myAllies[$i + 12]
@@ -865,7 +865,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if($myAuras[$i] == "restless_coalescence_yellow" && $currentPlayer == $playerID && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction)) $playable = true;
     $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
     $counters = $myAuras[$i + 2];
-    $atkCounters = $myAuras[$i + 3];
+    $powerCounters = $myAuras[$i + 3];
     $action = $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0;
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
@@ -876,7 +876,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       cardNumber: $myAuras[$i],
       overlay: ($myAuras[$i + 1] != 2 ? 1 : 0),
       counters: $counters,
-      atkCounters: $atkCounters,
+      powerCounters: $powerCounters,
       action: $action,
       controller: $playerID,
       borderColor: $border,
@@ -1296,7 +1296,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $counters = 0;
       $lifeCounters = 0;
       $enduranceCounters = 0;
-      $atkCounters = 0;
+      $powerCounters = 0;
       $steamCounters = 0;
       $borderColor = 0;
       $uniqueIDIndex = -1;
@@ -1391,13 +1391,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $lifeCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 2] : $myAllies[$index + 2];
         $enduranceCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 6] : $myAllies[$index + 6];
         $uniqueID = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 5] : $myAllies[$index + 5];
-        $attackCounters = 0;
+        $powerCounters = 0;
         if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
-            $attackCounters = EffectAttackModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + AttackValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index]);
+            $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index]);
         }
       }
-      //Show Atk counters on Auras in the popups
-      $atkCounters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3]) : null;
+      //Show power counters on Auras in the popups
+      $powerCounters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3]) : null;
       //Show various counters on Auras in the popups
       $counters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2]) : null;
       //Show Steam Counters on items
@@ -1408,7 +1408,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         
       //   $items = $option[0] == "THEIRITEMS" ? $theirItems : $myItems;
       //   if ($items[$index] == "micro_processor_blue") {
-      //     if (DelimStringContains($items[$index + 8], "Opt", true)) $atkCounters = 1;
+      //     if (DelimStringContains($items[$index + 8], "Opt", true)) $powerCounters = 1;
       //     if (DelimStringContains($items[$index + 8], "Draw_then_top_deck", true)) $counters = 1;
       //     if (DelimStringContains($items[$index + 8], "Banish_top_deck", true)) $steamCounters = 1;
       //   }
@@ -1419,7 +1419,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
 
       if ($maxCount < 2)
-        array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, atkCounters: $atkCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters));
+        array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters));
       else
         array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
     }

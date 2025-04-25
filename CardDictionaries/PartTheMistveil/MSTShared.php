@@ -44,7 +44,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
   };
 }
 
-function MSTEffectAttackModifier($cardID): int
+function MSTEffectPowerModifier($cardID): int
 {
   global $mainPlayer;
   $idArr = explode(",", $cardID);
@@ -223,7 +223,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "enigma_ledger_of_ancestry":
     case "enigma":
-      PlayAura("spectral_shield", $currentPlayer, 1, numAttackCounters: 1);
+      PlayAura("spectral_shield", $currentPlayer, 1, numPowerCounters: 1);
       return "";
     case "truths_retold":
       MZMoveCard($currentPlayer, "MYDISCARD:subtype=Aura", "MYBOTDECK");
@@ -244,7 +244,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               break;
             case "Put_a_+1_counter_on_each_aura_with_ward_you_control":
               AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasWard=true", 1);
-              AddDecisionQueue("ADDALLATTACKCOUNTERS", $currentPlayer, "1", 1);
+              AddDecisionQueue("ADDALLPOWERCOUNTERS", $currentPlayer, "1", 1);
               break;
             case "Transcend":
               Transcend($currentPlayer, "MST032_inner_chi_blue", $from);
@@ -463,12 +463,12 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $auras = GetAuras($currentPlayer);
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from != "PLAY") {
-        $count = CountAuraAtkCounters($currentPlayer) + 10; //+10 is an arbitrary number to keep the loop going until the player pass
+        $count = CountAuraPowerCounters($currentPlayer) + 10; //+10 is an arbitrary number to keep the loop going until the player pass
         for ($i = 0; $i < $count; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasPowerCounters=true", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter or pass", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $currentPlayer, "TRANSFERATKCOUNTER", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "TRANSFERPOWERCOUNTER", 1);
         }
         AddCurrentTurnEffect($cardID, $currentPlayer, $from, $auras[count($auras) - AuraPieces() + 6]);
       }
@@ -542,7 +542,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else if ($cardID == "spectral_manifestations_red") $amount = 3;
       else if ($cardID == "spectral_manifestations_yellow") $amount = 2;
       else if ($cardID == "spectral_manifestations_blue") $amount = 1;
-      PlayAura("spectral_shield", $currentPlayer, numAttackCounters: $amount);
+      PlayAura("spectral_shield", $currentPlayer, numPowerCounters: $amount);
       return "";
     case "chase_the_tail_red":
       if (ComboActive()) AddCurrentTurnEffect($cardID, $currentPlayer);

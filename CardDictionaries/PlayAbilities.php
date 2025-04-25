@@ -65,7 +65,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $cards = explode(",", $deck->Top(amount: 6));
         $numSixes = 0;
         for ($i = 0; $i < count($cards); ++$i) {
-          if (ModifiedAttackValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
+          if (ModifiedPowerValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
         }
         PlayAura("might", $currentPlayer, $numSixes); 
         if (CountAura("might", $currentPlayer) >= 6) PlayAura("agility", $currentPlayer); 
@@ -153,7 +153,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       return "";
     case "shift_the_tide_of_battle_yellow":
-      if (CachedTotalAttack() > AttackValue($CombatChain->AttackCard()->ID())) {
+      if (CachedTotalPower() > PowerValue($CombatChain->AttackCard()->ID())) {
         GiveAttackGoAgain();
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
@@ -861,7 +861,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "smashing_performance_yellow":
       Draw($currentPlayer);
       $card = DiscardRandom();
-      if (ModifiedAttackValue($card, $currentPlayer, "HAND", source: "smashing_performance_yellow") >= 6) {
+      if (ModifiedPowerValue($card, $currentPlayer, "HAND", source: "smashing_performance_yellow") >= 6) {
         $items = SearchMultizone($currentPlayer, "THEIRITEMS&MYITEMS");
         if ($items != "") {
           $items = explode(",", $items);

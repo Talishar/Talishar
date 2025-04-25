@@ -49,7 +49,7 @@
     }
   }
 
-function DVREffectAttackModifier($cardID)
+function DVREffectPowerModifier($cardID)
 {
   $params = explode(",", $cardID);
   $cardID = $params[0];

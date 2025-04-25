@@ -58,7 +58,7 @@
     }
   }
 
-  function WTREffectAttackModifier($cardID)
+  function WTREffectPowerModifier($cardID)
   {
     $idArr = explode("-", $cardID);
     $cardID = $idArr[0];
@@ -171,7 +171,7 @@
         return "";
       case "bloodrush_bellow_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+        if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
           Draw($currentPlayer);
           Draw($currentPlayer);
@@ -183,7 +183,7 @@
         if(IsAllyAttacking()) {
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
-        else if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+        else if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
         }
         return "";
@@ -200,13 +200,13 @@
         IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
         return "Prevents the next $roll damage that will be dealt to you this turn";
       case "breakneck_battery_red": case "breakneck_battery_yellow": case "breakneck_battery_blue":
-        if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+        if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           GiveAttackGoAgain();
           $rv = "Discarded a 6 power card and gains go again.";
         }
         return $rv;
       case "savage_feast_red": case "savage_feast_yellow": case "savage_feast_blue":
-        if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) Draw($currentPlayer);
+        if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) Draw($currentPlayer);
         return "";
       case "barraging_beatdown_red": case "barraging_beatdown_yellow": case "barraging_beatdown_blue":
         AddCurrentTurnEffect($cardID, $mainPlayer);

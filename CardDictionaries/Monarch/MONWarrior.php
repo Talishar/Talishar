@@ -2,7 +2,7 @@
 
   function MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $CS_NumCharged, $currentPlayer, $CS_AtksWWeapon, $CS_LastAttack;
+    global $CS_NumCharged, $currentPlayer, $CS_AttacksWithWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
     $rv = "";
     switch($cardID)
@@ -11,7 +11,7 @@
         if(HasIncreasedAttack()) GiveAttackGoAgain();
         return "";
       case "beacon_of_victory_yellow":
-        AddDecisionQueue("ATTACKMODIFIER", $currentPlayer, intval($additionalCosts), 1);
+        AddDecisionQueue("POWERMODIFIER", $currentPlayer, intval($additionalCosts), 1);
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0) {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "beacon_of_victory_yellow-2", 1);
           AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
@@ -48,7 +48,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "second_swing_red": case "second_swing_yellow": case "second_swing_blue":
-        if(GetClassState($currentPlayer, $CS_AtksWWeapon) == 0) return "Does nothing because there were no weapon attacks this turn";
+        if(GetClassState($currentPlayer, $CS_AttacksWithWeapon) == 0) return "Does nothing because there were no weapon attacks this turn";
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       default: return "";

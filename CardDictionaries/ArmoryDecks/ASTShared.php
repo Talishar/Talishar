@@ -17,7 +17,7 @@ function ASTAbilityHasGoAgain($cardID): bool
   };
 }
 
-function ASTEffectAttackModifier($cardID): int
+function ASTEffectPowerModifier($cardID): int
 {
   global $currentPlayer, $defPlayer;
   return match ($cardID) {

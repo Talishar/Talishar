@@ -1010,7 +1010,7 @@ function ChainLinkBeginResolutionEffects()
           //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control
           //CR 2.1 - 6.5.5. Prevention: Fourth, each player applies any active prevention effects they control
           case "shatter_yellow":
-            $pendingDamage = CachedTotalAttack() - CachedTotalBlock();
+            $pendingDamage = CachedTotalPower() - CachedTotalBlock();
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Currently $pendingDamage damage would be dealt. Do you want to destroy a defending equipment instead?");
             AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_destroy_a_blocking_equipment_instead_of_dealing_damage");
             AddDecisionQueue("NOPASS", $mainPlayer, "-");
@@ -1033,33 +1033,33 @@ function ChainLinkBeginResolutionEffects()
 
 function ResolveChainLink()
 {
-  global $combatChain, $combatChainState, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $CCS_LinkTotalAttack;
+  global $combatChain, $combatChainState, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $CCS_LinkTotalPower;
   BuildMainPlayerGameState();
 
-  $totalAttack = 0;
+  $totalPower = 0;
   $totalDefense = 0;
-  EvaluateCombatChain($totalAttack, $totalDefense);
+  EvaluateCombatChain($totalPower, $totalDefense);
 
-  $combatChainState[$CCS_LinkTotalAttack] = $totalAttack;
+  $combatChainState[$CCS_LinkTotalPower] = $totalPower;
 
-  LogCombatResolutionStats($totalAttack, $totalDefense);
+  LogCombatResolutionStats($totalPower, $totalDefense);
 
   $target = explode("-", GetAttackTarget());
   if ($target[0] == "THEIRALLY") {
     $index = $target[1];
     $allies = &GetAllies($defPlayer);
-    $totalAttack += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-    $totalAttack = AllyDamagePrevention($defPlayer, $index, $totalAttack, "COMBAT");
-    if ($totalAttack < 0) $totalAttack = 0;
+    $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+    $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT");
+    if ($totalPower < 0) $totalPower = 0;
     if ($index < count($allies)) {
-      $allies[$index + 2] = intval($allies[$index + 2]) - $totalAttack;
-      if ($totalAttack > 0) AllyDamageTakenAbilities($defPlayer, $index);
-      DamageDealtAbilities($mainPlayer, $totalAttack, "COMBAT", $combatChain[0]);
+      $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
+      if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
+      DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
       if ($allies[$index + 2] <= 0) DestroyAlly($defPlayer, $index, false, true, $allies[$index + 5]);
     }
-    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalAttack);
+    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalPower);
   } else {
-    $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalAttack - $totalDefense;
+    $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
     DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
     AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
@@ -1103,7 +1103,7 @@ function ResolveCombatDamage($damageDone)
           $EffectContext = $combatChain[$i]; 
           AddOnHitTrigger($combatChain[$i], $combatChain[$i+8]);
           if ($damageDone >= 4 && IsHeroAttackTarget()) AddCrushEffectTrigger($combatChain[$i]);
-          if (CachedTotalAttack() >= 13) AddTowerEffectTrigger($combatChain[$i]);
+          if (CachedTotalPower() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
       }
       if (IsHeroAttackTarget()) {
@@ -1157,7 +1157,7 @@ function ResolveCombatDamage($damageDone)
 function FinalizeChainLink($chainClosed = false)
 {
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
-  global $mainClassState, $CS_AtksWWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalAttack, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
+  global $mainClassState, $CS_AttacksWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalPower, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
   global $layerPriority;
   BuildMainPlayerGameState();
@@ -1173,7 +1173,7 @@ function FinalizeChainLink($chainClosed = false)
     if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-") SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
   }
   array_push($chainLinkSummary, $combatChainState[$CCS_DamageDealt]);
-  array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalAttack]);
+  array_push($chainLinkSummary, $combatChainState[$CCS_LinkTotalPower]);
   array_push($chainLinkSummary, TalentOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
   array_push($chainLinkSummary, ClassOverride(isset($combatChain[0]) ? $combatChain[0] : "", $mainPlayer));
   array_push($chainLinkSummary, SerializeCurrentAttackNames());
@@ -1203,7 +1203,7 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i]); //Player ID
     array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[$i + 1] != "PLAY" ? "1" : "0")); //Still on chain? 1 = yes, 0 = no
     array_push($chainLinks[$CLIndex], $combatChain[$i + 1]); //From
-    array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Attack Modifier
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 4]); //Power Modifier
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
     array_push($chainLinks[$CLIndex], "-"); //Added On-hits (comma separated)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 8]); //Original card ID, differs from CardID in case of copies
@@ -1218,7 +1218,7 @@ function FinalizeChainLink($chainClosed = false)
   //Don't change state until the end, in case it changes what effects are active
   if ($CombatChain->HasCurrentLink()) {
     if (TypeContains($combatChain[0], "W", $mainPlayer) && !$chainClosed) {
-      ++$mainClassState[$CS_AtksWWeapon];
+      ++$mainClassState[$CS_AttacksWithWeapon];
       if (CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
     }
     if (CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
@@ -2272,17 +2272,17 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "double_down_red-PAID", 1);
       break;
     case "10000_year_reunion_red":
-      $count = CountAuraAtkCounters($currentPlayer);
+      $count = CountAuraPowerCounters($currentPlayer);
       if ($from != "PLAY" && $count >= 3) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter or pass");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasPowerCounters=true");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter or pass");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-");
-        AddDecisionQueue("MZOP", $currentPlayer, "REMOVEATKCOUNTER", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "REMOVEPOWERCOUNTER", 1);
         for ($i = 0; $i < 2; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasAttackCounters=true", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 attack counter", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasPowerCounters=true", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $currentPlayer, "REMOVEATKCOUNTER", 1);
+          AddDecisionQueue("MZOP", $currentPlayer, "REMOVEPOWERCOUNTER", 1);
         }
         AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       }
@@ -2946,7 +2946,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "expendable_limbs_blue":
       $banish = &GetBanish($currentPlayer);
       $index = count($banish) - BanishPieces();
-      if (ModifiedAttackValue($banish[$index], $currentPlayer, "BANISH") >= 6) $banish[$index + 1] = "NT";
+      if (ModifiedPowerValue($banish[$index], $currentPlayer, "BANISH") >= 6) $banish[$index + 1] = "NT";
       break;
     case "blood_dripping_frenzy_blue":
       $banishedCards = BanishHand($currentPlayer);
@@ -3348,17 +3348,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chainClosed = ProcessAttackTarget();
       $baseAttackSet = CurrentEffectBaseAttackSet();
       if($baseAttackSet != -1) {
-        $attackValue = $baseAttackSet;
+        $powerValue = $baseAttackSet;
       }
       else {
-        if(TypeContains( $cardID, "W", $currentPlayer)) $attackValue = GeneratedAttackValue($cardID);
-        else $attackValue = AttackValue($cardID);
+        if(TypeContains( $cardID, "W", $currentPlayer)) $powerValue = GeneratedPowerValue($cardID);
+        else $powerValue = PowerValue($cardID);
       }
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
-      $combatChainState[$CCS_LinkBaseAttack] = BaseAttackModifiers($cardID, $attackValue);
+      $combatChainState[$CCS_LinkBaseAttack] = BasePowerModifiers($cardID, $powerValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
-      if ($definedCardType == "AA" && $attackValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
-      if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && (SearchCharacterActive($currentPlayer, "kayo_berserker_runt") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $currentPlayer))) && $attackValue >= 6) KayoStaticAbility($cardID);
+      if ($definedCardType == "AA" && $powerValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
+      if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && (SearchCharacterActive($currentPlayer, "kayo_berserker_runt") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $currentPlayer))) && $powerValue >= 6) KayoStaticAbility($cardID);
       $openedChain = true;
       if ($definedCardType != "AA") $combatChainState[$CCS_WeaponIndex] = GetClassState($currentPlayer, $CS_PlayIndex);
       if ($additionalCosts != "-" && HasFusion($cardID)) $combatChainState[$CCS_AttackFused] = 1;

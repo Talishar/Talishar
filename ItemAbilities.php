@@ -520,7 +520,7 @@ function ItemBlockModifier($cardID)
   return $blockModifier;
 }
 
-function ItemAttackModifiers(&$attackModifiers)
+function ItemPowerModifiers(&$powerModifiers)
 {
   global $mainPlayer, $CombatChain;
   $items = &GetItems($mainPlayer);
@@ -531,16 +531,16 @@ function ItemAttackModifiers(&$attackModifiers)
         $attackID = $CombatChain->AttackCard()->ID();
         if (CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           $modifier += 1;
-          array_push($attackModifiers, "Item Ability");
-          array_push($attackModifiers, 1);
+          array_push($powerModifiers, "Item Ability");
+          array_push($powerModifiers, 1);
         }
         break;
       case "clamp_press_blue":
         $attackID = $CombatChain->AttackCard()->ID();
         if (SubtypeContains($attackID, "Wrench")) {
           $modifier += 2;
-          array_push($attackModifiers, "Item Ability");
-          array_push($attackModifiers, 2);
+          array_push($powerModifiers, "Item Ability");
+          array_push($powerModifiers, 2);
         }
         break;
       default:
@@ -550,21 +550,21 @@ function ItemAttackModifiers(&$attackModifiers)
   return $modifier;
 }
 
-function ItemsAttackModifiers($cardID, $player, $from)
+function ItemsPowerModifiers($cardID, $player, $from)
 {
   $items = &GetItems($player);
-  $attackModifier = 0;
+  $powerModifier = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     switch ($items[$i]) {
       case "penetration_script_yellow":
-        if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$attackModifier;
+        if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$powerModifier;
       case "clamp_press_blue":
-        if (SubtypeContains($cardID, "Wrench")) $attackModifier += 2;
+        if (SubtypeContains($cardID, "Wrench")) $powerModifier += 2;
       default:
         break;
     }
   }
-  return $attackModifier;
+  return $powerModifier;
 }
 
 //checks if a cardname is blocked by null time zone

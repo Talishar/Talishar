@@ -72,7 +72,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function OUTEffectAttackModifier($cardID, $attached=false)
+  function OUTEffectPowerModifier($cardID, $attached=false)
   {
     $idArr = explode("-", $cardID);
     $idArr2 = explode(",", $idArr[0]);
@@ -135,7 +135,7 @@ function OUTAbilityCost($cardID)
       case "mask_of_many_faces": return CardType($attackID) == "AA";
       case "head_leads_the_tail_red": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "be_like_water_red": case "be_like_water_yellow": case "be_like_water_blue": return true;
-      case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;//Base power
+      case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return CardType($attackID) == "AA" && PowerValue($attackID) <= 2;//Base power
       case "buzzsaw_trap_blue": return true;
       case "melting_point_red": return CardSubType($attackID) == "Arrow";
       case "fletch_a_red_tail_red": case "fletch_a_yellow_tail_yellow": case "fletch_a_blue_tail_blue": return CardSubType($attackID) == "Arrow";
@@ -192,7 +192,7 @@ function OUTAbilityCost($cardID)
           DestroyCharacter($currentPlayer, $index);
         }
         AttackReplaced($card->ID(), $currentPlayer);
-        $combatChainState[$CCS_LinkBaseAttack] = ModifiedAttackValue($combatChain[0], $currentPlayer, "CC", source:"");
+        $combatChainState[$CCS_LinkBaseAttack] = ModifiedPowerValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
       case "redback_shroud":
@@ -450,7 +450,7 @@ function OUTAbilityCost($cardID)
         if($cardRemoved == "") { AddCurrentTurnEffect("gore_belching_red-7", $currentPlayer); return "You cannot reveal cards so Gore Belching gets -7."; }
         else {
           BanishCardForPlayer($cardRemoved, $currentPlayer, "DECK", "-", "gore_belching_red");
-          AddCurrentTurnEffect("gore_belching_red-" . ModifiedAttackValue($cardRemoved, $currentPlayer, "DECK", source:"gore_belching_red"), $currentPlayer);
+          AddCurrentTurnEffect("gore_belching_red-" . ModifiedPowerValue($cardRemoved, $currentPlayer, "DECK", source:"gore_belching_red"), $currentPlayer);
         }
         return "";
       case "burdens_of_the_past_blue":

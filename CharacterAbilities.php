@@ -3,7 +3,7 @@
 //0 - Card ID
 //1 - Status (2=ready, 1=unavailable, 0=destroyed)
 //2 - Num counters
-//3 - Num attack counters
+//3 - Num power counters
 //4 - Num defense counters
 //5 - Num uses
 //6 - On chain (1 = yes, 0 = no)
@@ -19,7 +19,7 @@ class Character
   public $cardID = "";
   public $status = 2;
   public $numCounters = 0;
-  public $numAttackCounters = 0;
+  public $numPowerCounters = 0;
   public $numDefenseCounters = 0;
   public $numUses = 0;
   public $onChain = 0;
@@ -45,7 +45,7 @@ class Character
     $this->cardID = $array[$index];
     $this->status = $array[$index + 1];
     $this->numCounters = $array[$index + 2];
-    $this->numAttackCounters = $array[$index + 3];
+    $this->numPowerCounters = $array[$index + 3];
     $this->numDefenseCounters = $array[$index + 4];
     $this->numUses = $array[$index + 5];
     $this->onChain = $array[$index + 6];
@@ -65,7 +65,7 @@ class Character
     $array[$this->arrIndex] = $this->cardID;
     $array[$this->arrIndex + 1] = $this->status;
     $array[$this->arrIndex + 2] = $this->numCounters;
-    $array[$this->arrIndex + 3] = $this->numAttackCounters;
+    $array[$this->arrIndex + 3] = $this->numPowerCounters;
     $array[$this->arrIndex + 4] = $this->numDefenseCounters;
     $array[$this->arrIndex + 5] = $this->numUses;
     $array[$this->arrIndex + 6] = $this->onChain;
@@ -87,7 +87,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   array_push($char, $cardID); //0 - Card ID
   array_push($char, 2); //1 - Status (2=ready, 1=unavailable, 0=destroyed, 3=Sleeping (Sleep Dart, Crush Confidance, etc)), 4=Dishonored
   array_push($char, CharacterCounters($cardID)); //2 - Num counters
-  array_push($char, 0); //3 - Num attack counters
+  array_push($char, 0); //3 - Num power counters
   array_push($char, 0); //4 - Num defense counters
   array_push($char, CharacterNumUsesPerTurn($cardID)); //5 - Num uses
   array_push($char, 0); //6 - On chain (1 = yes, 0 = no)
@@ -474,7 +474,7 @@ function MainCharacterBeginEndPhaseTriggers()
 
 function MainCharacterEndTurnAbilities()
 {
-  global $mainClassState, $CS_HitsWDawnblade, $CS_AtksWWeapon, $mainPlayer, $CS_NumNonAttackCards, $defPlayer;
+  global $mainClassState, $CS_HitsWDawnblade, $CS_AttacksWithWeapon, $mainPlayer, $CS_NumNonAttackCards, $defPlayer;
   global $CS_NumAttackCards, $CS_ArcaneDamageDealt;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
@@ -488,7 +488,7 @@ function MainCharacterEndTurnAbilities()
         KassaiEndTurnAbility();
         break;
       case "valiant_dynamo":
-        if ($mainClassState[$CS_AtksWWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
+        if ($mainClassState[$CS_AttacksWithWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
         break;
       case "duskblade":
         if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i + 3] = 0;
@@ -649,7 +649,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
   }
 }
 
-function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs = false, $player = -1)
+function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs = false, $player = -1)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain;
   $modifier = 0;
@@ -662,8 +662,8 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
       switch ($mainCharacterEffects[$i + 1]) {
         case "steelblade_supremacy_red":
           $modifier += 2;
-          array_push($attackModifiers, $mainCharacterEffects[$i + 1]);
-          array_push($attackModifiers, 2);
+          array_push($powerModifiers, $mainCharacterEffects[$i + 1]);
+          array_push($powerModifiers, 2);
           break;
         case "ironsong_determination_yellow":
         case "biting_blade_red":
@@ -678,8 +678,8 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
         case "plow_through_blue":
         case "blood_on_her_hands_yellow-1":
           $modifier += 1;
-          array_push($attackModifiers, $mainCharacterEffects[$i + 1]);
-          array_push($attackModifiers, 1);
+          array_push($powerModifiers, $mainCharacterEffects[$i + 1]);
+          array_push($powerModifiers, 1);
           break;
         default:
           break;
@@ -696,8 +696,8 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
       case "boltyn":
         if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) {
           $modifier += 1;
-          array_push($attackModifiers, $characterID);
-          array_push($attackModifiers, 1);
+          array_push($powerModifiers, $characterID);
+          array_push($powerModifiers, 1);
         }
         break;
       case "arakni_marionette":
@@ -705,8 +705,8 @@ function MainCharacterAttackModifiers(&$attackModifiers, $index = -1, $onlyBuffs
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
         if (HasStealth($CombatChain->CurrentAttack()) && CheckMarked($otherPlayer) && IsHeroAttackTarget()) {
           $modifier += 1;
-          array_push($attackModifiers, $characterID);
-          array_push($attackModifiers, 1);
+          array_push($powerModifiers, $characterID);
+          array_push($powerModifiers, 1);
         }
         break;
       default:
@@ -1405,7 +1405,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
       case "tiger_stripe_shuko"://Tiger Stripe Shuko
-        if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && AttackValue($cardID) <= 2) {
+        if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID) <= 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
         }

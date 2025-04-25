@@ -70,7 +70,7 @@
     }
   }
 
-  function ELEEffectAttackModifier($cardID)
+  function ELEEffectPowerModifier($cardID)
   {
     global $combatChainState, $CCS_AttackFused;
     switch($cardID)

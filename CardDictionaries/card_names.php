@@ -3,7 +3,7 @@
 function CardName($cardID)
 {
     if($cardID == NULL) return "";
-    if($cardID == "ATKCOU") return "+1 Attack Counter";
+    if($cardID == "POWERCOUNTER") return "+1 Power Counter";
     switch ($cardID) {
       case "valda_seismic_impact":
         return "Valda, Seismic Impact";

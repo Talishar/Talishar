@@ -59,7 +59,7 @@ function DYNAbilityHasGoAgain($cardID)
   }
 }
 
-function DYNEffectAttackModifier($cardID)
+function DYNEffectPowerModifier($cardID)
 {
   global $mainPlayer;
   $params = explode(",", $cardID);
@@ -120,7 +120,7 @@ function DYNCombatEffectActive($cardID, $attackID)
   $cardID = $params[0];
   switch($cardID) {
     case "savage_beatdown_red": return true;
-    case "blessing_of_savagery_red": case "blessing_of_savagery_yellow": case "blessing_of_savagery_blue": return AttackValue($attackID) >= 6;//Specifies base attack
+    case "blessing_of_savagery_red": case "blessing_of_savagery_yellow": case "blessing_of_savagery_blue": return PowerValue($attackID) >= 6;//Specifies base attack
     case "madcap_muscle_red": case "madcap_muscle_yellow": case "madcap_muscle_blue": return true;
     case "rumble_grunting_red": case "rumble_grunting_yellow": case "rumble_grunting_blue": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "buckle_blue": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
@@ -172,14 +172,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       return "";
     case "savage_beatdown_red":
-      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "berserk_yellow": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "dust_from_the_golden_plains_red": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
     case "dust_from_the_red_desert_red": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
     case "dust_from_the_shadow_crypts_red": PutPermanentIntoPlay($currentPlayer, $cardID); return "";
-    case "madcap_charger_red": case "madcap_charger_yellow": case "madcap_charger_blue": if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain(); return "";
-    case "madcap_muscle_red": case "madcap_muscle_yellow": case "madcap_muscle_blue": if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
+    case "madcap_charger_red": case "madcap_charger_yellow": case "madcap_charger_blue": if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain(); return "";
+    case "madcap_muscle_red": case "madcap_muscle_yellow": case "madcap_muscle_blue": if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "rumble_grunting_red": case "rumble_grunting_yellow": case "rumble_grunting_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "buckle_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "shield_bash_red": case "shield_bash_yellow": case "shield_bash_blue":
@@ -233,7 +233,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Sword to gain a +1 counter");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDATTACKCOUNTERS", $currentPlayer, "1", 1);
+      AddDecisionQueue("ADDPOWERCOUNTERS", $currentPlayer, "1", 1);
       return "";
     case "precision_press_red": case "precision_press_yellow": case "precision_press_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);

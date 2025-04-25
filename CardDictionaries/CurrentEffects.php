@@ -1,6 +1,6 @@
 <?php
 
-function TCCEffectAttackModifier($cardID): int|string
+function TCCEffectPowerModifier($cardID): int|string
 {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
@@ -27,7 +27,7 @@ function TCCCombatEffectActive($cardID, $attackID): bool
   };
 }
 
-function EVOEffectAttackModifier($cardID): int|string
+function EVOEffectPowerModifier($cardID): int|string
 {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
@@ -58,7 +58,7 @@ function EVOCombatEffectActive($cardID, $attackID)
   };
 }
 
-function HVYEffectAttackModifier($cardID): int|string
+function HVYEffectPowerModifier($cardID): int|string
 {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];

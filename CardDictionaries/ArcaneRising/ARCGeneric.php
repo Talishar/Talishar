@@ -36,7 +36,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       if($from == "ARS") {
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-        $rv = "Played from arsenal: Gives your next attack action card +" . EffectAttackModifier($cardID . "-2");
+        $rv = "Played from arsenal: Gives your next attack action card +" . EffectPowerModifier($cardID . "-2");
       }
       return $rv;
     case "eirinas_prayer_red": case "eirinas_prayer_yellow": case "eirinas_prayer_blue":
@@ -54,14 +54,14 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       return "";
     case "ravenous_rabble_red": case "ravenous_rabble_yellow": case "ravenous_rabble_blue":
       $deck = new Deck($currentPlayer);
-      if($deck->Empty()) return "Ravenous Rabble does not get negative attack because your deck is empty";
+      if($deck->Empty()) return "Ravenous Rabble does not get negative power because your deck is empty";
       if($deck->Reveal(1)) {
         $top = $deck->Top();
         $pitch = PitchValue($top);
         $CombatChain->AttackCard()->ModifyPower(-$pitch);
-        return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " attack";
+        return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
       }
-      return "Ravenous Rabble does not get negative attack because the reveal was prevented";
+      return "Ravenous Rabble does not get negative power because the reveal was prevented";
     case "fate_foreseen_red": case "fate_foreseen_yellow": case "fate_foreseen_blue":
       PlayerOpt($currentPlayer, 1);
       return "";

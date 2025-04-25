@@ -67,10 +67,10 @@ function SearchArsenal($player, $type = "", $subtype = "", $maxCost = -1, $minCo
   return SearchInner($arsenal, $player, "ARS", ArsenalPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, faceUp: $faceUp, faceDown: $faceDown);
 }
 
-function SearchAura($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasWard = false, $hasAttackCounters = false, $nameIncludes = "")
+function SearchAura($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasWard = false, $hasPowerCounters = false, $nameIncludes = "")
 {
   $auras = &GetAuras($player);
-  return SearchInner($auras, $player, "AURAS", AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, hasWard: $hasWard, hasAttackCounters: $hasAttackCounters, nameIncludes: $nameIncludes);
+  return SearchInner($auras, $player, "AURAS", AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, hasWard: $hasWard, hasPowerCounters: $hasPowerCounters, nameIncludes: $nameIncludes);
 }
 
 function SearchItems($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
@@ -144,7 +144,7 @@ function SearchInner(
   $getDistinctCardNames = false,
   $is1h = false,
   $hasWard = false,
-  $hasAttackCounters = false,
+  $hasPowerCounters = false,
   $faceUp = false,
   $faceDown = false,
   $isIntimidated = false,
@@ -168,8 +168,8 @@ function SearchInner(
         && ($class == "" || ClassContains($cardID, $class, $player))
         && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player, $zone))
         && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
-        && ($maxAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) <= $maxAttack)
-        && ($minAttack == -1 || ModifiedAttackValue($cardID, $player, $zone) >= $minAttack)
+        && ($maxAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) <= $maxAttack)
+        && ($minAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) >= $minAttack)
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
         && ($arcaneDamage == -1 || ArcaneDamage($cardID) == $arcaneDamage)
       ) {
@@ -196,7 +196,7 @@ function SearchInner(
         if ($isIntimidated) {
           if ($array[$i + 1] != "INT") continue;
         }
-        if ($hasAttackCounters && !HasAttackCounters($zone, $array, $i)) continue;
+        if ($hasPowerCounters && !HasPowerCounters($zone, $array, $i)) continue;
         if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
         if ($hasStealth && !hasStealth($cardID)) continue;
         if ($hasWateryGrave && !HasWateryGrave($cardID)) continue;
@@ -609,7 +609,7 @@ function SearchPitchHighestAttack(&$pitch)
   global $mainPlayer;
   $highest = 0;
   for ($i = 0; $i < count($pitch); ++$i) {
-    $powerValue = ModifiedAttackValue($pitch[$i], $mainPlayer, "PITCH", source: "");
+    $powerValue = ModifiedPowerValue($pitch[$i], $mainPlayer, "PITCH", source: "");
     if ($powerValue > $highest) $highest = $powerValue;
   }
   return $highest;
@@ -722,8 +722,8 @@ function SearchHighestAttackDefended()
   $highest = 0;
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
-      $powerValue = ModifiedAttackValue($combatChain[$i], $defPlayer, "CC");
-      $powerValue += $combatChain[$i + 5];//Combat chain attack modifier
+      $powerValue = ModifiedPowerValue($combatChain[$i], $defPlayer, "CC");
+      $powerValue += $combatChain[$i + 5];//Combat chain power modifier
       if ($powerValue > $highest) $highest = $powerValue;
     }
   }
@@ -1040,7 +1040,7 @@ function CountAura($cardID, $player)
   return $count;
 }
 
-function CountAuraAtkCounters($player)
+function CountAuraPowerCounters($player)
 {
   $auras = &GetAuras($player);
   $count = 0;
@@ -1147,7 +1147,7 @@ function SearchChainLinks($minPower = -1, $maxPower = -1, $cardType = "")
   global $chainLinks;
   $links = "";
   for ($i = 0; $i < count($chainLinks); ++$i) {
-    $power = AttackValue($chainLinks[$i][0]);
+    $power = PowerValue($chainLinks[$i][0]);
     $type = CardType($chainLinks[$i][0]);
     if ($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower) && ($cardType == "" || $type == $cardType)) {
       if ($links != "") $links .= ",";
@@ -1222,7 +1222,7 @@ function SearchMultizone($player, $searches)
     $hasWard = false;
     $faceUp = false;
     $faceDown = false;
-    $hasAttackCounters = false;
+    $hasPowerCounters = false;
     $isIntimidated = false;
     $arcaneDamage = -1;
     $hasStealth = false;
@@ -1421,8 +1421,8 @@ function SearchMultizone($player, $searches)
           case "faceDown":
             $faceDown = $condition[1];
             break;
-          case "hasAttackCounters":
-            $hasAttackCounters = $condition[1];
+          case "hasPowerCounters":
+            $hasPowerCounters = $condition[1];
             break;
           case "arcaneDamage":
             $arcaneDamage = $condition[1];
@@ -1456,7 +1456,7 @@ function SearchMultizone($player, $searches)
           break;
         case "MYAURAS":
         case "THEIRAURAS":
-          $searchResult = SearchAura($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasWard, $hasAttackCounters);
+          $searchResult = SearchAura($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasWard, $hasPowerCounters);
           break;
         case "MYCHAR":
         case "THEIRCHAR":

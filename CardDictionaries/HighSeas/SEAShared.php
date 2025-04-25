@@ -46,7 +46,7 @@ function SEAAbilityHasGoAgain($cardID): bool
   };
 }
 
-function SEAEffectAttackModifier($cardID): int
+function SEAEffectPowerModifier($cardID): int
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();

@@ -15,7 +15,7 @@
       case "shadow_of_blasmophet_red":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
           MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-", may:true);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
@@ -23,7 +23,7 @@
       case "deadwood_rumbler_red": case "deadwood_rumbler_yellow": case "deadwood_rumbler_blue":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with " . CardLink($cardID, $cardID), 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -37,17 +37,17 @@
       case "ravenous_meataxe":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "tear_limb_from_limb_blue":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "pulping_red": case "pulping_yellow": case "pulping_blue":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       default: return "";
     }
@@ -71,7 +71,7 @@
     $diabolicOfferingCount = 0;
     for($i = 0; $i < 3; $i++) {
       $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
-      if(ModifiedAttackValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
+      if(ModifiedPowerValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
       elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
       // $cardID = RemoveDiscard($currentPlayer, $index);
       $cardID = RemoveGraveyard($currentPlayer, $index);
@@ -87,7 +87,7 @@
     $deck = new Deck($player);
     if($deck->Empty()) return;
     $topDeck = $deck->BanishTop("-", $player);
-    if(ModifiedAttackValue($topDeck, $player, "DECK", source:"lady_barthimont") >= 6) {
+    if(ModifiedPowerValue($topDeck, $player, "DECK", source:"lady_barthimont") >= 6) {
       $arsenal = &GetArsenal($player);
       ++$arsenal[$index+3];
       AddCurrentTurnEffect("lady_barthimont", $player);

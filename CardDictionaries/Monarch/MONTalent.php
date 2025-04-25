@@ -37,7 +37,7 @@
         for($i=0; $i<$count; ++$i) {
           AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDATTACKCOUNTERS", $currentPlayer, "1", 1);
+          AddDecisionQueue("ADDPOWERCOUNTERS", $currentPlayer, "1", 1);
         }
         if($currentPlayer == $mainPlayer) AddCurrentTurnEffect($cardID, $currentPlayer);
         else AddNextTurnEffect($cardID, $currentPlayer);

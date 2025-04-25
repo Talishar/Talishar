@@ -14,7 +14,7 @@ $isReactFE = false;
 //5 actionDataOverride = The value to give to ProcessInput
 //6 lifeCounters = Number of life counters
 //7 defCounters = Number of defense counters
-//8 atkCounters = Number of attack counters
+//8 powerCounters = Number of power counters
 //9 controller = Player that controls it
 //10 type = card type
 //11 sType = card subtype
@@ -32,7 +32,7 @@ function JSONRenderedCard(
   $actionDataOverride = NULL,
   $lifeCounters = NULL, // deprecated
   $defCounters = NULL, // deprecated
-  $atkCounters = NULL, // deprecated
+  $powerCounters = NULL, // deprecated
   $controller = NULL,
   $type = NULL,
   $sType = NULL,
@@ -73,8 +73,8 @@ function JSONRenderedCard(
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
   $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
   if($defCounters != NULL) $countersMap->defence = $defCounters;
-  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack : $atkCounters;
-  if($atkCounters != NULL) $countersMap->attack = $atkCounters;
+  $powerCounters = property_exists($countersMap, 'attack') ? $powerCounters->attack : $powerCounters;
+  if($powerCounters != NULL) $countersMap->attack = $powerCounters;
   $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
   if($steamCounters != NULL) $countersMap->steam = $steamCounters;
   $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
@@ -204,7 +204,7 @@ function JSONRenderedCard(
   if($actionDataOverride !== NULL) $card->actionDataOverride = $actionDataOverride;
   if($lifeCounters !== NULL) $card->lifeCounters = $lifeCounters;
   if($defCounters !== NULL) $card->defCounters = $defCounters;
-  if($atkCounters !== NULL) $card->atkCounters = $atkCounters;
+  if($powerCounters !== NULL) $card->powerCounters = $powerCounters;
   if($steamCounters !== NULL) $card->steamCounters = $steamCounters;
   if($controller !== NULL) $card->controller = $controller;
   if($type !== NULL) $card->type = $type;

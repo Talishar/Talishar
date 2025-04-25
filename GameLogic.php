@@ -257,7 +257,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $hand = &GetHand($player);
           $rv = [];
           for ($i = 0; $i < count($hand); $i += HandPieces()) {
-            if (CardType($hand[$i]) == "AA" && ModifiedAttackValue($hand[$i], $player, "HAND", "no_fear_red") >= 6) array_push($rv, $i);
+            if (CardType($hand[$i]) == "AA" && ModifiedPowerValue($hand[$i], $player, "HAND", "no_fear_red") >= 6) array_push($rv, $i);
           }
           $rv = implode(",", $rv);
           $rv = SearchCount($rv) . "-" . $rv;
@@ -658,7 +658,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           } else $character[$mzArr[1] + 10] = $paramArr[1];
           ++$character[$mzArr[1] + 2]; // Update the counter
           break;
-        case "REMOVEATKCOUNTER":
+        case "REMOVEPOWERCOUNTER":
           $auras = &GetAuras($player);
           $mzArr = explode("-", $lastResult);
           switch ($mzArr[0]) {
@@ -669,7 +669,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               break;
           }
           break;
-        case "TRANSFERATKCOUNTER":
+        case "TRANSFERPOWERCOUNTER":
           $auras = &GetAuras($player);
           $mzArr = explode("-", $lastResult);
           switch ($mzArr[0]) {
@@ -1116,7 +1116,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "GREATERTHAN0ORPASS":
       return $lastResult > 0 ? $lastResult : "PASS";
-    case "ATTACKMODIFIER":
+    case "POWERMODIFIER":
       $amount = intval($parameter);
       $combatChain[5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();
@@ -1452,7 +1452,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = (is_array($lastResult) ? $lastResult : explode(",", $lastResult));
       $totalAV = 0;
       for ($i = 0; $i < count($cards); ++$i) {
-        $totalAV += intval(ModifiedAttackValue($cards[$i], $player, "HAND", source: "rouse_the_ancients_blue"));
+        $totalAV += intval(ModifiedPowerValue($cards[$i], $player, "HAND", source: "rouse_the_ancients_blue"));
       }
       if ($totalAV >= 13) {
         AddCurrentTurnEffect("rouse_the_ancients_blue", $player);
@@ -1733,7 +1733,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($numBD > 0) AddCurrentTurnEffect("soul_harvest_blue," . $numBD, $player);
       return $lastResult;
-    case "ADDATTACKCOUNTERS":
+    case "ADDPOWERCOUNTERS":
       $lastResultArr = explode("-", $lastResult);
       $zone = $lastResultArr[0];
       $zoneDS = &GetMZZone($player, $zone);
@@ -1742,7 +1742,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index + 3] += $parameter;
       else if ($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$index + 9] += $parameter;
       return $lastResult;
-    case "ADDALLATTACKCOUNTERS":
+    case "ADDALLPOWERCOUNTERS":
       $lastResult = str_replace(",", "-", $lastResult);
       $lastResultArr = explode("-", $lastResult);
       $zone = $lastResultArr[0];
@@ -2783,7 +2783,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " copy and become " . CardLink($lastResult, $lastResult));
-      $combatChainState[$CCS_LinkBaseAttack] = AttackValue($lastResult);
+      $combatChainState[$CCS_LinkBaseAttack] = PowerValue($lastResult);
       $combatChain[0] = $lastResult;
       return $lastResult;
     case "EXTRAATTACK":

@@ -59,7 +59,7 @@ function DTDAbilityHasGoAgain($cardID)
   }
 }
 
-function DTDEffectAttackModifier($cardID)
+function DTDEffectPowerModifier($cardID)
 {
   $params = explode(",", $cardID);
   $dashArr = explode(",", $cardID);
@@ -322,23 +322,23 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       for($i=0; $i<count($cards); ++$i)
       {
         if(HasBloodDebt($cards[$i])) Draw($currentPlayer);
-        if(ModifiedAttackValue($cards[$i], $currentPlayer, "HAND", source:$cardID) >= 6) ++$num6Pow;
+        if(ModifiedPowerValue($cards[$i], $currentPlayer, "HAND", source:$cardID) >= 6) ++$num6Pow;
       }
       if($num6Pow > 0) AddCurrentTurnEffect("blood_dripping_frenzy_blue," . $num6Pow, $currentPlayer);
       return "";
     case "ram_raider_red": case "ram_raider_yellow": case "ram_raider_blue":
-      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain();
+      if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain();
       return "";
     case "shaden_scream_red": case "shaden_scream_yellow": case "shaden_scream_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "tribute_to_demolition_red": case "tribute_to_demolition_yellow": case "tribute_to_demolition_blue":
-      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+      if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       return "";
     case "tribute_to_the_legions_of_doom_red": case "tribute_to_the_legions_of_doom_yellow": case "tribute_to_the_legions_of_doom_blue":
-      if(ModifiedAttackValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+      if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       return "";
@@ -366,7 +366,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "dabble_in_darkness_red":
       $deck = new Deck($currentPlayer);
-      if($deck->Empty()) return "Ravenous Dabble does not get negative attack because your deck is empty";
+      if($deck->Empty()) return "Ravenous Dabble does not get negative power because your deck is empty";
       $top = $deck->BanishTop();
       $pitch = PitchValue($top);
       $CombatChain->AttackCard()->ModifyPower(-$pitch);
@@ -439,7 +439,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       for($i=0; $i<count($cards); ++$i)
       {
         WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
-        if(ModifiedAttackValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
+        if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
           ++$num6plus;
           $deck->AddBottom($cards[$i], "GY");
         }
@@ -569,7 +569,7 @@ function DoesAttackTriggerMirage()
 {
   global $CombatChain, $mainPlayer;
   if(ClassContains($CombatChain->CurrentAttack(), "ILLUSIONIST", $mainPlayer)) return false;
-  return CachedTotalAttack() >= 6;
+  return CachedTotalPower() >= 6;
 }
 
 function ProcessMirageOnBlock($index)
