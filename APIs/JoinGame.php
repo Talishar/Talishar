@@ -610,9 +610,7 @@ function isBannedInFormat($cardID, $format) {
           "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi_livewire",
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
-          "viserai_rune_blood", "nebula_blade"
-          //to uncomment Friday 25th April 2025
-          //, "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara"
+          "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara"
       ],
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
