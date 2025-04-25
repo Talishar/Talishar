@@ -8,8 +8,8 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
   $filenameNew = "./New Cards/" . $cardID . ".webp";
   $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  // if(!file_exists($filename) || !file_exists($cardImagesUploadedFolder))
-  if (substr($setID, 0,3) == "AMX")
+  if(!file_exists($filename) || !file_exists($cardImagesUploadedFolder))
+  // if (!file_exists($cardImagesUploadedFolder))
   {
     //$imageURL = "https://fabrary.net/images/cards/" . $setID . ".webp";
     //$imageURL = "https://fabrary.net/images/cards/" . $setID . ".width-450.webp";
@@ -36,9 +36,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       $image = imagescale($image, 450, 628);
       imagewebp($image, $filename);
       if(!file_exists($cardImagesUploadedFolder)) imagewebp($image, $cardImagesMissingFolder);
-      imagewebp($image, $cardImagesMissingFolder);
       if(!file_exists($filenameNew)) imagewebp($image, $filenameNew);
-      imagewebp($image, $filenameNew);
       // Free up memory
       imagedestroy($image);
     }
@@ -46,8 +44,8 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
   $concatFilename = "./concat/en/" . $cardID . ".webp";
   $cardSquaresUploadedFolder = "../CardImages/media/uploaded/public/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   $cardSquaresMissingFolder = "../CardImages/media/missing/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  // if(!file_exists($concatFilename) || !file_exists($cardSquaresUploadedFolder))
-  if (substr($setID, 0,3) == "AMX")
+  if(!file_exists($concatFilename) || !file_exists($cardSquaresUploadedFolder))
+  // if (!file_exists($cardSquaresUploadedFolder))
   {
     echo("Concat image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
@@ -62,9 +60,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
 
       if(!file_exists($concatFilename)) imagewebp($dest, $concatFilename);
-      imagewebp($dest, $concatFilename);
       if(!file_exists($cardSquaresUploadedFolder)) imagewebp($dest, $cardSquaresMissingFolder);
-      imagewebp($dest, $cardSquaresMissingFolder);
       // Free up memory
       imagedestroy($image);
       imagedestroy($dest);
@@ -76,8 +72,8 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
   $cropFilename = "./crops/" . $cardID . "_cropped.png";
   $cardCropsUploadedFolder = "../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
   $cardCropsMissingFolder = "../CardImages/media/missing/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
-  // if(!file_exists($cropFilename) || !file_exists($cardCropsUploadedFolder))
-  if (substr($setID, 0,3) == "AMX")
+  if(!file_exists($cropFilename) || !file_exists($cardCropsUploadedFolder))
+  // if (!file_exists($cardCropsUploadedFolder))
   {
     echo("Crop image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
@@ -86,9 +82,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       $image = imagecreatefromwebp($filename);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
       if(!file_exists($cropFilename)) imagepng($image, $cropFilename);
-      imagepng($image, $cropFilename);
       if(!file_exists($cardCropsUploadedFolder)) imagepng($image, $cardCropsMissingFolder);
-      imagepng($image, $cardCropsMissingFolder);
       imagedestroy($image);
       if(file_exists($cropFilename)) echo("Image for " . $cardID . " successfully converted to crops.<BR>");
     }
