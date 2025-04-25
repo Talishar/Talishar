@@ -322,6 +322,7 @@ function SpecificAllyAttackAbilities($attackID)
 
 function AllyDamageTakenAbilities($player, $i)
 {
+  WriteLog("HERE!!");
   $allies = &GetAllies($player);
   switch ($allies[$i]) {
     case "nekria":
@@ -332,6 +333,24 @@ function AllyDamageTakenAbilities($player, $i)
       break;
     default:
       break;
+  }
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherAuras = &GetAuras($otherPlayer);
+  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
+    switch ($otherAuras[$i]) {
+      // case "bloodspill_invocation_red": //need to check if damage was dealt by an AA card?
+      // case "bloodspill_invocation_yellow":
+      // case "bloodspill_invocation_blue":
+      case "arcane_cussing_red":
+      case "arcane_cussing_yellow":
+      case "arcane_cussing_blue":
+        $remove = 1;
+        break;
+      default:
+        break;
+    }
+    if ($remove) DestroyAura($otherPlayer, $i);
   }
 }
 
