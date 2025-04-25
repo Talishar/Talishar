@@ -1336,6 +1336,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($damage < 0) $damage = 0;
       WriteLog("Player " . $playerSource . " is dealing $damage arcane damage from " . CardLink($source, $source), $player);
       if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
+      if ($damage > 0 && TypeContains($source, "W")) {
+        $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $player);
+        if ($warcryIndex != -1 && $sourceUID != -1) {
+          $params = explode(",", $currentTurnEffects[$warcryIndex]);
+          $amount = isset($params[1]) ? $params[1] : 0;
+          $uniqueID = isset($params[2]) ? $params[2] : "-";
+          $wepIndex = SearchCharacterForUniqueID($uniqueID, $playerSource);
+          $char = GetPlayerCharacter($playerSource);
+          if($wepIndex != -1 && $damage <= $amount && $char[$wepIndex] == $source) {
+            AddLayer("TRIGGER", $player, "war_cry_of_bellona_yellow", $amount);
+            RemoveCurrentTurnEffect($warcryIndex);
+          }
+        }
+      }
       $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":
