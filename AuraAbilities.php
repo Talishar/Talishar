@@ -1,6 +1,6 @@
 <?php
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numAttackCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated;
   $otherPlayer = ($player == 1 ? 2 : 1);
@@ -23,16 +23,16 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $index = SearchArsenalReadyCard($player, "the_librarian");
     if ($index > -1) TheLibrarianEffect($player, $index);
   }
-  if ($cardID == "manifestation_of_miragai_blue") SearchCardList($additionalCosts, $player, subtype: "Chi") != "" ? $numAttackCounters += 4 : $numAttackCounters += 2;
-  if ($cardID == "waxing_specter_red" || $cardID == "waxing_specter_yellow" || $cardID == "waxing_specter_blue") $numAttackCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
+  if ($cardID == "manifestation_of_miragai_blue") SearchCardList($additionalCosts, $player, subtype: "Chi") != "" ? $numPowerCounters += 4 : $numPowerCounters += 2;
+  if ($cardID == "waxing_specter_red" || $cardID == "waxing_specter_yellow" || $cardID == "waxing_specter_blue") $numPowerCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
   if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("vengeful_apparition_red", $player, true) && CardCost($cardID, $from) <= 2 && CardCost($cardID, $from) > -1) {
-    ++$numAttackCounters;
+    ++$numPowerCounters;
   }
   if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("vengeful_apparition_yellow", $player, true) && CardCost($cardID, $from) <= 1 && CardCost($cardID, $from) > -1) {
-    ++$numAttackCounters;
+    ++$numPowerCounters;
   }
   if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("vengeful_apparition_blue", $player, true) && CardCost($cardID, $from) <= 0 && CardCost($cardID, $from) > -1) {
-    ++$numAttackCounters;
+    ++$numPowerCounters;
   }
 
   $myHoldState = AuraDefaultHoldTriggerState($cardID);
@@ -45,7 +45,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     array_push($auras, 2); //Status
     if ($rogueHeronSpecial) array_push($auras, 0); //Only happens on the damage effect of the Heron Master in the Roguelike Gamemode
     else array_push($auras, AuraPlayCounters($cardID)); //Miscellaneous Counters
-    array_push($auras, $numAttackCounters); //Attack counters
+    array_push($auras, $numPowerCounters); //Power counters
     array_push($auras, ($isToken ? 1 : 0)); //Is token 0=No, 1=Yes
     array_push($auras, AuraNumUses($cardID));
     array_push($auras, GetUniqueId($cardID, $player));
@@ -1303,7 +1303,7 @@ function AuraHitEffects($attackID)
   }
 }
 
-function AuraAttackModifiers($index, &$attackModifiers, $onBlock=false)
+function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
 {
   global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
   global $CID_Frailty;
@@ -1317,23 +1317,23 @@ function AuraAttackModifiers($index, &$attackModifiers, $onBlock=false)
         case "channel_mount_heroic_red":
           if (CardType($chainCard->ID()) == "AA") {
             $modifier += 3;
-            array_push($attackModifiers, $myAuras[$i]);
-            array_push($attackModifiers, 3);
+            array_push($powerModifiers, $myAuras[$i]);
+            array_push($powerModifiers, 3);
           }
           break;
         case $CID_Frailty:
           if ($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) {
             $modifier -= 1;
-            array_push($attackModifiers, $myAuras[$i]);
-            array_push($attackModifiers, -1);
+            array_push($powerModifiers, $myAuras[$i]);
+            array_push($powerModifiers, -1);
           }
           break;
         case "sharpened_senses_yellow":
           if(IsWeaponAttack())
           {
             $modifier += 1;
-            array_push($attackModifiers, $myAuras[$i]);
-            array_push($attackModifiers, 1);
+            array_push($powerModifiers, $myAuras[$i]);
+            array_push($powerModifiers, 1);
           }
         default:
           break;
@@ -1346,8 +1346,8 @@ function AuraAttackModifiers($index, &$attackModifiers, $onBlock=false)
       case "parable_of_humility_yellow":
         if (CardType($CombatChain->CurrentAttack()) == "AA") {
           $modifier -= 1;
-          array_push($attackModifiers, $theirAuras[$i]);
-          array_push($attackModifiers, -1);
+          array_push($powerModifiers, $theirAuras[$i]);
+          array_push($powerModifiers, -1);
         }
         break;
       default:
@@ -1458,14 +1458,14 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
 function AurasAttackYouControlModifiers($cardID, $player)
 {
   $auras = &GetAuras($player);
-  $attackModifier = 0;
+  $powerModifier = 0;
   for ($i = 0; $i < count($auras); $i += ItemPieces()) {
     switch ($auras[$i]) {
       case "channel_mount_heroic_red":
-        if (CardType($cardID) == "AA") $attackModifier += 3;
+        if (CardType($cardID) == "AA") $powerModifier += 3;
       default:
         break;
     }
   }
-  return $attackModifier;
+  return $powerModifier;
 }

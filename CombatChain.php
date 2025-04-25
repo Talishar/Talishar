@@ -82,11 +82,11 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   else return -1;
 }
 
-function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
+function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
-  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AtksWWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
+  global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AttacksWithWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
@@ -253,7 +253,7 @@ function AttackModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive 
     case "shrill_of_skullform_blue":
       return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "dawnblade_resplendent":
-      return GetClassState($mainPlayer, $CS_AtksWWeapon) >= 1 ? 1 : 0;
+      return GetClassState($mainPlayer, $CS_AttacksWithWeapon) >= 1 ? 1 : 0;
     case "beast_mode_red":
       return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
     case "phoenix_form_red":
@@ -668,7 +668,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
-      EvaluateCombatChain($totalAttack, $totalBlock);
+      EvaluateCombatChain($totalPower, $totalBlock);
       break;
     case "decimator_great_axe":
       if (!SearchCurrentTurnEffects("decimator_great_axe", $mainPlayer)) {
@@ -782,10 +782,10 @@ function OnBlockResolveEffects($cardID = "")
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
-    $effectAttackModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
-    if ($effectAttackModifier != 0) CombatChainPowerModifier($i, $effectAttackModifier);
-    $auraAttackModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
-    if ($auraAttackModifier != 0) CombatChainPowerModifier($i, $auraAttackModifier);
+    $effectPowerModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
+    if ($effectPowerModifier != 0) CombatChainPowerModifier($i, $effectPowerModifier);
+    $auraPowerModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
+    if ($auraPowerModifier != 0) CombatChainPowerModifier($i, $auraPowerModifier);
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
   }
@@ -793,7 +793,7 @@ function OnBlockResolveEffects($cardID = "")
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":
-        EvaluateCombatChain($totalAttack, $totalBlock);
+        EvaluateCombatChain($totalPower, $totalBlock);
         break;
       case "endless_winter_red":
         if (SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
@@ -970,7 +970,7 @@ function OnBlockResolveEffects($cardID = "")
       case "apex_bonebreaker":
         $num6Block = 0;
         for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
-          if (ModifiedAttackValue($combatChain[$j], $defPlayer, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
+          if (ModifiedPowerValue($combatChain[$j], $defPlayer, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
         }
         if ($num6Block) {
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
@@ -1395,7 +1395,7 @@ function IsOverpowerActive()
     case "hydraulic_press_blue":
       return SearchCurrentTurnEffects($combatChain[0], $mainPlayer);
     case "moonshot_yellow":
-      return CachedTotalAttack() >= 10;
+      return CachedTotalPower() >= 10;
     case "torque_tuned_red":
     case "torque_tuned_yellow":
     case "torque_tuned_blue":
@@ -1522,12 +1522,12 @@ function CombatChainPayAdditionalCosts($index, $from)
 
 function CacheCombatResult()
 {
-  global $combatChain, $combatChainState, $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
+  global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink;
   if (count($combatChain) == 0) return;
-  $combatChainState[$CCS_CachedTotalAttack] = 0;
+  $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
-  EvaluateCombatChain($combatChainState[$CCS_CachedTotalAttack], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
+  EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
@@ -1537,10 +1537,10 @@ function CacheCombatResult()
   $combatChainState[$CCS_AttackFused] = (IsFusionActive() ? "1" : "0");
 }
 
-function CachedTotalAttack()
+function CachedTotalPower()
 {
-  global $combatChainState, $CCS_CachedTotalAttack;
-  return $combatChainState[$CCS_CachedTotalAttack];
+  global $combatChainState, $CCS_CachedTotalPower;
+  return $combatChainState[$CCS_CachedTotalPower];
 }
 
 function CachedTotalBlock()
@@ -1613,7 +1613,7 @@ function IsPiercingActive($cardID)
 function IsTowerActive()
 {
   global $combatChain;
-  return (CachedTotalAttack() >= 13 && HasTower($combatChain[0]));
+  return (CachedTotalPower() >= 13 && HasTower($combatChain[0]));
 }
 
 function IsHighTideActive()

@@ -31,7 +31,7 @@ function DiscardPieces()
 //0 - Card ID
 //1 - Status (2=ready, 1=unavailable, 0=destroyed, 3=Sleeping (Sleep Dart, Crush Confidance, etc)), 4=Dishonored
 //2 - Num counters
-//3 - Num attack counters
+//3 - Num power counters
 //4 - Num defense counters
 //5 - Num uses
 //6 - On chain (1 = yes, 0 = no)
@@ -61,7 +61,7 @@ function BanishPieces()
 //2 - From
 //3 - Resources Paid
 //4 - Reprise Active? (Or other class effects?)
-//5 - Attack Modifier
+//5 - Power Modifier
 //6 - Defense Modifier
 //7 - Combat Chain Unique ID
 //8 - Origin Unique ID
@@ -75,7 +75,7 @@ function CombatChainPieces()
 //0 - Card ID
 //1 - Status (2=ready, 1=unavailable, 0=destroyed)
 //2 - Num counters
-//3 - Num attack counters
+//3 - Num power counters
 //4 - Is Token (1 = yes, 0 = no)
 //5 - Number of ability uses (triggered or activated)
 //6 - Unique ID
@@ -164,7 +164,7 @@ function ArsenalPieces()
 //6 - Endurance Counters
 //7 - Life Counters
 //8 - Ability/effect Uses
-//9 - Attack Counters
+//9 - Power Counters
 //10 - Dealt Damage to opposing hero
 //11 - Tapped (0 = no, 1 = yes)
 //12 - Steam Counters
@@ -211,7 +211,7 @@ function InventoryPieces()
 //1 - Player ID
 //2 - Still on chain? 1 = yes, 0 = no
 //3 - From
-//4 - Attack Modifier
+//4 - Power Modifier
 //5 - Defense Modifier
 //6 - Added On-hits (comma separated)
 //7 - Original Card ID (in case of copies)
@@ -261,7 +261,7 @@ $SHMOP_ISREPLAY = 10;//0 = not replay, 1 = replay
 //Class State (one for each player)
 $CS_Num6PowDisc = 0;
 $CS_NumBoosted = 1;
-$CS_AtksWWeapon = 2;
+$CS_AttacksWithWeapon = 2;
 $CS_HitsWDawnblade = 3;
 $CS_DamagePrevention = 4;
 $CS_CardsBanished = 5;
@@ -377,12 +377,12 @@ $CCS_AttackFused = 13;
 $CCS_AttackTotalDamage = 14;//Deprecated -- use chain link summary instead, it has all of them
 $CCS_NumChainLinks = 15;//Deprecated -- use NumChainLinks() instead
 $CCS_AttackTarget = 16;
-$CCS_LinkTotalAttack = 17;
+$CCS_LinkTotalPower = 17;
 $CCS_LinkBaseAttack = 18;
 $CCS_BaseAttackDefenseMax = 19;
 $CCS_ResourceCostDefenseMin = 20;
 $CCS_CardTypeDefenseRequirement = 21;
-$CCS_CachedTotalAttack = 22;
+$CCS_CachedTotalPower = 22;
 $CCS_CachedTotalBlock = 23;
 $CCS_CombatDamageReplaced = 24; //CR 6.5.3, CR 6.5.4 (CR 2.0)
 $CCS_AttackUniqueID = 25;
@@ -413,8 +413,8 @@ function ResetCombatChainState()
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_WagersThisLink, $CCS_ChainLinkHitEffectsPrevented;
   global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate, $CCS_PhantasmThisLink;
-  global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-  global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
+  global $CCS_LinkTotalPower, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+  global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
@@ -435,12 +435,12 @@ function ResetCombatChainState()
   $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackTotalDamage] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
-  $combatChainState[$CCS_LinkTotalAttack] = 0;
+  $combatChainState[$CCS_LinkTotalPower] = 0;
   $combatChainState[$CCS_LinkBaseAttack] = 0;
   $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
   $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
   $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
-  $combatChainState[$CCS_CachedTotalAttack] = 0;
+  $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   $combatChainState[$CCS_CombatDamageReplaced] = 0;
   $combatChainState[$CCS_AttackUniqueID] = -1;
@@ -503,7 +503,7 @@ function AttackReplaced($cardID, $player)
   $combatChainState[$CCS_LinkBaseAttack] = 0;
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
-  $combatChain[5] = 0;//Reset Attack modifiers
+  $combatChain[5] = 0;//Reset Power Modifiers
   $combatChain[6] = 0;//Reset Defense modifiers
   $combatChain[7] = GetUniqueId($cardID, $player); //new unique id
   $combatChain[9] = $cardID; //new original id
@@ -523,8 +523,8 @@ function ResetChainLinkState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_HasAimCounter, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
   global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
-  global $CCS_LinkTotalAttack, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
-  global $CCS_CachedTotalAttack, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
+  global $CCS_LinkTotalPower, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+  global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
@@ -543,12 +543,12 @@ function ResetChainLinkState()
   $combatChainState[$CCS_AttackFused] = 0;
   $combatChainState[$CCS_AttackTotalDamage] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
-  $combatChainState[$CCS_LinkTotalAttack] = 0;
+  $combatChainState[$CCS_LinkTotalPower] = 0;
   $combatChainState[$CCS_LinkBaseAttack] = 0;
   $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
   $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
   $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
-  $combatChainState[$CCS_CachedTotalAttack] = 0;
+  $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   $combatChainState[$CCS_CombatDamageReplaced] = 0;
   $combatChainState[$CCS_AttackUniqueID] = -1;
@@ -572,7 +572,7 @@ function ResetChainLinkState()
 
 function ResetMainClassState()
 {
-  global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AtksWWeapon, $CS_HitsWDawnblade, $CS_DamagePrevention, $CS_CardsBanished;
+  global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AttacksWithWeapon, $CS_HitsWDawnblade, $CS_DamagePrevention, $CS_CardsBanished;
   global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_ResolvingLayerUniqueID, $CS_NextWizardNAAInstant;
   global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
@@ -591,7 +591,7 @@ function ResetMainClassState()
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
-  $mainClassState[$CS_AtksWWeapon] = 0;
+  $mainClassState[$CS_AttacksWithWeapon] = 0;
   $mainClassState[$CS_HitsWDawnblade] = 0;
   $mainClassState[$CS_DamagePrevention] = 0;
   $mainClassState[$CS_CardsBanished] = 0;

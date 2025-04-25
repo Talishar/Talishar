@@ -2197,7 +2197,7 @@ return match($cardID) {
 default => "AA"
 };
 }
-function GeneratedAttackValue($cardID) {
+function GeneratedPowerValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
 "adrenaline_rush_red" => 4,

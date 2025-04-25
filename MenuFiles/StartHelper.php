@@ -42,7 +42,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0" . ($i < count($charEquip) - 1 ? " " : "\r\n"));
   }
   //Character and equipment. First is ID. Four numbers each. First is status (0=Destroy/unavailable, 1=Used, 2=Unused, 3=Disabled). Second is num counters
-  //Third is attack modifier, fourth is block modifier
+  //Third is power modifier, fourth is block modifier
   //Order: Character, weapon 1, weapon 2, head, chest, arms, legs
   fwrite($handler, "0 0\r\n"); //Resources float/needed
   fwrite($handler, "\r\n"); //Arsenal

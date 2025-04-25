@@ -1,5 +1,5 @@
 <?php
-function AUREffectAttackModifier($cardID): int
+function AUREffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "sizzle_red" => 3,

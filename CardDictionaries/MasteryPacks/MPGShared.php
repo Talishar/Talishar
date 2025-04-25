@@ -15,7 +15,7 @@ function MPGAbilityHasGoAgain($cardID): bool
   };
 }
 
-function MPGEffectAttackModifier($cardID): int
+function MPGEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     default => 0

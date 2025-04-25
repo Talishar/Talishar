@@ -78,7 +78,7 @@
     }
   }
 
-  function EVREffectAttackModifier($cardID)
+  function EVREffectPowerModifier($cardID)
   {
     $params = explode(",", $cardID);
     $cardID = $params[0];
@@ -133,7 +133,7 @@
 
   function EVRCombatEffectActive($cardID, $attackID)
   {
-    global $CS_AtksWWeapon, $mainPlayer;
+    global $CS_AttacksWithWeapon, $mainPlayer;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     switch($cardID)
@@ -145,17 +145,17 @@
       case "bravo_star_of_the_show": return CardCost($attackID) >= 3;
       case "valda_brightaxe": return HasCrush($attackID);
       case "pulverize_red": return true;
-      case "ride_the_tailwind_red": case "ride_the_tailwind_yellow": case "ride_the_tailwind_blue": return CardType($attackID) == "AA" && AttackValue($attackID) <= 2;//Base attack
+      case "ride_the_tailwind_red": case "ride_the_tailwind_yellow": case "ride_the_tailwind_blue": return CardType($attackID) == "AA" && PowerValue($attackID) <= 2;//Base attack
       case "twin_twisters_red-1": case "twin_twisters_yellow-1": case "twin_twisters_blue-1": return true;
       case "twin_twisters_red-2": case "twin_twisters_yellow-2": case "twin_twisters_blue-2": return true;
       case "slice_and_dice_red-1": case "slice_and_dice_yellow-1": case "slice_and_dice_blue-1":
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
-        return TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AtksWWeapon) == 0;
+        return TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AttacksWithWeapon) == 0;
       case "slice_and_dice_red-2": case "slice_and_dice_yellow-2": case "slice_and_dice_blue-2":
         $subtype = CardSubType($attackID);
         if($subtype != "Sword" && $subtype != "Dagger") return false;
-        return TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AtksWWeapon) == 1;
+        return TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AttacksWithWeapon) == 1;
       case "blade_runner_red": case "blade_runner_yellow": case "blade_runner_blue": return TypeContains($attackID, "W", $mainPlayer);
       case "outland_skirmish_red": case "outland_skirmish_yellow": case "outland_skirmish_blue": return TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID);
       case "outland_skirmish_red-1": case "outland_skirmish_yellow-1": case "outland_skirmish_blue-1": return TypeContains($attackID, "W", $mainPlayer);
@@ -213,12 +213,12 @@
       case "bare_fangs_red": case "bare_fangs_yellow": case "bare_fangs_blue":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "wild_ride_red": case "wild_ride_yellow": case "wild_ride_blue":
         Draw($currentPlayer);
         $card = DiscardRandom();
-        if(ModifiedAttackValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain();
+        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) GiveAttackGoAgain();
         return "";
       case "bad_beats_red": case "bad_beats_yellow": case "bad_beats_blue":
         if($cardID == "bad_beats_red") $target = 4;
@@ -778,8 +778,8 @@
             ModalAbilities($currentPlayer, $modalAbilities[0], $modalAbilities[1]);
           }
           else {
-            $attack = ModifiedAttackValue($chainLinks[$i][$j], $currentPlayer, "CC", source:"fractal_replication_red");
-            if($attack > $highestAttack) $highestAttack = $attack;
+            $power = ModifiedPowerValue($chainLinks[$i][$j], $currentPlayer, "CC", source:"fractal_replication_red");
+            if($power > $highestAttack) $highestAttack = $power;
             $modifiedBaseAttack = $chainLinkSummary[$i*ChainLinkSummaryPieces()+6];
             if($modifiedBaseAttack > $highestAttack) $highestAttack = $modifiedBaseAttack;
             $block = BlockValue($chainLinks[$i][$j]);
@@ -801,8 +801,8 @@
           ModalAbilities($currentPlayer, $modalAbilities[0], $modalAbilities[1]);
         }
         else {
-          $attack = ModifiedAttackValue($cardID, $currentPlayer, "CC", source:"fractal_replication_red");
-          if($attack > $highestAttack) $highestAttack = $attack;
+          $power = ModifiedPowerValue($cardID, $currentPlayer, "CC", source:"fractal_replication_red");
+          if($power > $highestAttack) $highestAttack = $power;
           $block = BlockValue($cardID);
           if($block > $highestBlock) $highestBlock = $block;
           if(!$hasPhantasm) $hasPhantasm = HasPhantasm($cardID);

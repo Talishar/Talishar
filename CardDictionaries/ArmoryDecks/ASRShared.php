@@ -14,7 +14,7 @@ function ASRAbilityHasGoAgain($cardID): bool
   };
 }
 
-function ASREffectAttackModifier($cardID): int
+function ASREffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     default => 0

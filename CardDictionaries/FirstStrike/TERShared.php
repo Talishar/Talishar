@@ -25,7 +25,7 @@ function TERCombatEffectActive($cardID): bool
   };
 }
 
-function TEREffectAttackModifier($cardID): int
+function TEREffectPowerModifier($cardID): int
 {
   global $currentPlayer;
 

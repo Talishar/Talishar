@@ -33,7 +33,7 @@ function ROSAbilityHasGoAgain($cardID): bool
   };
 }
 
-function ROSEffectAttackModifier($cardID): int
+function ROSEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "strong_yield_blue", "electrostatic_discharge_blue", "condemn_to_slaughter_blue" => 1,

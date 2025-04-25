@@ -20,7 +20,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
     array_push($allies, 0); //Life Counters
     array_push($allies, 1); //Ability/effect uses
-    array_push($allies, 0); //Attack Counters
+    array_push($allies, 0); //Power Counters
     array_push($allies, 0); //Damage dealt to the opponent
     array_push($allies, $tapped); //tapped
     array_push($allies, AllySteamCounters($cardID)); //steam counters
@@ -313,7 +313,7 @@ function SpecificAllyAttackAbilities($attackID)
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYALLY:subtype=Angel", 1);
-      AddDecisionQueue("ADDALLATTACKCOUNTERS", $mainPlayer, "1", 1);
+      AddDecisionQueue("ADDALLPOWERCOUNTERS", $mainPlayer, "1", 1);
       break;
     default:
       break;
@@ -322,7 +322,6 @@ function SpecificAllyAttackAbilities($attackID)
 
 function AllyDamageTakenAbilities($player, $i)
 {
-  WriteLog("HERE!!");
   $allies = &GetAllies($player);
   switch ($allies[$i]) {
     case "nekria":

@@ -3,7 +3,7 @@
 include "CardSetters.php";
 include "CardGetters.php";
 
-function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = [], $secondNeedleCheck = false)
+function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
   global $CCS_WeaponIndex, $combatChain, $defPlayer;
@@ -18,19 +18,19 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       $combatChainState[$CCS_LinkBaseAttack] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
     }
     if ($chainCard->PlayerID() == $mainPlayer) {
-      if ($i == 0 && $attackType != "W") $attack = $combatChainState[$CCS_LinkBaseAttack];
-      else $attack = AttackValue($chainCard->ID());
-      if ($canGainAttack || $i == 0 || $attack < 0) {
-        array_push($attackModifiers, $chainCard->ID());
-        array_push($attackModifiers, $attack);
-        if ($i == 0) $totalAttack += $attack;
-        else AddAttack($totalAttack, $attack);
+      if ($i == 0 && $attackType != "W") $power = $combatChainState[$CCS_LinkBaseAttack];
+      else $power = PowerValue($chainCard->ID());
+      if ($canGainAttack || $i == 0 || $power < 0) {
+        array_push($powerModifiers, $chainCard->ID());
+        array_push($powerModifiers, $power);
+        if ($i == 0) $totalPower += $power;
+        else AddAttack($totalPower, $power);
       }
-      $attack = AttackModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->AttackValue();
-      if (($canGainAttack && !$snagActive) || $attack < 0) {
-        array_push($attackModifiers, $chainCard->ID());
-        array_push($attackModifiers, $attack);
-        AddAttack($totalAttack, $attack);
+      $power = PowerModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->PowerValue();
+      if (($canGainAttack && !$snagActive) || $power < 0) {
+        array_push($powerModifiers, $chainCard->ID());
+        array_push($powerModifiers, $power);
+        AddAttack($totalPower, $power);
       }
     } else {
       $totalDefense += BlockingCardDefense($i * CombatChainPieces());
@@ -40,11 +40,11 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-        $attack = EffectAttackModifier($currentTurnEffects[$i]);
-        if (($canGainAttack || $attack < 0) && !($snagActive && ($currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
-          array_push($attackModifiers, $currentTurnEffects[$i]);
-          array_push($attackModifiers, $attack);
-          AddAttack($totalAttack, $attack);
+        $power = EffectPowerModifier($currentTurnEffects[$i]);
+        if (($canGainAttack || $power < 0) && !($snagActive && ($currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
+          array_push($powerModifiers, $currentTurnEffects[$i]);
+          array_push($powerModifiers, $power);
+          AddAttack($totalPower, $power);
         }
       }
     }
@@ -53,48 +53,48 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   if(isset($combatChain[10])) {
     foreach (explode(",", $combatChain[10]) as $buffSetID) {
       $buff = ConvertToCardID($buffSetID);
-      $attack = EffectAttackModifier($buff, attached: true);
-      if (($canGainAttack || $attack < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
-        array_push($attackModifiers, $buff);
-        array_push($attackModifiers, $attack);
-        AddAttack($totalAttack, $attack);
+      $power = EffectPowerModifier($buff, attached: true);
+      if (($canGainAttack || $power < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
+        array_push($powerModifiers, $buff);
+        array_push($powerModifiers, $power);
+        AddAttack($totalPower, $power);
       }
     }
   }
   if ($combatChainState[$CCS_WeaponIndex] != -1) {
-    $attack = 0;
+    $power = 0;
     if ($attackType == "W") {
       $char = &GetPlayerCharacter($mainPlayer);
-      $attack = $char[$combatChainState[$CCS_WeaponIndex] + 3];
-      if (filter_var($attack, FILTER_VALIDATE_INT) === false) $attack = 0;
+      $power = $char[$combatChainState[$CCS_WeaponIndex] + 3];
+      if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
     } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
       $auras = &GetAuras($mainPlayer);
-      if (isset($auras[$combatChainState[$CCS_WeaponIndex]])) $attack = $auras[$combatChainState[$CCS_WeaponIndex] + 3];
+      if (isset($auras[$combatChainState[$CCS_WeaponIndex]])) $power = $auras[$combatChainState[$CCS_WeaponIndex] + 3];
     } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Ally")) {
       $allies = &GetAllies($mainPlayer);
-      if (isset($allies[$combatChainState[$CCS_WeaponIndex]])) $attack = $allies[$combatChainState[$CCS_WeaponIndex] + 9];
+      if (isset($allies[$combatChainState[$CCS_WeaponIndex]])) $power = $allies[$combatChainState[$CCS_WeaponIndex] + 9];
     }
-    if ($canGainAttack || $attack < 0) {
-      array_push($attackModifiers, "ATKCOU"); //Attack Counter image ID
-      array_push($attackModifiers, $attack);
-      AddAttack($totalAttack, $attack);
+    if ($canGainAttack || $power < 0) {
+      array_push($powerModifiers, "POWERCOUNTER"); //Power Counter image ID
+      array_push($powerModifiers, $power);
+      AddAttack($totalPower, $power);
     }
   }
-  $attack = MainCharacterAttackModifiers($attackModifiers);
-  if ($canGainAttack || $attack < 0) {
-    AddAttack($totalAttack, $attack);
+  $power = MainCharacterPowerModifiers($powerModifiers);
+  if ($canGainAttack || $power < 0) {
+    AddAttack($totalPower, $power);
   }
-  $attack = AuraAttackModifiers(0, $attackModifiers);
-  if ($canGainAttack || $attack < 0) {
-    AddAttack($totalAttack, $attack);
+  $power = AuraPowerModifiers(0, $powerModifiers);
+  if ($canGainAttack || $power < 0) {
+    AddAttack($totalPower, $power);
   }
-  $attack = ArsenalAttackModifier($attackModifiers);
-  if ($canGainAttack || $attack < 0) {
-    AddAttack($totalAttack, $attack);
+  $power = ArsenalPowerModifier($powerModifiers);
+  if ($canGainAttack || $power < 0) {
+    AddAttack($totalPower, $power);
   }
-  $attack = ItemAttackModifiers($attackModifiers);
-  if ($canGainAttack || $attack < 0) {
-    AddAttack($totalAttack, $attack);
+  $power = ItemPowerModifiers($powerModifiers);
+  if ($canGainAttack || $power < 0) {
+    AddAttack($totalPower, $power);
   }
   CurrentEffectAfterPlayOrActivateAbility(false); //checking gauntlets of iron will
   if (!$secondNeedleCheck) {
@@ -103,7 +103,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
       case "zephyr_needle_r":
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
           $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
-          if ($totalDefense > 0 && $blockVal > $totalAttack && $combatChain[$i + 1] == $defPlayer) {
+          if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
             for ($i = 0; $i < count($char); $i += CharacterPieces()) {
@@ -123,7 +123,7 @@ function EvaluateCombatChain(&$totalAttack, &$totalDefense, &$attackModifiers = 
   }
 }
 
-function AddAttack(&$totalAttack, $amount): void
+function AddAttack(&$totalPower, $amount): void
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -139,7 +139,7 @@ function AddAttack(&$totalAttack, $amount): void
   }
   if ($amount > 0 && ($attackID == "back_heel_kick_red" || $attackID == "back_heel_kick_yellow" || $attackID == "back_heel_kick_blue") && ComboActive()) $amount += 1;
   if ($amount > 0) $amount += PermanentAddAttackAbilities();
-  $totalAttack += $amount;
+  $totalPower += $amount;
 }
 
 function BlockingCardDefense($index)
@@ -175,7 +175,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, $from);
   array_push($combatChain, $resourcesPaid);
   array_push($combatChain, RepriseActive());
-  array_push($combatChain, 0);//Attack modifier
+  array_push($combatChain, 0);//Power Modifier
   array_push($combatChain, 0);//Defense modifier
   array_push($combatChain, GetUniqueId($cardID, $player));
   array_push($combatChain, $OriginUniqueID);
@@ -216,7 +216,7 @@ function CombatChainDefenseModifier($index, $amount)
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
-    EvaluateCombatChain($totalAttack, $totalBlock);
+    EvaluateCombatChain($totalPower, $totalBlock);
   }
   if ($amount > 0) writelog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
   else if ($amount < 0) writelog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
@@ -400,7 +400,7 @@ function ArsenalAttackAbilities()
         if (CardType($attackID) == "AA" && $arsenal[$i + 1] == "UP") LadyBarthimontAbility($mainPlayer, $i);
         break;
       case "chief_rukutan":
-        if (CardType($attackID) == "AA" && ModifiedAttackValue($attackID, $mainPlayer, "CC", source: $arsenal[$i]) >= 6 && $arsenal[$i + 1] == "UP") ChiefRukutanAbility($mainPlayer, $i);
+        if (CardType($attackID) == "AA" && ModifiedPowerValue($attackID, $mainPlayer, "CC", source: $arsenal[$i]) >= 6 && $arsenal[$i + 1] == "UP") ChiefRukutanAbility($mainPlayer, $i);
         break;
       default:
         break;
@@ -408,7 +408,7 @@ function ArsenalAttackAbilities()
   }
 }
 
-function ArsenalAttackModifier(&$attackModifiers)
+function ArsenalPowerModifier(&$powerModifiers)
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -419,8 +419,8 @@ function ArsenalAttackModifier(&$attackModifiers)
     switch ($arsenal[$i]) {
       case "minerva_themis":
         $modifier += ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID) ? 1 : 0);
-        array_push($attackModifiers, $arsenal[$i]);
-        array_push($attackModifiers, $modifier);
+        array_push($powerModifiers, $arsenal[$i]);
+        array_push($powerModifiers, $modifier);
         break;
       default:
         break;
@@ -474,12 +474,12 @@ function HasIncreasedAttack()
 {
   global $CombatChain, $combatChainState, $CCS_LinkBaseAttack, $mainPlayer, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
-    $attack = CachedTotalAttack();
+    $power = CachedTotalPower();
     if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
-      if ($attack > WardAmount($combatChain[0], $mainPlayer)) return true;
+      if ($power > WardAmount($combatChain[0], $mainPlayer)) return true;
       else return false;
     }
-    if ($attack > $combatChainState[$CCS_LinkBaseAttack]) return true;
+    if ($power > $combatChainState[$CCS_LinkBaseAttack]) return true;
   }
   return false;
 }
@@ -1195,7 +1195,7 @@ function CombatChainClosedCharacterEffects()
           break;
         case "bone_vizier":
           $deck = new Deck($defPlayer);
-          if ($deck->Reveal() && ModifiedAttackValue($deck->Top(), $defPlayer, "DECK", source: "bone_vizier") < 6) {
+          if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source: "bone_vizier") < 6) {
             $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
             WriteLog(CardLink("bone_vizier", "bone_vizier") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
@@ -1853,15 +1853,15 @@ function DoesAttackHaveGoAgain()
     case "out_muscle_red":
     case "out_muscle_yellow":
     case "out_muscle_blue":
-      return SearchHighestAttackDefended() < CachedTotalAttack();
+      return SearchHighestAttackDefended() < CachedTotalPower();
     case "zealous_belting_red":
     case "zealous_belting_yellow":
     case "zealous_belting_blue":
-      return SearchPitchHighestAttack($mainPitch) > AttackValue($attackID);
+      return SearchPitchHighestAttack($mainPitch) > PowerValue($attackID);
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
-      return CachedTotalAttack() > AttackValue($attackID);
+      return CachedTotalPower() > PowerValue($attackID);
     case "swarming_gloomveil_red":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "fractal_replication_red":
@@ -2465,7 +2465,7 @@ function CanRevealCards($player)
   return true;
 }
 
-function BaseAttackModifiers($attackID, $attackValue)
+function BasePowerModifiers($attackID, $powerValue)
 {
   global $currentTurnEffects, $mainPlayer, $CS_Num6PowBan;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
@@ -2476,10 +2476,10 @@ function BaseAttackModifiers($attackID, $attackValue)
       case "fatigue_shot_red":
       case "fatigue_shot_yellow":
       case "fatigue_shot_blue":
-        $attackValue = ceil($attackValue / 2);
+        $powerValue = ceil($powerValue / 2);
         break;
       case "ghostly_touch":
-        if ($attackID == "UPR551") $attackValue = $effects[1];
+        if ($attackID == "UPR551") $powerValue = $effects[1];
         break;
       default:
         break;
@@ -2487,12 +2487,12 @@ function BaseAttackModifiers($attackID, $attackValue)
   }
   switch ($attackID) {
     case "diabolic_offering_blue":
-      $attackValue = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+      $powerValue = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
       break;
     default:
       break;
   }
-  return $attackValue;
+  return $powerValue;
 }
 
 function GetDamagePreventionIndices($player, $type, $damage, $preventable=true)

@@ -80,7 +80,7 @@ function AJVAbilityHasGoAgain($cardID) {
   }
 }
 
-function AJVEffectAttackModifier($cardID): int
+function AJVEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "gauntlets_of_the_boreal_domain-E" => 2,

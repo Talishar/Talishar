@@ -21,7 +21,7 @@ function CardIsBlockable($storedPriorityNode)
     case "herons_flight_red": return false; //I have no idea how to make Heron's Flight work, so I'm just gonna say it's unblockable. This is so edge case that no one will know for a while lmfaooooo
     case "crane_dance_red":
     case "crane_dance_yellow":
-    case "crane_dance_blue": return !(ComboActive() && AttackValue($storedPriorityNode[0]) > $combatChainState[$CCS_NumChainLinks]);
+    case "crane_dance_blue": return !(ComboActive() && PowerValue($storedPriorityNode[0]) > $combatChainState[$CCS_NumChainLinks]);
     default: return true;
   }
 }
@@ -260,7 +260,7 @@ function CardIsPrevented($cardID)
       switch ($currentTurnEffects[$i]) {
         case "crush_the_weak_red":
         case "crush_the_weak_yellow":
-        case "crush_the_weak_blue": return AttackValue($cardID) <= 3;
+        case "crush_the_weak_blue": return PowerValue($cardID) <= 3;
         case "frost_lock_blue": return CardCost($cardID) == 0;
         default:
           break;
@@ -288,7 +288,7 @@ function ArsenalIsFrozen($storedPriorityNode)
 
 function ReactionRequirementsMet($storedPriorityNode)
 {
-  global $combatChain, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AtksWWeapon, $CS_NumFusedIce, $CS_NumFusedEarth, $CS_NumFusedLightning;
+  global $combatChain, $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_AttacksWithWeapon, $CS_NumFusedIce, $CS_NumFusedEarth, $CS_NumFusedLightning;
   switch($storedPriorityNode[0])
   {
     case "breaking_scales": return HasCombo($combatChain[0]);
@@ -309,13 +309,13 @@ function ReactionRequirementsMet($storedPriorityNode)
     case "sutcliffes_suede_hides": return CardType($combatChain[0]) == "AA" && GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0;
     case "shatter_yellow": return TypeContains($combatChain[0], "W", $mainPlayer) && !Is1H($combatChain[0]);
     case "blade_runner_red": case "blade_runner_yellow": case "blade_runner_blue": return TypeContains($combatChain[0], "W", $mainPlayer) && Is1H($combatChain[0]);
-    case "in_the_swing_red": case "in_the_swing_yellow": case "in_the_swing_blue": return GetClassState($currentPlayer, $CS_AtksWWeapon) >= 1;
+    case "in_the_swing_red": case "in_the_swing_yellow": case "in_the_swing_blue": return GetClassState($currentPlayer, $CS_AttacksWithWeapon) >= 1;
     case "run_through_yellow":
     case "thrust_red":
     case "blade_flash_blue": return CardSubtype($combatChain[0]) == "Sword";
     case "combustion_point_red": return CardType($combatChain[0]) == "AA" && (ClassContains($combatChain[0], "NINJA", $mainPlayer) || TalentContains($combatChain[0], "DRACONIC", $mainPlayer));
     case "liquefy_red": return CardType($combatChain[0]) == "AA";
-    case "tide_flippers": return CardType($combatChain[0]) == "AA" && AttackValue($combatChain[0]) <= 2;
+    case "tide_flippers": return CardType($combatChain[0]) == "AA" && PowerValue($combatChain[0]) <= 2;
     case "rapid_reflex_red": case "rapid_reflex_yellow": case "rapid_reflex_blue": return CardType($combatChain[0]) == "AA" && CardCost($combatChain[0]) == 0;
     case "puncture_red": case "puncture_yellow": case "puncture_blue": return CardSubtype($combatChain[0]) == "Sword" || CardSubtype($combatChain[0]) == "Dagger";
     case "blacktek_whisperers": case "mask_of_perdition": return ClassContains($combatChain[0], "ASSASSIN", $mainPlayer) && CardType($combatChain[0]) == "AA";

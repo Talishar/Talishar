@@ -34,7 +34,7 @@
   fwrite($handler, "<?php\r\n");
 
   GenerateFunction($cardArray, $handler, "CardType", "type", "AA");
-  GenerateFunction($cardArray, $handler, "AttackValue", "attack", "0");
+  GenerateFunction($cardArray, $handler, "PowerValue", "attack", "0");
   GenerateFunction($cardArray, $handler, "BlockValue", "block", "3");
   GenerateFunction($cardArray, $handler, "CardName", "name");
   GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");

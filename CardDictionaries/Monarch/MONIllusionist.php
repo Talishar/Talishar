@@ -144,17 +144,17 @@
 
   function DoesBlockTriggerPhantasm($index)
   {
-    global $CombatChain, $mainPlayer, $defPlayer, $attackModifiers;
-    $attackModifiers = [];
+    global $CombatChain, $mainPlayer, $defPlayer, $powerModifiers;
+    $powerModifiers = [];
     $card = $CombatChain->Card($index);
     $defendingCardType = CardType($card->ID());
     if($defendingCardType != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
-    if(PowerCantBeModified($card->ID())) return AttackValue($card->ID()) >= 6;
-    $attackValue = ModifiedAttackValue($card->ID(), $defPlayer, "CC", source:$card->ID());
-    $attackValue += AuraAttackModifiers($index, $attackModifiers, onBlock: true);
-    $attackValue += $card->AttackValue();//Combat chain attack modifier
-    return $attackValue >= 6;
+    if(PowerCantBeModified($card->ID())) return PowerValue($card->ID()) >= 6;
+    $powerValue = ModifiedPowerValue($card->ID(), $defPlayer, "CC", source:$card->ID());
+    $powerValue += AuraPowerModifiers($index, $powerModifiers, onBlock: true);
+    $powerValue += $card->PowerValue();//Combat chain power modifier
+    return $powerValue >= 6;
   }
 
   function IsPhantasmStillActive()

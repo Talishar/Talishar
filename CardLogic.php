@@ -1652,10 +1652,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;  
     case "zephyr_needle":
     case "zephyr_needle_r":
-      EvaluateCombatChain($totalAttack, $totalBlock, secondNeedleCheck: true);
+      EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
-        if ($totalBlock > 0 && ($blockVal > $totalAttack) && $combatChain[$i + 1] == $defPlayer) {
+        if ($totalBlock > 0 && ($blockVal > $totalPower) && $combatChain[$i + 1] == $defPlayer) {
           DestroyCurrentWeapon();
         }
       }
@@ -1736,9 +1736,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");
-        AddDecisionQueue("ATTACKMODIFIER", $player, "-2", 1);
+        AddDecisionQueue("POWERMODIFIER", $player, "-2", 1);
       } else {
-        AddDecisionQueue("ATTACKMODIFIER", $mainPlayer, "-2", 1);
+        AddDecisionQueue("POWERMODIFIER", $mainPlayer, "-2", 1);
       }
       break;
     case "dread_triptych_blue":
@@ -1964,7 +1964,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "pack_call_yellow":
       $deck = new Deck($player);
-      if ($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source: "pack_call_yellow") < 6) {
+      if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: "pack_call_yellow") < 6) {
         $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
         WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
@@ -2125,7 +2125,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "berserk_yellow":
       $deck = new Deck($player);
-      if ($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source: "berserk_yellow") >= 6) {
+      if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: "berserk_yellow") >= 6) {
         Draw($player);
         WriteLog(CardLink($parameter, $parameter) . " drew a card");
       }
@@ -2355,7 +2355,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
     case "give_and_take_red":
-      MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalAttack()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalAttack()-1, "MYTOPDECK", may: true);
+      MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalPower()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalPower()-1, "MYTOPDECK", may: true);
       break;
     case "light_of_sol_yellow":
       $deck = new Deck($player);
@@ -2542,7 +2542,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "apex_bonebreaker":
       $num6Block = 0;
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if (ModifiedAttackValue($combatChain[$i], $player, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
+        if (ModifiedPowerValue($combatChain[$i], $player, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
       }
       if ($num6Block) {
         PlayAura("might", $player);
@@ -2553,7 +2553,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "pack_call_yellow":
     case "pack_call_blue":
       $deck = new Deck($player);
-      if ($deck->Reveal() && ModifiedAttackValue($deck->Top(), $player, "DECK", source: $parameter) < 6) {
+      if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: $parameter) < 6) {
         $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
         WriteLog(CardLink($parameter, $parameter) . " put " . CardLink($card, $card) . " on the bottom of your deck");
       }
@@ -2562,7 +2562,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Clash($parameter, effectController: $player);
       break;
     case "gauntlets_of_iron_will":
-      AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalAttack(), $mainPlayer);
+      AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower(), $mainPlayer);
       break;
     case "golden_glare":
       $yellowPitchCards = 0;
@@ -2691,7 +2691,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "haunting_specter_red":
     case "haunting_specter_yellow":
     case "haunting_specter_blue":
-      if (SearchAura($player, class: "ILLUSIONIST") < 0) PlayAura("spectral_shield", $player, numAttackCounters: 1);
+      if (SearchAura($player, class: "ILLUSIONIST") < 0) PlayAura("spectral_shield", $player, numPowerCounters: 1);
       else PlayAura("spectral_shield", $player);
       break;
     case "vengeful_apparition_red":
@@ -3316,7 +3316,7 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
 function DiscardedAtRandomEffects($player, $discarded, $source)
 {
   global $mainPlayer;
-  if (SearchCurrentTurnEffects("berserk_yellow", $player) && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
+  if (SearchCurrentTurnEffects("berserk_yellow", $player) && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
     $index = SearchGetFirstIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $discarded));
     RemoveGraveyard($player, $index);
     BanishCardForPlayer($discarded, $player, "GY", "-", $player);
@@ -3324,11 +3324,11 @@ function DiscardedAtRandomEffects($player, $discarded, $source)
   }
   $character = GetPlayerCharacter($player);
   $index = FindCharacterIndex($player, "beaten_trackers");
-  if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
+  if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && $player == $mainPlayer && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
     AddLayer("TRIGGER", $player, $character[$index]);
   }
   $index = FindCharacterIndex($player, "hide_tanner");
-  if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && $player == $mainPlayer && ModifiedAttackValue($discarded, $player, "GY", "HAND") >= 6) {
+  if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && $player == $mainPlayer && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
     AddLayer("TRIGGER", $player, $character[$index]);
   }
   switch ($discarded) {
@@ -3358,7 +3358,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 {
   global $CS_Num6PowDisc, $mainPlayer, $layers;
   AddEvent("DISCARD", $discarded);
-  $modifiedAttack = ModifiedAttackValue($discarded, $player, "HAND", $source);
+  $modifiedAttack = ModifiedPowerValue($discarded, $player, "HAND", $source);
   if ($modifiedAttack >= 6) {
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
@@ -3377,11 +3377,11 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 
-function ModifiedAttackValue($cardID, $player, $from, $source = "")
+function ModifiedPowerValue($cardID, $player, $from, $source = "")
 {
   global $CS_Num6PowBan;
   if ($cardID == "") return 0;
-  $attack = AttackValue($cardID);
+  $power = PowerValue($cardID);
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($player) * 2;
   else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Attack");
   else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $player);
@@ -3390,13 +3390,13 @@ function ModifiedAttackValue($cardID, $player, $from, $source = "")
   if ($from != "CC") {
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
-    if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$attack;
+    if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
   } else {
     // effect that only affect CC
-    $attack += EffectDefenderAttackModifiers($cardID);
+    $power += EffectDefenderPowerModifiers($cardID);
   }
-  $attack += ItemsAttackModifiers($cardID, $player, $from);
-  return $attack;
+  $power += ItemsPowerModifiers($cardID, $player, $from);
+  return $power;
 }
 
 function Intimidate($player = "")
@@ -3446,7 +3446,7 @@ function IsWeaponGreaterThanTwiceBasePower()
 {
   global $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
   if (count($combatChain) == 0) return false;
-  if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalAttack() > (AttackValue($combatChain[0]) * 2)) return true;
+  if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalPower() > (PowerValue($combatChain[0]) * 2)) return true;
   $char = &GetPlayerCharacter($mainPlayer);
   if ($char[CharacterPieces()] == "raydn_duskbane" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
   if ($char[CharacterPieces()] == "beaming_blade" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;
@@ -3465,7 +3465,7 @@ function HasEnergyCounters($array, $index)
   }
 }
 
-function HasAttackCounters($zone, $array, $index)
+function HasPowerCounters($zone, $array, $index)
 {
   switch ($zone) {
     case "AURAS":

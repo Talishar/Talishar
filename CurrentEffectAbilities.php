@@ -513,35 +513,35 @@ function EffectHitEffect($cardID, $from, $source = "-")
   return 0;
 }
 
-function EffectAttackModifier($cardID, $attached=false)
+function EffectPowerModifier($cardID, $attached=false)
 {
   $set = CardSet($cardID);
-  if ($set == "WTR") return WTREffectAttackModifier($cardID);
-  else if ($set == "ARC") return ARCEffectAttackModifier($cardID);
-  else if ($set == "CRU") return CRUEffectAttackModifier($cardID);
-  else if ($set == "MON") return MONEffectAttackModifier($cardID);
-  else if ($set == "ELE") return ELEEffectAttackModifier($cardID);
-  else if ($set == "EVR") return EVREffectAttackModifier($cardID);
-  else if ($set == "DVR") return DVREffectAttackModifier($cardID);
-  else if ($set == "RVD") return RVDEffectAttackModifier($cardID);
-  else if ($set == "UPR") return UPREffectAttackModifier($cardID);
-  else if ($set == "DYN") return DYNEffectAttackModifier($cardID);
-  else if ($set == "OUT") return OUTEffectAttackModifier($cardID, $attached);
-  else if ($set == "DTD") return DTDEffectAttackModifier($cardID);
-  else if ($set == "TCC") return TCCEffectAttackModifier($cardID);
-  else if ($set == "EVO") return EVOEffectAttackModifier($cardID);
-  else if ($set == "HVY") return HVYEffectAttackModifier($cardID);
-  else if ($set == "MST") return MSTEffectAttackModifier($cardID);
-  else if ($set == "ROG") return ROGUEEffectAttackModifier($cardID);
-  else if ($set == "AAZ") return AAZEffectAttackModifier($cardID);
-  else if ($set == "TER") return TEREffectAttackModifier($cardID);
-  else if ($set == "AUR") return AUREffectAttackModifier($cardID);
-  else if ($set == "ROS") return ROSEffectAttackModifier($cardID);
-  else if ($set == "AJV") return AJVEffectAttackModifier($cardID);
-  else if ($set == "HNT") return HNTEffectAttackModifier($cardID, $attached);
-  else if ($set == "AST") return ASTEffectAttackModifier($cardID);
-  else if ($set == "AMX") return AMXEffectAttackModifier($cardID);
-  else if ($set == "SEA") return SEAEffectAttackModifier($cardID);
+  if ($set == "WTR") return WTREffectPowerModifier($cardID);
+  else if ($set == "ARC") return ARCEffectPowerModifier($cardID);
+  else if ($set == "CRU") return CRUEffectPowerModifier($cardID);
+  else if ($set == "MON") return MONEffectPowerModifier($cardID);
+  else if ($set == "ELE") return ELEEffectPowerModifier($cardID);
+  else if ($set == "EVR") return EVREffectPowerModifier($cardID);
+  else if ($set == "DVR") return DVREffectPowerModifier($cardID);
+  else if ($set == "RVD") return RVDEffectPowerModifier($cardID);
+  else if ($set == "UPR") return UPREffectPowerModifier($cardID);
+  else if ($set == "DYN") return DYNEffectPowerModifier($cardID);
+  else if ($set == "OUT") return OUTEffectPowerModifier($cardID, $attached);
+  else if ($set == "DTD") return DTDEffectPowerModifier($cardID);
+  else if ($set == "TCC") return TCCEffectPowerModifier($cardID);
+  else if ($set == "EVO") return EVOEffectPowerModifier($cardID);
+  else if ($set == "HVY") return HVYEffectPowerModifier($cardID);
+  else if ($set == "MST") return MSTEffectPowerModifier($cardID);
+  else if ($set == "ROG") return ROGUEEffectPowerModifier($cardID);
+  else if ($set == "AAZ") return AAZEffectPowerModifier($cardID);
+  else if ($set == "TER") return TEREffectPowerModifier($cardID);
+  else if ($set == "AUR") return AUREffectPowerModifier($cardID);
+  else if ($set == "ROS") return ROSEffectPowerModifier($cardID);
+  else if ($set == "AJV") return AJVEffectPowerModifier($cardID);
+  else if ($set == "HNT") return HNTEffectPowerModifier($cardID, $attached);
+  else if ($set == "AST") return ASTEffectPowerModifier($cardID);
+  else if ($set == "AMX") return AMXEffectPowerModifier($cardID);
+  else if ($set == "SEA") return SEAEffectPowerModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":
       return 1;
@@ -612,7 +612,7 @@ function EffectBlockModifier($cardID, $index, $from)
       return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
     case "lay_down_the_law_red":
     case "lay_down_the_law_red":
-      return (CachedTotalAttack() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
+      return (CachedTotalPower() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
     case "ratchet_up_red":
     case "ratchet_up_yellow":
     case "ratchet_up_blue":
@@ -704,10 +704,10 @@ function RemoveEffectsFromCombatChain($cardID = "")
   }
 }
 
-function OnAttackEffects($attack)
+function OnAttackEffects($power)
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;
-  $attackType = CardType($attack);
+  $attackType = CardType($power);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
@@ -716,7 +716,7 @@ function OnAttackEffects($attack)
         case "bramble_spark_yellow":
         case "bramble_spark_blue":
           if ($attackType == "AA") {
-            AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $attack);
+            AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $power);
             $remove = true;
           }
           break;
@@ -774,7 +774,7 @@ function OnAttackEffects($attack)
           }
           break;
         case "shifting_winds_of_the_mystic_beast_blue":
-          if (CardNameContains($attack, "Crouching Tiger", $mainPlayer)) {
+          if (CardNameContains($power, "Crouching Tiger", $mainPlayer)) {
             AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
             AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
             AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "crouching_tiger-");
@@ -783,7 +783,7 @@ function OnAttackEffects($attack)
           }
           break;
         case "first_tenet_of_chi_moon_blue":
-          if (PitchValue($attack) == 3) {
+          if (PitchValue($power) == 3) {
             Draw($mainPlayer);
             $remove = true;
           }
@@ -968,16 +968,16 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "savage_sash":
-          $attack = 0;
+          $power = 0;
           for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
             if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
               if ($currentTurnEffects[$j + 1] == $currentPlayer) {
-                $attack += EffectAttackModifier($currentTurnEffects[$j]);
+                $power += EffectPowerModifier($currentTurnEffects[$j]);
               }
             }
           }  
-          $attack += ModifiedAttackValue($cardID, $currentPlayer, $from);
-          if (CardType($cardID) == "AA" && $attack >= 6) $costModifier -= 1;
+          $power += ModifiedPowerValue($cardID, $currentPlayer, $from);
+          if (CardType($cardID) == "AA" && $power >= 6) $costModifier -= 1;
           break;
         case "evo_heartdrive_blue":
           if (CardType($cardID) == "AA") {
@@ -1472,7 +1472,7 @@ function CurrentEffectAfterPlayOrActivateAbility($cache = true)
       switch ($effectArr[0]) {
         case "gauntlets_of_iron_will":
           if ($cache) CacheCombatResult();
-          if ($effectArr[1] != "ACTIVE" && CachedTotalAttack() > intval($effectArr[1])) $currentTurnEffects[$i] = "gauntlets_of_iron_will,ACTIVE";
+          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > intval($effectArr[1])) $currentTurnEffects[$i] = "gauntlets_of_iron_will,ACTIVE";
           break;
         default:
           break;
@@ -2251,7 +2251,7 @@ function CurrentEffectNameModifier($effectID, $effectParameter, $player)
   return $name;
 }
 
-function EffectDefenderAttackModifiers($cardID)
+function EffectDefenderPowerModifiers($cardID)
 {
   $mod = 0;
   global $defPlayer, $currentTurnEffects;
@@ -2281,7 +2281,7 @@ function EffectDefenderAttackModifiers($cardID)
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1)
 {
   global $mainPlayer, $currentTurnEffects, $p2IsAI;
-  $attackValue = AttackValue($cardID, $index);
+  $powerValue = PowerValue($cardID, $index);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = GetResolvedAbilityType($cardID);
   $abilityType = GetAbilityType($cardID, from: $from);
@@ -2294,7 +2294,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
       $effectID = $effectArr[0];
       switch ($effectID) {
         case "star_struck_yellow":
-          if ($attackValue <= $effectArr[1] && ($type == "AA" || $resolvedAbilityType == "AA" || $abilityType == "AA") && ($hasNoAbilityTypes || $resolvedAbilityType == "AA")) {
+          if ($powerValue <= $effectArr[1] && ($type == "AA" || $resolvedAbilityType == "AA" || $abilityType == "AA") && ($hasNoAbilityTypes || $resolvedAbilityType == "AA")) {
               $restrictedBy = "star_struck_yellow";
           }
           break;
@@ -2418,18 +2418,18 @@ function EffectCardID($effect)
 function EffectsAttackYouControlModifiers($cardID, $player)
 {
   global $currentTurnEffects;
-  $attackModifier = 0;
+  $powerModifier = 0;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "art_of_war_yellow-1":
-          if (CardType($cardID) == "AA") $attackModifier += 1;
+          if (CardType($cardID) == "AA") $powerModifier += 1;
         default:
           break;
       }
     }
   }
-  return $attackModifier;
+  return $powerModifier;
 }
 
 function AdministrativeEffect($effectID)

@@ -69,7 +69,7 @@ function HNTAbilityHasGoAgain($cardID): bool
   };
 }
 
-function HNTEffectAttackModifier($cardID, $attached=False): int
+function HNTEffectPowerModifier($cardID, $attached=False): int
 {
   global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -289,7 +289,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "lay_low_yellow" => true,
     "exposed_blue" => true,
     "nip_at_the_heels_blue" => true,
-    "trot_along_blue" => AttackValue($attackID, base:true) <= 3,
+    "trot_along_blue" => PowerValue($attackID, base:true) <= 3,
     "public_bounty_red" => true,
     "public_bounty_yellow" => true,
     "public_bounty_blue" => true,
@@ -303,7 +303,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AtksWWeapon, $CS_NumAttackCards;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AttacksWithWeapon, $CS_NumAttackCards;
   global $CS_NumBoosted, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   global $chainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -754,7 +754,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "dual_threat_yellow":
-      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_AttacksWithWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
       break;
     case "sound_the_alarm_red";

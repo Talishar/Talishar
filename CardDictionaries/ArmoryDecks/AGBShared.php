@@ -15,7 +15,7 @@ function AGBAbilityHasGoAgain($cardID): bool
   };
 }
 
-function AGBEffectAttackModifier($cardID): int
+function AGBEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     default => 0

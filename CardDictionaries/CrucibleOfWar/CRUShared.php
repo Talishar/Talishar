@@ -65,7 +65,7 @@
     }
   }
 
-  function CRUEffectAttackModifier($cardID) {
+  function CRUEffectPowerModifier($cardID) {
     switch($cardID) {
       case "massacre_red": return 2;
       case "crater_fist": return 2;
@@ -145,7 +145,7 @@
 
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts) {
   global $mainPlayer, $CS_NumBoosted, $combatChainState, $currentPlayer, $defPlayer;
-  global $CS_AtksWWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
+  global $CS_AttacksWithWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
   switch($cardID) {
@@ -263,15 +263,15 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "hit_and_run_red": case "hit_and_run_yellow": case "hit_and_run_blue":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0)
+      if(GetClassState($currentPlayer, $CS_AttacksWithWeapon) > 0)
       {
         AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
-        $rv = "Gives your next weapon +" . EffectAttackModifier($cardID . "-2") . " because you've attacked with a weapon";
+        $rv = "Gives your next weapon +" . EffectPowerModifier($cardID . "-2") . " because you've attacked with a weapon";
       }
       return $rv;
     case "push_forward_red": case "push_forward_yellow": case "push_forward_blue":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      if(GetClassState($currentPlayer, $CS_AtksWWeapon) > 0) {
+      if(GetClassState($currentPlayer, $CS_AttacksWithWeapon) > 0) {
         AddCurrentTurnEffect($cardID . "-2", $mainPlayer);
         $rv = "Gives your attack dominate because you've attacked with a weapon";
       }
@@ -555,8 +555,8 @@ function KayoStaticAbility($cardId)
 
 function KassaiEndTurnAbility()
 {
-  global $mainPlayer, $CS_AtksWWeapon, $CS_HitsWithWeapon;
-  if(GetClassState($mainPlayer, $CS_AtksWWeapon) >= 2) {
+  global $mainPlayer, $CS_AttacksWithWeapon, $CS_HitsWithWeapon;
+  if(GetClassState($mainPlayer, $CS_AttacksWithWeapon) >= 2) {
     PutItemIntoPlayForPlayer("copper", $mainPlayer, number:GetClassState($mainPlayer, $CS_HitsWithWeapon));
   }
 }

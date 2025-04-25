@@ -27,7 +27,7 @@ function AAZCombatEffectActive($cardID, $attackID): bool
   };
 }
 
-function AAZEffectAttackModifier($cardID): int
+function AAZEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "line_it_up_yellow" => 3,

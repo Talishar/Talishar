@@ -77,7 +77,7 @@
     }
   }
 
-  function MONEffectAttackModifier($cardID)
+  function MONEffectPowerModifier($cardID)
   {
     global $mainPlayer, $CS_NumNonAttackCards, $CombatChain;
     $arr = explode(",", $cardID);
@@ -122,7 +122,7 @@
       case "howl_from_beyond_blue": return 1;
       case "spew_shadow_red": return 2;
       case "ravenous_meataxe": return 2;
-      case "tear_limb_from_limb_blue": return ModifiedAttackValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", source:"");
+      case "tear_limb_from_limb_blue": return ModifiedPowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", source:"");
       case "stubby_hammerers": return 1;
       case "rouse_the_ancients_blue": return 7;
       case "captains_call_red-1": case "captains_call_yellow-1": case "captains_call_blue-1": return 2;
@@ -178,7 +178,7 @@
       case "ravenous_meataxe": return true;
       case "tear_limb_from_limb_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "pulping_red": case "pulping_yellow": case "pulping_blue": return true;
-      case "stubby_hammerers": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;//Base power
+      case "stubby_hammerers": return CardType($attackID) == "AA" && PowerValue($attackID) <= 3;//Base power
       case "rouse_the_ancients_blue": return true;
       case "captains_call_red-1": case "captains_call_red-2": return CardType($attackID) == "AA" && CardCost($attackID) <= 2;
       case "captains_call_yellow-1": case "captains_call_yellow-2": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
@@ -186,7 +186,7 @@
       case "adrenaline_rush_red": case "adrenaline_rush_yellow": case "adrenaline_rush_blue": return true;
       case "brandish_red": case "brandish_yellow": case "brandish_blue": return IsWeaponAttack();
       case "pound_for_pound_red": case "pound_for_pound_yellow": case "pound_for_pound_blue": return true;
-      case "minnowism_red": case "minnowism_yellow": case "minnowism_blue": return CardType($attackID) == "AA" && AttackValue($attackID) <= 3;//Base power
+      case "minnowism_red": case "minnowism_yellow": case "minnowism_blue": return CardType($attackID) == "AA" && PowerValue($attackID) <= 3;//Base power
       case "warmongers_recital_red": case "warmongers_recital_yellow": case "warmongers_recital_blue": return CardType($attackID) == "AA";
       case "lady_barthimont": return true;
       default: return false;

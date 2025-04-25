@@ -490,7 +490,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "EVENBIGGERTHANTHAT":
       $deck = new Deck($player);
-      $modifiedAttack = ModifiedAttackValue($deck->Top(), $player, "DECK", source:"");
+      $modifiedAttack = ModifiedPowerValue($deck->Top(), $player, "DECK", source:"");
       if($deck->Reveal() && $modifiedAttack > GetClassState(($player == 1 ? 1 : 2), piece: $CS_DamageDealt)) {
         WriteLog(CardLink($params[1], $params[1]) . " draw a card and created a " . CardLink("quicken", "quicken") . " token");
         Draw($player);
@@ -547,7 +547,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "SANDSKETCH":
       $discarded = DiscardRandom($player, "sand_sketched_plan_blue");
-      if(ModifiedAttackValue($discarded, $player, "HAND", source:"sand_sketched_plan_blue") >= 6) GainActionPoints(2, $player);
+      if(ModifiedPowerValue($discarded, $player, "HAND", source:"sand_sketched_plan_blue") >= 6) GainActionPoints(2, $player);
       return "1";
     case "REMEMBRANCE":
       $cards = "";
@@ -633,7 +633,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       $card = $deck->BanishTop("-", $player);
       LoseHealth(1, $player);
-      if(ModifiedAttackValue($card, $player, "DECK", source:"beast_within_yellow") >= 6) {
+      if(ModifiedPowerValue($card, $player, "DECK", source:"beast_within_yellow") >= 6) {
         $banish = new Banish($player);
         RemoveBanish($player, ($banish->NumCards()-1)*BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
@@ -698,7 +698,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "ALLURINGINDUCEMENT":
       global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
       $combatChain[0] = $lastResult;
-      $combatChainState[$CCS_LinkBaseAttack] = AttackValue($combatChain[0]);
+      $combatChainState[$CCS_LinkBaseAttack] = PowerValue($combatChain[0]);
       return $lastResult;
     case "CONSTRUCTNITROMECHANOID":
       sort($lastResult);
@@ -877,6 +877,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       for ($i = 0; $i < $remainingInds; ++$i) {
         $cardID = $deck->Top(true, 1);
         AddGraveyard($cardID, $player, "DECK", $player);
+        WriteLog("Player " . $player . " put " . CardLink($cardID, $cardID) . " into their graveyard");
         if (ColorContains($cardID, 2, $player)) PutItemIntoPlayForPlayer("gold", $player, isToken:true);
       }
       return $lastResult;
@@ -904,8 +905,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "SUNKENTREASURE":
       $target = GetMZCard($player, $lastResult);
+      WriteLog("Player " . $player . " turned " . CardLink($target, $target) . " face-down");
       if(ColorContains($target, 2, $player)) {
-        WriteLog("You found some sunken treasure!");
+        WriteLog("🪙Player " . $player . " found some sunken treasure!");
         PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
       }
       break;

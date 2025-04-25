@@ -40,7 +40,7 @@ function ROGUEAbilityHasGoAgain($cardID)
     }
 }
 
-function ROGUEEffectAttackModifier($cardID)
+function ROGUEEffectPowerModifier($cardID)
 {
     global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
     $params = explode(",", $cardID);
@@ -513,7 +513,7 @@ function ROGUEBlockValue($cardID)
     }
 }
 
-function ROGUEAttackValue($cardID)
+function ROGUEPowerValue($cardID)
 {
     switch ($cardID) {
       case "ROGUE002": return 2;
