@@ -36,9 +36,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       $image = imagescale($image, 450, 628);
       imagewebp($image, $filename);
       if(!file_exists($cardImagesUploadedFolder)) imagewebp($image, $cardImagesMissingFolder);
-      imagewebp($image, $cardImagesMissingFolder);
       if(!file_exists($filenameNew)) imagewebp($image, $filenameNew);
-      imagewebp($image, $filenameNew);
       // Free up memory
       imagedestroy($image);
     }
@@ -62,9 +60,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
 
       if(!file_exists($concatFilename)) imagewebp($dest, $concatFilename);
-      imagewebp($dest, $concatFilename);
       if(!file_exists($cardSquaresUploadedFolder)) imagewebp($dest, $cardSquaresMissingFolder);
-      imagewebp($dest, $cardSquaresMissingFolder);
       // Free up memory
       imagedestroy($image);
       imagedestroy($dest);
@@ -86,9 +82,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       $image = imagecreatefromwebp($filename);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
       if(!file_exists($cropFilename)) imagepng($image, $cropFilename);
-      imagepng($image, $cropFilename);
       if(!file_exists($cardCropsUploadedFolder)) imagepng($image, $cardCropsMissingFolder);
-      imagepng($image, $cardCropsMissingFolder);
       imagedestroy($image);
       if(file_exists($cropFilename)) echo("Image for " . $cardID . " successfully converted to crops.<BR>");
     }
