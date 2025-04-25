@@ -1039,7 +1039,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
 
 function AddCrushEffectTrigger($cardID)
 {
-  global $mainPlayer;
+  global $mainPlayer, $defPlayer;
   switch ($cardID) {
     case "crippling_crush_red":
     case "spinal_crush_red":
@@ -1072,10 +1072,15 @@ function AddCrushEffectTrigger($cardID)
     case "boulder_drop_blue":
     case "put_em_in_their_place_red":
     case "batter_to_a_pulp_red":
+      AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
+      break;
     case "blinding_of_the_old_ones_red": 
     case "smelting_of_the_old_ones_red": 
     case "disenchantment_of_the_old_ones_red":
-      AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
+      $defChar = GetPlayerCharacter($defPlayer);
+      if (ClassContains($defChar[0], "GUARDIAN", $defPlayer)) {
+        AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
+      }
       break;
     default:
       break;
