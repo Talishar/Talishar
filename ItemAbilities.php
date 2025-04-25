@@ -531,7 +531,7 @@ function ItemPowerModifiers(&$powerModifiers)
         $attackID = $CombatChain->AttackCard()->ID();
         if (CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           $modifier += 1;
-          array_push($powerModifiers, "Item Ability");
+          array_push($powerModifiers, $items[$i]);
           array_push($powerModifiers, 1);
         }
         break;
@@ -539,7 +539,7 @@ function ItemPowerModifiers(&$powerModifiers)
         $attackID = $CombatChain->AttackCard()->ID();
         if (SubtypeContains($attackID, "Wrench")) {
           $modifier += 2;
-          array_push($powerModifiers, "Item Ability");
+          array_push($powerModifiers, $items[$i]);
           array_push($powerModifiers, 2);
         }
         break;
