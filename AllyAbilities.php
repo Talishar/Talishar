@@ -322,7 +322,6 @@ function SpecificAllyAttackAbilities($attackID)
 
 function AllyDamageTakenAbilities($player, $i)
 {
-  WriteLog("HERE!!");
   $allies = &GetAllies($player);
   switch ($allies[$i]) {
     case "nekria":
