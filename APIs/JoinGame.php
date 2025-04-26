@@ -361,7 +361,7 @@ if ($decklink != "") {
     //Save deck
     include_once '../includes/functions.inc.php';
     include_once "../includes/dbh.inc.php";
-    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, $character, $deckFormat);
+    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, SetID($character), $deckFormat);
   }
 }
 
