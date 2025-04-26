@@ -660,7 +660,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     else {
       $allyInd = SearchAlliesForUniqueID($combatChain[8], $otherPlayer);
       $allies = &GetAllies($otherPlayer);
-      $allies[$allyInd + 10] += $damage;
+      if($allyInd != -1) $allies[$allyInd + 10] += $damage;
     }
     // add ally tracking  here
     if ($type !== "COMBAT") SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage);
@@ -1081,14 +1081,14 @@ function ResolutionStepEffectTriggers()
 
 function ResolutionStepCharacterTriggers()
 {
-  global $mainPlayer, $combatChain;
+  global $mainPlayer, $combatChain, $CombatChain;
   $character = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     $charID = $character[$i];
     switch ($charID) {
       case "nuu_alluring_desire":
       case "nuu":
-        if (HasStealth($combatChain[0]) && $character[$i + 1] < 3) {
+        if ($CombatChain->HasCurrentLink() && HasStealth($combatChain[0]) && $character[$i + 1] < 3) {
           AddLayer("TRIGGER", $mainPlayer, $charID, $combatChain[0]);
         }
         break;
@@ -1100,24 +1100,26 @@ function ResolutionStepCharacterTriggers()
 
 function ResolutionStepAttackTriggers()
 {
-  global $mainPlayer, $defPlayer, $combatChain, $CID_BloodRotPox, $CS_Transcended;
-  switch ($combatChain[0]) {
-    case "virulent_touch_red":
-    case "virulent_touch_yellow":
-    case "virulent_touch_blue":
-      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
-        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+  global $mainPlayer, $defPlayer, $combatChain, $CombatChain, $CS_Transcended;
+  if ($CombatChain->HasCurrentLink()) {
+    switch ($combatChain[0]) {
+      case "virulent_touch_red":
+      case "virulent_touch_yellow":
+      case "virulent_touch_blue":
+        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+          if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+          break;
+        }
         break;
-      }
-      break;
-    case "second_tenet_of_chi_moon_blue":
-      if (GetClassState($mainPlayer, $CS_Transcended) > 0) {
-        AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
-      }
-      break;
-    default:
-      break;
+      case "second_tenet_of_chi_moon_blue":
+        if (GetClassState($mainPlayer, $CS_Transcended) > 0) {
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+        }
+        break;
+      default:
+        break;  
+    }
   }
 }
 

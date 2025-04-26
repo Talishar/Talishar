@@ -772,8 +772,12 @@ function OUTAbilityCost($cardID)
     else {
       $targets = explode(",", $target);
       $targetWeapon = $targets[1];
-      $targetHero = $targets[2];
-      $targetHeroUniqueID = $targets[3];
+      isset($targets[2]) ? $targetHero = $targets[2] : $targetHero = "THEIRCHAR";
+      if(isset($targets[3])) $targetHeroUniqueID = $targets[3];
+      else {
+        $otherCharacter = GetPlayerCharacter($otherPlayer);
+        $targetHeroUniqueID = $otherCharacter[11];
+      }
       //Target Weapon
       if ($targets[0] == "COMBATCHAINATTACKS") {
         $ccAttacks = GetCombatChainAttacks();

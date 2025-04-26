@@ -1388,6 +1388,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       //Show Life and Def counters on allies in the popups
       if ($option[0] == "THEIRALLY" || $option[0] == "MYALLY") {
+        $index = intval($option[1]);
         $lifeCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 2] : $myAllies[$index + 2];
         $enduranceCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 6] : $myAllies[$index + 6];
         $uniqueID = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 5] : $myAllies[$index + 5];
@@ -1396,6 +1397,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
             $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index]);
         }
       }
+      
       //Show power counters on Auras in the popups
       $powerCounters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3]) : null;
       //Show various counters on Auras in the popups

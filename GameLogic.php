@@ -1338,7 +1338,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
       if ($damage > 0 && TypeContains($source, "W")) {
         $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $player);
-        if ($warcryIndex != -1 && $sourceUID != -1) {
+        if ($warcryIndex != -1) {
           $params = explode(",", $currentTurnEffects[$warcryIndex]);
           $amount = isset($params[1]) ? $params[1] : 0;
           $uniqueID = isset($params[2]) ? $params[2] : "-";

@@ -1247,7 +1247,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks;
   $effectsToRemove = [];
   $CLIndex = count($chainLinks) - 1;
-  $addedEffects = $combatChain[10];
+  isset($combatChain[10]) ? $addedEffects = $combatChain[10] : $addedEffects = "-";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
