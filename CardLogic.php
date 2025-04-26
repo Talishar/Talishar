@@ -1620,12 +1620,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "runechant":
       DealArcane(1, 1, "RUNECHANT", "runechant", player: $player);
-      DestroyAuraByID($player, "runechant");
+      DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "runechant_batch":
-      for ($i = 0; $i < $additionalCosts; $i++) {
+      $uniqueIDs = explode(",", $uniqueID);
+      foreach ($uniqueIDs as $uid) {
         DealArcane(1, 1, "RUNECHANT", "runechant", player: $player);
-        DestroyAuraByID($player, "runechant");
+        DestroyAuraUniqueID($player, $uid);
       }
       break;
     case "chains_of_eminence_red":

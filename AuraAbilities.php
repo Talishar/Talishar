@@ -1164,6 +1164,7 @@ function AuraPlayAbilities($cardID, $from = "")
   $auras = &GetAuras($currentPlayer);
   $cardType = CardType($cardID);
   $cardSubType = CardSubType($cardID);
+  $runechantUIDS = [];
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {
@@ -1218,21 +1219,29 @@ function AuraPlayAbilities($cardID, $from = "")
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
         }
         break;
+      case "runechant":
+        array_push($runechantUIDS, $auras[$i+6]);
+        break;
       default:
         break;
     }
     if ($remove == 1) DestroyAura($currentPlayer, $i);
   }
   // handle runechants separately so we can batch them
-  $runechantCount = CountAura("runechant", $currentPlayer);
+  $runechantCount = count($runechantUIDS);
   if ($runechantCount > 0) {
     $abilityType = GetResolvedAbilityType($cardID, $from);
     if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
       $batchSize = 10;
       $numBatches = intdiv($runechantCount, $batchSize);
       $remainder = $runechantCount % $batchSize;
-      for ($i = 0; $i < $remainder; $i++) AddLayer("TRIGGER", $currentPlayer, "runechant");
-      for ($i = 0; $i < $numBatches; $i++) AddLayer("TRIGGER", $currentPlayer, "runechant_batch", additionalCosts:$batchSize);
+      for ($i = 0; $i < $remainder; $i++) {
+        AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
+      }
+      for ($i = 0; $i < $numBatches; $i++) {
+        $uids = array_slice($runechantUIDS, $remainder + $batchSize * $i, $batchSize);
+        AddLayer("TRIGGER", $currentPlayer, "runechant_batch", uniqueID: implode(",", $uids));
+      }
     }
   }
 }
