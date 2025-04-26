@@ -692,7 +692,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
         AddDecisionQueue("SETDQVAR", $player, "0");
       }
-      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
+      AddDecisionQueue("SCOURSHOWSELECTEDTARGET", $player, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $player, "scour_blue", 1);
       break;
     case "ALLURINGINDUCEMENT":

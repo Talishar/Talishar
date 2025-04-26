@@ -1636,6 +1636,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("Player " . $targetPlayer . " targeted " . GetMZCardLink($targetPlayer, $targ));
       }
       return $lastResult;
+    case "SCOURSHOWSELECTEDTARGET":
+      foreach (explode(",", $lastResult) as $targ) {
+        $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+        WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
+      }
+      return $lastResult;
     case "MULTIZONEFORMAT":
       return SearchMultizoneFormat($lastResult, $parameter);
     case "MULTIZONETOKENCOPY":
