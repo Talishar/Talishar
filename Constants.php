@@ -378,7 +378,7 @@ $CCS_AttackTotalDamage = 14;//Deprecated -- use chain link summary instead, it h
 $CCS_NumChainLinks = 15;//Deprecated -- use NumChainLinks() instead
 $CCS_AttackTarget = 16;
 $CCS_LinkTotalPower = 17;
-$CCS_LinkBaseAttack = 18;
+$CCS_LinkBasePower = 18;
 $CCS_BaseAttackDefenseMax = 19;
 $CCS_ResourceCostDefenseMin = 20;
 $CCS_CardTypeDefenseRequirement = 21;
@@ -413,7 +413,7 @@ function ResetCombatChainState()
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_DamageDealt;
   global $CCS_HitsWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_WagersThisLink, $CCS_ChainLinkHitEffectsPrevented;
   global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate, $CCS_PhantasmThisLink;
-  global $CCS_LinkTotalPower, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+  global $CCS_LinkTotalPower, $CCS_LinkBasePower, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
@@ -436,7 +436,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_AttackTotalDamage] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
   $combatChainState[$CCS_LinkTotalPower] = 0;
-  $combatChainState[$CCS_LinkBaseAttack] = 0;
+  $combatChainState[$CCS_LinkBasePower] = 0;
   $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
   $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
   $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";
@@ -495,12 +495,12 @@ function ResetCombatChainState()
 function AttackReplaced($cardID, $player)
 {
   global $combatChainState, $currentTurnEffects, $mainPlayer;
-  global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBaseAttack, $combatChain;
+  global $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
   global $CS_NumStealthAttacks;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
-  $combatChainState[$CCS_LinkBaseAttack] = 0;
+  $combatChainState[$CCS_LinkBasePower] = 0;
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
   $combatChain[5] = 0;//Reset Power Modifiers
@@ -523,7 +523,7 @@ function ResetChainLinkState()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_WeaponIndex, $CCS_HasAimCounter, $CCS_DamageDealt, $CCS_GoesWhereAfterLinkResolves;
   global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
-  global $CCS_LinkTotalPower, $CCS_LinkBaseAttack, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
+  global $CCS_LinkTotalPower, $CCS_LinkBasePower, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
@@ -544,7 +544,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_AttackTotalDamage] = 0;
   $combatChainState[$CCS_AttackTarget] = "NA";
   $combatChainState[$CCS_LinkTotalPower] = 0;
-  $combatChainState[$CCS_LinkBaseAttack] = 0;
+  $combatChainState[$CCS_LinkBasePower] = 0;
   $combatChainState[$CCS_BaseAttackDefenseMax] = -1;
   $combatChainState[$CCS_ResourceCostDefenseMin] = -1;
   $combatChainState[$CCS_CardTypeDefenseRequirement] = "NA";

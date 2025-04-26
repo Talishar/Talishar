@@ -696,9 +696,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("SETLAYERTARGET", $player, "scour_blue", 1);
       break;
     case "ALLURINGINDUCEMENT":
-      global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
+      global $combatChain, $combatChainState, $CCS_LinkBasePower;
       $combatChain[0] = $lastResult;
-      $combatChainState[$CCS_LinkBaseAttack] = PowerValue($combatChain[0]);
+      $combatChainState[$CCS_LinkBasePower] = PowerValue($combatChain[0]);
       return $lastResult;
     case "CONSTRUCTNITROMECHANOID":
       sort($lastResult);

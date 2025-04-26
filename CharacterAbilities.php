@@ -1600,7 +1600,7 @@ function CharacterDealDamageAbilities($player, $damage)
 
 function CharacterAttackAbilities($attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_LinkBaseAttack, $CS_PlayIndex;
+  global $mainPlayer, $combatChainState, $CCS_LinkBasePower, $CS_PlayIndex;
   $char = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;//Don't do effect if destroyed
@@ -1619,7 +1619,7 @@ function CharacterAttackAbilities($attackID)
         break;
       case "cosmo_scroll_of_ancestral_tapestry":
         if (HasWard($attackID, $mainPlayer) && SubtypeContains($attackID, "Aura", $mainPlayer)) {
-          $combatChainState[$CCS_LinkBaseAttack] = WardAmount($attackID, $mainPlayer, GetClassState($mainPlayer, $CS_PlayIndex));
+          $combatChainState[$CCS_LinkBasePower] = WardAmount($attackID, $mainPlayer, GetClassState($mainPlayer, $CS_PlayIndex));
         }
         break;
       default:

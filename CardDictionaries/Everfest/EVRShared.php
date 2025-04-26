@@ -811,7 +811,7 @@
       }
     }
     switch($stat) {
-      case "Attack": return $highestAttack;
+      case "Power": return $highestAttack;
       case "Block": return $highestBlock;
       case "HasPhantasm": return $hasPhantasm;
       case "GoAgain": return $hasGoAgain;

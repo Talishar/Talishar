@@ -958,7 +958,7 @@ function PowerValue($cardID, $index=-1, $base=false)
     }
   }
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($mainPlayer) * 2;
-  else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Attack");
+  else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Power");
   else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $currentPlayer);
   if ($set != "ROG" && $set != "DUM") {
     $setID = SetID($cardID);
@@ -1981,7 +1981,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBaseAttack, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -2599,7 +2599,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "just_a_nick_red":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (HasStealth($CombatChain->AttackCard()->ID())) return false;
-      if ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "astral_etchings_red":
     case "astral_etchings_yellow":
@@ -2618,7 +2618,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "maul_yellow":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CardNameContains($CombatChain->AttackCard()->ID(), "Crouching Tiger", $player)) return false;
-      if ($combatChainState[$CCS_LinkBaseAttack] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "longdraw_half_glove":
       return (count($myHand) + count($myArsenal)) < 2;

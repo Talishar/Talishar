@@ -543,14 +543,14 @@ function CRUHitEffect($cardID)
 
 function KayoStaticAbility($cardId)
 {
-  global $combatChainState, $CCS_LinkBaseAttack, $mainPlayer;
+  global $combatChainState, $CCS_LinkBasePower, $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
   if(PowerCantBeModified($cardId)) return;
   if($roll >= 5) {
     if(CanGainAttack($cardId)) {
-      $combatChainState[$CCS_LinkBaseAttack] *= 2;
+      $combatChainState[$CCS_LinkBasePower] *= 2;
     }
-  } else $combatChainState[$CCS_LinkBaseAttack] = floor($combatChainState[$CCS_LinkBaseAttack] / 2);
+  } else $combatChainState[$CCS_LinkBasePower] = floor($combatChainState[$CCS_LinkBasePower] / 2);
 }
 
 function KassaiEndTurnAbility()
