@@ -422,9 +422,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cardID;
     case "REMOVEMYHAND":
       $hand = &GetHand($player);
-      $cardID = $hand[$lastResult];
-      unset($hand[$lastResult]);
-      $hand = array_values($hand);
+      if (isset($hand[$lastResult])) {
+        $cardID = $hand[$lastResult];
+        unset($hand[$lastResult]);
+        $hand = array_values($hand);
+      }
+      else $cardID = "";
       return $cardID;
     case "HANDCARD":
       $hand = &GetHand($player);
@@ -2140,7 +2143,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = ($player == 1 ? 2 : 1);
       $params = explode(",", $parameter);
       $removedSteamCounterCount = 0;
-      for ($i = count($lastResultArr); $i > 0; --$i) {
+      for ($i = count($lastResultArr) - 1; $i > 0; --$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         switch ($mzIndex[0]) {
           case "THEIRITEMS":
