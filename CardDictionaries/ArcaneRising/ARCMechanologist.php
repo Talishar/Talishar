@@ -214,21 +214,23 @@ function DoBoost($player, $cardID, $boostCount=1)
     }
     $char = GetPlayerCharacter($player);
     for ($j = 0; $j < count($char); $j += CharacterPieces()) {
-      switch ($char[$j]) {
-        case "drive_brake":
-          if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-            AddLayer("TRIGGER", $player, $char[$j], $j);
-          }
-          break;
-        case "fist_pump":
-          if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-            // there should only ever be one wrench equipped
-            $wrenchInd = SearchCharacter($player, subtype:"Wrench");
-            if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$j], GetMZCard($player, $wrenchInd));
-          }
-          break;
-        default:
-          break;
+      if ($char[$j + 1] == 2) {
+        switch ($char[$j]) {
+          case "drive_brake":
+            if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+              AddLayer("TRIGGER", $player, $char[$j], $j);
+            }
+            break;
+          case "fist_pump":
+            if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
+              // there should only ever be one wrench equipped
+              $wrenchInd = SearchCharacter($player, subtype:"Wrench");
+              if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$j], GetMZCard($player, $wrenchInd));
+            }
+            break;
+          default:
+            break;
+        }
       }
     }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
