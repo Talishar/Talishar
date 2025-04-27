@@ -3226,7 +3226,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "skyward_serenade_yellow":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2;");
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-create_embodiment_of_lightning,search_for_skyzyk,buff_next_attack-2");
+      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Create_an_Embodiment_of_Lightning,Search_for_Skyzyk,Buff_your_next_attack-2");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;

@@ -341,10 +341,10 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       $params = explode(",", $lastResult);
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
-          case "create_embodiment_of_lightning":
+          case "Create_an_Embodiment_of_Lightning":
             PlayAura("embodiment_of_lightning", $player, isToken:true, effectController:$player, effectSource:"skyward_serenade_yellow");
             break;
-          case "search_for_skyzyk":
+          case "Search_for_Skyzyk":
             $search = "MYDECK:isSameName=skyzyk_red";
             $fromMod = "Deck,TT"; //pull it out of the deck, playable "This Turn"
             AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
@@ -353,7 +353,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             AddDecisionQueue("MZREMOVE", $player, "-", 1);
             AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
             break;
-          case "buff_next_attack":
+          case "Buff_your_next_attack":
             AddCurrentTurnEffectNextAttack("skyward_serenade_yellow", $player);
             break;
           default: break;
