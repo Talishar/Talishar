@@ -194,6 +194,12 @@ function GetCardBack($player)
     case 94: return "CBDazzyfizzle5";
     case 95: return "CBDazzyfizzle6";
     case 96: return "CBThaiCardsShop";
+    case 97: return "CBNikobru";
+    case 98: return "CBDazzyfizzle7";
+    case 99: return "CBDazzyfizzle8";
+    case 100: return "CBSmilingFleshBag";
+    case 101: return "CBDashciples";
+    case 102: return "CBBlitzkriegMeph";
     default: return "CardBack";
   }
 }
@@ -312,7 +318,6 @@ function AltArtsDisabled($player)
 
 function ParseSettingsStringValueToIdInt(string $value)
 {
-  //TODO NOTE: use array_flip to turn it the other way around (int -> string);
   $settingsToId = array(
     "HoldPrioritySetting" => 0,
     "TryReactUI" => 1,
@@ -560,6 +565,7 @@ function isTeamScowlingFleshBag($userID)
 {
   switch($userID) {
     case "ScowlingFleshBag":
+    case "SmilingFleshBag":
     case "PvtVoid":
       return true;
     default: break;

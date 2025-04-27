@@ -1,9 +1,9 @@
-CRU046 WTR078 CRU049 WTR079 WTR150 OUT139 UPR159
-OUT067 OUT067 DTD226 DTD226 CRU059 CRU059 ARC159 ARC159 CRU054 CRU054 WTR094 WTR094 WTR092 WTR092 WTR093 WTR093 WTR088 WTR088 WTR086 WTR086 TCC088 TCC088 WTR085 WTR085 WTR106 WTR106 CRU062 CRU062 WTR215 WTR215 CRU066 CRU066 UPR189 UPR189 CRU069 CRU069 WTR112 WTR112 EVR040 EVR040
+ira_crimson_haze harmonized_kodachi harmonized_kodachi mask_of_momentum fyendals_spring_tunic flick_knives tide_flippers
+back_heel_kick_blue back_heel_kick_blue censor_red censor_red crane_dance_blue crane_dance_blue command_and_conquer_red command_and_conquer_red find_center_blue find_center_blue flic_flak_blue flic_flak_blue flic_flak_red flic_flak_red flic_flak_yellow flic_flak_yellow fluster_fist_blue fluster_fist_blue fluster_fist_red fluster_fist_red mauling_qi_red mauling_qi_red pounding_gale_red pounding_gale_red rising_knee_thrust_blue rising_knee_thrust_blue rushing_river_blue rushing_river_blue sink_below_red sink_below_red soulbead_strike_red soulbead_strike_red that_all_you_got_yellow that_all_you_got_yellow torrent_of_tempo_red torrent_of_tempo_red whelming_gustwave_blue whelming_gustwave_blue winds_of_eternity_blue winds_of_eternity_blue
 
-ARC156
-ARC157
-CRU053
+nullrune_robe
+nullrune_gloves
+breeze_rider_boots
 
 
 

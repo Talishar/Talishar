@@ -7,7 +7,7 @@
 //[3] -> Priority Value
 
 //This function is super complicated, let me run you through it.
-function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, $type) //TODO: add items, auras, allies, banish, and permanents
+function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, $type)
 {
   $priorityArray = []; //Creates an empty array to push things into, then checks what type of priority array is being created.
   switch($type)

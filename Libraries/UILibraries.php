@@ -6,7 +6,7 @@ require_once("CoreLibraries.php");
 
 $isReactFE = false;
 
-//0 Card number = card ID (e.g. WTR000 = Heart of Fyendal)
+//0 Card number = card ID (e.g. heart_of_fyendal_blue = Heart of Fyendal)
 //1 action = (ProcessInput mode)
 //2 overlay = 0 is none, 1 is grayed out/disabled
 //3 borderColor = Border Color
@@ -14,7 +14,7 @@ $isReactFE = false;
 //5 actionDataOverride = The value to give to ProcessInput
 //6 lifeCounters = Number of life counters
 //7 defCounters = Number of defense counters
-//8 atkCounters = Number of attack counters
+//8 powerCounters = Number of power counters
 //9 controller = Player that controls it
 //10 type = card type
 //11 sType = card subtype
@@ -32,7 +32,7 @@ function JSONRenderedCard(
   $actionDataOverride = NULL,
   $lifeCounters = NULL, // deprecated
   $defCounters = NULL, // deprecated
-  $atkCounters = NULL, // deprecated
+  $powerCounters = NULL, // deprecated
   $controller = NULL,
   $type = NULL,
   $sType = NULL,
@@ -60,7 +60,8 @@ function JSONRenderedCard(
   $stainCounters = NULL,
   $lightningPlayed = NULL,
   $showAmpAmount = false,
-  $marked = NULL
+  $marked = NULL,
+  $tapped = NULL
 ) {
   global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
@@ -72,8 +73,8 @@ function JSONRenderedCard(
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
   $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
   if($defCounters != NULL) $countersMap->defence = $defCounters;
-  $atkCounters = property_exists($countersMap, 'attack') ? $atkCounters->attack : $atkCounters;
-  if($atkCounters != NULL) $countersMap->attack = $atkCounters;
+  $powerCounters = property_exists($countersMap, 'attack') ? $powerCounters->attack : $powerCounters;
+  if($powerCounters != NULL) $countersMap->attack = $powerCounters;
   $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
   if($steamCounters != NULL) $countersMap->steam = $steamCounters;
   $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
@@ -164,11 +165,11 @@ function JSONRenderedCard(
   }
   //Volzar Amp icon
   if($controller != NULL){
-    if($cardNumber == "ROS021" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
+    if($cardNumber == "volzar_the_lightning_rod" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
       $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
       $countersMap->counters = 0;
     }
-    if($cardNumber == "ROS021" && $controller == $otherPlayer && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
+    if($cardNumber == "volzar_the_lightning_rod" && $controller == $otherPlayer && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
       $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
       $countersMap->counters = 0;
     }
@@ -203,7 +204,7 @@ function JSONRenderedCard(
   if($actionDataOverride !== NULL) $card->actionDataOverride = $actionDataOverride;
   if($lifeCounters !== NULL) $card->lifeCounters = $lifeCounters;
   if($defCounters !== NULL) $card->defCounters = $defCounters;
-  if($atkCounters !== NULL) $card->atkCounters = $atkCounters;
+  if($powerCounters !== NULL) $card->powerCounters = $powerCounters;
   if($steamCounters !== NULL) $card->steamCounters = $steamCounters;
   if($controller !== NULL) $card->controller = $controller;
   if($type !== NULL) $card->type = $type;
@@ -218,6 +219,7 @@ function JSONRenderedCard(
   if($numUses !== NULL) $card->numUses = $numUses;
   if($subcard !== NULL) $card->subcards = $subcard;
   if($marked !== NULL) $card->marked = $marked;
+  if($tapped !== NULL) $card->tapped = $tapped;
   return $card;
 }
 

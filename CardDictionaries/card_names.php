@@ -3,43 +3,51 @@
 function CardName($cardID)
 {
     if($cardID == NULL) return "";
-    if($cardID == "ATKCOU") return "+1 Attack Counter";
-    $arr = str_split($cardID, 3);
+    if($cardID == "POWERCOUNTER") return "+1 Power Counter";
+    switch ($cardID) {
+      case "valda_seismic_impact":
+        return "Valda, Seismic Impact";
+      case "silversheen_needle":
+        return "Silversheen Needle";
+      case "fabric_of_spring_yellow":
+        return "Fabric of Spring";
+      case "venomback_fabric_yellow":
+        return "Venomback Fabric";
+      case "taylor":
+        return "Taylor";
+      case "polly_cranka":
+        return "Polly Cranka";
+      default:
+        break;
+    }
+    $setID = SetID($cardID);
+    $arr = str_split($setID, 3);
     if(count($arr) < 2) return "";
     $set = $arr[0];
     if($set != "ROG" && $set != "DUM")
     {
-      $number = intval(substr($cardID, 3));
-      if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "EVO410" && $cardID != "EVO410b" && $cardID != "DTD564")) return GeneratedCardName($cardID);
+      return GeneratedCardName($cardID);
+      // $number = intval(substr($setID, 3));
+      // if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb" && $cardID != "levia_redeemed")) return GeneratedCardName($cardID);
     }
     if ($set == "ROG") {
       return ROGUEName($cardID);
     }
     switch($cardID)
     {
-		  case "MON400": return "Spell Fray Cloak";
-		  case "MON401": return "Spell Fray Gloves";
-		  case "MON402": return "Spell Fray Leggings";
-		  case "MON404": return "The Librarian";
-		  case "MON405": return "Minerva Themis";
-		  case "MON406": return "Lady Barthimont";
-		  case "MON407": return "Lord Sutcliffe";
-      case "DYN492": return "Nitro Mechanoid";
-		  case "DYN492a": return "Nitro Mechanoid";
-		  case "DYN492b": return "Nitro Mechanoid";
-		  case "DYN492c": return "Nitro Mechanoid";
-      case "DYN612": return "Suraya, Archangel of Knowledge";
       case "DUMMY": return "Practice Dummy";
       case "DUMMYDISHONORED": return "Dishonored Hero";
-      case "EVO410": return "Teklovossen, the Mechropotent";
-      case "EVO410b": return "Teklovossen, the Mechropotent";
-      case "DTD564": return "Blasmophet, Levia Consumed";
-      case "MST400": case "MST410": case "MST432": case "MST453": 
-      case "MST495": case "MST496": case "MST497": case "MST498": 
-      case "MST499": case "MST500": case "MST501": case "MST502":
-        return "Inner Chi";
-      case "HNT407": 
-        return "The Hand that Pulls the Strings";
       default: return "";
     }
 	}
+
+//checks if meld cards share a name
+function ShareName($name1, $name2) {
+  if ($name1 == $name2) return true;
+  foreach (explode(" // ", $name1) as $n1) {
+    foreach (explode(" // ", $name2) as $n2) {
+      if ($n1 == $n2) return true;
+    }
+  }
+  return false;
+}

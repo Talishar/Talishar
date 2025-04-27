@@ -4,7 +4,7 @@ function IsWeapon($cardID, $from)
 {
   global $currentPlayer, $mainPlayer;
   if (DelimStringContains(CardSubType($cardID), "Aura") && ClassContains($cardID, "ILLUSIONIST", $mainPlayer) && $from == "PLAY" && (
-      SearchCharacterForCard($mainPlayer, "MON003") || SearchCharacterForCard($mainPlayer, "MON088") || SearchCharacterForCard($mainPlayer, "DTD216") || SearchCharacterForCard($mainPlayer, "MST130"))) 
+      SearchCharacterForCard($mainPlayer, "luminaris") || SearchCharacterForCard($mainPlayer, "iris_of_reality") || SearchCharacterForCard($mainPlayer, "reality_refractor") || SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry"))) 
     {
     return true;
   }
@@ -16,6 +16,14 @@ function IsWeaponAttack()
   global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
   if (TypeContains($combatChain[0], "W", $mainPlayer) || DelimStringContains(CardSubType($combatChain[0]), "Aura")) return true;
+  return false;
+}
+
+function WeaponWithNonAttack($cardID, $from) 
+{
+  if (!IsWeapon($cardID, $from)) return false;
+  if (GetAbilityTypes($cardID, from:$from) != "") return true;
+  if (GetAbilityType($cardID, from:$from) != "AA" && GetAbilityType($cardID, from:$from) != "") return true;
   return false;
 }
 
@@ -31,11 +39,11 @@ function WeaponIndices($chooser, $player, $subtype = "")
       $weapons .= $whoPrefix . "CHAR-" . $i;
     }
   }
-  $auraWeapons = (SearchCharacterForCard($player, "MON003") || SearchCharacterForCard($player, "MON088") || SearchCharacterForCard($player, "DTD216") || SearchCharacterForCard($player, "MST130")) && ($player == $mainPlayer);
+  $auraWeapons = (SearchCharacterForCard($player, "luminaris") || SearchCharacterForCard($player, "iris_of_reality") || SearchCharacterForCard($player, "reality_refractor") || SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry")) && ($player == $mainPlayer);
   if ($auraWeapons) {
     $auras = GetAuras($player);
     for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-      if (SearchCharacterForCard($player, "MST130")) {
+      if (SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry")) {
         if (HasWard($auras[$i], $player)) {
           if ($weapons != "") $weapons .= ",";
           $weapons .= $whoPrefix . "AURAS-" . $i;

@@ -54,7 +54,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $ind = intdiv($mzIndex[1],ChainLinksPieces());
         $lastResult = $chainLinks[$ind][0];
         $chainLinks[$ind][2] = 0;
-        AddGraveyard($lastResult, $player, "CC", $player);
+        AddGraveyard($chainLinks[$ind][7], $player, "CC", $player);
         break;
       default:
         break;
@@ -183,12 +183,12 @@ function MZAddZone($player, $parameter, $lastResult)
     switch ($params[0]) {
       case "MYBANISH":
         if (count($params) < 4) array_push($params, $player);
-        BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) ? $params[3] : "-");
+        BanishCardForPlayer($cardIDs[$i], $player, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
         if (count($params) < 4) array_push($params, $player);
-        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "-");
+        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "MYHAND":
@@ -445,23 +445,59 @@ function GetMZCard($player, $MZIndex)
   return $zoneDS[$index];
 }
 
+function GetMZUID($player, $MZIndex)
+{
+  $mzArr = explode("-", $MZIndex);
+  $zone = &GetMZZone($player, $mzArr[0]);
+  switch ($mzArr[0]) {
+    case "ALLY":
+    case "MYALLY":
+    case "THEIRALLY":
+      return $zone[$mzArr[1] + 5];
+    case "BANISH":
+    case "MYBANISH":
+    case "THEIRBANISH":
+      return $zone[$mzArr[1] + 2];
+    case "AURAS":
+    case "MYAURAS":
+    case "THEIRAURAS":
+      return $zone[$mzArr[1] + 6];
+    case "LAYER":
+      return $zone[$mzArr[1] + 5];
+    case "COMBATCHAINATTACKS":
+      return $zone[$mzArr[1] + 8]; // CHECK THIS
+    case "COMBATCHAINLINK":
+      return $zone[$mzArr[1] + 8]; // CHECK THIS
+    case "CHAR":
+    case "MYCHAR":
+    case "THEIRCHAR":
+      return $zone[$mzArr[1] + 11];
+    case "ITEMS":
+    case "MYITEMS":
+    case "THEIRITEMS":
+      return $zone[$mzArr[1] + 4];
+    default:
+      return "-1";
+  }
+}
+
 function MZStartTurnAbility($player, $MZIndex)
 {
   $cardID = GetMZCard($player, $MZIndex);
   switch ($cardID) {
-    case "UPR086":
+    case "thaw_red":
       AddDecisionQueue("PASSPARAMETER", $player, $MZIndex);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "GY,-", 1);
-      AddDecisionQueue("FINDINDICES", $player, "UPR086");
+      AddDecisionQueue("FINDINDICES", $player, "thaw_red");
       AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("AFTERTHAW", $player, "<-", 1);
       break;
-    case "HNT150":
+    case "loyalty_beyond_the_grave_red":
       AddDecisionQueue("PASSPARAMETER", $player, $MZIndex);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "GY,-", 1);
-      MZMoveCard($player, "MYDISCARD:isSameName=HNT150", "MYBANISH", DQContext:"Choose a card named Loyalty Beyond the Grave to banish", isSubsequent:true);
+      MZMoveCard($player, "MYDISCARD:isSameName=loyalty_beyond_the_grave_red", "MYBANISH", DQContext:"Choose a card named Loyalty Beyond the Grave to banish", isSubsequent:true);
       AddDecisionQueue("DRAW", $player, "-", 0);
       break;
     default:
@@ -469,11 +505,12 @@ function MZStartTurnAbility($player, $MZIndex)
   }
 }
 
-function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "")
+function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "", $logText = "")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
-  if (str_contains($search, "DECK") && (SearchAurasForCard("UPR138", $otherPlayer) != "" || SearchAurasForCard("UPR138", $player) != "")) {
-    WriteLog("Deck search prevented by " . CardLink("UPR138", "UPR138"));
+  if ($logText == "") $logText = "Card chosen: <0>";
+  if (str_contains($search, "DECK") && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
   }
   AddDecisionQueue("MULTIZONEINDICES", $player, $search, ($isSubsequent ? 1 : 0));
@@ -484,7 +521,7 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
 
   if ($silent);
   else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-  else AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+  else AddDecisionQueue("WRITELOG", $player, $logText, 1);
 
   if ($where != "") AddDecisionQueue("MZADDZONE", $player, $where, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);

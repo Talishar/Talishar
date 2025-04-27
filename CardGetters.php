@@ -19,8 +19,10 @@ function &GetMZZone($player, $zone)
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
-  else if ($zone == "COMBATCHAINATTACKS") return GetCombatChainAttacks();
-  return $rv;
+  else if ($zone == "COMBATCHAINATTACKS") {
+    $attacks = GetCombatChainAttacks();
+    return $attacks;
+  }  return $rv;
 }
 
 function &GetRelativeMZZone($player, $zone)
@@ -341,7 +343,7 @@ function GetCombatChainAttacks()
   global $chainLinks;
   $attacks = [];
   foreach ($chainLinks as $link) {
-    if ($link[2] == 1) {
+    if ($link[2] == 1 || $link[3] == "PLAY" || $link[3] == "EQUIP") {
       for ($j = 0; $j < ChainLinksPieces(); ++$j) {
         array_push($attacks, $link[$j]);
       }
@@ -408,7 +410,7 @@ function ArsenalHasFaceDownArrowCard($player)
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);
-  $fullCount = SearchCharacterActive($player, "ELE213") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
+  $fullCount = SearchCharacterActive($player, "new_horizon") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
   return count($arsenal) >= $fullCount;
 }
 

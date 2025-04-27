@@ -2,13 +2,12 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants, $defPlayer;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
     PassInput();
   }
-
   if (!IsGameOver()) {
     for ($i = 0; $i < 10 && $somethingChanged; ++$i) {
       if ($lastPhase != $turn[0]) $i = 0;
@@ -32,7 +31,7 @@ function ProcessMacros()
         }
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
-          if($layers[0] == "FINALIZECHAINLINK" && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
+          if(($layers[0] == "FINALIZECHAINLINK" || $layers[0] == "RESOLUTIONSTEP" || $layers[0] == "CLOSINGCHAIN") && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
           else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[0] == "ATTACKSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID
@@ -40,7 +39,7 @@ function ProcessMacros()
             $subtype = CardSubType($layers[2]);
             if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
             else if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-            else if($layers[2] == "DTD564" && GetCharacterGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+            else if($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
           }
         }
       }
@@ -52,14 +51,14 @@ function ProcessMacros()
         else if($threshold == "1")
         {
           CacheCombatResult();
-          if(CachedTotalAttack() <= 1) { $somethingChanged = true; PassInput(); }
+          if(CachedTotalPower() <= 1) { $somethingChanged = true; PassInput(); }
         }
       }
       if(!IsGameOver() && ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         $somethingChanged = true; 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
-      else if (!IsGameOver() && isset($layers[2]) && $layers[2] == "ARC112" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+      else if (!IsGameOver() && isset($layers[2]) && ($layers[2] == "runechant" || $layers[2] == "runechant_batch") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
       }
@@ -125,7 +124,7 @@ function HasPlayableCard($player, $phase)
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
   $character = GetPlayerCharacter($player);
-  if ($character[0] == "EVO001" || $character[0] == "EVO002") {
+  if ($character[0] == "dash_io" || $character[0] == "dash_database") {
     $deck = &GetDeck($player);
     if(count($deck) > 0 && $character[1] == 2) {
       if(IsPlayable($deck[0], $phase, "DECK", 0)) return true;

@@ -28,6 +28,31 @@ ob_end_clean();
 
 session_start();
 
+if($playerID == 3) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  if(!IsUserLoggedIn()) {
+    loginFromCookie();
+    if(!IsUserLoggedIn()) {
+      $response->error = "You must be logged in to spectate games";
+      echo (json_encode($response));
+      exit;
+    }
+  }
+  //Now audit the spectate
+  $userID = LoggedInUser();
+  $conn = GetDBConnection();
+  if ($conn->connect_error) {
+    $response->error = "Database connection failed: " . $conn->connect_error;
+    echo (json_encode($response));
+    exit;
+  }
+  $query = "UPDATE users SET numSpectates = numSpectates + 1 WHERE usersId = ?";
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param("i", $userID);
+  $stmt->execute();
+  $stmt->close();
+}
+
 // CORS etc *must* be set for all endpoints
 SetHeaders();
 
@@ -37,16 +62,16 @@ $popupType = $params[0];
 $response = new stdClass();
 switch ($popupType) {
   case "attackSummary":
-    $totalAttack = 0;
+    $totalPower = 0;
     $totalDefense = 0;
-    $attackModifiers = [];
+    $powerModifiers = [];
     $response->Cards = array();
-    EvaluateCombatChain($totalAttack, $totalDefense, $attackModifiers);
-    for ($i = 0; $i < count($attackModifiers); $i += 2) {
+    EvaluateCombatChain($totalPower, $totalDefense, $powerModifiers);
+    for ($i = 0; $i < count($powerModifiers); $i += 2) {
       $thisModifier = new stdClass();
-      $idArr = explode("-", $attackModifiers[$i]);
-      $cardID = substr($idArr[0], 0, 6);
-      $bonus = $attackModifiers[$i + 1];
+      $idArr = explode("-", $powerModifiers[$i]);
+      $cardID = ExtractCardID($idArr[0]);
+      $bonus = $powerModifiers[$i + 1];
       if ($bonus == 0) continue;
       $effectName = CardName($cardID);
       if($effectName == "")
@@ -168,18 +193,18 @@ function ChainLinkObject($link)
     $card->Player = $chainLinks[$link][$i+1];
     if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR")
     {
-      $attackValue = AttackValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
+      $powerValue = PowerValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
     }
     elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || DelimStringContains(CardType($chainLinks[$link][$i]), "I")))
     {
-      $attackValue = AttackModifier($chainLinks[$link][$i]);
+      $powerValue = PowerModifier($chainLinks[$link][$i]);
     }
-    else $attackValue = 0;
+    else $powerValue = 0;
 
     if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 5];
     else $blockValue = 0;
 
-    if($card->Player == $mainPlayer) $card->modifier = $attackValue;
+    if($card->Player == $mainPlayer) $card->modifier = $powerValue;
     else $card->modifier = $blockValue;
     $card->cardID = $chainLinks[$link][$i];
     $card->Name = CardName($chainLinks[$link][$i]);

@@ -31,7 +31,7 @@ function EncounterAI()
       {
         if($AIDebug) WriteLog("AI Branch - Decision Queue");
         global $EffectContext;
-        if($EffectContext == "OUT234")
+        if($EffectContext == "bloodrot_pox")
         {
           if($AIDebug) WriteLog("AI Branch - Bloodrot");
           ContinueDecisionQueue("NO");
@@ -98,7 +98,7 @@ function EncounterAI()
         //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
         $health = &GetHealth($currentPlayer);
         //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
-        //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalAttack().",cachedblock->".CachedTotalBlock().",health->".$health.",attackvalue->".AttackValue("UPR061"));
+        //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalPower().",cachedblock->".CachedTotalBlock().",health->".$health.",powervalue->".PowerValue("brand_with_cinderclaw_yellow"));
         if(ShouldBlock($found, $storedPriorityNode))
         {
           BlockCardAttempt($storedPriorityNode); //attempts to play the card. Found in EncounterPlayLogic.php;
@@ -173,7 +173,7 @@ function EncounterAI()
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
-        $threatened = CachedTotalAttack() - CachedTotalBlock();
+        $threatened = CachedTotalPower() - CachedTotalBlock();
         //if($found == true && $threatened > 0 && $storedPriorityNode[3] != 0)
         if($found == true && ShouldBlock($found, $storedPriorityNode) && $storedPriorityNode[3] != 0)
         {
@@ -248,6 +248,11 @@ function EncounterAI()
         ProcessInput($currentPlayer, 12, $options[0], 0, 0, "");
         CacheCombatResult();
       }
+      else if($turn[0] == "CHOOSEBOTTOM"){
+        if($AIDebug) WriteLog("AI Branch - Hand Choose Bottom");
+        $options = explode(",", $turn[2]);
+        ContinueDecisionQueue($options[0]);//Just pick the first option
+      }
       else
       {
         if($AIDebug) WriteLog("AI Branch - Pass");
@@ -277,13 +282,13 @@ function ShouldBlock($found, $storedPriorityNode)
 {
   global $currentPlayer;
   $health = &GetHealth($currentPlayer);
-  $threatened = CachedTotalAttack() - CachedTotalBlock();
+  $threatened = CachedTotalPower() - CachedTotalBlock();
   if(!$found || $threatened == 0) return false;
   if(IsFirstTurn() && ($threatened > 1 || !DoesAttackHaveGoAgain())) return true;//Make AI more likely to block on turn 0
   //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
-  //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalAttack().",cachedblock->".CachedTotalBlock().",health->".$health.",attackvalue->".AttackValue("UPR061"));
+  //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalPower().",cachedblock->".CachedTotalBlock().",health->".$health.",powervalue->".PowerValue("brand_with_cinderclaw_yellow"));
   if($storedPriorityNode[3] != 0 &&
-((CachedTotalAttack() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalAttack() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
+((CachedTotalPower() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalPower() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
   {
     return true;
   }

@@ -3,12 +3,12 @@
 
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
-  global $turn, $EffectContext;
+  global $turn, $EffectContext, $CS_NumGoldCreated;
   $otherPlayer = ($player == 1 ? 2 : 1);
-  if (!DelimStringContains(CardSubType($item), "Item") && $item != "DTD164") return;
+  if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
   if (TypeContains($item, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
-  $numMinusTokens = CountCurrentTurnEffects("HVY209", $player) + CountCurrentTurnEffects("HVY209", $otherPlayer);
+  $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($item);
@@ -29,20 +29,32 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, 0);
     array_push($items, ItemModalities($item));
     array_push($items, $from);
+    array_push($items, 0); //enters untapped
     if (HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
-  if (($symbiosisIndex = FindCharacterIndex($player, "EVO003")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
+  if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
     $char = &GetPlayerCharacter($player);
     if ($char[$symbiosisIndex + 2] < 6) ++$char[$symbiosisIndex + 2];
   }
-  if ($item == "DYN243") {
+  if ($item == "gold") {
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
-    if ($number > 0 && ($hero == "HVY047" || $hero == "HVY048") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
+    IncrementClassState($player, $CS_NumGoldCreated);
+    UndestroyHook($player);
+    if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
       $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
     }
+  }
+  //enters the arena triggers
+  switch ($item) {
+    case "stasis_cell_blue":
+    case "null_time_zone_blue":
+      AddLayer("TRIGGER", $player, $item);
+      break;
+    default:
+      break;
   }
   PlayAbility($item, $from, 0);
 }
@@ -50,7 +62,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
 function ItemUses($cardID)
 {
   switch ($cardID) {
-    case "EVR070":
+    case "micro_processor_blue":
       return 3;
     default:
       return 1;
@@ -60,7 +72,7 @@ function ItemUses($cardID)
 function ItemModalities($cardID)
 {
   switch ($cardID) {
-    case 'EVR070':
+    case 'micro_processor_blue':
       return "Opt,Draw_then_top_deck,Banish_top_deck";
     default:
       return "-";
@@ -74,58 +86,60 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   $items = &GetItems($currentPlayer);
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
-    case "WTR162":
-    case "WTR170":
-    case "WTR171":
-    case "WTR172":
-    case "ELE143":
-    case "ELE172":
-    case "ELE201":
-    case "EVR176":
-    case "EVR177":
-    case "EVR178":
-    case "EVR179":
-    case "EVR180":
-    case "EVR181":
-    case "EVR182":
-    case "EVR183":
-    case "EVR184":
-    case "EVR185":
-    case "EVR186":
-    case "EVR187":
-    case "OUT054":
-    case "EVO081":
-    case "EVO082":
-    case "EVO083":
-    case "HNT228";
+    case "crazy_brew_blue":
+    case "energy_potion_blue":
+    case "potion_of_strength_blue":
+    case "timesnap_potion_blue":
+    case "amulet_of_earth_blue":
+    case "amulet_of_ice_blue":
+    case "amulet_of_lightning_blue":
+    case "amulet_of_assertiveness_yellow":
+    case "amulet_of_echoes_blue":
+    case "amulet_of_havencall_blue":
+    case "amulet_of_ignition_yellow":
+    case "amulet_of_intervention_blue":
+    case "amulet_of_oblation_blue":
+    case "clarity_potion_blue":
+    case "healing_potion_blue":
+    case "potion_of_seeing_blue":
+    case "potion_of_deja_vu_blue":
+    case "potion_of_ironhide_blue":
+    case "potion_of_luck_blue":
+    case "silverwind_shuriken_blue":
+    case "backup_protocol_red_red":
+    case "backup_protocol_yel_yellow":
+    case "backup_protocol_blu_blue":
+    case "imperial_seal_of_command_red":
+    case "gold":
+    case "diamond_amulet_blue":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
-    case "ARC035":
+    case "dissipation_shield_yellow":
       AddAdditionalCost($currentPlayer, $items[$index + 1]);
       DestroyItemForPlayer($currentPlayer, $index);
       break;
-    case "ARC010":
-    case "ARC018":
+    case "induction_chamber_red":
+    case "cognition_nodes_blue":
       if ($from == "PLAY" && $items[$index + 1] > 0 && count($combatChain) > 0) {
         $items[$index + 1] -= 1;
         $items[$index + 2] = 1;
       }
       break;
-    case "CRU105":
+    case "plasma_purifier_red":
       if ($from == "PLAY" && $items[$index + 1] > 0 && $items[$index + 2] == 2) {
         $items[$index + 1] -= 1;
         AddAdditionalCost($currentPlayer, "PAID");
       }
       break;
-    case "EVO071":
-    case "EVO072":
+    case "prismatic_lens_yellow":
+    case "quantum_processor_yellow":
       if ($from == "PLAY") {
         $items[$index + 2] = 1;
       }
       break;
-    case "EVO075":
-    case "EVO076":
-    case "EVO077":
+    case "fuel_injector_blue":
+    case "medkit_blue":
+    case "steam_canister_blue":
       if (substr($items[$index + 9], 0, 5) != "THEIR") {
         $deck = new Deck($currentPlayer);
       } else {
@@ -134,18 +148,21 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
-    case "EVO087":
-    case "EVO088":
-    case "EVO089":
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       break;
-    case "AIO026":
+    case "cerebellum_processor_blue":
       if ($from == "PLAY") {
         $items[$index + 2] = 1;
       }
       break;
+    case "goldkiss_rum":
+      Tap("MYCHAR-0", $currentPlayer);
+      DestroyItemForPlayer($currentPlayer, $index);
     default:
       break;
   }
@@ -158,7 +175,7 @@ function ItemPlayAbilities($cardID, $from)
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     $remove = false;
     switch ($items[$i]) {
-      case "EVR189":
+      case "talisman_of_cremation_blue":
         if ($from == "BANISH") {
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card name to banish with Talisman of Cremation");
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
@@ -188,37 +205,44 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   $items = &GetItems($player);
   if (!$skipDestroy) {
+    if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
+    else $destPlayer = $player;
     if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
-      AddGraveyard($items[$index], $player, "PLAY");
+      AddGraveyard($items[$index], $destPlayer, "PLAY");
     IncrementClassState($player, $CS_NumItemsDestroyed);
   }
   $cardID = $items[$index];
   for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
-    if ($items[$i] == "DYN492c") {
-      $indexWeapon = FindCharacterIndex($player, "DYN492a");
+    if ($items[$i] == "nitro_mechanoidc") {
+      $indexWeapon = FindCharacterIndex($player, "nitro_mechanoida");
       DestroyCharacter($player, $indexWeapon);
-      $indexEquipment = FindCharacterIndex($player, "DYN492b");
+      $indexEquipment = FindCharacterIndex($player, "nitro_mechanoidb");
       DestroyCharacter($player, $indexEquipment, true);
-      SearchCurrentTurnEffects("DYN089-UNDER", $player, true);
+      SearchCurrentTurnEffects("galvanic_bender-UNDER", $player, true);
     }
     unset($items[$i]);
   }
   $items = array_values($items);
-  if ($cardID == "EVO073") AddLayer("TRIGGER", $player, $cardID);
+  if ($cardID == "stasis_cell_blue") AddLayer("TRIGGER", $player, $cardID);
   return $cardID;
 }
 
 function StealItem($srcPlayer, $index, $destPlayer)
 {
+  global $CS_NumGoldCreated;
   $srcItems = &GetItems($srcPlayer);
+  if ($srcItems[$index] == "gold") {
+    UndestroyHook($destPlayer);
+    IncrementClassState($destPlayer, $CS_NumGoldCreated);
+  }
   $destItems = &GetItems($destPlayer);
   for ($i = 0; $i < ItemPieces(); ++$i) {
-    if ($srcItems[$i] == "DYN492c") {
-      $indexEquipment = FindCharacterIndex($srcPlayer, "DYN492b");
+    if ($srcItems[$i] == "nitro_mechanoidc") {
+      $indexEquipment = FindCharacterIndex($srcPlayer, "nitro_mechanoidb");
       RemoveCharacter($srcPlayer, $indexEquipment);
-      $indexWeapon = FindCharacterIndex($srcPlayer, "DYN492a");
+      $indexWeapon = FindCharacterIndex($srcPlayer, "nitro_mechanoida");
       RemoveCharacter($srcPlayer, $indexWeapon);
-      SearchCurrentTurnEffects("DYN089-UNDER", $srcPlayer, true);
+      SearchCurrentTurnEffects("galvanic_bender-UNDER", $srcPlayer, true);
     }
     array_push($destItems, $srcItems[$index + $i]);
     unset($srcItems[$index + $i]);
@@ -246,24 +270,24 @@ function ItemHitTrigger($attackID)
   $items = &GetItems($mainPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     switch ($items[$i]) {
-      case "DYN094":
+      case "powder_keg_blue":
         if ($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
-      case "EVO074":
+      case "tick_tock_clock_red":
         if (IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
-      case "EVO084":
-      case "EVO085":
-      case "EVO086":
+      case "boom_grenade_red":
+      case "boom_grenade_yellow":
+      case "boom_grenade_blue":
         if (IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
-      case "EVO098":
+      case "autosave_script_blue":
         if ($attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
@@ -278,11 +302,14 @@ function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
 {
   $items = &GetItems($player);
   switch ($items[$index]) {
-    case "EVO093":
-    case "EVO094":
-    case "EVO095":
+    case "mini_forcefield_red":
+    case "mini_forcefield_yellow":
+    case "mini_forcefield_blue":
       if ($preventable) $damage -= ItemDamagePeventionAmount($player, $index);
       DestroyItemForPlayer($player, $index);
+      break;
+    case "dissolution_sphere_yellow":
+      if ($preventable) $damage -= ItemDamagePeventionAmount($player, $index, $damage);
       break;
     default:
       break;
@@ -299,7 +326,7 @@ function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable 
   $items = &GetItems($player);
   for ($i = count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {
     switch ($items[$i]) {
-      case "CRU104":
+      case "absorption_dome_yellow":
         if ($damage > $items[$i + 1]) {
           if ($preventable) $damage -= $items[$i + 1];
           $items[$i + 1] = 0;
@@ -321,47 +348,57 @@ function ItemStartTurnAbility($index)
   global $mainPlayer;
   $mainItems = &GetItems($mainPlayer);
   switch ($mainItems[$index]) {
-    case "ARC007":
-    case "ARC035":
-    case "EVR069":
-    case "EVR071":
+    case "teklo_core_blue":
+    case "dissipation_shield_yellow":
+    case "dissolution_sphere_yellow":
+    case "signal_jammer_blue":
       AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
       break;
-    case "EVO070":
-    case "EVO071":
-    case "EVO072":
-    case "EVO078":
-    case "EVO079":
-    case "EVO080":
-    case "EVO081":
-    case "EVO082":
-    case "EVO083":
-    case "EVO084":
-    case "EVO085":
-    case "EVO086":
-    case "EVO087":
-    case "EVO088":
-    case "EVO089":
-    case "EVO090":
-    case "EVO091":
-    case "EVO092":
-    case "EVO093":
-    case "EVO094":
-    case "EVO095":
-    case "EVO096":
-    case "EVO097":
-    case "EVO098":
-    case "AIO026":
-    case "HNT251":
+    case "null_time_zone_blue":
+      if ($mainItems[$index + 1] > 0) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index], $mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
+        AddDecisionQueue("REMOVECOUNTERITEMORDESTROYUID", $mainPlayer, $mainItems[$index+4], 1);
+      } else {
+        WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
+        DestroyItemForPlayer($mainPlayer, $index);
+      }
+      break;
+    case "grinding_gears_blue":
+    case "prismatic_lens_yellow":
+    case "quantum_processor_yellow":
+    case "polarity_reversal_script_red":
+    case "penetration_script_yellow":
+    case "security_script_blue":
+    case "backup_protocol_red_red":
+    case "backup_protocol_yel_yellow":
+    case "backup_protocol_blu_blue":
+    case "boom_grenade_red":
+    case "boom_grenade_yellow":
+    case "boom_grenade_blue":
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
+    case "hadron_collider_red":
+    case "hadron_collider_yellow":
+    case "hadron_collider_blue":
+    case "mini_forcefield_red":
+    case "mini_forcefield_yellow":
+    case "mini_forcefield_blue":
+    case "overload_script_red":
+    case "mhz_script_yellow":
+    case "autosave_script_blue":
+    case "cerebellum_processor_blue":
+    case "clamp_press_blue":
+    case "golden_cog":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
-    case "EVO074":
+    case "tick_tock_clock_red":
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else {
         DestroyItemForPlayer($mainPlayer, $index);
         DealDamageAsync($mainPlayer, 1);
-        WriteLog(CardLink("EVO074", "EVO074") . " deals 1 damage to Player " . $mainPlayer . ".");
+        WriteLog(CardLink("tick_tock_clock_red", "tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
       }
       break;
     default:
@@ -374,9 +411,11 @@ function ItemEndTurnAbilities()
   global $mainPlayer;
   $items = &GetItems($mainPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    //untap
+    Tap("MYITEMS-$i", $mainPlayer, 0);
     $remove = false;
     switch ($items[$i]) {
-      case "EVR188":
+      case "talisman_of_balance_blue":
         $remove = TalismanOfBalanceEndTurn();
         break;
       default:
@@ -394,7 +433,7 @@ function ItemDamageTakenAbilities($player, $damage)
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     $remove = false;
     switch ($items[$i]) {
-      case "EVR193":
+      case "talisman_of_warfare_yellow":
         if (IsHeroAttackTarget() && $damage == 2) {
           WriteLog("Talisman of Warfare destroyed both player's arsenal");
           DestroyArsenal($player, effectController: $otherPlayer);
@@ -414,7 +453,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
   global $CS_NumBoosted;
   $counters = ETASteamCounters($item);
   switch ($item) {
-    case "CRU104":
+    case "absorption_dome_yellow":
       $counters += GetClassState($playerID, $CS_NumBoosted);
       break;
     default:
@@ -423,23 +462,26 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
   if (ClassContains($item, "MECHANOLOGIST", $playerID) && CardCost($item) >= 0 && CardCost($item) <= 2) {
     $items = &GetItems($playerID);
     for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
-      if ($items[$i] == "DYN093") {
+      if ($items[$i] == "plasma_mainline_red") {
         AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
       }
     }
   }
-  if(SearchCurrentTurnEffects("EVO000-".$item, $playerID, true)) $counters += 1;
+  if(SearchCurrentTurnEffects("master_cog_yellow-".$item, $playerID, true)) $counters += 1;
   return $counters;
 }
 
-function ItemDamagePeventionAmount($player, $index)
+function ItemDamagePeventionAmount($player, $index, $damage=0, $preventable=true)
 {
   $items = &GetItems($player);
   switch ($items[$index]) {
-    case "EVO093":
-    case "EVO094":
-    case "EVO095":
+    case "mini_forcefield_red":
+    case "mini_forcefield_yellow":
+    case "mini_forcefield_blue":
       return $items[$index + 1];
+    case "dissolution_sphere_yellow":
+      if ($damage == 1 && $preventable) return 1;
+      else return 0;
     default:
       return 0;
   }
@@ -452,13 +494,11 @@ function ItemBlockModifier($cardID)
   $blockModifier = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     switch ($items[$i]) {
-      case "EVO078":
+      case "polarity_reversal_script_red":
         $type = CardType($cardID);
         $typeEvo = "";
-        if (SubtypeContains($cardID, "Evo", $defPlayer)) {
-          $number = intval(substr($cardID, 3));
-          $number = $number - 400;
-          $typeEvo = CardType("EVO0" . $number);
+        if (substr($cardID, -5) == "equip") {
+          $typeEvo = CardType(substr($cardID,0, strlen($cardID) - 6));
         }
         $attackID = $CombatChain->AttackCard()->ID();
         if ((DelimStringContains($type, "A") || $type == "AA" || $typeEvo == "A") && CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) --$blockModifier;
@@ -470,7 +510,7 @@ function ItemBlockModifier($cardID)
   $items = &GetItems($defPlayer);
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     switch ($items[$i]) {
-      case "EVO080":
+      case "security_script_blue":
         if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) ++$blockModifier;
         break;
       default:
@@ -480,20 +520,29 @@ function ItemBlockModifier($cardID)
   return $blockModifier;
 }
 
-function ItemAttackModifiers(&$attackModifiers)
+function ItemPowerModifiers(&$powerModifiers)
 {
   global $mainPlayer, $CombatChain;
   $items = &GetItems($mainPlayer);
   $modifier = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     switch ($items[$i]) {
-      case "EVO079":
+      case "penetration_script_yellow":
         $attackID = $CombatChain->AttackCard()->ID();
         if (CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           $modifier += 1;
-          array_push($attackModifiers, "Item Ability");
-          array_push($attackModifiers, 1);
+          array_push($powerModifiers, $items[$i]);
+          array_push($powerModifiers, 1);
         }
+        break;
+      case "clamp_press_blue":
+        $attackID = $CombatChain->AttackCard()->ID();
+        if (SubtypeContains($attackID, "Wrench")) {
+          $modifier += 2;
+          array_push($powerModifiers, $items[$i]);
+          array_push($powerModifiers, 2);
+        }
+        break;
       default:
         break;
     }
@@ -501,18 +550,29 @@ function ItemAttackModifiers(&$attackModifiers)
   return $modifier;
 }
 
-function ItemsAttackModifiers($cardID, $player, $from)
+function ItemsPowerModifiers($cardID, $player, $from)
 {
   $items = &GetItems($player);
-  $attackModifier = 0;
+  $powerModifier = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     switch ($items[$i]) {
-      case "EVO079":
-        if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$attackModifier;
+      case "penetration_script_yellow":
+        if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$powerModifier;
+      case "clamp_press_blue":
+        if (SubtypeContains($cardID, "Wrench")) $powerModifier += 2;
       default:
         break;
     }
   }
-  return $attackModifier;
+  return $powerModifier;
 }
 
+//checks if a cardname is blocked by null time zone
+function FindNullTime($cardName) 
+{
+  global $mainPlayer, $defPlayer;
+  
+  $foundNullTime = SearchItemForModalities($cardName, $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities($cardName, $defPlayer, "null_time_zone_blue") != -1;
+  return $foundNullTime;
+}

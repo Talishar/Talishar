@@ -3,61 +3,87 @@
   function HasCrank($cardID, $player)
   {
     $char = &GetPlayerCharacter($player);
-    if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "EVO004") || SearchCharacterForCard($player, "EVO005")) && $char[1] < 3) return true;
+    if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "maxx_the_hype_nitro") || SearchCharacterForCard($player, "maxx_nitro")) && $char[1] < 3) return true;
     switch($cardID) {
-      case "EVO070": case "EVO071": case "EVO072":
-      case "EVO074":
-      case "EVO078": case "EVO079": case "EVO080":
-      case "EVO081": case "EVO082": case "EVO083":
-      case "EVO084": case "EVO085": case "EVO086":
-      case "EVO087": case "EVO088": case "EVO089":
-      case "EVO090": case "EVO091": case "EVO092":
-      case "EVO093": case "EVO094": case "EVO095":
-      case "EVO096": case "EVO097": case "EVO098":
-      case "AIO026":
-      case "HNT251":
+      case "grinding_gears_blue": case "prismatic_lens_yellow": case "quantum_processor_yellow":
+      case "tick_tock_clock_red":
+      case "polarity_reversal_script_red": case "penetration_script_yellow": case "security_script_blue":
+      case "backup_protocol_red_red": case "backup_protocol_yel_yellow": case "backup_protocol_blu_blue":
+      case "boom_grenade_red": case "boom_grenade_yellow": case "boom_grenade_blue":
+      case "dissolving_shield_red": case "dissolving_shield_yellow": case "dissolving_shield_blue":
+      case "hadron_collider_red": case "hadron_collider_yellow": case "hadron_collider_blue":
+      case "mini_forcefield_red": case "mini_forcefield_yellow": case "mini_forcefield_blue":
+      case "overload_script_red": case "mhz_script_yellow": case "autosave_script_blue":
+      case "cerebellum_processor_blue":
+      case "null_time_zone_blue":
+      case "clamp_press_blue":
+      case "polly_cranka_ally": case "golden_cog":
         return true;
       default: return false;
     }
   }
 
-  function Crank($player, $index, $mainPhase="True")
+  function Crank($player, $index, $mainPhase="True", $zone="MYITEMS")
   {
-    $items = GetItems($player);
+    $MZZone = match($zone) {
+      "MYITEMS" => GetItems($player),
+      "MYALLY" => GetAllies($player),
+      default => GetItems($player)
+    };
     PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
-    PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase". $mainPhase, 1);
+    PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase$mainPhase-$zone", 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");
     PrependDecisionQueue("DOCRANK", $player, "-");
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($items[$index], $items[$index]) ."?", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($MZZone[$index], $MZZone[$index]) ."?", 1);
     PrependDecisionQueue("SETDQVAR", $player, "0");
   }
 
-  function DoCrank($player, $index, $mainPhase=true)
+  function DoCrank($player, $index, $mainPhase=true, $zone="MYITEMS")
   {
     global $CS_NumCranked;
-    $items = &GetItems($player);
-    if($items[$index+1] <= 0) return;
-    --$items[$index+1];
+    if ($zone == "MYALLY") {
+      $MZZone = &GetAllies($player);
+      $steamInd = 12;
+    }
+    else {
+      $MZZone = &GetItems($player);
+      $steamInd = 1;
+    }
+    if($MZZone[$index+$steamInd] <= 0) return;
+    --$MZZone[$index+$steamInd];
     if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
-    if(CardName($items[$index]) == "Hyper Driver" && ($items[$index+1] <= 0)) DestroyItemForPlayer($player, $index);
+    $char = GetPlayerCharacter($player);
+    for ($i = 0; $i < count($char); $i += CharacterPieces()){
+      switch ($char[$i]) {
+        case "puffin_hightail":
+          if (GetClassState($player, $CS_NumCranked) == 2) AddLayer("TRIGGER", $player, $char[$i]);
+          break;
+        default:
+          break;
+      }
+    }
+    if(CardName($MZZone[$index]) == "Hyper Driver" && ($MZZone[$index+$steamInd] <= 0)) DestroyItemForPlayer($player, $index);
   }
 
   function ProcessTowerEffect($cardID)
   {
     global $CombatChain, $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
-    if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("OUT108", $mainPlayer, count($layers) <= LayerPieces())) return true;
+    if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
+      WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
+      return true;
+    }
     switch($cardID)
     {
-      case "TCC034": case "HVY062":
+      case "colossal_bearing_red":
         AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP1", 1);
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("DESTROYCHARACTER", $defPlayer, "-", 1);
         break;
-      case "TCC036": case "HVY064":
+      case "smack_of_reality_red":
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS:type=T"), $mainPlayer);
       default: break;
     }
@@ -88,8 +114,8 @@
     for($i=1; $i<=2; ++$i) {
       $deck = new Deck($i);
       if($deck->Reveal()) {
-        $power = $deck->Empty() ? 0 : ModifiedAttackValue($deck->Top(), $i, "DECK", source:$cardID);
-        if(!TypeContains($deck->Top(), "AA")) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
+        $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $i, "DECK", source:$cardID);
+        if(!TypeContains($deck->Top(), "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
         if($i == 1) $p1Power = $power;
         else $p2Power = $power;
       }
@@ -117,9 +143,9 @@
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $deck = new Deck($playerID);
     switch ($deck->Top()) {
-      case "HVY059":
-      case "HVY077": case "HVY078": case "HVY079":
-      case "HVY080": case "HVY081": case "HVY082":
+      case "the_golden_son_yellow":
+      case "thunk_red": case "thunk_yellow": case "thunk_blue":
+      case "wallop_red": case "wallop_yellow": case "wallop_blue":
         AddLayer("TRIGGER", $playerID, $deck->Top());
         break;
       default:
@@ -127,7 +153,7 @@
     }
     switch($cardID)
     {
-      case "HVY050":
+      case "millers_grindstone":
         if($deck->Empty()) {
           break;
         }
@@ -138,45 +164,45 @@
           --$character[$index + 3];
         }
         break;
-      case "HVY052":
+      case "stonewall_impasse":
         if($playerID == $defPlayer) AddCurrentTurnEffect($cardID, $defPlayer, "CC");
         break;
-      case "HVY061": break;
-      case "HVY061-0": break;
-      case "HVY061-1":
+      case "trounce_red": break;
+      case "trounce_red-0": break;
+      case "trounce_red-1":
         if($playerID == 1) {
-          PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
-          PlayAura("HVY241", $playerID); //Might
-          PlayAura("HVY242", $playerID); //Vigor
+          PutItemIntoPlayForPlayer("gold", $playerID, effectController:$defPlayer);
+          PlayAura("might", $playerID); 
+          PlayAura("vigor", $playerID); 
         }
         break;
-      case "HVY061-2":
+      case "trounce_red-2":
         if($playerID == 2) {
-          PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$defPlayer);
-          PlayAura("HVY241", $playerID); //Might
-          PlayAura("HVY242", $playerID); //Vigor
+          PutItemIntoPlayForPlayer("gold", $playerID, effectController:$defPlayer);
+          PlayAura("might", $playerID); 
+          PlayAura("vigor", $playerID); 
         }
         break;
-      case "HVY137": case "HVY138": case "HVY139":
-        PlayAura("HVY241", $playerID);//Might
+      case "clash_of_might_red": case "clash_of_might_yellow": case "clash_of_might_blue":
+        PlayAura("might", $playerID);
         break;
-      case "HVY141":
-        PlayAura("HVY241", $playerID);//Might
+      case "test_of_might_red":
+        PlayAura("might", $playerID);
         break;
-      case "HVY157": case "HVY158": case "HVY159":
-        PlayAura("HVY240", $playerID);//Agility
+      case "clash_of_agility_red": case "clash_of_agility_yellow": case "clash_of_agility_blue":
+        PlayAura("agility", $playerID);
         break;
-      case "HVY162":
-        PlayAura("HVY240", $playerID);
+      case "test_of_agility_red":
+        PlayAura("agility", $playerID);
         break;
-      case "HVY177": case "HVY178": case "HVY179":
-        PlayAura("HVY242", $playerID);//Vigor
+      case "clash_of_vigor_red": case "clash_of_vigor_yellow": case "clash_of_vigor_blue":
+        PlayAura("vigor", $playerID);
         break;
-      case "HVY182": case "HVY183": case "HVY184":
-        PlayAura("HVY242", $playerID);//Vigor
+      case "test_of_vigor_red": case "rising_energy_red": case "rising_energy_yellow":
+        PlayAura("vigor", $playerID);
         break;
-      case "HVY239":
-        PutItemIntoPlayForPlayer("DYN243", $playerID, effectController:$effectController);
+      case "test_of_strength_red":
+        PutItemIntoPlayForPlayer("gold", $playerID, effectController:$effectController);
         break;
       default: break;
     }
@@ -186,7 +212,7 @@
     $otherPlayer = ($playerID == 1 ? 2 : 1);
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
-    if(($hero == "HVY047" || $hero == "HVY048") && CountItem("DYN243", $playerID) > 0 && $char[1] == 2) {
+    if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
       PrependDecisionQueue("CLASH", $effectController, $cardID, 1);
@@ -199,14 +225,14 @@
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
       PrependDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
-      if(SearchCharacterAlive($playerID, "HVY051")) {
+      if(SearchCharacterAlive($playerID, "aurum_aegis")) {
         PrependDecisionQueue("MZDESTROY", $playerID, "-", 1);
         PrependDecisionQueue("MAYCHOOSEMULTIZONE", $playerID, "<-", 1);
-        PrependDecisionQueue("MULTIZONEINDICES", $playerID, "MYITEMS:isSameName=DYN243&MYCHAR:cardID=HVY051", 1);
-      } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "DYN243-1", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $playerID, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+      } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "gold-1", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
       PrependDecisionQueue("NOPASS", $playerID, "-", 1);
-      PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("DYN243", "DYN243") ."_to_clash_again", 1);
+      PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("gold", "gold") ."_to_clash_again", 1);
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("PASSPARAMETER", $playerID, "NO");
     }
@@ -229,7 +255,7 @@
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATE", $currentPlayer, $CCS_WagersThisLink, $canPass);
     $char = &GetPlayerCharacter($currentPlayer);
     $cardID = ShiyanaCharacter($char[0]);
-    if($char[1] == 2 && ($cardID == "HVY045" || $cardID == "HVY046")) {
+    if($char[1] == 2 && ($cardID == "betsy_skin_in_the_game" || $cardID == "betsy")) {
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, $canPass ? 1 : 0);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 2 for <0> to give overpower and +1?", 1);
@@ -248,75 +274,75 @@
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
-    if(SearchCurrentTurnEffects("HVY176", $wonWager)) $amount += CountCurrentTurnEffects("HVY176", $wonWager);
+    if(SearchCurrentTurnEffects("double_down_red", $wonWager)) $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = true;
       if(isset($currentTurnEffects[$i])) {
         switch($currentTurnEffects[$i]) {
-          case "HVY055":
+          case "good_time_chapeau":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY241", $wonWager, $amount);//Might
-            PlayAura("HVY242", $wonWager, $amount);//Vigor
+            PlayAura("might", $wonWager, $amount);
+            PlayAura("vigor", $wonWager, $amount);
             break;
-          case "HVY057":
+          case "bet_big_red":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
-            PlayAura("HVY241", $wonWager, $amount);//Might
-            PlayAura("HVY242", $wonWager, $amount);//Vigor
+            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            PlayAura("might", $wonWager, $amount);
+            PlayAura("vigor", $wonWager, $amount);
             break;
-          case "HVY083": case "HVY084": case "HVY085":
+          case "big_bop_red": case "big_bop_yellow": case "big_bop_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY242", $wonWager, $amount);//Vigor
+            PlayAura("vigor", $wonWager, $amount);
             break;
-          case "HVY086": case "HVY087": case "HVY088":
+          case "bigger_than_big_red": case "bigger_than_big_yellow": case "bigger_than_big_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY241", $wonWager, $amount);//Might
+            PlayAura("might", $wonWager, $amount);
             break;
-          case "HVY098":
+          case "prized_galea":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
+            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
             break;
-          case "HVY103-1":
+          case "up_the_ante_blue-1":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY240", $wonWager, $amount);//Agility
+            PlayAura("agility", $wonWager, $amount);
             break;
-          case "HVY103-2":
+          case "up_the_ante_blue-2":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
+            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
             break;
-          case "HVY103-3":
+          case "up_the_ante_blue-3":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY242", $wonWager, $amount);//Vigor
+            PlayAura("vigor", $wonWager, $amount);
             break;
-          case "HVY124": case "HVY125": case "HVY126":
+          case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY240", $wonWager, $amount);//Agility
+            PlayAura("agility", $wonWager, $amount);
             break;
-          case "HVY130": case "HVY131": case "HVY132":
+          case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY242", $wonWager, $amount);//Vigor
+            PlayAura("vigor", $wonWager, $amount);
             break;
-          case "HVY149": case "HVY150": case "HVY151":
+          case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY241", $wonWager, $amount);//Might
+            PlayAura("might", $wonWager, $amount);
             break;
-          case "HVY169": case "HVY170": case "HVY171":
+          case "wage_agility_red": case "wage_agility_yellow": case "wage_agility_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY240", $wonWager, $amount);//Agility
+            PlayAura("agility", $wonWager, $amount);
             break;
-          case "HVY189": case "HVY190": case "HVY191":
+          case "wage_vigor_red": case "wage_vigor_yellow": case "wage_vigor_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("HVY242", $wonWager, $amount);//Vigor
+            PlayAura("vigor", $wonWager, $amount);
             break;
-          case "HVY216": case "HVY217": case "HVY218":
+          case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
+            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
             break;
-          case "HVY235": case "HVY236": case "HVY237":
+          case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("DYN243", $wonWager, number:$amount, effectController:$mainPlayer);//Gold
+            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
             break;
-          case "ROS244":
+          case "drink_em_under_the_table_red":
             RemoveCurrentTurnEffect($i);
             Draw($wonWager);
             PummelHit($lostWager);
@@ -331,8 +357,8 @@
     if($numWagersWon > 0 && $wonWager == $mainPlayer) {
       $char = &GetPlayerCharacter($mainPlayer);
       $hero = ShiyanaCharacter($char[0]);
-      if($char[1] == 2 && ($hero == "HVY092" || $hero == "HVY093")) {
-        PutItemIntoPlayForPlayer("DYN243", $mainPlayer, effectController:$mainPlayer);//Gold
+      if($char[1] == 2 && ($hero == "olympia_prized_fighter" || $hero == "olympia")) {
+        PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer);
         WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
       }
     }
@@ -341,7 +367,7 @@
   function HasUniversal($cardID)
   {
     switch($cardID) {
-      case "HVY216": case "HVY217": case "HVY218": return true;
+      case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue": return true;
       default: break;
     }
     return false;
@@ -352,7 +378,7 @@
     global $currentPlayer, $CS_Transcended;
     $otherplayer = $player == 1 ? 2 : 1;
     SetClassState($player, $CS_Transcended, 1);
-    if(SearchCharacterAlive($player, "MST048")) {
+    if(SearchCharacterAlive($player, "twelve_petal_kasaya")) {
       AddDecisionQueue("YESNO", $player, "if you want to gain a resource");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("GAINRESOURCES", $player, "1", 1);

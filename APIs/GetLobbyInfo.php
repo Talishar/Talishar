@@ -106,9 +106,17 @@ if($handler) {
       $handItem = new stdClass();
       $handItem->id = $cardID;
       $handItem->is1H = Is1H($handItem->id);
+      $subtype = CardSubtype($handItem->id);
       $numHands = 2;
-      if(SubtypeContains($cardID, "Quiver")) $numHands = 0;
-      else if(SubtypeContains($cardID, "Off-Hand")) $numHands = 1;
+      if(DelimStringContains($subtype, "Quiver")) {
+        $numHands = 0;
+        $handItem->isQuiver = true;
+      }
+      else if(HasPerched($cardID)) $numHands = 0;
+      else if(DelimStringContains($subtype, "Off-Hand")) {
+        $numHands = 1;
+        $handItem->isOffhand = true;
+      }
       else if(Is1H($handItem->id)) $numHands = 1;
       $handItem->numHands = $numHands;
       array_push($response->deck->weapons, $handItem);
@@ -156,8 +164,14 @@ if($handler) {
     $handItem->id = $handsSB[$i];
     $subtype = CardSubtype($handItem->id);
     $numHands = 2;
-    if($subtype == "Quiver") $numHands = 0;
-    else if($subtype == "Off-Hand") $numHands = 1;
+    if(DelimStringContains($subtype, "Quiver")) {
+      $numHands = 0;
+      $handItem->isQuiver = true;
+    }
+    else if(DelimStringContains($subtype, "Off-Hand")) {
+      $numHands = 1;
+      $handItem->isOffhand = true;
+    }
     else if(Is1H($handItem->id)) $numHands = 1;
     $handItem->numHands = $numHands;
     $handItem->is1H = Is1H($handItem->id);

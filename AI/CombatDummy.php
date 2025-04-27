@@ -27,7 +27,7 @@ function CombatDummyAI()
       {
         $character = &GetPlayerCharacter($currentPlayer);
         $index = -1;
-        for($i=0; $i<count($character) && $index == -1; $i += CharacterPieces()) if(CardType($character[$i]) != "C") $index = $i;
+        for($j=0; $j<count($character) && $index == -1; $j += CharacterPieces()) if(CardType($character[$j]) != "C") $index = $j;
         $cardID = $character[$index];
         $from = "EQUIP";
         $baseCost = AbilityCost($cardID);
@@ -42,14 +42,6 @@ function CombatDummyAI()
         }
         else PassInput();
       }
-      elseif($turn[0] == "CHOOSEBOTTOM"){
-        $options = explode(",", $turn[2]);
-        ContinueDecisionQueue($options[0]);//Just pick the first option
-      }
-      else
-      {
-        PassInput();
-      }
       ProcessMacros();
       $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
     }
@@ -59,9 +51,7 @@ function CombatDummyAI()
 function IsPlayerAI($playerID)
 {
   global $p2IsAI;
-  $char = &GetPlayerCharacter($playerID);
-  if($playerID == 2 && ($char[0] == "DUMMY" || $p2IsAI == "1")) return true;
+  if($playerID == 2 && $p2IsAI == "1") return true;
   return false;
 }
-
 ?>
