@@ -2201,7 +2201,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "rally_the_rearguard_red":
     case "rally_the_rearguard_yellow":
     case "rally_the_rearguard_blue":
-      if (isset($combatChain[$index + 7]) && $from == "PLAY") return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
+      if ($index == 0 && $from == "PLAY") return true;
+      else if (isset($combatChain[$index + 7]) && $from == "PLAY") return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
       else return false;
     case "memorial_ground_red":
     case "memorial_ground_yellow":
