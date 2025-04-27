@@ -763,6 +763,7 @@ function OUTAbilityCost($cardID)
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $weaponTargetInd = "";
+    $heroTargetInd = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     if ($target == "-") {
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");

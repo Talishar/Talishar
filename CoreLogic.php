@@ -97,7 +97,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     AddPower($totalPower, $power);
   }
   CurrentEffectAfterPlayOrActivateAbility(false); //checking gauntlets of iron will
-  if (!$secondNeedleCheck) {
+  if (!$secondNeedleCheck && isset($combatChain[0])) {
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":
