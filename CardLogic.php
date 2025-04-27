@@ -3389,7 +3389,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
   if ($cardID == "") return 0;
   $power = PowerValue($cardID);
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($player) * 2;
-  else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Attack");
+  else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Power");
   else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $player);
   else if ($cardID == "diabolic_offering_blue") return GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
   else if ($cardID == "nitro_mechanoidb") return SearchCurrentTurnEffects("galvanic_bender-UNDER", $player) > 0 ? 6 : 5;

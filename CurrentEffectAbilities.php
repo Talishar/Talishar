@@ -2299,7 +2299,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
           }
           break;
         case "WarmongersPeace":
-          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "warmongers_diplomacy_blue";
+          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID, from:$from), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "warmongers_diplomacy_blue";
           break;
         default:
           break;
@@ -2357,8 +2357,8 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           if (DelimStringContains($type, "A") && !HasMeld($cardID) && CardType($cardID) != "W") $restrictedBy = "warmongers_diplomacy_blue";
           break;
         case "WarmongersPeace":
-          // !str_contains(GetAbilityTypes($cardID), "I") should allow discarding attack actions for instant abilities under peace
-          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "warmongers_diplomacy_blue";
+          // str_contains(GetAbilityTypes($cardID, from:$from), "I") should allow discarding attack actions for instant abilities under peace
+          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID, from:$from), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "warmongers_diplomacy_blue";
           break;
         case "kabuto_of_imperial_authority":
           if (IsWeapon($cardID, $from) && !WeaponWithNonAttack($cardID, $from)) $restrictedBy = "kabuto_of_imperial_authority";
@@ -2366,7 +2366,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
         case "coat_of_allegiance":
         case "oath_of_loyalty_red":
           if (!$resolutionCheck) {
-            if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID), "I")) {
+            if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID, from:$from), "I")) {
               if (TypeContains($cardID, "AA")) {
                 // this case is needed because brand with cinderclaw isn't set to become active until after the attack is played
                 $restrict = true;

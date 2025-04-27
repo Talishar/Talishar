@@ -5,7 +5,7 @@ include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
-  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBaseAttack, $CCS_WeaponIndex;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBasePower, $CCS_WeaponIndex;
   global $CCS_WeaponIndex, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
@@ -15,22 +15,22 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, true);
     if ($chainCard->ID() == "manifestation_of_miragai_blue" && SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
-      $combatChainState[$CCS_LinkBaseAttack] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+      $combatChainState[$CCS_LinkBasePower] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
     }
     if ($chainCard->PlayerID() == $mainPlayer) {
-      if ($i == 0 && $attackType != "W") $power = $combatChainState[$CCS_LinkBaseAttack];
+      if ($i == 0 && $attackType != "W") $power = $combatChainState[$CCS_LinkBasePower];
       else $power = PowerValue($chainCard->ID());
       if ($canGainAttack || $i == 0 || $power < 0) {
         array_push($powerModifiers, $chainCard->ID());
         array_push($powerModifiers, $power);
         if ($i == 0) $totalPower += $power;
-        else AddAttack($totalPower, $power);
+        else AddPower($totalPower, $power);
       }
       $power = PowerModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->PowerValue();
       if (($canGainAttack && !$snagActive) || $power < 0) {
         array_push($powerModifiers, $chainCard->ID());
         array_push($powerModifiers, $power);
-        AddAttack($totalPower, $power);
+        AddPower($totalPower, $power);
       }
     } else {
       $totalDefense += BlockingCardDefense($i * CombatChainPieces());
@@ -44,7 +44,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         if (($canGainAttack || $power < 0) && !($snagActive && ($currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
           array_push($powerModifiers, $currentTurnEffects[$i]);
           array_push($powerModifiers, $power);
-          AddAttack($totalPower, $power);
+          AddPower($totalPower, $power);
         }
       }
     }
@@ -57,7 +57,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       if (($canGainAttack || $power < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
         array_push($powerModifiers, $buff);
         array_push($powerModifiers, $power);
-        AddAttack($totalPower, $power);
+        AddPower($totalPower, $power);
       }
     }
   }
@@ -77,24 +77,24 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     if ($canGainAttack || $power < 0) {
       array_push($powerModifiers, "POWERCOUNTER"); //Power Counter image ID
       array_push($powerModifiers, $power);
-      AddAttack($totalPower, $power);
+      AddPower($totalPower, $power);
     }
   }
   $power = MainCharacterPowerModifiers($powerModifiers);
   if ($canGainAttack || $power < 0) {
-    AddAttack($totalPower, $power);
+    AddPower($totalPower, $power);
   }
   $power = AuraPowerModifiers(0, $powerModifiers);
   if ($canGainAttack || $power < 0) {
-    AddAttack($totalPower, $power);
+    AddPower($totalPower, $power);
   }
   $power = ArsenalPowerModifier($powerModifiers);
   if ($canGainAttack || $power < 0) {
-    AddAttack($totalPower, $power);
+    AddPower($totalPower, $power);
   }
   $power = ItemPowerModifiers($powerModifiers);
   if ($canGainAttack || $power < 0) {
-    AddAttack($totalPower, $power);
+    AddPower($totalPower, $power);
   }
   CurrentEffectAfterPlayOrActivateAbility(false); //checking gauntlets of iron will
   if (!$secondNeedleCheck) {
@@ -123,7 +123,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   }
 }
 
-function AddAttack(&$totalPower, $amount): void
+function AddPower(&$totalPower, $amount): void
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -138,7 +138,7 @@ function AddAttack(&$totalPower, $amount): void
     SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
   }
   if ($amount > 0 && ($attackID == "back_heel_kick_red" || $attackID == "back_heel_kick_yellow" || $attackID == "back_heel_kick_blue") && ComboActive()) $amount += 1;
-  if ($amount > 0) $amount += PermanentAddAttackAbilities();
+  if ($amount > 0) $amount += PermanentAddPowerAbilities();
   $totalPower += $amount;
 }
 
@@ -472,14 +472,14 @@ function ArsenalPlayCardAbilities($cardID)
 
 function HasIncreasedAttack()
 {
-  global $CombatChain, $combatChainState, $CCS_LinkBaseAttack, $mainPlayer, $combatChain;
+  global $CombatChain, $combatChainState, $CCS_LinkBasePower, $mainPlayer, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
     $power = CachedTotalPower();
     if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
       if ($power > WardAmount($combatChain[0], $mainPlayer)) return true;
       else return false;
     }
-    if ($power > $combatChainState[$CCS_LinkBaseAttack]) return true;
+    if ($power > $combatChainState[$CCS_LinkBasePower]) return true;
   }
   return false;
 }
@@ -2285,6 +2285,7 @@ function CanPassPhase($phase)
     case "CHOOSECARDID":
     case "OVER":
     case "BUTTONINPUT":
+    case "MULTICHOOSETHEIRDISCARD":
       return 0;
     default:
       return 1;

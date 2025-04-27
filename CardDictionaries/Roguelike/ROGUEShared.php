@@ -42,7 +42,7 @@ function ROGUEAbilityHasGoAgain($cardID)
 
 function ROGUEEffectPowerModifier($cardID)
 {
-    global $combatChain, $combatChainState, $CCS_LinkBaseAttack;
+    global $combatChain, $combatChainState, $CCS_LinkBasePower;
     $params = explode(",", $cardID);
     $cardID = $params[0];
     if (count($params) > 1) $parameter = $params[1];

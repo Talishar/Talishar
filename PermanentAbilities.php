@@ -437,7 +437,7 @@ function PermanentPlayAbilities($attackID, $from="")
   }
 }
 
-function PermanentAddAttackAbilities()
+function PermanentAddPowerAbilities()
 {
   global $mainPlayer;
   $amount = 0;

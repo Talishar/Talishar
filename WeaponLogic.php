@@ -19,11 +19,11 @@ function IsWeaponAttack()
   return false;
 }
 
-function WeaponWithNonAttack($cardID,  $from) 
+function WeaponWithNonAttack($cardID, $from) 
 {
   if (!IsWeapon($cardID, $from)) return false;
-  if (GetAbilityTypes($cardID) != "") return true;
-  if (GetAbilityType($cardID) != "AA" && GetAbilityType($cardID) != "") return true;
+  if (GetAbilityTypes($cardID, from:$from) != "") return true;
+  if (GetAbilityType($cardID, from:$from) != "AA" && GetAbilityType($cardID, from:$from) != "") return true;
   return false;
 }
 
