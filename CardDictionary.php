@@ -522,7 +522,15 @@ function CardClass($cardID)
     case "sawbones_dock_hand_yellow":
     case "riggermortis_yellow":
     case "chum_friendly_first_mate_yellow":
+    case "gravy_bones":
+    case "gravy_bones_shipwrecked_looter":
       return "PIRATE,NECROMANCER";
+    case "marlynn":
+    case "marylynn_treasure_hunter":
+      return "PIRATE,RANGER";
+    case "puffin":
+    case "puffin_hightail":
+      return "PIRATE,MECHANOLOGIST";
     default:
       break;
   }

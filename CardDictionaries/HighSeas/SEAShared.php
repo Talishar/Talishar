@@ -67,7 +67,8 @@ function SEACombatEffectActive($cardID, $attackID): bool
   global $mainPlayer;
   return match ($cardID) {
     "peg_leg" => true,
-    "gold_baited_hook" => TalentContains($attackID, "PIRATE", $mainPlayer),
+    // pirate is inconsistently classed as a talent or a class leave it like this until it gets cleaned up
+    "gold_baited_hook" => ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer),
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
