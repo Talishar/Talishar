@@ -6,13 +6,15 @@
     $permanents = &GetPermanents($currentPlayer);
     $targetArray = explode("-", $target);
     if (count($targetArray) > 1) {
-      $targetIndex = $targetArray[1];
-      $matID = $permanents[$targetIndex];
-      if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
-        $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
-        DestroyPermanent($currentPlayer, $targetIndex);
-        $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
-        $target = "MYPERM-$targetIndex";
+      $targetIndex = is_numeric($targetArray[1]) ? 0 : $targetArray[1];
+      if (isset($permanents[$targetIndex])) {
+        $matID = $permanents[$targetIndex];
+        if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
+          $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
+          DestroyPermanent($currentPlayer, $targetIndex);
+          $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
+          $target = "MYPERM-$targetIndex";
+        }
       }
     }
     switch($cardID)

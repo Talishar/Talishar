@@ -178,7 +178,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "long_whisker_loyalty_red" & count($dashArr) > 1) {
     if ($dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
     if (DelimStringContains($dashArr[1], "MARK", true)) {
-      $id = explode(",", $dashArr[1])[1];
+      $id = str_contains($dashArr[1], ",") ? explode(",", $dashArr[1])[1] : -1;
       $character = &GetPlayerCharacter($mainPlayer);
       return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
     }
