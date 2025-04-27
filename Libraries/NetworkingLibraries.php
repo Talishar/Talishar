@@ -1757,15 +1757,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       // there's a bug here where the $index is getting reset if you need to pitch, and I can't figure out why
+      if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
       if($from == "BANISH") $mod = GetBanishModifier($index);
-      if ($actionPoints > 0) {
+        if ($actionPoints > 0) {
         if(!$canPlayAsInstant) --$actionPoints;
         elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
         elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
         && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
           --$actionPoints;
         }
-        elseif(!$canPlayAsInstant && GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
+        elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
           --$actionPoints;
         }
       }
