@@ -1382,7 +1382,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "chum_friendly_first_mate_yellow":
-      if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -1392,7 +1391,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       return $names;
     case "sawbones_dock_hand_yellow":
-      if (CheckTapped("MYALLY-$index", $currentPlayer)) return "";
       $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -1662,8 +1660,8 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
     }
   };
   //modal cards dominate and overpower restriction
-  if (IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID) != "") return true;
-  if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID) != "") {
+  if (IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") return true;
+  if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
   }
   //current turn effects
@@ -2025,7 +2023,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     && $from != "PLAY" 
     && GetClassState($player, $CS_NumNonAttackCards) >= 1 
     && (SearchItemsForCard("signal_jammer_blue", 1) != "" || SearchItemsForCard("signal_jammer_blue", 2) != "") 
-    && (GetAbilityTypes($cardID) == "" || !DelimStringContains(GetAbilityTypes($cardID), "I"))
+    && (GetAbilityTypes($cardID, from:$from) == "" || !DelimStringContains(GetAbilityTypes($cardID, from:$from), "I"))
     ){
     $restriction = "signal_jammer_blue";
     return true;
