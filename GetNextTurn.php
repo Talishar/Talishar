@@ -1531,7 +1531,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $options = explode(",", $params[1]);
     $maxNumber = intval($params[0]);
     $minNumber = count($params) > 2 ? intval($params[2]) : 0;
-    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to " . $maxNumber ) . " card" . ($maxNumber > 1 ? "s:" : ":");
+    $title = "Choose " . ($minNumber > 0 ? $maxNumber : "up to " . $maxNumber ) . " card" . ($maxNumber > 1 ? "s and click Submit:" : " and click Submit:");
     $subtitles = "";
 
     if($turn[0] == "MULTICHOOSEDECK"){
