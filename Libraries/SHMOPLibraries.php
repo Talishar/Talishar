@@ -19,35 +19,16 @@
 16 - Player 2 is chat enabled
 */
 
-// $useRedis = getenv('REDIS_ENABLED') ?? false;
-$useRedis = false;
-$redisHost = (!empty(getenv("REDIS_HOST")) ? getenv("REDIS_HOST") : "127.0.0.1");
-$redisPort = (!empty(getenv("REDIS_PORT")) ? getenv("REDIS_PORT") : "6379");
-$redisPassword = (!empty(getenv("REDIS_PASSWORD")) ? getenv("REDIS_PASSWORD") : "");
-
-if ($useRedis) {
-  $redis = new Redis();
-  $redis->connect($redisHost, $redisPort);
-  $redis->auth($redisPassword);
-}
-
 function WriteCache($name, $data)
 {
-  global $useRedis, $redis;
-  //DeleteCache($name);
   if ($name == 0) return;
   $serData = trim(serialize(trim($data)));
-
-  if ($useRedis) {
-    $redis->set($name, $serData);
+  $id = shmop_open($name, "c", 0644, 128);
+  if ($id == false) {
+    exit;
   } else {
-    $id = shmop_open($name, "c", 0644, 128);
-    if ($id == false) {
-      exit;
-    } else {
-      $serData = str_pad($serData, 128, "\0");
-      $rv = shmop_write($id, $serData, 0);
-    }
+    $serData = str_pad($serData, 128, "\0");
+    $rv = shmop_write($id, $serData, 0);
   }
 }
 
@@ -66,28 +47,14 @@ function WriteGamestateCache($name, $data)
 
 function ReadCache($name)
 {
-  global $useRedis, $redis;
   if ($name == 0) return "";
-
   $data = "";
-  if ($useRedis) {
-    $data = RedisReadCache($name);
-    if ($data == "" && is_numeric($name)) {
-      $data = ShmopReadCache($name);
-    }
-  } else {
-    $data = ShmopReadCache($name);
-    // if ($data == "") {
-    //   $data = RedisReadCache($name);
-    // }
-  }
-
+  $data = ShmopReadCache($name);
   return unserialize($data);
 }
 
 function ShmopReadCache($name)
 {
-  // If name is empty just return
   if (!trim($name)) {
     return "";
   }
@@ -98,39 +65,16 @@ function ShmopReadCache($name)
   return trim(shmop_read($id, 0, shmop_size($id)));
 }
 
-function RedisReadCache($name)
-{
-  global $redis;
-  if (!isset($redis)) $redis = RedisConnect();
-  return $data = $redis->get($name);
-}
-
-function RedisConnect()
-{
-  global $redis, $redisHost, $redisPort, $redisPassword;
-  $redis = new Redis();
-  $redis->connect($redisHost, $redisPort);
-  $redis->auth($redisPassword);
-  return $redis;
-}
-
 function DeleteCache($name)
 {
-  global $useRedis, $redis;
-  if ($useRedis) {
-    $redis->del($name);
-    $redis->del(GamestateID($name));
-  }
   //Always try to delete shmop
   $id = shmop_open($name, "w", 0644, 128);
   if($id) {
     shmop_delete($id);
-    shmop_close($id); //shmop_close is deprecated
   }
   $gsID = shmop_open(GamestateID($name), "c", 0644, 16384);
   if($gsID) {
     shmop_delete($gsID);
-    shmop_close($gsID); //shmop_close is deprecated
   }
 }
 
@@ -172,7 +116,6 @@ function IncrementCachePiece($gameName, $piece)
 
 function GamestateUpdated($gameName)
 {
-  global $currentPlayer;
   $cache = ReadCache($gameName);
   $cacheArr = explode(SHMOPDelimiter(), $cache);
   $cacheArr[0]++;

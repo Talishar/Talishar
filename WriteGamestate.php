@@ -104,5 +104,3 @@ flock($handler, LOCK_UN);
 fclose($handler);
 
 WriteGamestateCache($gameName, $gamestateContent);
-
-if($useRedis) WriteCache($gameName . "GS", $gamestateContent);
