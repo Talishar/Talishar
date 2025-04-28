@@ -360,7 +360,7 @@
     {
       case "Generic": case "Warrior": case "Ninja": case "Brute": case "Guardian":
       case "Wizard": case "Mechanologist": case "Ranger": case "Runeblade":
-      case "Illusionist": case "Assassin": return true;
+      case "Illusionist": case "Assassin": case "Necromancer": case "Pirate": return true;
       case "Shapeshifter": case "Merchant": case "Arbiter": case "Bard": return true;
       default: return false;
     }
