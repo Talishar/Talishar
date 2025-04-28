@@ -1235,7 +1235,7 @@ function AuraPlayAbilities($cardID, $from = "")
       $batchSize = 10;
       $numBatches = intdiv($runechantCount, $batchSize);
       $remainder = $runechantCount % $batchSize;
-      if ($remainder < 6) {
+      if ($remainder < 6 && $numBatches > 0) {
         //make sure oblivion isn't blocked
         $remainder += 10;
         $numBatches -= 1;
