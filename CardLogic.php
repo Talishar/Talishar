@@ -2423,7 +2423,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case $CID_Inertia:
       $deck = new Deck($player);
-      WriteLog("Processing the end of turn effect of Inertia.");
+      WriteLog("Processing the end of turn effect of " . CardLink("inertia", "inertia") . ".");
       for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
         BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
       }
