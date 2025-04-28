@@ -1235,6 +1235,11 @@ function AuraPlayAbilities($cardID, $from = "")
       $batchSize = 10;
       $numBatches = intdiv($runechantCount, $batchSize);
       $remainder = $runechantCount % $batchSize;
+      if ($remainder < 6) {
+        //make sure oblivion isn't blocked
+        $remainder += 10;
+        $numBatches -= 1;
+      }
       for ($i = 0; $i < $remainder; $i++) {
         AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
       }
