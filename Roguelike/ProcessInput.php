@@ -321,10 +321,10 @@
       {
         if($dq[0] == "CHOOSECARD")
         {
-          $options = explode(",", $dq[1]);
-          $pick = GetELEPick($options); // !Undefined function
-          ProcessCommand($i, 1, $pick);
-          $changeMade = true;
+          // $options = explode(",", $dq[1]);
+          // $pick = GetELEPick($options); // !Undefined function
+          // ProcessCommand($i, 1, $pick); // !Missing argument
+          // $changeMade = true;
         }
       }
     }
