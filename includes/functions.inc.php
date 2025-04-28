@@ -116,45 +116,59 @@ function CreateUserAPI($conn, $username, $email, $pwd)
 
 function loginFromCookie()
 {
-	$token = $_COOKIE["rememberMeToken"];
-	$conn = GetDBConnection();
-	$sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "s", $token);
-		mysqli_stmt_execute($stmt);
-		$data = mysqli_stmt_get_result($stmt);
-		$row = mysqli_fetch_array($data, MYSQLI_NUM);
-		mysqli_stmt_close($stmt);
-		if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-		if ($row != null && count($row) > 0) {
-			$_SESSION["userid"] = $row[0];
-			$_SESSION["useruid"] = $row[1];
-			$_SESSION["useremail"] = $row[2];
-			$patreonAccessToken = $row[3];
-			$patreonRefreshToken = $row[4];
-			$_SESSION["patreonEnum"] = $row[5];
-			$_SESSION["isBanned"] = $row[6];
-			$_SESSION["lastGameName"] = $row[7];
-			$_SESSION["lastPlayerId"] = $row[8];
-			$_SESSION["lastAuthKey"] = $row[9];
-			try {
-				PatreonLogin($patreonAccessToken);
-			} catch (\Exception $e) {
-			}
-		} else {
-			unset($_SESSION["userid"]);
-			unset($_SESSION["useruid"]);
-			unset($_SESSION["useremail"]);
-			unset($_SESSION["patreonEnum"]);
-			unset($_SESSION["isBanned"]);
-			unset($_SESSION["lastGameName"]);
-			unset($_SESSION["lastPlayerId"]);
-			unset($_SESSION["lastAuthKey"]);
-		}
-		session_write_close();
-	}
-	mysqli_close($conn);
+    if (isset($_COOKIE["rememberMeToken"])) {
+        $token = $_COOKIE["rememberMeToken"];
+        $conn = GetDBConnection();
+        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
+        $stmt = mysqli_stmt_init($conn);
+        
+        if (mysqli_stmt_prepare($stmt, $sql)) {
+            mysqli_stmt_bind_param($stmt, "s", $token);
+            mysqli_stmt_execute($stmt);
+            $data = mysqli_stmt_get_result($stmt);
+            $row = mysqli_fetch_array($data, MYSQLI_NUM);
+            mysqli_stmt_close($stmt);
+
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+
+            if ($row != null && count($row) > 0) {
+                $_SESSION["userid"] = $row[0];
+                $_SESSION["useruid"] = $row[1];
+                $_SESSION["useremail"] = $row[2];
+                $patreonAccessToken = $row[3];
+                $patreonRefreshToken = $row[4];
+                $_SESSION["patreonEnum"] = $row[5];
+                $_SESSION["isBanned"] = $row[6];
+                $_SESSION["lastGameName"] = $row[7];
+                $_SESSION["lastPlayerId"] = $row[8];
+                $_SESSION["lastAuthKey"] = $row[9];
+                
+                try {
+                    PatreonLogin($patreonAccessToken);
+                } catch (\Exception $e) {
+                    // Handle exception (if any)
+                }
+            } else {
+                // Unset session variables if token doesn't match
+                unset($_SESSION["userid"]);
+                unset($_SESSION["useruid"]);
+                unset($_SESSION["useremail"]);
+                unset($_SESSION["patreonEnum"]);
+                unset($_SESSION["isBanned"]);
+                unset($_SESSION["lastGameName"]);
+                unset($_SESSION["lastPlayerId"]);
+                unset($_SESSION["lastAuthKey"]);
+            }
+            session_write_close();
+        }
+        mysqli_close($conn);
+    } else {
+        // Handle the case when rememberMeToken doesn't exist in cookies
+        // For example, you might redirect the user or show a message
+        echo "Remember me token not found.";
+    }
 }
 
 function storeFabraryId($uid, $fabraryId)

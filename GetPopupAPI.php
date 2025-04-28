@@ -28,15 +28,20 @@ ob_end_clean();
 
 session_start();
 
-if($playerID == 3) {
+if ($playerID == 3) {
   include_once "./AccountFiles/AccountSessionAPI.php";
-  if(!IsUserLoggedIn()) {
-    loginFromCookie();
-    if(!IsUserLoggedIn()) {
-      $response->error = "You must be logged in to spectate games";
-      echo (json_encode($response));
-      exit;
-    }
+  
+  if (!IsUserLoggedIn()) {
+      loginFromCookie();
+      
+      if (!IsUserLoggedIn()) {
+          if (!isset($response)) {
+              $response = new stdClass();
+          }
+          $response->error = "You must be logged in to spectate games";
+          echo json_encode($response);
+          exit;
+      }
   }
   //Now audit the spectate
   $userID = LoggedInUser();
