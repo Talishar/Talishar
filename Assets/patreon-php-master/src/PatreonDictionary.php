@@ -135,6 +135,7 @@ enum PatreonCampaign : string
   case Nikobru = "13586904";
   case Dashciples = "13136013";
   case BlitzkriegMeph = "13969806";
+  case HamMan215 = "13035399";
 
   public function SessionID(): string
   {
@@ -184,6 +185,7 @@ enum PatreonCampaign : string
       case "13586904": return "isNikobruPatron";
       case "13136013": return "isDashciplesPatron";
       case "13969806": return "isBlitzkriegMephPatron";
+      case "13035399": return "isHamMan215Patron";
       default: return "";
     }
   }
@@ -256,6 +258,7 @@ enum PatreonCampaign : string
       case "13586904": return "Nikobru";
       case "13136013": return "Dashciples";
       case "13969806": return "Blitzkrieg Meph";
+      case "13035399": return "HamMan215";
       default: return "";
     }
   }
@@ -328,6 +331,7 @@ enum PatreonCampaign : string
       case "13586904": return $userName == "Nikobru";
       case "13136013": return $userName == "WuntrikAkali";
       case "13969806": return ($userName == "PvtVoid" || $userName == "BlitzkriegMeph");
+      case "13035399": return ($userName == "PvtVoid" || $userName == "HamMan215");
       default: return "";
     }
   }
@@ -420,6 +424,7 @@ enum PatreonCampaign : string
       case "13586904": return "97";
       case "13136013": return "101";
       case "13969806": return "102";
+      case "13035399": return "103";
       default: return "";
     }
   }
