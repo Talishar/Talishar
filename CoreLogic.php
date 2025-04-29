@@ -2397,14 +2397,6 @@ function IsAllyAttackTarget()
   return $target[0] == "THEIRALLY";
 }
 
-function IsAllyPirateAttackTarget()
-{
-  global $defPlayer;
-  $target = explode("-", GetAttackTarget());
-  $cardID = GetMZCard($defPlayer, $target[0] ."-". $target[1]);
-  return SubtypeContains($cardID, "Pirate") && $target[0] == "THEIRALLY";
-}
-
 function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
 {
   global $combatChainState, $CCS_AttackTargetUID;
@@ -2632,8 +2624,6 @@ function SelfCostModifier($cardID, $from)
       return (-1 * NumRunechants($currentPlayer));
     case "liquid_cooled_mayhem_red":
     case "liquid_cooled_mayhem_yellow":
-    case "liquid_cooled_mayhem_blue":
-    case "liquid_cooled_mayhem_red":
     case "liquid_cooled_mayhem_blue":
       return EvoUpgradeAmount($currentPlayer) * -1;
     case "annihilator_engine_red":

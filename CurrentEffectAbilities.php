@@ -611,7 +611,6 @@ function EffectBlockModifier($cardID, $index, $from)
     case "defender_of_daybreak_blue":
       return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
     case "lay_down_the_law_red":
-    case "lay_down_the_law_red":
       return (CachedTotalPower() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
     case "ratchet_up_red":
     case "ratchet_up_yellow":
@@ -1068,12 +1067,6 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
           if (!$skip) --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] == 0) $remove = true;
           break;
-        case "sawbones_dock_hand_yellow":
-          if(IsHeroAttackTarget() || IsAllyPirateAttackTarget()) {
-            $preventedDamage += 1;
-            RemoveCurrentTurnEffect($i);
-          }
-          break;
         default:
           break;
       }
@@ -1337,6 +1330,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             break;
           }
           break;
+        case "sawbones_dock_hand_yellow":
+          $character = &GetPlayerCharacter($player);
+          if(ClassContains($character[0], "PIRATE", $player)) {
+            $preventedDamage += 1;
+            RemoveCurrentTurnEffect($i);
+          }
         default:
           break;
       }

@@ -755,7 +755,6 @@ function AbilityCost($cardID)
     default:
       return 0;
   }
-  return 0;
 }
 
 function DynamicCost($cardID)
@@ -3151,8 +3150,6 @@ function HasBattleworn($cardID)
     case "skull_crushers":
     case "helm_of_sharp_eye":
       return true;
-    case "gallantry_gold":
-      return true;
     case "beaten_trackers":
     case "seasoned_saviour":
     case "tearing_shuko":
@@ -3172,10 +3169,6 @@ function HasBattleworn($cardID)
     case "hyper_x3":
       return true;
     case "teklovossen_the_mechropotentb":
-    case "evo_tekloscope_blue_equip":
-    case "evo_energy_matrix_blue_equip":
-    case "evo_scatter_shot_blue_equip":
-    case "evo_rapid_fire_blue_equip":
     case "shriek_razors":
       return true;
     case "evo_sentry_base_head_red_equip":
@@ -3339,9 +3332,6 @@ function HasPiercing($cardID, $from = "")
 function HasTower($cardID)
 {
   switch ($cardID) {
-    case "colossal_bearing_red":
-    case "lay_down_the_law_red":
-    case "smack_of_reality_red":
     case "colossal_bearing_red":
     case "lay_down_the_law_red":
     case "smack_of_reality_red":
@@ -3798,7 +3788,7 @@ function AuraDefaultHoldTriggerState($cardID): int
     "pyroglyphic_protection_yellow", "pyroglyphic_protection_blue", "emerging_avalanche_red", "emerging_avalanche_yellow", "emerging_avalanche_blue", "strength_of_sequoia_red", "strength_of_sequoia_yellow", "strength_of_sequoia_blue", "embolden_red", "embolden_yellow", "embolden_blue",
     "embodiment_of_earth", "embodiment_of_lightning", "frostbite", "stamp_authority_blue", "towering_titan_red", "towering_titan_yellow", "towering_titan_blue", "emerging_dominance_red", "emerging_dominance_yellow", "emerging_dominance_blue", "zen_state",
     "runeblood_barrier_yellow", "soul_shackle", "channel_mount_isen_blue" => 0,
-    "runechant", "spellbane_aegis", "spellbane_aegis" => 1,
+    "runechant", "spellbane_aegis" => 1,
     default => 2
   };
 }
@@ -4476,7 +4466,6 @@ function IsIyslander($character)
   switch ($character) {
     case 'iyslander':
     case 'iyslander_stormbind':
-    case 'iyslander':
       return true;
     default:
       return false;

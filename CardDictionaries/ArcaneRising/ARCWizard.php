@@ -541,7 +541,6 @@ function ArcaneModifierAmount($source, $player, $index)
       case "exploding_aether_yellow":
       case "exploding_aether_blue":
         return $effectArr[1];
-        break;
       default:
         break;
     }
