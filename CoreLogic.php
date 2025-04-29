@@ -2397,14 +2397,6 @@ function IsAllyAttackTarget()
   return $target[0] == "THEIRALLY";
 }
 
-function IsAllyPirateAttackTarget()
-{
-  global $defPlayer;
-  $target = explode("-", GetAttackTarget());
-  $cardID = GetMZCard($defPlayer, $target[0] ."-". $target[1]);
-  return SubtypeContains($cardID, "Pirate") && $target[0] == "THEIRALLY";
-}
-
 function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
 {
   global $combatChainState, $CCS_AttackTargetUID;
