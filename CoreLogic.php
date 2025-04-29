@@ -2633,8 +2633,6 @@ function SelfCostModifier($cardID, $from)
     case "liquid_cooled_mayhem_red":
     case "liquid_cooled_mayhem_yellow":
     case "liquid_cooled_mayhem_blue":
-    case "liquid_cooled_mayhem_red":
-    case "liquid_cooled_mayhem_blue":
       return EvoUpgradeAmount($currentPlayer) * -1;
     case "annihilator_engine_red":
     case "terminator_tank_red":

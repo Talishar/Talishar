@@ -611,7 +611,6 @@ function EffectBlockModifier($cardID, $index, $from)
     case "defender_of_daybreak_blue":
       return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
     case "lay_down_the_law_red":
-    case "lay_down_the_law_red":
       return (CachedTotalPower() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
     case "ratchet_up_red":
     case "ratchet_up_yellow":

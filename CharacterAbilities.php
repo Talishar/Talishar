@@ -1074,7 +1074,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "vexing_quillhand":
     case "crown_of_reflection":
     case "blossom_of_spring":
-    case "gallantry_gold":
     case "silken_form":
     case "heat_wave":
     case "sash_of_sandikai":
