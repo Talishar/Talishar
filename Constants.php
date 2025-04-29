@@ -567,7 +567,6 @@ function ResetChainLinkState()
   $combatChainState[$CCS_EclecticMag] = 0;
   $combatChainState[$CCS_NumUsedInReactions] = 0;
   $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
-  UnsetChainLinkBanish();
 }
 
 function ResetMainClassState()

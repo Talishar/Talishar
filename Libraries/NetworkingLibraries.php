@@ -3628,5 +3628,6 @@ function EndResolutionStep()
     NegateLayer("LAYER-$resolutionIndex", "-");
     $layerIndex += LayerPieces();
   }
+  UnsetChainLinkBanish();
   return $layerIndex;
 }
