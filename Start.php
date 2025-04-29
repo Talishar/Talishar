@@ -35,8 +35,8 @@ else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; 
 if ($authKey != $targetKey) { echo("Invalid auth key"); exit; }
 
 //Initialize global variables
-$p1Inventory = "";
-$p2Inventory = "";
+$p1Inventory = [];
+$p2Inventory = [];
 
 //Initialize the initial state of the game
 $filename = "./Games/" . $gameName . "/gamestate.txt";
