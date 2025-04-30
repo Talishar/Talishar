@@ -72,7 +72,6 @@ function TypeToPlay($phase)
     case "MULTICHOOSEBANISH":
       return "cards from banish";
     case "YESNO":
-      return str_replace("_", " ", isset($turn[2]) ? $turn[2] : "");
     case "OK":
       return str_replace("_", " ", isset($turn[2]) ? $turn[2] : "");
     case "MULTICHOOSETEXT":
