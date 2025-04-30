@@ -748,7 +748,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "urgent_delivery_yellow":
     case "urgent_delivery_blue":
     case "spiders_bite":
-    case "spiders_bite":
     case "eradicate_yellow":
     case "regicide_blue":
     case "leave_no_witnesses_red":
@@ -870,7 +869,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "metex_red":
     case "metex_yellow":
     case "metex_blue":
-    case "under_loop_red":
     case "under_loop_yellow":
     case "under_loop_blue":
     case "already_dead_red":
@@ -2556,7 +2554,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "pack_call_red":
-    case "pack_call_yellow":
     case "pack_call_blue":
       $deck = new Deck($player);
       if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: $parameter) < 6) {

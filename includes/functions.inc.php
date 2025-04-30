@@ -69,8 +69,6 @@ function uidExists($conn, $username)
 		$result = false;
 		return $result;
 	}
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
 }
 
 // Insert new user into database
@@ -807,7 +805,6 @@ function GetNormalCardID($cardID)
 		case "lord_sutcliffe": return "lord_sutcliffe";
 		case "MON401": return "spell_fray_gloves";
 		case "lady_barthimont": return "lady_barthimont";
-		case "MON400": return "spell_fray_cloak";
 		case "the_librarian": return "the_librarian";
 		case "MON402": return "spell_fray_leggings";
 		case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
@@ -830,46 +827,26 @@ function SavePatreonTokens($accessToken, $refreshToken)
 	mysqli_close($conn);
 }
 
-function LoadBadges($userID)
-{
-	return [];//Return empty until inefficient join can be fixed with index
-	if($userID == "") return "";
-	$conn = GetDBConnection();
-	$sql = "SELECT pb.playerId,pb.badgeId,pb.intVariable,bs.topText,bs.bottomText,bs.image,bs.link FROM playerbadge pb join badges bs on bs.badgeId = pb.badgeId WHERE pb.playerId = ?;";
-	$stmt = mysqli_stmt_init($conn);
-	$output = [];
-	if(mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "s", $userID);
-		mysqli_stmt_execute($stmt);
-		$data = mysqli_stmt_get_result($stmt);
-		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for($i = 0; $i < 7; ++$i) array_push($output, $row[$i]);
-		}
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
-	return $output;
-}
-
-function GetMyAwardableBadges($userID)
-{
-	if($userID == "") return "";
-	$output = [];
-	$conn = GetDBConnection();
-	$sql = "select * from userassignablebadge where playerId=?";
-	$stmt = mysqli_stmt_init($conn);
-	if(mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "s", $userID);
-		mysqli_stmt_execute($stmt);
-		$data = mysqli_stmt_get_result($stmt);
-		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			array_push($output, $row[0]);
-		}
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
-	return $output;
-}
+// function LoadBadges($userID)
+// {
+// 	return [];//Return empty until inefficient join can be fixed with index
+// 	if($userID == "") return "";
+// 	$conn = GetDBConnection();
+// 	$sql = "SELECT pb.playerId,pb.badgeId,pb.intVariable,bs.topText,bs.bottomText,bs.image,bs.link FROM playerbadge pb join badges bs on bs.badgeId = pb.badgeId WHERE pb.playerId = ?;";
+// 	$stmt = mysqli_stmt_init($conn);
+// 	$output = [];
+// 	if(mysqli_stmt_prepare($stmt, $sql)) {
+// 		mysqli_stmt_bind_param($stmt, "s", $userID);
+// 		mysqli_stmt_execute($stmt);
+// 		$data = mysqli_stmt_get_result($stmt);
+// 		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
+// 			for($i = 0; $i < 7; ++$i) array_push($output, $row[$i]);
+// 		}
+// 		mysqli_stmt_close($stmt);
+// 	}
+// 	mysqli_close($conn);
+// 	return $output;
+// }
 
 function AwardBadge($userID, $badgeID)
 {

@@ -17,17 +17,17 @@ include_once "../Libraries/HTTPLibraries.php";
 SetHeaders();
 
 $response = new stdClass();
-$response->badges = [];
+// $response->badges = [];
 
-$badges = LoadBadges(LoggedInUser());
-for ($i = 0; $i < count($badges); $i += 7) {
-  $badge = new stdClass();
-  $badge->topText = $badges[$i + 3];
-  $badge->bottomText = str_replace("{0}", $badges[$i + 2], $badges[$i + 4]);
-  if ($badges[$i + 6] != "") $badge->link = $badges[$i + 6];
-  $badge->image = $badges[$i + 5];
-  array_push($response->badges, $badge);
-}
+// $badges = LoadBadges(LoggedInUser());
+// for ($i = 0; $i < count($badges); $i += 7) {
+//   $badge = new stdClass();
+//   $badge->topText = $badges[$i + 3];
+//   $badge->bottomText = str_replace("{0}", $badges[$i + 2], $badges[$i + 4]);
+//   if ($badges[$i + 6] != "") $badge->link = $badges[$i + 6];
+//   $badge->image = $badges[$i + 5];
+//   array_push($response->badges, $badge);
+// }
 
 $response->userName = LoggedInUserName();
 
