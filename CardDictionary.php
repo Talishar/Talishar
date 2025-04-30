@@ -75,7 +75,7 @@ function CardType($cardID, $from="")
     "regrowth__shock_blue"
   ];
 
-  if (isset($meldCards[$cardID])) {
+  if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
     if (function_exists("GetClassState")) {
       $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
