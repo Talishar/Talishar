@@ -8,20 +8,19 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   $otherPlayer = ($playerID == 1 ? 2 : 1);
   switch ($mode) {
     case 0:
-      break; //Deprecated
     case 1:
-      break; //Deprecated
-    case 2: //Play card from hand - DEPRECATED
+    case 2: //DEPRECATED
+    case 18:
+    case 28:
       break;
     case 3: //Play equipment/hero ability
       $index = $cardID;
-      $found = -1;
       $character = &GetPlayerCharacter($playerID);
-      $cardID = $character[$index];
       if ($index != -1 && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
+        $cardID = $character[$index];
         if ($turn[0] == "B") $character[$index + 6] = 1;
         elseif ($turn[0] == "D" && canBeAddedToChainDuringDR($cardID)) {
           $character[$index + 1] = 1;
@@ -197,8 +196,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2]);
       break;
-    case 16:
-    case 18: //Decision Queue (15 and 18 deprecated)
+    case 16: 
       if (count($decisionQueue) > 0) {
         $index = $cardID;
         $isValid = false;
@@ -393,8 +391,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         PlayCard($cardID, "HAND");
       }
       break;
-    case 28:
-      break; //Deprecated
     case 29: //CHOOSETOPOPPONENT
       if ($turn[0] == "CHOOSETOPOPPONENT") {
         $otherPlayer = ($playerID == 1 ? 2 : 1);
@@ -825,57 +821,20 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
 
 function IsModeAsync($mode)
 {
-  switch ($mode) {
-    case 26:
-      return true;
-    case 102:
-      return true;
-    case 103:
-      return true;
-    case 104:
-      return true;
-    case 10000:
-      return true;
-    case 10003:
-      return true;
-    case 100000:
-      return true;
-    case 100001:
-      return true;
-    case 100002:
-      return true;
-    case 100003:
-      return true;
-    case 100004:
-      return true;
-    case 100007:
-      return true;
-    case 100010:
-      return true;
-    case 100012:
-      return true;
-    case 100015: //Request chat
-      return true;
-    case 100016://Confirm Undo
-    case 100017://Decline Undo
-    case 100018://Confirm This Turn Undo
-    case 100019://Confirm Last Turn Undo
-      return true;
-    case 100020: //Decline chat request
-      return true;
-  
-  }
-  return false;
+  static $asyncModes = [
+    26 => true, 102 => true, 103 => true, 104 => true, 10000 => true,
+    10003 => true, 100000 => true, 100001 => true, 100002 => true,
+    100003 => true, 100004 => true, 100007 => true, 100010 => true,
+    100012 => true, 100015 => true, 100016 => true, 100017 => true,
+    100018 => true, 100019 => true, 100020 => true
+  ];
+  return isset($asyncModes[$mode]);
 }
 
 function IsModeAllowedForSpectators($mode)
 {
-  switch ($mode) {
-    case 100001:
-      return true;
-    default:
-      return false;
-  }
+  static $spectatorModes = [100001 => true];
+  return isset($spectatorModes[$mode]);
 }
 
 function PitchHasCard($cardID)
@@ -1076,6 +1035,8 @@ function ResolveCombatDamage($damageDone)
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
   if (DoesAttackHaveGoAgain()) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+  
+  // Track damage for non-ally cards
   if (!DelimStringContains(CardSubtype($cardID), "Ally")) {
     SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
     if (!IsHeroAttackTarget()) SetClassState($mainPlayer, $CS_PowDamageDealt, GetClassState($mainPlayer, $CS_PowDamageDealt) + $damageDone);
@@ -1083,6 +1044,8 @@ function ResolveCombatDamage($damageDone)
     if ($wasHit) {
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
     $combatChainState[$CCS_DamageDealt] = $damageDone;
+    
+    // Handle weapon hit effects
     if (IsWeaponAttack()) {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
@@ -1099,7 +1062,9 @@ function ResolveCombatDamage($damageDone)
       }
     }
     if (!HitEffectsArePrevented($cardID)) {
-      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+      $count = count($combatChain);
+      $pieces = CombatChainPieces();
+      for ($i = 0; $i < $count; $i += $pieces) {
         if ($combatChain[$i + 1] == $mainPlayer) {
           $EffectContext = $combatChain[$i]; 
           AddOnHitTrigger($combatChain[$i], $combatChain[$i+8]);
@@ -1111,7 +1076,9 @@ function ResolveCombatDamage($damageDone)
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
         CheckHitContracts($mainPlayer, $otherPlayer);
       }
-      for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+      $count = count($currentTurnEffects);
+      $pieces = CurrentTurnEffectsPieces();
+      for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
         if (IsCombatEffectActive($currentTurnEffects[$i])) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
             AddEffectHitTrigger($currentTurnEffects[$i]); // Effects that gives effect to the attack
@@ -1126,7 +1093,9 @@ function ResolveCombatDamage($damageDone)
       ItemHitTrigger($cardID);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
-    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    $count = count($currentTurnEffects);
+    $pieces = CurrentTurnEffectsPieces();
+    for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
       if ($currentTurnEffects[$i] == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
       if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
         AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
@@ -1363,6 +1332,8 @@ function FinishTurnPass()
   if ($turn[0] == "OVER") return;
   ClearLog();
   ResetCombatChainState();
+  
+  // Process end phase abilities
   QuellEndPhase(1);
   QuellEndPhase(2);
   ItemEndTurnAbilities();
@@ -1372,6 +1343,7 @@ function FinishTurnPass()
   LandmarkBeginEndPhaseAbilities();
   BeginEndPhaseEffects();
   PermanentBeginEndPhaseEffects();
+  
   AddDecisionQueue("PASSTURN", $mainPlayer, "-");
   ProcessDecisionQueue("");
 }
@@ -1383,14 +1355,13 @@ function PassTurn()
     BuildMainPlayerGameState();
   }
   $MainHand = GetHand($mainPlayer);
-  if (EndTurnPitchHandling($playerID)) {
-    if (EndTurnPitchHandling(($playerID == 1 ? 2 : 1))) {
-      if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
-        $currentPlayer = $mainPlayer;
-        $turn[0] = "ARS";
-      } else {
-        FinalizeTurn();
-      }
+  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
+    if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
+      $currentPlayer = $mainPlayer;
+      $turn[0] = "ARS";
+    } else {
+      FinalizeTurn();
     }
   }
 }

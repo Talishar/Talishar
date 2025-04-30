@@ -2961,10 +2961,17 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
-  if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "D") || DelimStringContains($cardType, "Companion")) return true;
-  if ($from == "PLAY") return true;
-  if ($from == "ARS" && DelimStringContains($cardType, "M")) return true;
-  if ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
+  if (
+    DelimStringContains($cardType, "C") || 
+    DelimStringContains($cardType, "E") || 
+    DelimStringContains($cardType, "W") || 
+    DelimStringContains($cardType, "D") || 
+    DelimStringContains($cardType, "Companion") || 
+    $from == "PLAY" || 
+    ($from == "ARS" && DelimStringContains($cardType, "M")) || 
+    ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID))) {
+      return true;
+  }
   return false;
 }
 
@@ -2978,31 +2985,22 @@ function HasBladeBreak($cardID)
     case "ironrot_plate":
     case "ironrot_gauntlet":
     case "ironrot_legs":
-      return true;
     case "skullbone_crosswrap":
-      return true;
     case "perch_grapplers":
-      return true;
     case "vestige_of_sol":
-      return true;
     case "heart_of_ice":
     case "rotten_old_buckler":
     case "new_horizon":
     case "spellbound_creepers":
-      return true;
     case "mask_of_the_pouncing_lynx":
     case "silver_palms":
-      return true;
     case "bone_vizier":
-      return true;
     case "coronet_peak":
     case "tiger_stripe_shuko":
     case "crown_of_providence":
-      return true;
     case "blazen_yoroi":
     case "hornets_sting":
     case "amethyst_tiara":
-      return true;
     case "mask_of_many_faces":
     case "trench_of_sunken_treasure":
     case "wayfinders_crest":
@@ -3011,87 +3009,60 @@ function HasBladeBreak($cardID)
     case "blade_cuff":
     case "mask_of_malicious_manifestations":
     case "toxic_tips":
-      return true;
-    case "vambrace_of_determination":
-      return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
     case "scowling_flesh_bag":
-      return true;
     case "frontline_helm":
     case "frontline_plating":
     case "frontline_gauntlets":
     case "frontline_legs":
-      return true;
     case $CID_TekloHead:
     case $CID_TekloChest:
     case $CID_TekloArms:
     case $CID_TekloLegs:
-      return true;
     case "adaptive_plating":
-      return true;
     case "teklo_base_head":
     case "teklo_base_chest":
     case "teklo_base_arms":
     case "teklo_base_legs":
-      return true;
     case "evo_command_center_yellow_equip":
     case "evo_engine_room_yellow_equip":
     case "evo_smoothbore_yellow_equip":
     case "evo_thruster_yellow_equip":
-      return true;
     case "EVO418":
     case "EVO419":
     case "EVO420":
     case "EVO421":
-      return true;
     case "evo_data_mine_yellow_equip":
     case "evo_battery_pack_yellow_equip":
     case "evo_cogspitter_yellow_equip":
     case "evo_charging_rods_yellow_equip":
-      return true;
     case "golden_glare":
     case "parry_blade":
-      return true;
     case "gauntlet_of_might":
     case "flat_trackers":
     case "vigor_girth":
-      return true;
     case "face_adversity":
     case "confront_adversity":
     case "embrace_adversity":
     case "overcome_adversity":
-      return true;
     case "headliner_helm":
     case "stadium_centerpiece":
     case "ticket_puncher":
     case "grandstand_legplates":
     case "bloodied_oval":
-      return true;
     case "mask_of_recurring_nightmares":
-      return true;
     case "twelve_petal_kasaya":
-      return true;
-    case "heirloom_of_tiger_hide":
-      $char = &GetPlayerCharacter($defPlayer);
-      $index = FindCharacterIndex($defPlayer, $cardID);
-      return $char[$index + 12] == "UP";
     case "stride_of_reprisal":
     case "mask_of_wizened_whiskers":
-      return true;
     case "traverse_the_universe":
-      return true;
     case "stonewall_gauntlet":
-      return true;
     case "helm_of_halos_grace":
     case "bracers_of_bellonas_grace":
     case "warpath_of_winged_grace":
-      return true;
     case "helm_of_lignum_vitae":
     case "flash_of_brilliance":
     case "face_purgatory":
-      return true;
     case "ollin_ice_cap":
     case "root_bound_trunks":
-      return true;
     case "mask_of_deceit":
     case "kabuto_of_imperial_authority":
     case "vow_of_vengeance":
@@ -3109,11 +3080,16 @@ function HasBladeBreak($cardID)
     case "red_alert_boots":
     case "tremorshield_sabatons":
     case "misfire_dampener":
-      return true;
     case "zap_clappers":
     case "starlight_striders":
     case "peg_leg":
       return true;
+    case "vambrace_of_determination":
+      return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
+    case "heirloom_of_tiger_hide":
+      $char = &GetPlayerCharacter($defPlayer);
+      $index = FindCharacterIndex($defPlayer, $cardID);
+      return $char[$index + 12] == "UP";
     default:
       return false;
   }
@@ -3130,78 +3106,57 @@ function HasBattleworn($cardID)
     case "breaking_scales":
     case "braveforge_bracers":
     case "refraction_bolters":
-      return true;
     case "teklo_foundry_heart":
     case "grasp_of_the_arknight":
     case "arcanite_skullcap":
-      return true;
     case "breeze_rider_boots":
-      return true;
     case "valiant_dynamo":
     case "gallantry_gold":
     case "hooves_of_the_shadowbeast":
     case "aether_ironweave":
-      return true;
     case "skull_crushers":
     case "helm_of_sharp_eye":
-      return true;
     case "beaten_trackers":
     case "seasoned_saviour":
     case "tearing_shuko":
     case "galvanic_bender":
     case "blacktek_whisperers":
     case "mask_of_perdition":
-      return true;
     case "redback_shroud":
-      return true;
     case "blood_scent":
     case "pouncing_paws":
     case "evo_tekloscope_blue_equip":
     case "evo_energy_matrix_blue_equip":
     case "evo_scatter_shot_blue_equip":
     case "evo_rapid_fire_blue_equip":
-      return true;
     case "hyper_x3":
-      return true;
     case "teklovossen_the_mechropotentb":
     case "shriek_razors":
-      return true;
     case "evo_sentry_base_head_red_equip":
     case "evo_sentry_base_chest_red_equip":
     case "evo_sentry_base_arms_red_equip":
     case "evo_sentry_base_legs_red_equip":
-      return true;
     case "monstrous_veil":
     case "hood_of_red_sand":
+    case "arousing_wave":
+    case "undertow_stilettos":
+    case "longdraw_half_glove":
+    case "hide_tanner":
+    case "sharp_shooters":
+    case "flight_path":
+    case "heavy_industry_gear_shift":
+    case "lightning_greaves":
+    case "aether_bindings_of_the_third_age":
+    case "dragonscaler_flight_path":
+    case "shock_frock":
+    case "drive_brake":
+    case "fist_pump":
+    case "gold_baited_hook":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
-    case "arousing_wave":
-    case "undertow_stilettos":
-      return true;
-    case "longdraw_half_glove":
-      return true;
-    case "hide_tanner":
-      return true;
-    case "sharp_shooters":
-    case "flight_path":
-      return true;
-    case "heavy_industry_gear_shift":
-      return true;
-    case "lightning_greaves":
-      return true;
-    case "aether_bindings_of_the_third_age"://Aether Bindings
-      return true;
-    case "dragonscaler_flight_path":
-      return true;
-    case "shock_frock":
-      return true;
-    case "drive_brake":
-    case "fist_pump":
-    case "gold_baited_hook":
-      return true;
     default:
       return false;
   }
@@ -3213,33 +3168,25 @@ function HasTemper($cardID)
     case "crater_fist":
     case "courage_of_bladehold":
     case "bloodsheath_skeleta":
-      return true;
     case "stalagmite_bastion_of_isenloft":
-      return true;
     case "earthlore_bounty":
-      return true;
     case "flamescale_furnace":
-      return true;
     case "steelbraid_buckler":
     case "nitro_mechanoidb":
-      return true;
     case "soulbond_resolve":
     case "bastion_of_unity":
     case "ironsong_versus":
     case "dyadic_carapace":
-      return true;
     case "bastion_of_duty":
     case "civic_peak":
     case "civic_duty":
     case "civic_guide":
     case "civic_steps":
-      return true;
     case "warband_of_bellona":
     case "evo_steel_soul_memory_blue_equip":
     case "evo_steel_soul_processor_blue_equip":
     case "evo_steel_soul_controller_blue_equip":
     case "evo_steel_soul_tower_blue_equip":
-      return true;
     case "apex_bonebreaker":
     case "knucklehead":
     case "raw_meat":
@@ -3256,14 +3203,10 @@ function HasTemper($cardID)
     case "heavy_industry_surveillance":
     case "heavy_industry_power_plant":
     case "heavy_industry_ram_stop":
-      return true;
     case "gauntlets_of_the_boreal_domain":
-      return true;
     case "barkskin_of_the_millennium_tree":
-      return true;
     case "tectonic_crust":
     case "helm_of_the_arknight":
-      return true;
     case "breaker_helm_protos":
     case "puffer_jacket":
       return true;
@@ -3290,9 +3233,8 @@ function HasGuardwell($cardID)
 
 function HasPiercing($cardID, $from = "")
 {
-  // TODO see what breaks this
-  // $cardID = substr($cardID, 0, 6);
   switch ($cardID) {
+     //Weapons with Piercing
     case "spiders_bite":
     case "spiders_bite_r":
     case "nerve_scalpel":
@@ -3300,7 +3242,7 @@ function HasPiercing($cardID, $from = "")
     case "orbitoclast":
     case "orbitoclast_r":
     case "scale_peeler":
-    case "scale_peeler_r": //Weapons with Piercing
+    case "scale_peeler_r":
     case "graven_call":
     case "hunters_klaive":
     case "hunters_klaive_r":
@@ -3310,14 +3252,14 @@ function HasPiercing($cardID, $from = "")
     case "precision_press_blue":
     case "puncture_red":
     case "puncture_yellow":
-    case "puncture_blue": //Warrior NAA + Reactions
+    case "puncture_blue":
     case "visit_the_imperial_forge_red":
     case "visit_the_imperial_forge_yellow":
     case "visit_the_imperial_forge_blue":
       return (!IsPlayRestricted($cardID, $restriction, $from) || IsCombatEffectActive($cardID));
     case "drill_shot_red":
     case "drill_shot_yellow":
-    case "drill_shot_blue": // Arrows
+    case "drill_shot_blue":
       return HasAimCounter();
     default:
       return false;
@@ -3427,24 +3369,46 @@ function ETASteamCounters($cardID)
   global $currentPlayer;
   switch ($cardID) {
     case "aether_sink_yellow":
+    case "dissolution_sphere_yellow":
+    case "signal_jammer_blue":
+    case "prismatic_lens_yellow":
+    case "quantum_processor_yellow":
+    case "tick_tock_clock_red":
+    case "polarity_reversal_script_red":
+    case "penetration_script_yellow":
+    case "security_script_blue":
+    case "backup_protocol_red_red":
+    case "backup_protocol_yel_yellow":
+    case "backup_protocol_blu_blue":
+    case "boom_grenade_red":
+    case "boom_grenade_yellow":
+    case "boom_grenade_blue":
+    case "dissolving_shield_blue":
+    case "grinding_gears_blue":
+    case "overload_script_red":
+    case "mhz_script_yellow":
+    case "autosave_script_blue":
+    case "golden_cog":
       return 1;
     case "teklo_core_blue":
     case "convection_amplifier_red":
+    case "dissolving_shield_yellow":
+    case "mini_forcefield_blue":
+    case "hadron_collider_blue":
+    case "cerebellum_processor_blue":
+    case "null_time_zone_blue":
+    case "clamp_press_blue":
       return 2;
+    case "teklo_pounder_blue":
+    case "dissolving_shield_red":
+    case "mini_forcefield_yellow":
+    case "hadron_collider_yellow":
+      return 3;
     case "dissipation_shield_yellow":
+    case "mini_forcefield_red":
+    case "hadron_collider_red":
       return 4;
     case "optekal_monocle_blue":
-      return 5;
-    case "absorption_dome_yellow":
-      return 0;
-    case "plasma_purifier_red":
-      return 0;
-    case "dissolution_sphere_yellow":
-      return 1;
-    case "signal_jammer_blue":
-      return 1;
-    case "teklo_pounder_blue":
-      return 3;
     case "plasma_mainline_red":
       return 5;
     case "hyper_driver_red":
@@ -3456,54 +3420,6 @@ function ETASteamCounters($cardID)
     case "hyper_driver_blue":
       if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 2;
       else return 1;
-    case "prismatic_lens_yellow":
-      return 1;
-    case "quantum_processor_yellow":
-      return 1;
-    case "tick_tock_clock_red":
-      return 1;
-    case "polarity_reversal_script_red":
-    case "penetration_script_yellow":
-    case "security_script_blue":
-      return 1;
-    case "backup_protocol_red_red":
-    case "backup_protocol_yel_yellow":
-    case "backup_protocol_blu_blue":
-      return 1;
-    case "boom_grenade_red":
-    case "boom_grenade_yellow":
-    case "boom_grenade_blue":
-      return 1;
-    case "mini_forcefield_red":
-      return 4;
-    case "dissolving_shield_red":
-    case "mini_forcefield_yellow":
-      return 3;
-    case "dissolving_shield_yellow":
-    case "mini_forcefield_blue":
-      return 2;
-    case "dissolving_shield_blue":
-      return 1;
-    case "grinding_gears_blue":
-      return 1;
-    case "hadron_collider_red":
-      return 4;
-    case "hadron_collider_yellow":
-      return 3;
-    case "hadron_collider_blue":
-      return 2;
-    case "overload_script_red":
-    case "mhz_script_yellow":
-    case "autosave_script_blue":
-      return 1;
-    case "cerebellum_processor_blue":
-      return 2;
-    case "null_time_zone_blue":
-      return 2;
-    case "clamp_press_blue":
-      return 2;
-    case "golden_cog":
-      return 1;
     default:
       return 0;
   }
@@ -3633,17 +3549,14 @@ function DoesEffectGrantDominate($cardID): bool
     case "metis_archangel_of_tenacity":
     case "crumble_to_eternity_blue":
     case "bravo_flattering_showman":
+      case "murky_water_red":
+    case "stone_rain_red":
+    case "gauntlets_of_the_boreal_domain-I":
       return true;
     case "weave_ice_red":
     case "weave_ice_yellow":
     case "weave_ice_blue":
       return $combatChainState[$CCS_AttackFused] == 1;
-    case "murky_water_red":
-      return true;
-    case "stone_rain_red":
-      return true;
-    case "gauntlets_of_the_boreal_domain-I":
-      return true;
     default:
       return false;
   }
@@ -3654,34 +3567,23 @@ function CharacterNumUsesPerTurn($cardID)
   switch ($cardID) {
     case "bravo_showstopper":
     case "bravo":
-      return 999;
-    case "voltaire_strike_twice":
-      return 2;
     case "helios_mitre":
-      return 999;
     case "emperor_dracai_of_aesir":
     case "seerstone":
-      return 999;
     case "nitro_mechanoida":
-      return 999;
-    case "barbed_castaway":
-      return 2;
     case "stasis_cell_blue":
-      return 999;
     case "teklovossen_the_mechropotent":
-      return 999;
     case "nuu_alluring_desire":
     case "nuu":
     case "enigma_new_moon":
-      return 999;
     case "sanctuary_of_aria":
-      return 999;
     case "quickdodge_flexors":
-      return 999;
-    case "bank_breaker":
-      return 2;
     case "bravo_flattering_showman":
       return 999;
+    case "voltaire_strike_twice":
+    case "barbed_castaway":  
+    case "bank_breaker":
+      return 2;
     default:
       return 1;
   }
@@ -3691,69 +3593,51 @@ function CharacterNumUsesPerTurn($cardID)
 function CharacterDefaultActiveState($cardID)
 {
   switch ($cardID) {
-    case "refraction_bolters":
-      return 1;
-    // case "fyendals_spring_tunic":
-    //   return 0;
-    case "vest_of_the_first_fist":
-      return 1;
-    case "breeze_rider_boots":
-    case "metacarpus_node":
-      return 1;
-    case "hooves_of_the_shadowbeast":
-      return 1;
-    case "plume_of_evergrowth":
-    case "shock_charmers":
-    case "mark_of_lightning":
-      return 1;
-    case "halo_of_illumination":
-    case "dream_weavers":
-    case "ebon_fold":
-    case "MON400":
-    case "MON401":
-    case "MON402":
-      return 1;
-    case "spell_fray_tiara":
-    case "spell_fray_cloak":
-    case "spell_fray_gloves":
-    case "spell_fray_leggings":
-      return 1;
-    case "mask_of_the_pouncing_lynx":
-      return 1;
     case "silken_form":
     case "heat_wave":
     case "conduit_of_frostburn":
     case "quelling_robe":
     case "quelling_sleeves":
     case "quelling_slippers":
-      return 0;
-    case "beaten_trackers":
-      return 1;
-    case "quiver_of_abyssal_depths":
-    case "quiver_of_rustling_leaves":
-    case "driftwood_quiver":
-      return 1;
     case "shroud_of_darkness":
     case "cloak_of_darkness":
     case "grasp_of_darkness":
     case "dance_of_darkness":
-      return 0;
     case "blasmophet_levia_consumed":
       return 0;
+    case "refraction_bolters":
+    case "vest_of_the_first_fist":
+    case "breeze_rider_boots":
+    case "metacarpus_node":
+    case "hooves_of_the_shadowbeast":
+    case "plume_of_evergrowth":
+    case "shock_charmers":
+    case "mark_of_lightning":
+    case "halo_of_illumination":
+    case "dream_weavers":
+    case "ebon_fold":
+    case "MON400":
+    case "MON401":
+    case "MON402":
+    case "spell_fray_tiara":
+    case "spell_fray_cloak":
+    case "spell_fray_gloves":
+    case "spell_fray_leggings":
+    case "mask_of_the_pouncing_lynx":
+    case "beaten_trackers":
+    case "quiver_of_abyssal_depths":
+    case "quiver_of_rustling_leaves":
+    case "driftwood_quiver":
     case "evo_circuit_breaker_red_equip":
     case "evo_atom_breaker_red_equip":
     case "evo_face_breaker_red_equip":
     case "evo_mach_breaker_red_equip":
-      return 1;
     case "hide_tanner":
-      return 1;
     case "grains_of_bloodspill":
     case "meridian_pathway":
     case "longdraw_half_glove":
-      return 1;
     case "aether_crackers":
     case "hard_knuckle":
-      return 1;
     case "verdance_thorn_of_the_rose":
     case "verdance":
     case "arcanite_fortress":
@@ -3761,10 +3645,8 @@ function CharacterDefaultActiveState($cardID)
     case "widow_back_abdomen":
     case "widow_claw_tarsus":
     case "widow_web_crawler":
-      return 1;
     case "blood_splattered_vest":
-      return 1;
-    case "leap_frog_vocal_sac"://leapfrog equipment
+    case "leap_frog_vocal_sac":
     case "leap_frog_slime_skin":
     case "leap_frog_gloves":
     case "leap_frog_leggings":
@@ -3870,7 +3752,6 @@ function HasCombo($cardID)
     case "whelming_gustwave_red":
     case "whelming_gustwave_yellow":
     case "whelming_gustwave_blue":
-      return true;
     case "find_center_blue":
     case "flood_of_force_yellow":
     case "herons_flight_red":
@@ -3880,13 +3761,11 @@ function HasCombo($cardID)
     case "rushing_river_red":
     case "rushing_river_yellow":
     case "rushing_river_blue":
-      return true;
     case "break_tide_yellow":
     case "winds_of_eternity_blue":
     case "hundred_winds_red":
     case "hundred_winds_yellow":
     case "hundred_winds_blue":
-      return true;
     case "tiger_swipe_red":
     case "pouncing_qi_red":
     case "pouncing_qi_yellow":
@@ -3894,7 +3773,6 @@ function HasCombo($cardID)
     case "qi_unleashed_red":
     case "qi_unleashed_yellow":
     case "qi_unleashed_blue":
-      return true;
     case "cyclone_roundhouse_yellow":
     case "dishonor_blue":
     case "bonds_of_ancestry_red":
@@ -3916,7 +3794,6 @@ function HasCombo($cardID)
     case "one_two_punch_yellow":
     case "one_two_punch_blue":
     case "mauling_qi_red":
-      return true;
     case "chase_the_tail_red":
     case "aspect_of_tiger_body_red":
     case "aspect_of_tiger_soul_yellow":
@@ -3924,9 +3801,7 @@ function HasCombo($cardID)
     case "breed_anger_red":
     case "breed_anger_yellow":
     case "breed_anger_blue":
-      return true;
     case "gustwave_of_the_second_wind_red":
-      return true;
     case "retrace_the_past_blue":
     case "enact_vengeance_red":
       return true;
@@ -4673,11 +4548,8 @@ function HasDominate($cardID)
     case "demolition_crew_red":
     case "demolition_crew_yellow":
     case "demolition_crew_blue":
-      return true;
     case "arknight_ascendancy_red":
-      return true;
     case "herald_of_erudition_yellow":
-      return true;
     case "herald_of_tenacity_red":
     case "herald_of_tenacity_yellow":
     case "herald_of_tenacity_blue":
@@ -5023,8 +4895,6 @@ function canBeAddedToChainDuringDR($cardID){
   }
 }
 
-//utility function for stripping "," and "-" from a card id
-//replaces substr($cardID, 0, 6)
 function ExtractCardID($cardID) {
   $cardID = explode(",", $cardID)[0];
   $cardID = explode("-", $cardID)[0];

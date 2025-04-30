@@ -142,7 +142,6 @@ function HasBoost($cardID, $player)
     case "scramble_pulse_red": case "scramble_pulse_yellow": case "scramble_pulse_blue":
 		case "crankshaft_red": case "crankshaft_yellow": case "crankshaft_blue":
 		case "jump_start_red": case "jump_start_yellow": case "jump_start_blue":
-    case "under_loop_red":
     case "heist_red": case "steel_street_hoons_blue": case "twin_drive_red":
     case "bull_bar_red": case "bull_bar_yellow": case "bull_bar_blue":
     case "spring_a_leak_red": case "spring_a_leak_yellow": case "spring_a_leak_blue":
@@ -283,7 +282,6 @@ function ItemBoostEffects()
   $items = &GetItems($currentPlayer);
   for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     switch($items[$i]) {
-      case "hyper_driver_red":
       case "hyper_driver_red": case "hyper_driver_yellow": case "hyper_driver_blue": case "hyper_driver":
         if($items[$i+2] == 2) {
           AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);

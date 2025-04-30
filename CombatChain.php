@@ -254,8 +254,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "dawnblade_resplendent":
       return GetClassState($mainPlayer, $CS_AttacksWithWeapon) >= 1 ? 1 : 0;
-    case "beast_mode_red":
-      return GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
     case "phoenix_form_red":
       return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "combustion_point_red":
@@ -325,9 +323,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "soul_butcher_blue":
       $theirSoul = &GetSoul($defPlayer);
       return (count($theirSoul) > 0 ? 2 : 0);
-    case "mechanical_strength_red":
-    case "mechanical_strength_blue":
-      return EvoUpgradeAmount($mainPlayer);
     case "teklo_leveler":
       return EvoUpgradeAmount($mainPlayer) >= 4;
     case "annihilator_engine_red":
@@ -888,24 +883,23 @@ function OnBlockResolveEffects($cardID = "")
       case "ironhide_plate":
       case "ironhide_gauntlet":
       case "ironhide_legs":
-      case "pack_call_yellow"://Pack Call
-      case "rampart_of_the_rams_head"://Rampart of the Ram's Head
-      case "phantasmal_footsteps"://Phantasmal Footsteps
-      case "flameborn_retribution_red"://Flameborn Retribution
-      case "crown_of_providence"://Crown of Providence
+      case "rampart_of_the_rams_head":
+      case "phantasmal_footsteps":
+      case "flameborn_retribution_red":
+      case "crown_of_providence":
       case "flex_red":
       case "flex_yellow":
-      case "flex_blue"://Flex
+      case "flex_blue":
       case "fyendals_fighting_spirit_red":
       case "fyendals_fighting_spirit_yellow":
-      case "fyendals_fighting_spirit_blue"://Fyendal's Fighting Spirit
+      case "fyendals_fighting_spirit_blue":
       case "brothers_in_arms_red":
       case "brothers_in_arms_yellow":
-      case "brothers_in_arms_blue"://Brothers in Arms
-      case "hornets_sting"://Hornet's Sting
-      case "wayfinders_crest"://Wayfinder's Crest
-      case "vambrace_of_determination"://Vambrace of Determination
-      case "soulbond_resolve"://Soulbond Resolve
+      case "brothers_in_arms_blue":
+      case "hornets_sting":
+      case "wayfinders_crest":
+      case "vambrace_of_determination":
+      case "soulbond_resolve":
       case "scowling_flesh_bag":
       case "firewall_red":
       case "firewall_yellow":
@@ -918,7 +912,7 @@ function OnBlockResolveEffects($cardID = "")
       case "tiger_eye_reflex_blue":
       case "crowd_control_red":
       case "crowd_control_yellow":
-      case "song_of_the_shining_knight_blue": // Crowd Control
+      case "song_of_the_shining_knight_blue":
       case "pack_call_red":
       case "pack_call_yellow":
       case "pack_call_blue":
@@ -942,7 +936,7 @@ function OnBlockResolveEffects($cardID = "")
       case "hearty_block_red":
       case "test_of_vigor_red":
       case "standing_order_red":
-      case "test_of_strength_red"://Clash blocks
+      case "test_of_strength_red":
       case "evo_magneto_blue_equip":
       case "stride_of_reprisal":
       case "traverse_the_universe":
@@ -955,11 +949,11 @@ function OnBlockResolveEffects($cardID = "")
       case "heavy_industry_surveillance":
       case "heavy_industry_ram_stop":
       case "barkskin_of_the_millennium_tree":
-      case "flash_of_brilliance"://flash of brilliance
-      case "unforgetting_unforgiving_red"://Unforgiving Unforgetting
+      case "flash_of_brilliance":
+      case "unforgetting_unforgiving_red":
       case "mask_of_deceit":
-      case "kabuto_of_imperial_authority"://Kabuto of Imperial Authority
-      case "thick_hide_hunter_yellow"://Thick Hide Hunter
+      case "kabuto_of_imperial_authority":
+      case "thick_hide_hunter_yellow":
       case "zap_clappers":
       case "starlight_striders":
       case "hoist_em_up_red":
