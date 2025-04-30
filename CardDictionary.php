@@ -4882,6 +4882,22 @@ function HasEssenceOfEarth($cardID){
       return false;
   }
 }
+function HasEssenceOfLightning($cardID){
+  switch ($cardID) {
+    case "lexi":
+    case "lexi_livewire":
+    case "briar_warden_of_thorns":
+    case "briar":
+    case "bravo_star_of_the_show":
+    case "oscilio":
+    case "oscilio_constella_intelligence":
+    case "aurora":
+    case "aurora_shooting_star":
+      return true;
+    default:
+      return false;
+  }
+}
 
 function canBeAddedToChainDuringDR($cardID){
   switch ($cardID) {
