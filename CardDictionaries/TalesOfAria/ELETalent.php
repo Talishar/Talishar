@@ -171,6 +171,9 @@
         if (explode("-", $target)[0] == "COMBATCHAINLINK") {
           if ($CombatChain->HasCurrentLink()) CombatChainPowerModifier($targetIndex, $amount);
         }
+        elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
+          // targeting a past chain link, do nothing for now
+        }
         //only add current turn effect if there's no target (ie. played in layer step)
         else AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

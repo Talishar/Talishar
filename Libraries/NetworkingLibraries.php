@@ -1865,7 +1865,7 @@ function GetLayerTarget($cardID, $from)
     case "lightning_press_red":
     case "lightning_press_yellow":
     case "lightning_press_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:maxCost=1;type=AA&COMBATCHAINLINK:maxCost=1;type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -3417,7 +3417,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
                 WriteLog("Lightning Press fizzles due to missing target");
                 $fizzled = true;
               }
-              else {
+              elseif (explode("-", $target)[0] == "COMBATCHAINLINK") {
                 //chain link didn't close but target is still gone
                 $targetIndex = intval(explode("-", $target)[1]);
                 if ($targetIndex == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
