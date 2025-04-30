@@ -3386,6 +3386,14 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
       }
     }
+    switch ($cardID) { //cards that add themselves as blocking
+      case "quickdodge_flexors":
+        OnBlockEffects($index, "EQUIP");
+        OnBlockResolveEffects($cardID);
+        break;
+      default:
+        break;
+    }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
