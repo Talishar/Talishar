@@ -1072,20 +1072,21 @@ function ResolveCombatDamage($damageDone)
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer;
   $wasHit = $damageDone > 0;
+  $cardID = $combatChain[0];
   PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
   if (DoesAttackHaveGoAgain()) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
-  if (!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) {
+  if (!DelimStringContains(CardSubtype($cardID), "Ally")) {
     SetClassState($mainPlayer, $CS_DamageDealt, GetClassState($mainPlayer, $CS_DamageDealt) + $damageDone);
     if (!IsHeroAttackTarget()) SetClassState($mainPlayer, $CS_PowDamageDealt, GetClassState($mainPlayer, $CS_PowDamageDealt) + $damageDone);
   }
     if ($wasHit) {
-    LogPlayCardStats($mainPlayer, $combatChain[0], "CC", "HIT");
+    LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
     $combatChainState[$CCS_DamageDealt] = $damageDone;
     if (IsWeaponAttack()) {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
-      if (SubtypeContains($combatChain[0], "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
+      if (SubtypeContains($cardID, "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
       if (SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer) != -1) {
         $index = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
         $params = explode(",", $currentTurnEffects[$index]);
@@ -1097,7 +1098,7 @@ function ResolveCombatDamage($damageDone)
         }
       }
     }
-    if (!HitEffectsArePrevented($combatChain[0])) {
+    if (!HitEffectsArePrevented($cardID)) {
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if ($combatChain[$i + 1] == $mainPlayer) {
           $EffectContext = $combatChain[$i]; 
@@ -1118,11 +1119,11 @@ function ResolveCombatDamage($damageDone)
         }
       }
       $currentTurnEffects = array_values($currentTurnEffects);
-      MainCharacterHitTrigger();
+      MainCharacterHitTrigger($cardID);
       MainCharacterHitEffects();
       ArsenalHitEffects();
-      AuraHitEffects($combatChain[0]);
-      ItemHitTrigger($combatChain[0]);
+      AuraHitEffects($cardID);
+      ItemHitTrigger($cardID);
       AttackDamageAbilities(GetClassState($mainPlayer, $CS_DamageDealt));
     }
     for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -1145,7 +1146,7 @@ function ResolveCombatDamage($damageDone)
       }
     }
   } else {
-    NonHitEffects($combatChain[0]);
+    NonHitEffects($cardID);
   }
   $character = &GetPlayerCharacter($mainPlayer);
   $charID = $character[0];
