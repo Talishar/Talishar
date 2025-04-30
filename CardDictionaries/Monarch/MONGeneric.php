@@ -2,7 +2,7 @@
 
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
-    global $currentPlayer, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CombatChain, $CS_PlayIndex;
+    global $currentPlayer, $CombatChain, $CS_PlayIndex;
     $rv = "";
     switch($cardID)
     {
@@ -41,7 +41,10 @@
         return "";
       case "rally_the_rearguard_red": case "rally_the_rearguard_yellow": case "rally_the_rearguard_blue":
         if($from == "PLAY") {
-          $CombatChain->AbilityCard()->ModifyDefense(3);
+          $index = GetClassState($currentPlayer, $CS_PlayIndex);
+          //Safety in case it loses the index when more cards are played at instant
+          if($index == -1) $index = GetCombatChainIndex($cardID, $currentPlayer); 
+          CombatChainDefenseModifier($index, 3);
         }
         return "";
       case "minnowism_red": case "minnowism_yellow": case "minnowism_blue":
