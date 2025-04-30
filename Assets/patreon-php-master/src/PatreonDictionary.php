@@ -336,24 +336,136 @@ enum PatreonCampaign : string
     }
   }
 
-  public function AltArts(): string
+  public function AltArts($playerID): string
   {
-    switch($this->value)
-    {
-      // Talishar
-      // case "7198186": return "lightning_press_red=ELE183-T,rosetta_thorn=ELE222-T,mask_of_recurring_nightmares=MST004-T,sacred_art_undercurrent_desires_blue=MST010-T,sacred_art_immortal_lunar_shrine_blue=MST032-T,twelve_petal_kasaya=MST048-T,sacred_art_jade_tiger_domain_blue=MST053-T,traverse_the_universe=MST066-T,koi_blessed_kimono=MST068-T,a_drop_in_the_ocean_blue=MST095-T,homage_to_ancestors_blue=MST096-T,pass_over_blue=MST097-T,path_well_traveled_blue=MST098-T,preserve_tradition_blue=MST099-T,rising_sun_setting_moon_blue=MST100-T,stir_the_pot_blue=MST101-T,the_grain_that_tips_the_scale_blue=MST102-T,MST000_inner_chi_blue=MST400-T,MST010_inner_chi_blue=MST410-T,MST032_inner_chi_blue=MST432-T,MST053_inner_chi_blue=MST453-T,MST095_inner_chi_blue=MST495-T,MST096_inner_chi_blue=MST496-T,MST097_inner_chi_blue=MST497-T,MST098_inner_chi_blue=MST498-T,MST099_inner_chi_blue=MST499-T,MST100_inner_chi_blue=MST500-T,MST101_inner_chi_blue=MST501-T,MST102_inner_chi_blue=MST502-T,sigil_of_brilliance_yellow=ROS022-T,barkskin_of_the_millennium_tree=ROS028-T,earth_form_red=ROS036-T,rootbound_carapace_red=ROS042-T,rootbound_carapace_yellow=ROS043-T,rootbound_carapace_blue=ROS044-T,sigil_of_sanctuary_blue=ROS045-T,sigil_of_earth_blue=ROS070-T,lightning_form_red=ROS082-T,sigil_of_conductivity_blue=ROS088-T,flittering_charge_red=ROS089-T,flittering_charge_yellow=ROS090-T,flittering_charge_blue=ROS091-T,electrostatic_discharge_red=ROS110-T,electrostatic_discharge_yellow=ROS111-T,electrostatic_discharge_blue=ROS112-T,sigil_of_lightning_blue=ROS113-T,face_purgatory=ROS114-T,sigil_of_the_arknight_blue=ROS133-T,runerager_swarm_red=ROS149-T,deadwood_dirge_red=ROS155-T,sigil_of_deadwood_blue=ROS161-T,sigil_of_aether_blue=ROS168-T,glyph_overlay_red=ROS173-T,sigil_of_temporal_manipulation_blue=ROS182-T,sigil_of_forethought_blue=ROS210-T,arcanite_fortress=ROS211-T,ten_foot_tall_and_bulletproof_red=ROS217-T,call_to_the_grave_blue=ROS218-T,sigil_of_cycles_blue=ROS226-T,sigil_of_fyendal_blue=ROS230-T,chivalry_blue=TCC048-T,fyendals_fighting_spirit_red=UPR194-T,flic_flak_red=WTR092-T,timesnap_potion_blue=WTR172-T,sigil_of_solace_red=WTR173-T,command_and_conquer_red=ARC159-T,bare_fangs_red=EVR008-T,bare_fangs_yellow=EVR009-T,bare_fangs_blue=EVR010-T,swarming_gloomveil_red=EVR105-T,exude_confidence_red=MON245-T,erase_face_red=UPR187-T,rhinar_reckless_rampage=WTR001-T,rhinar=WTR002-T,head_jab_red=WTR098-T,head_jab_yellow=WTR099-T,head_jab_blue=WTR100-T,fyendals_spring_tunic=WTR150-T,crazy_brew_blue=WTR162-T,cracked_bauble_yellow=WTR224-T,ravenous_rabble_red=ARC191-T,twinning_blade_yellow=CRU082-T,galaxxi_black=MON155-T,blood_tribute_red=MON215-T,blood_tribute_yellow=MON216-T,blood_tribute_blue=MON217-T,blasmophet_the_soul_harvester=MON219-T,ursur_the_soul_reaper=MON220-T,channel_lake_frigid_blue=ELE146-T,earthlore_bounty=EVR020-T,invoke_dracona_optimai_red=UPR006-T,invoke_tomeltai_red=UPR007-T,invoke_dominia_red=UPR008-T,invoke_azvolai_red=UPR009-T,invoke_cromai_red=UPR010-T,invoke_kyloria_red=UPR011-T,invoke_miragai_red=UPR012-T,invoke_nekria_red=UPR013-T,invoke_ouvia_red=UPR014-T,invoke_themai_red=UPR015-T,invoke_vynserakai_red=UPR016-T,invoke_yendurai_red=UPR017-T,aether_ashwing=UPR042-T,ash=UPR043-T,rewind_blue=UPR169-T,dracona_optimai=UPR006-T,tomeltai=UPR007-T,dominia=UPR008-T,azvolai=UPR009-T,cromai=UPR010-T,kyloria=UPR011-T,miragai=UPR012-T,nekria=UPR013-T,ouvia=UPR014-T,themai=UPR015-T,vynserakai=UPR016-T,yendurai=UPR017-T,emperor_dracai_of_aesir=DYN001-T,rok=DYN005-T,seasoned_saviour=DYN026-T,blazen_yoroi=DYN045-T,crouching_tiger=DYN065-T,merciless_battleaxe=DYN068-T,hanabi_blaster=DYN088-T,construct_nitro_mechanoid_yellow=DYN092-T,regicide_blue=DYN121-T,sandscour_greatbow=DYN151-T,amethyst_tiara=DYN171-T,surgent_aethertide=DYN192-T,invoke_suraya_yellow=DYN212-T,celestial_kimono=DYN213-T,crown_of_dominion=DYN234-T,nitro_mechanoida=DYN492a-T,nitro_mechanoidb=DYN492b-T,nitro_mechanoidc=DYN492c-T,suraya_archangel_of_knowledge=DYN212-T,figment_of_erudition_yellow=DTD005-T,figment_of_judgment_yellow=DTD006-T,figment_of_protection_yellow=DTD007-T,figment_of_ravages_yellow=DTD008-T,figment_of_rebirth_yellow=DTD009-T,figment_of_tenacity_yellow=DTD010-T,figment_of_triumph_yellow=DTD011-T,figment_of_war_yellow=DTD012-T,levia_redeemed=DTD164-T,blasmophet_levia_consumed=DTD164-T,suraya_archangel_of_erudition=DTD005-T,themis_archangel_of_judgment=DTD006-T,aegis_archangel_of_protection=DTD007-T,sekem_archangel_of_ravages=DTD008-T,avalon_archangel_of_rebirth=DTD009-T,metis_archangel_of_tenacity=DTD010-T,victoria_archangel_of_triumph=DTD011-T,bellona_archangel_of_war=DTD012-T,singularity_red=EVO010-T,evo_steel_soul_memory_blue=EVO026-T,evo_steel_soul_processor_blue=EVO027-T,evo_steel_soul_controller_blue=EVO028-T,evo_steel_soul_tower_blue=EVO029-T,evo_circuit_breaker_red=EVO030-T,evo_atom_breaker_red=EVO031-T,evo_face_breaker_red=EVO032-T,evo_mach_breaker_red=EVO033-T,teklovossen_the_mechropotent=EVO010-T,teklovossen_the_mechropotenta=EVO410a-T,teklovossen_the_mechropotentb=EVO410b-T,evo_steel_soul_memory_blue_equip=EVO426-T,evo_steel_soul_processor_blue_equip=EVO427-T,evo_steel_soul_controller_blue_equip=EVO428-T,evo_steel_soul_tower_blue_equip=EVO429-T,peace_of_mind_red=OUT231-T,in_the_swing_red=EVR063-T,wrecker_romp_blue=WTR031-T,electrify_blue=ELE200-T,sap_red=DYN206-T,sap_yellow=DYN207-T,sap_blue=DYN208-T,iris_of_reality=MON088-T,zero_to_sixty_red=ARC026-T,stir_the_wildwood_red=ELE082-T,fate_foreseen_red=ARC200-T,scar_for_a_scar_red=WTR191-T,boneyard_marauder_red=MON135-T,sand_cover_red=UPR039-T,oasis_respite_red=UPR221-T,energy_potion_blue=WTR170-T";
-      case "7198186": return "lightning_press_red=ELE183-T,rosetta_thorn=ELE222-T,mask_of_recurring_nightmares=MST004-T,sacred_art_undercurrent_desires_blue=MST010-T,sacred_art_immortal_lunar_shrine_blue=MST032-T,twelve_petal_kasaya=MST048-T,sacred_art_jade_tiger_domain_blue=MST053-T,traverse_the_universe=MST066-T,koi_blessed_kimono=MST068-T,a_drop_in_the_ocean_blue=MST095-T,homage_to_ancestors_blue=MST096-T,pass_over_blue=MST097-T,path_well_traveled_blue=MST098-T,preserve_tradition_blue=MST099-T,rising_sun_setting_moon_blue=MST100-T,stir_the_pot_blue=MST101-T,the_grain_that_tips_the_scale_blue=MST102-T,MST000_inner_chi_blue=MST400-T,MST010_inner_chi_blue=MST410-T,MST032_inner_chi_blue=MST432-T,MST053_inner_chi_blue=MST453-T,MST095_inner_chi_blue=MST495-T,MST096_inner_chi_blue=MST496-T,MST097_inner_chi_blue=MST497-T,MST098_inner_chi_blue=MST498-T,MST099_inner_chi_blue=MST499-T,MST100_inner_chi_blue=MST500-T,MST101_inner_chi_blue=MST501-T,MST102_inner_chi_blue=MST502-T,sigil_of_brilliance_yellow=ROS022-T,barkskin_of_the_millennium_tree=ROS028-T,earth_form_red=ROS036-T,rootbound_carapace_red=ROS042-T,rootbound_carapace_yellow=ROS043-T,rootbound_carapace_blue=ROS044-T,sigil_of_sanctuary_blue=ROS045-T,sigil_of_earth_blue=ROS070-T,lightning_form_red=ROS082-T,sigil_of_conductivity_blue=ROS088-T,flittering_charge_red=ROS089-T,flittering_charge_yellow=ROS090-T,flittering_charge_blue=ROS091-T,electrostatic_discharge_red=ROS110-T,electrostatic_discharge_yellow=ROS111-T,electrostatic_discharge_blue=ROS112-T,sigil_of_lightning_blue=ROS113-T,face_purgatory=ROS114-T,sigil_of_the_arknight_blue=ROS133-T,runerager_swarm_red=ROS149-T,deadwood_dirge_red=ROS155-T,sigil_of_deadwood_blue=ROS161-T,sigil_of_aether_blue=ROS168-T,glyph_overlay_red=ROS173-T,sigil_of_temporal_manipulation_blue=ROS182-T,sigil_of_forethought_blue=ROS210-T,arcanite_fortress=ROS211-T,ten_foot_tall_and_bulletproof_red=ROS217-T,call_to_the_grave_blue=ROS218-T,sigil_of_cycles_blue=ROS226-T,sigil_of_fyendal_blue=ROS230-T,chivalry_blue=TCC048-T,fyendals_fighting_spirit_red=UPR194-T,flic_flak_red=WTR092-T,timesnap_potion_blue=WTR172-T,sigil_of_solace_red=WTR173-T,command_and_conquer_red=ARC159-T,bare_fangs_red=EVR008-T,bare_fangs_yellow=EVR009-T,bare_fangs_blue=EVR010-T,swarming_gloomveil_red=EVR105-T,exude_confidence_red=MON245-T,erase_face_red=UPR187-T,rhinar_reckless_rampage=WTR001-T,rhinar=WTR002-T,head_jab_red=WTR098-T,head_jab_yellow=WTR099-T,head_jab_blue=WTR100-T,fyendals_spring_tunic=WTR150-T,crazy_brew_blue=WTR162-T,cracked_bauble_yellow=WTR224-T,ravenous_rabble_red=ARC191-T,twinning_blade_yellow=CRU082-T,galaxxi_black=MON155-T,blood_tribute_red=MON215-T,blood_tribute_yellow=MON216-T,blood_tribute_blue=MON217-T,blasmophet_the_soul_harvester=MON219-T,ursur_the_soul_reaper=MON220-T,channel_lake_frigid_blue=ELE146-T,earthlore_bounty=EVR020-T,aether_ashwing=UPR042-T,ash=UPR043-T,rewind_blue=UPR169-T,emperor_dracai_of_aesir=DYN001-T,rok=DYN005-T,seasoned_saviour=DYN026-T,blazen_yoroi=DYN045-T,crouching_tiger=DYN065-T,merciless_battleaxe=DYN068-T,hanabi_blaster=DYN088-T,construct_nitro_mechanoid_yellow=DYN092-T,regicide_blue=DYN121-T,sandscour_greatbow=DYN151-T,amethyst_tiara=DYN171-T,surgent_aethertide=DYN192-T,celestial_kimono=DYN213-T,crown_of_dominion=DYN234-T,nitro_mechanoida=DYN492a-T,nitro_mechanoidb=DYN492b-T,nitro_mechanoidc=DYN492c-T,levia_redeemed=DTD164-T,blasmophet_levia_consumed=DTD164-T,singularity_red=EVO010-T,evo_steel_soul_memory_blue=EVO026-T,evo_steel_soul_processor_blue=EVO027-T,evo_steel_soul_controller_blue=EVO028-T,evo_steel_soul_tower_blue=EVO029-T,evo_circuit_breaker_red=EVO030-T,evo_atom_breaker_red=EVO031-T,evo_face_breaker_red=EVO032-T,evo_mach_breaker_red=EVO033-T,teklovossen_the_mechropotent=EVO010-T,teklovossen_the_mechropotenta=EVO410a-T,teklovossen_the_mechropotentb=EVO410b-T,evo_steel_soul_memory_blue_equip=EVO426-T,evo_steel_soul_processor_blue_equip=EVO427-T,evo_steel_soul_controller_blue_equip=EVO428-T,evo_steel_soul_tower_blue_equip=EVO429-T,peace_of_mind_red=OUT231-T,in_the_swing_red=EVR063-T,wrecker_romp_blue=WTR031-T,electrify_blue=ELE200-T,sap_red=DYN206-T,sap_yellow=DYN207-T,sap_blue=DYN208-T,iris_of_reality=MON088-T,zero_to_sixty_red=ARC026-T,stir_the_wildwood_red=ELE082-T,fate_foreseen_red=ARC200-T,scar_for_a_scar_red=WTR191-T,boneyard_marauder_red=MON135-T,sand_cover_red=UPR039-T,oasis_respite_red=UPR221-T,energy_potion_blue=WTR170-T";
-      //PvtVoid
-      // case "9408649": return "lightning_press_red=ELE183-T,rosetta_thorn=ELE222-T,mask_of_recurring_nightmares=MST004-T,sacred_art_undercurrent_desires_blue=MST010-T,sacred_art_immortal_lunar_shrine_blue=MST032-T,twelve_petal_kasaya=MST048-T,sacred_art_jade_tiger_domain_blue=MST053-T,traverse_the_universe=MST066-T,koi_blessed_kimono=MST068-T,a_drop_in_the_ocean_blue=MST095-T,homage_to_ancestors_blue=MST096-T,pass_over_blue=MST097-T,path_well_traveled_blue=MST098-T,preserve_tradition_blue=MST099-T,rising_sun_setting_moon_blue=MST100-T,stir_the_pot_blue=MST101-T,the_grain_that_tips_the_scale_blue=MST102-T,MST000_inner_chi_blue=MST400-T,MST010_inner_chi_blue=MST410-T,MST032_inner_chi_blue=MST432-T,MST053_inner_chi_blue=MST453-T,MST095_inner_chi_blue=MST495-T,MST096_inner_chi_blue=MST496-T,MST097_inner_chi_blue=MST497-T,MST098_inner_chi_blue=MST498-T,MST099_inner_chi_blue=MST499-T,MST100_inner_chi_blue=MST500-T,MST101_inner_chi_blue=MST501-T,MST102_inner_chi_blue=MST502-T,sigil_of_brilliance_yellow=ROS022-T,barkskin_of_the_millennium_tree=ROS028-T,earth_form_red=ROS036-T,rootbound_carapace_red=ROS042-T,rootbound_carapace_yellow=ROS043-T,rootbound_carapace_blue=ROS044-T,sigil_of_sanctuary_blue=ROS045-T,sigil_of_earth_blue=ROS070-T,lightning_form_red=ROS082-T,sigil_of_conductivity_blue=ROS088-T,flittering_charge_red=ROS089-T,flittering_charge_yellow=ROS090-T,flittering_charge_blue=ROS091-T,electrostatic_discharge_red=ROS110-T,electrostatic_discharge_yellow=ROS111-T,electrostatic_discharge_blue=ROS112-T,sigil_of_lightning_blue=ROS113-T,face_purgatory=ROS114-T,sigil_of_the_arknight_blue=ROS133-T,runerager_swarm_red=ROS149-T,deadwood_dirge_red=ROS155-T,sigil_of_deadwood_blue=ROS161-T,sigil_of_aether_blue=ROS168-T,glyph_overlay_red=ROS173-T,sigil_of_temporal_manipulation_blue=ROS182-T,sigil_of_forethought_blue=ROS210-T,arcanite_fortress=ROS211-T,ten_foot_tall_and_bulletproof_red=ROS217-T,call_to_the_grave_blue=ROS218-T,sigil_of_cycles_blue=ROS226-T,sigil_of_fyendal_blue=ROS230-T,chivalry_blue=TCC048-T,fyendals_fighting_spirit_red=UPR194-T,flic_flak_red=WTR092-T,timesnap_potion_blue=WTR172-T,rhinar_reckless_rampage=WTR001-T,rhinar=WTR002-T,head_jab_red=WTR098-T,head_jab_yellow=WTR099-T,head_jab_blue=WTR100-T,fyendals_spring_tunic=WTR150-T,crazy_brew_blue=WTR162-T,sigil_of_solace_red=WTR173-T,cracked_bauble_yellow=WTR224-T,ravenous_rabble_red=ARC191-T,twinning_blade_yellow=CRU082-T,galaxxi_black=MON155-T,blood_tribute_red=MON215-T,blood_tribute_yellow=MON216-T,blood_tribute_blue=MON217-T,blasmophet_the_soul_harvester=MON219-T,ursur_the_soul_reaper=MON220-T,channel_lake_frigid_blue=ELE146-T,earthlore_bounty=EVR020-T,invoke_dracona_optimai_red=UPR006-T,invoke_tomeltai_red=UPR007-T,invoke_dominia_red=UPR008-T,invoke_azvolai_red=UPR009-T,invoke_cromai_red=UPR010-T,invoke_kyloria_red=UPR011-T,invoke_miragai_red=UPR012-T,invoke_nekria_red=UPR013-T,invoke_ouvia_red=UPR014-T,invoke_themai_red=UPR015-T,invoke_vynserakai_red=UPR016-T,invoke_yendurai_red=UPR017-T,aether_ashwing=UPR042-T,ash=UPR043-T,rewind_blue=UPR169-T,dracona_optimai=UPR006-T,tomeltai=UPR007-T,dominia=UPR008-T,azvolai=UPR009-T,cromai=UPR010-T,kyloria=UPR011-T,miragai=UPR012-T,nekria=UPR013-T,ouvia=UPR014-T,themai=UPR015-T,vynserakai=UPR016-T,yendurai=UPR017-T,emperor_dracai_of_aesir=DYN001-T,rok=DYN005-T,seasoned_saviour=DYN026-T,blazen_yoroi=DYN045-T,crouching_tiger=DYN065-T,merciless_battleaxe=DYN068-T,hanabi_blaster=DYN088-T,construct_nitro_mechanoid_yellow=DYN092-T,regicide_blue=DYN121-T,sandscour_greatbow=DYN151-T,amethyst_tiara=DYN171-T,surgent_aethertide=DYN192-T,invoke_suraya_yellow=DYN212-T,celestial_kimono=DYN213-T,crown_of_dominion=DYN234-T,nitro_mechanoida=DYN492a-T,nitro_mechanoidb=DYN492b-T,nitro_mechanoidc=DYN492c-T,suraya_archangel_of_knowledge=DYN212-T,figment_of_erudition_yellow=DTD005-T,figment_of_judgment_yellow=DTD006-T,figment_of_protection_yellow=DTD007-T,figment_of_ravages_yellow=DTD008-T,figment_of_rebirth_yellow=DTD009-T,figment_of_tenacity_yellow=DTD010-T,figment_of_triumph_yellow=DTD011-T,figment_of_war_yellow=DTD012-T,levia_redeemed=DTD164-T,blasmophet_levia_consumed=DTD164-T,suraya_archangel_of_erudition=DTD005-T,themis_archangel_of_judgment=DTD006-T,aegis_archangel_of_protection=DTD007-T,sekem_archangel_of_ravages=DTD008-T,avalon_archangel_of_rebirth=DTD009-T,metis_archangel_of_tenacity=DTD010-T,victoria_archangel_of_triumph=DTD011-T,bellona_archangel_of_war=DTD012-T,singularity_red=EVO010-T,evo_steel_soul_memory_blue=EVO026-T,evo_steel_soul_processor_blue=EVO027-T,evo_steel_soul_controller_blue=EVO028-T,evo_steel_soul_tower_blue=EVO029-T,evo_circuit_breaker_red=EVO030-T,evo_atom_breaker_red=EVO031-T,evo_face_breaker_red=EVO032-T,evo_mach_breaker_red=EVO033-T,teklovossen_the_mechropotent=EVO010-T,teklovossen_the_mechropotenta=EVO410a-T,teklovossen_the_mechropotentb=EVO410b-T,evo_steel_soul_memory_blue_equip=EVO426-T,evo_steel_soul_processor_blue_equip=EVO427-T,evo_steel_soul_controller_blue_equip=EVO428-T,evo_steel_soul_tower_blue_equip=EVO429-T,peace_of_mind_red=OUT231-T,in_the_swing_red=EVR063-T,wrecker_romp_blue=WTR031-T,electrify_blue=ELE200-T,sap_red=DYN206-T,sap_yellow=DYN207-T,sap_blue=DYN208-T,iris_of_reality=MON088-T,zero_to_sixty_red=ARC026-T,stir_the_wildwood_red=ELE082-T,fate_foreseen_red=ARC200-T,scar_for_a_scar_red=WTR191-T,boneyard_marauder_red=MON135-T,sand_cover_red=UPR039-T,oasis_respite_red=UPR221-T,energy_potion_blue=WTR170-T";
-      case "9408649": return "lightning_press_red=ELE183-T,rosetta_thorn=ELE222-T,mask_of_recurring_nightmares=MST004-T,sacred_art_undercurrent_desires_blue=MST010-T,sacred_art_immortal_lunar_shrine_blue=MST032-T,twelve_petal_kasaya=MST048-T,sacred_art_jade_tiger_domain_blue=MST053-T,traverse_the_universe=MST066-T,koi_blessed_kimono=MST068-T,a_drop_in_the_ocean_blue=MST095-T,homage_to_ancestors_blue=MST096-T,pass_over_blue=MST097-T,path_well_traveled_blue=MST098-T,preserve_tradition_blue=MST099-T,rising_sun_setting_moon_blue=MST100-T,stir_the_pot_blue=MST101-T,the_grain_that_tips_the_scale_blue=MST102-T,MST000_inner_chi_blue=MST400-T,MST010_inner_chi_blue=MST410-T,MST032_inner_chi_blue=MST432-T,MST053_inner_chi_blue=MST453-T,MST095_inner_chi_blue=MST495-T,MST096_inner_chi_blue=MST496-T,MST097_inner_chi_blue=MST497-T,MST098_inner_chi_blue=MST498-T,MST099_inner_chi_blue=MST499-T,MST100_inner_chi_blue=MST500-T,MST101_inner_chi_blue=MST501-T,MST102_inner_chi_blue=MST502-T,sigil_of_brilliance_yellow=ROS022-T,barkskin_of_the_millennium_tree=ROS028-T,earth_form_red=ROS036-T,rootbound_carapace_red=ROS042-T,rootbound_carapace_yellow=ROS043-T,rootbound_carapace_blue=ROS044-T,sigil_of_sanctuary_blue=ROS045-T,sigil_of_earth_blue=ROS070-T,lightning_form_red=ROS082-T,sigil_of_conductivity_blue=ROS088-T,flittering_charge_red=ROS089-T,flittering_charge_yellow=ROS090-T,flittering_charge_blue=ROS091-T,electrostatic_discharge_red=ROS110-T,electrostatic_discharge_yellow=ROS111-T,electrostatic_discharge_blue=ROS112-T,sigil_of_lightning_blue=ROS113-T,face_purgatory=ROS114-T,sigil_of_the_arknight_blue=ROS133-T,runerager_swarm_red=ROS149-T,deadwood_dirge_red=ROS155-T,sigil_of_deadwood_blue=ROS161-T,sigil_of_aether_blue=ROS168-T,glyph_overlay_red=ROS173-T,sigil_of_temporal_manipulation_blue=ROS182-T,sigil_of_forethought_blue=ROS210-T,arcanite_fortress=ROS211-T,ten_foot_tall_and_bulletproof_red=ROS217-T,call_to_the_grave_blue=ROS218-T,sigil_of_cycles_blue=ROS226-T,sigil_of_fyendal_blue=ROS230-T,chivalry_blue=TCC048-T,fyendals_fighting_spirit_red=UPR194-T,flic_flak_red=WTR092-T,timesnap_potion_blue=WTR172-T,rhinar_reckless_rampage=WTR001-T,rhinar=WTR002-T,head_jab_red=WTR098-T,head_jab_yellow=WTR099-T,head_jab_blue=WTR100-T,fyendals_spring_tunic=WTR150-T,crazy_brew_blue=WTR162-T,sigil_of_solace_red=WTR173-T,cracked_bauble_yellow=WTR224-T,ravenous_rabble_red=ARC191-T,twinning_blade_yellow=CRU082-T,galaxxi_black=MON155-T,blood_tribute_red=MON215-T,blood_tribute_yellow=MON216-T,blood_tribute_blue=MON217-T,blasmophet_the_soul_harvester=MON219-T,ursur_the_soul_reaper=MON220-T,channel_lake_frigid_blue=ELE146-T,earthlore_bounty=EVR020-T,invoke_dracona_optimai_red=UPR006-T,aether_ashwing=UPR042-T,ash=UPR043-T,rewind_blue=UPR169-T,emperor_dracai_of_aesir=DYN001-T,rok=DYN005-T,seasoned_saviour=DYN026-T,blazen_yoroi=DYN045-T,crouching_tiger=DYN065-T,merciless_battleaxe=DYN068-T,hanabi_blaster=DYN088-T,construct_nitro_mechanoid_yellow=DYN092-T,regicide_blue=DYN121-T,sandscour_greatbow=DYN151-T,amethyst_tiara=DYN171-T,surgent_aethertide=DYN192-T,celestial_kimono=DYN213-T,crown_of_dominion=DYN234-T,nitro_mechanoida=DYN492a-T,nitro_mechanoidb=DYN492b-T,nitro_mechanoidc=DYN492c-T,levia_redeemed=DTD164-T,blasmophet_levia_consumed=DTD164-T,singularity_red=EVO010-T,evo_steel_soul_memory_blue=EVO026-T,evo_steel_soul_processor_blue=EVO027-T,evo_steel_soul_controller_blue=EVO028-T,evo_steel_soul_tower_blue=EVO029-T,evo_circuit_breaker_red=EVO030-T,evo_atom_breaker_red=EVO031-T,evo_face_breaker_red=EVO032-T,evo_mach_breaker_red=EVO033-T,teklovossen_the_mechropotent=EVO010-T,teklovossen_the_mechropotenta=EVO410a-T,teklovossen_the_mechropotentb=EVO410b-T,evo_steel_soul_memory_blue_equip=EVO426-T,evo_steel_soul_processor_blue_equip=EVO427-T,evo_steel_soul_controller_blue_equip=EVO428-T,evo_steel_soul_tower_blue_equip=EVO429-T,peace_of_mind_red=OUT231-T,in_the_swing_red=EVR063-T,wrecker_romp_blue=WTR031-T,electrify_blue=ELE200-T,sap_red=DYN206-T,sap_yellow=DYN207-T,sap_blue=DYN208-T,iris_of_reality=MON088-T,zero_to_sixty_red=ARC026-T,stir_the_wildwood_red=ELE082-T,fate_foreseen_red=ARC200-T,scar_for_a_scar_red=WTR191-T,boneyard_marauder_red=MON135-T,sand_cover_red=UPR039-T,oasis_respite_red=UPR221-T,energy_potion_blue=WTR170-T";
-      //ManSant
-      case "8955846": return "levia_shadowborn_abomination=MON119-ManSant,levia=MON120-ManSant,agility=HVY240-ManSant,might=TCC105-ManSant";
-      //Brandao
-      case "279086": return "dash_inventor_extraordinaire=ARC001-Brandao,kano_dracai_of_aether=ARC113-Brandao,kassai_cintari_sellsword=CRU077-Brandao,lexi_livewire=ELE031-Brandao,riptide_lurker_of_the_deep=OUT091-Brandao,dromai_ash_artist=UPR001-Brandao,bravo_showstopper=WTR038-Brandao,teklo_plasma_pistol=ARC003-Brandao,cintari_saber=CRU079-Brandao,cintari_saber=CRU079-Brandao,copper=CRU197-Brandao,frostbite=ELE111-Brandao,storm_of_sandikai=UPR003-Brandao,aether_ashwing=UPR042-Brandao,ash=UPR043-Brandao,anothos=WTR040-Brandao,seismic_surge=WTR075-Brandao,runechant=ARC112_Brandao,harmonized_kodachi=WTR078_Brandao,vynnset=DTD134_Brandao,flail_of_agony=DTD135_Brandao,maxx_the_hype_nitro=EVO004_Brandao,banksy=EVO006_Brandao,hyper_driver=EVO234_Brandao,katsu_the_wanderer=WTR076_Brandao,harmonized_kodachi=WTR078_Brandao,mandible_claw=CRU004_Brandao,mandible_claw=CRU004_Brandao,courage=DTD232_Brandao,rhinar_reckless_rampage=WTR001_Brandao,dorinthea_ironsong=WTR113_Brandao,dawnblade=WTR115_Brandao";
-      //TeamTalishar
-      case "14": return "embodiment_of_earth=ELE109-Promo,embodiment_of_lightning=ELE110-Promo";
-      default: return "";
+    $altArts = [];
+    $char = getPlayerCharacter($playerID);
+
+    // Add character-specific alt arts
+    if(HasEssenceOfEarth($char[0])) {
+      $altArts[] = "runechant=ARC112-Earth";
+      $altArts[] = "might=TER028-might";
     }
+    if(HasEssenceOfLightning($char[0])) {
+      $altArts[] = "runechant=ARC112-Lightning";
+    }
+    if($char[0] == "enigma" || $char[0] == "enigma_ledger_of_ancestry") {
+      $altArts[] = "spectral_shield=MON104-Blue";
+    }
+    if($char[0] == "enigma_new_moon") {
+      $altArts[] = "spectral_shield=MON104-Green";
+    }
+    if(CardSet($char[0]) == "HVY") {
+      $altArts[] = "gold=HVY243-gold";
+    }
+    if(CardSet($char[0]) == "SEA") {
+      $altArts[] = "gold=SEA244-gold";
+    }
+
+    // Add campaign-specific alt arts
+    $campaignAltArts = $this->getCampaignAltArts();
+    if (!empty($campaignAltArts)) {
+      $altArts[] = $campaignAltArts;
+    }
+
+    return implode(",", $altArts);
+  }
+
+  private function getCampaignAltArts(): string
+  {
+    $altArts = [];
+    
+    switch($this->value) {
+      case "7198186": // Talishar
+      case "9408649": // PvtVoid
+        $altArts = [
+          "lightning_press_red=ELE183-T", "rosetta_thorn=ELE222-T", "mask_of_recurring_nightmares=MST004-T",
+          "sacred_art_undercurrent_desires_blue=MST010-T", "sacred_art_immortal_lunar_shrine_blue=MST032-T",
+          "twelve_petal_kasaya=MST048-T", "sacred_art_jade_tiger_domain_blue=MST053-T",
+          "traverse_the_universe=MST066-T", "koi_blessed_kimono=MST068-T", "a_drop_in_the_ocean_blue=MST095-T",
+          "homage_to_ancestors_blue=MST096-T", "pass_over_blue=MST097-T", "path_well_traveled_blue=MST098-T",
+          "preserve_tradition_blue=MST099-T", "rising_sun_setting_moon_blue=MST100-T", "stir_the_pot_blue=MST101-T",
+          "the_grain_that_tips_the_scale_blue=MST102-T", "MST000_inner_chi_blue=MST400-T",
+          "MST010_inner_chi_blue=MST410-T", "MST032_inner_chi_blue=MST432-T", "MST053_inner_chi_blue=MST453-T",
+          "MST095_inner_chi_blue=MST495-T", "MST096_inner_chi_blue=MST496-T", "MST097_inner_chi_blue=MST497-T",
+          "MST098_inner_chi_blue=MST498-T", "MST099_inner_chi_blue=MST499-T", "MST100_inner_chi_blue=MST500-T",
+          "MST101_inner_chi_blue=MST501-T", "MST102_inner_chi_blue=MST502-T", "sigil_of_brilliance_yellow=ROS022-T",
+          "barkskin_of_the_millennium_tree=ROS028-T", "earth_form_red=ROS036-T", "rootbound_carapace_red=ROS042-T",
+          "rootbound_carapace_yellow=ROS043-T", "rootbound_carapace_blue=ROS044-T", "sigil_of_sanctuary_blue=ROS045-T",
+          "sigil_of_earth_blue=ROS070-T", "lightning_form_red=ROS082-T", "sigil_of_conductivity_blue=ROS088-T",
+          "flittering_charge_red=ROS089-T", "flittering_charge_yellow=ROS090-T", "flittering_charge_blue=ROS091-T",
+          "electrostatic_discharge_red=ROS110-T", "electrostatic_discharge_yellow=ROS111-T",
+          "electrostatic_discharge_blue=ROS112-T", "sigil_of_lightning_blue=ROS113-T", "face_purgatory=ROS114-T",
+          "sigil_of_the_arknight_blue=ROS133-T", "runerager_swarm_red=ROS149-T", "deadwood_dirge_red=ROS155-T",
+          "sigil_of_deadwood_blue=ROS161-T", "sigil_of_aether_blue=ROS168-T", "glyph_overlay_red=ROS173-T",
+          "sigil_of_temporal_manipulation_blue=ROS182-T", "sigil_of_forethought_blue=ROS210-T",
+          "arcanite_fortress=ROS211-T", "ten_foot_tall_and_bulletproof_red=ROS217-T",
+          "call_to_the_grave_blue=ROS218-T", "sigil_of_cycles_blue=ROS226-T", "sigil_of_fyendal_blue=ROS230-T",
+          "chivalry_blue=TCC048-T", "fyendals_fighting_spirit_red=UPR194-T", "flic_flak_red=WTR092-T",
+          "timesnap_potion_blue=WTR172-T", "sigil_of_solace_red=WTR173-T", "command_and_conquer_red=ARC159-T",
+          "bare_fangs_red=EVR008-T", "bare_fangs_yellow=EVR009-T", "bare_fangs_blue=EVR010-T",
+          "swarming_gloomveil_red=EVR105-T", "exude_confidence_red=MON245-T", "erase_face_red=UPR187-T",
+          "rhinar_reckless_rampage=WTR001-T", "rhinar=WTR002-T", "head_jab_red=WTR098-T",
+          "head_jab_yellow=WTR099-T", "head_jab_blue=WTR100-T", "fyendals_spring_tunic=WTR150-T",
+          "crazy_brew_blue=WTR162-T", "cracked_bauble_yellow=WTR224-T", "ravenous_rabble_red=ARC191-T",
+          "twinning_blade_yellow=CRU082-T", "galaxxi_black=MON155-T", "blood_tribute_red=MON215-T",
+          "blood_tribute_yellow=MON216-T", "blood_tribute_blue=MON217-T",
+          "blasmophet_the_soul_harvester=MON219-T", "ursur_the_soul_reaper=MON220-T",
+          "channel_lake_frigid_blue=ELE146-T", "earthlore_bounty=EVR020-T", "aether_ashwing=UPR042-T",
+          "ash=UPR043-T", "rewind_blue=UPR169-T", "emperor_dracai_of_aesir=DYN001-T", "rok=DYN005-T",
+          "seasoned_saviour=DYN026-T", "blazen_yoroi=DYN045-T", "crouching_tiger=DYN065-T",
+          "merciless_battleaxe=DYN068-T", "hanabi_blaster=DYN088-T", "construct_nitro_mechanoid_yellow=DYN092-T",
+          "regicide_blue=DYN121-T", "sandscour_greatbow=DYN151-T", "amethyst_tiara=DYN171-T",
+          "surgent_aethertide=DYN192-T", "celestial_kimono=DYN213-T", "crown_of_dominion=DYN234-T",
+          "nitro_mechanoida=DYN492a-T", "nitro_mechanoidb=DYN492b-T", "nitro_mechanoidc=DYN492c-T",
+          "levia_redeemed=DTD164-T", "blasmophet_levia_consumed=DTD164-T", "singularity_red=EVO010-T",
+          "evo_steel_soul_memory_blue=EVO026-T", "evo_steel_soul_processor_blue=EVO027-T",
+          "evo_steel_soul_controller_blue=EVO028-T", "evo_steel_soul_tower_blue=EVO029-T",
+          "evo_circuit_breaker_red=EVO030-T", "evo_atom_breaker_red=EVO031-T", "evo_face_breaker_red=EVO032-T",
+          "evo_mach_breaker_red=EVO033-T", "teklovossen_the_mechropotent=EVO010-T",
+          "teklovossen_the_mechropotenta=EVO410a-T", "teklovossen_the_mechropotentb=EVO410b-T",
+          "evo_steel_soul_memory_blue_equip=EVO426-T", "evo_steel_soul_processor_blue_equip=EVO427-T",
+          "evo_steel_soul_controller_blue_equip=EVO428-T", "evo_steel_soul_tower_blue_equip=EVO429-T",
+          "peace_of_mind_red=OUT231-T", "in_the_swing_red=EVR063-T", "wrecker_romp_blue=WTR031-T",
+          "electrify_blue=ELE200-T", "sap_red=DYN206-T", "sap_yellow=DYN207-T", "sap_blue=DYN208-T",
+          "iris_of_reality=MON088-T", "zero_to_sixty_red=ARC026-T", "stir_the_wildwood_red=ELE082-T",
+          "fate_foreseen_red=ARC200-T", "scar_for_a_scar_red=WTR191-T", "boneyard_marauder_red=MON135-T",
+          "sand_cover_red=UPR039-T", "oasis_respite_red=UPR221-T", "energy_potion_blue=WTR170-T"
+        ];
+        break;
+      case "8955846": // ManSant
+        $altArts = [
+          "levia_shadowborn_abomination=MON119-ManSant",
+          "levia=MON120-ManSant",
+          "agility=HVY240-ManSant",
+          "might=TCC105-ManSant"
+        ];
+        break;
+      case "279086": // Brandao
+        $altArts = [
+          "dash_inventor_extraordinaire=ARC001-Brandao", "kano_dracai_of_aether=ARC113-Brandao",
+          "kassai_cintari_sellsword=CRU077-Brandao", "lexi_livewire=ELE031-Brandao",
+          "riptide_lurker_of_the_deep=OUT091-Brandao", "dromai_ash_artist=UPR001-Brandao",
+          "bravo_showstopper=WTR038-Brandao", "teklo_plasma_pistol=ARC003-Brandao",
+          "cintari_saber=CRU079-Brandao", "copper=CRU197-Brandao", "frostbite=ELE111-Brandao",
+          "storm_of_sandikai=UPR003-Brandao", "aether_ashwing=UPR042-Brandao", "ash=UPR043-Brandao",
+          "anothos=WTR040-Brandao", "seismic_surge=WTR075-Brandao", "runechant=ARC112_Brandao",
+          "harmonized_kodachi=WTR078_Brandao", "vynnset=DTD134_Brandao", "flail_of_agony=DTD135_Brandao",
+          "maxx_the_hype_nitro=EVO004_Brandao", "banksy=EVO006_Brandao", "hyper_driver=EVO234_Brandao",
+          "katsu_the_wanderer=WTR076_Brandao", "mandible_claw=CRU004_Brandao", "courage=DTD232_Brandao",
+          "rhinar_reckless_rampage=WTR001_Brandao", "dorinthea_ironsong=WTR113_Brandao",
+          "dawnblade=WTR115_Brandao"
+        ];
+        break;
+      case "14": // TeamTalishar
+        $altArts = [
+          "embodiment_of_earth=ELE109-Promo",
+          "embodiment_of_lightning=ELE110-Promo"
+        ];
+        break;
+    }
+
+    return implode(",", $altArts);
   }
 
   public function CardBacks(): string

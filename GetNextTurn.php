@@ -206,7 +206,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     {
       foreach(PatreonCampaign::cases() as $campaign) {
         if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
-          $altArts = $campaign->AltArts();
+          $altArts = $campaign->AltArts($playerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
           for($i = 0; $i < count($altArts); ++$i) {
