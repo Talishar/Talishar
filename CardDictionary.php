@@ -63,8 +63,8 @@ function CardType($cardID, $from="")
 {
   global $CS_AdditionalCosts, $currentPlayer;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "CLOSINGCHAIN", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
-  if (!$cardID || isset($adminCards[$cardID])) return "";
-
+  if (!$cardID || in_array($cardID, $adminCards)) return "";
+  
   // Handle meld cards
   $meldCards = [
     "thistle_bloom__life_yellow",
