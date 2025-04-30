@@ -1,4 +1,4 @@
-  <?php
+<?php
 
 include "Constants.php";
 include "CardDictionaries/WelcomeToRathe/WTRShared.php";
@@ -64,159 +64,146 @@ function CardType($cardID, $from="")
   global $CS_AdditionalCosts, $currentPlayer;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "CLOSINGCHAIN", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
-  switch ($cardID) {
-    case "parry_blade":
-      return "W,E";
-    case "thistle_bloom__life_yellow":
-    case "arcane_seeds__life_red":
-    case "burn_up__shock_red":
-    case "pulsing_aether__life_red":
-    case "comet_storm__shock_red":
-    case "regrowth__shock_blue":
-      if($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
-      if(function_exists("GetClassState")) {
-        if(GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") return "A,I";
-        elseif (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "I";
-        elseif (IsMeldActionName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "A";  
-      }
-      return "A,I";
-    case "sanctuary_of_aria":
-      return "Macro";
-    case "summit_the_unforgiving":
-      return "W";
-    case "graphene_chelicera":
-      return "W,T";
-    case "valda_seismic_impact": //hardcoding before fabcube update
-      return "C";
-    case "chum_friendly_first_mate_yellow":
-    case "riggermortis_yellow":
-    case "sawbones_dock_hand_yellow":
-      return "A";
-    case "polly_cranka":
-      return "Comp";//companion
-    default:
-      break;
+
+  // Handle meld cards
+  $meldCards = [
+    "thistle_bloom__life_yellow",
+    "arcane_seeds__life_red",
+    "burn_up__shock_red",
+    "pulsing_aether__life_red",
+    "comet_storm__shock_red",
+    "regrowth__shock_blue"
+  ];
+
+  if (in_array($cardID, $meldCards)) {
+    if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
+    if (function_exists("GetClassState")) {
+      $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
+      if ($additionalCosts == "Both") return "A,I";
+      if (IsMeldInstantName($additionalCosts)) return "I";
+      if (IsMeldActionName($additionalCosts)) return "A";
+    }
+    return "A,I";
   }
   $set = CardSet($cardID);
   if ($set != "ROG" && $set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400) return GeneratedCardType($cardID);
-    else if ($set != "MON" && $set != "DYN" && $set != "HNT" && $setID != "UPR551" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") return GeneratedCardType($cardID);
+    if ($set != "MON" && $set != "DYN" && $set != "HNT" && $setID != "UPR551" && 
+        $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") {
+      return GeneratedCardType($cardID);
+    }
   }
   if ($set == "ROG") return ROGUECardType($cardID);
-  switch ($cardID) {
-    case "MON400":
-    case "MON401":
-    case "MON402":
-      return "E";
-    case "the_librarian":
-      return "M";
-    case "minerva_themis":
-      return "M";
-    case "lady_barthimont":
-    case "lord_sutcliffe":
-      return "M";
-    case "UPR551":
-      return "-";
-    case "nitro_mechanoida":
-      return "W";
-    case "nitro_mechanoidb":
-    case "teklovossen_the_mechropotentb":
-      return "E";
-    case "teklovossen_the_mechropotent":
-      return "C";
-    case "levia_redeemed":
-    case "blasmophet_levia_consumed":
-      return "D";
-    case "suraya_archangel_of_knowledge":
-      return "-";
-    case "DUMMY":
-    case "DUMMYDISHONORED":
-      return "C";
-    case "the_hand_that_pulls_the_strings":
-      return "M";
-    default:
-      return "";
-  }
+
+  // Handle remaining special cases
+  $specialCases = [
+    "MON400" => "E",
+    "MON401" => "E",
+    "MON402" => "E",
+    "the_librarian" => "M",
+    "minerva_themis" => "M",
+    "lady_barthimont" => "M",
+    "lord_sutcliffe" => "M",
+    "UPR551" => "-",
+    "nitro_mechanoida" => "W",
+    "nitro_mechanoidb" => "E",
+    "teklovossen_the_mechropotentb" => "E",
+    "teklovossen_the_mechropotent" => "C",
+    "levia_redeemed" => "D",
+    "blasmophet_levia_consumed" => "D",
+    "suraya_archangel_of_knowledge" => "-",
+    "DUMMY" => "C",
+    "DUMMYDISHONORED" => "C",
+    "the_hand_that_pulls_the_strings" => "M",
+    "parry_blade" => "W,E",
+    "sanctuary_of_aria" => "Macro",
+    "summit_the_unforgiving" => "W",
+    "graphene_chelicera" => "W,T",
+    "valda_seismic_impact" => "C",
+    "polly_cranka" => "Companion"
+  ];
+
+  return $specialCases[$cardID] ?? "";
 }
 
 function CardTypeExtended($cardID, $from="") // used to handle evos
 {
-  switch ($cardID) {
-    case "evo_steel_soul_memory_blue"://steel soul
-    case "evo_steel_soul_processor_blue":
-    case "evo_steel_soul_controller_blue":
-    case "evo_steel_soul_tower_blue":
-    case "evo_steel_soul_memory_blue_equip":
-    case "evo_steel_soul_processor_blue_equip":
-    case "evo_steel_soul_controller_blue_equip":
-    case "evo_steel_soul_tower_blue_equip":
-    case "evo_data_mine_yellow"://yellow 2 blocks
-    case "evo_battery_pack_yellow":
-    case "evo_cogspitter_yellow":
-    case "evo_charging_rods_yellow":
-    case "evo_data_mine_yellow_equip":
-    case "evo_battery_pack_yellow_equip":
-    case "evo_cogspitter_yellow_equip":
-    case "evo_charging_rods_yellow_equip":
-    case "evo_command_center_yellow"://yellow 3 blocks
-    case "evo_engine_room_yellow":
-    case "evo_smoothbore_yellow":
-    case "evo_thruster_yellow":
-    case "evo_command_center_yellow_equip":
-    case "evo_engine_room_yellow_equip":
-    case "evo_smoothbore_yellow_equip":
-    case "evo_thruster_yellow_equip":
-    case "evo_magneto_blue"://evo magneto
-    case "evo_magneto_blue_equip":
-      return "A,E";
-    case "evo_circuit_breaker_red"://breakers
-    case "evo_atom_breaker_red":
-    case "evo_face_breaker_red":
-    case "evo_mach_breaker_red":
-    case "evo_circuit_breaker_red_equip":
-    case "evo_atom_breaker_red_equip":
-    case "evo_face_breaker_red_equip":
-    case "evo_mach_breaker_red_equip":
-    case "evo_zoom_call_yellow"://yellow 0 blocks
-    case "evo_buzz_hive_yellow":
-    case "evo_whizz_bang_yellow":
-    case "evo_zip_line_yellow":
-    case "evo_zoom_call_yellow_equip":
-    case "evo_buzz_hive_yellow_equip":
-    case "evo_whizz_bang_yellow_equip":
-    case "evo_zip_line_yellow_equip":
-    case "evo_recall_blue"://AB evos
-    case "evo_heartdrive_blue":
-    case "evo_shortcircuit_blue":
-    case "evo_speedslip_blue":
-    case "evo_recall_blue_equip":
-    case "evo_heartdrive_blue_equip":
-    case "evo_shortcircuit_blue_equip":
-    case "evo_speedslip_blue_equip":
-      return "I,E";
-    default:
-      break;
-  }
-  return CardType($cardID, $from);
+  $evolutionTypes = [
+    "evo_steel_soul_memory_blue" => "A,E",
+    "evo_steel_soul_processor_blue" => "A,E",
+    "evo_steel_soul_controller_blue" => "A,E",
+    "evo_steel_soul_tower_blue" => "A,E",
+    "evo_steel_soul_memory_blue_equip" => "A,E",
+    "evo_steel_soul_processor_blue_equip" => "A,E",
+    "evo_steel_soul_controller_blue_equip" => "A,E",
+    "evo_steel_soul_tower_blue_equip" => "A,E",
+    
+    "evo_data_mine_yellow" => "A,E",
+    "evo_battery_pack_yellow" => "A,E",
+    "evo_cogspitter_yellow" => "A,E",
+    "evo_charging_rods_yellow" => "A,E",
+    "evo_data_mine_yellow_equip" => "A,E",
+    "evo_battery_pack_yellow_equip" => "A,E",
+    "evo_cogspitter_yellow_equip" => "A,E",
+    "evo_charging_rods_yellow_equip" => "A,E",
+    
+    "evo_command_center_yellow" => "A,E",
+    "evo_engine_room_yellow" => "A,E",
+    "evo_smoothbore_yellow" => "A,E",
+    "evo_thruster_yellow" => "A,E",
+    "evo_command_center_yellow_equip" => "A,E",
+    "evo_engine_room_yellow_equip" => "A,E",
+    "evo_smoothbore_yellow_equip" => "A,E",
+    "evo_thruster_yellow_equip" => "A,E",
+    
+    "evo_magneto_blue" => "A,E",
+    "evo_magneto_blue_equip" => "A,E",
+    
+    "evo_circuit_breaker_red" => "I,E",
+    "evo_atom_breaker_red" => "I,E",
+    "evo_face_breaker_red" => "I,E",
+    "evo_mach_breaker_red" => "I,E",
+    "evo_circuit_breaker_red_equip" => "I,E",
+    "evo_atom_breaker_red_equip" => "I,E",
+    "evo_face_breaker_red_equip" => "I,E",
+    "evo_mach_breaker_red_equip" => "I,E",
+    
+    "evo_zoom_call_yellow" => "I,E",
+    "evo_buzz_hive_yellow" => "I,E",
+    "evo_whizz_bang_yellow" => "I,E",
+    "evo_zip_line_yellow" => "I,E",
+    "evo_zoom_call_yellow_equip" => "I,E",
+    "evo_buzz_hive_yellow_equip" => "I,E",
+    "evo_whizz_bang_yellow_equip" => "I,E",
+    "evo_zip_line_yellow_equip" => "I,E",
+    
+    "evo_recall_blue" => "I,E",
+    "evo_heartdrive_blue" => "I,E",
+    "evo_shortcircuit_blue" => "I,E",
+    "evo_speedslip_blue" => "I,E",
+    "evo_recall_blue_equip" => "I,E",
+    "evo_heartdrive_blue_equip" => "I,E",
+    "evo_shortcircuit_blue_equip" => "I,E",
+    "evo_speedslip_blue_equip" => "I,E"
+  ];
+
+  return $evolutionTypes[$cardID] ?? CardType($cardID, $from);
 }
 
 function SetID($cardID)
 {
-  switch ($cardID) {
-    case "teklovossen_the_mechropotentb":
-    case "nitro_mechanoida":
-    case "nitro_mechanoidb":
-    case "nitro_mechanoidc":
-      return GeneratedSetID(substr($cardID, 0, strlen($cardID) - 1));
-    case "the_hand_that_pulls_the_strings":
-      return "HNT407";
-    case "valda_seismic_impact":
-      return "HER135";
-    default:
-      return GeneratedSetID($cardID);
-  }
+  $specialCases = [
+    "teklovossen_the_mechropotentb" => GeneratedSetID("teklovossen_the_mechropotent"),
+    "nitro_mechanoida" => GeneratedSetID("nitro_mechanoid"),
+    "nitro_mechanoidb" => GeneratedSetID("nitro_mechanoid"),
+    "nitro_mechanoidc" => GeneratedSetID("nitro_mechanoid"),
+    "the_hand_that_pulls_the_strings" => "HNT407",
+    "valda_seismic_impact" => "HER135"
+  ];
+
+  return $specialCases[$cardID] ?? GeneratedSetID($cardID);
 }
 
 //converts cardIDs to setIDs, retaining any trailing tags
@@ -2966,7 +2953,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
-  if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "D") || DelimStringContains($cardType, "Comp")) return true;
+  if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "D") || DelimStringContains($cardType, "Companion")) return true;
   if ($from == "PLAY") return true;
   if ($from == "ARS" && DelimStringContains($cardType, "M")) return true;
   if ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
