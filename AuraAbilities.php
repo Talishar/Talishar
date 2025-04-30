@@ -1227,25 +1227,13 @@ function AuraPlayAbilities($cardID, $from = "")
     }
     if ($remove == 1) DestroyAura($currentPlayer, $i);
   }
-  // handle runechants separately so we can batch them
+  // handle runechants separately so we can handle large amounts of them
   $runechantCount = count($runechantUIDS);
   if ($runechantCount > 0) {
     $abilityType = GetResolvedAbilityType($cardID, $from);
     if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
-      $batchSize = 10;
-      $numBatches = intdiv($runechantCount, $batchSize);
-      $remainder = $runechantCount % $batchSize;
-      if ($remainder < 6 && $numBatches > 0) {
-        //make sure oblivion isn't blocked
-        $remainder += 10;
-        $numBatches -= 1;
-      }
-      for ($i = 0; $i < $remainder; $i++) {
+      for ($i = 0; $i < $runechantCount; $i++) {
         AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
-      }
-      for ($i = 0; $i < $numBatches; $i++) {
-        $uids = array_slice($runechantUIDS, $remainder + $batchSize * $i, $batchSize);
-        AddLayer("TRIGGER", $currentPlayer, "runechant_batch", uniqueID: implode(",", $uids));
       }
     }
   }
