@@ -57,7 +57,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "show_no_mercy_red":
-      if (IsHeroAttackTarget()) Intimidate();
+      if (IsHeroAttackTarget()) Intimidate($defPlayer);
       return "";
     case "cast_bones_red":
       $deck = new Deck($currentPlayer);
