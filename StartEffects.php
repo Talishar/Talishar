@@ -112,6 +112,14 @@ function handleCharacterStartAbilities(): void
     AddDecisionQueue("CHOOSEDECK", 2, $items);
     AddDecisionQueue("SETDQVAR", 2, "1");
   }
+  if ($p1IsDash) {
+    AddDecisionQueue("PASSPARAMETER", 1, "{0}");
+    AddDecisionQueue("PUTPLAY", 1, "-");
+  }
+  if ($p2IsDash) {
+    AddDecisionQueue("PASSPARAMETER", 2, "{1}");
+    AddDecisionQueue("PUTPLAY", 2, "-");
+  }
 
   // Fai abilities
   if (in_array($p1Char[0], ["fai_rising_rebellion", "fai"])) {
