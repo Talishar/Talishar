@@ -240,8 +240,10 @@ function isAdministrativeStep($cardID)
 function SearchHandForCard($player, $card)
 {
   $hand = &GetHand($player);
+  $count = count($hand);
+  $pieces = HandPieces();
   $indices = "";
-  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($hand[$i] == $card) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -267,8 +269,10 @@ function SearchHandForCardName($player, $name)
 function SearchArsenalForCard($player, $card, $facing = "-")
 {
   $arsenal = &GetArsenal($player);
+  $count = count($arsenal);
+  $pieces = ArsenalPieces();
   $indices = "";
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($arsenal[$i] == $card && ($arsenal[$i + 1] == $facing || $facing == "-")) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -280,8 +284,10 @@ function SearchArsenalForCard($player, $card, $facing = "-")
 function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $deck = &GetDeck($player);
+  $count = count($deck);
+  $pieces = DeckPieces();
   $cardList = "";
-  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     $id = $deck[$i];
     if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
       if ($cardList != "") $cardList = $cardList . ",";
@@ -350,8 +356,10 @@ function SearchBanishByName($player, $name)
 function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $discard = &GetDiscard($player);
+  $count = count($discard);
+  $pieces = DiscardPieces();
   $cardList = "";
-  for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     $id = $discard[$i];
     if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
       if ($cardList != "") $cardList = $cardList . ",";
@@ -378,8 +386,10 @@ function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
 function SearchPermanentsForCard($player, $card)
 {
   $permanents = &GetPermanents($player);
+  $count = count($permanents);
+  $pieces = PermanentPieces();
   $indices = "";
-  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($permanents[$i] == $card) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -411,7 +421,9 @@ function SearchCharacterActive($player, $cardID, $checkGem = false, $setInactive
 function SearchCharacterForCard($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $count = count($character);
+  $pieces = CharacterPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($character[$i] == $cardID && $character[$i + 12] != "DOWN" && $character[$i + 1] != 0) return true;
   }
   return false;
@@ -421,14 +433,18 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
 {
   global $currentTurnEffects, $combatChain;
   $character = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $count = count($character);
+  $pieces = CharacterPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
       if (!$notActiveLink) return true;
       else if ($combatChain[8] != $character[$i + 11]) return true;
     }
     if ($character[$i] == "frostbite") {
       $slot = "";
-      for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
+      $effectCount = count($currentTurnEffects);
+      $effectPieces = CurrentTurnEffectPieces();
+      for ($j = 0; $j < $effectCount; $j += $effectPieces) {
         $effect = explode(",", $currentTurnEffects[$j]);
         if ($effect[0] == "frostbite-" . $character[$i + 11]) $slot = $effect[1];
       }
@@ -441,7 +457,9 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
 function SearchCharacterIndexSubtype($player, $subtype)
 {
   $character = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $count = count($character);
+  $pieces = CharacterPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (SubtypeContains($character[$i], $subtype, $player)) return $i;
   }
   return -1;
@@ -450,31 +468,35 @@ function SearchCharacterIndexSubtype($player, $subtype)
 function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
-  $index = -1;
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $count = count($character);
+  $pieces = CharacterPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (isset($character[$i]) && $character[$i] == $cardID) {
       if ($character[$i + 1] != 0) return $i;
     }
   }
-  return $index;
+  return -1;
 }
 
 function FindCharacterIndexUniqueID($player, $uniqueID)
 {
   $character = &GetPlayerCharacter($player);
-  $index = -1;
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $count = count($character);
+  $pieces = CharacterPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (isset($character[$i]) && $character[$i+11] == $uniqueID) {
       if ($character[$i + 1] != 0) return $i;
     }
   }
-  return $index;
+  return -1;
 }
 
 function FindCurrentTurnEffectIndex($player, $cardID)
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
     if ($currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i] == $cardID) {
       return $i;
     }
@@ -488,15 +510,6 @@ function CombineSearches($search1, $search2)
   else if ($search1 == "") return $search2;
   return $search1 . "," . $search2;
 }
-
-// function DeDupeSearches($search)
-// {
-//   if ($search == "") return $search;
-//   $searchArr = explode(",", $search);
-//   for ($i = count($searchArr); $i >= 0; --$i) {
-
-//   }
-// }
 
 function SearchRemoveDuplicates($search)
 {
@@ -529,7 +542,9 @@ function SearchMultizoneFormat($search, $zone)
 function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false)
 {
   global $currentTurnEffects;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
@@ -557,7 +572,9 @@ function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false,
 function SearchNextTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false)
 {
   global $nextTurnEffects;
-  for ($i = 0; $i < count($nextTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $count = count($nextTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (!isset($nextTurnEffects[$i + 1])) continue;
     if ($nextTurnEffects[$i] == $cardID && $nextTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
@@ -571,7 +588,9 @@ function SearchNextTurnEffects($cardID, $player, $remove = false, $returnUniqueI
 function SearchCurrentTurnEffectsForIndex($cardID, $player)
 {
   global $currentTurnEffects;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if (ExtractCardID($currentTurnEffects[$i]) == $cardID && $currentTurnEffects[$i + 1] == $player) {
       return $i;
@@ -583,7 +602,9 @@ function SearchCurrentTurnEffectsForIndex($cardID, $player)
 function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
 {
   global $currentTurnEffects;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($currentTurnEffects[$i] == $card1 && $currentTurnEffects[$i + 1] == $player) return true;
     if ($currentTurnEffects[$i] == $card2 && $currentTurnEffects[$i + 1] == $player) return true;
     if ($currentTurnEffects[$i] == $card3 && $currentTurnEffects[$i + 1] == $player) return true;
@@ -594,16 +615,17 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
 function CountCurrentTurnEffects($cardID, $player, $remove = false)
 {
   global $currentTurnEffects;
-  $count = 0;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  $total = 0;
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
-      ++$count;
+      ++$total;
     }
   }
-  return $count;
+  return $total;
 }
-
 function SearchPitchHighestAttack(&$pitch)
 {
   global $mainPlayer;
@@ -617,34 +639,40 @@ function SearchPitchHighestAttack(&$pitch)
 
 function SearchPitchForColor($player, $pitchValue)
 {
-  $count = 0;
   $pitch = &GetPitch($player);
-  for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-    if (PitchValue($pitch[$i]) == $pitchValue && ColorContains($pitch[$i], $pitchValue, $player)) ++$count;
+  $count = count($pitch);
+  $pieces = PitchPieces();
+  $total = 0;
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (PitchValue($pitch[$i]) == $pitchValue && ColorContains($pitch[$i], $pitchValue, $player)) ++$total;
   }
-  return $count;
+  return $total;
 }
 
 //For e.g. Mutated Mass
 function SearchPitchForNumCosts($player)
 {
-  $count = 0;
-  $countArr = [];
   $pitch = &GetPitch($player);
-  for ($i = 0; $i < count($pitch) && count($pitch) > 0; $i += PitchPieces()) {
+  $count = count($pitch);
+  $pieces = PitchPieces();
+  $total = 0;
+  $countArr = [];
+  
+  for ($i = 0; $i < $count && $count > 0; $i += $pieces) {
     $cost = CardCost($pitch[$i]);
     if($cost == -1) continue;
     while (count($countArr) <= $cost) array_push($countArr, 0);
-    if ($countArr[$cost] == 0) ++$count;
+    if ($countArr[$cost] == 0) ++$total;
     ++$countArr[$cost];
   }
-  return $count;
+  return $total;
 }
 
 function SearchPitchForCard($playerID, $cardID)
 {
   $pitch = GetPitch($playerID);
-  for ($i = 0; $i < count($pitch); ++$i) {
+  $count = count($pitch);
+  for ($i = 0; $i < $count; ++$i) {
     if ($pitch[$i] == $cardID) return $i;
   }
   return -1;
@@ -653,7 +681,9 @@ function SearchPitchForCard($playerID, $cardID)
 function SearchBanishForCard($playerID, $cardID)
 {
   $banish = GetBanish($playerID);
-  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+  $count = count($banish);
+  $pieces = BanishPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($banish[$i] == $cardID && $banish[$i + 1] != "FACEDOWN") return $i;
   }
   return -1;
@@ -662,7 +692,9 @@ function SearchBanishForCard($playerID, $cardID)
 function SearchBanishForUID($playerID, $UID)
 {
   $banish = GetBanish($playerID);
-  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+  $count = count($banish);
+  $pieces = BanishPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($banish[$i + 2] == $UID && $banish[$i + 1] != "FACEDOWN") return $i;
   }
   return -1;
@@ -671,7 +703,9 @@ function SearchBanishForUID($playerID, $UID)
 function SearchBanishForCardName($playerID, $cardID)
 {
   $banish = GetBanish($playerID);
-  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+  $count = count($banish);
+  $pieces = BanishPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (CardName($banish[$i]) == CardName($cardID)) return $i;
   }
   return -1;
@@ -681,7 +715,8 @@ function SearchBanishForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
 {
   $cardList = "";
   $banish = GetBanish($playerID);
-  for ($i = 0; $i < count($banish); ++$i) {
+  $count = count($banish);
+  for ($i = 0; $i < $count; ++$i) {
     if ($banish[$i] == $card1 || $banish[$i] == $card2 || $banish[$i] == $card3) {
       if ($cardList != "") $cardList .= ",";
       $cardList .= $i;
@@ -694,7 +729,8 @@ function SearchItemsForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
 {
   $cardList = "";
   $items = GetItems($playerID);
-  for ($i = 0; $i < count($items); ++$i) {
+  $count = count($items);
+  for ($i = 0; $i < $count; ++$i) {
     if ($items[$i] == $card1 || $items[$i] == $card2 || $items[$i] == $card3) {
       if ($cardList != "") $cardList .= ",";
       $cardList .= $i;
@@ -707,7 +743,8 @@ function SearchCharacterForCardMulti($playerID, $card1, $card2 = "", $card3 = ""
 {
   $cardList = "";
   $char = GetPlayerCharacter($playerID);
-  for ($i = 0; $i < count($char); ++$i) {
+  $count = count($char);
+  for ($i = 0; $i < $count; ++$i) {
     if (($char[$i] == $card1 || $char[$i] == $card2 || $char[$i] == $card3) && $char[$i + 1] != 0 && $char[$i + 12] != "DOWN") {
       if ($cardList != "") $cardList .= ",";
       $cardList .= $i;
@@ -719,8 +756,10 @@ function SearchCharacterForCardMulti($playerID, $card1, $card2 = "", $card3 = ""
 function SearchHighestAttackDefended()
 {
   global $combatChain, $defPlayer;
+  $count = count($combatChain);
+  $pieces = CombatChainPieces();
   $highest = 0;
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($combatChain[$i + 1] == $defPlayer) {
       $powerValue = ModifiedPowerValue($combatChain[$i], $defPlayer, "CC");
       $powerValue += $combatChain[$i + 5];//Combat chain power modifier
@@ -733,7 +772,9 @@ function SearchHighestAttackDefended()
 function SearchCharacterEffects($player, $index, $effect)
 {
   $effects = &GetCharacterEffects($player);
-  for ($i = 0; $i < count($effects); $i += CharacterEffectPieces()) {
+  $count = count($effects);
+  $pieces = CharacterEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($effects[$i] == $index && $effects[$i + 1] == $effect) return true;
   }
   return false;
@@ -742,8 +783,10 @@ function SearchCharacterEffects($player, $index, $effect)
 function GetArsenalFaceDownIndices($player)
 {
   $arsenal = &GetArsenal($player);
+  $count = count($arsenal);
+  $pieces = ArsenalPieces();
   $indices = "";
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($arsenal[$i + 1] == "DOWN") {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -755,8 +798,10 @@ function GetArsenalFaceDownIndices($player)
 function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatChain = false)
 {
   $character = &GetPlayerCharacter($player);
+  $count = count($character);
+  $pieces = CharacterPieces();
   $indices = "";
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($character[$i + 1] != 0
       && CardType($character[$i]) == "E"
       && (($minBlock == -1 && $maxBlock == -1) || (BlockValue($character[$i]) + $character[$i + 4] <= $maxBlock && BlockValue($character[$i]) >= $minBlock))
@@ -950,8 +995,10 @@ function SearchUniqueIDForCurrentTurnEffects($index)
 function SearchItemsForCard($cardID, $player)
 {
   $items = &GetItems($player);
+  $count = count($items);
+  $pieces = ItemPieces();
   $indices = "";
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($items[$i] == $cardID) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -1010,8 +1057,10 @@ function SearchItemForModalities($modality, $player, $cardID)
 function SearchInventoryForCard($player, $cardID)
 {
   $inventory = &GetInventory($player);
+  $count = count($inventory);
+  $pieces = InventoryPieces();
   $indices = "";
-  for ($i = 0; $i < count($inventory); $i += InventoryPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($inventory[$i] == $cardID) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -1033,21 +1082,25 @@ function CountAura($cardID, $player)
 {
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return 0;
   $auras = &GetAuras($player);
-  $count = 0;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i] == $cardID) ++$count;
+  $count = count($auras);
+  $pieces = AuraPieces();
+  $total = 0;
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($auras[$i] == $cardID) ++$total;
   }
-  return $count;
+  return $total;
 }
 
 function CountAuraPowerCounters($player)
 {
   $auras = &GetAuras($player);
-  $count = 0;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if ($auras[$i + 3] > 0) $count += $auras[$i + 3];
+  $count = count($auras);
+  $pieces = AuraPieces();
+  $total = 0;
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($auras[$i + 3] > 0) $total += $auras[$i + 3];
   }
-  return $count;
+  return $total;
 }
 
 function GetItemIndex($cardID, $player)
@@ -1080,12 +1133,14 @@ function GetCombatChainCardIDIndex($cardID)
 function CountItem($cardID, $player, $NotTokens = true)
 {
   $items = &GetItems($player);
-  $count = 0;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == $cardID) ++$count;
+  $count = count($items);
+  $pieces = ItemPieces();
+  $total = 0;
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($items[$i] == $cardID) ++$total;
   }
-  if ($cardID == "gold" && SearchCharacterForCard($player, "aurum_aegis") && SearchCharacterActive($player, "aurum_aegis") && $NotTokens) ++$count; // Aurum Aegis is considered a Gold object. Rules and effects that specify a “Gold” may refer to Aurum Aegis. Rules and effects that specify a “Gold token” cannot refer to Aurum Aegis.
-  return $count;
+  if ($cardID == "gold" && SearchCharacterForCard($player, "aurum_aegis") && SearchCharacterActive($player, "aurum_aegis") && $NotTokens) ++$total;
+  return $total;
 }
 
 function SearchArsenalReadyCard($player, $cardID)
