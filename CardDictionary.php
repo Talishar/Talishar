@@ -63,7 +63,7 @@ function CardType($cardID, $from="")
 {
   global $CS_AdditionalCosts, $currentPlayer;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "CLOSINGCHAIN", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
-  if (!$cardID || in_array($cardID, $adminCards)) return "";
+  if (!$cardID || isset($adminCards[$cardID])) return "";
 
   // Handle meld cards
   $meldCards = [
@@ -75,7 +75,7 @@ function CardType($cardID, $from="")
     "regrowth__shock_blue"
   ];
 
-  if (in_array($cardID, $meldCards)) {
+  if (isset($meldCards[$cardID])) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
     if (function_exists("GetClassState")) {
       $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
@@ -85,19 +85,8 @@ function CardType($cardID, $from="")
     }
     return "A,I";
   }
-  $set = CardSet($cardID);
-  if ($set != "ROG" && $set != "DUM") {
-    $setID = SetID($cardID);
-    $number = intval(substr($setID, 3));
-    if ($number < 400) return GeneratedCardType($cardID);
-    if ($set != "MON" && $set != "DYN" && $set != "HNT" && $setID != "UPR551" && 
-        $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") {
-      return GeneratedCardType($cardID);
-    }
-  }
-  if ($set == "ROG") return ROGUECardType($cardID);
 
-  // Handle remaining special cases
+  // Handle special cases
   $specialCases = [
     "MON400" => "E",
     "MON401" => "E",
@@ -122,10 +111,29 @@ function CardType($cardID, $from="")
     "summit_the_unforgiving" => "W",
     "graphene_chelicera" => "W,T",
     "valda_seismic_impact" => "C",
-    "polly_cranka" => "Companion"
+    "chum_friendly_first_mate_yellow" => "A",
+    "riggermortis_yellow" => "A",
+    "sawbones_dock_hand_yellow" => "A",
+    "polly_cranka" => "Companion",
+    "treasure_island" => "Macro"
   ];
 
-  return $specialCases[$cardID] ?? "";
+  if (isset($specialCases[$cardID])) {
+    return $specialCases[$cardID];
+  }
+
+  $set = CardSet($cardID);
+  if ($set != "ROG" && $set != "DUM") {
+    $setID = SetID($cardID);
+    $number = intval(substr($setID, 3));
+    if ($number < 400) return GeneratedCardType($cardID);
+    if ($set != "MON" && $set != "DYN" && $set != "HNT" && $setID != "UPR551" && 
+        $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") {
+      return GeneratedCardType($cardID);
+    }
+  }
+  if ($set == "ROG") return ROGUECardType($cardID);
+  return GeneratedCardType($cardID);
 }
 
 function CardTypeExtended($cardID, $from="") // used to handle evos
