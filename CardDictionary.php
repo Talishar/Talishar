@@ -1237,7 +1237,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
-    case "riggermortis_yellow": return "AA";
+    case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
     case "bravo_flattering_showman": return "A";
     default:
       return "";
