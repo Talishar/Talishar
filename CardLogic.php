@@ -2470,7 +2470,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       BanishCardForPlayer("crouching_tiger", $player, "-", "NT");
       break;
     case "civic_steps":
-      PlayAura("quicken", $otherPlayer);
+      PlayAura("quicken", $otherPlayer, effectController:$player);
       break;
     case "crowd_control_red":
     case "crowd_control_yellow":
