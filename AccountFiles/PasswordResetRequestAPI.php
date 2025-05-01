@@ -5,6 +5,7 @@ include_once '../Libraries/HTTPLibraries.php';
 
 SetHeaders();
 
+$response = new stdClass();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
 $userEmail = isset($_POST["email"]) ? $_POST["email"] : null;
@@ -21,7 +22,6 @@ $url = "https://talishar.net/user/login/reset-password?selector=" . $selector . 
 
 $expires = date("U") + 1800;
 
-$response = new stdClass();
 
 // Delete any existing entries.
 $conn = GetDBConnection();

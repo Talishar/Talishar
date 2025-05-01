@@ -736,8 +736,9 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
       break;
   }
   if ($zone == "MYCHAR" && $source[$index + 1] == 0) return;
-  $cardID = $source[$index];
-  $spellVoidAmount = SpellVoidAmount($cardID, $player);
+  if (!isset($source[$index])) WriteLog("Please report this bug to the developers. " . $zone . " " . $index, highlight:true);
+    $cardID = $source[$index];
+    $spellVoidAmount = SpellVoidAmount($cardID, $player);
   if ($spellVoidAmount > 0) {
     if ($zone == "MYCHAR") DestroyCharacter($player, $index);
     else if ($zone == "MYITEMS") DestroyItemForPlayer($player, $index);
