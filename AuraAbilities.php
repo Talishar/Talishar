@@ -1023,14 +1023,15 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
   $auras = &GetAuras($player);
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
+  $preventedDamage = 0;
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    if ($damage <= 0) {
-      $damage = 0;
+    if ($preventedDamage == $damage) {
+      $preventedDamage = $damage;
       break;
     }
     switch ($auras[$i]) {
       case "zen_state":
-        if ($preventable) $damage -= 1;
+        if ($preventable) $preventedDamage += 1;
         break;
       case "runeblood_barrier_yellow":
         if ($auras[$i + 1] == 2) {
@@ -1043,7 +1044,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
             }
             if ($numRunchants > 1) WriteLog($numRunchants . " " . CardLink("runechant", "runechant") . "s were destroyed");
             else WriteLog($numRunchants . " " . CardLink("runechant", "runechant") . " was destroyed");
-            if ($preventable) $damage -= $numRunchants;
+            if ($preventable) $preventedDamage += $numRunchants;
           } else {
             for ($j = 0; $j < $damage; $j++) {
               $index = SearchAurasForIndex("runechant", $player);
@@ -1051,23 +1052,28 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
             }
             if ($damage > 1) WriteLog($damage . " " . CardLink("runechant", "runechant") . "s were destroyed");
             else WriteLog($damage . " " . CardLink("runechant", "runechant") . " was destroyed");
-            if ($preventable) $damage -= $damage;
+            if ($preventable) $preventedDamage += $damage;
           }
         }
         break;
       case "pyroglyphic_protection_red":
-        if ($type == "ARCANE" && $preventable) $damage -= 3;
+        if ($type == "ARCANE" && $preventable) $preventedDamage += 3;
         break;
       case "pyroglyphic_protection_yellow":
-        if ($type == "ARCANE" && $preventable) $damage -= 2;
+        if ($type == "ARCANE" && $preventable) $preventedDamage += 2;
         break;
       case "pyroglyphic_protection_blue":
-        if ($type == "ARCANE" && $preventable) $damage -= 1;
+        if ($type == "ARCANE" && $preventable) $preventedDamage += 1;
         break;
       default:
         break;
     }
   }
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
+  }
+  $damage -= $preventedDamage;
   return $damage;
 }
 
