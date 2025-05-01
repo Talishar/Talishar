@@ -2510,7 +2510,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) return true;
       //check for blocking AAs
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        WriteLog("HERE: " . $combatChain[$i]);
         if ($combatChain[$i+1] == $defPlayer && TypeContains($combatChain[$i], "AA")) return false;
       }
       return true; 
