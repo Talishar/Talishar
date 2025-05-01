@@ -2506,7 +2506,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "moonshot_yellow":
       return GetClassState($player, $CS_NumBoosted) <= 0;
     case "shriek_razors":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) return true;
+      //check for blocking AAs
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        WriteLog("HERE: " . $combatChain[$i]);
+        if ($combatChain[$i+1] == $defPlayer && TypeContains($combatChain[$i], "AA")) return false;
+      }
+      return true; 
     case "evo_command_center_yellow_equip":
     case "evo_engine_room_yellow_equip":
     case "evo_smoothbore_yellow_equip":
