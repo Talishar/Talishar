@@ -1521,7 +1521,10 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
-    if ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType != "E") return false;
+    if ($phase == "B") {
+      if ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType != "E") return false;
+    }
+    elseif ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType == "DR") return false;
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
   }
