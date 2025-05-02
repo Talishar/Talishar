@@ -187,6 +187,7 @@
   {
     global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock, $CS_DamagePrevention;
+    global $layers;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
     switch($cardID)
@@ -364,13 +365,27 @@
         $allTargets = explode(",", $target);
         $numDestroyed = 0;
         for ($i = 1; $i < count($allTargets); $i++) {
-          $index = -1;
-          for ($j = 0; $j < count($auras); $j += AuraPieces()) {
-            if ($auras[$j + 6] == $allTargets[$i]) $index = $j;
+          if (substr($allTargets[$i], 0, 5) == "LAYER") {
+            $index = -1;
+            $uid = substr($allTargets[$i], 5);
+            for ($j = 0; $j < count($layers); $j += LayerPieces()) {
+              if ($layers[$j + 6] == $uid) $index = $j;
+            }
+            if ($index != -1) {
+              WriteLog(CardLink($cardID, $cardID) . " destroyed " . CardLink($layers[$index], $layers[$index]) . " while it was on the stack!");
+              NegateLayer("LAYER-$index");
+              ++$numDestroyed;
+            }
           }
-          if ($index != -1) {
-            DestroyAura($targetPlayer, $index);
-            ++$numDestroyed;
+          else {
+            $index = -1;
+            for ($j = 0; $j < count($auras); $j += AuraPieces()) {
+              if ($auras[$j + 6] == $allTargets[$i]) $index = $j;
+            }
+            if ($index != -1) {
+              DestroyAura($targetPlayer, $index);
+              ++$numDestroyed;
+            }
           }
         }
         DealArcane($numDestroyed, source:"scour_blue", type:"PLAYCARD", resolvedTarget:$damageTarget);

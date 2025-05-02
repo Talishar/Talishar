@@ -287,7 +287,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SCOURINDICES":
       $targPlayer = explode("|", $parameter)[0];
       $currentTargets = explode(",", explode("|", $parameter)[1]);
-      $search = "$targPlayer:maxCost=0";
+      $search = "$targPlayer:maxCost=0&LAYER:subtype=Aura;maxCost=0";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
       //remove any choices that have already been targetted
@@ -1545,9 +1545,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $prefix = "MY";
           }
           foreach (array_slice($allTargets, 1) as $targ) {
+            $zone = explode("-", $targ)[0];
             $index = intval(explode("-", $targ)[1]);
-            $target .= "," . $auras[$index + 6];
-            $cleanTarget .= ",{$prefix}AURASUID-" . $auras[$index + 6];
+            if ($zone == "LAYER") {
+              $target .= ",LAYER" . $layers[$index + 6];
+              $cleanTarget .= ",LAYERUID-" . $layers[$index + 6];
+            }
+            else {
+              $target .= "," . $auras[$index + 6];
+              $cleanTarget .= ",{$prefix}AURASUID-" . $auras[$index + 6];
+            }
           }
           break;
         case "flick_knives":
