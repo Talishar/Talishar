@@ -4,13 +4,13 @@
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
   global $turn, $EffectContext, $CS_NumGoldCreated;
-  if ($number == 0) return; // there's no event in this case
   $otherPlayer = ($player == 1 ? 2 : 1);
   if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
   if (TypeContains($item, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
+  if ($number <= 0) return; // there's no event in this case
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($item);
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
