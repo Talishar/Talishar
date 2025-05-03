@@ -1209,8 +1209,10 @@ function FinalizeChainLink($chainClosed = false)
     $triggerName = CardLink($triggerCard, $triggerCard);
     WriteLog("<b>$triggerName may trigger when the chain breaks. Break the chain if you want to do a Non-Attack Action!</b>");
   }
-  PrependLayer("RESOLUTIONSTEP", $mainPlayer, "-");
-  MakeGamestateBackup();
+  if (!$chainClosed) {
+    PrependLayer("RESOLUTIONSTEP", $mainPlayer, "-");
+    MakeGamestateBackup();
+  }
 }
 
 function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
