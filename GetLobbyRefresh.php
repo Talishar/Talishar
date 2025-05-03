@@ -44,7 +44,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   SetCachePiece($gameName, $playerID + 1, $currentTime);
   ++$count;
   if ($count == 100) break;
-  $otherP = ($playerID == 1 ? 2 : 1);
+  $otherP = $playerID == 1 ? 2 : 1;
   $oppLastTime = GetCachePiece($gameName, $otherP + 1);
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 

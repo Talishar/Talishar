@@ -5,7 +5,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState;
   global $roguelikeGameID, $CS_SkipAllRunechants;
-  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
     case 1:
@@ -185,7 +185,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 15: // Their Banish
       $index = $cardID;
-      $otherPlayer = ($playerID == 1 ? 2 : 1);
+      $otherPlayer = $playerID == 1 ? 2 : 1;
       $theirBanish = &GetBanish($otherPlayer);
       $theirChar = &GetPlayerCharacter($otherPlayer);
       if ($index < 0 || $index >= count($theirBanish)) {
@@ -394,7 +394,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 29: //CHOOSETOPOPPONENT
       if ($turn[0] == "CHOOSETOPOPPONENT") {
-        $otherPlayer = ($playerID == 1 ? 2 : 1);
+        $otherPlayer = $playerID == 1 ? 2 : 1;
         $options = explode(",", $turn[2]);
         $found = -1;
         for ($i = 0; $i < count($options); ++$i) {
@@ -673,7 +673,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100000: //Quick Rematch
       if ($isSimulation) return;
       if ($turn[0] != "OVER") break;
-      $otherPlayer = ($playerID == 1 ? 2 : 1);
+      $otherPlayer = $playerID == 1 ? 2 : 1;
       $char = &GetPlayerCharacter($otherPlayer);
       if (!IsPlayerAI($otherPlayer)) {
         AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Quick Rematch</b>?");
@@ -687,7 +687,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100001: //Main Menu
       if ($isSimulation) return;
-      header("Location: " . $redirectPath . "/MainMenu.php");
+      header("Location: {$redirectPath}/MainMenu.php");
       exit;
     case 100002: //Concede
       if ($isSimulation) return;
@@ -703,7 +703,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100004: //Full Rematch
       if ($isSimulation) return;
       if ($turn[0] != "OVER") break;
-      $otherPlayer = ($playerID == 1 ? 2 : 1);
+      $otherPlayer = $playerID == 1 ? 2 : 1;
       AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Rematch</b>?");
       AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
       ProcessDecisionQueue();
@@ -713,7 +713,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($currentPlayerActivity == 2) {
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
-        $otherPlayer = ($playerID == 1 ? 2 : 1);
+        $otherPlayer = $playerID == 1 ? 2 : 1;
         if (!IsGameOver()) PlayerLoseHealth($otherPlayer, GetHealth($otherPlayer));
         WriteLog("🚩The opponent forfeit due to inactivity.");
       }
@@ -734,7 +734,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100011: //Resume adventure (roguelike)
       if ($roguelikeGameID == "") break;
-      header("Location: " . $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1));
+      header("Location: {$redirectPath}/Roguelike/ContinueAdventure.php?gameName={$roguelikeGameID}&playerID=1&health=" . GetHealth(1));
       break;
     case 100012: //Create Replay
       if (!file_exists("./Games/" . $gameName . "/origGamestate.txt")) {
@@ -1356,7 +1356,7 @@ function PassTurn()
     BuildMainPlayerGameState();
   }
   $MainHand = GetHand($mainPlayer);
-  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  $otherPlayer = $playerID == 1 ? 2 : 1;
   if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
     if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
       $currentPlayer = $mainPlayer;
@@ -1417,7 +1417,7 @@ function FinalizeTurn()
   $defResources[0] = 0;
   $defResources[1] = 0;
   $lastPlayed = [];
-  // 4.4.3e The turn player draws cards until the number of cards in their hand is equal to their hero’s intellect
+  // 4.4.3e The turn player draws cards until the number of cards in their hand is equal to their hero's intellect
   if ($mainPlayer == $firstPlayer && $currentTurn == 1)//Defender draws up on turn 1
   {
     $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);

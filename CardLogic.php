@@ -1454,7 +1454,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
 function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 {
   global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $player, count($layers) <= LayerPieces())) {
     WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
     return true;
@@ -1508,9 +1508,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($additionalCosts == "ONHITEFFECT") {
-    ProcessHitEffect($parameter, $combatChain[2], $uniqueID, target:$target);
+    if(isset($combatChain) && count($combatChain) > 2) {
+      ProcessHitEffect($parameter, $combatChain[2], $uniqueID, target:$target);
+    }
     return;
   }
   if ($additionalCosts == "CRUSHEFFECT") {
@@ -1522,9 +1524,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     return;
   }
   if ($additionalCosts == "EFFECTHITEFFECT") {
-    if (EffectHitEffect($target, $combatChain[2], $uniqueID)) {
-      $index = FindCurrentTurnEffectIndex($player, $target);
-      if ($index != -1) RemoveCurrentTurnEffect($index);
+    if(isset($combatChain) && count($combatChain) > 2) {
+      if (EffectHitEffect($target, $combatChain[2], $uniqueID)) {
+        $index = FindCurrentTurnEffectIndex($player, $target);
+        if ($index != -1) RemoveCurrentTurnEffect($index);
+      }
     }
     return;
   }
@@ -2089,7 +2093,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $numRed = 0;
         for ($j = 0; $j < count($cards); ++$j) if (PitchValue($cards[$j]) == 1) ++$numRed;
         if ($numRed > 0) {
-          $otherPlayer = ($player == 1 ? 2 : 1);
+          $otherPlayer = $player == 1 ? 2 : 1;
           AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
           AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
           AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
@@ -2101,7 +2105,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $deck = new Deck($player);
       if ($deck->Reveal(1)) {
         if (PitchValue($deck->Top()) == 1) {
-          $otherPlayer = ($player == 1 ? 2 : 1);
+          $otherPlayer = $player == 1 ? 2 : 1;
           AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
@@ -2861,7 +2865,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "blast_to_oblivion_red":
     case "blast_to_oblivion_yellow":
     case "blast_to_oblivion_blue":
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $targetedPlayer = intval(explode("-", $target)[0]);
       $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
       $uID = explode("-", $target)[1];

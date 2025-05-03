@@ -690,7 +690,7 @@ function OUTAbilityCost($cardID)
 
   function CodexOfFrailty($player)
   {
-    $otherPlayer = ($player == 1 ? 2 : 1);
+    $otherPlayer = $player == 1 ? 2 : 1;
     $conditionPlayerMet = false;
     $conditionOtherPlayerMet = false;
     if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
@@ -863,13 +863,13 @@ function OUTAbilityCost($cardID)
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
     if($char[1] == 2 && $characterID == "riptide_lurker_of_the_deep" || $characterID == "riptide")
     {
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID, $cardID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
     }
   }
 
   function LookAtTopCard($player, $source, $showHand=false, $setPlayer="-")
   {
-    $otherPlayer = ($player == 1 ? 2 : 1);
+    $otherPlayer = $player == 1 ? 2 : 1;
     if ($setPlayer == "-") {
       AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
       AddDecisionQueue("SETDQVAR", $player, "1");

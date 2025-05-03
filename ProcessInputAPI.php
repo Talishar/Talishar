@@ -13,7 +13,7 @@ include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
-require_once("Libraries/CoreLibraries.php");
+require_once "Libraries/CoreLibraries.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
@@ -23,9 +23,9 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 
 //We should always have a player ID as a URL parameter
 // Check if the "gameName" key exists in the $_POST array
-$gameName = isset($_POST["gameName"]) ? $_POST["gameName"] : null;
+$gameName = $_POST["gameName"] ?? null;ProcessInput.php
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  echo "Invalid game name.";
   exit;
 }
 $playerID = $_POST["playerID"];
@@ -56,12 +56,12 @@ if (!IsReplay()) {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
   if ($playerID != 3 && $authKey != $targetAuth) exit;
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;;
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
-    exit;;
+    exit;
   }
 }
 
@@ -224,4 +224,4 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
 
-exit;;
+exit;

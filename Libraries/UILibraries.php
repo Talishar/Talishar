@@ -65,7 +65,7 @@ function JSONRenderedCard(
 ) {
   global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
-  $otherPlayer = ($playerID == 1 ? 2 : 1);
+  $otherPlayer = $playerID == 1 ? 2 : 1;
 
   $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
   if($counters != NULL) $countersMap->counters = $counters;

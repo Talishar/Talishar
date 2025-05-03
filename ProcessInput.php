@@ -21,7 +21,7 @@ include_once "APIKeys/APIKeys.php";
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  echo "Invalid game name.";
   exit;
 }
 $playerID = $_GET["playerID"];
@@ -51,7 +51,7 @@ SetHeaders();
 $numPass = 0;
 if(IsReplay() && $mode == 99)
 {
-  $filename = "./Games/" . $gameName . "/replayCommands.txt";
+  $filename = "./Games/$gameName/replayCommands.txt";
   $file = file($filename);
   $line = $file[0];
   unset($file[0]);
@@ -98,12 +98,12 @@ if(!IsReplay()) {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
   if ($playerID != 3 && $authKey != $targetAuth) { echo("Invalid auth key"); exit; }
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;;
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
-    exit;;
+    exit;
   }
 }
 
@@ -113,7 +113,7 @@ $animations = [];
 $events = [];//Clear events each time so it's only updated ones that get sent
 
 if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
-  $commandFile = fopen("./Games/" . $gameName . "/commandfile.txt", "a");
+  $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
   fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
 }
@@ -123,11 +123,11 @@ ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, fals
 
 ProcessMacros();
 if ($inGameStatus == $GameStatus_Rematch) {
-  $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
-  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
-  $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
-  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
   include "MenuFiles/ParseGamefile.php";
+  $origDeck = "./Games/{$gameName}/p1DeckOrig.txt";
+  if (file_exists($origDeck)) copy($origDeck, "./Games/{$gameName}/p1Deck.txt");
+  $origDeck = "./Games/{$gameName}/p2DeckOrig.txt";
+  if (file_exists($origDeck)) copy($origDeck, "./Games/{$gameName}/p2Deck.txt");
   include "MenuFiles/WriteGamefile.php";
   $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   SetCachePiece($gameName, 14, $gameStatus);
@@ -178,4 +178,4 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
 
-exit;;
+exit;

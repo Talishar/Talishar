@@ -41,7 +41,7 @@ if ($authKey != $targetAuth) {
 if ($action == "Go First") {
   $firstPlayer = $playerID;
 } else {
-  $firstPlayer = ($playerID == 1 ? 2 : 1);
+  $firstPlayer = $playerID == 1 ? 2 : 1;
 }
 WriteLog("Player " . $firstPlayer . " will go first.", path: "../");
 $gameStatus = $MGS_P2Sideboard;

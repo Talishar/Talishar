@@ -27,7 +27,7 @@ if ($playerToBan != "") {
 if ($ipToBan != "") {
   $gameName = $ipToBan;
   include './MenuFiles/ParseGamefile.php';
-  $ipToBan = ($playerNumberToBan == "1" ? $hostIP : $joinerIP);
+  $ipToBan = $playerNumberToBan == "1" ? $hostIP : $joinerIP;
   file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
 }
 

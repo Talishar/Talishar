@@ -4,7 +4,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
 {
   global $CombatChain, $chainLinks;
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
@@ -66,7 +66,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
 function MZRemove($player, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; --$i) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
@@ -134,7 +134,7 @@ function MZRemove($player, $lastResult)
 function MZDiscard($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $params = explode(",", $parameter);
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
@@ -150,7 +150,7 @@ function MZDiscard($player, $parameter, $lastResult)
 function MZReveal($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
@@ -164,7 +164,7 @@ function MZReveal($player, $parameter, $lastResult)
 function MZAddZone($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $params = explode(",", $parameter);
   $deckIndexModifier = 0;
   if (str_contains($params[0], "-")) {
@@ -242,7 +242,7 @@ function MZUndestroy($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
@@ -260,7 +260,7 @@ function MZBanish($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
@@ -298,7 +298,7 @@ function MZGainControl($player, $target)
 function MZBounce($player, $lastResult, $allArsenal = true)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
@@ -326,7 +326,7 @@ function MZBounce($player, $lastResult, $allArsenal = true)
 function MZBottom($player, $lastResult, $allArsenal = true)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     switch ($mzIndex[0]) {
@@ -335,7 +335,7 @@ function MZBottom($player, $lastResult, $allArsenal = true)
         $cardID = $auras[$mzIndex[1]];
         $lastResult = RemoveAura($player, $mzIndex[1]);
         if (DelimStringContains(CardSubType($cardID), "Affliction")) {
-          $player = ($player == 1 ? 2 : 1);
+          $player = $player == 1 ? 2 : 1;
         }
         AddBottomDeck($cardID, $player, "-");
         break;
@@ -437,7 +437,7 @@ function GetMZCard($player, $MZIndex)
 {
   $params = explode("-", $MZIndex);
   if (count($params) < 2) return "";
-  if (substr($params[0], 0, 5) == "THEIR") $player = ($player == 1 ? 2 : 1);
+  if (substr($params[0], 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
   if (isset($zoneDS[$index]) && ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD")) $index += 2;

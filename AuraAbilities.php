@@ -3,12 +3,12 @@
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
-    $player = ($player == 1 ? 2 : 1);
+    $player = $player == 1 ? 2 : 1;
   }
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
@@ -152,7 +152,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
   $uniqueIDIndex = $auraConstants[1];
   $cardID = $auras[$index];
   $uniqueID = $auras[$index + $uniqueIDIndex];
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($cardID) {
     case "ironsong_pride_red":
       $char = &GetPlayerCharacter($player);

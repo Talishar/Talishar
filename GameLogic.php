@@ -1228,7 +1228,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $damage;
     case "TAKEDAMAGE":
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $params = explode("-", $parameter);
       $damage = intval($params[0]);
       $source = (count($params) > 1 ? $params[1] : "-");
@@ -1588,7 +1588,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         default:
           $targetArr = explode("-", $lastResult);
-          $otherPlayer = ($player == 1 ? 2 : 1);
+          $otherPlayer = $player == 1 ? 2 : 1;
           if ($targetArr[0] == "LAYER") $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
           if ($targetArr[0] == "THEIRDISCARD") {
             $discard = GetDiscard($otherPlayer);
@@ -2026,7 +2026,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TRANSFORMHERO":
       return ResolveTransformHero($player, $parameter, $lastResult);
     case "AFTERTHAW":
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $params = explode("-", $lastResult);
       if ($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
       else if($params[0] == "MYCHAR") DestroyAura($player, $params[1], "", "EQUIP");
@@ -2034,15 +2034,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
-      if ($params[0] == "THEIRALLY") {
-        $allies = &GetAllies($otherPlayer);
-        WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen ally");
-        if ($allies[$params[1] + 8] == "1") DestroyAlly($otherPlayer, $params[1], uniqueID: $allies[$params[1] + 5]);
-      } else {
-        DestroyFrozenArsenal($otherPlayer);
-        WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen arsenal card");
-        break;
+      $otherPlayer = $player == 1 ? 2 : 1;
+      switch ($params[0]) {
+        case "THEIRALLY":
+          $allies = &GetAllies($otherPlayer);
+          WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen ally");
+          if ($allies[$params[1] + 8] == "1") {
+            DestroyAlly($otherPlayer, $params[1], uniqueID: $allies[$params[1] + 5]);
+          }
+          break;
+        default:
+          DestroyFrozenArsenal($otherPlayer);
+          WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen arsenal card");
+          break;
       }
       return $lastResult;
     case "STARTGAME":
@@ -2056,7 +2060,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       SetCachePiece($gameName, 3, $currentTime);
       ClearGameFiles($gameName);
       include "MenuFiles/ParseGamefile.php";
-      header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
+      header("Location: $redirectPath/Start.php?gameName=$gameName&playerID=$playerID");
       exit;
     case "REMATCH":
       global $GameStatus_Rematch, $inGameStatus;
@@ -2086,7 +2090,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZADDCOUNTERANDEFFECT":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $params = explode(",", $parameter);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
@@ -2104,7 +2108,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZADDCOUNTER":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $params = explode(",", $parameter);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
@@ -2147,7 +2151,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZREMOVECOUNTER":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $params = explode(",", $parameter);
       $removedSteamCounterCount = 0;
       for ($i = count($lastResultArr) - 1; $i >= 0; --$i) {
@@ -2504,7 +2508,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "CHANGESHIYANA":
-      $otherPlayer = ($player == 1 ? 2 : 1);
+      $otherPlayer = $player == 1 ? 2 : 1;
       $otherChar = GetPlayerCharacter($otherPlayer);
       if ($lastResult != "shiyana_diamond_gemini" && !IsPlayerAI($player)) {
         $lifeDifference = GeneratedCharacterHealth("shiyana_diamond_gemini") - GeneratedCharacterHealth($otherChar[0]);

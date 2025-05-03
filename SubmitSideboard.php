@@ -41,12 +41,12 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
   }
   if ($numHands < 1) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $numHands . " weapon currently equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
     exit;
   }
   if ($numHands > 2) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $numHands . " weapons currently equipped.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
     exit;
   }
 
@@ -54,12 +54,12 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
   $deckCount = count($playerDeck);
   if ($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc")) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
     exit;
   }
   if ($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz")) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
-    header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+    header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
     exit;
   }
 
@@ -88,7 +88,7 @@ WriteGameFile();
 GamestateUpdated($gameName);
 
 if ($gameStarted == 1) {
-  header("Location: " . $redirectPath . "/Start.php?gameName=$gameName&playerID=$playerID");
+  header("Location: {$redirectPath}/Start.php?gameName={$gameName}&playerID={$playerID}");
 } else {
-  header("Location: " . $redirectPath . "/GameLobby.php?gameName=$gameName&playerID=$playerID");
+  header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
 }
