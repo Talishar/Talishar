@@ -80,10 +80,15 @@ if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
       break;
   }
 }
-
-if ($format == "precon") {
-  $decklink = "https://fabrary.net/decks/01JRH0631MH5A9JPVGTP3TKJXN"; //test with maxx
-}
+$preconDecklinks = [
+  "https://fabrary.net/decks/01JRH0631MH5A9JPVGTP3TKJXN", //maxx
+  "https://fabrary.net/decks/01JN2DEG4X2V8DVMCWFBWQTTSC", //aurora
+  "https://fabrary.net/decks/01JCPPENK52DTRBJZMWQF8S0X2", //jarl
+  "https://fabrary.net/decks/01J9822H5PANJAFQVMC4TPK4Z1", //dio
+  "https://fabrary.net/decks/01J3GKKSTM773CW7BG3RRJ5FJH", //azalea
+  "https://fabrary.net/decks/01J202NH0RG8S0V8WXH1FWB2AH", //boltyn
+  "https://fabrary.net/decks/01HWNCK2BYPVKK6701052YYXMZ", //kayo
+];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
@@ -321,6 +326,12 @@ if ($decklink != "") {
 
   if ($totalCards > 80  && ($format == "cc" || $format == "compcc")) {
     $response->error = "⚠️ The deck link you have entered has too many cards (" . $totalCards . "). Please double-check your decklist link and try again.";
+    echo (json_encode($response));
+    exit;
+  }
+
+  if ($format == "precon" && !in_array($decklink, $preconDecklinks)) {
+    $response->error = "⚠️ Please use an armory deck from Fabrary";
     echo (json_encode($response));
     exit;
   }

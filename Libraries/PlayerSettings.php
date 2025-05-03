@@ -412,6 +412,7 @@ function FormatCode($format)
     case "clash": return -1;
     case "openformatllcc": return 11;
     case "openformatllblitz": return 12; //Currently not used
+    case "precon": return -2;
     default: return -1;
   }
 }
@@ -434,6 +435,7 @@ function FormatName($formatCode)
     case -1: return "clash";
     case 11: return "openformatllcc";
     case 12: return "openformatllblitz"; //Currently not used
+    case -2: return "precon";
     default: return "-";
   }
 }
