@@ -2564,6 +2564,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return GetClassState($otherPlayer, $CS_NumCardsDrawn) < 2;
     case "graven_call":
       if ($from == "GY") return CountItem("silver", $currentPlayer) < 2; else return false;
+    case "mask_of_recurring_nightmares":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (IsAllyAttackTarget()) return true;
+      return false;
     case "pass_over_blue":
       return count($otherPlayerDiscard) <= 0;
     case "preserve_tradition_blue":
