@@ -682,10 +682,6 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "stasis_cell_blue":
       if ($from == "PLAY") {
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        RemoveItem($currentPlayer, $index);
-        $deck = new Deck($currentPlayer);
-        $deck->AddBottom($cardID, from: "PLAY");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target equipment it cannot defend this turn");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);

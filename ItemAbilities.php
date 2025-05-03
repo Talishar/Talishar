@@ -149,6 +149,11 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
+    case "stasis_cell_blue":
+      RemoveItem($currentPlayer, $index);
+      $deck = new Deck($currentPlayer);
+      $deck->AddBottom($cardID, from: "PLAY");
+      break;
     case "dissolving_shield_red":
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
