@@ -81,6 +81,10 @@ if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
   }
 }
 
+if ($format == "precon") {
+  $decklink = "https://fabrary.net/decks/01JRH0631MH5A9JPVGTP3TKJXN"; //test with maxx
+}
+
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
 if ($deck == "" && !IsDeckLinkValid($decklink)) {
