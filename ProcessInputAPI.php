@@ -23,7 +23,7 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 
 //We should always have a player ID as a URL parameter
 // Check if the "gameName" key exists in the $_POST array
-$gameName = $_POST["gameName"] ?? null;ProcessInput.php
+$gameName = $_POST["gameName"]; // null;ProcessInput.php
 if (!IsGameNameValid($gameName)) {
   echo "Invalid game name.";
   exit;
