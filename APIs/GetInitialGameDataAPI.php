@@ -31,7 +31,7 @@ ob_end_clean();
 
 $response->p1Name = $p1uid;
 $response->p2Name = $p2uid;
-$contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn");
+$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn"];
 $response->p1IsPatron = $p1IsPatron == "" ? false : true;
 $response->p1IsContributor = in_array($response->p1Name, $contributors);
 $response->p2IsPatron = $p2IsPatron == "" ? false : true;
@@ -47,7 +47,7 @@ if(!AltArtsDisabled($playerID))
 {
   foreach(PatreonCampaign::cases() as $campaign) {
     if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
-      $altArts = $campaign->AltArts();
+      $altArts = $campaign->AltArts($playerID);
       $altArts = explode(",", $altArts);
       for($i = 0; $i < count($altArts); ++$i) {
         $arr = explode("=", $altArts[$i]);

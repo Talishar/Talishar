@@ -209,7 +209,7 @@
     }
 
   function VictorAbility($playerID, $cardID, $effectController="") {
-    $otherPlayer = ($playerID == 1 ? 2 : 1);
+    $otherPlayer = $playerID == 1 ? 2 : 1;
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
     if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {

@@ -439,7 +439,7 @@ function PlayRequiresTarget($cardID, $from)
 function GetArcaneTargetIndices($player, $target): string
 {
   global $CS_ArcaneTargetsSelected;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($target == 4) return "MYCHAR-0";
   if ($target != 4 && $target != 5) $rv = "THEIRCHAR-0";
   else $rv = "";

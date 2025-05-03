@@ -72,7 +72,7 @@ while (true) {
   $lastOppStatus = 0;
   if($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 1, $currentTime);
-    $otherP = ($playerID == 1 ? 2 : 1);
+    $otherP = $playerID == 1 ? 2 : 1;
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
     if (($currentTime - $oppLastTime) > 3000 && $oppStatus == 0 && $oppStatus != $lastOppStatus) {

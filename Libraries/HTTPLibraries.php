@@ -29,6 +29,7 @@ function IsDeckLinkValid($deckLink)
 
 function GetGameCounter($path = "./")
 {
+  global $redirectPath;
   $gameIDCounterFile = $path . "HostFiles/GameIDCounter.txt";
 
   if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
@@ -44,7 +45,7 @@ function GetGameCounter($path = "./")
     ++$attemptCount;
   }
   if ($attemptCount == 30) {
-    header("Location: " . $redirectorPath . "MainMenu.php"); //We never actually got the lock
+    header("Location: " . $redirectPath . "MainMenu.php"); //We never actually got the lock
   }
   $counter = intval(fgets($gcFile));
   //$gameName = hash("sha256", $counter);

@@ -4,7 +4,7 @@
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
   global $turn, $EffectContext, $CS_NumGoldCreated;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
   if (TypeContains($item, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
@@ -321,7 +321,7 @@ function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
 function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable = true)
 {
   if ($type != "") {
-    $otherPlayer = ($player == 1 ? 2 : 1);
+    $otherPlayer = $player == 1 ? 2 : 1;
     $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
   }
   $items = &GetItems($player);
@@ -429,7 +429,7 @@ function ItemEndTurnAbilities()
 
 function ItemDamageTakenAbilities($player, $damage)
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $items = &GetItems($otherPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     $remove = false;

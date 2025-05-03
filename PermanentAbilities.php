@@ -4,7 +4,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if(TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);

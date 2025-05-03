@@ -494,7 +494,7 @@ function DamageTrigger($player, $damage, $type, $source = "NA")
 function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
   global $mainPlayer;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
@@ -855,7 +855,7 @@ function LoseHealth($amount, $player)
 function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
   global $mainPlayer, $CS_HealthGained;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
   if ((SearchCurrentTurnEffects("poison_the_well_blue", 1, remove: true) || SearchCurrentTurnEffects("poison_the_well_blue", 2, remove: true)) && $preventable) {
@@ -1194,7 +1194,7 @@ function CombatChainClosedCharacterEffects()
         case "ironhide_gauntlet":
         case "ironhide_legs":
           $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
-          if (SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex);; //Ironhide
+          if (SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex); //Ironhide
           break;
         case "bone_vizier":
           $deck = new Deck($defPlayer);
@@ -1285,12 +1285,12 @@ function NumActionsBlocking()
 function GetCardIDBeforeTransform($cardID)
 {
   $splitCard = explode("_", $cardID);
-  return implode("_", array_slice($splitCard, 0, count($splitCard) - 1));;
+  return implode("_", array_slice($splitCard, 0, count($splitCard) - 1));
 }
 
 function PlayerHasLessHealth($player)
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   return GetHealth($player) < GetHealth($otherPlayer);
 }
 
@@ -1307,7 +1307,7 @@ function GetIndices($count, $add = 0, $pieces = 1)
 function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
 {
   global $CS_DieRoll;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $numRolls = 1 + CountCurrentTurnEffects("ready_to_roll_blue", $player);
   $highRoll = 0;
   for ($i = 0; $i < $numRolls; ++$i) {
@@ -1505,7 +1505,7 @@ function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
   $cardClass = "";
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
   $mainCharacter = &GetPlayerCharacter($player);
 
@@ -2453,7 +2453,7 @@ function IsSpecificAuraAttacking($player, $index)
 
 function CanRevealCards($player)
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "") {
     WriteLog("Reveal prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return false;
@@ -3087,7 +3087,7 @@ function UnityEffect($cardID)
 function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-")
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("talisman_of_tithes_blue", $otherPlayer);
     if ($talismanOfTithes != "") {
@@ -3264,7 +3264,7 @@ function EvoHasUnderCard($player, $index)
 
 function EvoTransformAbility($toCardID, $fromCardID, $player = "")
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($toCardID) {
     case "evo_steel_soul_memory_blue":
     case "evo_steel_soul_memory_blue_equip":

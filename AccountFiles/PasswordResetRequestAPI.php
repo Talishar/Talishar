@@ -11,7 +11,7 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 $userEmail = isset($_POST["email"]) ? $_POST["email"] : null;
 if (empty($userEmail)) {
     $response->error = "Email is required.";
-    echo(json_encode($response));
+    echo json_encode($response);
     exit;
 }
 
@@ -22,14 +22,12 @@ $url = "https://talishar.net/user/login/reset-password?selector=" . $selector . 
 
 $expires = date("U") + 1800;
 
-
-// Delete any existing entries.
 $conn = GetDBConnection();
 $sql = "DELETE FROM pwdReset WHERE pwdResetEmail=?";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   $response->message = "There was an error deleting the old password reset requests.";
-  echo(json_encode($response));
+  echo json_encode($response);
   exit;
 } else {
   mysqli_stmt_bind_param($stmt, "s", $userEmail);
@@ -41,7 +39,7 @@ $sql = "INSERT INTO pwdReset (pwdResetEmail, pwdResetSelector, pwdResetToken, pw
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   $response->message = "There was an error creating the password reset token.";
-  echo(json_encode($response));
+  echo json_encode($response);
   exit;
 } else {
   // Here we also hash the token to make it unreadable, in case a hacker accessess our database.
@@ -56,7 +54,7 @@ mysqli_close($conn);
 SendEmailAPI($userEmail, $url);
 
 $response->message = "Password reset email sent.";
-echo(json_encode($response));
+echo json_encode($response);
 
 exit;
 

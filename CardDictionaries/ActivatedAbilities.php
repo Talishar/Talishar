@@ -119,7 +119,7 @@ function EVOAbilityHasGoAgain($cardID): bool
 
 function DestroyTopCardTarget($player): void
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
   AddDecisionQueue("SETDQVAR", $player, "1");
   if (ShouldAutotargetOpponent($player)) {
@@ -140,7 +140,7 @@ function DestroyTopCardTarget($player): void
 
 function DestroyTopCardOpponent($player): void
 {
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of Player " . $otherPlayer . " deck", 1);
   AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
 }

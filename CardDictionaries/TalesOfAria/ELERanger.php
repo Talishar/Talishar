@@ -280,7 +280,7 @@
         switch($currentTurnEffects[$i]) {
           case "isenhowl_weathervane_red": case "isenhowl_weathervane_yellow": case "isenhowl_weathervane_blue":
             if($element == "ICE") {
-              $otherPlayer = ($player == 1 ? 2 : 1);
+              $otherPlayer = $player == 1 ? 2 : 1;
               AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
               $remove = 1;
             }

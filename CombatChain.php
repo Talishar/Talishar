@@ -1500,6 +1500,10 @@ function CombatChainPayAdditionalCosts($index, $from)
 {
   global $combatChain, $currentPlayer;
   $i = $index * CombatChainPieces();
+  if(!isset($combatChain[$i]))  {
+    //PHP error happening here. Undefined array key 121 in /opt/lampp/htdocs/game/CombatChain.php on line 1503
+    return; 
+  }
   switch($combatChain[$i]) {
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
@@ -1507,7 +1511,7 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "palantir_aeronought_red":
       //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      Tap(explode(",", $inds)[0], $currentPlayer);
+      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
       break;
     default:
       break;

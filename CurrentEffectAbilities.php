@@ -1087,7 +1087,7 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
 function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
 {
   global $currentTurnEffects;
-  $otherPlayer = ($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {

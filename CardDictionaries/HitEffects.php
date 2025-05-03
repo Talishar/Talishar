@@ -145,7 +145,7 @@ function EVOHitEffect($cardID)
 
 function HVYHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $currentTurnEffects;;
+  global $mainPlayer, $defPlayer, $currentTurnEffects;
   switch ($cardID) {
     case "send_packing_yellow":
       for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
