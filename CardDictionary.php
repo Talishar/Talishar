@@ -1618,7 +1618,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   switch ($cardType) {
     case "A":
-      if (ChainBreakTriggerLive() != "" && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
+      if ((ChainBreakTriggerLive() != "" || BlockShortcut($cardID)) && !SearchLayersForPhase("RESOLUTIONSTEP") && !CanPlayAsInstant($cardID, $index, $from)) {
         return false;
       }
       else return $phase == "M";
@@ -1952,6 +1952,15 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     return true;
   }
   return false;
+}
+
+function BlockShortCut($cardID)
+{
+  // these NAAs are a little buggy when played in the resolution step
+  return match ($cardID) {
+    "scour_blue" => true,
+    default => false
+  };
 }
 
 function ChainBreakTriggerLive()
