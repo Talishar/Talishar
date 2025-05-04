@@ -55,16 +55,14 @@ if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 3, "0");
   }
 }
-
-// Cache frequently accessed values
+$count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
 $otherPlayer = $playerID == 1 ? 2 : 1;
 $gameFileExists = file_exists("./Games/$gameName/GameFile.txt");
 
-$count = 0;
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(100000); //100 milliseconds
-  if (!$gameFileExists) break;
+  if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
   if ($isGamePlayer) {
