@@ -111,6 +111,7 @@ if ($handle = opendir($path)) {
         else if($format == "llblitz") $formatName = "Living Legend Blitz";
         else if($format == "openformatllcc") $formatName = "Open Living Legend CC";
         else if($format == "openformatllblitz") $formatName = "Open Living Legend Blitz";
+        else if($format == "precon") $formatName = "Preconstructed Deck";
         $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $openGame->format = $format;
         $openGame->formatName = $formatName;
