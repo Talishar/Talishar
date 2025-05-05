@@ -413,13 +413,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = FindCharacterIndex($player, $combatChain[$parameter]);
       $character[$index + 4] += $lastResult;
       return $lastResult;
-    case "REMOVEDISCARD":
-      $discard = &GetDiscard($player);
-      $cardID = $discard[$lastResult];
-      unset($discard[$lastResult + 1]);
-      unset($discard[$lastResult]);
-      $discard = array_values($discard);
-      return $cardID;
     case "REMOVEMYHAND":
       $hand = &GetHand($player);
       if (isset($hand[$lastResult])) {
@@ -2338,41 +2331,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       RemoveCurrentTurnEffect($effectIndex);
       if ($index == -1) WriteLog("Something went horribly wrong, please submit a bug report");
       return "";
-    case "ROGUEMIRRORGAMESTART":
-      $deck = &GetDeck($player);
-      for ($mirrorAmount = 0; $mirrorAmount < 7; ++$mirrorAmount) {
-        array_unshift($deck, $lastResult);
-      }
-      return $lastResult;
-    case "ROGUEMIRRORTURNSTART":
-      $deck = &GetDeck($player);
-      $hand = &GetHand($player);
-      if (count($deck) > 3) {
-        $optionOne = rand(0, count($deck) - 1);
-        $optionTwo = rand(0, count($deck) - 1);
-        $optionThree = rand(0, count($deck) - 1);
-        if ($optionOne == $optionTwo) {
-          if ($optionOne == 0) ++$optionTwo;
-          else --$optionTwo;
-        }
-        for ($i = 0; $i < 5 && ($optionThree == $optionOne || $optionThree == $optionOne); ++$i) {
-          if ($optionThree <= 4) $optionThree += 3;
-          else --$optionThree;
-        }
-        $deck[$optionOne] = $hand[$lastResult];
-        $deck[$optionTwo] = $hand[$lastResult];
-        $deck[$optionThree] = $hand[$lastResult];
-      } else {
-        for ($deckCount = 0; $deckCount < count($deck); ++$deckCount) {
-          $deck[$deckCount] = $hand[$lastResult];
-        }
-      }
-      return $lastResult;
-    case "ROGUEDECKCARDSTURNSTART":
-      $deck = &GetDeck($player);
-      $hand = &GetHand($player);
-      array_unshift($deck, $hand[$lastResult]);
-      return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
       if ((CardType($params[0]) == "AA" && (GetResolvedAbilityType($params[0], $params[1]) == "") || GetResolvedAbilityType($params[0], $params[1]) == "AA")) GetTargetOfAttack($params[0]);

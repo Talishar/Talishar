@@ -117,13 +117,11 @@ function EncounterAI()
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
-          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(CardIsPlayable($storedPriorityNode, $hand, $resources))
           {
             //Only attempt to play the card if you have excess resources compared to what needs to be saved
-            if($storedPriorityNode[0] != "Hand" || count($hand) > 1 || ResourcesNeededToSave($character[0]) >= ($resources[0] - CardCost($storedPriorityNode[0])))
+            if($storedPriorityNode[0] != "Hand" || count($hand) > 1)
             {
-              //WriteLog("found " . $storedPriorityNode[0]);
               $found = true;
             }
           }
@@ -275,7 +273,7 @@ function EncounterAI()
 function IsEncounterAI($enemyHero)
 {
   global $p2IsAI;
-  return str_contains($enemyHero, "ROGUE") || $p2IsAI == "1";
+  return $p2IsAI == "1";
 }
 
 function ShouldBlock($found, $storedPriorityNode)
@@ -303,34 +301,3 @@ function IsFirstTurn()
   global $mainPlayer, $firstPlayer, $currentTurn;
   return $mainPlayer == $firstPlayer && $currentTurn == 1;
 }
-
-function LogPriorityArray($priorityArray)
-{
-  WriteLog("Priority Array:");
-  for($i = 0; $i < count($priorityArray); ++$i)
-  {
-    WriteLog("[" . $priorityArray[$i][0] . "," . $priorityArray[$i][1] . "," . $priorityArray[$i][2] . "," . $priorityArray[$i][3] . "]");
-  }
-}
-
-function LogHandArray($hand)
-{
-  $rv = "Hand=[";
-  for($i = 0; $i < count($hand); ++$i)
-  {
-    if($i != 0) $rv.=",";
-    $rv.=$hand[$i];
-  }
-  WriteLog($rv . "]");
-}
-
-function ResourcesNeededToSave($aiID)
-{
-  switch($aiID)
-  {
-    case "ROGUE027": return 1;
-    default: return 0;
-  }
-}
-
-?>

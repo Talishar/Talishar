@@ -194,46 +194,6 @@ function CharacterStartTurnAbility($index)
         AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
       }
       break;
-    case "ROGUE015":
-      $hand = &GetHand($mainPlayer);
-      array_unshift($hand, "crouching_tiger");
-      break;
-    case "ROGUE017":
-      $hand = &GetHand($mainPlayer);
-      array_unshift($hand, "gorganian_tome");
-      Draw($mainPlayer);
-      break;
-    case "ROGUE018":
-      AddCurrentTurnEffect("ROGUE018", $mainPlayer);
-      break;
-    case "ROGUE010":
-      PlayAura("runechant", $mainPlayer);
-      PlayAura("runechant", $mainPlayer);
-      break;
-    case "ROGUE021":
-      $hand = &GetHand($mainPlayer);
-      array_unshift($hand, "smash_with_big_tree_red");
-      $resources = &GetResources($mainPlayer);
-      $resources[0] += 2;
-      break;
-    case "ROGUE022":
-      $defBanish = &GetBanish($otherPlayer);
-      $health = &GetHealth($mainPlayer);
-      $totalBD = 0;
-      for ($i = 0; $i < count($defBanish); $i += BanishPieces()) {
-        if (HasBloodDebt($defBanish[$i])) ++$totalBD;
-      }
-      $health += $totalBD;
-      array_push($defBanish, "ghostly_visit_red");
-      array_push($defBanish, "");
-      array_push($defBanish, GetUniqueId());
-      break;
-    case "ROGUE024":
-      AddCurrentTurnEffect("ROGUE024", $otherPlayer);
-      break;
-    case "ROGUE028":
-      PlayAura("spectral_shield", $mainPlayer);
-      break;
     case "victor_goldmane_high_and_mighty":
     case "victor_goldmane":
       if (!SearchCurrentTurnEffects($cardID . "-1", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
@@ -339,9 +299,6 @@ function DefCharacterStartTurnAbilities()
       case "victor_goldmane":
         $character = GetPlayerCharacter($defPlayer);
         if (!SearchCurrentTurnEffects($character[$i] . "-1", $defPlayer) && $character[1] < 3) AddCurrentTurnEffect($character[$i] . "-1", $defPlayer);
-        break;
-      case "ROGUE018":
-        AddCurrentTurnEffect("ROGUE018", $mainPlayer);
         break;
       default:
         break;
@@ -504,9 +461,6 @@ function MainCharacterEndTurnAbilities()
         if ($mainCharacter[$i + 12] != "UP") break;
         --$mainCharacter[$i + 4];
         break;
-      case "ROGUE018":
-        PlayAura("embodiment_of_earth", $mainPlayer);
-        break;
       default:
         break;
     }
@@ -623,24 +577,6 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
       case "blood_splattered_vest":
         if ((SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer)) && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
-        }
-        break;
-      case "ROGUE016":
-        if (CardType($attackID) == "AA") {
-          $deck = &GetDeck($mainPlayer);
-          array_unshift($deck, "searing_shot_red");
-        }
-        break;
-      case "ROGUE024":
-        if (IsHeroAttackTarget()) {
-          $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
-          DamageTrigger($otherPlayer, 1, "ATTACKHIT");
-        }
-        break;
-      case "ROGUE028":
-        if (IsHeroAttackTarget()) {
-          PlayAura("spectral_shield", $mainPlayer);
-          PlayAura("spectral_shield", $mainPlayer);
         }
         break;
       default:
@@ -1339,30 +1275,6 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
   return $damage > 0 ? $damage : 0;
 }
 
-function CharacterDamageTakenAbilities($player, $damage)
-{
-  $char = &GetPlayerCharacter($player);
-  for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
-    if ($char[$i + 1] != 2) continue;
-    switch ($char[$i]) {
-      case "ROGUE015":
-        $hand = &GetHand($player);
-        for ($j = 0; $j < $damage; ++$j) {
-          $randomNimb = rand(1, 3);
-          if ($randomNimb == 1) array_unshift($hand, "nimblism_red");
-          else if ($randomNimb == 2) array_unshift($hand, "nimblism_yellow");
-          else array_unshift($hand, "nimblism_blue");
-        }
-        break;
-      case "ROGUE019":
-        PlayAura("zen_state", $player, 4, false, true);
-        break;
-      default:
-        break;
-    }
-  }
-}
-
 function CharacterAttackDestroyedAbilities($attackID)
 {
   global $mainPlayer;
@@ -1410,37 +1322,14 @@ function CharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "ira_crimson_haze":
-      case "ROGUE008":
       case "ira_scarlet_revenger":
         if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
         }
         break;
-      case "ROGUE025":
-        $resources = &GetResources($currentPlayer);
-        ++$resources[0];
-        break;
-      case "melody_sing_along"://Melody, Sing-Along
+      case "melody_sing_along":
         if (SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("copper", $currentPlayer);
-        break;
-      default:
-        break;
-    }
-  }
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  for ($i = 0; $i < count($otherCharacter); $i += CharacterPieces()) {
-    $characterID = $otherCharacter[$i];
-    switch ($characterID) {
-      case "ROGUE026":
-        if (CardType($cardID) != "W" && CardType($cardID) != "E") {
-          $generatedAmount = CardCost($cardID, $from);
-          if ($generatedAmount < 1) $generatedAmount = 1;
-          for ($j = 0; $j < $generatedAmount; ++$j) {
-            PutItemIntoPlayForPlayer("gold", $currentPlayer, effectController: $currentPlayer);
-          }
-        }
         break;
       default:
         break;
@@ -1526,36 +1415,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
-      case "ROGUE017":
-        if (CardType($cardID) == "AA") {
-          $deck = &GetDeck($currentPlayer);
-          array_unshift($deck, $cardID);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        }
-        break;
-      case "ROGUE003":
-        if (CardType($cardID) == "AA") {
-          $deck = &GetDeck($currentPlayer);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        }
-        break;
-      case "ROGUE019":
-        if ($cardID == "soulbead_strike_red" || $cardID == "soulbead_strike_yellow" || $cardID == "soulbead_strike_blue") {
-          $choices = array("crane_dance_red", "crane_dance_yellow", "crane_dance_blue");
-          $hand = &GetHand($currentPlayer);
-          array_unshift($hand, $choices[rand(0, count($choices) - 1)]);
-        } else if ($cardID == "crane_dance_red" || $cardID == "crane_dance_yellow" || $cardID == "crane_dance_blue") {
-          $choices = array("find_center_blue", "herons_flight_red");
-          $hand = &GetHand($currentPlayer);
-          array_unshift($hand, $choices[rand(0, count($choices) - 1)]);
-        }
-        break;
-      case "ROGUE031":
-        global $actionPoints;
-        if (CardTalent($cardID) == "LIGHTNING") {
-          $actionPoints++;
-        }
-        break;
       default:
         break;
     }
@@ -1565,32 +1424,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
-      default:
-        break;
-    }
-  }
-}
-
-function CharacterDealDamageAbilities($player, $damage)
-{
-  $char = &GetPlayerCharacter($player);
-  for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
-    if ($char[$i + 1] != 2) continue;
-    switch ($char[$i]) {
-      case "ROGUE023":
-        if ($damage >= 4) {
-          PlayAura("towering_titan_blue", $player, 1, false, true);
-        }
-        break;
-      case "ROGUE029":
-        for ($j = count($char) - CharacterPieces(); $j >= 0; $j -= CharacterPieces()) {
-          if ($char[$j] == "merciless_battleaxe") $indexCounter = $j + 3;
-        }
-        $char[$indexCounter] += 1;
-        if ($damage >= 4) {
-          $char[$indexCounter] = $char[$indexCounter] * 2;
-        }
-        break;
       default:
         break;
     }

@@ -532,7 +532,6 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "EVO") return EVOEffectPowerModifier($cardID);
   else if ($set == "HVY") return HVYEffectPowerModifier($cardID);
   else if ($set == "MST") return MSTEffectPowerModifier($cardID);
-  else if ($set == "ROG") return ROGUEEffectPowerModifier($cardID);
   else if ($set == "AAZ") return AAZEffectPowerModifier($cardID);
   else if ($set == "TER") return TEREffectPowerModifier($cardID);
   else if ($set == "AUR") return AUREffectPowerModifier($cardID);
@@ -997,14 +996,6 @@ function CurrentEffectCostModifiers($cardID, $from)
           if (SubtypeContains($cardID, "Dagger", $currentPlayer)) {
             $costModifier -= 1;
           }
-          break;
-        case "ROGUE803":
-          if (IsStaticType(CardType($cardID), $from, $cardID)) {
-            $costModifier -= 1;
-          }
-          break;
-        case "ROGUE024":
-          $costModifier += 1;
           break;
         case "solar_plexus":
           if (PitchValue($cardID) == 2) $costModifier -= 1;
@@ -1693,8 +1684,6 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "shadowrealm_horror_red-2":
           return true;
-        case "ROGUE710-GA":
-          return true;
         case "flight_path":
           return true;
         case "arc_lightning_yellow-GOAGAIN":
@@ -1895,7 +1884,6 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "EVO") return EVOCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "HVY") return HVYCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "MST") return MSTCombatEffectActive($cardID, $cardToCheck);
-  else if ($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AAZ") return AAZCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "TER") return TERCombatEffectActive($cardID);
   else if ($set == "AUR") return AURCombatEffectActive($cardID, $cardToCheck);
@@ -2111,27 +2099,6 @@ function IsCombatEffectPersistent($cardID)
     case "war_cry_of_bellona_yellow-DMG":
       return true;
     case "fist_pump":
-      return true;
-    //Roguelike
-    case "ROGUE018":
-    case "ROGUE601":
-    case "ROGUE702":
-    case "ROGUE704":
-    case "ROGUE707":
-      return true;
-    case "ROGUE603":
-    case "ROGUE612":
-    case "ROGUE613":
-    case "ROGUE614":
-    case "ROGUE615":
-    case "ROGUE616":
-      return true;
-    case "ROGUE710-GA":
-    case "ROGUE710-DO":
-    case "ROGUE711":
-    case "ROGUE802":
-    case "ROGUE805":
-    case "ROGUE806":
       return true;
     default:
       return false;

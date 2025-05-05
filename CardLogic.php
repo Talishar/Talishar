@@ -281,7 +281,7 @@ function IsDecisionQueueActive()
 
 function ProcessDecisionQueue()
 {
-  global $turn, $decisionQueue, $dqState;
+  global $turn, $dqState;
   if ($dqState[0] != "1") {
     if (count($turn) < 3) $turn[2] = "-";
     $dqState[0] = "1"; //If the decision queue is currently active/processing
