@@ -9,18 +9,17 @@ include_once "Assets/patreon-php-master/src/PatreonDictionary.php";
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  echo "Invalid game name.";
   exit;
 }
 $playerID = TryGet("playerID", 3);
 $lastUpdate = TryGet("lastUpdate", 0);
 $authKey = TryGet("authKey", 0);
 
-if(!file_exists("./Games/" . $gameName . "/")) { header('HTTP/1.0 403 Forbidden'); exit; }
+if(!file_exists("./Games/$gameName/")) { header('HTTP/1.0 403 Forbidden'); exit; }
 
 if($lastUpdate == "NaN") $lastUpdate = 0;
 if ($lastUpdate > 10000000) $lastUpdate = 0;
-
 
 include "WriteLog.php";
 include "HostFiles/Redirector.php";
@@ -62,9 +61,9 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+$targetAuth = $playerID == 1 ? $p1Key : $p2Key;
 if ($authKey != $targetAuth) {
-  echo ("Invalid Auth Key");
+  echo "Invalid Auth Key";
   exit;
 }
 
@@ -75,8 +74,8 @@ if ($kickPlayerTwo) {
   {
     WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
   }
-  if (file_exists("./Games/" . $gameName . "/p2Deck.txt")) unlink("./Games/" . $gameName . "/p2Deck.txt");
-  if (file_exists("./Games/" . $gameName . "/p2DeckOrig.txt")) unlink("./Games/" . $gameName . "/p2DeckOrig.txt");
+  if (file_exists("./Games/$gameName/p2Deck.txt")) unlink("./Games/$gameName/p2Deck.txt");
+  if (file_exists("./Games/$gameName/p2DeckOrig.txt")) unlink("./Games/$gameName/p2DeckOrig.txt");
   $gameStatus = $MGS_Initial;
   SetCachePiece($gameName, 14, $gameStatus);
   $p2SideboardSubmitted = "0";

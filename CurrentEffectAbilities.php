@@ -2306,7 +2306,6 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);

@@ -8,17 +8,17 @@ include "Libraries/SHMOPLibraries.php";
 session_start();
 
 if (!isset($_SESSION["useruid"])) {
-  echo("Please login to view this page.");
+  echo "Please login to view this page.";
   exit;
 }
 $useruid = $_SESSION["useruid"];
 if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "bavverst" && $useruid != "Star_Seraph" && $useruid != "Tower" && $useruid != "PvtVoid") {
-  echo("You must log in to use this page.");
+  echo "You must log in to use this page.";
   exit;
 }
 
 $gameToken = TryGET("gameToClose", "");
-$folder = "./Games/" . $gameToken;
+$folder = "./Games/$gameToken";
 
 deleteDirectory($folder);
 DeleteCache($gameToken);
@@ -43,7 +43,7 @@ function deleteDirectory($dir)
     if ($item == '.' || $item == '..') {
       continue;
     }
-    if (!deleteDirectory($dir . "/" . $item)) {
+    if (!deleteDirectory("$dir/$item")) {
       return false;
     }
   }

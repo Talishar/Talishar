@@ -143,22 +143,18 @@ function AllyStartTurnAbilities($player)
 
 function AllyEnduranceCounters($cardID)
 {
-  switch ($cardID) {
-    case "yendurai":
-      return 1;
-    default:
-      return 0;
-  }
+  return match ($cardID) {
+    "yendurai" => 1,
+    default => 0,
+  };
 }
 
 function AllySteamCounters($cardID)
 {
-  switch ($cardID) {
-    case "polly_cranka_ally":
-      return 1;
-    default:
-      return 0;
-  }
+  return match ($cardID) {
+    "polly_cranka_ally" => 1,
+    default => 0,
+  };
 }
 
 function AllyDamagePrevention($player, $index, $damage, $type = "")

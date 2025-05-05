@@ -104,19 +104,16 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
 
 function CharacterCounters($cardID)
 {
-  switch ($cardID) {
-    case "nitro_mechanoida":
-      return 8;
-    default:
-      return 0;
-  }
+  return match ($cardID) {
+    "nitro_mechanoida" => 8,
+    default => 0,
+  };
 }
 
 //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
 function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
   $char = &GetPlayerCharacter($player);
-  $type = "-";
   $remove = false;
   $preventedDamage = 0;
   if ($damage > 0 && HasWard($char[$index], $player)) {
@@ -140,7 +137,6 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer, $CS_TunicTicks;
-  $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $char = new Character($mainPlayer, $index);
   $character = GetPlayerCharacter($mainPlayer);
   if ($char->status != 2) return;
@@ -278,7 +274,7 @@ function DefCharacterStartTurnAbilities()
       case "silver_palms":
         if (PlayerHasLessHealth($mainPlayer)) {
           AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_".CardLink("silver","silver").".", 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_" . CardLink("silver", "silver") . ".", 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $defPlayer, "silver", 1);
@@ -489,9 +485,9 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
         break;
       case "mask_of_momentum":
         $count = CountCurrentTurnEffects($characterID, $mainPlayer);
-        if($mainCharacter[$i + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
-          AddCurrentTurnEffect("mask_of_momentum", $mainPlayer); 
-        } 
+        if ($mainCharacter[$i + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
+          AddCurrentTurnEffect("mask_of_momentum", $mainPlayer);
+        }
         if ($isAA && HitsInRow() >= 2) {
           while (SearchCurrentTurnEffects($characterID, $mainPlayer, true));
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
@@ -570,7 +566,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
       case "fang":
         if ($mainCharacter[$i+1] < 3) {
           if (IsHeroAttackTarget() && CheckMarked($targetPlayer)) {
-            AddLayer("TRIGGER", $mainPlayer, $characterID,$damageSource, "MAINCHARHITEFFECT");
+            AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
           }
         }
         break;
@@ -638,7 +634,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
         break;
       case "arakni_marionette":
       case "arakni_web_of_deceit":
-        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+        $otherPlayer = $mainPlayer == 1 ? 2 : 1;
         if (HasStealth($CombatChain->CurrentAttack()) && CheckMarked($otherPlayer) && IsHeroAttackTarget()) {
           $modifier += 1;
           array_push($powerModifiers, $characterID);
@@ -714,8 +710,7 @@ function CharacterCostModifier($cardID, $from, $cost)
   $char = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     if ($char[$i + 1] >= 3 || $char[$i + 1] == 0) continue;
-    if (CardType($char[$i]) == "C") $thisChar = ShiyanaCharacter($char[$i]);
-    else $thisChar = $char[$i];
+    $thisChar = (CardType($char[$i]) == "C") ? ShiyanaCharacter($char[$i]) : $char[$i];
     switch ($thisChar) {
       case "kassai_cintari_sellsword":
         if (CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1) --$modifier;
@@ -755,7 +750,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         $fealties = SearchAurasForCardName("Fealty", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
         break;
-       default:
+      default:
         break;
     }
   }
@@ -859,7 +854,7 @@ function EquipWeapon($player, $card, $source = "-")
   $numHands = NumOccupiedHands($player);
   $uniqueID = GetUniqueId($card, $player);
   //check if you have enough hands to equip it
-  if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
+  if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)) {
     //Replace the first destroyed weapon; if none you can't re-equip
     for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
       if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {

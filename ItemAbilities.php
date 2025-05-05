@@ -3,7 +3,7 @@
 
 function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
-  global $turn, $EffectContext, $CS_NumGoldCreated;
+  global $EffectContext, $CS_NumGoldCreated;
   $otherPlayer = $player == 1 ? 2 : 1;
   if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
   if (TypeContains($item, "T", $player)) $isToken = true;
@@ -42,7 +42,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     $hero = ShiyanaCharacter($char[0], $player);
     IncrementClassState($player, $CS_NumGoldCreated);
     UndestroyHook($player);
-    if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
+    if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects("$hero-1", $player, true) && $effectController == $player) {
       $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
@@ -62,22 +62,18 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
 
 function ItemUses($cardID)
 {
-  switch ($cardID) {
-    case "micro_processor_blue":
-      return 3;
-    default:
-      return 1;
-  }
+  return match ($cardID) {
+    "micro_processor_blue" => 3,
+    default => 1,
+  };
 }
 
 function ItemModalities($cardID)
 {
-  switch ($cardID) {
-    case 'micro_processor_blue':
-      return "Opt,Draw_then_top_deck,Banish_top_deck";
-    default:
-      return "-";
-  }
+  return match ($cardID) {
+    'micro_processor_blue' => "Opt,Draw_then_top_deck,Banish_top_deck",
+    default => "-",
+  };
 }
 
 function PayItemAbilityAdditionalCosts($cardID, $from)
@@ -141,11 +137,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "fuel_injector_blue":
     case "medkit_blue":
     case "steam_canister_blue":
-      if (substr($items[$index + 9], 0, 5) != "THEIR") {
-        $deck = new Deck($currentPlayer);
-      } else {
-        $deck = new Deck($otherPlayer);
-      }
+      $deck = (substr($items[$index + 9], 0, 5) != "THEIR") ? new Deck($currentPlayer) : new Deck($otherPlayer);
       RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
@@ -189,7 +181,7 @@ function ItemPlayAbilities($cardID, $from)
           AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
           AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "THEIRDISCARD:isSameName=", 1);
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
+          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-,$currentPlayer", 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           $remove = true;
         }
@@ -211,8 +203,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   $items = &GetItems($player);
   if (!$skipDestroy) {
-    if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
-    else $destPlayer = $player;
+    $destPlayer = (str_contains($items[$index + 9], "THEIR")) ? $player == 1 ? 2 : 1 : $player;
     if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
       AddGraveyard($items[$index], $destPlayer, "PLAY");
     IncrementClassState($player, $CS_NumItemsDestroyed);
@@ -260,7 +251,7 @@ function GetItemGemState($player, $cardID)
 {
   global $currentPlayer;
   $items = &GetItems($player);
-  $offset = ($currentPlayer == $player ? 5 : 6);
+  $offset = $currentPlayer == $player ? 5 : 6;
   $state = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if ($items[$i] == $cardID && $items[$i + $offset] > $state) $state = $items[$i + $offset];
@@ -473,7 +464,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       }
     }
   }
-  if(SearchCurrentTurnEffects("master_cog_yellow-".$item, $playerID, true)) $counters += 1;
+  if(SearchCurrentTurnEffects("master_cog_yellow-$item", $playerID, true)) $counters += 1;
   return $counters;
 }
 

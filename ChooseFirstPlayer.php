@@ -24,11 +24,7 @@ if ($authKey != $targetAuth) {
   exit;
 }
 
-if ($action == "Go First") {
-  $firstPlayer = $playerID;
-} else {
-  $firstPlayer = $playerID == 1 ? 2 : 1;
-}
+$firstPlayer = ($action == "Go First") ? $playerID : $playerID == 1 ? 2 : 1;
 WriteLog("Player $firstPlayer will go first.");
 $gameStatus = $MGS_P2Sideboard;
 SetCachePiece($gameName, 14, $gameStatus);
