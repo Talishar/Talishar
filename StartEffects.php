@@ -158,7 +158,7 @@ function handleCharacterStartAbilities()
   }
 }
 
-function handleCogwerxEquipment($p1Char, $p2Char)
+function handleCogwerxEquipment(&$p1Char, &$p2Char)
 {
   $equipment = ["cogwerx_base_head", "cogwerx_base_chest", "cogwerx_base_arms", "cogwerx_base_legs"];
   foreach ($equipment as $cardID) {
@@ -178,10 +178,10 @@ function GameSetup()
   AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-");
 }
 
-function EquipWithSteamCounter($cardID, $p1Char, $p2Char)
+function EquipWithSteamCounter($cardID, &$p1Char, &$p2Char)
 {
-  if (($index = FindCharacterIndex(1, $cardID)) > 0) $p1Char[$index + 2] += 1;
-  if (($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index + 2] += 1;
+  if (($index = FindCharacterIndex(1, $cardID)) >= 0) $p1Char[$index + 2] += 1;
+  if (($index = FindCharacterIndex(2, $cardID)) >= 0) $p2Char[$index + 2] += 1;
 }
 
 function InventoryStartGameAbilities($player)
