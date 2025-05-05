@@ -34,7 +34,6 @@ include "CardDictionaries/ClassicBattles/RVDShared.php";
 include "CardDictionaries/Dynasty/DYNShared.php";
 include "CardDictionaries/Outsiders/OUTShared.php";
 include "CardDictionaries/DuskTillDawn/DTDShared.php";
-include "CardDictionaries/Roguelike/ROGUEShared.php";
 include "CardDictionaries/FirstStrike/AURShared.php";
 include "CardDictionaries/FirstStrike/TERShared.php";
 include "CardDictionaries/PartTheMistveil/MSTShared.php";
@@ -123,7 +122,7 @@ function CardType($cardID, $from="")
   }
 
   $set = CardSet($cardID);
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400) return GeneratedCardType($cardID);
@@ -132,7 +131,6 @@ function CardType($cardID, $from="")
       return GeneratedCardType($cardID);
     }
   }
-  if ($set == "ROG") return ROGUECardType($cardID);
   return GeneratedCardType($cardID);
 }
 
@@ -270,7 +268,7 @@ function CardSubType($cardID, $uniqueID = -1)
     return "";
   }
   $set = CardSet($cardID);
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     $setID = SetID($cardID);
 
     $number = intval(substr($setID, 3));
@@ -279,7 +277,6 @@ function CardSubType($cardID, $uniqueID = -1)
       $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "nitro_mechanoidc" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb" && $set != "MST")
       return GeneratedCardSubtype($cardID);
   }
-  if ($set == "ROG") return ROGUECardSubtype($cardID);
   switch ($cardID) {
     case "MON400":
       return "Chest";
@@ -339,62 +336,10 @@ function CharacterHealth($cardID)
       break;
   }
   $set = CardSet($cardID);
-  if ($set != "ROG" && $set != "DUM") return GeneratedCharacterHealth($cardID);
+  if ($set != "DUM") return GeneratedCharacterHealth($cardID);
   switch ($cardID) {
     case "DUMMY":
       return 9999;
-    case "ROGUE001":
-      return 6;
-    case "ROGUE003":
-      return 8;
-    case "ROGUE004":
-      return 14;
-    case "ROGUE008":
-      return 20;
-    case "ROGUE006":
-      return 14;
-    case "ROGUE009":
-      return 10;
-    case "ROGUE010":
-      return 14;
-    case "ROGUE013":
-      return 14;
-    case "ROGUE014":
-      return 6;
-    case "ROGUE015":
-      return 13;
-    case "ROGUE016":
-      return 8;
-    case "ROGUE017":
-      return 20;
-    case "ROGUE018":
-      return 10;
-    case "ROGUE019":
-      return 18;
-    case "ROGUE020":
-      return 6;
-    case "ROGUE021":
-      return 8;
-    case "ROGUE022":
-      return 10;
-    case "ROGUE023":
-      return 12;
-    case "ROGUE024":
-      return 15;
-    case "ROGUE025":
-      return 20;
-    case "ROGUE026":
-      return 99;
-    case "ROGUE027":
-      return 6;
-    case "ROGUE028":
-      return 14;
-    case "ROGUE029":
-      return 16;
-    case "ROGUE030":
-      return 14;
-    case "ROGUE031":
-      return 16;
     default:
       return 20;
   }
@@ -408,58 +353,6 @@ function CharacterIntellect($cardID)
       return 3;
     case "teklovossen_the_mechropotent":
       return 3;
-    case "ROGUE001":
-      return 3;
-    case "ROGUE003":
-      return 3;
-    case "ROGUE004":
-      return 3;
-    case "ROGUE008":
-      return 4;
-    case "ROGUE006":
-      return 3;
-    case "ROGUE009":
-      return 3;
-    case "ROGUE010":
-      return 4;
-    case "ROGUE013":
-      return 4;
-    case "ROGUE014":
-      return 3;
-    case "ROGUE015":
-      return 0;
-    case "ROGUE016":
-      return 3;
-    case "ROGUE017":
-      return 0;
-    case "ROGUE018":
-      return 4;
-    case "ROGUE019":
-      return 1;
-    case "ROGUE020":
-      return 3;
-    case "ROGUE021":
-      return 1;
-    case "ROGUE022":
-      return 3;
-    case "ROGUE023":
-      return 3;
-    case "ROGUE024":
-      return 3;
-    case "ROGUE025":
-      return 4;
-    case "ROGUE026":
-      return 3;
-    case "ROGUE027":
-      return 3;
-    case "ROGUE028":
-      return 4;
-    case "ROGUE029":
-      return 4;
-    case "ROGUE030":
-      return 4;
-    case "ROGUE031":
-      return 4;
     default:
       return 4;
   }
@@ -468,7 +361,6 @@ function CharacterIntellect($cardID)
 function CardSet($cardID)
 {
   if (!$cardID) return "";
-  if (substr($cardID, 0, 3) == "ROG") return "ROG";
   if (substr($cardID, 0, 3) == "DUM") return "DUM";
   switch ($cardID) {
     case "kunai_of_retribution_r"://these cards are from promo packs, this is needed to find their code
@@ -597,7 +489,6 @@ function CardTalent($cardID, $from="-")
   }
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
-  if ($set == "ROG") return ROGUECardTalent($cardID);
   $number = intval(substr($setID, 3));
   if ($number >= 400) {
     switch ($set) {
@@ -692,10 +583,9 @@ function CardCost($cardID, $from="-")
     default:
       break;
   }
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     return GeneratedCardCost($cardID);
   }
-  if ($set == "ROG") return ROGUECardCost($cardID);
 }
 
 function AbilityCost($cardID)
@@ -734,7 +624,6 @@ function AbilityCost($cardID)
   else if ($set == "HVY") return HVYAbilityCost($cardID);
   else if ($set == "AKO") return AKOAbilityCost($cardID);
   else if ($set == "MST") return MSTAbilityCost($cardID);
-  else if ($set == "ROG") return ROGUEAbilityCost($cardID);
   else if ($set == "ROS") return ROSAbilityCost($cardID);
   else if ($set == "TER") return TERAbilityCost($cardID);
   else if ($set == "AIO") return AIOAbilityCost($cardID);
@@ -850,10 +739,9 @@ function PitchValue($cardID)
         break;
     }
   }
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     return GeneratedPitchValue($cardID);
   }
-  if ($set == "ROG") return ROGUEPitchValue($cardID);
 }
 
 function BlockValue($cardID)
@@ -875,12 +763,11 @@ function BlockValue($cardID)
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($defPlayer) * 2;
   if ($cardID == "fractal_replication_red") return FractalReplicationStats("Block");
   if ($cardID == "arcanite_fortress") return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")) return GeneratedBlockValue($cardID);
   }
-  if ($set == "ROG") return ROGUEBlockValue($cardID);
   switch ($cardID) {
     case "MON400":
     case "MON401":
@@ -962,13 +849,12 @@ function PowerValue($cardID, $index=-1, $base=false)
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($mainPlayer) * 2;
   else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Power");
   else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $currentPlayer);
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN"))
     return GeneratedPowerValue($cardID);
   }
-  if ($set == "ROG") return ROGUEPowerValue($cardID);
   switch ($cardID) {
     case "nitro_mechanoida":
       return 5;
@@ -1177,9 +1063,7 @@ function HasGoAgain($cardID): bool|int
     case "performance_bonus_blue":
       return false;
   }
-  $set = CardSet($cardID);
-  if ($set == "ROG") return ROGUEHasGoAgain($cardID);
-  else return GeneratedGoAgain($cardID);
+  return GeneratedGoAgain($cardID);
 }
 
 function TriggerTargets($cardID)
@@ -1222,7 +1106,6 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AKO") return AKOAbilityType($cardID, $index, $from);
   else if ($set == "MST") return MSTAbilityType($cardID, $index, $from);
   else if ($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
-  else if ($set == "ROG") return ROGUEAbilityType($cardID, $index);
   else if ($set == "ROS") return ROSAbilityType($cardID);
   else if ($set == "ASB") return ASBAbilityType($cardID, $index);
   else if ($set == "TER") return TERAbilityType($cardID);
@@ -1375,7 +1258,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "war_cry_of_bellona_yellow":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
-      $hasRaydn = false;//CardNameContains($combatChain[0], "Raydn", $mainPlayer, true);
+      $hasRaydn = false;
       $char = GetPlayerCharacter($currentPlayer);
       for ($i = 0; $i < count($char); $i += CharacterPieces()) {
         if (CardNameContains($char[$i], "Raydn", $currentPlayer)) $hasRaydn = true;
@@ -2471,7 +2354,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && count($hand) == 0;
     case "resounding_courage_red":
     case "resounding_courage_yellow":
-    case "resounding_courage_blue"://Resounding Courage
+    case "resounding_courage_blue":
       return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || !TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $mainPlayer);
     case "radiant_view":
     case "radiant_raiment":
@@ -2499,9 +2382,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "symbiosis_shot":
       return $character[$index + 2] <= 0;
     case "maxx_the_hype_nitro":
-    case "maxx_nitro": //Maxx Nitro
+    case "maxx_nitro": 
     case "teklovossen_esteemed_magnate":
-    case "teklovossen": //Teklovossen
+    case "teklovossen": 
       return $character[5] == 0;
     case "cogwerx_base_head":
     case "cogwerx_base_chest":
@@ -3109,7 +2992,7 @@ function HasBladeBreak($cardID)
     case "peg_leg":
       return true;
     case "vambrace_of_determination":
-      return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
+      return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
     case "heirloom_of_tiger_hide":
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
@@ -3473,7 +3356,6 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "HVY") return HVYAbilityHasGoAgain($cardID);
   else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
   else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
-  else if ($set == "ROG") return ROGUEAbilityHasGoAgain($cardID);
   else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
   else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
   else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
@@ -3568,7 +3450,6 @@ function DoesEffectGrantDominate($cardID): bool
     case "valda_seismic_impact":
     case "rise_up_red":
     case "buckle_blue":
-    case "ROGUE710-DO":
     case "figment_of_tenacity_yellow":
     case "metis_archangel_of_tenacity":
     case "crumble_to_eternity_blue":
@@ -4720,11 +4601,8 @@ function Rarity($cardID)
     case "qi_unleashed_blue": // Commoner workaround. Can be deleted later when the database is updated.
       return "C";
   }
-  if ($set != "ROG" && $set != "DUM") {
+  if ($set != "DUM") {
     return GeneratedRarity($cardID);
-  }
-  if ($set == "ROG") {
-    return ROGUERarity($cardID);
   }
 }
 

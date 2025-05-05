@@ -532,7 +532,6 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "EVO") return EVOEffectPowerModifier($cardID);
   else if ($set == "HVY") return HVYEffectPowerModifier($cardID);
   else if ($set == "MST") return MSTEffectPowerModifier($cardID);
-  else if ($set == "ROG") return ROGUEEffectPowerModifier($cardID);
   else if ($set == "AAZ") return AAZEffectPowerModifier($cardID);
   else if ($set == "TER") return TEREffectPowerModifier($cardID);
   else if ($set == "AUR") return AUREffectPowerModifier($cardID);
@@ -649,45 +648,45 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "mask_of_momentum":
       case "high_speed_impact_red":
       case "high_speed_impact_yellow":
-      case "high_speed_impact_blue": //High Speed Impact
+      case "high_speed_impact_blue": 
       case "combustible_courier_red":
       case "combustible_courier_yellow":
-      case "combustible_courier_blue": // Combustible Courier
-      case "v_of_the_vanguard_yellow": //V of the Vanguard
-      case "exude_confidence_red": //Exude Confidence
+      case "combustible_courier_blue":
+      case "v_of_the_vanguard_yellow":
+      case "exude_confidence_red":
       case "explosive_growth_red":
       case "explosive_growth_yellow":
-      case "explosive_growth_blue": //Explosive Growth
+      case "explosive_growth_blue":
       case "ball_lightning_red":
       case "ball_lightning_yellow":
-      case "ball_lightning_blue": //Ball Lightning
-      case "spreading_flames_red": //Spreading Flames
+      case "ball_lightning_blue":
+      case "spreading_flames_red":
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":
-      case "brand_with_cinderclaw_blue": //Brand with Cinderclaw
+      case "brand_with_cinderclaw_blue":
       case "scramble_pulse_red":
       case "scramble_pulse_yellow":
-      case "scramble_pulse_blue": //Scramble Pulse
+      case "scramble_pulse_blue": 
       case "prowl_red":
       case "prowl_yellow":
-      case "prowl_blue": //Prowl
-      case "head_leads_the_tail_red": //Head Leads the Tail
+      case "prowl_blue": 
+      case "head_leads_the_tail_red": 
       case "deadly_duo_red":
       case "deadly_duo_yellow":
-      case "deadly_duo_blue": //Deadly Duo
-      case "spirit_of_war_red"://Spirit of War
+      case "deadly_duo_blue": 
+      case "spirit_of_war_red":
       case "growl_red":
-      case "growl_yellow"://Growl
-      case "coercive_tendency_blue"://Coercive Tendency
-      case "tiger_taming_khakkara": //Tiger Taming
-      case "chase_the_tail_red"://Chase the Tail
+      case "growl_yellow":
+      case "coercive_tendency_blue":
+      case "tiger_taming_khakkara":
+      case "chase_the_tail_red":
       case "untamed_red":
       case "untamed_yellow":
-      case "untamed_blue": //Untamed
-      case "stonewall_gauntlet": //Stonewall Gauntlet
+      case "untamed_blue": 
+      case "stonewall_gauntlet": 
       case "water_the_seeds_red":
       case "water_the_seeds_yellow":
-      case "water_the_seeds_blue": //Water the Seeds
+      case "water_the_seeds_blue": 
       case "wrath_of_retribution_red":
       case "fire_tenet_strike_first_red":
       case "poisoned_blade_red":
@@ -997,14 +996,6 @@ function CurrentEffectCostModifiers($cardID, $from)
           if (SubtypeContains($cardID, "Dagger", $currentPlayer)) {
             $costModifier -= 1;
           }
-          break;
-        case "ROGUE803":
-          if (IsStaticType(CardType($cardID), $from, $cardID)) {
-            $costModifier -= 1;
-          }
-          break;
-        case "ROGUE024":
-          $costModifier += 1;
           break;
         case "solar_plexus":
           if (PitchValue($cardID) == 2) $costModifier -= 1;
@@ -1693,8 +1684,6 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "shadowrealm_horror_red-2":
           return true;
-        case "ROGUE710-GA":
-          return true;
         case "flight_path":
           return true;
         case "arc_lightning_yellow-GOAGAIN":
@@ -1895,7 +1884,6 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "EVO") return EVOCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "HVY") return HVYCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "MST") return MSTCombatEffectActive($cardID, $cardToCheck);
-  else if ($set == "ROG") return ROGUECombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AAZ") return AAZCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "TER") return TERCombatEffectActive($cardID);
   else if ($set == "AUR") return AURCombatEffectActive($cardID, $cardToCheck);
@@ -2035,13 +2023,13 @@ function IsCombatEffectPersistent($cardID)
     case "figment_of_triumph_yellow":
       return true;
     case "beckoning_light_red":
-      return true;//Beckoning Light
+      return true;
     case "spirit_of_war_red":
-      return true;//Spirit of War
+      return true;
     case "blood_dripping_frenzy_blue":
       return true;
     case "call_down_the_lightning_yellow":
-      return true;//Call Down the Lightning
+      return true;
     case "chorus_of_ironsong_yellow":
       return true;
     case "hack_to_reality_yellow-HIT":
@@ -2111,27 +2099,6 @@ function IsCombatEffectPersistent($cardID)
     case "war_cry_of_bellona_yellow-DMG":
       return true;
     case "fist_pump":
-      return true;
-    //Roguelike
-    case "ROGUE018":
-    case "ROGUE601":
-    case "ROGUE702":
-    case "ROGUE704":
-    case "ROGUE707":
-      return true;
-    case "ROGUE603":
-    case "ROGUE612":
-    case "ROGUE613":
-    case "ROGUE614":
-    case "ROGUE615":
-    case "ROGUE616":
-      return true;
-    case "ROGUE710-GA":
-    case "ROGUE710-DO":
-    case "ROGUE711":
-    case "ROGUE802":
-    case "ROGUE805":
-    case "ROGUE806":
       return true;
     default:
       return false;

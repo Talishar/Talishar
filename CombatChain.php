@@ -461,7 +461,6 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
-  if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("ROGUE802", $defPlayer);
   if ($cardType == "E") {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       switch ($currentTurnEffects[$i]) {
@@ -582,7 +581,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "territorial_domain_blue":
       if (GetClassState($defPlayer, $CS_NumCrouchingTigerCreatedThisTurn) > 0) $blockModifier += 3;
       break;
-    case "helm_of_lignum_vitae": //helm of lignum vitae
+    case "helm_of_lignum_vitae":
       if (SearchCount(SearchBanish($defPlayer, talent: "EARTH")) >= 4) $blockModifier += 1;
       break;
     case "heavy_industry_surveillance":
@@ -776,7 +775,6 @@ function OnBlockResolveEffects($cardID = "")
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if (SearchCurrentTurnEffects("ROGUE802", $defPlayer) && CardType($combatChain[$i]) == "AA") CombatChainPowerModifier($i, 1);
     $effectPowerModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
     if ($effectPowerModifier != 0) CombatChainPowerModifier($i, $effectPowerModifier);
     $auraPowerModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
@@ -1147,7 +1145,6 @@ function OnBlockEffects($index, $from)
           if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
           $splitCard = explode("_", $chainCard->ID());
           if ($splitCard[count($splitCard) - 1] == "equip") {
-            // TODO, check for bugs here
             $id = implode("_", array_splice($splitCard, 0, count($splitCard) - 1));
             if (CardType($id) != $cardType) $chainCard->ModifyDefense(-1);
           }

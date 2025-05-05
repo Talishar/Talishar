@@ -24,14 +24,9 @@ function CardName($cardID)
     $arr = str_split($setID, 3);
     if(count($arr) < 2) return "";
     $set = $arr[0];
-    if($set != "ROG" && $set != "DUM")
+    if($set != "DUM")
     {
       return GeneratedCardName($cardID);
-      // $number = intval(substr($setID, 3));
-      // if($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb" && $cardID != "levia_redeemed")) return GeneratedCardName($cardID);
-    }
-    if ($set == "ROG") {
-      return ROGUEName($cardID);
     }
     switch($cardID)
     {

@@ -21,9 +21,10 @@ if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 // Initialize game log
 $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
+if (!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
 if (file_exists($fullLog)) {
   $handler = fopen($fullLog, "w+");
-  fwrite($handler, "Player $firstPlayer is the first player and will begin play" . "\r\n");
+  fwrite($handler, "Player $firstPlayer is the first player and will begin play\r\n");
   fclose($handler);
 }
 
@@ -38,20 +39,6 @@ $MakeStartGameBackup = false;
 
 if (IsPlayerAI($currentPlayer)) {
   SetCachePiece($gameName, 3, "99999999999999");
-}
-
-// Handle roguelike gamemode powers
-if (CardSet($p2Char[0]) == "ROG") {
-  $deck = &GetDeck(1);
-  $powers = SearchDeck(1, "", "Power");
-  if (strlen($powers) != 0) {
-    $powersArray = explode(",", $powers);
-    for ($i = count($powersArray) - 1; $i >= 0; --$i) {
-      PutPermanentIntoPlay(1, $deck[$powersArray[$i]]);
-      array_splice($deck, $powersArray[$i], 1);
-    }
-  }
-  ROGUEPowerStart();
 }
 
 //Dummy - Single Player
@@ -72,9 +59,6 @@ InventoryStartGameAbilities(2);
 // Handle Cogwerx equipment
 handleCogwerxEquipment($p1Char, $p2Char);
 
-// Handle special character cases
-//handleRogueCharacter();
-
 //Aria Sanctuary for Rosseta Limited
 /* if($format == "draft"){
   AddDecisionQueue("PASSPARAMETER", 1, "sanctuary_of_aria");
@@ -87,14 +71,14 @@ handleCogwerxEquipment($p1Char, $p2Char);
 GameSetup();
 
 ProcessDecisionQueue();
-CombatDummyAI();
+CombatDummyAI(); //Only does anything if applicable
 DoGamestateUpdate();
 include "WriteGamestate.php";
 
 if ($MakeStartTurnBackup) MakeStartTurnBackup();
 if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
-function handleCharacterStartAbilities(): void
+function handleCharacterStartAbilities()
 {
   global $p1Char, $p2Char, $format;
 
@@ -174,7 +158,7 @@ function handleCharacterStartAbilities(): void
   }
 }
 
-function handleCogwerxEquipment(array &$p1Char, array &$p2Char): void
+function handleCogwerxEquipment($p1Char, $p2Char)
 {
   $equipment = ["cogwerx_base_head", "cogwerx_base_chest", "cogwerx_base_arms", "cogwerx_base_legs"];
   foreach ($equipment as $cardID) {
@@ -182,28 +166,7 @@ function handleCogwerxEquipment(array &$p1Char, array &$p2Char): void
   }
 }
 
-// function handleRogueCharacter()
-// {
-//   global $p2Char;
-
-//   // Quickshot Apprentice
-//   if ($p2Char[0] == "ROGUE016") {
-//     $p2Hand = &GetHand(2);
-//     array_unshift($p2Hand, "searing_shot_red");
-//   }
-//   if ($p2Char[0] == "ROGUE025") {
-//     $options = ["ROGUE801", "ROGUE803", "ROGUE805"];
-//     PutPermanentIntoPlay(0, $options[array_rand($options)]);
-//   }
-
-//   if ($p2Char[0] == "ROGUE008") {
-//     PutPermanentIntoPlay(0, "ROGUE601");
-//     PutPermanentIntoPlay(0, "ROGUE603");
-//     PutPermanentIntoPlay(0, "ROGUE803");
-//   }
-// }
-
-function GameSetup(): void
+function GameSetup()
 {
   global $mainPlayer;
 
@@ -215,13 +178,13 @@ function GameSetup(): void
   AddDecisionQueue("STARTTURNABILITIES", $mainPlayer, "-");
 }
 
-function EquipWithSteamCounter(string $cardID, array &$p1Char, array &$p2Char): void
+function EquipWithSteamCounter($cardID, $p1Char, $p2Char)
 {
   if (($index = FindCharacterIndex(1, $cardID)) > 0) $p1Char[$index + 2] += 1;
   if (($index = FindCharacterIndex(2, $cardID)) > 0) $p2Char[$index + 2] += 1;
 }
 
-function InventoryStartGameAbilities(int $player): void
+function InventoryStartGameAbilities($player)
 {
   global $p1Inventory, $p2Inventory;
   $inventory = $player == 1 ? $p1Inventory : $p2Inventory;
@@ -241,7 +204,7 @@ function InventoryStartGameAbilities(int $player): void
   }
 }
 
-function addAdaptiveEquipmentDecision(int $player, string $cardID, string $modalType): void
+function addAdaptiveEquipmentDecision($player, $cardID, $modalType)
 {
   AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
   AddDecisionQueue("SETDQVAR", $player, "0", 1);

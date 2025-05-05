@@ -1265,7 +1265,7 @@ function BeginTurnPass()
     WriteLog("Player $mainPlayer passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }  
-  ProcessDecisionQueue("");
+  ProcessDecisionQueue();
 }
 
 function EndStep()
@@ -1348,7 +1348,7 @@ function FinishTurnPass()
   PermanentBeginEndPhaseEffects();
   
   AddDecisionQueue("PASSTURN", $mainPlayer, "-");
-  ProcessDecisionQueue("");
+  ProcessDecisionQueue();
 }
 
 function PassTurn()
@@ -1800,7 +1800,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
-    PermanentPlayAbilities($cardID, $from);
     if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));

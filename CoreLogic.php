@@ -138,7 +138,6 @@ function AddPower(&$totalPower, $amount): void
     SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
   }
   if ($amount > 0 && ($attackID == "back_heel_kick_red" || $attackID == "back_heel_kick_yellow" || $attackID == "back_heel_kick_blue") && ComboActive()) $amount += 1;
-  if ($amount > 0) $amount += PermanentAddPowerAbilities();
   $totalPower += $amount;
 }
 
@@ -237,7 +236,6 @@ function StartTurnAbilities()
   DefCharacterStartTurnAbilities();
   ArsenalStartTurnAbilities();
   AuraStartTurnAbilities();
-  PermanentStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
 
@@ -648,9 +646,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     }
     AuraDamageTakenAbilities($player, $damage, $source);
     ItemDamageTakenAbilities($player, $damage);
-    CharacterDamageTakenAbilities($player, $damage);
     AuraDamageDealtAbilities($otherPlayer, $damage);
-    CharacterDealDamageAbilities($otherPlayer, $damage);
     if (SearchAuras("ode_to_wrath_yellow", $otherPlayer)) {
       LoseHealth(CountAura("ode_to_wrath_yellow", $otherPlayer), $player);
       WriteLog("Lost life from Ode to Wrath");
@@ -2607,12 +2603,6 @@ function SelfCostModifier($cardID, $from)
     case "bleed_out_yellow":
     case "bleed_out_blue":
       return (-1 * DamageDealtBySubtype("Dagger"));
-    case "pummel_red":
-    case "pummel_yellow":
-    case "pummel_blue":
-      if (GetPlayerCharacter($currentPlayer)[0] == "ROGUE030") {
-        return -1;
-      } else return 0;
     case "dimenxxional_vortex":
       return ($from == "BANISH" ? -2 : 0);
     case "grim_feast_red":
@@ -2983,7 +2973,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         break;
     }
   }
-  return ROGUEPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  return "";
 }
 
 function PitchAbility($cardID)
@@ -3124,14 +3114,6 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("seismic_surge", $player);
     }
   }
-  if ($mainPhase && SearchCharacterActive($otherPlayer, "ROGUE026")) {
-    $health = &GetHealth($otherPlayer);
-    $health += -10;
-    if ($health < 1) {
-      $health = 1;
-      WriteLog("NO! You will not banish me! I refuse!");
-    }
-  }
   if ($mainPhase) {
     $numBrainstorm = CountCurrentTurnEffects("brainstorm_blue", $player);
     if ($numBrainstorm > 0) {
@@ -3139,7 +3121,6 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       for ($i = 0; $i < $numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
     }
   }
-  PermanentDrawCardAbilities($player);
   $hand = array_values($hand);
   return $hand[count($hand) - 1];
 }

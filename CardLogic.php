@@ -281,7 +281,7 @@ function IsDecisionQueueActive()
 
 function ProcessDecisionQueue()
 {
-  global $turn, $decisionQueue, $dqState;
+  global $turn, $dqState;
   if ($dqState[0] != "1") {
     if (count($turn) < 3) $turn[2] = "-";
     $dqState[0] = "1"; //If the decision queue is currently active/processing
@@ -515,7 +515,7 @@ function ContinueDecisionQueue($lastResult = "")
   $currentPlayer = $player;
   $turn[2] = ($parameter == "<-" ? $lastResult : $parameter);
   $return = "PASS";
-  if ($subsequent != 1 || is_array($lastResult) || strval($lastResult) != "PASS") $return = DecisionQueueStaticEffect($phase, $player, ($parameter == "<-" ? $lastResult : $parameter), $lastResult);
+  if ($subsequent != 1 || is_array($lastResult) || strval($lastResult) != "PASS") $return = DecisionQueueStaticEffect($phase, $player, $parameter == "<-" ? $lastResult : $parameter, $lastResult);
   if ($parameter == "<-" && !is_array($lastResult) && $lastResult == "-1") $return = "PASS"; //Collapse the rest of the queue if this decision point has invalid parameters
   if (is_array($return) || strval($return) != "NOTSTATIC") {
     if ($phase != "SETDQCONTEXT") $dqState[4] = "-"; //Clear out context for static states -- context only persists for one choice
@@ -2750,7 +2750,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "warpath_of_winged_grace":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
-      AddDecisionQueue("PLAYAURA", $player, "quicken-1", 1); // Quicken
+      AddDecisionQueue("PLAYAURA", $player, "quicken-1", 1); 
       break;
     case "arc_lightning_yellow":
       DealArcane(1, 2, "PLAYCARD", "arc_lightning_yellow");
@@ -3009,7 +3009,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
       }
       break;
-    case "crumble_to_eternity_blue": // Pop Crumble to Eternity and add Dominate to the next attack.
+    case "crumble_to_eternity_blue":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
@@ -3369,9 +3369,9 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   if ($modifiedAttack >= 6) {
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
-    if (($characterID == "rhinar_reckless_rampage" || $characterID == "rhinar" || $characterID == "rhinar") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Rhinar
+    if (($characterID == "rhinar_reckless_rampage" || $characterID == "rhinar" || $characterID == "rhinar") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) {
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
-    } else if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) { //Kayo, Armed and Dangerous
+    } else if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) {
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
       $character[1] = 1;
     }
@@ -3611,7 +3611,6 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
-  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($parameter) {
     case "thistle_bloom__life_yellow":
       PlayAura("runechant", $player, GetClassState($player, $CS_HealthGained));
