@@ -1239,7 +1239,6 @@ function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
 {
   global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
   $preventedDamage = 0;
   for ($i = count($char) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;
@@ -1315,7 +1314,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
-      case "tiger_stripe_shuko"://Tiger Stripe Shuko
+      case "tiger_stripe_shuko":
         if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID) <= 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
@@ -1344,14 +1343,14 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
     if ($character[$i + 1] != 2) {
       if ($character[$i] == "briar" || $character[$i] == "briar_warden_of_thorns") {
-        if ($character[$i+1] != 1) continue; //briar is destroyed, sleeeping, dishonered, etc.
+        if ($character[$i+1] != 1) continue; //Briar is destroyed, sleeeping, dishonered, etc.
       }
       elseif ($character[$i] != "hanabi_blaster") continue;
     }
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
       case "viserai_rune_blood":
-      case "viserai": //Viserai
+      case "viserai":
         if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer) && !TypeContains($cardID, "B", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
@@ -1387,18 +1386,18 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         if (ContractType($cardID) != "") AddLayer("TRIGGER", $currentPlayer, $characterID);
         break;
       case "riptide_lurker_of_the_deep":
-      case "riptide": //Riptide
+      case "riptide":
         if ($from == "HAND" && GetResolvedAbilityName($cardID, "HAND") != "Ability") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
       case "vynnset_iron_maiden":
-      case "vynnset": //Vynnset
+      case "vynnset":
         if (CardType($cardID) == "A" && TalentContains($cardID, "SHADOW", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
-      case "hard_knuckle": // Hard Knuckle
+      case "hard_knuckle":
         if (CardType($cardID) == "AA") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }

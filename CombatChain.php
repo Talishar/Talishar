@@ -581,7 +581,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "territorial_domain_blue":
       if (GetClassState($defPlayer, $CS_NumCrouchingTigerCreatedThisTurn) > 0) $blockModifier += 3;
       break;
-    case "helm_of_lignum_vitae": //helm of lignum vitae
+    case "helm_of_lignum_vitae":
       if (SearchCount(SearchBanish($defPlayer, talent: "EARTH")) >= 4) $blockModifier += 1;
       break;
     case "heavy_industry_surveillance":
@@ -1145,7 +1145,6 @@ function OnBlockEffects($index, $from)
           if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
           $splitCard = explode("_", $chainCard->ID());
           if ($splitCard[count($splitCard) - 1] == "equip") {
-            // TODO, check for bugs here
             $id = implode("_", array_splice($splitCard, 0, count($splitCard) - 1));
             if (CardType($id) != $cardType) $chainCard->ModifyDefense(-1);
           }

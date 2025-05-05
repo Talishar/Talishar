@@ -1258,7 +1258,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "war_cry_of_bellona_yellow":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
-      $hasRaydn = false;//CardNameContains($combatChain[0], "Raydn", $mainPlayer, true);
+      $hasRaydn = false;
       $char = GetPlayerCharacter($currentPlayer);
       for ($i = 0; $i < count($char); $i += CharacterPieces()) {
         if (CardNameContains($char[$i], "Raydn", $currentPlayer)) $hasRaydn = true;
@@ -2354,7 +2354,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && count($hand) == 0;
     case "resounding_courage_red":
     case "resounding_courage_yellow":
-    case "resounding_courage_blue"://Resounding Courage
+    case "resounding_courage_blue":
       return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || !TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $mainPlayer);
     case "radiant_view":
     case "radiant_raiment":
@@ -2382,9 +2382,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "symbiosis_shot":
       return $character[$index + 2] <= 0;
     case "maxx_the_hype_nitro":
-    case "maxx_nitro": //Maxx Nitro
+    case "maxx_nitro": 
     case "teklovossen_esteemed_magnate":
-    case "teklovossen": //Teklovossen
+    case "teklovossen": 
       return $character[5] == 0;
     case "cogwerx_base_head":
     case "cogwerx_base_chest":
@@ -2991,7 +2991,7 @@ function HasBladeBreak($cardID)
     case "peg_leg":
       return true;
     case "vambrace_of_determination":
-      return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer); //Vambrace of determination
+      return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
     case "heirloom_of_tiger_hide":
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);

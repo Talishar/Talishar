@@ -648,45 +648,45 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "mask_of_momentum":
       case "high_speed_impact_red":
       case "high_speed_impact_yellow":
-      case "high_speed_impact_blue": //High Speed Impact
+      case "high_speed_impact_blue": 
       case "combustible_courier_red":
       case "combustible_courier_yellow":
-      case "combustible_courier_blue": // Combustible Courier
-      case "v_of_the_vanguard_yellow": //V of the Vanguard
-      case "exude_confidence_red": //Exude Confidence
+      case "combustible_courier_blue":
+      case "v_of_the_vanguard_yellow":
+      case "exude_confidence_red":
       case "explosive_growth_red":
       case "explosive_growth_yellow":
-      case "explosive_growth_blue": //Explosive Growth
+      case "explosive_growth_blue":
       case "ball_lightning_red":
       case "ball_lightning_yellow":
-      case "ball_lightning_blue": //Ball Lightning
-      case "spreading_flames_red": //Spreading Flames
+      case "ball_lightning_blue":
+      case "spreading_flames_red":
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":
-      case "brand_with_cinderclaw_blue": //Brand with Cinderclaw
+      case "brand_with_cinderclaw_blue":
       case "scramble_pulse_red":
       case "scramble_pulse_yellow":
-      case "scramble_pulse_blue": //Scramble Pulse
+      case "scramble_pulse_blue": 
       case "prowl_red":
       case "prowl_yellow":
-      case "prowl_blue": //Prowl
-      case "head_leads_the_tail_red": //Head Leads the Tail
+      case "prowl_blue": 
+      case "head_leads_the_tail_red": 
       case "deadly_duo_red":
       case "deadly_duo_yellow":
-      case "deadly_duo_blue": //Deadly Duo
-      case "spirit_of_war_red"://Spirit of War
+      case "deadly_duo_blue": 
+      case "spirit_of_war_red":
       case "growl_red":
-      case "growl_yellow"://Growl
-      case "coercive_tendency_blue"://Coercive Tendency
-      case "tiger_taming_khakkara": //Tiger Taming
-      case "chase_the_tail_red"://Chase the Tail
+      case "growl_yellow":
+      case "coercive_tendency_blue":
+      case "tiger_taming_khakkara":
+      case "chase_the_tail_red":
       case "untamed_red":
       case "untamed_yellow":
-      case "untamed_blue": //Untamed
-      case "stonewall_gauntlet": //Stonewall Gauntlet
+      case "untamed_blue": 
+      case "stonewall_gauntlet": 
       case "water_the_seeds_red":
       case "water_the_seeds_yellow":
-      case "water_the_seeds_blue": //Water the Seeds
+      case "water_the_seeds_blue": 
       case "wrath_of_retribution_red":
       case "fire_tenet_strike_first_red":
       case "poisoned_blade_red":
@@ -2023,13 +2023,13 @@ function IsCombatEffectPersistent($cardID)
     case "figment_of_triumph_yellow":
       return true;
     case "beckoning_light_red":
-      return true;//Beckoning Light
+      return true;
     case "spirit_of_war_red":
-      return true;//Spirit of War
+      return true;
     case "blood_dripping_frenzy_blue":
       return true;
     case "call_down_the_lightning_yellow":
-      return true;//Call Down the Lightning
+      return true;
     case "chorus_of_ironsong_yellow":
       return true;
     case "hack_to_reality_yellow-HIT":

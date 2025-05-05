@@ -3,7 +3,7 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $layers, $combatChain, $chainLinks;
+  global $layers, $combatChain;
   $rv = "";
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);

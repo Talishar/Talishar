@@ -193,21 +193,21 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       $aurasArray = explode(",", $illusionistAuras);
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
-    case "sigil_of_brilliance_yellow": //sigil of brilliance
+    case "sigil_of_brilliance_yellow":
       AddDecisionQueue("DRAW", $player, "-", 0);
       break;
     case "sigil_of_sanctuary_blue":
       WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("embodiment_of_earth", "embodiment_of_earth"));
       PlayAura("embodiment_of_earth", $player);
       break;
-    case "sigil_of_earth_blue": //sigil of earth
+    case "sigil_of_earth_blue":
       PlayAura("embodiment_of_earth", $player);
       break;
     case "sigil_of_conductivity_blue":
       WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("embodiment_of_lightning", "embodiment_of_lightning"));
       PlayAura("embodiment_of_lightning", $player);
       break;
-    case "sigil_of_lightning_blue": //sigil of lightning
+    case "sigil_of_lightning_blue":
       PlayAura("embodiment_of_lightning", $player);
       break;
     case "sigil_of_the_arknight_blue":
@@ -228,7 +228,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
     case "sigil_of_deadwood_blue":
       PlayAura("runechant", $player);
       break;
-    case "sigil_of_aether_blue"://Sigil of aether
+    case "sigil_of_aether_blue":
       AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
       break;
     case "sigil_of_temporal_manipulation_blue":
