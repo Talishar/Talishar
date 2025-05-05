@@ -13,7 +13,7 @@ include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
-require_once "Libraries/CoreLibraries.php";
+require_once("Libraries/CoreLibraries.php");
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
@@ -36,15 +36,15 @@ if($mode == 100015)
 }
 
 //We should also have some information on the type of command
-$buttonInput = $_GET["buttonInput"] ?? ""; //The player that is the target of the command - e.g. for changing life total
-$cardID = $_GET["cardID"] ?? "";
-$chkCount = $_GET["chkCount"] ?? 0;
+$buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing life total
+$cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
+$chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
 $chkInput = [];
 for ($i = 0; $i < $chkCount; ++$i) {
-  $chk = isset($_GET[("chk$i")]) ? $_GET[("chk$i")] : "";
+  $chk = isset($_GET[("chk" . $i)]) ? $_GET[("chk" . $i)] : "";
   if ($chk != "") array_push($chkInput, $chk);
 }
-$inputText = $_GET["inputText"] ?? "";
+$inputText = isset($_GET["inputText"]) ? $_GET["inputText"] : "";
 
 SetHeaders();
 
@@ -89,7 +89,7 @@ $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
-$targetAuth = $playerID == 1 ? $p1Key : $p2Key;
+$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
@@ -97,7 +97,7 @@ if(!IsReplay()) {
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
-  if ($playerID != 3 && $authKey != $targetAuth) { echo "Invalid auth key"; exit; }
+  if ($playerID != 3 && $authKey != $targetAuth) { echo("Invalid auth key"); exit; }
   if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = round(microtime(true) * 1000);
@@ -129,12 +129,12 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $origDeck = "./Games/{$gameName}/p2DeckOrig.txt";
   if (file_exists($origDeck)) copy($origDeck, "./Games/{$gameName}/p2Deck.txt");
   include "MenuFiles/WriteGamefile.php";
-  $gameStatus = IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer;
+  $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
-  $firstPlayerChooser = $winner == 1 ? 2 : 1;
+  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";
-  $p2SideboardSubmitted = IsPlayerAI(2) ? "1" : "0";
+  $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";

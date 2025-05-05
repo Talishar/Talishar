@@ -154,7 +154,7 @@ function SearchInner(
 )
 {
   $cardList = "";
-  if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
+  if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
@@ -200,8 +200,8 @@ function SearchInner(
         if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
         if ($hasStealth && !hasStealth($cardID)) continue;
         if ($hasWateryGrave && !HasWateryGrave($cardID)) continue;
-        if ($cardList != "") $cardList = "$cardList,";
-        $cardList .= ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
+        if ($cardList != "") $cardList = $cardList . ",";
+        $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
       }
     }
   }
@@ -290,8 +290,8 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
   for ($i = 0; $i < $count; $i += $pieces) {
     $id = $deck[$i];
     if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList;
@@ -304,8 +304,8 @@ function SearchDeckByName($player, $name)
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($deck); $i += DeckPieces()) {
     if (ShareName(CardName($deck[$i]), $name)) {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList;
@@ -318,8 +318,8 @@ function SearchDiscardByName($player, $name)
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($discard); $i += DeckPieces()) {
     if (ShareName(CardName($discard[$i]), $name) && !isFaceDownMod($discard[$i+2])) {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList;
@@ -332,8 +332,8 @@ function SearchItemsByName($player, $name)
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
     if (CardName($items[$i]) == $name) {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList;
@@ -346,8 +346,8 @@ function SearchBanishByName($player, $name)
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($banish); $i += BanishPieces()) {
     if (CardName($banish[$i]) == $name) {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList;
@@ -362,8 +362,8 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
   for ($i = 0; $i < $count; $i += $pieces) {
     $id = $discard[$i];
     if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList;
@@ -376,8 +376,8 @@ function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     $id = $allies[$i];
     if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     }
   }
   return $cardList != "";
@@ -508,7 +508,7 @@ function CombineSearches($search1, $search2)
 {
   if ($search2 == "") return $search1;
   else if ($search1 == "") return $search2;
-  return "$search1,$search2";
+  return $search1 . "," . $search2;
 }
 
 function SearchRemoveDuplicates($search)
@@ -1178,19 +1178,19 @@ function SearchArcaneReplacement($player, $zone, $damage)
     $cardID = $array[$i];
     if ($zone == "MYAURAS" && $array[$i + 7] == 0) continue;
     if (SpellVoidAmount($cardID, $player) > 0 && $zone == "MYCHAR" && IsCharacterActive($player, $i)) {
-      if ($cardList != "") $cardList = "$cardList,";
-      $cardList = "$cardList$i";
+      if ($cardList != "") $cardList = $cardList . ",";
+      $cardList = $cardList . $i;
     } elseif (SpellVoidAmount($cardID, $player) > 0 && $zone != "MYCHAR") {
       if ($cardID == "runechant") {
         if ($addedRunechants < $damage) {
-          if ($cardList != "") $cardList = "$cardList,";
-          $cardList = "$cardList$i";
+          if ($cardList != "") $cardList = $cardList . ",";
+          $cardList = $cardList . $i;
           ++$addedRunechants;
         }
       }
       else {
-        if ($cardList != "") $cardList = "$cardList,";
-        $cardList = "$cardList$i";
+        if ($cardList != "") $cardList = $cardList . ",";
+        $cardList = $cardList . $i;
       }
     }
   }
@@ -1459,8 +1459,8 @@ function SearchMultizone($player, $searches)
               default:
                 break;
             }
-            if ($rv != "") $rv = "$rv,";
-            $rv .= SearchMultiZoneFormat($searchResult, $zone);
+            if ($rv != "") $rv = $rv . ",";
+            $rv = $rv . SearchMultiZoneFormat($searchResult, $zone);
             if (substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
             $isSameName = true;
             break;
@@ -1489,7 +1489,7 @@ function SearchMultizone($player, $searches)
         }
       }
     }
-    $searchPlayer = substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1);
+    $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
     $searchResult = "";
     if (!$isCardID && !$isSameName) {
       switch ($zone) {

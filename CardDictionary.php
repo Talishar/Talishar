@@ -337,20 +337,25 @@ function CharacterHealth($cardID)
   }
   $set = CardSet($cardID);
   if ($set != "DUM") return GeneratedCharacterHealth($cardID);
-  return match ($cardID) {
-    "DUMMY" => 9999,
-    default => 20,
-  };
+  switch ($cardID) {
+    case "DUMMY":
+      return 9999;
+    default:
+      return 20;
+  }
 }
 
 function CharacterIntellect($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
-  return match ($cardID) {
-    "data_doll_mkii" => 3,
-    "teklovossen_the_mechropotent" => 3,
-    default => 4,
-  };
+  switch ($cardID) {
+    case "data_doll_mkii":
+      return 3;
+    case "teklovossen_the_mechropotent":
+      return 3;
+    default:
+      return 4;
+  }
 }
 
 function CardSet($cardID)
@@ -628,11 +633,12 @@ function AbilityCost($cardID)
   else if ($set == "SEA") return SEAAbilityCost($cardID);
   else if ($set == "AST") return ASTAbilityCost($cardID);
   else if ($set == "AGB") return AGBAbilityCost($cardID);
-  else return match ($cardID) {
-         "riggermortis_yellow" => 1,
-         "bravo_flattering_showman" => 2,
-         default => 0,
-       };
+  else switch ($cardID) {
+    case "riggermortis_yellow": return 1;
+    case "bravo_flattering_showman": return 2;
+    default:
+      return 0;
+  }
 }
 
 function DynamicCost($cardID)
@@ -654,8 +660,8 @@ function DynamicCost($cardID)
       return "3,4,5,6,7,8,9,10,11,12,13,14,15";
     case "scour_blue":
       $myAurasCount = SearchCount(SearchAura($currentPlayer, "", "", 0));
-      $otherPlayerAurasCount = SearchCount(SearchAura($currentPlayer == 1 ? 2 : 1, "", "", 0));
-      return $myAurasCount > $otherPlayerAurasCount ? GetIndices(SearchCount(SearchAura($currentPlayer, "", "", 0)) + 1) : GetIndices(SearchCount(SearchAura($currentPlayer == 1 ? 2 : 1, "", "", 0)) + 1);
+      $otherPlayerAurasCount = SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0));
+      return $myAurasCount > $otherPlayerAurasCount ? GetIndices(SearchCount(SearchAura($currentPlayer, "", "", 0)) + 1) : GetIndices(SearchCount(SearchAura(($currentPlayer == 1 ? 2 : 1), "", "", 0)) + 1);
     case "ice_eternal_blue":
       return "0,2,4,6,8,10,12,14,16,18,20";
     case "hyper_scrapper_blue":
@@ -824,7 +830,7 @@ function PowerValue($cardID, $index=-1, $base=false)
     if ($cardID == "hammer_of_havenhold") return SearchPitchForCard($mainPlayer, "chivalry_blue") > -1 ? 4 : 3;
     if ($cardID == "ball_breaker") return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? 4 : 3;
     if ($cardID == "high_riser") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
-    if ($cardID == "rotwood_reaper") return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2;
+    if ($cardID == "rotwood_reaper") return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2);
     if ($cardID == "mark_of_the_huntsman" || $cardID == "mark_of_the_huntsman_r") {
       if (!IsHeroAttackTarget()) return 1;
       else return CheckMarked($defPlayer) ? 2 : 1;
@@ -849,12 +855,16 @@ function PowerValue($cardID, $index=-1, $base=false)
     if ($number < 400 || ($set != "MON" && $set != "DYN"))
     return GeneratedPowerValue($cardID);
   }
-  return match ($cardID) {
-    "nitro_mechanoida" => 5,
-    "suraya_archangel_of_knowledge" => 4,
-    "teklovossen_the_mechropotent" => 6,
-    default => 0,
-  };
+  switch ($cardID) {
+    case "nitro_mechanoida":
+      return 5;
+    case "suraya_archangel_of_knowledge":
+      return 4;
+    case "teklovossen_the_mechropotent":
+      return 6;
+    default:
+      return 0;
+  }
 }
 
 function HasGoAgain($cardID): bool|int
@@ -1107,13 +1117,14 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($set == "ASR") return ASRAbilityType($cardID);
   else if ($set == "AGB") return AGBAbilityType($cardID);
-  else return match ($cardID) {
-         "blaze_firemind" => "I",
-         "magrar" => "A",
-         "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",
-         "bravo_flattering_showman" => "A",
-         default => "",
-       };
+  else switch ($cardID) {
+    case "blaze_firemind": return "I";
+    case "magrar": return "A";
+    case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
+    case "bravo_flattering_showman": return "A";
+    default:
+      return "";
+  }
 }
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
@@ -1195,7 +1206,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       return $names;
     case "under_the_trap_door_blue":
       // can't use the ability if there are no traps in graveyard
-      $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "") ? "Ability" : "";
+      if (SearchDiscard($currentPlayer, subtype: "Trap") != "") $names = "Ability";
+      else $names = "";
       if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
@@ -1478,10 +1490,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
       $charIndex = FindCharacterIndex($currentPlayer, $cardID);
-      return match ($cardID) {
-        "nitro_mechanoida" => $character[$charIndex + 2] > 0,
-        "teklovossen_the_mechropotent" => $character[$charIndex + 2] > 1,
-      };
+      switch ($cardID) {
+        case "nitro_mechanoida":
+          return $character[$charIndex + 2] > 0;
+        case "teklovossen_the_mechropotent":
+          return $character[$charIndex + 2] > 1;
+      }
     }
     return false;
   }
@@ -1589,10 +1603,12 @@ function CanBlockWithEquipment()
 function CanBlockWithAura()
 {
   global $CombatChain;
-  return match ($CombatChain->AttackCard()->ID()) {
-    "cut_through_the_facade_red" => false,
-    default => true,
-  };
+  switch ($CombatChain->AttackCard()->ID()) {
+    case "cut_through_the_facade_red":
+      return false;
+    default:
+      return true;
+  }
 }
 
 function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom = "", $stillOnCombatChain = 1, $additionalCosts = "-")
@@ -1658,7 +1674,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       if (substr($from, 0, 5) != "THEIR") return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "HAND" : "GY";
       else return GetClassState($player, $CS_NumWizardNonAttack) >= 2 ? "THEIRHAND" : "THEIRDISCARD";
     case "soul_shield_yellow":
-      return $from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY";
+      return ($from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY");
     case "soul_food_yellow":
       return "SOUL";
     case "sonata_arcanix_red":
@@ -1678,16 +1694,16 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "invigorating_light_red":
     case "invigorating_light_yellow":
     case "invigorating_light_blue":
-      return $from == "CHAINCLOSING" && SearchCurrentTurnEffects($cardID, $mainPlayer) ? "SOUL" : "GY";
+      return ($from == "CHAINCLOSING" && SearchCurrentTurnEffects($cardID, $mainPlayer) ? "SOUL" : "GY");
     case "ray_of_hope_yellow":
       $theirChar = &GetPlayerCharacter($otherPlayer);
-      return PlayerHasLessHealth($player) && TalentContains($theirChar[0], "SHADOW") ? "SOUL" : "GY";
+      return (PlayerHasLessHealth($player) && TalentContains($theirChar[0], "SHADOW") ? "SOUL" : "GY");
     case "guardian_of_the_shadowrealm_red":
-      return $from == "BANISH" ? "HAND" : "GY";
+      return ($from == "BANISH" ? "HAND" : "GY");
     case "rotary_ram_red":
     case "rotary_ram_yellow":
     case "rotary_ram_blue":
-      return GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY";
+      return (GetClassState($player, $CS_NumBoosted) > 0 ? "BOTDECK" : "GY");
     case "timekeepers_whim_red":
     case "timekeepers_whim_yellow":
     case "timekeepers_whim_blue":
@@ -1863,7 +1879,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions;
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
   $myArsenal = &GetArsenal($player);
@@ -1996,7 +2012,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol"
           || $myItems[$index + 2] != 2);
     case "cognition_nodes_blue":
-      return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index + 1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index + 2] != 2);
+      return ($CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index + 1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index + 2] != 2));
     case "skullbone_crosswrap":
       return !ArsenalHasFaceDownCard($player);
     case "twinning_blade_yellow":
@@ -2163,20 +2179,20 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "amulet_of_echoes_blue":
       return $from == "PLAY" && IsAmuletOfEchoesRestricted($from, $otherPlayer);
     case "amulet_of_havencall_blue":
-      return $from == "PLAY" && count($myHand) > 0;
+      return ($from == "PLAY" && count($myHand) > 0);
     case "amulet_of_ignition_yellow":
-      return $from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1;
+      return ($from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1);
     case "helm_of_sharp_eye":
       return !IsWeaponGreaterThanTwiceBasePower();
     case "amulet_of_oblation_blue":
       return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA");
     case "run_through_yellow":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";
+      return (!$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || CardSubType($CombatChain->AttackCard()->ID()) != "Sword");
     case "thrust_red":
     case "blade_flash_blue":
       return !$CombatChain->HasCurrentLink() || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";
     case "combustion_point_red":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || (!ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer));
+      return (!$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || (!ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer)));
     case "flamescale_furnace":
       return GetClassState($player, $CS_NumRedPlayed) == 0;
     case "sash_of_sandikai":
@@ -2184,9 +2200,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "liquefy_red":
       return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "tome_of_firebrand_red":
-      return $player != $mainPlayer || NumDraconicChainLinks() < 4;
+      return ($player != $mainPlayer || NumDraconicChainLinks() < 4);
     case "ghostly_touch":
-      return $character[$index + 2] < 2 && !SearchCurrentTurnEffects($cardID, $player);
+      return ($character[$index + 2] < 2 && !SearchCurrentTurnEffects($cardID, $player));
     case "frightmare_red":
       return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
     case "semblance_blue":
@@ -2275,7 +2291,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "razors_edge_blue":
       return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || (CardType($CombatChain->AttackCard()->ID()) != "AA");
     case "silverwind_shuriken_blue":
-      return $from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID()) : false;
+      return ($from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID()) : false);
     case "trench_of_sunken_treasure":
       return !ArsenalHasFaceDownCard($player);
     case "flick_knives":
@@ -2312,7 +2328,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || PowerValue($CombatChain->AttackCard()->ID()) > 1;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
-      return count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
+      return (count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "");
     case "luminaris_celestial_fury":
       return !$CombatChain->HasCurrentLink() || (!str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer));
     case "angelic_descent_red":
@@ -2837,7 +2853,9 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       break;
   }
   if (canBeAddedToChainDuringDR($cardID) && $phase == "D") return true;
-  $cardType = ($phase != "B" && $from == "EQUIP" || $from == "PLAY") ? GetResolvedAbilityType($cardID, $from) : ($phase == "M" && $cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") ? GetResolvedAbilityType($cardID, $from) : CardType($cardID);
+  if ($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
+  else if ($phase == "M" && $cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
+  else $cardType = CardType($cardID);
   if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
   if (DelimStringContains($cardType, "I")) return false; //Instants as yet never go on the combat chain
   if (($phase == "A" || $phase == "D") && DelimStringContains($cardType, "A")) return false; //Non-attacks played as instants never go on combat chain
@@ -3144,7 +3162,7 @@ function HasPiercing($cardID, $from = "")
     case "visit_the_imperial_forge_red":
     case "visit_the_imperial_forge_yellow":
     case "visit_the_imperial_forge_blue":
-      return !IsPlayRestricted($cardID, $restriction, $from) || IsCombatEffectActive($cardID);
+      return (!IsPlayRestricted($cardID, $restriction, $from) || IsCombatEffectActive($cardID));
     case "drill_shot_red":
     case "drill_shot_yellow":
     case "drill_shot_blue":
@@ -4124,10 +4142,12 @@ function AbilityPlayableFromBanish($cardID, $mod = "")
   global $currentPlayer, $mainPlayer;
   $mod = explode("-", $mod)[0];
   if (isFaceDownMod($mod)) return false;
-  return match ($cardID) {
-    "guardian_of_the_shadowrealm_red" => $currentPlayer == $mainPlayer,
-    default => false,
-  };
+  switch ($cardID) {
+    case "guardian_of_the_shadowrealm_red":
+      return $currentPlayer == $mainPlayer;
+    default:
+      return false;
+  }
 }
 
 function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
@@ -4147,10 +4167,12 @@ function PlayableFromGraveyard($cardID, $mod="-")
   global $currentPlayer;
   if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer)) return true;
-  return match ($cardID) {
-    "graven_call" => true,
-    default => false,
-  };
+  switch ($cardID) {
+    case "graven_call":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function RequiresDieRoll($cardID, $from, $player): bool
@@ -4292,7 +4314,7 @@ function WardAmount($cardID, $player, $index = -1)
     case "meridian_pathway":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "manifestation_of_miragai_blue":
-      return $auras[$index + 3] ?? 0;
+      return isset($auras[$index + 3]) ? $auras[$index + 3] : 0;
     case "three_visits_red":
       return SearchPitchForColor($player, 3) * 3;
     case "haze_shelter_red":
@@ -4426,7 +4448,7 @@ function HasDominate($cardID)
     case "open_the_center_red":
     case "open_the_center_yellow":
     case "open_the_center_blue":
-      return ComboActive() ? true : false;
+      return (ComboActive() ? true : false);
     case "demolition_crew_red":
     case "demolition_crew_yellow":
     case "demolition_crew_blue":
@@ -4451,7 +4473,7 @@ function HasDominate($cardID)
     case "macho_grande_blue":
       return true;
     case "break_tide_yellow":
-      return ComboActive() ? true : false;
+      return (ComboActive() ? true : false);
     case "payload_red":
     case "payload_yellow":
     case "payload_blue":
@@ -4541,26 +4563,32 @@ function HasGalvanize($cardID)
 
 function PowerCantBeModified($cardID)
 {
-  return match ($cardID) {
-    "numbskull_red" => true,
-    default => false,
-  };
+  switch ($cardID) {
+    case "numbskull_red":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function CostCantBeModified($cardID)
 {
-  return match ($cardID) {
-    "numbskull_red" => true,
-    default => false,
-  };
+  switch ($cardID) {
+    case "numbskull_red":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function BlockCantBeModified($cardID)
 {
-  return match ($cardID) {
-    "numbskull_red" => true,
-    default => false,
-  };
+  switch ($cardID) {
+    case "numbskull_red":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function Rarity($cardID)

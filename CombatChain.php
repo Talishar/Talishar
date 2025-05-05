@@ -21,31 +21,47 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
   else if ($set == "ARC") {
-    return match ($class) {
-      "MECHANOLOGIST" => ARCMechanologistHitEffect($cardID, $from),
-      "RANGER" => ARCRangerHitEffect($cardID, $from),
-      "RUNEBLADE" => ARCRunebladeHitEffect($cardID),
-      "WIZARD" => ARCWizardHitEffect($cardID),
-      "GENERIC" => ARCGenericHitEffect($cardID),
-    };
+    switch ($class) {
+      case "MECHANOLOGIST":
+        return ARCMechanologistHitEffect($cardID, $from);
+      case "RANGER":
+        return ARCRangerHitEffect($cardID, $from);
+      case "RUNEBLADE":
+        return ARCRunebladeHitEffect($cardID);
+      case "WIZARD":
+        return ARCWizardHitEffect($cardID);
+      case "GENERIC":
+        return ARCGenericHitEffect($cardID);
+    }
   } else if ($set == "CRU") return CRUHitEffect($cardID);
   else if ($set == "MON") {
-    return match ($class) {
-      "BRUTE" => MONBruteHitEffect($cardID),
-      "ILLUSIONIST" => MONIllusionistHitEffect($cardID),
-      "RUNEBLADE" => MONRunebladeHitEffect($cardID),
-      "WARRIOR" => MONWarriorHitEffect($cardID),
-      "GENERIC" => MONGenericHitEffect($cardID),
-      "NONE" => MONTalentHitEffect($cardID),
-      default => "",
-    };
+    switch ($class) {
+      case "BRUTE":
+        return MONBruteHitEffect($cardID);
+      case "ILLUSIONIST":
+        return MONIllusionistHitEffect($cardID);
+      case "RUNEBLADE":
+        return MONRunebladeHitEffect($cardID);
+      case "WARRIOR":
+        return MONWarriorHitEffect($cardID);
+      case "GENERIC":
+        return MONGenericHitEffect($cardID);
+      case "NONE":
+        return MONTalentHitEffect($cardID);
+      default:
+        return "";
+    }
   } else if ($set == "ELE") {
-    return match ($class) {
-      "GUARDIAN" => ELEGuardianHitEffect($cardID),
-      "RANGER" => ELERangerHitEffect($cardID),
-      "RUNEBLADE" => ELERunebladeHitEffect($cardID),
-      default => ELETalentHitEffect($cardID),
-    };
+    switch ($class) {
+      case "GUARDIAN":
+        return ELEGuardianHitEffect($cardID);
+      case "RANGER":
+        return ELERangerHitEffect($cardID);
+      case "RUNEBLADE":
+        return ELERunebladeHitEffect($cardID);
+      default:
+        return ELETalentHitEffect($cardID);
+    }
   } else if ($set == "EVR") return EVRHitEffect($cardID);
   else if ($set == "UPR") return UPRHitEffect($cardID);
   else if ($set == "DYN") return DYNHitEffect($cardID, $from, $CombatChain->AttackCard()->ID());
@@ -78,37 +94,37 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   if (HasHighTide($cardID) && HighTideConditionMet($mainPlayer)) return 1;
   switch ($cardID) {
     case "romping_club":
-      return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
+      return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
     case "breaking_scales":
       return 1;
     case "lord_of_wind_blue":
-      return ComboActive() ? $resourcesPaid : 0;
+      return (ComboActive() ? $resourcesPaid : 0);
     case "ancestral_empowerment_red":
       return 1;
     case "mugenshi_release_yellow":
-      return ComboActive() ? 1 : 0;
+      return (ComboActive() ? 1 : 0);
     case "hurricane_technique_yellow":
-      return ComboActive() ? 1 : 0;
+      return (ComboActive() ? 1 : 0);
     case "fluster_fist_red":
     case "fluster_fist_yellow":
     case "fluster_fist_blue":
-      return ComboActive() ? NumAttacksHit() : 0;
+      return (ComboActive() ? NumAttacksHit() : 0);
     case "blackout_kick_red":
     case "blackout_kick_yellow":
     case "blackout_kick_blue":
-      return ComboActive() ? 3 : 0;
+      return (ComboActive() ? 3 : 0);
     case "open_the_center_red":
     case "open_the_center_yellow":
     case "open_the_center_blue":
-      return ComboActive() ? 1 : 0;
+      return (ComboActive() ? 1 : 0);
     case "rising_knee_thrust_red":
     case "rising_knee_thrust_yellow":
     case "rising_knee_thrust_blue":
-      return ComboActive() ? 2 : 0;
+      return (ComboActive() ? 2 : 0);
     case "whelming_gustwave_red":
     case "whelming_gustwave_yellow":
     case "whelming_gustwave_blue":
-      return ComboActive() ? 1 : 0;
+      return (ComboActive() ? 1 : 0);
     case "rout_red":
       return 3;
     case "singing_steelblade_yellow":
@@ -217,13 +233,13 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "burgeoning_blue":
       return $from == "ARS" ? 1 : 0;
     case "break_tide_yellow":
-      return ComboActive() ? 3 : 0;
+      return (ComboActive() ? 3 : 0);
     case "winds_of_eternity_blue":
-      return ComboActive() ? 2 : 0;
+      return (ComboActive() ? 2 : 0);
     case "hundred_winds_red":
     case "hundred_winds_yellow":
     case "hundred_winds_blue":
-      return ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0;
+      return (ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0);
     case "in_the_swing_red":
       return 3;
     case "in_the_swing_yellow":
@@ -231,21 +247,21 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "in_the_swing_blue":
       return 1;
     case "swarming_gloomveil_red":
-      return GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0;
+      return (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
     case "shrill_of_skullform_red":
     case "shrill_of_skullform_yellow":
     case "shrill_of_skullform_blue":
-      return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0;
+      return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 3 : 0);
     case "dawnblade_resplendent":
       return GetClassState($mainPlayer, $CS_AttacksWithWeapon) >= 1 ? 1 : 0;
     case "phoenix_form_red":
-      return NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0;
+      return (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
     case "combustion_point_red":
       return 1;
     case "lava_burst_red":
-      return RuptureActive() ? 3 : 0;
+      return (RuptureActive() ? 3 : 0);
     case "phoenix_flame_red":
-      return NumDraconicChainLinks() >= 2 ? 1 : 0;
+      return (NumDraconicChainLinks() >= 2 ? 1 : 0);
     case "rapid_reflex_red":
       return 3;
     case "rapid_reflex_yellow":
@@ -253,31 +269,31 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "rapid_reflex_blue":
       return 1;
     case "tiger_swipe_red":
-      return ComboActive() ? 2 : 0;
+      return (ComboActive() ? 2 : 0);
     case "pouncing_qi_red":
     case "pouncing_qi_yellow":
     case "pouncing_qi_blue":
-      return ComboActive() ? 1 : 0;
+      return (ComboActive() ? 1 : 0);
     case "qi_unleashed_red":
     case "qi_unleashed_yellow":
     case "qi_unleashed_blue":
-      return ComboActive() ? 4 : 0;
+      return (ComboActive() ? 4 : 0);
     case "sneak_attack_red":
     case "sneak_attack_yellow":
     case "sneak_attack_blue":
-      return NumAttackReactionsPlayed() > 0 ? 4 : 0;
+      return (NumAttackReactionsPlayed() > 0 ? 4 : 0);
     case "dishonor_blue":
-      return ComboActive() ? 2 : 0;
+      return (ComboActive() ? 2 : 0);
     case "silverwind_shuriken_blue":
       return 1;
     case "spinning_wheel_kick_red":
     case "spinning_wheel_kick_yellow":
     case "spinning_wheel_kick_blue":
-      return ComboActive() ? 1 : 0;
+      return (ComboActive() ? 1 : 0);
     case "descendent_gustwave_red":
     case "descendent_gustwave_yellow":
     case "descendent_gustwave_blue":
-      return ComboActive() ? 2 : 0;
+      return (ComboActive() ? 2 : 0);
     case "widowmaker_red":
     case "widowmaker_yellow":
     case "widowmaker_blue":
@@ -287,17 +303,17 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "feisty_locals_red":
     case "feisty_locals_yellow":
     case "feisty_locals_blue":
-      return CachedNumActionBlocked() > 0 ? 2 : 0;
+      return (CachedNumActionBlocked() > 0 ? 2 : 0);
     case "freewheeling_renegades_red":
     case "freewheeling_renegades_yellow":
     case "freewheeling_renegades_blue":
-      return CachedNumActionBlocked() > 0 ? -2 : 0;
+      return (CachedNumActionBlocked() > 0 ? -2 : 0);
     case "beaming_blade":
       return GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0 ? 5 : 0;
     case "searing_ray_red":
     case "searing_ray_yellow":
     case "searing_ray_blue":
-      return SearchPitchForColor($mainPlayer, 2) > 0 ? 2 : 0;
+      return (SearchPitchForColor($mainPlayer, 2) > 0 ? 2 : 0);
     case "battlefield_breaker_red":
     case "battlefield_breaker_yellow":
     case "battlefield_breaker_blue":
@@ -306,7 +322,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "soul_butcher_yellow":
     case "soul_butcher_blue":
       $theirSoul = &GetSoul($defPlayer);
-      return count($theirSoul) > 0 ? 2 : 0;
+      return (count($theirSoul) > 0 ? 2 : 0);
     case "teklo_leveler":
       return EvoUpgradeAmount($mainPlayer) >= 4;
     case "annihilator_engine_red":
@@ -383,7 +399,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "hit_the_high_notes_red":
     case "hit_the_high_notes_yellow":
     case "hit_the_high_notes_blue":
-      return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0;
+      return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "fast_and_furious_red":
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
     case "summit_the_unforgiving":
@@ -429,7 +445,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "incision_blue": return 1;
     case "outed_red": return CheckMarked($defPlayer) ? 1 : 0;
     case "retrace_the_past_blue":
-      return SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1 ? 2 : 0;
+      return (SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1 ? 2 : 0);
     case "skyzyk_red":
       return DoesAttackHaveGoAgain() ? 1 : 0;
     default:
@@ -490,13 +506,13 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "staunch_response_red":
     case "staunch_response_yellow":
     case "staunch_response_blue":
-      $blockModifier += $resourcesPaid >= 6 ? 3 : 0;
+      $blockModifier += ($resourcesPaid >= 6 ? 3 : 0);
       break;
     case "arcanite_skullcap":
-      $blockModifier += PlayerHasLessHealth($defPlayer) ? 1 : 0;
+      $blockModifier += (PlayerHasLessHealth($defPlayer) ? 1 : 0);
       break;
     case "springboard_somersault_yellow":
-      $blockModifier += $from == "ARS" ? 2 : 0;
+      $blockModifier += ($from == "ARS" ? 2 : 0);
       break;
     case "impenetrable_belief_red":
     case "impenetrable_belief_yellow":
@@ -509,9 +525,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
     case "wax_on_red":
     case "wax_on_yellow":
     case "wax_on_blue":
-      return CardCost($attackID) == 0 && CardType($attackID) == "AA" ? 2 : 0;
+      return (CardCost($attackID) == 0 && CardType($attackID) == "AA" ? 2 : 0);
     case "blazen_yoroi":
-      $blockModifier += count($chainLinks) >= 3 ? 4 : 0;
+      $blockModifier += (count($chainLinks) >= 3 ? 4 : 0);
       break;
     case "shield_wall_red":
     case "shield_wall_yellow":
@@ -544,7 +560,7 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       CountAura("vigor", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
       break;
     case "boast_blue":
-      $blockModifier += 2 * GetClassState($defPlayer, $CS_NumClashesWon);
+      $blockModifier += (2 * GetClassState($defPlayer, $CS_NumClashesWon));
       break;
     case "parry_blade":
       if (IsWeaponAttack()) $blockModifier += 2;
@@ -609,18 +625,28 @@ function BlockModifier($cardID, $from, $resourcesPaid)
 
 function PlayBlockModifier($cardID)
 {
-  return match ($cardID) {
-    "reinforce_the_line_red" => 4,
-    "reinforce_the_line_yellow" => 3,
-    "reinforce_the_line_blue" => 2,
-    "summerwood_shelter_red" => 4,
-    "summerwood_shelter_yellow" => 3,
-    "summerwood_shelter_blue" => 2,
-    "celestial_resolve_red" => 5,
-    "celestial_resolve_yellow" => 4,
-    "celestial_resolve_blue" => 3,
-    default => 0,
-  };
+  switch ($cardID) {
+    case "reinforce_the_line_red":
+      return 4;
+    case "reinforce_the_line_yellow":
+      return 3;
+    case "reinforce_the_line_blue":
+      return 2;
+    case "summerwood_shelter_red":
+      return 4;
+    case "summerwood_shelter_yellow":
+      return 3;
+    case "summerwood_shelter_blue":
+      return 2;
+    case "celestial_resolve_red":
+      return 5;
+    case "celestial_resolve_yellow":
+      return 4;
+    case "celestial_resolve_blue":
+      return 3;
+    default:
+      return 0;
+  }
 }
 
 function OnDefenseReactionResolveEffects($from, $cardID)
@@ -1038,7 +1064,7 @@ function OnBlockResolveEffects($cardID = "")
 function GetDefendingCardsFromCombatChainLink($chainLink, $defPlayer)
 {
   // returns array of equipments played by the defending hero which is still on the chain
-  $defendingCards = [];
+  $defendingCards = array();
   for ($i = 0; $i < count($chainLink); $i += ChainLinksPieces()) {
     if ($chainLink[$i + 2] == 1 && $chainLink[$i + 1] == $defPlayer) {
       array_push($defendingCards, $chainLink[$i]);
@@ -1081,7 +1107,7 @@ function OnBlockEffects($index, $from)
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
   $cardSubtype = CardSubType($chainCard->ID());
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -1099,7 +1125,9 @@ function OnBlockEffects($index, $from)
         case "withstand_yellow":
         case "withstand_blue":
           if (ClassContains($chainCard->ID(), "GUARDIAN", $currentPlayer) && CardSubType($chainCard->ID()) == "Off-Hand") {
-            $amount = ($currentTurnEffects[$i] == "withstand_red") ? 6 : ($currentTurnEffects[$i] == "withstand_yellow") ? 5 : 4;
+            if ($currentTurnEffects[$i] == "withstand_red") $amount = 6;
+            else if ($currentTurnEffects[$i] == "withstand_yellow") $amount = 5;
+            else $amount = 4;
             $chainCard->ModifyDefense($amount);
             $remove = true;
           }
@@ -1261,7 +1289,7 @@ function IsDominateActive()
     case "open_the_center_red":
     case "open_the_center_yellow":
     case "open_the_center_blue":
-      return ComboActive() ? true : false;
+      return (ComboActive() ? true : false);
     case "demolition_crew_red":
     case "demolition_crew_yellow":
     case "demolition_crew_blue":
@@ -1289,7 +1317,7 @@ function IsDominateActive()
     case "macho_grande_blue":
       return true;
     case "break_tide_yellow":
-      return ComboActive() ? true : false;
+      return (ComboActive() ? true : false);
     case "payload_red":
     case "payload_yellow":
     case "payload_blue":
@@ -1495,13 +1523,13 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
-  $combatChainState[$CCS_CachedDominateActive] = IsDominateActive() ? "1" : "0";
-  $combatChainState[$CCS_CachedOverpowerActive] = IsOverpowerActive() ? "1" : "0";
+  $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
+  $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
   if ($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
-  $combatChainState[$CCS_WagersThisLink] = IsWagerActive() ? intval($combatChainState[$CCS_WagersThisLink]) : "0";
-  $combatChainState[$CCS_PhantasmThisLink] = IsPhantasmActive() ? "1" : "0";
-  $combatChainState[$CCS_AttackFused] = IsFusionActive() ? "1" : "0";
+  $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? intval($combatChainState[$CCS_WagersThisLink]) : "0");
+  $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
+  $combatChainState[$CCS_AttackFused] = (IsFusionActive() ? "1" : "0");
 }
 
 function CachedTotalPower()
@@ -1519,20 +1547,20 @@ function CachedTotalBlock()
 function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
-  return $combatChainState[$CCS_CachedDominateActive] == "1" ? true : false;
+  return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
 }
 
 function CachedOverpowerActive()
 {
   global $combatChainState, $CCS_CachedOverpowerActive;
-  return $combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false;
+  return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
 }
 
 function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
-    return $combatChainState[$CCS_WagersThisLink] >= "1" ? true : false;
+    return ($combatChainState[$CCS_WagersThisLink] >= "1" ? true : false);
   } else return false;
 }
 
@@ -1540,7 +1568,7 @@ function CachedFusionActive()
 {
   global $combatChainState, $CCS_AttackFused;
   if (isset($combatChainState[$CCS_AttackFused])) {
-    return $combatChainState[$CCS_AttackFused] == "1" ? true : false;
+    return ($combatChainState[$CCS_AttackFused] == "1" ? true : false);
   } else return false;
 }
 
@@ -1548,7 +1576,7 @@ function CachedPhantasmActive()
 {
   global $combatChainState, $CCS_PhantasmThisLink;
   if (isset($combatChainState[$CCS_PhantasmThisLink])) {
-    return $combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false;
+    return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
   } else return false;
 }
 
@@ -1580,11 +1608,11 @@ function IsPiercingActive($cardID)
 function IsTowerActive()
 {
   global $combatChain;
-  return CachedTotalPower() >= 13 && HasTower($combatChain[0]);
+  return (CachedTotalPower() >= 13 && HasTower($combatChain[0]));
 }
 
 function IsHighTideActive()
 {
   global $combatChain, $mainPlayer;
-  return HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer);
+  return (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer));
 }

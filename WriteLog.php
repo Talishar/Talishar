@@ -58,7 +58,7 @@ function EchoLog($gameName, $playerID)
     $blue = "#128ee5";
     $line = str_replace("<PLAYER1COLOR>", $playerID == 1 || $playerID == 3 ? $blue : $red, $line);
     $line = str_replace("<PLAYER2COLOR>", $playerID == 2 ? $blue : $red, $line);
-    echo $line;
+    echo ($line);
     fclose($handler);
   }
 }

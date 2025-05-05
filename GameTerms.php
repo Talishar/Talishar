@@ -73,7 +73,7 @@ function TypeToPlay($phase)
       return "cards from banish";
     case "YESNO":
     case "OK":
-      return str_replace("_", " ", $turn[2] ?? "");
+      return str_replace("_", " ", isset($turn[2]) ? $turn[2] : "");
     case "MULTICHOOSETEXT":
       return " options";
     case "MAYMULTICHOOSETEXT":
@@ -119,9 +119,12 @@ function PlayTerm($phase, $from="", $cardID="")
   if ($cardID != "") {
     if (IsStaticType(CardType($cardID), $from, $cardID) && $phase != "B") return "activated";
   }
-  return match ($phase) {
-    "P" => "pitched",
-    "B" => "blocked with",
-    default => "played",
-  };
+  switch ($phase) {
+    case "P":
+      return "pitched";
+    case "B":
+      return "blocked with";
+    default:
+      return "played";
+  }
 }
