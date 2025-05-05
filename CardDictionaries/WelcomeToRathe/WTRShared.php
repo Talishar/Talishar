@@ -154,7 +154,7 @@
 
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer, $CS_DamagePrevention;
+    global $mainPlayer, $currentPlayer, $defPlayer, $CS_DamagePrevention, $CombatChain;
     $rv = "";
     switch($cardID) {
       case "blessing_of_deliverance_red": case "blessing_of_deliverance_yellow": case "blessing_of_deliverance_blue": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
@@ -255,7 +255,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "glint_the_quicksilver_blue":
-        GiveAttackGoAgain();
+        if (TypeContains($CombatChain->AttackCard()->ID(), "W")) GiveAttackGoAgain();
         if(RepriseActive()) Draw($currentPlayer);
         return "";
       case "steelblade_supremacy_red": case "ironsong_determination_yellow":

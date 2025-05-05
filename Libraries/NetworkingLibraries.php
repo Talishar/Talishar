@@ -1822,6 +1822,24 @@ function GetLayerTarget($cardID, $from)
 {
   global $currentPlayer;
   switch ($cardID) {
+    case "rout_red":
+    case "singing_steelblade_yellow":
+    case "overpower_red":
+    case "overpower_yellow":
+    case "overpower_blue":
+    case "glint_the_quicksilver_blue":
+    case "biting_blade_red":
+    case "biting_blade_yellow":
+    case "biting_blade_blue":
+    case "stroke_of_foresight_red":
+    case "stroke_of_foresight_yellow":
+    case "stroke_of_foresight_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:type=W&ACTIVEATTACK:type=W");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon attack");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "rattle_bones_red":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=AA;class=RUNEBLADE");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target Runeblade attack action card");

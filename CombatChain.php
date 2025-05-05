@@ -126,14 +126,17 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "whelming_gustwave_blue":
       return (ComboActive() ? 1 : 0);
     case "rout_red":
-      return 3;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
     case "singing_steelblade_yellow":
-      return 1;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
     case "overpower_red":
+      if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return 0;
       return $repriseActive ? 6 : 4;
     case "overpower_yellow":
+      if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return 0;
       return $repriseActive ? 5 : 3;
     case "overpower_blue":
+      if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return 0;
       return $repriseActive ? 4 : 2;
     case "ironsong_response_red":
       return TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 3 : 0;
@@ -142,17 +145,17 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "ironsong_response_blue":
       return TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 1 : 0;
     case "biting_blade_red":
-      return 3;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
     case "biting_blade_yellow":
-      return 2;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 2 : 0;
     case "biting_blade_blue":
-      return 1;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
     case "stroke_of_foresight_red":
-      return 3;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
     case "stroke_of_foresight_yellow":
-      return 2;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 2 : 0;
     case "stroke_of_foresight_blue":
-      return 1;
+      return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
     case "barraging_brawnhide_red":
     case "barraging_brawnhide_yellow":
     case "barraging_brawnhide_blue":

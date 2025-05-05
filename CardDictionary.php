@@ -1937,7 +1937,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = true;
     return true;
   }
-  // block NAAs if a chain break trigger is active
   switch ($cardID) {
     case "breaking_scales":
       return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
@@ -1957,7 +1956,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "stroke_of_foresight_red":
     case "stroke_of_foresight_yellow":
     case "stroke_of_foresight_blue":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (SearchCombatChainAttacks($mainPlayer, type:"W") != "") return false;
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) return false;
+      return true;
     case "ironsong_response_red":
     case "ironsong_response_yellow":
     case "ironsong_response_blue":
