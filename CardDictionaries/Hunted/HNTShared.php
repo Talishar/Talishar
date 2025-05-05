@@ -477,7 +477,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "affirm_loyalty_red":
     case "endear_devotion_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("fealty", $currentPlayer);
       break;
     case "fire_and_brimstone_red":
@@ -497,7 +497,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sisters_of_fire_red":
     case "sizzling_steel_red":
     case "stabbing_pain_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "jagged_edge_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

@@ -2735,8 +2735,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "dynastic_dedication_red":
     case "imperial_intent_red":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
-      return false;
+      if (SearchCombatChainAttacks($currentPlayer, subtype:"Dagger") != "") return false;
+      if (SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return false;
+      return true;
     case "brothers_of_flame_red":
       if (NumDraconicChainLinks() < 2) return true;
       if (!$CombatChain->HasCurrentLink()) return true;
