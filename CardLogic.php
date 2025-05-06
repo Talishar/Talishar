@@ -1863,7 +1863,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "bramble_spark_red":
     case "bramble_spark_yellow":
     case "bramble_spark_blue":
-      DealArcane(1, 0, "PLAYCARD", $target, true);
+      DealArcane(1, 0, "PLAYCARD", $CombatChain->AttackCard()->ID(), true, resolvedTarget:$target);
       break;
     case "embodiment_of_earth":
       DestroyAuraUniqueID($player, $uniqueID);

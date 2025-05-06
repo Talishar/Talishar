@@ -714,7 +714,9 @@ function OnAttackEffects($power)
         case "bramble_spark_yellow":
         case "bramble_spark_blue":
           if ($attackType == "AA") {
-            AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $power);
+            SetArcaneTarget($mainPlayer, $currentTurnEffects[$i], 0, 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+            AddDecisionQueue("ADDTRIGGER", $mainPlayer, $currentTurnEffects[$i], 1);
             $remove = true;
           }
           break;
