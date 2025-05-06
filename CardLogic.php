@@ -2846,12 +2846,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "gone_in_a_flash_red":
       CleanUpCombatEffects();
-      AddPlayerHand($combatChain[0], $mainPlayer, "CC");
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      if (!SearchLayersForPhase("RESOLUTIONSTEP")) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
+      else $chainLinks[count($chainLinks)-1][2] = 0;
       if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
         //only close the chain if removed before the resolution step
         CloseCombatChain(false);
       }
+      AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
       break;
     case "channel_lightning_valley_yellow":
       if ($additionalCosts == "CHANNEL") {
