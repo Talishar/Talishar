@@ -1640,10 +1640,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
+    //gone in a flash is the active chainlink
     $goneActive = $CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red";
-    $goneActive = $goneActive || (SearchLayersForPhase("RESOLUTIONSTEP") && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1);
+    //we're in the resolution step of gone's chain link
+    $goneActive = $goneActive || (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1 && SearchLayersForCardID("gone_in_a_flash_red") == -1);
     if($goneActive && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
-      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true) || SearchLayersForPhase("RESOLUTIONSTEP")) {
+      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true) || SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
