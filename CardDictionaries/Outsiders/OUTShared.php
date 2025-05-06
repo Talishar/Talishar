@@ -606,7 +606,7 @@ function OUTAbilityCost($cardID)
         if(ComboActive() && IsHeroAttackTarget())
         {
           AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
-          AddDecisionQueue("DEALDAMAGE", $defPlayer, "THEIRCHAR-0", 1);
+          AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
         }
         break;
       case "barbed_undertow_red":
