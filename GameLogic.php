@@ -2537,6 +2537,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd", $additional);
           break;
+        case "bite_red":
+        case "bite_yellow":
+        case "bite_blue":
+          $targetLoc = explode("-", $target)[0];
+          $targetInd = explode("-", $target)[1];
+          if ($targetLoc == "MYCHAR") {
+            $targetInd = GetMZUID($player, $target);
+          }
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
+          break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
           break;

@@ -3043,6 +3043,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       else AddDecisionQueue("PASSPARAMETER", $player, -1);
       AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
       break;
+    case "bite_red":
+    case "bite_yellow":
+    case "bite_blue":
+      ThrowWeapon("Dagger", $cardID, target:$target);
+      break;
     case "hunted_or_hunter_red":
       WriteLog("The Hunter has become the hunted");
       LoseHealth(1, $mainPlayer);
