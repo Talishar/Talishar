@@ -2787,19 +2787,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $handInd = explode("-", $lastResult)[1];
       $hand = &GetHand($player);
       $cardID = $hand[$handInd];
-      //Right now it's unclear what happens to action cards selected when they can't be blocked with (eg dominate)
-      //I'm implementing it right now as the effect failing
-      if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
+      $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
+      $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
+      if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && !$dominateRestricted && !$overpowerRestricted) {
         AddCombatChain($cardID, $player, "HAND", 0, -1);
         OnBlockResolveEffects($cardID);
         unset($hand[$handInd]);
         $hand = array_values($hand);
       }
-      else {
+      elseif(!(TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) {
         AddGraveyard($cardID, $player, "HAND");
         unset($hand[$handInd]);
         $hand = array_values($hand);
       }
+      else WriteLog(CardLink($cardID, $cardID) . " could not be added as a blocking card");
       return $lastResult;
     case "COMPARENUMBERS":
       $otherPlayer = $player == 1 ? 2 : 1;
