@@ -705,7 +705,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "timidity_point_red":
     case "timidity_point_yellow":
     case "timidity_point_blue":
-    case "runic_reclamation_red":
     case "swarming_gloomveil_red":
     case "drowning_dire_red":
     case "drowning_dire_yellow":
@@ -1005,6 +1004,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
         AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
+      }
+      break;
+    case "runic_reclamation_red":
+      if (IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);

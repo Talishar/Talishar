@@ -2521,6 +2521,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
       switch ($params[0]) {
+        case "runic_reclamation_red":
+          AddLayer("TRIGGER", $mainPlayer, $params[0], GetMZUID($targettedPlayer, $target), $additional);
+          break;
         case "blast_to_oblivion_red": //these targetting effects need UID
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
