@@ -687,6 +687,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "water_the_seeds_red":
       case "water_the_seeds_yellow":
       case "water_the_seeds_blue": 
+      case "ignite_red":
       case "wrath_of_retribution_red":
       case "fire_tenet_strike_first_red":
       case "poisoned_blade_red":
