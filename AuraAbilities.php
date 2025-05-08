@@ -249,7 +249,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
       AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
-      AddDecisionQueue("DRAW", $player, "-", 0);
+      AddDecisionQueue("DRAW", $player, $cardID, 0);
       break;
     default:
       break;
