@@ -363,7 +363,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "bite_blue":
       if (IsHeroAttackTarget())
       {
-        ThrowWeapon("Dagger", $cardID, true);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
+        AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
       }
       break;
     case "whittle_from_bone_red":
@@ -1018,7 +1022,7 @@ function ListDracDaggersGraveyard($player) {
   for ($i = 0; $i < count($graveyard); $i += DiscardPieces()) {
     $cardID = $graveyard[$i];
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger") && !isFaceDownMod($graveyard[$i+2])) {
-      if (TalentContains($cardID, "DRACONIC")) {
+      if (TalentContains($cardID, "DRACONIC", $player)) {
         if ($weapons != "") $weapons .= ",";
         $weapons .= $cardID;
       }

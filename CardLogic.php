@@ -705,7 +705,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "timidity_point_red":
     case "timidity_point_yellow":
     case "timidity_point_blue":
-    case "runic_reclamation_red":
     case "swarming_gloomveil_red":
     case "drowning_dire_red":
     case "drowning_dire_yellow":
@@ -1005,6 +1004,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
         AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
+      }
+      break;
+    case "runic_reclamation_red":
+      if (IsHeroAttackTarget()) {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
@@ -2846,8 +2853,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "gone_in_a_flash_red":
       CleanUpCombatEffects();
-      AddPlayerHand($combatChain[0], $mainPlayer, "CC");
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      if (SearchLayersForPhase("RESOLUTIONSTEP") == -1) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
+      else $chainLinks[count($chainLinks)-1][2] = 0;
+      AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
       if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
         //only close the chain if removed before the resolution step
         CloseCombatChain(false);
@@ -3033,6 +3042,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if (CheckMarked($mainPlayer)) AddDecisionQueue("CHOOSECARD", $player, "arakni_black_widow,arakni_funnel_web,arakni_orb_weaver,arakni_redback,arakni_tarantula,arakni_trap_door");
       else AddDecisionQueue("PASSPARAMETER", $player, -1);
       AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
+      break;
+    case "bite_red":
+    case "bite_yellow":
+    case "bite_blue":
+      ThrowWeapon("Dagger", $cardID, target:$target);
       break;
     case "hunted_or_hunter_red":
       WriteLog("The Hunter has become the hunted");

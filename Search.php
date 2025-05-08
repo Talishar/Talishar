@@ -1143,6 +1143,19 @@ function CountItem($cardID, $player, $NotTokens = true)
   return $total;
 }
 
+function CountItemByName($cardName, $player)
+{
+  $items = &GetItems($player);
+  $count = count($items);
+  $pieces = ItemPieces();
+  $total = 0;
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (CardNameContains($items[$i], $cardName, $player)) ++$total;
+  }
+  if ($cardName == "Gold" && SearchCharacterForCard($player, "aurum_aegis") && SearchCharacterActive($player, "aurum_aegis")) ++$total;
+  return $total;
+}
+
 function SearchArsenalReadyCard($player, $cardID)
 {
   $arsenal = GetArsenal($player);

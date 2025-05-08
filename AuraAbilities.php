@@ -1467,10 +1467,11 @@ function AurasAttackYouControlModifiers($cardID, $player)
 {
   $auras = &GetAuras($player);
   $powerModifier = 0;
-  for ($i = 0; $i < count($auras); $i += ItemPieces()) {
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     switch ($auras[$i]) {
       case "channel_mount_heroic_red":
         if (CardType($cardID) == "AA") $powerModifier += 3;
+        break;
       default:
         break;
     }

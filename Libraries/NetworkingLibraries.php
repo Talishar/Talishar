@@ -1479,7 +1479,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
-  global $CS_NumCannonsActivated;
+  global $CS_NumCannonsActivated, $chainLinks;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1640,8 +1640,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
-    if($CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
-      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
+    //gone in a flash is the active chainlink
+    $goneActive = $CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red";
+    //we're in the resolution step of gone's chain link
+    $goneActive = $goneActive || (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1 && SearchLayersForCardID("gone_in_a_flash_red") == -1);
+    if($goneActive && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
+      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true) || SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
@@ -3041,7 +3045,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       }
       break;
     case "raise_an_army_yellow":
-      $numGold = CountItem("gold", $currentPlayer);
+      $numGold = CountItemByName("Gold", $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);

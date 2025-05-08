@@ -2521,6 +2521,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
       switch ($params[0]) {
+        case "runic_reclamation_red":
+          AddLayer("TRIGGER", $mainPlayer, $params[0], GetMZUID($targettedPlayer, $target), $additional);
+          break;
         case "blast_to_oblivion_red": //these targetting effects need UID
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
@@ -2533,6 +2536,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $targetInd = GetMZUID($player, $target);
           }
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd", $additional);
+          break;
+        case "bite_red":
+        case "bite_yellow":
+        case "bite_blue":
+          $targetLoc = explode("-", $target)[0];
+          $targetInd = explode("-", $target)[1];
+          if ($targetLoc == "MYCHAR") {
+            $targetInd = GetMZUID($player, $target);
+          }
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
           break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
@@ -2784,19 +2797,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $handInd = explode("-", $lastResult)[1];
       $hand = &GetHand($player);
       $cardID = $hand[$handInd];
-      //Right now it's unclear what happens to action cards selected when they can't be blocked with (eg dominate)
-      //I'm implementing it right now as the effect failing
-      if (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) {
+      $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
+      $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
+      if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && !$dominateRestricted && !$overpowerRestricted) {
         AddCombatChain($cardID, $player, "HAND", 0, -1);
         OnBlockResolveEffects($cardID);
         unset($hand[$handInd]);
         $hand = array_values($hand);
       }
-      else {
+      elseif(!(TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) {
         AddGraveyard($cardID, $player, "HAND");
         unset($hand[$handInd]);
         $hand = array_values($hand);
       }
+      else WriteLog(CardLink($cardID, $cardID) . " could not be added as a blocking card");
       return $lastResult;
     case "COMPARENUMBERS":
       $otherPlayer = $player == 1 ? 2 : 1;

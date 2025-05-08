@@ -580,7 +580,7 @@
     }
   }
 
-  function EVRHitEffect($cardID)
+  function EVRHitEffect($cardID, $target="-")
   {
     global $mainPlayer, $defPlayer, $CS_NumAuras, $chainLinks, $chainLinkSummary;
     switch($cardID)
@@ -650,10 +650,10 @@
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "runic_reclamation_red":
-        if(IsHeroAttackTarget()) {
-          MZChooseAndDestroy($mainPlayer, "THEIRAURAS");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "runechant", 1);
-          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        $ind = SearchAurasForUniqueID($target, $defPlayer);
+        if ($ind != -1) {
+          DestroyAura($defPlayer, $ind);
+          PlayAura("runechant", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
         }
         break;
       case "swarming_gloomveil_red":

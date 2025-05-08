@@ -62,7 +62,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
       default:
         return ELETalentHitEffect($cardID);
     }
-  } else if ($set == "EVR") return EVRHitEffect($cardID);
+  } else if ($set == "EVR") return EVRHitEffect($cardID, $target);
   else if ($set == "UPR") return UPRHitEffect($cardID);
   else if ($set == "DYN") return DYNHitEffect($cardID, $from, $CombatChain->AttackCard()->ID());
   else if ($set == "OUT") return OUTHitEffect($cardID, $from);
