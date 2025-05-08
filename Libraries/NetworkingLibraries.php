@@ -1512,7 +1512,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
       }
       if (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
-        WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please break the chain (by passing) instead of replaying your card.");
+        WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please break the chain (by passing) instead of replaying your card.", highlight: true);
         RevertGamestate();
         return "";
       }
