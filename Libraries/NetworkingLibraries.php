@@ -3045,7 +3045,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       }
       break;
     case "raise_an_army_yellow":
-      $numGold = CountItem("gold", $currentPlayer);
+      $numGold = CountItemByName("Gold", $currentPlayer);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
