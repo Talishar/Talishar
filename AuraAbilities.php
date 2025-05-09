@@ -1166,7 +1166,7 @@ function AuraLoseHealthAbilities($player, $amount)
 
 function AuraPlayAbilities($cardID, $from = "")
 {
-  global $currentPlayer, $CS_NumIllusionistActionCardAttacks;
+  global $currentPlayer, $CS_NumIllusionistActionCardAttacks, $defPlayer, $layers;
   $auras = &GetAuras($currentPlayer);
   $cardType = CardType($cardID);
   $cardSubType = CardSubType($cardID);
@@ -1235,7 +1235,14 @@ function AuraPlayAbilities($cardID, $from = "")
   }
   // handle runechants separately so we can handle large amounts of them
   $runechantCount = count($runechantUIDS);
-  if ($runechantCount > 0) {
+  $atkPower = isset($layers[0]) ?  PowerValue($layers[0]) : 0;
+  //if there are a lot of runechants, and there are enough runechants to probably be lethal
+  //assumes that every card in teh opponent's hand can prevent 3 damage, and the arsenal can prevent 4
+  if ($runechantCount > 40 && $runechantCount > GetHealth($defPlayer) + 16 - $atkPower) {
+    WriteLog("There appear to be enough runechants to win, ending the game to avoid a crash. If this is incorrect, please edit the game result on fabrary", highlight: true);
+    LoseHealth(GetHealth($defPlayer), $defPlayer);
+  }
+  elseif ($runechantCount > 0) {
     $abilityType = GetResolvedAbilityType($cardID, $from);
     if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
       for ($i = 0; $i < $runechantCount; $i++) {
