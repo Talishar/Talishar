@@ -1238,7 +1238,7 @@ function AuraPlayAbilities($cardID, $from = "")
   $atkPower = isset($layers[0]) ?  PowerValue($layers[0]) : 0;
   //if there are a lot of runechants, and there are enough runechants to probably be lethal
   //assumes that every card in teh opponent's hand can prevent 3 damage, and the arsenal can prevent 4
-  if ($runechantCount > 40 && $runechantCount > GetHealth($defPlayer) + 16 - $atkPower) {
+  if ($runechantCount > 40 && $runechantCount > GetHealth($defPlayer) + 20 - $atkPower) {
     WriteLog("There appear to be enough runechants to win, ending the game to avoid a crash. If this is incorrect, please edit the game result on fabrary", highlight: true);
     LoseHealth(GetHealth($defPlayer), $defPlayer);
   }
