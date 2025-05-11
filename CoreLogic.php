@@ -2011,12 +2011,15 @@ function AttackDestroyed($attackID)
   CharacterAttackDestroyedAbilities($attackID);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $mainPlayer));
   if ($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
-    AddDecisionQueue("PASSPARAMETER", $mainPlayer, $attackID);
-    AddDecisionQueue("ADDSOUL", $mainPlayer, "CC");
+    AddGraveyard($attackID, $mainPlayer, "COMBATCHAIN");
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+    $grave = GetDiscard($mainPlayer);
+    $uid = $grave[count($grave) - DiscardPieces() + 1];
   }
+
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-    AddDecisionQueue("ADDTRIGGER", $mainPlayer, "merciful_retribution_yellow," . $attackID);
+    AddLayer("TRIGGER", $mainPlayer, "merciful_retribution_yellow", additionalCosts: $uid);
+    // AddDecisionQueue("ADDTRIGGER", $mainPlayer, "merciful_retribution_yellow," . $attackID);
   }
 }
 

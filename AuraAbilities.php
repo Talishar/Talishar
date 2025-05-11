@@ -131,13 +131,16 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   $goesWhere = GoesWhereAfterResolving($cardID, $from);
   $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $player)) + ($cardID == "merciful_retribution_yellow" ? 1 : 0);
   if ($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
-    AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
-    AddDecisionQueue("ADDSOUL", $player, "PLAY", 1);
-    $goesWhere = "-";
+    if ($goesWhere == "GY") {
+      AddGraveyard($cardID, $player, "COMBATCHAIN");
+      $grave = GetDiscard($player);
+      $uid = $grave[count($grave) - DiscardPieces() + 1];
+      $goesWhere = "-";
+    }
   }
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
     if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
-    AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow," . $cardID);
+    AddLayer("TRIGGER", $player, "merciful_retribution_yellow", additionalCosts: $uid);
   }
   if (HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if (CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token

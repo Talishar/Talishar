@@ -1800,6 +1800,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "merciful_retribution_yellow":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
+      $index = SearchDiscardForUniqueID($additionalCosts, $player);
+      if ($index != -1) {
+        $graveyard = GetDiscard($player);
+        $cardID = $graveyard[$index];
+        if (TalentContains($cardID, "LIGHT")) {
+          AddSoul($cardID, $player, "DISCARD");
+          RemoveGraveyard($player, $index);
+        }
+      }
       break;
     case "phantasmal_footsteps":
       $hand = &GetHand($player);
@@ -3046,7 +3055,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "bite_red":
     case "bite_yellow":
     case "bite_blue":
-      ThrowWeapon("Dagger", $cardID, target:$target);
+      ThrowWeapon("Dagger", $parameter, target:$target);
       break;
     case "hunted_or_hunter_red":
       WriteLog("The Hunter has become the hunted");
