@@ -43,7 +43,7 @@ if (IsPlayerAI($currentPlayer)) {
 
 //Dummy - Single Player
 if ($p2Char[0] == "DUMMY") {
-  $cards = ["combustible_courier_red", "zipper_hit_red", "over_loop_blue", "micro_processor_blue", "induction_chamber_red", "zero_to_sixty_red"];
+  $cards = ["combustible_courier_red", "zipper_hit_red", "zipper_hit_blue", "zipper_hit_yellow", "over_loop_blue", "micro_processor_blue", "induction_chamber_red", "zero_to_sixty_red"];
   for ($i = 0; $i < 5; ++$i) {
     AddGraveyard($cards[array_rand($cards)], 2, "DECK");
   }

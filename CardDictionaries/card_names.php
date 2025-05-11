@@ -17,6 +17,12 @@ function CardName($cardID)
         return "Taylor";
       case "polly_cranka":
         return "Polly Cranka";
+      case "DUMMY":
+        return "Practice Dummy";
+      case "DUMMYDISHONORED":
+        return "Dishonored Hero";
+      case "tusk":
+        return "Tusk";
       default:
         break;
     }
@@ -28,12 +34,6 @@ function CardName($cardID)
     {
       return GeneratedCardName($cardID);
     }
-  return match ($cardID) {
-    "DUMMY" => "Practice Dummy",
-    "DUMMYDISHONORED" => "Dishonored Hero",
-    "tusk" => "Tusk",
-    default => "",
-  };
 	}
 
 //checks if meld cards share a name

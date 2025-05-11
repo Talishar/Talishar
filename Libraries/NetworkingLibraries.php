@@ -1465,7 +1465,7 @@ function FinalizeTurn()
   $MakeStartTurnBackup = true;
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
-  WriteLog("Player $mainPlayer's turn $currentTurn has begun");
+  WriteLog("Player $mainPlayer's turn $currentTurn has begun.");
   DoGamestateUpdate();
   ProcessDecisionQueue();
 }
