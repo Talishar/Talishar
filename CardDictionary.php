@@ -114,7 +114,8 @@ function CardType($cardID, $from="")
     "riggermortis_yellow" => "A",
     "sawbones_dock_hand_yellow" => "A",
     "polly_cranka" => "Companion",
-    "treasure_island" => "Macro"
+    "treasure_island" => "Macro",
+    "tusk" => "W" // AI custom weapon
   ];
 
   if (isset($specialCases[$cardID])) {
@@ -206,7 +207,8 @@ function SetID($cardID)
     "nitro_mechanoidb" => GeneratedSetID("nitro_mechanoid"),
     "nitro_mechanoidc" => GeneratedSetID("nitro_mechanoid"),
     "the_hand_that_pulls_the_strings" => "HNT407",
-    "valda_seismic_impact" => "HER135"
+    "valda_seismic_impact" => "HER135",
+    "tusk" => "DUM"
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -855,16 +857,13 @@ function PowerValue($cardID, $index=-1, $base=false)
     if ($number < 400 || ($set != "MON" && $set != "DYN"))
     return GeneratedPowerValue($cardID);
   }
-  switch ($cardID) {
-    case "nitro_mechanoida":
-      return 5;
-    case "suraya_archangel_of_knowledge":
-      return 4;
-    case "teklovossen_the_mechropotent":
-      return 6;
-    default:
-      return 0;
-  }
+  return match ($cardID) {
+    "nitro_mechanoida" => 5,
+    "suraya_archangel_of_knowledge" => 4,
+    "teklovossen_the_mechropotent" => 6,
+    "tusk" => 2,
+    default => 0,
+  };
 }
 
 function HasGoAgain($cardID): bool|int
@@ -1122,6 +1121,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
     case "magrar": return "A";
     case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
     case "bravo_flattering_showman": return "A";
+    case "tusk": return "AA"; // AI custom weapon
     default:
       return "";
   }
