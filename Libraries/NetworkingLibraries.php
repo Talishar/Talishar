@@ -1961,9 +1961,14 @@ function GetLayerTarget($cardID, $from)
     case "oasis_respite_red":
     case "oasis_respite_yellow":
     case "oasis_respite_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to grant respite");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      if (!ShouldAutotargetOpponent($currentPlayer)) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to grant respite");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      }
+      else {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-0",1);
+      }
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
