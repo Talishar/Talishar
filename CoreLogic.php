@@ -854,6 +854,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   $otherPlayer = $player == 1 ? 2 : 1;
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
+  $p2Char = &GetPlayerCharacter($otherPlayer);
   if ((SearchCurrentTurnEffects("poison_the_well_blue", 1, remove: true) || SearchCurrentTurnEffects("poison_the_well_blue", 2, remove: true)) && $preventable) {
     WriteLog("<span style='color:green;'>🧪 Somebody poisoned the water hole.</span>");
     LoseHealth($amount, $player);
@@ -869,7 +870,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
-  if(!IsPlayerAI($player) || $player == 1) $health += $amount;
+  if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
   LogHealthGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {
