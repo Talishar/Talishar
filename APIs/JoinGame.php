@@ -69,6 +69,7 @@ if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
   echo (json_encode($response));
   exit;
 }
+
 if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
   $starterDeck = true;
   switch ($decksToTry) {
@@ -80,6 +81,7 @@ if ($decklink == "" && $deck == "" && $favoriteDeckLink == "0") {
       break;
   }
 }
+
 $preconDecklinks = [
   "https://fabrary.net/decks/01JRH0631MH5A9JPVGTP3TKJXN", //maxx
   "https://fabrary.net/decks/01JN2DEG4X2V8DVMCWFBWQTTSC", //aurora
