@@ -1229,7 +1229,10 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "runechant":
-        array_push($runechantUIDS, $auras[$i+6]);
+        $abilityType = GetResolvedAbilityType($cardID, $from);
+        if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
+          array_push($runechantUIDS, $auras[$i+6]);
+        }
         break;
       default:
         break;
@@ -1246,11 +1249,8 @@ function AuraPlayAbilities($cardID, $from = "")
     LoseHealth(GetHealth($defPlayer), $defPlayer);
   }
   elseif ($runechantCount > 0) {
-    $abilityType = GetResolvedAbilityType($cardID, $from);
-    if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || ((TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA")) && $abilityType != "I") {
-      for ($i = 0; $i < $runechantCount; $i++) {
-        AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
-      }
+    for ($i = 0; $i < $runechantCount; $i++) {
+      AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
     }
   }
 }
