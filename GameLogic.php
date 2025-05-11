@@ -1775,7 +1775,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $index = intval(explode("-", $lastResult)[1]); 
         $player = $player == 1 ? 2 : 1;
       }
-      elseif(substr($lastResult, 0, 5) == "MY") {
+      elseif(substr($lastResult, 0, 2) == "MY") {
         $index = intval(explode("-", $lastResult)[1]);
       }
       else {
