@@ -86,7 +86,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
       "themai" => "invoke_themai_red",
       "vynserakai" => "invoke_vynserakai_red",
       "yendurai" => "invoke_yendurai_red",
-      "suraya_archangel_of_knowledge" => "invoke_suraya",
+      "suraya_archangel_of_knowledge" => "invoke_suraya_yellow",
       "polly_cranka_ally" => "polly_cranka",
       default => $cardID
     };
