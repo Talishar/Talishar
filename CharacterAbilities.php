@@ -1283,7 +1283,8 @@ function CharacterAttackDestroyedAbilities($attackID)
     switch ($character[$i]) {
       case "phantasmal_footsteps":
         if ($character[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
-          AddDecisionQueue("ADDTRIGGER", $mainPlayer, $character[$i], $i);
+          AddLayer("TRIGGER", $mainPlayer, $character[$i]);
+          // AddDecisionQueue("ADDTRIGGER", $mainPlayer, $character[$i], $i);
           --$character[$i + 5];
         }
         break;

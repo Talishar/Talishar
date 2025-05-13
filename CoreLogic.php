@@ -2019,7 +2019,7 @@ function AttackDestroyed($attackID)
 
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
     AddLayer("TRIGGER", $mainPlayer, "merciful_retribution_yellow", additionalCosts: $uid);
-    // AddDecisionQueue("ADDTRIGGER", $mainPlayer, "merciful_retribution_yellow," . $attackID);
+    // AddDecisionQueue("ADDTRIGGER", $mainPlayer, "merciful_retribution_yellow," . $attackID, 1);
   }
 }
 
