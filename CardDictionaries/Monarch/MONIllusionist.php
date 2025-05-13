@@ -43,6 +43,7 @@
     switch($cardID)
     {
       case "herald_of_erudition_yellow":
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         Draw($mainPlayer);
@@ -53,20 +54,24 @@
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         break;
-      case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue": 
+      case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue":
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         break;
       case "herald_of_protection_red": case "herald_of_protection_yellow": case "herald_of_protection_blue":
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         PlayAura("spectral_shield", $mainPlayer);
         break;
       case "herald_of_ravages_red": case "herald_of_ravages_yellow": case "herald_of_ravages_blue":
         DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         break;
@@ -77,14 +82,17 @@
         AddDecisionQueue("MULTIADDTOPDECK", $mainPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         break;
       case "herald_of_tenacity_red": case "herald_of_tenacity_yellow": case "herald_of_tenacity_blue": 
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         break;
       case "wartune_herald_red": case "wartune_herald_yellow": case "wartune_herald_blue": 
+        if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
         break;
