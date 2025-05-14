@@ -3220,6 +3220,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         WriteLog("Player $player plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
       }
       break;
+    case "fiddlers_green_red": case "fiddlers_green_yellow": case "fiddlers_green_blue":
+      $healthGain = match ($parameter) {
+        "fiddlers_green_red" => 3,
+        "fiddlers_green_yellow" => 2,
+        "fiddlers_green_blue" => 1,
+      };
+      GainHealth($healthGain, $player);
+      break;
     default:
       break;
   }
