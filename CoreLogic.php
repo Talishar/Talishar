@@ -626,6 +626,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain;
+  global $landmarks;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -637,6 +638,11 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
       if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA") {
         $otherCharacter[1] = 1;
         PlayAura("embodiment_of_earth", $otherPlayer);
+      }
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if ($treasureID != -1 && !IsAllyAttackTarget()) {
+        $numGold = min($damage, $landmarks[$treasureID + 3]);
+        if ($numGold > 0) AddLayer("TRIGGER", $otherPlayer, "treasure_island", additionalCosts:$damage);  
       }
       if ($source == "cryptic_crossing_yellow" && SearchCurrentTurnEffects("cryptic_crossing_yellow", $mainPlayer, true)) {
         WriteLog("Player " . $mainPlayer . " drew a card and Player " . $otherPlayer . " must discard a card");
