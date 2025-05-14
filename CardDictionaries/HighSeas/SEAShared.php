@@ -7,6 +7,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "gold_baited_hook" => "A",
 
     "gravy_bones_shipwrecked_looter" => "I",
+    "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
     "chowder_hearty_cook_yellow" => "I",
     "wailer_humperdink_yellow" => $from == "PLAY" ? "AA": "A",
@@ -116,6 +117,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     // Gravy cards
     case "gravy_bones_shipwrecked_looter":
+    case "gravy_bones":
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
       break;

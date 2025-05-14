@@ -1180,6 +1180,7 @@ function EquipPayAdditionalCosts($cardIndex)
       BanishFromSoul($currentPlayer);
       break;
     case "gravy_bones_shipwrecked_looter":
+    case "gravy_bones":
     case "puffin_hightail":
     case "puffin":
     case "marlynn_treasure_hunter":

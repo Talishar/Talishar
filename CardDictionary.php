@@ -2742,6 +2742,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "shock_frock":
       return GetClassState($player, $CS_NumLightningPlayed) == 0;
     case "gravy_bones_shipwrecked_looter":
+    case "gravy_bones":
     case "puffin_hightail":
     case "puffin":
     case "marlynn_treasure_hunter":
@@ -4181,6 +4182,7 @@ function PlayableFromGraveyard($cardID, $mod="-")
   global $currentPlayer;
   if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer)) return true;
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $currentPlayer)) return true;
   switch ($cardID) {
     case "graven_call":
       return true;
