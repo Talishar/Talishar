@@ -20,6 +20,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "redspine_manta" => "A",
     "marlynn_treasure_hunter" => "A",
+    "marlynn" => "A",
     "hammerhead_harpoon_cannon" => "A",
 
     "diamond_amulet_blue" => "I",
@@ -46,6 +47,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "gold_baited_hook" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
+    "marlynn" => true,
     "hammerhead_harpoon_cannon" => true,
     default => false,
   };
@@ -216,6 +218,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       LoadArrow($currentPlayer);
       return "";
     case "marlynn_treasure_hunter":
+    case "marlynn":
       AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
       break;
     case "hammerhead_harpoon_cannon":

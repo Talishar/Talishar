@@ -3184,6 +3184,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Draw($player, effectSource:$parameter);
       break;
     case "marlynn_treasure_hunter":
+    case "marlynn":
       LoadArrow($player);
       break;
     case "sunken_treasure_blue":

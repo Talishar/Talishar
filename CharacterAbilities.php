@@ -1182,6 +1182,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "gravy_bones_shipwrecked_looter":
     case "puffin_hightail":
     case "marlynn_treasure_hunter":
+    case "marlynn":
       $goldIndex = GetItemIndex("gold", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $goldIndex);
       Tap("MYCHAR-$cardIndex", $currentPlayer);

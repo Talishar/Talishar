@@ -3116,7 +3116,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
-  if ($mainPhase && $player == $mainPlayer && SearchCharacterActive($player, "marlynn_treasure_hunter")) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
+  if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn_treasure_hunter"))) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
+  if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn"))) AddLayer("TRIGGER", $player, "marlynn");
   if (SearchCharacterActive($player, "earthlore_bounty")) {
     $context = $effectSource != "-" ? $effectSource : $EffectContext;
     if ($context != "-") {
