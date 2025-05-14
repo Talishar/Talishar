@@ -111,6 +111,7 @@ function CardType($cardID, $from="")
     "graphene_chelicera" => "W,T",
     "valda_seismic_impact" => "C",
     "chum_friendly_first_mate_yellow" => "A",
+    "chowder_hearty_cook_yellow" => "A",
     "riggermortis_yellow" => "A",
     "sawbones_dock_hand_yellow" => "A",
     "polly_cranka" => "Companion",
@@ -323,6 +324,7 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Legs,Evo";
     case "chum_friendly_first_mate_yellow":
     case "sawbones_dock_hand_yellow":
+    case "chowder_hearty_cook_yellow":
       return "Ally";
     default:
       return "";
@@ -411,6 +413,7 @@ function CardClass($cardID)
     case "sawbones_dock_hand_yellow":
     case "riggermortis_yellow":
     case "chum_friendly_first_mate_yellow":
+    case "chowder_hearty_cook_yellow":
     case "gravy_bones":
     case "gravy_bones_shipwrecked_looter":
       return "PIRATE,NECROMANCER";
@@ -1141,6 +1144,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "war_cry_of_bellona_yellow" => "I,AR",
     "chum_friendly_first_mate_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "sawbones_dock_hand_yellow" => ($from != "PLAY") ? "" : "I,AA",
+    "chowder_hearty_cook_yellow" => ($from != "PLAY") ? "" : "I,AA",
     default => "",
   };
 }
@@ -1276,6 +1280,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       return $names;
     case "sawbones_dock_hand_yellow":
+    case "chowder_hearty_cook_yellow":
       $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -1477,7 +1482,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
     else return false;
   }
-  if (($cardID == "sawbones_dock_hand_yellow") && $from == "PLAY") {
+  if (($cardID == "sawbones_dock_hand_yellow" || $cardID == "chowder_hearty_cook_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase)) return true;
@@ -2839,6 +2844,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":
     case "sawbones_dock_hand_yellow":
+    case "chowder_hearty_cook_yellow":
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "shelter_from_the_storm_red":
       return GetResolvedAbilityType($cardID, $from) == "DR";

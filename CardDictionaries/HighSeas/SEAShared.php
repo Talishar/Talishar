@@ -8,6 +8,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "gravy_bones_shipwrecked_looter" => "I",
     "chum_friendly_first_mate_yellow" => "I",
+    "chowder_hearty_cook_yellow" => "I",
     "compass_of_sunken_depths" => "I",
 
     "puffin_hightail" => "A",
@@ -104,6 +105,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "chum_friendly_first_mate_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
+      break;
+    case "chowder_hearty_cook_yellow":
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($from == "PLAY" && $abilityType == "I") GainHealth(1, $currentPlayer);
       break;
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
@@ -354,6 +359,7 @@ function HasWateryGrave($cardID): bool
     "riggermortis_yellow" => true,
     "diamond_amulet_blue" => true,
     "sawbones_dock_hand_yellow" => true,
+    "chowder_hearty_cook_yellow" => true,
     default => false
   };
 }
