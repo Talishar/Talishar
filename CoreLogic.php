@@ -1176,7 +1176,7 @@ function CombatChainClosedCharacterEffects()
         $blockModifier = $blockModifier < 0 ? 0 : $blockModifier;
         $character[$charIndex + 4] -= $blockModifier;
         if (IsWeapon($chainLinks[$i][0], "PLAY") && ($chainLinks[$i][$j] == "blade_beckoner_helm" || $chainLinks[$i][$j] == "blade_beckoner_plating" || $chainLinks[$i][$j] == "blade_beckoner_gauntlets" || $chainLinks[$i][$j] == "blade_beckoner_boots")) {
-          $character[$charIndex + 4] -= 1;
+          if($blockModifier > 0) $character[$charIndex + 4] -= 1;
         }
       } 
       elseif (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
