@@ -3181,6 +3181,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "puffin_hightail":
+    case "puffin":
       Draw($player, effectSource:$parameter);
       break;
     case "marlynn_treasure_hunter":

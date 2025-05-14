@@ -1181,6 +1181,7 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "gravy_bones_shipwrecked_looter":
     case "puffin_hightail":
+    case "puffin":
     case "marlynn_treasure_hunter":
     case "marlynn":
       $goldIndex = GetItemIndex("gold", $currentPlayer);

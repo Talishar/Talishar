@@ -14,6 +14,8 @@ function SEAAbilityType($cardID, $from="-"): string
     "compass_of_sunken_depths" => "I",
 
     "puffin_hightail" => "A",
+    "puffin" => "A",
+    
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
     "palantir_aeronought_red" => $from == "PLAY" ? "I": "AA",
     "polly_cranka", "polly_cranka_ally" => "A",
@@ -178,6 +180,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     // Puffin cards
     case "puffin_hightail":
+    case "puffin":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, isToken: true);
       break;
     case "polly_cranka": case "polly_cranka_ally":

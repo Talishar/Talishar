@@ -59,6 +59,7 @@
     for ($i = 0; $i < count($char); $i += CharacterPieces()){
       switch ($char[$i]) {
         case "puffin_hightail":
+        case "puffin":
           if (GetClassState($player, $CS_NumCranked) == 2) AddLayer("TRIGGER", $player, $char[$i]);
           break;
         default:
