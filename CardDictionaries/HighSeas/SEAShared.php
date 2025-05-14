@@ -12,6 +12,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "chowder_hearty_cook_yellow" => "I",
     "wailer_humperdink_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
+    "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
 
     "puffin_hightail" => "A",
@@ -378,6 +379,7 @@ function HasWateryGrave($cardID): bool
   return match($cardID) {
     "chum_friendly_first_mate_yellow" => true,
     "riggermortis_yellow" => true,
+    "barnacle_yellow" => true,
     "diamond_amulet_blue" => true,
     "sawbones_dock_hand_yellow" => true,
     "chowder_hearty_cook_yellow" => true,
