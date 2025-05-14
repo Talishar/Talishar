@@ -158,7 +158,7 @@ function JSONRenderedCard(
         $countersMap->counters = 0;
       }
     } 
-    else if ($subtype == "Arrow") {
+    else if ($subtype == "Arrow" && $showAmpAmount == false) {
       $countersMap->aim = $countersMap->counters;
       $countersMap->counters = 0;
     } 
