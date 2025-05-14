@@ -114,6 +114,7 @@ function CardType($cardID, $from="")
     "chowder_hearty_cook_yellow" => "A",
     "riggermortis_yellow" => "A",
     "sawbones_dock_hand_yellow" => "A",
+    "wailer_humperdink_yellow" => "A",
     "polly_cranka" => "Companion",
     "treasure_island" => "Macro",
     "tusk" => "W" // AI custom weapon
@@ -412,6 +413,7 @@ function CardClass($cardID)
       return "GUARDIAN";
     case "sawbones_dock_hand_yellow":
     case "riggermortis_yellow":
+    case "wailer_humperdink_yellow":
     case "chum_friendly_first_mate_yellow":
     case "chowder_hearty_cook_yellow":
     case "gravy_bones":
@@ -2751,6 +2753,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "polly_cranka":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
+    case "wailer_humperdink_yellow":
     case "polly_cranka_ally":
       if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
