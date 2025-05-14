@@ -2,15 +2,23 @@
 
 function PlayLandmark($cardID, $player, $from="-")
 {
-  global $landmarks;
+  global $landmarks, $mainPlayer;
   if (count($landmarks) > 0) DestroyLandmark(0); //Right now, playing a new landmark destroys the old landmark
-  if (CardSubtype($cardID) != "Landmark") {
+  if (!SubtypeContains($cardID, "Landmark")) {
     WriteError($cardID . " was tried to play as a landmark, but is not a landmark.");
     return;
   }
   array_push($landmarks, $cardID);
   array_push($landmarks, $player); //The player that originally played the landmark
   array_push($landmarks, $from);
+  array_push($landmarks, 0); // counters
+  switch ($cardID) {
+    case "treasure_island":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      break;
+    default:
+      break;
+  }
 }
 
 function DestroyLandmark($index, $skipDestroy=false)
@@ -61,8 +69,18 @@ function LandmarkStartTurnAbilities()
           AddCurrentTurnEffect($landmarks[$i], $mainPlayer);
         }
         break;
+      case "treasure_island":
+        AddCurrentTurnEffect($landmarks[$i], $mainPlayer);
+        break;
       default:
         break;
       }
     }
+}
+
+function SearchLandmarksForID($cardID)
+{
+  global $landmarks;
+  //there should only ever be one landmark
+  return $landmarks[0] == $cardID ? 0 : -1;
 }

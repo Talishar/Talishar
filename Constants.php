@@ -196,9 +196,10 @@ function LayerPieces()
 //0 - Card ID
 //1 - Player
 //2 - Where it's played from
+//3 - counters
 function LandmarkPieces()
 {
-  return 2;
+  return 3;
 }
 
 //0 - Card ID

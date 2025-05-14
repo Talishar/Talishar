@@ -1511,6 +1511,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $CS_DamagePrevention, $chainLinks;
+  global $landmarks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
@@ -3209,6 +3210,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $char = &GetPlayerCharacter($player);
       $index = SearchCharacterIndexSubtype($player, "Wrench");
       AddCurrentTurnEffect($parameter, $player, "", $char[$index + 11]);
+      break;
+    case "treasure_island":
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if ($treasureID != -1) {
+        $numGold = min($additionalCosts, $landmarks[$treasureID + 3]);
+        $landmarks[$treasureID + 3] -= $numGold;
+        PutItemIntoPlayForPlayer("gold", $player, number:$numGold, isToken:true);
+        WriteLog("Player $player plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
+      }
       break;
     default:
       break;

@@ -642,6 +642,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("Player " . $playerID . " manually created a token", highlight: true);
         if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID, $num, from:"MANUAL");
         elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID, number:$num, from:"MANUAL");
+        elseif (SubtypeContains($cardID, "Landmark")) PlayLandmark($cardID, $playerID, "MANUAL");
         else PutPermanentIntoPlay($playerID, $cardID, from:"MANUAL");
       }
       break;
@@ -3255,6 +3256,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
   global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves;
+  global $landmarks;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
@@ -3431,6 +3433,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if (!$chainClosed || $definedCardType == "AA") {
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if (!IsAllyAttackTarget() && $treasureID != -1 && SearchCurrentTurnEffects("treasure_island", $mainPlayer, true)) {
+        WriteLog("More gold discovered on treasure island!");
+        $landmarks[$treasureID + 3]++;
+      }
     }
     $EffectContext = $cardID;
     $playText = "";
