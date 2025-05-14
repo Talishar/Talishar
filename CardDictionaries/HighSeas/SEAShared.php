@@ -101,6 +101,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "portside_exchange_blue":
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+      AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$currentPlayer", 1);
+      AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
+      AddDecisionQueue("PLAYITEM", $currentPlayer, "gold", 1);
+      AddDecisionQueue("DRAW", $currentPlayer, $cardID);
+      break;
     // Gravy cards
     case "gravy_bones_shipwrecked_looter":
       Draw($currentPlayer, effectSource:$cardID);
