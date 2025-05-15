@@ -1157,7 +1157,7 @@ function AuraLoseHealthAbilities($player, $amount)
     $remove = 0;
     switch ($auras[$i]) {
       case "dimenxxional_crossroads_yellow":
-        if ($player == $mainPlayer) $remove = 1;
+        if ($player == $mainPlayer && $amount > 0) $remove = 1;
         break;
       default:
         break;
