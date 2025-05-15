@@ -2768,7 +2768,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
     case "swabbie_yellow":
-    casse "limpit_hop_a_long_yellow":
+    case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
     case "wailer_humperdink_yellow":
     case "polly_cranka_ally":
