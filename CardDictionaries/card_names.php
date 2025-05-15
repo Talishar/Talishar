@@ -21,8 +21,10 @@ function CardName($cardID)
         return "Practice Dummy";
       case "DUMMYDISHONORED":
         return "Dishonored Hero";
-      case "tusk":
+      case "tusk": // AI custom weapon
         return "Tusk";
+      case "wrenchtastic": // AI custom weapon
+        return "Wrench-tastic!";
       default:
         break;
     }

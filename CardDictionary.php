@@ -118,7 +118,8 @@ function CardType($cardID, $from="")
     "wailer_humperdink_yellow" => "A",
     "polly_cranka" => "Companion",
     "treasure_island" => "Macro",
-    "tusk" => "W" // AI custom weapon
+    "tusk" => "W", // AI custom weapon
+    "wrenchtastic" => "W" // AI custom weapon
   ];
 
   if (isset($specialCases[$cardID])) {
@@ -211,7 +212,8 @@ function SetID($cardID)
     "nitro_mechanoidc" => GeneratedSetID("nitro_mechanoid"),
     "the_hand_that_pulls_the_strings" => "HNT407",
     "valda_seismic_impact" => "HER135",
-    "tusk" => "DUM"
+    "tusk" => "DUM", // AI custom weapon
+    "wrenchtastic" => "DUM" // AI custom weapon
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -868,7 +870,8 @@ function PowerValue($cardID, $index=-1, $base=false)
     "nitro_mechanoida" => 5,
     "suraya_archangel_of_knowledge" => 4,
     "teklovossen_the_mechropotent" => 6,
-    "tusk" => 2,
+    "tusk" => 2, // AI custom weapon
+    "wrenchtastic" => 4, // AI custom weapon
     default => 0,
   };
 }
@@ -1129,6 +1132,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
     case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
     case "bravo_flattering_showman": return "A";
     case "tusk": return "AA"; // AI custom weapon
+    case "wrenchtastic": return "AA"; // AI custom weapon
     default:
       return "";
   }
