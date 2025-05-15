@@ -431,6 +431,7 @@ function AllyPayAdditionalCosts($cardIndex)
     case "chum_friendly_first_mate_yellow":
     case "riggermortis_yellow":
     case "swabbie_yellow":
+    case "limpit_hop_a_long_yellow":
     case "sawbones_dock_hand_yellow":
     case "chowder_hearty_cook_yellow":
     case "wailer_humperdink_yellow":

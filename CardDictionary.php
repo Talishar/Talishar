@@ -114,6 +114,7 @@ function CardType($cardID, $from="")
     "chowder_hearty_cook_yellow" => "A",
     "riggermortis_yellow" => "A",
     "swabbie_yellow" => "A",
+    "limpit_hop_a_long_yellow" => "A",
     "barnacle_yellow" => "A",
     "sawbones_dock_hand_yellow" => "A",
     "wailer_humperdink_yellow" => "A",
@@ -418,6 +419,7 @@ function CardClass($cardID)
     case "sawbones_dock_hand_yellow":
     case "riggermortis_yellow":
     case "swabbie_yellow":
+    case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
     case "wailer_humperdink_yellow":
     case "chum_friendly_first_mate_yellow":
@@ -2766,6 +2768,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "riggermortis_yellow":
     case "swabbie_yellow":
+    casse "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
     case "wailer_humperdink_yellow":
     case "polly_cranka_ally":

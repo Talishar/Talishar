@@ -13,6 +13,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "wailer_humperdink_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
+    "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
 
@@ -40,6 +41,7 @@ function SEAAbilityCost($cardID): int
     "wailer_humperdink_yellow" => 6,
     "riggermortis_yellow" => 1,
     "swabbie_yellow" => 2,
+    "limpit_hop_a_long_yellow" => 1,
     "peg_leg" => 3,
     "hammerhead_harpoon_cannon" => 4,
     default => 0
@@ -49,6 +51,7 @@ function SEAAbilityCost($cardID): int
 function SEAAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "limpit_hop_a_long_yellow" => true,
     "peg_leg" => true,
     "gold_baited_hook" => true,
     "redspine_manta" => true,
@@ -382,6 +385,7 @@ function HasWateryGrave($cardID): bool
     "chum_friendly_first_mate_yellow" => true,
     "riggermortis_yellow" => true,
     "swabbie_yellow" => true,
+    "limpit_hop_a_long_yellow" => true,
     "barnacle_yellow" => true,
     "diamond_amulet_blue" => true,
     "sawbones_dock_hand_yellow" => true,
