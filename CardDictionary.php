@@ -1313,10 +1313,11 @@ function GetAbilityIndex($cardID, $index, $abilityName)
   return 0;
 }
 
-function GetResolvedAbilityType($cardID, $from = "-")
+function GetResolvedAbilityType($cardID, $from = "-", $player = -1)
 {
   global $currentPlayer, $CS_AbilityIndex;
-  $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
+  $player = $player ==  -1 ? $currentPlayer : $player;
+  $abilityIndex = GetClassState($player, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
   if ($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
@@ -4707,8 +4708,13 @@ function HasAttackLayer()
   $layerIndex = count($layers) - LayerPieces();//Only the earliest layer can be an attack
   $layerID = $layers[$layerIndex];
   $parameters = explode("|", $layers[$layerIndex+2]);
+  $player = $layers[$layerIndex+1];
   // if (strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
-  if (GetResolvedAbilityType($layerID, $parameters[0]) == "AA") return true;
+  if (GetResolvedAbilityType($layerID, $parameters[0], $player) == "AA") return true;
+  //handle modal cards separately
+  if (GetAbilityTypes($layerID, from:$parameters[0]) != "") {
+    if (GetResolvedAbilityType($layerID, $parameters[0], $player) != "AA") return false;
+  }
   if ($layerID == "MELD") return false;
   $layerType = CardType($layerID);
   if ($layerType == "AA") return true; //It's an attack
