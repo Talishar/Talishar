@@ -887,7 +887,7 @@ function PassInput($autopass = true, $doublePass=false)
         BeginTurnPass();
       } else PassTurn();
     }
-    if (HoldPrioritySetting($currentPlayer) != 4 || $doublePass) {
+    if (HoldPrioritySetting($currentPlayer) != 3 || $doublePass) {
       // without this line the turn player needs to pass twice to break the chain
       // but including the line makes auto-passers automatically pass through the resolution step
       // for now only turn enable this line if you aren't on always pass
@@ -1210,7 +1210,9 @@ function FinalizeChainLink($chainClosed = false)
     $triggerName = CardLink($triggerCard, $triggerCard);
     WriteLog("<b>$triggerName may trigger when the chain breaks. Break the chain if you want to do a Non-Attack Action!</b>");
   }
-  if (!$chainClosed) {
+  //when on always pass priority, ENDTURN will be added to the stack before the resolution step finishes
+  //in that case just skip the resolution step?
+  if (!$chainClosed && SearchLayersForPhase("ENDTURN") == -1) {
     PrependLayer("RESOLUTIONSTEP", $mainPlayer, "-");
     MakeGamestateBackup();
   }
