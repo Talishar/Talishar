@@ -3230,6 +3230,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       };
       GainHealth($healthGain, $player);
       break;
+    case "sirens_of_safe_harbor_red": case "sirens_of_safe_harbor_yellow": case "sirens_of_safe_harbor_blue":
+      GainHealth(1, $player);
+      break;
     case "sea_legs_yellow":
       PutItemIntoPlayForPlayer("goldkiss_rum", $player, effectController:$player, isToken:true);
       break;
