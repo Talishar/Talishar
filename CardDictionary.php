@@ -2661,7 +2661,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
     case "dragonscaler_flight_path":
-      if(!$CombatChain->HasCurrentLink()) return true;
+      if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1) return true;
       $previousLink = SearchCombatChainAttacks($currentPlayer, talent:"DRACONIC") == "";
       $currentLink = !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer);
       if ($previousLink && $currentLink) return true;
