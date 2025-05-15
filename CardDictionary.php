@@ -1313,11 +1313,10 @@ function GetAbilityIndex($cardID, $index, $abilityName)
   return 0;
 }
 
-function GetResolvedAbilityType($cardID, $player=-1, $from = "-")
+function GetResolvedAbilityType($cardID, $from = "-")
 {
   global $currentPlayer, $CS_AbilityIndex;
-  $player = $player == -1 ? $currentPlayer : $player;
-  $abilityIndex = GetClassState($player, $CS_AbilityIndex);
+  $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
   if ($abilityTypes == "" || $abilityIndex == "-") return GetAbilityType($cardID, -1, $from);
   $abilityTypes = explode(",", $abilityTypes);
@@ -4709,10 +4708,7 @@ function HasAttackLayer()
   $layerID = $layers[$layerIndex];
   $parameters = explode("|", $layers[$layerIndex+2]);
   // if (strlen($layerID) != 6) return false;//Game phase, not a card - sorta hacky
-  if (GetResolvedAbilityType($layerID, $layers[$layerIndex+1], $parameters[0]) == "AA") return true;
-  if (GetAbilityTypes($layerID, from:$parameters[0]) != "") {
-    if (GetResolvedAbilityType($layerID, $layers[$layerIndex+1], $parameters[0]) != "AA") return false;
-  }
+  if (GetResolvedAbilityType($layerID, $parameters[0]) == "AA") return true;
   if ($layerID == "MELD") return false;
   $layerType = CardType($layerID);
   if ($layerType == "AA") return true; //It's an attack
