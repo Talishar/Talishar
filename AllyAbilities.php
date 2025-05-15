@@ -430,6 +430,7 @@ function AllyPayAdditionalCosts($cardIndex)
   switch ($cardID) {
     case "chum_friendly_first_mate_yellow":
     case "riggermortis_yellow":
+    case "swabbie_yellow":
     case "sawbones_dock_hand_yellow":
     case "chowder_hearty_cook_yellow":
     case "wailer_humperdink_yellow":
