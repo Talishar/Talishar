@@ -349,7 +349,7 @@
     {
       case "Action": case "Attack": case "Defense Reaction": case "Attack Reaction":
       case "Instant": case "Weapon": case "Hero": case "Equipment": case "Token":
-      case "Resource": case "Mentor": return true;
+      case "Resource": case "Mentor": case "Companion": return true;
       default: return false;
     }
   }

@@ -14,6 +14,8 @@ function SEAAbilityType($cardID, $from="-"): string
     "chowder_hearty_cook_yellow" => "I",
     "wailer_humperdink_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
+    "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
+    "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
     "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
@@ -41,6 +43,8 @@ function SEAAbilityCost($cardID): int
   return match ($cardID) {
     "wailer_humperdink_yellow" => 6,
     "riggermortis_yellow" => 1,
+    "swabbie_yellow" => 2,
+    "limpit_hop_a_long_yellow" => 1,
     "peg_leg" => 3,
     "hammerhead_harpoon_cannon" => 4,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
@@ -53,6 +57,7 @@ function SEAAbilityCost($cardID): int
 function SEAAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "limpit_hop_a_long_yellow" => true,
     "peg_leg" => true,
     "gold_baited_hook" => true,
     "redspine_manta" => true,
@@ -122,6 +127,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
       AddDecisionQueue("PLAYITEM", $currentPlayer, "gold", 1);
       AddDecisionQueue("DRAW", $currentPlayer, $cardID);
+      break;
+    case "expedition_to_azuro_keys_red":
+    case "expedition_to_blackwater_strait_red":
+    case "expedition_to_dreadfall_reach_red":
+    case "expedition_to_horizons_mantle_red":
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if ($treasureID != -1) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island", "treasure_island") . "?");
+        AddDecisionQueue("YESNO", $currentPlayer, "-");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-");
+        AddDecisionQueue("ADDCOUNTERLANDMARK", $currentPlayer, $treasureID, 1);
+      }
       break;
     // Gravy cards
     case "gravy_bones_shipwrecked_looter":
@@ -414,6 +431,8 @@ function HasWateryGrave($cardID): bool
   return match($cardID) {
     "chum_friendly_first_mate_yellow" => true,
     "riggermortis_yellow" => true,
+    "swabbie_yellow" => true,
+    "limpit_hop_a_long_yellow" => true,
     "barnacle_yellow" => true,
     "diamond_amulet_blue" => true,
     "sawbones_dock_hand_yellow" => true,

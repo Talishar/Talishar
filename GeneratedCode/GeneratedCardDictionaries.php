@@ -2,6 +2,7 @@
 function GeneratedCardType($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "ALLY",
 "10000_year_reunion_red" => "A",
 "a_drop_in_the_ocean_blue" => "I",
 "absorb_in_aether_red" => "DR",
@@ -2222,6 +2223,7 @@ default => "AA"
 function GeneratedPowerValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => 3,
 "adrenaline_rush_red" => 4,
 "adrenaline_rush_yellow" => 3,
 "adrenaline_rush_blue" => 2,
@@ -3829,6 +3831,7 @@ default => 0
 function GeneratedBlockValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => -1,
 "a_drop_in_the_ocean_blue" => -1,
 "absorb_in_aether_red" => 4,
 "absorb_in_aether_blue" => 2,
@@ -5890,6 +5893,7 @@ default => 3
 function GeneratedCardName($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "Cutty Shark, Quick Clip",
 "10000_year_reunion_red" => "10,000 Year Reunion",
 "a_drop_in_the_ocean_blue" => "A Drop in the Ocean",
 "absorb_in_aether_red" => "Absorb in Aether",
@@ -9611,6 +9615,7 @@ default => ""
 function GeneratedPitchValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => 2,
 "a_drop_in_the_ocean_blue" => 3,
 "absorb_in_aether_yellow" => 2,
 "absorb_in_aether_blue" => 3,
@@ -12250,6 +12255,7 @@ default => 1
 function GeneratedCardCost($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => 1,
 "10000_year_reunion_red" => 8,
 "absorb_in_aether_red" => 1,
 "absorb_in_aether_yellow" => 1,
@@ -14765,6 +14771,7 @@ default => 0
 function GeneratedCardSubtype($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "Ally",
 "10000_year_reunion_red" => "Aura",
 "absorption_dome_yellow" => "Item",
 "achilles_accelerator" => "Legs",
@@ -15945,6 +15952,7 @@ default => ""
 function GeneratedCharacterHealth($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => 4,
 "aegis_archangel_of_protection" => 4,
 "aether_ashwing" => 1,
 "arakni_5lp3d_7hru_7h3_cr4x" => 38,
@@ -18006,6 +18014,7 @@ default => false
 function GeneratedCardClass($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "PIRATE,NECROMANCER",
 "10000_year_reunion_red" => "ILLUSIONIST",
 "absorb_in_aether_red" => "WIZARD",
 "absorb_in_aether_yellow" => "WIZARD",
@@ -21263,6 +21272,7 @@ default => "NONE"
 function GeneratedCardTalent($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "PIRATE",
 "a_drop_in_the_ocean_blue" => "MYSTIC",
 "aegis_archangel_of_protection" => "LIGHT",
 "aether_ashwing" => "DRACONIC",
@@ -22391,6 +22401,7 @@ default => "NONE"
 function GeneratedIsSpecialization($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -26112,6 +26123,7 @@ default => ""
 function GeneratedSetID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => "SEA076",
 "10000_year_reunion_red" => "MST131",
 "a_drop_in_the_ocean_blue" => "MST095",
 "absorb_in_aether_red" => "ARC123",
@@ -29810,6 +29822,7 @@ default => ""
 function GeneratedSetIDtoCardID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"SEA076" => "cutty_shark_quick_clip_yellow",
 "MST131" => "10000_year_reunion_red",
 "MST095" => "a_drop_in_the_ocean_blue",
 "ARC123" => "absorb_in_aether_red",
@@ -33509,6 +33522,7 @@ default => ""
 function GeneratedGoAgain($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"cutty_shark_quick_clip_yellow" => true,
 "aether_ironweave" => true,
 "aether_sink_yellow" => true,
 "agility_stance_yellow" => true,
