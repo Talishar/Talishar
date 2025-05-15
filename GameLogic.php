@@ -2911,6 +2911,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZTAP":
       Tap($lastResult, $player);
       return $lastResult;
+    case "ADDCOUNTERLANDMARK":
+      global $landmarks;
+      $landmarks[$parameter + 3]++;
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

@@ -121,6 +121,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PLAYITEM", $currentPlayer, "gold", 1);
       AddDecisionQueue("DRAW", $currentPlayer, $cardID);
       break;
+    case "expedition_to_azuro_keys_red":
+    case "expedition_to_blackwater_strait_red":
+    case "expedition_to_dreadfall_reach_red":
+    case "expedition_to_horizons_mantle_red":
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if ($treasureID != -1) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island", "treasure_island") . "?");
+        AddDecisionQueue("YESNO", $currentPlayer, "-");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-");
+        AddDecisionQueue("ADDCOUNTERLANDMARK", $currentPlayer, $treasureID, 1);
+      }
+      break;
     // Gravy cards
     case "gravy_bones_shipwrecked_looter":
     case "gravy_bones":

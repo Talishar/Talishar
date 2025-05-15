@@ -3645,6 +3645,16 @@ function HasStainCounters($cardID)
   }
 }
 
+function HasGoldCounters($cardID)
+{
+  switch ($cardID) {
+    case "treasure_island":
+      return true;
+    default:
+      return false;
+  }
+}
+
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
