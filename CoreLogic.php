@@ -1738,7 +1738,7 @@ function DoesAttackHaveGoAgain()
   if (SearchCurrentTurnEffects("blizzard_blue", $mainPlayer)) return false;
 
   //Natural Go Again
-  if (!$isAura && HasGoAgain($attackID)) return true;
+  if (!$isAura && HasGoAgain($attackID, "ATTACK")) return true;
 
   //Prevention Grant Go Again
   if (SearchAuras("hypothermia_blue", $mainPlayer)) return false;

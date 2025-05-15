@@ -117,7 +117,7 @@ function CardType($cardID, $from="")
     "limpit_hop_a_long_yellow" => "A",
     "barnacle_yellow" => "A",
     "sawbones_dock_hand_yellow" => "A",
-    "wailer_humperdink_yellow" => "A",
+    "wailer_humperdinck_yellow" => "A",
     "moray_le_fay_yellow" => "A",
     "kelpie_tangled_mess_yellow" => "A",
     "limpit_hop_a_long_yellow" => "A",
@@ -430,7 +430,7 @@ function CardClass($cardID)
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
-    case "wailer_humperdink_yellow":
+    case "wailer_humperdinck_yellow":
     case "chum_friendly_first_mate_yellow":
     case "chowder_hearty_cook_yellow":
     case "moray_le_fay_yellow":
@@ -893,7 +893,7 @@ function PowerValue($cardID, $index=-1, $base=false)
   };
 }
 
-function HasGoAgain($cardID): bool|int
+function HasGoAgain($cardID, $from="-"): bool|int
 {
   switch ($cardID) { //cards that may have missed go again in the generated script
     case "spiders_bite":
@@ -1085,6 +1085,8 @@ function HasGoAgain($cardID): bool|int
     case "plasma_barrel_shot":
     case "kelpie_tangled_mess_yellow":
       return false;
+    case "limpit_hop_a_long_yellow":
+      return $from == "ATTACK";
     case "performance_bonus_red": //cards that the script just messed up
     case "performance bonus_yellow":
     case "performance_bonus_blue":
@@ -2802,7 +2804,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
-    case "wailer_humperdink_yellow":
+    case "wailer_humperdinck_yellow":
     case "polly_cranka_ally":
       if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;

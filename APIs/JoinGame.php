@@ -582,6 +582,9 @@ function isUnimplemented($cardID) {
         "gold_baited_hook" => false,
         "moray_le_fay_yellow" => false,
         "kelpie_tangled_mess_yellow" => false,
+        "limpit_hop_a_long_yellow" => false,
+        "wailer_humperdinck_yellow" => false,
+        "barnacle_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

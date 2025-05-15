@@ -12,7 +12,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "moray_le_fay_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
     "chowder_hearty_cook_yellow" => "I",
-    "wailer_humperdink_yellow" => $from == "PLAY" ? "AA": "A",
+    "wailer_humperdinck_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
     "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
@@ -40,7 +40,7 @@ function SEAAbilityType($cardID, $from="-"): string
 function SEAAbilityCost($cardID): int
 {
   return match ($cardID) {
-    "wailer_humperdink_yellow" => 6,
+    "wailer_humperdinck_yellow" => 6,
     "riggermortis_yellow" => 1,
     "swabbie_yellow" => 2,
     "limpit_hop_a_long_yellow" => 1,
@@ -435,7 +435,7 @@ function HasWateryGrave($cardID): bool
     "diamond_amulet_blue" => true,
     "sawbones_dock_hand_yellow" => true,
     "chowder_hearty_cook_yellow" => true,
-    "wailer_humperdink_yellow" => true,
+    "wailer_humperdinck_yellow" => true,
     "moray_le_fay_yellow" => true,
     "kelpie_tangled_mess_yellow" => true,
     default => false
