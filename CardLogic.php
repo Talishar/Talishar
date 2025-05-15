@@ -3230,6 +3230,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       };
       GainHealth($healthGain, $player);
       break;
+    case "sea_legs_yellow":
+      PutItemIntoPlayForPlayer("goldkiss_rum", $player, effectController:$player, isToken:true);
+      break;
     default:
       break;
   }
@@ -3422,6 +3425,9 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   }
   if ($discarded == "massacre_red" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
     WriteLog(CardLink("massacre_red", "massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
+    AddLayer("TRIGGER", $mainPlayer, $discarded);
+  }
+  if($discarded == "sea_legs_yellow") {
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
