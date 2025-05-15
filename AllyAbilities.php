@@ -434,6 +434,9 @@ function AllyPayAdditionalCosts($cardIndex)
     case "chowder_hearty_cook_yellow":
     case "wailer_humperdink_yellow":
     case "barnacle_yellow":
+    case "_yellow":
+    case "kelpie_tangled_mess_yellow":
+    case "limpit_hop_a_long_yellow":
       Tap("MYALLY-$cardIndex", $currentPlayer);
       break;
     case "polly_cranka_ally":

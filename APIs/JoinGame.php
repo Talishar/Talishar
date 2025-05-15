@@ -547,6 +547,7 @@ function isSpecialUsePromo($cardID) {
 
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
+  return false;
   switch (CardSet($cardID)) {
     case "SEA":
       return match($cardID) {

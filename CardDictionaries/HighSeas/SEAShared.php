@@ -9,10 +9,13 @@ function SEAAbilityType($cardID, $from="-"): string
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
+    "moray_le_fay_yellow" => "I",
+    "kelpie_tangled_mess_yellow" => "A",
     "chowder_hearty_cook_yellow" => "I",
     "wailer_humperdink_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
+    "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
 
     "puffin_hightail" => "A",
@@ -40,6 +43,9 @@ function SEAAbilityCost($cardID): int
     "riggermortis_yellow" => 1,
     "peg_leg" => 3,
     "hammerhead_harpoon_cannon" => 4,
+    "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
+    "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
+    "limpit_hop_a_long_yellow" => 1,
     default => 0
   };
 }
@@ -53,6 +59,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "marlynn_treasure_hunter" => true,
     "marlynn" => true,
     "hammerhead_harpoon_cannon" => true,
+    "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
     default => false,
   };
 }
@@ -129,6 +136,34 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "chowder_hearty_cook_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") GainHealth(1, $currentPlayer);
+      break;
+    case "moray_le_fay_yellow":
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($from == "PLAY" && $abilityType == "I") {
+        $targetPlayer = explode("-", $target)[0] == "MYALLY" ? $currentPlayer : $otherPlayer;
+        $targetUid = explode("-", $target)[1];
+        $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
+        $allies = &GetAllies($targetPlayer);
+        $allies[$allyInd + 9]++;
+      }
+      break;
+    case "kelpie_tangled_mess_yellow":
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($from == "PLAY" && $abilityType == "A") {
+        $zone = explode("-", $target)[0];
+        $targetUid = explode("-", $target)[1];
+        if (str_contains($target, "ALLY")) {
+          $targetPlayer = $zone == "MYALLY" ? $currentPlayer : $otherPlayer;
+          $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
+          Tap("$zone-$allyInd", $targetPlayer);
+        }
+        else {
+          $targetPlayer = $zone == "MYCHAR" ? $currentPlayer : $otherPlayer;
+          $charInd = SearchCharacterForUniqueID($targetUid, $targetPlayer);
+          $zone = $zone == "THEIRCHARUID" ? "THEIRCHAR": $zone;
+          Tap("$zone-$charInd", $targetPlayer);
+        }
+      }
       break;
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
@@ -384,6 +419,8 @@ function HasWateryGrave($cardID): bool
     "sawbones_dock_hand_yellow" => true,
     "chowder_hearty_cook_yellow" => true,
     "wailer_humperdink_yellow" => true,
+    "moray_le_fay_yellow" => true,
+    "kelpie_tangled_mess_yellow" => true,
     default => false
   };
 }
