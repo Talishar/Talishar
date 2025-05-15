@@ -49,7 +49,6 @@ function SEAAbilityCost($cardID): int
     "hammerhead_harpoon_cannon" => 4,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
-    "limpit_hop_a_long_yellow" => 1,
     default => 0
   };
 }
