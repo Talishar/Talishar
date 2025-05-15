@@ -547,7 +547,6 @@ function isSpecialUsePromo($cardID) {
 
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
-  return false;
   switch (CardSet($cardID)) {
     case "SEA":
       return match($cardID) {
@@ -581,6 +580,8 @@ function isUnimplemented($cardID) {
         "sky_skimmer_blue" => false,
         "palantir_aeronought_red" => false,
         "gold_baited_hook" => false,
+        "moray_le_fay_yellow" => false,
+        "kelpie_tangled_mess_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

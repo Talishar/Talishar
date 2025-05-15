@@ -17,7 +17,6 @@ function SEAAbilityType($cardID, $from="-"): string
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
     "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
-    "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
 
     "puffin_hightail" => "A",
