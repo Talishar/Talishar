@@ -6,6 +6,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "peg_leg" => "A",
     "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
+    "sawbones_dock_hand_yellow" => "I",
 
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
@@ -57,6 +58,8 @@ function SEAAbilityCost($cardID): int
     "peg_leg" => 3,
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
+    "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
+
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
@@ -179,6 +182,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "chowder_hearty_cook_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") GainHealth(1, $currentPlayer);
+      break;
+    case "sawbones_dock_hand_yellow":
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "scooba_salty_sea_dog_yellow":
       if ($from == "PLAY") {
