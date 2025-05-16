@@ -204,10 +204,10 @@ function MZAddZone($player, $parameter, $lastResult)
         AddBottomDeck($cardIDs[$i], $otherPlayer, "-");
         break;
       case "MYDISCARD":
-        AddGraveyard($cardIDs[$i], $player, "-", isset($params[1]) ? $params[1] : "");
+        AddGraveyard($cardIDs[$i], $player, isset($params[2]) ? $params[2] : "-", isset($params[1]) ? $params[1] : "");
         break;
       case "THEIRDISCARD":
-        AddGraveyard($cardIDs[$i], $otherPlayer, "-", isset($params[1]) ? $params[1] : "");
+        AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[2]) ? $params[2] : "-", isset($params[1]) ? $params[1] : "");
         break;
       case "MYARS":
         AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) ? $params[3] : "0");
@@ -535,7 +535,7 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
   else AddDecisionQueue("WRITELOG", $player, $logText, 1);
 
-  if ($where != "") AddDecisionQueue("MZADDZONE", $player, $where, 1);
+  if ($where != "") AddDecisionQueue("MZADDZONE", $player, $where.",".$search, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
 }
 

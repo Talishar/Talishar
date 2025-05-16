@@ -3446,9 +3446,6 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     WriteLog(CardLink("massacre_red", "massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
-  if($discarded == "sea_legs_yellow" || $discarded == "fools_gold_yellow") {
-    AddLayer("TRIGGER", $player, $discarded);
-  }
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 
