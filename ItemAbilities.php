@@ -40,7 +40,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   if ($item == "gold") {
     $char = &GetPlayerCharacter($player);
     $hero = ShiyanaCharacter($char[0], $player);
-    IncrementClassState($player, $CS_NumGoldCreated);
+    IncrementClassState($player, $CS_NumGoldCreated, $number);
     UndestroyHook($player);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
       $EffectContext = $hero;

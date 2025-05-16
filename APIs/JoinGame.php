@@ -614,6 +614,7 @@ function isUnimplemented($cardID) {
         "spitfire" => false,
         "sawbones_dock_hand_yellow" => false,
         "patch_the_hole" => false,
+        "loan_shark_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

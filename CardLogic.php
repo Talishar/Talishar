@@ -3,7 +3,7 @@
 include "CardDictionary.php";
 include "CoreLogic.php";
 
-function PummelHit($player = -1, $passable = false, $fromDQ = false)
+function PummelHit($player = -1, $passable = false, $fromDQ = false, $context = "Choose a card to discard")
 {
   global $defPlayer;
   if ($player == -1) $player = $defPlayer;
@@ -12,11 +12,11 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false)
     PrependDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
     if ($passable) PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
     PrependDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
   } else {
     AddDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
     if ($passable) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
@@ -3264,6 +3264,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("REVEALCARDS", $player, "-", 1);
         AddDecisionQueue("PLAYAURA", $player, "embodiment_of_lightning", 1);
       }
+      break;
+    case "loan_shark_yellow":
+      DestroyAuraUniqueID($player, $uniqueID);
+      WriteLog("Resolving " . CardLink($parameter, $parameter) . " ability");
+      PummelHit($player, true, context:"Choose a card to discard or pass and lose 2 health");
+      AddDecisionQueue("NOTEQUALPASS", $player, "PASS");
+      AddDecisionQueue("PASSPARAMETER", $player, "2", 1);
+      AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
       break;
     default:
       break;

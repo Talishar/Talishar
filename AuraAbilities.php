@@ -795,7 +795,7 @@ function AuraBeginningActionPhaseAbilities(){
 
 function AuraBeginEndPhaseTriggers()
 {
-  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed;
+  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
@@ -823,6 +823,12 @@ function AuraBeginEndPhaseTriggers()
         if (!$fealtySurvives) {
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
+        break;
+      case "loan_shark_yellow":
+        if(GetClassState($mainPlayer, $CS_NumGoldCreated) <= 0) {
+          AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        }
+        break;
       default:
         break;
     }

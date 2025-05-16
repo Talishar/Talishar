@@ -160,6 +160,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("ADDCOUNTERLANDMARK", $currentPlayer, $treasureID, 1);
       }
       break;
+    case "loan_shark_yellow":
+      PutItemIntoPlayForPlayer("gold", $currentPlayer, number: 2, effectController: $currentPlayer);
+      break;
     // Gravy cards
     case "gravy_bones_shipwrecked_looter":
     case "gravy_bones":
