@@ -2918,6 +2918,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       global $landmarks;
       $landmarks[$parameter + 3]++;
       return $lastResult;
+    case "GOESWHERE":
+      // 0 - CardID
+      // 1 - From
+      // 2 - To
+      $params = explode(",", $parameter);
+      if($lastResult == "PASS") {
+        AddGraveyard($params[0], $player, $params[1]);
+      }
+      else {
+        switch ($params[2]) {
+          case 'MYBOTDECK':
+            AddBottomDeck($params[0], $player, $params[1]);
+            break;
+          default:
+            AddGraveyard($params[0], $player, $params[1]);
+            break;
+        }
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

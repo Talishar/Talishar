@@ -304,6 +304,19 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
       break;
+      //other cards
+    case "tip_the_barkeep_blue":
+      PutItemIntoPlayForPlayer("goldkiss_rum", $currentPlayer, isToken: true);
+      if(CountItem("gold", $currentPlayer, false) > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Would you like to give a ".CardLink("gold", "gold")." token to your opponent?");
+        AddDecisionQueue("YESNO", $currentPlayer, "");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:type=T;cardID=gold", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $otherPlayer, "GAINCONTROL", 1);
+      }
+      AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK");
+      break;
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
