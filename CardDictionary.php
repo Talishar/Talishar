@@ -1192,12 +1192,15 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
+
     "chum_friendly_first_mate_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "moray_le_fay_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "shelly_hardened_traveler_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "sawbones_dock_hand_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "chowder_hearty_cook_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "kelpie_tangled_mess_yellow" => ($from != "PLAY") ? "" : "A,AA",
+
+    "cogwerx_blunderbuss" => "I,AA",
     default => "",
   };
 }
@@ -1323,6 +1326,13 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       if ($from != "HAND") $names = "-,Attack Reaction";
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
+      return $names;
+    case "cogwerx_blunderbuss":
+      $names = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog") == "" ? "-" : "Ability";
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return $names;
+      if (SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) return $names;
+      //catch other edge cases like warmongers later
+      $names .= ",Attack";
       return $names;
     case "chum_friendly_first_mate_yellow":
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
@@ -1950,7 +1960,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
-  global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard;
+  global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -2821,6 +2831,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "hammerhead_harpoon_cannon":
     case "polly_cranka":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
+    case "spitfire":
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+      if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
+      return false;
+    case "cogwerx_blunderbuss":
+      if (!CheckTapped("MYCHAR-$index", $currentPlayer) && $turn[0] == "M") return false;
+      if (GetUntapped($player, "MYITEMS", "subtype=Cog") != "") return false;
+      return true;
     case "dead_threads":
       return CheckTapped("MYCHAR-$index", $currentPlayer) && GetClassState($currentPlayer, $CS_NumAllyPutInGraveyard) > 0;
     case "sealace_sarong":

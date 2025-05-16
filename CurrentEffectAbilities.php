@@ -1721,6 +1721,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "sealong_sarong":
           return true;
+        case "cogwerx_blunderbuss":
+          return true;
         default:
           break;
       }

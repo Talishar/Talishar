@@ -1206,6 +1206,27 @@ function EquipPayAdditionalCosts($cardIndex)
       BanishCardForPlayer("polly_cranka", $currentPlayer, "EQUIP");
       DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
       break;
+    case "spitfire":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      $cogIndices = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      //for some reason DQs aren't working here, for now just automatically choose the first cog
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      // AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to fire spitfire", 1);
+      // AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $cogIndices, 1);
+      // AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      break;
+    case "cogwerx_blunderbuss":
+      // will need fixing to have costs paid after mode choice
+      if (GetResolvedAbilityType($cardID) == "AA") {
+        Tap("MYCHAR-$cardIndex", $currentPlayer);
+      }
+      else {
+        $cogIndices = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to fire spitfire");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $cogIndices, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

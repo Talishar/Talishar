@@ -25,6 +25,8 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "puffin_hightail" => "A",
     "puffin" => "A",
+    "spitfire" => "AA",
+    "cogwerx_blunderbuss" => "I",
     
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
@@ -46,6 +48,7 @@ function SEAAbilityType($cardID, $from="-"): string
 function SEAAbilityCost($cardID): int
 {
   return match ($cardID) {
+    "cogwerx_blunderbuss" => GetResolvedAbilityType($cardID) == "AA" ? 2 : 0,
     "wailer_humperdinck_yellow" => 6,
     "riggermortis_yellow" => 1,
     "swabbie_yellow" => 2,
@@ -83,6 +86,7 @@ function SEAEffectPowerModifier($cardID): int
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow" => 1,
+    "spitfire" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
@@ -105,6 +109,8 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow" => true,
     "jolly_bludger_yellow-OP" => true,
+    "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
+    "spitfire" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
@@ -276,6 +282,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAlly("polly_cranka_ally", $currentPlayer, tapped:true);
         RemoveBanish($currentPlayer, $index);
       }
+      break;
+    case "cogwerx_blunderbuss":
+      if (GetResolvedAbilityType($cardID) == "I") {
+        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      }
+      break;
+    case "spitfire":
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to power up spitfire");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
