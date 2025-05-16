@@ -13,7 +13,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "shelly_hardened_traveler_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
     "chowder_hearty_cook_yellow" => "I",
-    "scooba_salty_sea_dog_yellow" => "AA",
+    "scooba_salty_sea_dog_yellow" => $from == "PLAY" ? "AA": "A",
     "wailer_humperdinck_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
