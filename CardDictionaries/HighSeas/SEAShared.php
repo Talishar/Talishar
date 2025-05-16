@@ -4,6 +4,7 @@ function SEAAbilityType($cardID, $from="-"): string
 {
   return match ($cardID) {
     "peg_leg" => "A",
+    "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
 
     "gravy_bones_shipwrecked_looter" => "I",
@@ -128,6 +129,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     // Generic cards
     case "peg_leg":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "patch_the_hole":
+      MZMoveCard($currentPlayer, "MYARS", "MYHAND", silent: true);
       break;
     case "gold_baited_hook":
       AddCurrentTurnEffect($cardID, $currentPlayer);

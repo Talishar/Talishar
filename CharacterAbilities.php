@@ -1095,6 +1095,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "shock_frock":
     case "cap_of_quick_thinking":
     case "peg_leg":
+    case "patch_the_hole":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
