@@ -3447,7 +3447,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
   if($discarded == "sea_legs_yellow" || $discarded == "fools_gold") {
-    AddLayer("TRIGGER", $mainPlayer, $discarded);
+    AddLayer("TRIGGER", $player, $discarded);
   }
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
