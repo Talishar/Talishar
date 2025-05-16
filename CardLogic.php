@@ -3236,6 +3236,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "sea_legs_yellow":
       PutItemIntoPlayForPlayer("goldkiss_rum", $player, effectController:$player, isToken:true);
       break;
+    case "fools_gold":
+      PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
+      break;
     case "draw_a_crowd_blue":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
@@ -3423,7 +3426,7 @@ function DiscardCard($player, $index, $source = "", $effectController = "", $mai
 
 function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 {
-  global $CS_Num6PowDisc, $mainPlayer, $layers;
+  global $CS_Num6PowDisc, $mainPlayer;
   AddEvent("DISCARD", $discarded);
   $modifiedAttack = ModifiedPowerValue($discarded, $player, "HAND", $source);
   if ($modifiedAttack >= 6) {
@@ -3441,7 +3444,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     WriteLog(CardLink("massacre_red", "massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
-  if($discarded == "sea_legs_yellow") {
+  if($discarded == "sea_legs_yellow" || $discarded == "fools_gold") {
     AddLayer("TRIGGER", $mainPlayer, $discarded);
   }
   WriteLog(CardLink($discarded, $discarded) . " was discarded");

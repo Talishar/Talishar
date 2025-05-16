@@ -659,8 +659,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
     case "fiddlers_green_red": case "fiddlers_green_yellow": case "fiddlers_green_blue":
     case "sirens_of_safe_harbor_red": case "sirens_of_safe_harbor_yellow": case "sirens_of_safe_harbor_blue":
       AddLayer("TRIGGER", $player, $cardID);
-      break;   
-
+      break;  
     default:
       break;
   }
