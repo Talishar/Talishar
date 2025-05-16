@@ -541,6 +541,7 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "AST") return ASTEffectPowerModifier($cardID);
   else if ($set == "AMX") return AMXEffectPowerModifier($cardID);
   else if ($set == "SEA") return SEAEffectPowerModifier($cardID);
+  else if ($set == "MPG") return MPGEffectPowerModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":
       return 1;

@@ -28,10 +28,11 @@ function CardName($cardID)
       default:
         break;
     }
-    $setID = SetID($cardID);
-    $arr = str_split($setID, 3);
-    if(count($arr) < 2) return "";
-    $set = $arr[0];
+    // $setID = SetID($cardID);
+    // $arr = str_split($setID, 3);
+    // if(count($arr) < 2) return "";
+    // $set = $arr[0];
+    $set = CardSet($cardID);
     if($set != "DUM")
     {
       return GeneratedCardName($cardID);

@@ -388,6 +388,9 @@ function CardSet($cardID)
     case "hunters_klaive_r":
       return "HNT";
     case "valda_seismic_impact":
+    case "draw_a_crowd_blue":
+    case "promising_terrain_blue":
+    case "batter_to_a_pulp_red":
       return "MPG";
     case "polly_cranka": case "polly_cranka_ally":
       return "SEA";

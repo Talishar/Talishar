@@ -17,10 +17,10 @@ function SearchHand($player, $type = "", $subtype = "", $maxCost = -1, $minCost 
   return SearchInner($hand, $player, "HAND", HandPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, arcaneDamage: $arcaneDamage, hasWateryGrave: $hasWateryGrave);
 }
 
-function SearchCharacter($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "", $is1h = false, $faceUp = false, $faceDown = false)
+function SearchCharacter($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "", $is1h = false, $faceUp = false, $faceDown = false, $nullDef = false)
 {
   $character = &GetPlayerCharacter($player);
-  return SearchInner($character, $player, "CHAR", CharacterPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, is1h: $is1h, faceUp: $faceUp, faceDown: $faceDown);
+  return SearchInner($character, $player, "CHAR", CharacterPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, is1h: $is1h, faceUp: $faceUp, faceDown: $faceDown, nullDef: $nullDef);
 }
 
 function SearchPitch($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
@@ -150,7 +150,8 @@ function SearchInner(
   $isIntimidated = false,
   $arcaneDamage = -1,
   $hasStealth = false,
-  $hasWateryGrave = false
+  $hasWateryGrave = false,
+  $nullDef = false
 )
 {
   $cardList = "";
@@ -185,6 +186,7 @@ function SearchInner(
         if ($hasSteamCounter && !HasSteamCounter($array, $i, $player)) continue;
         if ($is1h && !Is1H($cardID)) continue;
         if ($hasWard && !HasWard($cardID, $player)) continue;
+        if ($nullDef && BlockValue($cardID) >= 0) continue;
         if ($zone == "ARS") {
           if ($faceUp && $array[$i + 1] != "UP") continue;
           if ($faceDown && $array[$i + 1] != "DOWN") continue;
@@ -1294,6 +1296,7 @@ function SearchMultizone($player, $searches)
     $isIntimidated = false;
     $arcaneDamage = -1;
     $hasStealth = false;
+    $nullDef = false;
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
@@ -1497,6 +1500,10 @@ function SearchMultizone($player, $searches)
             break;
           case "hasStealth":
             $hasStealth = $condition[1];
+            break;
+          case "nullDef":
+            $nullDef = $condition[1];
+            break;
           default:
             break;
         }
@@ -1528,7 +1535,7 @@ function SearchMultizone($player, $searches)
           break;
         case "MYCHAR":
         case "THEIRCHAR":
-          $searchResult = SearchCharacter($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, $is1h, $faceUp, $faceDown);
+          $searchResult = SearchCharacter($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nameIncludes, $is1h, $faceUp, $faceDown, $nullDef);
           break;
         case "MYITEMS":
         case "THEIRITEMS":

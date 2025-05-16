@@ -636,7 +636,8 @@
         if ($numDraw > 0) WriteLog("Player $defPlayer discarded their hand and drew $numDraw cards");
         break;
       case "batter_to_a_pulp_red":
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;maxDef=-1");
+        // maxDef = -2 will search for null block, -1 just gets skipped
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;nullDef=true");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         break;

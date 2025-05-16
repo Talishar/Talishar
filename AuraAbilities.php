@@ -19,6 +19,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
 
   if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) $number -= $numMinusTokens;
   if ($cardID == "runechant") $number += CountCurrentTurnEffects("mordred_tide_red", $player);
+  if ($cardID == "seismic_surge") $number += CountAura("promising_terrain_blue", $player);
   if ($cardID == "spectral_shield") {
     $index = SearchArsenalReadyCard($player, "the_librarian");
     if ($index > -1) TheLibrarianEffect($player, $index);
@@ -710,6 +711,13 @@ function AuraStartTurnAbilities()
 function AuraBeginningActionPhaseAbilities(){
   global $mainPlayer, $EffectContext, $CS_NumSeismicSurgeDestroyed;
   $auras = &GetAuras($mainPlayer);
+  //check seismic surges first so by default they'll resolve last
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    if ($auras[$i] == "seismic_surge") {
+      IncrementClassState($mainPlayer, $CS_NumSeismicSurgeDestroyed, 1);
+      AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+    }
+  }
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
     switch ($auras[$i]) {
@@ -775,10 +783,8 @@ function AuraBeginningActionPhaseAbilities(){
       case "sigil_of_cycles_blue":
       case "sigil_of_fyendal_blue":
       case "crumble_to_eternity_blue":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
-        break;
-      case "seismic_surge":
-        IncrementClassState($mainPlayer, $CS_NumSeismicSurgeDestroyed, 1);
+      case "draw_a_crowd_blue":
+      case "promising_terrain_blue":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:

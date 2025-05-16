@@ -3236,6 +3236,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "sea_legs_yellow":
       PutItemIntoPlayForPlayer("goldkiss_rum", $player, effectController:$player, isToken:true);
       break;
+    case "draw_a_crowd_blue":
+      AddCurrentTurnEffect($parameter, $player);
+      DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "promising_terrain_blue":
+      $numSeismic = CountAura("seismic_surge", $player);
+      if ($numSeismic >=3) {
+        Draw($player, effectSource:$parameter);
+        GainHealth(1, $player);
+      }
+      DestroyAuraUniqueID($player, $uniqueID);
     default:
       break;
   }
