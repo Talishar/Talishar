@@ -603,6 +603,7 @@ function isUnimplemented($cardID) {
         "sirens_of_safe_harbor_yellow" => false, 
         "sirens_of_safe_harbor_blue" => false,
         "burn_bare" => false,
+        "dead_threads" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

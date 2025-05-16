@@ -18,6 +18,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
+    "dead_threads" => "I",
 
     "puffin_hightail" => "A",
     "puffin" => "A",
@@ -143,6 +144,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "gravy_bones":
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
+      break;
+    case "dead_threads":
+      GainResources(1, $currentPlayer);
       break;
     case "chum_friendly_first_mate_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);

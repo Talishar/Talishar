@@ -616,7 +616,7 @@ function AddCharacterEffect($player, $index, $effect)
 
 function AddGraveyard($cardID, $player, $from, $effectController = "")
 {
-  global $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext;
   if ($from == "DECK" && ($cardID == "back_alley_breakline_red" || $cardID == "back_alley_breakline_yellow" || $cardID == "back_alley_breakline_blue") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
@@ -624,6 +624,9 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
       GainActionPoints(1);
     }
+  }
+  if (SubtypeContains($cardID, "ALLY", $player)) {
+    IncrementClassState($player, $CS_NumAllyPutInGraveyard);
   }
   $char = GetPlayerCharacter($player);
   if (ColorContains($cardID, 3, $player) && ($char[0] == "gravy_bones_shipwrecked_looter" || $char[0] == "gravy_bones")) {

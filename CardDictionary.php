@@ -1949,7 +1949,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
-  global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions;
+  global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($player);
@@ -2820,6 +2820,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "hammerhead_harpoon_cannon":
     case "polly_cranka":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
+    case "dead_threads":
+      return CheckTapped("MYCHAR-$index", $currentPlayer) && GetClassState($currentPlayer, $CS_NumAllyPutInGraveyard) > 0;
     case "riggermortis_yellow":
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
@@ -3072,6 +3074,7 @@ function HasBladeBreak($cardID)
     case "zap_clappers":
     case "starlight_striders":
     case "peg_leg":
+    case "dead_threads":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

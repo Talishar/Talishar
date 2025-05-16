@@ -1194,6 +1194,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "redspine_manta":
     case "hammerhead_harpoon_cannon":
     case "bravo_flattering_showman":
+    case "dead_threads":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "polly_cranka":
