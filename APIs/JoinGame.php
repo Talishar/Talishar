@@ -585,6 +585,23 @@ function isUnimplemented($cardID) {
         "limpit_hop_a_long_yellow" => false,
         "wailer_humperdinck_yellow" => false,
         "barnacle_yellow" => false,
+        "chowder_hearty_cook_yellow" => false,
+        "portside_exchange_blue" => false,
+        "fiddlers_green_red" => false,
+        "fiddlers_green_yellow" => false,
+        "fiddlers_green_blue" => false,
+        "marlynn" => false,
+        "gravy_bones" => false,
+        "puffin" => false,
+        "swabbie_yellow" => false,
+        "sea_legs_yellow" => false,
+        "expedition_to_azuro_keys_red" => false,
+        "expedition_to_blackwater_strait_red" => false,
+        "expedition_to_dreadfall_reach_red" => false,
+        "expedition_to_horizons_mantle_red" => false,
+        "sirens_of_safe_harbor_red" => false,
+        "sirens_of_safe_harbor_yellow" => false, 
+        "sirens_of_safe_harbor_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
