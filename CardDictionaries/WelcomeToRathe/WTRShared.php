@@ -545,6 +545,7 @@
       case "blinding_of_the_old_ones_red": 
       case "smelting_of_the_old_ones_red": 
       case "disenchantment_of_the_old_ones_red":
+      case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
         return true;
       default:
         return false;
@@ -651,6 +652,13 @@
         break;
       case "disenchantment_of_the_old_ones_red":
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS"), $mainPlayer); 
+        break;
+      case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) {
+          break;
+        }
+        else DestroyTopCardOpponent($mainPlayer);
         break;
       default: return;
     }

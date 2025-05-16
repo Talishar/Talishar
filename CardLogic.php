@@ -1079,6 +1079,7 @@ function AddCrushEffectTrigger($cardID)
     case "boulder_drop_blue":
     case "put_em_in_their_place_red":
     case "batter_to_a_pulp_red":
+    case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
       AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
       break;
     case "blinding_of_the_old_ones_red": 

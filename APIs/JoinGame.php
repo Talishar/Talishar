@@ -625,6 +625,9 @@ function isUnimplemented($cardID) {
         "smelting_of_the_old_ones_red" => false,
         "disenchantment_of_the_old_ones_red" => false,
         "sawbones_dock_hand_yellow" => false,
+        "grind_them_down_red" => false,
+        "grind_them_down_yellow" => false,
+        "grind_them_down_blue" => false,
         default => true
       };
     default:
