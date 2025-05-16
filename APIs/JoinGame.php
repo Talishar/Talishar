@@ -610,6 +610,7 @@ function isUnimplemented($cardID) {
         "tip_the_barkeep_blue" => false,
         "shelly_hardened_traveler_yellow" => false,
         "sealace_sarong" => false,
+        "jolly_bludger_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

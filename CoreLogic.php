@@ -848,7 +848,6 @@ function AttackDamageAbilities($damageDone)
       if (IsHeroAttackTarget() && $damageDone > 0) {
         $items = GetItems($defPlayer);
         $reps = min($damageDone, intdiv(count($items), ItemPieces()));
-        WriteLog("HERE: $reps");
         for ($i = 0; $i < $reps; ++$i) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
