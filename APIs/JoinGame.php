@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 include_once "../WriteLog.php";
 include_once "../Libraries/HTTPLibraries.php";
@@ -609,6 +609,7 @@ function isUnimplemented($cardID) {
         "scooba_salty_sea_dog_yellow" => false,
         "tip_the_barkeep_blue" => false,
         "shelly_hardened_traveler_yellow" => false,
+        "sealace_sarong" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

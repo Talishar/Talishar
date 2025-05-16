@@ -1197,6 +1197,10 @@ function EquipPayAdditionalCosts($cardIndex)
     case "dead_threads":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
+    case "sealace_sarong":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      SetArsenalFacing("UP", $currentPlayer);
+      break;
     case "polly_cranka":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       BanishCardForPlayer("polly_cranka", $currentPlayer, "EQUIP");

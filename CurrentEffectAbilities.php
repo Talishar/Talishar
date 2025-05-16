@@ -1719,6 +1719,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "peg_leg": case "goldkiss_rum":
           return true;
+        case "sealong_sarong":
+          return true;
         default:
           break;
       }

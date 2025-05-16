@@ -21,6 +21,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
     "dead_threads" => "I",
+    "sealace_sarong" => "I",
 
     "puffin_hightail" => "A",
     "puffin" => "A",
@@ -102,6 +103,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "sealace_sarong" => true,
     "goldkiss_rum" => true,
     default => false,
   };
@@ -300,6 +302,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "redspine_manta":
       LoadArrow($currentPlayer);
       return "";
+    case "sealace_sarong":
+      AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      break;
     case "marlynn_treasure_hunter":
     case "marlynn":
       AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);

@@ -2823,6 +2823,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "dead_threads":
       return CheckTapped("MYCHAR-$index", $currentPlayer) && GetClassState($currentPlayer, $CS_NumAllyPutInGraveyard) > 0;
+    case "sealace_sarong":
+      return CheckTapped("MYCHAR-$index", $currentPlayer) && !ArsenalHasFaceDownBlueArrow($player);
     case "riggermortis_yellow":
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
@@ -3076,6 +3078,7 @@ function HasBladeBreak($cardID)
     case "starlight_striders":
     case "peg_leg":
     case "dead_threads":
+    case "sealace_sarong":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
@@ -3540,7 +3543,7 @@ function DoesEffectGrantDominate($cardID): bool
     case "metis_archangel_of_tenacity":
     case "crumble_to_eternity_blue":
     case "bravo_flattering_showman":
-      case "murky_water_red":
+    case "murky_water_red":
     case "stone_rain_red":
     case "gauntlets_of_the_boreal_domain-I":
       return true;
@@ -3570,6 +3573,20 @@ function CharacterNumUsesPerTurn($cardID)
     case "sanctuary_of_aria":
     case "quickdodge_flexors":
     case "bravo_flattering_showman":
+    case "redspine_manta":
+    case "sealace_sarong":
+    case "cogwerx_blunderbuss":
+    case "dead_threads":
+    case "puffin":
+    case "puffin_hightail":
+    case "hammerhead_harpoon_cannon":
+    case "spitfire":
+    case "compass_of_sunken_depths":
+    case "gravy_bones":
+    case "gravy_bones_shipwrecked_looter":
+    case "marlynn":
+    case "marlynn_treasure_hunter":
+    case "gold_baited_hook":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  
