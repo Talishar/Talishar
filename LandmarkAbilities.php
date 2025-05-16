@@ -82,5 +82,6 @@ function SearchLandmarksForID($cardID)
 {
   global $landmarks;
   //there should only ever be one landmark
+  if (!isset($landmarks[0])) return -1;
   return $landmarks[0] == $cardID ? 0 : -1;
 }

@@ -210,10 +210,10 @@ function MZAddZone($player, $parameter, $lastResult)
         AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[2]) ? $params[2] : "-", isset($params[1]) ? $params[1] : "");
         break;
       case "MYARS":
-        AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) ? $params[3] : "0");
+        AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) && is_numeric($params[3]) ? $params[3] : "0");
         break;
       case "THEIRARS":
-        AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2], isset($params[3]) ? $params[3] : "0");
+        AddArsenal($cardIDs[$i], $otherPlayer, $params[1], $params[2], isset($params[3]) && is_numeric($params[3]) ? $params[3] : "0");
         break;
       case "MYPERMANENTS":
         PutPermanentIntoPlay($player, $cardIDs[$i]);
