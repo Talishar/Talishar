@@ -629,6 +629,9 @@ function isUnimplemented($cardID) {
         "grind_them_down_red" => false,
         "grind_them_down_yellow" => false,
         "grind_them_down_blue" => false,
+        "crash_and_bash_red" => false,
+        "crash_and_bash_yellow" => false,
+        "crash_and_bash_blue" => false,
         default => true
       };
     default:

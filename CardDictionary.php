@@ -785,17 +785,6 @@ function BlockValue($cardID)
 {
   global $defPlayer;
   if (!$cardID) return "";
-  switch ($cardID) { // cards currently have the wrong data on fabcube, can be removed when that gets fixed
-    case "shock_frock":
-    case "starlight_striders":
-      return 1;
-    case "zap_clappers":
-      return 2;
-    case "valda_seismic_impact":
-      return -1;
-    default:
-      break;
-  }
   $set = CardSet($cardID);
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($defPlayer) * 2;
   if ($cardID == "fractal_replication_red") return FractalReplicationStats("Block");
