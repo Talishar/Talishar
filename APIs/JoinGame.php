@@ -604,7 +604,7 @@ function isUnimplemented($cardID) {
         "sirens_of_safe_harbor_blue" => false,
         "burn_bare" => false,
         "dead_threads" => false,
-        "fools_gold" => false,
+        "fools_gold_yellow" => false,
         "give_no_quarter_blue" => false,
         "scooba_salty_sea_dog_yellow" => false,
         default => true
