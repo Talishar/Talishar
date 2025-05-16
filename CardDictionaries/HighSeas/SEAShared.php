@@ -348,8 +348,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:type=T;cardID=gold", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $otherPlayer, "GAINCONTROL", 1);
+        AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK");
       }
-      AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK");
+      else AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD");
       break;
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
