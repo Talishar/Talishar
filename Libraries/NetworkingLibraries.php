@@ -2464,7 +2464,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
     case "moray_le_fay_yellow":
       $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "I") {
-        $context = "Choose an ally to receive Moray le Fay's blessing";
+        $context = "Choose an ally to receive ".CardLink($cardID, $cardID)."'s blessing";
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY&THEIRALLY");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);

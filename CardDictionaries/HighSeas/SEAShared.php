@@ -10,6 +10,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
     "moray_le_fay_yellow" => "I",
+    "shelly_hardened_traveler_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
     "chowder_hearty_cook_yellow" => "I",
     "scooba_salty_sea_dog_yellow" => "AA",
@@ -50,6 +51,7 @@ function SEAAbilityCost($cardID): int
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
+    "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
     default => 0
   };
@@ -176,6 +178,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
         $allies = &GetAllies($targetPlayer);
         $allies[$allyInd + 9]++;
+      }
+      break;
+    case "shelly_hardened_traveler_yellow":
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($from == "PLAY" && $abilityType == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
     case "kelpie_tangled_mess_yellow":
@@ -476,6 +484,7 @@ function HasWateryGrave($cardID): bool
     "chowder_hearty_cook_yellow" => true,
     "wailer_humperdinck_yellow" => true,
     "moray_le_fay_yellow" => true,
+    "shelly_hardened_traveler_yellow" => true,
     "kelpie_tangled_mess_yellow" => true,
     "scooba_salty_sea_dog_yellow" => true,
     default => false

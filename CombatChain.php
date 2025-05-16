@@ -1162,6 +1162,12 @@ function OnBlockEffects($index, $from)
             $remove = true;
           }
           break;
+        case "shelly_hardened_traveler_yellow":
+          if (TypeContains($chainCard->ID(), "AA")) {
+            $chainCard->ModifyDefense(1);
+            $remove = true;
+          }
+          break;
         default:
           break;
       }

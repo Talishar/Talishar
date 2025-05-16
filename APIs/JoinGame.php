@@ -608,6 +608,7 @@ function isUnimplemented($cardID) {
         "give_no_quarter_blue" => false,
         "scooba_salty_sea_dog_yellow" => false,
         "tip_the_barkeep_blue" => false,
+        "shelly_hardened_traveler_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
