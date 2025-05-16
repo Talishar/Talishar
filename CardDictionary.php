@@ -2840,7 +2840,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") != "") return false;
       return true;
     case "dead_threads":
-      return CheckTapped("MYCHAR-$index", $currentPlayer) && GetClassState($currentPlayer, $CS_NumAllyPutInGraveyard) > 0;
+      return CheckTapped("MYCHAR-$index", $currentPlayer) || GetClassState($currentPlayer, $CS_NumAllyPutInGraveyard) == 0;
     case "sealace_sarong":
       return CheckTapped("MYCHAR-$index", $currentPlayer) && !ArsenalHasFaceDownBlueArrow($player);
     case "riggermortis_yellow":
