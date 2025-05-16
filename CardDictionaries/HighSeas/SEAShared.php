@@ -163,7 +163,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PummelHit($currentPlayer);
       break;
     case "dead_threads":
-      GainResources(1, $currentPlayer);
+      GainResources($currentPlayer, 1);
       break;
     case "chum_friendly_first_mate_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
