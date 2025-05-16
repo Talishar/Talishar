@@ -2769,6 +2769,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "SCOOBASALTYSEADOG":
+      AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
+      return $lastResult;
     case "UNDERTRAPDOOR":
       AddCurrentTurnEffect("under_the_trap_door_blue", $currentPlayer, "", $parameter);
       return $lastResult;

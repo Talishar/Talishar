@@ -348,6 +348,18 @@ function MZBottom($player, $lastResult, $allArsenal = true)
         }
         AddBottomDeck($cardID, $otherPlayer, "-");
         break;
+      case "MYDISCARD":
+        $discard = GetDiscard($player);
+        $cardID = $discard[$mzIndex[1]];
+        $lastResult = RemoveGraveyard($player, $mzIndex[1]);
+        AddBottomDeck($cardID, $player, "-");
+        break;
+      case "THEIRDISCARD":
+        $discard = GetDiscard($otherPlayer);
+        $cardID = $discard[$mzIndex[1]];
+        $lastResult = RemoveGraveyard($otherPlayer, $mzIndex[1]);
+        AddBottomDeck($cardID, $otherPlayer, "-");
+        break;
       default:
         break;
     }

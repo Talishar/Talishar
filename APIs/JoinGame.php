@@ -606,6 +606,7 @@ function isUnimplemented($cardID) {
         "dead_threads" => false,
         "fools_gold" => false,
         "give_no_quarter_blue" => false,
+        "scooba_salty_sea_dog_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

@@ -12,6 +12,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "moray_le_fay_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
     "chowder_hearty_cook_yellow" => "I",
+    "scooba_salty_sea_dog_yellow" => "AA",
     "wailer_humperdinck_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
@@ -46,6 +47,7 @@ function SEAAbilityCost($cardID): int
     "swabbie_yellow" => 2,
     "limpit_hop_a_long_yellow" => 1,
     "peg_leg" => 3,
+    "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
@@ -155,6 +157,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "chowder_hearty_cook_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") GainHealth(1, $currentPlayer);
+      break;
+    case "scooba_salty_sea_dog_yellow":
+      if ($from == "PLAY") {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:pitch=2&MYDISCARD:pitch=2", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target yellow card", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZBOTTOM", $currentPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
+        AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+      }
       break;
     case "moray_le_fay_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
@@ -452,6 +464,7 @@ function HasWateryGrave($cardID): bool
     "wailer_humperdinck_yellow" => true,
     "moray_le_fay_yellow" => true,
     "kelpie_tangled_mess_yellow" => true,
+    "scooba_salty_sea_dog_yellow" => true,
     default => false
   };
 }

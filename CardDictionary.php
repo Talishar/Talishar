@@ -112,6 +112,7 @@ function CardType($cardID, $from="")
     "valda_seismic_impact" => "C",
     "chum_friendly_first_mate_yellow" => "A", //gravy allies
     "chowder_hearty_cook_yellow" => "A",
+    "scooba_salty_sea_dog_yellow" => "A",
     "riggermortis_yellow" => "A",
     "swabbie_yellow" => "A",
     "limpit_hop_a_long_yellow" => "A",
@@ -333,6 +334,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "chum_friendly_first_mate_yellow":
     case "sawbones_dock_hand_yellow":
     case "chowder_hearty_cook_yellow":
+    case "scooba_salty_sea_dog_yellow":
     case "moray_le_fay_yellow":
     case "wailer_humperdinck_yellow":
     case "kelpie_tangled_mess_yellow":
@@ -435,6 +437,7 @@ function CardClass($cardID)
     case "wailer_humperdinck_yellow":
     case "chum_friendly_first_mate_yellow":
     case "chowder_hearty_cook_yellow":
+    case "scooba_salty_sea_dog_yellow":
     case "moray_le_fay_yellow":
     case "kelpie_tangled_mess_yellow":
     case "gravy_bones":
