@@ -27,7 +27,9 @@ function SEAAbilityType($cardID, $from="-"): string
     "puffin" => "A",
     
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
-    "palantir_aeronought_red" => $from == "PLAY" ? "I": "AA",
+    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
+    "palantir_aeronought_red", "jolly_bludger_yellow" => $from == "PLAY" ? "I": "AA",
+
     "polly_cranka", "polly_cranka_ally" => "A",
 
     "redspine_manta" => "A",
@@ -80,7 +82,7 @@ function SEAEffectPowerModifier($cardID): int
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
-    "palantir_aeronought_red" => 1,
+    "palantir_aeronought_red", "jolly_bludger_yellow" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
@@ -101,7 +103,8 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
-    "palantir_aeronought_red" => true,
+    "palantir_aeronought_red", "jolly_bludger_yellow" => true,
+    "jolly_bludger_yellow-OP" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
@@ -299,6 +302,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
         }
       }
+      return "";
+    case "jolly_bludger_yellow":
+      if ($from != "PLAY") {
+        $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to gain overpower");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "jolly_bludger_yellow-OP", 1);
+      }
+      else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":

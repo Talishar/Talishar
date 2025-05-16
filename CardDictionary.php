@@ -2848,6 +2848,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CountBoatActivations($cardID, $player) >= 2) return true;
       return false;
     case "palantir_aeronought_red":
+    case "jolly_bludger_yellow":
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 3) return true;
@@ -3480,7 +3481,8 @@ function DoesEffectGrantOverpower($cardID): bool
   return match ($cardID) {
     "betsy_skin_in_the_game", "betsy", "the_golden_son_yellow", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "log_fall_red", "log_fall_yellow", "machinations_of_dominion_blue" => true,
     "bank_breaker", "board_the_ship_red" => true,
-     "hammerhead_harpoon_cannon" => CardNameContains($attackID, "Harpoon", $mainPlayer, true),
+    "hammerhead_harpoon_cannon" => CardNameContains($attackID, "Harpoon", $mainPlayer, true),
+    "jolly_bludger_yellow-OP" => true,
     default => false,
   };
 }
@@ -4337,7 +4339,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
-    "palantir_aeronought_red" => true,
+    "palantir_aeronought_red", "jolly_bludger_yellow" => true,
     default => false
   };
 }
