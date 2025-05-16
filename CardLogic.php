@@ -402,7 +402,7 @@ function ContinueDecisionQueue($lastResult = "")
         if ($cardID == "ENDTURN") EndStep();
         else if ($cardID == "ENDPHASE") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
-        else if ($cardID == "LAYER") ProcessLayer($player, $parameter);
+        else if ($cardID == "LAYER") ProcessLayer($player, $parameter, $target, $additionalCosts);
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
         else if ($cardID == "RESOLUTIONSTEP") {
           ResetCombatChainState();
@@ -524,11 +524,11 @@ function ContinueDecisionQueue($lastResult = "")
   }
 }
 
-function ProcessLayer($player, $parameter)
+function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   switch ($parameter) {
     case "PHANTASM":
-      PhantasmLayer();
+      PhantasmLayer($additionalCosts);
       break;
     case "MIRAGE":
       MirageLayer();

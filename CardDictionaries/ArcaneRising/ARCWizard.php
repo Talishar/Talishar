@@ -633,6 +633,7 @@ function ArcaneDamage($cardID): int
 {
   //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
   return match ($cardID) {
+    "burn_bare" => 6,
     "voltic_bolt_red", "timekeepers_whim_red", "freezing_point_red", "ice_bolt_red", "succumb_to_winter_red", "aether_icevein_red", "swell_tidings_red" => 5,
     "aether_spindle_red", "scalding_rain_red", "voltic_bolt_yellow", "rousing_aether_red", "emeritus_scolding_red", "aether_wildfire_red", "timekeepers_whim_yellow", "dampen_red", "ice_bolt_yellow", "aether_hail_red", "polar_cap_red",
     "succumb_to_winter_yellow", "aether_icevein_yellow", "aether_quickening_red", "eternal_inferno_red", "chorus_of_the_amphitheater_red", "photon_splicing_red" => 4,
@@ -791,6 +792,7 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
     case "regrowth__shock_blue":
+    case "burn_bare":
       return true;
     default:
       return false;

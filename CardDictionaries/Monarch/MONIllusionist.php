@@ -165,10 +165,11 @@
     return $powerValue >= 6;
   }
 
-  function IsPhantasmStillActive()
+  function IsPhantasmStillActive($source)
   {
     global $combatChain, $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     if(count($combatChain) == 0) return false;
+    if($source == "burn_bare") return true;
     $blockGreaterThan6 = false;
     for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
     {
@@ -179,10 +180,10 @@
     return true;
   }
 
-  function PhantasmLayer()
+  function PhantasmLayer($source)
   {
     global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers;
-    if(IsPhantasmStillActive())
+    if(IsPhantasmStillActive($source))
     {
       $attackID = $CombatChain->AttackCard()->ID();
       if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);

@@ -611,6 +611,9 @@ function CardCost($cardID, $from="-")
     case "two_sides_to_the_blade_red":
     case "roiling_fissure_blue":
       return 1;
+    case "burn_bare":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
+      return 3;
     default:
       break;
   }
@@ -1165,11 +1168,24 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
+
     "barbed_castaway" => "I,I",
-    "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", "restless_coalescence_yellow", 
-    "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", "ripple_away_blue", "under_the_trap_door_blue", "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
+
+    "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", 
+    "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", 
+    "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", 
+    "restless_coalescence_yellow", 
+    "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", 
+    "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", 
+    "ripple_away_blue", "under_the_trap_door_blue", 
+    "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
     "tip_off_red", "tip_off_yellow", "tip_off_blue" => "I,AA",
-    "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", "photon_splicing_red", "photon_splicing_yellow", "photon_splicing_blue", "war_cry_of_themis_yellow" => "I,A",
+
+    "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", 
+    "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", 
+    "photon_splicing_red", "photon_splicing_yellow", "photon_splicing_blue", 
+    "war_cry_of_themis_yellow", "burn_bare" => "I,A",
+
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
@@ -1274,6 +1290,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
     case "war_cry_of_themis_yellow":
+    case "burn_bare":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";

@@ -288,6 +288,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "burn_bare":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
+        AddLayer("LAYER", $currentPlayer, "PHANTASM", $combatChain[0], $cardID);
+      } else {
+        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
+      }
+      return "";
     default:
       break;
   }

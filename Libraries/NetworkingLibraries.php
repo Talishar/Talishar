@@ -2329,6 +2329,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
     case "war_cry_of_themis_yellow":
+    case "burn_bare":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
