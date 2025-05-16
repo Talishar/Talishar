@@ -605,6 +605,7 @@ function isUnimplemented($cardID) {
         "burn_bare" => false,
         "dead_threads" => false,
         "fools_gold" => false,
+        "give_no_quarter_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

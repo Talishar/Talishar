@@ -625,7 +625,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       GainActionPoints(1);
     }
   }
-  if (SubtypeContains($cardID, "ALLY", $player)) {
+  if (SubtypeContains($cardID, "Ally", $player)) {
     IncrementClassState($player, $CS_NumAllyPutInGraveyard);
   }
   $char = GetPlayerCharacter($player);

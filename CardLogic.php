@@ -171,6 +171,8 @@ function CurrentTurnEffectUses($cardID)
     case "shelter_from_the_storm_red":
     case "calming_breeze_red":
       return 3;
+    case "give_no_quarter_blue":
+      return 2;
     default:
       return 1;
   }

@@ -1021,6 +1021,13 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "perforate_yellow":
           if (GetClassState($currentPlayer, $CS_PlayUniqueID) == $currentTurnEffects[$i + 2]) $costModifier -= 1;
           break;
+        case "give_no_quarter_blue":
+          if (SubtypeContains($cardID, "Ally", $currentPlayer) && HasWateryGrave($cardID) && $from != "PLAY") {
+            $costModifier -= 3;
+            --$currentTurnEffects[$i + 3];
+            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+          }
+          break;
         default:
           break;
       }

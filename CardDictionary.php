@@ -120,7 +120,6 @@ function CardType($cardID, $from="")
     "wailer_humperdinck_yellow" => "A",
     "moray_le_fay_yellow" => "A",
     "kelpie_tangled_mess_yellow" => "A",
-    "limpit_hop_a_long_yellow" => "A",
     "polly_cranka" => "Companion",
     "treasure_island" => "Macro",
     "tusk" => "W", // AI custom weapon
@@ -437,9 +436,7 @@ function CardClass($cardID)
     case "chum_friendly_first_mate_yellow":
     case "chowder_hearty_cook_yellow":
     case "moray_le_fay_yellow":
-    case "wailer_humperdinck_yellow":
     case "kelpie_tangled_mess_yellow":
-    case "limpit_hop_a_long_yellow":
     case "gravy_bones":
     case "gravy_bones_shipwrecked_looter":
       return "PIRATE,NECROMANCER";

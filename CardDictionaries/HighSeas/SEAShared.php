@@ -235,6 +235,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "diamond_amulet_blue":
       if($from == "PLAY") GainActionPoints(1, $currentPlayer);
       break;
+    case "give_no_quarter_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     // Puffin cards
     case "puffin_hightail":
     case "puffin":
