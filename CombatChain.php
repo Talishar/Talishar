@@ -1514,6 +1514,9 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
+    case "cloud_city_steamboat_red":
+    case "cloud_city_steamboat_yellow":
+    case "cloud_city_steamboat_blue":
     case "palantir_aeronought_red":
       //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");

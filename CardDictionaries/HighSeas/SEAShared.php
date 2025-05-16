@@ -79,6 +79,7 @@ function SEAEffectPowerModifier($cardID): int
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
+    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
     "palantir_aeronought_red" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
@@ -99,6 +100,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
@@ -298,12 +300,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       return "";
+    case "cloud_city_steamboat_red":
+    case "cloud_city_steamboat_yellow":
+    case "cloud_city_steamboat_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     // Marlynn cards
     case "redspine_manta":
       LoadArrow($currentPlayer);
       return "";
     case "sealace_sarong":
-      AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      $arsenal = GetArsenal($currentPlayer);
+      AddCurrentTurnEffect($cardID, $currentPlayer, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
       break;
     case "marlynn_treasure_hunter":
     case "marlynn":
@@ -350,6 +358,23 @@ function SEAHitEffect($cardID): void
 {
   global $CS_NumCannonsActivated, $mainPlayer, $defPlayer;
   switch ($cardID) {
+    //puffin cards
+    case "cloud_city_steamboat_red":
+    case "cloud_city_steamboat_yellow":
+    case "cloud_city_steamboat_blue":
+      $inds = GetUntapped($mainPlayer, "MYITEMS", "subtype=Cog");
+      if($inds != "") {
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $inds);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to put a steam counter on a cog (or pass)", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a cog to add a steam counter to", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYITEMS:subtype=Cog", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer ,"<-", 1);
+        AddDecisionQueue("MZADDCOUNTER", $mainPlayer, "-", 1);
+      }
+      break;
+    //marlynn cards
     case "king_kraken_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
         AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);

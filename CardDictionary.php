@@ -2838,25 +2838,37 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "sky_skimmer_blue":
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      if (SearchCurrentTurnEffects($cardID, $player)) return true;
-      if (SearchLayersForPhase($cardID) != -1) return true;
+      if (CountBoatActivations($cardID, $player) >= 1) return true;
+      return false;
+    case "cloud_city_steamboat_red":
+    case "cloud_city_steamboat_yellow":
+    case "cloud_city_steamboat_blue":
+      if ($from != "PLAY") return false;
+      if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
+      if (CountBoatActivations($cardID, $player) >= 2) return true;
       return false;
     case "palantir_aeronought_red":
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      $numResolved = CountCurrentTurnEffects($cardID, $currentPlayer);
-      $numUnresolved = 0;
-      global $layers;
-      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-        if ($layers[$i] == $cardID) $numUnresolved++;
-      }
-      if ($numResolved + $numUnresolved == 3) return true;
+      if (CountBoatActivations($cardID, $player) >= 3) return true;
       return false;
     case "goldkiss_rum":
       return CheckTapped("MYCHAR-0", $currentPlayer);
     default:
       return false;
   }
+}
+
+//counts how many times puffin's attacks have been used
+function CountBoatActivations($cardID, $player)
+{
+  global $layers;
+  $numResolved = CountCurrentTurnEffects($cardID, $player);
+  $numUnresolved = 0;
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    if ($layers[$i] == $cardID) $numUnresolved++;
+  }
+  return $numResolved + $numUnresolved;
 }
 
 function IsDefenseReactionPlayable($cardID, $from)
@@ -4324,6 +4336,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => true,
     "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red" => true,
     default => false
   };
