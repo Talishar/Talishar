@@ -54,14 +54,14 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       return "";
     case "ravenous_rabble_red": case "ravenous_rabble_yellow": case "ravenous_rabble_blue":
       $deck = new Deck($currentPlayer);
-      if($deck->Empty()) return "Ravenous Rabble does not get negative power because your deck is empty";
+      if($deck->Empty()) return CardLink($cardID, $cardID). " does not get negative power because your deck is empty";
       if($deck->Reveal(1)) {
         $top = $deck->Top();
         $pitch = PitchValue($top);
         $CombatChain->AttackCard()->ModifyPower(-$pitch);
         return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
       }
-      return "Ravenous Rabble does not get negative power because the reveal was prevented";
+      return CardLink($cardID, $cardID). " does not get negative power because the reveal was prevented";
     case "fate_foreseen_red": case "fate_foreseen_yellow": case "fate_foreseen_blue":
       PlayerOpt($currentPlayer, 1);
       return "";

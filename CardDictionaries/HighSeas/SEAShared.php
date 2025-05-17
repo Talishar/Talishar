@@ -429,6 +429,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD");
       break;
+    case "murderous_rabble_blue":
+      $deck = new Deck($currentPlayer);
+      if($deck->Empty()) return CardLink($cardID, $cardID). " does not get power because your deck is empty";
+      if($deck->Reveal(1)) {
+        $top = $deck->Top();
+        $pitch = PitchValue($top);
+        $CombatChain->AttackCard()->ModifyPower($pitch);
+        return "Reveals " . CardLink($top, $top) . " and gets +" . $pitch . " power";
+      }
+      return CardLink($cardID, $cardID). " does not get power because the reveal was prevented";
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
