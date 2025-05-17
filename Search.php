@@ -349,7 +349,7 @@ function SearchBanishByName($player, $name)
   $cardList = "";
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;
   for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-    if (CardName($banish[$i]) == $name) {
+    if (CardName($banish[$i]) == $name && !isFaceDownMod($banish[$i+1])) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -365,7 +365,7 @@ function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
   $cardList = "";
   for ($i = 0; $i < $count; $i += $pieces) {
     $id = $discard[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "" && !isFaceDownMod($discard[$i+2])) {
       if ($cardList != "") $cardList = $cardList . ",";
       $cardList = $cardList . $i;
     }
@@ -928,7 +928,7 @@ function SearchDiscardForUniqueID($uniqueID, $player)
 {
   $discard = &GetDiscard($player);
   for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
-    if ($discard[$i + 1] == $uniqueID) return $i;
+    if ($discard[$i + 1] == $uniqueID && !isFaceDownMod($discard[$i+2])) return $i;
   }
   return -1;
 }
