@@ -233,7 +233,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   return $cardID;
 }
 
-function StealItem($srcPlayer, $index, $destPlayer)
+function StealItem($srcPlayer, $index, $destPlayer, $from)
 {
   global $CS_NumGoldCreated;
   $srcItems = &GetItems($srcPlayer);
@@ -249,6 +249,16 @@ function StealItem($srcPlayer, $index, $destPlayer)
       $indexWeapon = FindCharacterIndex($srcPlayer, "nitro_mechanoida");
       RemoveCharacter($srcPlayer, $indexWeapon);
       SearchCurrentTurnEffects("galvanic_bender-UNDER", $srcPlayer, true);
+    }
+    if($i == 9) //9 - Where it's played from ... Important for where it'll go when destroyed for example.
+    {
+      if (strpos($srcItems[$index + $i], 'MY') === 0) {
+          $srcItems[$index + $i] = 'THEIR' . substr($srcItems[$index + $i], 2);
+      } elseif (strpos($srcItems[$index + $i], 'THEIR') === 0) {
+          $srcItems[$index + $i] = 'MY' . substr($srcItems[$index + $i], 5);
+      } else {
+          $srcItems[$index + $i] = 'THEIR' . $srcItems[$index + $i];
+      }
     }
     array_push($destItems, $srcItems[$index + $i]);
     unset($srcItems[$index + $i]);

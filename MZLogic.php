@@ -288,7 +288,7 @@ function MZGainControl($player, $target)
   switch ($targetArr[0]) {
     case "MYITEMS":
     case "THEIRITEMS":
-      StealItem($player == 1 ? 2 : 1, $targetArr[1], $player);
+      StealItem($player == 1 ? 2 : 1, $targetArr[1], $player, $targetArr[0]);
       break;
     default:
       break;
