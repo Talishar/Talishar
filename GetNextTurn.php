@@ -753,7 +753,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
-    if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Buffed";
+    if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
     array_push($theirAlliesOutput, 
       JSONRenderedCard(
         cardNumber: $theirAllies[$i], 
@@ -836,7 +836,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
     $actionDataOverride = ($actionType == 24 ? strval($i) : "");
     $uniqueID = $myAllies[$i+5];
-    if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Buffed";
+    if(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
     array_push($myAlliesOutput, JSONRenderedCard(
       cardNumber: $myAllies[$i],
       action: $actionType,
