@@ -255,12 +255,6 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ash";
     case "kiss_of_death_red":
       return "Dagger,Attack";
-    case "compass_of_sunken_depths":
-      return "Off-Hand";
-    case "goldfin_harpoon_yellow":
-    case "king_kraken_harpoon_red":
-    case "king_shark_harpoon_red":
-      return "Arrow";
     case "polly_cranka":
       return "Off-Hand"; //handle being an ally elsewhere
     case "polly_cranka_ally":

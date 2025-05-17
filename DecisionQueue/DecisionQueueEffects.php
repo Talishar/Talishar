@@ -903,6 +903,39 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         }
       }
       return $lastResult;
+    case "REDFINHARPOON":
+      $index = intval(explode("-", $lastResult)[1]);
+      $cardID = GetMZCard($player, $lastResult);
+      if (CanRevealCards($defPlayer)) {
+        RevealCards($cardID);
+        if (ColorContains($cardID, 1, $defPlayer)) {
+          DiscardCard($defPlayer, $index, "red_fin_harpoon_blue", $mainPlayer);
+          PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+        }
+      }
+      return $lastResult;
+    case "YELLOWFINHARPOON":
+      $index = intval(explode("-", $lastResult)[1]);
+      $cardID = GetMZCard($player, $lastResult);
+      if (CanRevealCards($defPlayer)) {
+        RevealCards($cardID);
+        if (ColorContains($cardID, 2, $defPlayer)) {
+          DiscardCard($defPlayer, $index, "yellow_fin_harpoon_blue", $mainPlayer);
+          PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+        }
+      }
+      return $lastResult;
+    case "BLUEFINHARPOON":
+      $index = intval(explode("-", $lastResult)[1]);
+      $cardID = GetMZCard($player, $lastResult);
+      if (CanRevealCards($defPlayer)) {
+        RevealCards($cardID);
+        if (ColorContains($cardID, 3, $defPlayer)) {
+          DiscardCard($defPlayer, $index, "blue_fin_harpoon_blue", $mainPlayer);
+          PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+        }
+      }
+      return $lastResult;
     case "SUNKENTREASURE":
       $target = GetMZCard($player, $lastResult);
       WriteLog("Player " . $player . " turned " . CardLink($target, $target) . " face-down");

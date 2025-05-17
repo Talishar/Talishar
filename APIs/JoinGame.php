@@ -621,6 +621,7 @@ function isUnimplemented($cardID) {
         "cogwerx_dovetail_red" => false,
         "murderous_rabble_blue" => false,
         "copper_cog_blue" => false,
+        "red_fin_harpoon_blue", "yellow_fin_harpoon_blue", "blue_fin_harpoon_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

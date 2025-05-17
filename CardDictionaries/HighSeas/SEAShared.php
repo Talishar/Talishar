@@ -478,13 +478,13 @@ function SEAHitEffect($cardID): void
     case "king_kraken_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
         AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, non-attack action card will be discarded");
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, non-attack action cards will be discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $defPlayer, "KINGKRAKENHARPOON", 1);
       }
       else {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, non-attack action card will be discarded");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, non-attack action cards will be discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "KINGKRAKENHARPOON", 1);
       }
@@ -492,15 +492,57 @@ function SEAHitEffect($cardID): void
     case "king_shark_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
         AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, attack action card will be discarded");
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, attack action cards will be discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $defPlayer, "KINGSHARKHARPOON", 1);
       }
       else {
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, attack action card will be discarded");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, attack action cards will be discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "KINGSHARKHARPOON", 1);
+      }
+      break;
+    case "red_fin_harpoon_blue":
+      if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
+        AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, red cards will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $defPlayer, "REDFINHARPOON", 1);
+      }
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, red cards will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "REDFINHARPOON", 1);
+      }
+      break;
+    case "yellow_fin_harpoon_blue":
+      if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
+        AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, yellow cards will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $defPlayer, "YELLOWFINHARPOON", 1);
+      }
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, yellow cards will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "YELLOWFINHARPOON", 1);
+      }
+      break;
+    case "blue_fin_harpoon_blue":
+      if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
+        AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, blue cards will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $defPlayer, "BLUEFINHARPOON", 1);
+      }
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card from their hand, blue cards will be discarded");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BLUEFINHARPOON", 1);
       }
       break;
     case "conqueror_of_the_high_seas_red":

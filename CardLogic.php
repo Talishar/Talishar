@@ -1002,6 +1002,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case 'cloud_city_steamboat_blue':
+    case "red_fin_harpoon_blue":
+    case "yellow_fin_harpoon_blue":
+    case "blue_fin_harpoon_blue":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
     case "pain_in_the_backside_red":
