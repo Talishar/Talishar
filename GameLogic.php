@@ -2938,6 +2938,29 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "UNTAPALL":
+      $params = explode(":", $parameter); 
+      $zone = $params[0];
+      switch ($zone) {
+        case "MYCHAR":
+          $pieces = CharacterPieces();
+          break;
+        case "MYALLY":
+          $pieces = AllyPieces();
+          break;
+        case "MYITEMS":
+          $pieces = ItemPieces();
+          break;
+        default:
+          Writelog("Invalid zone for untap all in GameLogic.php. Report Bug!", highlight:true);
+          return "";
+      }
+      $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1]));
+      for ($i = count($indices); $i >= 0; $i--) {
+        //Untap
+        Tap($indices[$i], $player, 0);
+      }
+      break;
     default:
       return "NOTSTATIC";
   }

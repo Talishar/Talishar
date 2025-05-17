@@ -2857,6 +2857,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "palantir_aeronought_red":
     case "jolly_bludger_yellow":
+    case "cogwerx_dovetail_red":
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 3) return true;
@@ -4348,7 +4349,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
-    "palantir_aeronought_red", "jolly_bludger_yellow" => true,
+    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
     default => false
   };
 }

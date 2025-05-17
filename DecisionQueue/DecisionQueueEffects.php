@@ -911,13 +911,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
       }
       break;
-    case "SKYSKIMMER":
+    case "COGCONTROL":
       switch ($lastResult) {
         case "Go_Again": 
           GiveAttackGoAgain();
           break;
         case "+1_Power":
-          AddCurrentTurnEffect("sky_skimmer_red", $player);
+          AddCurrentTurnEffect($params[1], $player);
           break;
         default: break;
       }

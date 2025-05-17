@@ -617,6 +617,8 @@ function isUnimplemented($cardID) {
         "loan_shark_yellow" => false,
         "cog_in_the_machine_red" => false,
         "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => false,
+        "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => false,
+        "cogwerx_dovetail_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

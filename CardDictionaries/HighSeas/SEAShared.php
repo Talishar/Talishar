@@ -32,7 +32,7 @@ function SEAAbilityType($cardID, $from="-"): string
     
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
-    "palantir_aeronought_red", "jolly_bludger_yellow" => $from == "PLAY" ? "I": "AA",
+    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $from == "PLAY" ? "I": "AA",
 
     "polly_cranka", "polly_cranka_ally" => "A",
 
@@ -89,7 +89,7 @@ function SEAEffectPowerModifier($cardID): int
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
-    "palantir_aeronought_red", "jolly_bludger_yellow" => 1,
+    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
     "spitfire" => 1,
     "big_game_trophy_shot_yellow" => 4,
@@ -112,7 +112,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hoist_em_up_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
-    "palantir_aeronought_red", "jolly_bludger_yellow" => true,
+    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
@@ -352,8 +352,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
       if ($from == "PLAY") {
-        AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "Go Again,+1 Power");
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SKYSKIMMER", 1);
+        AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
       }
       break;
     case "palantir_aeronought_red":
@@ -384,10 +384,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "cogwerx_dovetail_red":
+      if ($from == "PLAY") {
+        AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
+      }
+      return "";
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case "cloud_city_steamboat_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if ($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     // Marlynn cards
     case "redspine_manta":
@@ -489,12 +495,14 @@ function SEAHitEffect($cardID): void
       }
       break;
     case "conqueror_of_the_high_seas_red":
-      if(IsHeroAttackTarget()) {
-        $arsenal = GetArsenal($defPlayer);
-        $count = count($arsenal) / ArsenalPieces();
-        DestroyArsenal($defPlayer, effectController:$mainPlayer);
-        PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
-      }     
+      $arsenal = GetArsenal($defPlayer);
+      $count = count($arsenal) / ArsenalPieces();
+      DestroyArsenal($defPlayer, effectController:$mainPlayer);
+      PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
+      break;
+    case "cogwerx_dovetail_red":
+      Writelog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
+      AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
     default:
       break;
