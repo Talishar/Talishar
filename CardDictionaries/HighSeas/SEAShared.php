@@ -93,6 +93,7 @@ function SEAEffectPowerModifier($cardID): int
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
     "spitfire" => 1,
     "big_game_trophy_shot_yellow" => 4,
+    "fire_in_the_hole_red" => 3,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
@@ -119,7 +120,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "spitfire" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
-    "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "hammerhead_harpoon_cannon", "fire_in_the_hole_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
     default => false,
@@ -414,6 +415,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
+      break;
+    case "fire_in_the_hole_red":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $inds = GetTapped($currentPlayer, "MYCHAR", "subtype=bow");
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a bow you control");
+      //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
       break;
       //other cards
     case "tip_the_barkeep_blue":
