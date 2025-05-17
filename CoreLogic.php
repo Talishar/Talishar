@@ -217,8 +217,8 @@ function CombatChainDefenseModifier($index, $amount)
     case "zephyr_needle_r":
     EvaluateCombatChain($totalPower, $totalBlock);
   }
-  if ($amount > 0) writelog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
-  else if ($amount < 0) writelog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
+  if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
+  else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
   return $index;
 }
 
@@ -3039,7 +3039,7 @@ function PitchAbility($cardID)
     case "master_cog_yellow": // Technically wrong, it should be a trigger, but since we can't reorder those it works better gameplay-wise to not have that one as a trigger
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true&LAYER:hasCrank=true");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to put a steam counter", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $currentPlayer, $cardID, 1);
       break;
     case "grandeur_of_valahai_blue":
@@ -3050,7 +3050,7 @@ function PitchAbility($cardID)
       break;
     case "will_of_arcana_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      Writelog(CardLink($cardID, $cardID) . " is amping 1");
+      WriteLog(CardLink($cardID, $cardID) . " is amping 1");
       break;
     default:
       break;

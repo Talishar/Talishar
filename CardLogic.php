@@ -999,6 +999,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "king_shark_harpoon_red":
     case "conqueror_of_the_high_seas_red":
     case "cogwerx_dovetail_red":
+    case "cloud_city_steamboat_red":
+    case "cloud_city_steamboat_yellow":
+    case 'cloud_city_steamboat_blue':
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
     case "pain_in_the_backside_red":
@@ -3176,7 +3179,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "hoist_em_up_red":
       $inds = GetUntapped($defPlayer, "MYALLY");
       if (strlen($inds) > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "choose an ally to tap or pass");
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "choose an ally to tap (or pass)");
         AddDecisionQueue("PASSPARAMETER", $defPlayer, $inds, 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
         AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
@@ -3269,7 +3272,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "loan_shark_yellow":
       DestroyAuraUniqueID($player, $uniqueID);
       WriteLog("Resolving " . CardLink($parameter, $parameter) . " ability");
-      PummelHit($player, true, context:"Choose a card to discard or pass and lose 2 health");
+      PummelHit($player, true, context:"Choose a card to discard (or pass and lose 2 health)");
       AddDecisionQueue("NOTEQUALPASS", $player, "PASS");
       AddDecisionQueue("PASSPARAMETER", $player, "2", 1);
       AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);

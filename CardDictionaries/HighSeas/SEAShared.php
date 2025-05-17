@@ -238,23 +238,21 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "paddle_faster_red":
       $inds = GetUntapped($currentPlayer, "MYALLY");
-      if (strlen($inds) > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "choose an ally to tap or pass");
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-        AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
-      }
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "choose an ally to tap (or pass)");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "board_the_ship_red":
       $inds = GetUntapped($currentPlayer, "MYALLY");
-      if (strlen($inds) > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "choose an ally to tap or pass");
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
-      }
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "choose an ally to tap (or pass)");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chart_the_high_seas_blue":
       $deck = GetDeck($currentPlayer);
@@ -315,7 +313,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cog_in_the_machine_red":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, number:2, isToken: true);
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog you control or pass");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog you control (or pass)");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK", 1);
@@ -378,6 +376,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "jolly_bludger_yellow":
       if ($from != "PLAY") {
         $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+        if(empty($inds)) break;
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to gain overpower");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
@@ -465,16 +464,15 @@ function SEAHitEffect($cardID): void
     case "cloud_city_steamboat_yellow":
     case "cloud_city_steamboat_blue":
       $inds = GetUntapped($mainPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") {
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $inds);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to put a steam counter on a cog (or pass)", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a cog to add a steam counter to", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYITEMS:subtype=Cog", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer ,"<-", 1);
-        AddDecisionQueue("MZADDCOUNTER", $mainPlayer, "-", 1);
-      }
+      if(empty($inds)) break;
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $inds);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to put a steam counter on a cog (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a cog to add a steam counter to", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYITEMS:subtype=Cog", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer ,"<-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $mainPlayer, "-", 1);      
       break;
     //marlynn cards
     case "king_kraken_harpoon_red":
@@ -512,7 +510,7 @@ function SEAHitEffect($cardID): void
       PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
       break;
     case "cogwerx_dovetail_red":
-      Writelog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
+      WriteLog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
       AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
     default:
@@ -592,7 +590,7 @@ function TapPermanent($player, $zone, $may=true) {
   };
   $inds = GetUntapped($player, $zone);
   if (strlen($inds) > 0) {
-    AddDecisionQueue("SETDQCONTEXT", $player, "choose $obj to tap or pass");
+    AddDecisionQueue("SETDQCONTEXT", $player, "choose $obj to tap (or pass)");
     AddDecisionQueue("PASSPARAMETER", $player, $inds, 1);
     if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);

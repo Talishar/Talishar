@@ -829,7 +829,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:cardID=seismic_surge", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Seismic Surge to destroy or pass", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Seismic Surge to destroy (or pass)", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       }

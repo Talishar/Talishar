@@ -251,7 +251,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "high_voltage_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      Writelog(CardLink($cardID, $cardID) . " is amping 1");
+      WriteLog(CardLink($cardID, $cardID) . " is amping 1");
       return "";
     case "blast_to_oblivion_red":
     case "blast_to_oblivion_yellow":

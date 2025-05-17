@@ -466,7 +466,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $count = CountAuraPowerCounters($currentPlayer) + 10; //+10 is an arbitrary number to keep the loop going until the player pass
         for ($i = 0; $i < $count; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasPowerCounters=true", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter or pass", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter (or pass)", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZOP", $currentPlayer, "TRANSFERPOWERCOUNTER", 1);
         }
@@ -629,7 +629,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "hyper_driver", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, $resourcesPaid, 1);
       if ($resourcesPaid >= 3 && SearchBanishForCardName($currentPlayer, "construct_nitro_mechanoid_yellow") != -1) {
-        MZMoveCard($currentPlayer, "MYBANISH:isSameName=construct_nitro_mechanoid_yellow", "MYTOPDECK", true, true, DQContext: "Choose a card to shuffle in your deck, or pass");
+        MZMoveCard($currentPlayer, "MYBANISH:isSameName=construct_nitro_mechanoid_yellow", "MYTOPDECK", true, true, DQContext: "Choose a card to shuffle in your deck, (or pass)");
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       return "";

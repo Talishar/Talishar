@@ -2291,7 +2291,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       $count = CountAuraPowerCounters($currentPlayer);
       if ($from != "PLAY" && $count >= 3) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasPowerCounters=true");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter or pass");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter (or pass)");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-");
         AddDecisionQueue("MZOP", $currentPlayer, "REMOVEPOWERCOUNTER", 1);
         for ($i = 0; $i < 2; $i++) {

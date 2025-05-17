@@ -382,8 +382,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
       CombatChainPowerModifier($lastResult, $parameter);
-      if ($parameter > 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " power");
-      else if ($parameter < 0) writelog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " power");
+      if ($parameter > 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " power");
+      else if ($parameter < 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " power");
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
       return CombatChainDefenseModifier($lastResult, $parameter);
@@ -468,7 +468,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddArsenal($deck->Top(), $player, $from, $facing);
         return $lastResult;
       } else {
-        writelog("Player $player arsenal is full, no card was puit in arsenal");
+        WriteLog("Player $player arsenal is full, no card was puit in arsenal");
         return "PASS";
       }
     case "ADDARSENALFROMDECK": //needed for schism so pass doesn't skip the other player
@@ -917,7 +917,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(GamestateUnsanitize($parameter));
       return $lastResult;
     case "WRITELOGCARDLINK":
-      Writelog(CardLink($parameter, $parameter) . " was chosen");
+      WriteLog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGLASTRESULT":
       WriteLog("<b>" . $lastResult . "<b> was selected.");
@@ -1230,7 +1230,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if ($type == "COMBAT") $dqState[6] = $damage;
-      Writelog("Player $player took $damage damage from " . Cardlink($source, $source));
+      WriteLog("Player $player took $damage damage from " . Cardlink($source, $source));
       return $damage;
     case "AFTERQUELL":
       $maxQuell = GetClassState($player, $CS_MaxQuellUsed);
@@ -2912,7 +2912,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items[$params[0]+8] = $params[1];
       return $lastResult;
     case "MZTAP":
-      $parameter != 0 ? 1 : 0;
+      $parameter != 0 ? $parameter = 1 : $parameter = 0;
       Tap($lastResult, $player, $parameter);
       return $lastResult;
     case "ADDCOUNTERLANDMARK":
@@ -2952,7 +2952,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $pieces = ItemPieces();
           break;
         default:
-          Writelog("Invalid zone for untap all in GameLogic.php. Report Bug!", highlight:true);
+          WriteLog("Invalid zone for untap all in GameLogic.php. Report Bug!", highlight:true);
           return "";
       }
       $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1]));
