@@ -306,6 +306,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "spitfire":
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      if(empty($inds)) break;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to activate ".CardLink($cardID, $cardID));
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
