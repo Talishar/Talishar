@@ -70,36 +70,52 @@ function JSONRenderedCard(
 
   $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
   if($counters != NULL) $countersMap->counters = $counters;
+
   $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
+
   $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
   if($defCounters != NULL) $countersMap->defence = $defCounters;
+
   $powerCounters = property_exists($countersMap, 'attack') ? $powerCounters->attack : $powerCounters;
   if($powerCounters != NULL) $countersMap->attack = $powerCounters;
+
   $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
   if($steamCounters != NULL) $countersMap->steam = $steamCounters;
+
   $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
-  if($energyCounters != NULL) $countersMap->steam = $steamCounters;
+  if($energyCounters != NULL) $countersMap->energy = $energyCounters;
+
   $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
-  if($hauntCounters != NULL) $countersMap->energy = $energyCounters;
+  if($hauntCounters != NULL) $countersMap->haunt = $hauntCounters;
+
   $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
   if($verseCounters != NULL) $countersMap->verse = $verseCounters;
+
   $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
   if($doomCounters != NULL) $countersMap->doom = $doomCounters;
+
   $lessonCounters = property_exists($countersMap, 'lesson') ? $lessonCounters->lesson : $lessonCounters;
   if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
+
   $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
   if($rustCounters != NULL) $countersMap->rust = $rustCounters;
+
   $flowCounters = property_exists($countersMap, 'flow') ? $flowCounters->flow : $flowCounters;
   if($flowCounters != NULL) $countersMap->flow = $flowCounters;
+
   $frostCounters = property_exists($countersMap, 'frost') ? $frostCounters->frost : $frostCounters;
   if($frostCounters != NULL) $countersMap->frost = $frostCounters;
+
   $balanceCounters = property_exists($countersMap, 'balance') ? $balanceCounters->balance : $balanceCounters;
   if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
+
   $bindCounters = property_exists($countersMap, 'bind') ? $bindCounters->bind : $bindCounters;
   if($bindCounters != NULL) $countersMap->bind = $bindCounters;
+
   $stainCounters = property_exists($countersMap, 'stain') ? $stainCounters->stain : $stainCounters;
   if($stainCounters != NULL) $countersMap->stain = $stainCounters;
+
   $goldCounters = property_exists($countersMap, 'gold') ? $goldCounters->gold : $goldCounters;
   if($goldCounters != NULL) $countersMap->gold = $goldCounters;
 
@@ -107,7 +123,7 @@ function JSONRenderedCard(
     $class = CardClass($cardNumber);
     $type = CardType($cardNumber);
     $subtype = CardSubType($cardNumber);
-    if ($class == "MECHANOLOGIST" && ($subtype == "Item" || CardType($cardNumber) == "W")) {
+    if ($class == "MECHANOLOGIST" && (str_contains($subtype, "Item") || str_contains($type, "W"))) {
       $countersMap->steam = $countersMap->counters;
       $countersMap->counters = 0;
     } 
