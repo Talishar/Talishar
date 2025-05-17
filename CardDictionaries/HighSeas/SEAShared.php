@@ -304,10 +304,20 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "spitfire":
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to power up spitfire");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to activate ".CardLink($cardID, $cardID));
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      break;
+    case "cog_in_the_machine_red":
+      PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, number:2, isToken: true);
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog you control or pass");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK", 1);
+      AdddecisionQueue("ELSE", $currentPlayer, "-");
+      AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD", 1);
       break;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":

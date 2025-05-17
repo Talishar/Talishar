@@ -1817,6 +1817,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "the_hand_that_pulls_the_strings":
       return "-";
     case "tip_the_barkeep_blue":
+    case "cog_in_the_machine_red":
       return "-";
     default:
       return "GY";

@@ -21,7 +21,7 @@ if (!function_exists("DelimStringContains")) {
 }
 
 if (!function_exists("SubtypeContains")) {
-  function SubtypeContains($cardID, $subtype)
+  function SubtypeContains($cardID, $subtype, $player = "")
   {
     $cardSubtype = CardSubtype($cardID);
     return DelimStringContains($cardSubtype, $subtype);
@@ -29,7 +29,7 @@ if (!function_exists("SubtypeContains")) {
 }
 
 if (!function_exists("TypeContains")) {
-  function TypeContains($cardID, $type)
+  function TypeContains($cardID, $type, $player = "")
   {
     $cardType = CardType($cardID);
     return DelimStringContains($cardType, $type);
@@ -615,6 +615,7 @@ function isUnimplemented($cardID) {
         "sawbones_dock_hand_yellow" => false,
         "patch_the_hole" => false,
         "loan_shark_yellow" => false,
+        "cog_in_the_machine_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
