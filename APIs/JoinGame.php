@@ -616,6 +616,7 @@ function isUnimplemented($cardID) {
         "patch_the_hole" => false,
         "loan_shark_yellow" => false,
         "cog_in_the_machine_red" => false,
+        "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":

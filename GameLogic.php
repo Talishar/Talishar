@@ -2912,7 +2912,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items[$params[0]+8] = $params[1];
       return $lastResult;
     case "MZTAP":
-      Tap($lastResult, $player);
+      $parameter != 0 ? 1 : 0;
+      Tap($lastResult, $player, $parameter);
       return $lastResult;
     case "ADDCOUNTERLANDMARK":
       global $landmarks;

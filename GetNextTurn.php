@@ -1396,6 +1396,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $borderColor = ($combatChain[$index + 1] == $playerID ? 1 : 2);
         }
 
+        if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
+          $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] : $myCharacter[$index + 14];
+        }
+
         if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN")) {
           $card = $TheirCardBack;
           switch ($option[0]) {
@@ -1413,39 +1417,35 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         //Show Life and Def counters on allies in the popups
         if ($option[0] == "THEIRALLY" || $option[0] == "MYALLY") {
           $index = intval($option[1]);
-          $lifeCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 2] : $myAllies[$index + 2];
-          $enduranceCounters = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 6] : $myAllies[$index + 6];
-          $uniqueID = ($option[0] == "THEIRALLY") ? $theirAllies[$index + 5] : $myAllies[$index + 5];
+          $lifeCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 2] : $myAllies[$index + 2];
+          $enduranceCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 6] : $myAllies[$index + 6];
+          $uniqueID = $option[0] == "THEIRALLY" ? $theirAllies[$index + 5] : $myAllies[$index + 5];
           $powerCounters = 0;
+          $tapped = $option[0] == "THEIRALLY" ? $theirAllies[$index + 11] : $myAllies[$index + 11];
           if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
               $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index]);
           }
         }
         
-        //Show power counters on Auras in the popups
-        $powerCounters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3]) : null;
-        //Show various counters on Auras in the popups
-        $counters = ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") ? ($option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2]) : null;
+        if ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") {
+          //Show power counters on Auras in the popups
+          $powerCounters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3];
+          //Show various counters on Auras in the popups
+          $counters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2];
+        }
         //Show Steam Counters on items
-        $steamCounters = ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") ? ($option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1]) : null;
-        //Show counters on microprocessor for uses left
-        // print("HERE");
-        // if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
-          
-        //   $items = $option[0] == "THEIRITEMS" ? $theirItems : $myItems;
-        //   if ($items[$index] == "micro_processor_blue") {
-        //     if (DelimStringContains($items[$index + 8], "Opt", true)) $powerCounters = 1;
-        //     if (DelimStringContains($items[$index + 8], "Draw_then_top_deck", true)) $counters = 1;
-        //     if (DelimStringContains($items[$index + 8], "Banish_top_deck", true)) $steamCounters = 1;
-        //   }
-        // }
+        if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
+          $steamCounters = $option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1];
+          $tapped = $option[0] == "THEIRITEMS" ? $theirItems[$index + 10] : $myItems[$index + 10];
+        }
+        
         //Show Subtitles on MyDeck
         if(substr($turn[2], 0, 6) === "MYDECK"){
           $subtitles = "(You can click your deck to see its content during this card resolution)";
         }
 
         if ($maxCount < 2)
-          array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters));
+          array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped));
         else
           array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
       }

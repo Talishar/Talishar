@@ -90,6 +90,7 @@ function SEAEffectPowerModifier($cardID): int
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow" => 1,
+    "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
     "spitfire" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
@@ -112,6 +113,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow" => true,
+    "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
     "spitfire" => true,
@@ -319,6 +321,27 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AdddecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD", 1);
       break;
+    case "draw_back_the_hammer_red":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $inds = GetTapped($currentPlayer, "MYCHAR", "subtype=Gun");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a gun you control or pass");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
+    case "perk_up_red":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $inds = GetTapped($currentPlayer, "MYCHAR", "type=C");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap your hero or pass");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
+    case "tighten_the_screws_red":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a cog you control or pass");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
@@ -475,6 +498,10 @@ function SEAHitEffect($cardID): void
 function GetUntapped($player, $zone, $cond="-")
 {
   switch ($zone) {
+    case "MYCHAR":
+      $arr = GetPlayerCharacter($player);
+      $count = CharacterPieces();
+      break;
     case "MYALLY":
       $arr = GetAllies($player);
       $count = AllyPieces();
@@ -496,6 +523,38 @@ function GetUntapped($player, $zone, $cond="-")
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
     if (!CheckTapped($index, $player)) array_push($unwavedInds, $index);
+  }
+  return implode(",", $unwavedInds);
+}
+
+function GetTapped($player, $zone, $cond="-")
+{
+  switch ($zone) {
+    case "MYCHAR":
+      $arr = GetPlayerCharacter($player);
+      $count = CharacterPieces();
+      break;
+    case "MYALLY":
+      $arr = GetAllies($player);
+      $count = AllyPieces();
+      break;
+    case "MYITEMS":
+      $arr = GetItems($player);
+      $count = ItemPieces();
+      break;
+    default:
+      return "";
+  }
+  $unwavedInds = [];
+  $allowedInds = -1;
+  if ($cond != "-") {
+    $allowedInds = explode(",", SearchMultizone($player, "$zone:$cond"));
+  }
+  else $allowedInds = [];
+  for ($i = 0; $i < count($arr); $i += $count) {
+    $index = "$zone-$i";
+    if ($cond != "-" && !in_array($index, $allowedInds)) continue;
+    if (CheckTapped($index, $player)) array_push($unwavedInds, $index);
   }
   return implode(",", $unwavedInds);
 }
