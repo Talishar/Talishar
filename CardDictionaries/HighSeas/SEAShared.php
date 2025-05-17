@@ -94,6 +94,7 @@ function SEAEffectPowerModifier($cardID): int
     "spitfire" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "fire_in_the_hole_red" => 3,
+    "monkey_powder_red" => 1,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
@@ -120,7 +121,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "spitfire" => true,
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
-    "hammerhead_harpoon_cannon", "fire_in_the_hole_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
     default => false,
@@ -425,6 +426,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
+    case "monkey_powder_red":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      Draw($currentPlayer);
       break;
       //other cards
     case "tip_the_barkeep_blue":

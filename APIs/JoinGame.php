@@ -623,6 +623,7 @@ function isUnimplemented($cardID) {
         "copper_cog_blue" => false,
         "red_fin_harpoon_blue", "yellow_fin_harpoon_blue", "blue_fin_harpoon_blue" => false,
         "fire_in_the_hole_red" => false,
+        "monkey_powder_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
