@@ -324,22 +324,28 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "draw_back_the_hammer_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $inds = GetTapped($currentPlayer, "MYCHAR", "subtype=Gun");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a gun you control or pass");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a gun you control");
+      //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
     case "perk_up_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $inds = GetTapped($currentPlayer, "MYCHAR", "type=C");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap your hero or pass");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap your hero");
+      //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
     case "tighten_the_screws_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a cog you control or pass");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+      $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a cog you control");
+      //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
     case "sky_skimmer_red":

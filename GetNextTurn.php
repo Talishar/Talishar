@@ -1325,6 +1325,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $borderColor = 0;
         $uniqueIDIndex = -1;
         $label = "";
+        $tapped = false;
 
         if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $otherPlayer == $mainPlayer) $label = "Attacking";
         if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $playerID == $mainPlayer) $label = "Attacking";
@@ -1397,7 +1398,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         }
 
         if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
-          $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] : $myCharacter[$index + 14];
+          $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] == 1 : $myCharacter[$index + 14] == 1;
         }
 
         if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN")) {
@@ -1421,7 +1422,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $enduranceCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 6] : $myAllies[$index + 6];
           $uniqueID = $option[0] == "THEIRALLY" ? $theirAllies[$index + 5] : $myAllies[$index + 5];
           $powerCounters = 0;
-          $tapped = $option[0] == "THEIRALLY" ? $theirAllies[$index + 11] : $myAllies[$index + 11];
+          $tapped = $option[0] == "THEIRALLY" ? $theirAllies[$index + 11] == 1 : $myAllies[$index + 11] == 1;
           if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
               $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index]);
           }
@@ -1436,7 +1437,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         //Show Steam Counters on items
         if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
           $steamCounters = $option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1];
-          $tapped = $option[0] == "THEIRITEMS" ? $theirItems[$index + 10] : $myItems[$index + 10];
+          $tapped = $option[0] == "THEIRITEMS" ? $theirItems[$index + 10] == 1 : $myItems[$index + 10] == 1;
         }
         
         //Show Subtitles on MyDeck
