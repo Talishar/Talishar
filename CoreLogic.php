@@ -238,7 +238,6 @@ function StartTurnAbilities()
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
-
   AuraBeginningActionPhaseAbilities();
 
   $mainItems = &GetItems($mainPlayer);
@@ -246,6 +245,20 @@ function StartTurnAbilities()
     $mainItems[$i + 2] = "2";
     $mainItems[$i + 3] = ItemUses($mainItems[$i]);
     ItemStartTurnAbility($i);
+  }
+  $mainBanish = &GetBanish($mainPlayer);
+  for ($i = count($mainBanish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+    if($mainBanish[$i + 1] == "RETURNFIRE"){
+      if (!ArsenalFull($mainPlayer) ) {
+        $arsenal = &GetArsenal($mainPlayer);
+        AddArsenal($mainBanish[$i], $mainPlayer, "BANISH", "UP");
+        RemoveBanish($mainPlayer, $i);
+        AddCurrentTurnEffect("return_fire_red", $mainPlayer, uniqueID:$arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      }
+      else {
+        $mainBanish[$i + 1] = "-";
+      }
+    }
   }
   $defItems = &GetItems($defPlayer);
   for ($i = 0; $i < count($defItems); $i += ItemPieces()) {

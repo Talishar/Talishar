@@ -3280,6 +3280,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, "2", 1);
       AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
       break;
+    case "return_fire_red":
+      MZMoveCard($player, "MYHAND:subtype=Arrow", "MYBANISH,HAND,RETURNFIRE", may:true, DQContext:"Choose an arrow to banish (or pass)");
+      break;
     default:
       break;
   }
