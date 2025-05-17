@@ -252,7 +252,7 @@ if ($decklink != "") {
 
       if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "blitz" || $format == "compblitz" || $format == "clash") && $cardCounts[$id] > 2) {
+        if (($format == "blitz" || $format == "compblitz" || $format == "clash") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
           if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
           $isDeckBlitzLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
