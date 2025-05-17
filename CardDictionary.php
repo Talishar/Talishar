@@ -3415,6 +3415,7 @@ function ETASteamCounters($cardID)
     case "cerebellum_processor_blue":
     case "null_time_zone_blue":
     case "clamp_press_blue":
+    case "copper_cog_blue":
       return 2;
     case "teklo_pounder_blue":
     case "dissolving_shield_red":

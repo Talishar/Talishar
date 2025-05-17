@@ -17,7 +17,7 @@
       case "cerebellum_processor_blue":
       case "null_time_zone_blue":
       case "clamp_press_blue":
-      case "polly_cranka_ally": case "golden_cog":
+      case "polly_cranka_ally": case "golden_cog": case "copper_cog_blue":
         return true;
       default: return false;
     }
