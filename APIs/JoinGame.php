@@ -619,6 +619,8 @@ function isUnimplemented($cardID) {
         "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => false,
         "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => false,
         "cogwerx_dovetail_red" => false,
+        "murderous_rabble_blue" => false,
+        "copper_cog_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
