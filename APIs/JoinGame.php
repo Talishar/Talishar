@@ -258,7 +258,7 @@ if ($decklink != "") {
         }
       }
       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
-      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3) {
+      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
         if ($isDeckCCLegal != "") $isDeckCCLegal .= ", ";
         $isDeckCCLegal .= CardName($id);
       }

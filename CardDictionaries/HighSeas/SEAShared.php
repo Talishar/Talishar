@@ -736,3 +736,13 @@ function UndestroyHook($player)
     }
   }
 }
+
+function hasUnlimited($cardID)
+{
+switch ($cardID) {
+  case "copper_cog_blue":
+    return true;
+  default:
+    return false;
+  }
+}
