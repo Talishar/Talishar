@@ -2969,7 +2969,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         //Untap
         Tap($indices[$i], $player, 0);
       }
-      break;
+      return $lastResult;
+    case "GOLDENSKYWARDEN":
+      $items = &GetItems($player);
+      if (GetMZCard($player, "MYITEMS-" . $lastResult) == "golden_cog") PutItemIntoPlayForPlayer("gold", $player, isToken:true);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

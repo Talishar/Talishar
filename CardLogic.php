@@ -2535,20 +2535,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
     case "golden_skywarden_yellow":
-      $maxRepeats = SearchCount(SearchItemsForCard("golden_cog", $player));
+      $myItems = GetItems($player);
+      $maxRepeats = count($myItems);
       for ($i = 0; $i < $maxRepeats; $i++) {
-        AddDecisionQueue("YESNO", $player, "if you would like to destroy a Golden Cog", 1);
-        AddDecisionQueue("NOPASS", $player, "-", 1);
-        AddDecisionQueue("FINDANDDESTROYITEM", $player, "golden_cog-1", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("GOLDENSKYWARDEN", $player, "-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);
-        AddDecisionQueue("PLAYITEM", $player, "gold", 1);
       }
-      AddDecisionQueue("ELSE", $player, "-");
-      // in the future make this not show golden cogs
-      MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose another item to galvanize");
-      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);
       break;
     case "stasis_cell_blue":
       AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
