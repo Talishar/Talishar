@@ -132,7 +132,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $defPlayer;
+  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $defPlayer, $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
