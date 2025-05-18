@@ -207,6 +207,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:pitch=2&MYDISCARD:pitch=2", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target yellow card", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
+        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
         AddDecisionQueue("MZBOTTOM", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);

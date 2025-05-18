@@ -668,7 +668,6 @@ function AbilityCost($cardID)
   else if ($set == "AST") return ASTAbilityCost($cardID);
   else if ($set == "AGB") return AGBAbilityCost($cardID);
   else switch ($cardID) {
-    case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
     default:
       return 0;
@@ -1145,7 +1144,6 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
-    case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
     case "bravo_flattering_showman": return "A";
     case "tusk": return "AA"; // AI custom weapon
     case "wrenchtastic": return "AA"; // AI custom weapon
@@ -2850,6 +2848,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "barnacle_yellow":
     case "wailer_humperdinck_yellow":
     case "polly_cranka_ally":
+    case "scooba_salty_sea_dog_yellow":
       if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
     case "sky_skimmer_red":
