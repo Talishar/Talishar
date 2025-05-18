@@ -2537,7 +2537,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "golden_skywarden_yellow":
       $myItems = GetItems($player);
       $maxRepeats = count($myItems);
-      for ($i = 0; $i < $maxRepeats; $i++) {
+      for ($i = 0; $i < $maxRepeats; $i += itemPieces()) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);

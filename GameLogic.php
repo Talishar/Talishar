@@ -2972,9 +2972,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "GOLDENSKYWARDEN":
       $items = &GetItems($player);
-      if (GetMZCard($player, "MYITEMS-" . $lastResult) == "golden_cog") PutItemIntoPlayForPlayer("gold", $player, isToken:true);
+      if (GetMZCard($player, $lastResult) == "golden_cog") PutItemIntoPlayForPlayer("gold", $player, isToken:true, effectController:$player);
       return $lastResult;
     default:
       return "NOTSTATIC";
   }
 }
+ 
