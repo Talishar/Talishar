@@ -881,7 +881,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("WRITELOG", $player, "Shows your top deck", 1);
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $player, CardName($source, $source) . " shows the top of your deck is <1>", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, CardName($source) . " shows the top of your deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
@@ -892,7 +892,7 @@ function OUTAbilityCost($cardID)
     else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source, $source) . " shows the top of their deck is <1>", 1);
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardName($source) . " shows the top of their deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }

@@ -1824,6 +1824,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqVars[$parameter] = $targetType;
       return $lastResult;
     case "SETDQVAR":
+      if (!isset($dqVars[0])) $dqVars[0] = "-";
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "MZSETDQVAR":
