@@ -1214,7 +1214,6 @@ function EquipPayAdditionalCosts($cardIndex)
       if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
       break;
     case "cogwerx_blunderbuss":
-      // will need fixing to have costs paid after mode choice
       if (GetResolvedAbilityType($cardID) == "AA") {
         Tap("MYCHAR-$cardIndex", $currentPlayer);
       }

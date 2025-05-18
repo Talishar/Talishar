@@ -16,6 +16,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 3: //Play equipment/hero ability
       $index = $cardID;
       $character = &GetPlayerCharacter($playerID);
+      $zone = -1;
       if ($index != -1 && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
@@ -26,8 +27,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $character[$index + 1] = 1;
           $character[$index + 6] = 1;
         }
-        else EquipPayAdditionalCosts($index);
-        PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11], zone: "MYCHAR");
+        else $zone = "MYCHAR";
+        PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11], zone: $zone);
       } else {
         echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -1635,6 +1636,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $playType = $cardType;
   $EffectContext = $cardID;
   PlayerMacrosCardPlayed();
+  if ($zone == "MYCHAR") EquipPayAdditionalCosts($index);
   if ($zone == "MYALLY") AllyPayAdditionalCosts($index, $from);
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
