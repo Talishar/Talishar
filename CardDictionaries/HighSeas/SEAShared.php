@@ -153,7 +153,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$currentPlayer", 1);
-      AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
+      AddDecisionQueue("ALLCARDCOLORORPASS", $currentPlayer, "2", 1);
       AddDecisionQueue("PLAYITEM", $currentPlayer, "gold", 1);
       AddDecisionQueue("DRAW", $currentPlayer, $cardID);
       break;

@@ -1059,6 +1059,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (PitchValue($cards[$i]) != $parameter) return "PASS";
       }
       return $lastResult;
+    case "ALLCARDCOLORORPASS":
+      $cards = explode(",", $lastResult);
+      for ($i = 0; $i < count($cards); ++$i) {
+        if (!ColorContains($cards[$i], $parameter, $player)) return "PASS";
+      }
+      return $lastResult;
     case "ALLCARDSCOMBOORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
