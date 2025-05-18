@@ -540,7 +540,7 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
   }
 }
 
-function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
+function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-"): void
 {
   global $mainPlayer, $combatChain, $layers;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
@@ -913,7 +913,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source="-"): void
     case "hunters_klaive_r":
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
+      if (IsHeroAttackTarget() || $targetPlayer != "-") AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
       break;
     case "find_center_blue":
     case "break_tide_yellow":
