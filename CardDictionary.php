@@ -4323,7 +4323,7 @@ function RequiresDieRoll($cardID, $from, $player): bool
   if (GetDieRoll($player) > 0) return false;
   if ($turn[0] == "B") return false;
   $type = CardType($cardID);
-  if ($type == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && PowerValue($cardID) >= 6 && (SearchCharacterActive($player, "kayo_berserker_runt") || SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $player))) return true;
+  if ($type == "AA" && (GetResolvedAbilityType($cardID, $from, $player) == "" || GetResolvedAbilityType($cardID, $from, $player) == "AA") && PowerValue($cardID) >= 6 && (SearchCharacterActive($player, "kayo_berserker_runt") || SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $player))) return true;
   return match ($cardID) {
     "crazy_brew_blue" => $from == "PLAY",
     "scabskin_leathers", "barkbone_strapping", "bone_head_barrier_yellow", "argh_smash_yellow", "rolling_thunder_red", "bad_beats_red", "bad_beats_yellow", "bad_beats_blue", "knucklehead" => true,
