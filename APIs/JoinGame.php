@@ -216,7 +216,7 @@ if ($decklink != "") {
   $weapon2 = "";
   $weaponSideboard = "";
   $totalCards = 0;
-  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS"];
+  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP"];
 
   if (is_countable($cards)) {
     // need to get the character first to check legality
@@ -541,7 +541,7 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["SEA", "AGB", "APR", "AVS", "MPG", "BDD"];
+  $unreleasedSets = ["SEA", "AGB", "APR", "AVS", "MPG", "BDD", "SMP"];
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
 
@@ -629,7 +629,7 @@ function isUnimplemented($cardID) {
         "cogwerx_blunderbuss" => false,
         default => true
       };
-    case "AGB": case "APR": case "AVS": case "MPG": case "BDD":
+    case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
       return match($cardID) {
         "valda_seismic_impact" => false,
         "testament_of_valahai" => false,
@@ -643,6 +643,7 @@ function isUnimplemented($cardID) {
         "grind_them_down_red", "grind_them_down_yellow", "grind_them_down_blue" => false,
         "crash_and_bash_red", "crash_and_bash_yellow", "crash_and_bash_blue" => false,
         "flatten_the_field_red", "flatten_the_field_yellow", "flatten_the_field_blue" => false,
+        "bravo_flattering_showman" => false,
         default => true
       };
     default:
