@@ -1458,7 +1458,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
-  if ($cardType == "DR" && IsAllyAttackTarget() && $abilityTypes == "") return false;
+  if ($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
