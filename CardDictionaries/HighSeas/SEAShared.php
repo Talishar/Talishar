@@ -468,12 +468,23 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return CardLink($cardID, $cardID). " does not get power because the reveal was prevented";
     case "midas_touch_yellow":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&MYALLY");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an ally to destroy");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MIDASTOUCH", $currentPlayer, "-", 1);
-      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      break;
+      $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
+      $uid = explode("-", $target)[1];
+      $index = SearchAlliesForUniqueID($uid, $targetPlayer);
+      if ($index != -1) {
+        $allies = GetAllies($targetPlayer);
+        $allyCost = CardCost($allies[$index]);
+        PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$allyCost, isToken:true, effectController:$currentPlayer);
+        $token = $allyCost > 1 ? " tokens" : " token";
+        $allyName = CardLink($allies[$index], $allies[$index]);
+        WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold", "gold") . " $token!");
+        DestroyAlly($targetPlayer, $index);
+        return "";
+      }
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
+        return "FAILED";
+      }
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

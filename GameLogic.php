@@ -2976,11 +2976,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("Player " . $player . " created a " . CardLink("gold", "gold") . " token");
       }
       return $lastResult;
-    case "MIDASTOUCH":
-      PutItemIntoPlayForPlayer("gold", $player, number:CardCost(GetMZCard($player, $lastResult)), isToken:true, effectController:$player);
-      $token = CardCost(GetMZCard($player, $lastResult)) > 1 ? " tokens" : " token";
-      WriteLog("Player " . $player . " created " . CardCost(GetMZCard($player, $lastResult)) . " " . CardLink("gold", "gold") . $token);
-      return $lastResult;
     default:
       return "NOTSTATIC";
   }
