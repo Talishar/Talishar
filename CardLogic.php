@@ -455,7 +455,7 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
         if ($additionalCosts == "") $additionalCosts = "-";
         $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
-        $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4];
+        $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4] . "|" . $params[5];
         $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
@@ -470,7 +470,7 @@ function ContinueDecisionQueue($lastResult = "")
         $otherPlayer = $currentPlayer == 1 ? 2 : 1;
         BuildMyGamestate($currentPlayer);
       }
-      PlayCard($params[0], $params[1], $lastResult, $params[2], isset($params[4]) ? $params[4] : -1);
+      PlayCard($params[0], $params[1], $lastResult, $params[2], isset($params[3]) ? $params[3] : -1, isset($params[4]) ? $params[4] : -1);
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
       ResolveChainLink();

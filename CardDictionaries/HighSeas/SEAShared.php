@@ -15,6 +15,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "shelly_hardened_traveler_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
     "chowder_hearty_cook_yellow" => "I",
+    "cutty_shark_quick_clip_yellow" => "A",
     "scooba_salty_sea_dog_yellow" => $from == "PLAY" ? "AA": "A",
     "wailer_humperdinck_yellow" => $from == "PLAY" ? "AA": "A",
     "riggermortis_yellow" => $from == "PLAY" ? "AA" : "A",  
@@ -60,6 +61,7 @@ function SEAAbilityCost($cardID): int
     "hammerhead_harpoon_cannon" => 4,
     "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
 
+    "cutty_shark_quick_clip_yellow" => 1,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
@@ -78,6 +80,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "marlynn" => true,
     "hammerhead_harpoon_cannon" => true,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
+    "cutty_shark_quick_clip_yellow" => GetResolvedAbilityType($cardID) == "A",
     default => false,
   };
 }
@@ -92,6 +95,7 @@ function SEAEffectPowerModifier($cardID): int
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
     "spitfire" => 1,
+    "cutty_shark_quick_clip_yellow" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "fire_in_the_hole_red" => 3,
     "monkey_powder_red" => 1,
@@ -118,6 +122,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
+    "cutty_shark_quick_clip_yellow" => SubtypeContains($attackID, "Ally", $mainPlayer),
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
     "spitfire" => true,
     "return_fire_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
@@ -188,6 +193,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "chowder_hearty_cook_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") GainHealth(1, $currentPlayer);
+      break;
+    case "cutty_shark_quick_clip_yellow":
+      $abilityType = GetResolvedAbilityType($cardID, $from);
+      if ($from == "PLAY" && $abilityType == "A") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "sawbones_dock_hand_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
@@ -714,6 +723,7 @@ function HasWateryGrave($cardID): bool
     "shelly_hardened_traveler_yellow" => true,
     "kelpie_tangled_mess_yellow" => true,
     "scooba_salty_sea_dog_yellow" => true,
+    "cutty_shark_quick_clip_yellow" => true,
     default => false
   };
 }

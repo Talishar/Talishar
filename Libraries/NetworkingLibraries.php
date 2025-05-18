@@ -27,7 +27,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $character[$index + 6] = 1;
         }
         else EquipPayAdditionalCosts($index);
-        PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11]);
+        PlayCard($cardID, "EQUIP", -1, $index, $character[$index + 11], zone: "MYCHAR");
       } else {
         echo("Play equipment ability " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -57,7 +57,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
         if(!IsStaticType(CardType($arsenal[$index], "ARS"), "ARS", $arsenal[$index])) RemoveArsenal($playerID, $index);
-        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID);
+        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS");
       } else {
         echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -120,7 +120,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       --$items[$index + 3];
       SetClassState($playerID, $CS_PlayIndex, $index);
       $set = CardSet($cardID);
-      PlayCard($cardID, "PLAY", -1, $index, $items[$index + 4]);
+      PlayCard($cardID, "PLAY", -1, $index, $items[$index + 4], zone: "MYITEMS");
       break;
     case 11: //CHOOSEDECK
       if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSETHEIRDECK") {
@@ -181,7 +181,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $otherPlayerBanish->UnsetModifier("shadowrealm_horror_red");
       }
       if($banish[$index + 1] == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
-      PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2]);
+      PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH");
       break;
     case 15: // Their Banish
       $index = $cardID;
@@ -195,7 +195,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $theirBanish[$index];
       if (!IsPlayable($cardID, $turn[0], "THEIRBANISH", $index)) break;
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
-      PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2]);
+      PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2], zone: "THEIRBANISH");
       break;
     case 16: 
       if (count($decisionQueue) > 0) {
@@ -317,7 +317,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
         CombatChainPayAdditionalCosts($index, "PLAY");
-        PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7]);
+        PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7], zone: "CC");
       }
       break;
     case 22: //Aura ability
@@ -329,7 +329,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $names = GetAbilityNames($cardID, $index);
       if ($names == "") $auras[$index + 1] = 1; //Set status to used - for now
       SetClassState($playerID, $CS_PlayIndex, $index);
-      PlayCard($cardID, "PLAY", -1, $index, $auras[$index + 6]);
+      PlayCard($cardID, "PLAY", -1, $index, $auras[$index + 6], zone: "MYAURAS");
       break;
     case 23: //CHOOSECARD
       if ($turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") {
@@ -355,8 +355,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Ally not playable
       $allies[$index + 1] = 1;
       SetClassState($playerID, $CS_PlayIndex, $index);
-      AllyPayAdditionalCosts($index);
-      PlayCard($cardID, "PLAY", -1, $index, $allies[$index + 5]);
+      PlayCard($cardID, "PLAY", -1, $index, $allies[$index + 5], "MYALLY");
       break;
     case 25: //Landmark Ability
       $index = $cardID;
@@ -364,7 +363,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $landmarks[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Landmark not playable
       SetClassState($playerID, $CS_PlayIndex, $index);
-      PlayCard($cardID, "PLAY", -1);
+      PlayCard($cardID, "PLAY", -1, zone: "LANDMARK");
       break;
     case 26: //Change setting
       $userID = "";
@@ -389,7 +388,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
         unset($hand[$found]);
         $hand = array_values($hand);
-        PlayCard($cardID, "HAND");
+        PlayCard($cardID, "HAND", zone: "MYHAND");
       }
       break;
     case 29: //CHOOSETOPOPPONENT
@@ -458,7 +457,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $permanents[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Permanent not playable
       SetClassState($playerID, $CS_PlayIndex, $index);
-      PlayCard($cardID, "PLAY", -1, $index);
+      PlayCard($cardID, "PLAY", -1, $index, zone: "MYPERM");
       break;
     case 35: //Play card from deck
       $index = $cardID; //Overridden to be index instead
@@ -468,7 +467,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!IsPlayable($cardID, $turn[0], "DECK", $index)) break;
       unset($deck[$index]);
       $deck = array_values($deck);
-      PlayCard($cardID, "DECK");
+      PlayCard($cardID, "DECK", zone: "MYDECK");
       break;
     case 36: //Play card from graveyard
       $index = $cardID;
@@ -483,7 +482,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($discard[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "GY")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      PlayCard($cardID, "GY", -1, $index, isset($discard[$index + 2]) ? $discard[$index + 2] : -1);
+      PlayCard($cardID, "GY", -1, $index, isset($discard[$index + 2]) ? $discard[$index + 2] : -1, zone: "MYDISCARD");
       break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
@@ -1473,7 +1472,7 @@ function FinalizeTurn()
   ProcessDecisionQueue();
 }
 
-function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1)
+function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1)
 {
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $CombatChain;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
@@ -1591,7 +1590,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
-      AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index . "-" . $uniqueID);
+      AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index . "-" . $uniqueID . "-" . $zone);
       $decisionQueue = array_merge($decisionQueue, $dqCopy);
       ProcessDecisionQueue();
       //MISSING CR 5.1.3d Decide if action that can be played as instant will be
@@ -1611,6 +1610,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $turn[2] = $turn[0];
       $turn[3] = $cardID;
       $turn[4] = $from;
+      $turn[5] = $index;
+      $turn[6] = $uniqueID;
+      $turn[7] = $zone;
     }
     $turn[0] = "P";
     return; //We know we need to pitch more, short circuit here
@@ -1622,6 +1624,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $turn[0] = $turn[2];
     $cardID = $turn[3];
     $from = $turn[4];
+    $index = $turn[5];
+    $uniqueID = $turn[6];
+    $zone = $turn[7];
     $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
   if (GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost) . ".");
@@ -1630,6 +1635,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $playType = $cardType;
   $EffectContext = $cardID;
   PlayerMacrosCardPlayed();
+  if ($zone == "MYALLY") AllyPayAdditionalCosts($index, $from);
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
@@ -1661,7 +1667,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         GiveAttackGoAgain();
       }
     }
-
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
@@ -1809,7 +1814,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     AuraPlayAbilities($cardID, $from);
     if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
   }
-  AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID));
+  AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID) . "|" . $zone);
   ProcessDecisionQueue();
 }
 
@@ -3282,7 +3287,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
   global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves;
   global $landmarks;
-
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {

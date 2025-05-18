@@ -112,6 +112,7 @@ function CardType($cardID, $from="")
     "valda_seismic_impact" => "C",
     "chum_friendly_first_mate_yellow" => "A", //gravy allies
     "chowder_hearty_cook_yellow" => "A",
+    "cutty_shark_quick_clip_yellow" => "A",
     "scooba_salty_sea_dog_yellow" => "A",
     "riggermortis_yellow" => "A",
     "swabbie_yellow" => "A",
@@ -329,6 +330,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "chum_friendly_first_mate_yellow":
     case "sawbones_dock_hand_yellow":
     case "chowder_hearty_cook_yellow":
+    case "cutty_shark_quick_clip_yellow":
     case "scooba_salty_sea_dog_yellow":
     case "moray_le_fay_yellow":
     case "wailer_humperdinck_yellow":
@@ -433,6 +435,7 @@ function CardClass($cardID)
     case "wailer_humperdinck_yellow":
     case "chum_friendly_first_mate_yellow":
     case "chowder_hearty_cook_yellow":
+    case "cutty_shark_quick_clip_yellow":
     case "scooba_salty_sea_dog_yellow":
     case "moray_le_fay_yellow":
     case "kelpie_tangled_mess_yellow":
@@ -1076,6 +1079,7 @@ function HasGoAgain($cardID, $from="-"): bool|int
     case "great_library_of_solana":
     case "plasma_barrel_shot":
     case "kelpie_tangled_mess_yellow":
+    case "cutty_shark_quick_clip_yellow":
       return false;
     case "limpit_hop_a_long_yellow":
       return $from == "ATTACK";
@@ -1182,6 +1186,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "sawbones_dock_hand_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "chowder_hearty_cook_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "kelpie_tangled_mess_yellow" => ($from != "PLAY") ? "" : "A,AA",
+    "cutty_shark_quick_clip_yellow" => ($from != "PLAY") ? "" : "A,AA",
 
     "cogwerx_blunderbuss" => "I,AA",
     default => "",
@@ -1346,6 +1351,13 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
+      return $names;
+    case "cutty_shark_quick_clip_yellow":
+      $allies = &GetAllies($currentPlayer);
+      $names = "";
+      if ($allies[$index + 8] > 0) $names = "Ability";
+      if (CheckTapped("MYALLY-$index", $currentPlayer)) return "Ability";
+      $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
     default:
       return "";
@@ -1545,6 +1557,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase)) return true;
+    else return false;
+  }
+  if ($cardID == "Cutty_Shark_Quick_Clip_Yellow" && $from == "PLAY") {
+    if (CheckTapped("MYALLY-$index", $currentPlayer) && $ally[$index + 1] != 2) return false;
+    else if ($currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     else return false;
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
@@ -2940,6 +2957,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "chum_friendly_first_mate_yellow":
     case "sawbones_dock_hand_yellow":
     case "chowder_hearty_cook_yellow":
+    case "cutty_shark_quick_clip_yellow":
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "shelter_from_the_storm_red":
       return GetResolvedAbilityType($cardID, $from) == "DR";

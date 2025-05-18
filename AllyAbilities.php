@@ -422,7 +422,7 @@ function AllyEndTurnAbilities()
   }
 }
 
-function AllyPayAdditionalCosts($cardIndex)
+function AllyPayAdditionalCosts($cardIndex, $from)
 {
   global $currentPlayer;
   $ally = &GetAllies($currentPlayer);
@@ -440,11 +440,21 @@ function AllyPayAdditionalCosts($cardIndex)
     case "scooba_salty_sea_dog_yellow":
     case "shelly_hardened_traveler_yellow":
       Tap("MYALLY-$cardIndex", $currentPlayer);
+      $ally[$cardIndex + 1] = 2;//Not once per turn effects
       break;
     case "polly_cranka_ally":
       Tap("MYALLY-$cardIndex", $currentPlayer);
       DestroyAlly($currentPlayer, $cardIndex, skipDestroy:true, toBanished:true);
       break;
+    case "cutty_shark_quick_clip_yellow":
+      if(GetResolvedAbilityType($cardID, $from, $currentPlayer) == "AA") {
+        Tap("MYALLY-$cardIndex", $currentPlayer);
+        if($ally[$cardIndex + 8] > 0) $ally[$cardIndex + 1] = 2;//Not once per turn effects
+      }
+      else {
+        $ally[$cardIndex + 8] = 0;//Once per turn ability used
+      }
+      break; 
     default: break;
   }
 }

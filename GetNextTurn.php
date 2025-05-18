@@ -832,7 +832,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $label = "";
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
-    $playable = ($currentPlayer == $playerID ? IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && $myAllies[$i + 1] == 2 : false);
+    $playable = ($currentPlayer == $playerID ? IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && ($myAllies[$i + 1] == 2 || !CheckTapped("MYALLY-".$i, $currentPlayer)) : false);
     $actionType = ($currentPlayer == $playerID && $turn[0] != "P" && $playable) ? 24 : 0;
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
     $actionDataOverride = ($actionType == 24 ? strval($i) : "");
