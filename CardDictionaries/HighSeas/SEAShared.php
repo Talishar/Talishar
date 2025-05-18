@@ -421,7 +421,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "fire_in_the_hole_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $inds = GetTapped($currentPlayer, "MYCHAR", "subtype=bow");
+      $inds = GetTapped($currentPlayer, "MYCHAR", "subtype=Bow");
       if(empty($inds)) break;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a bow you control");
       //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
