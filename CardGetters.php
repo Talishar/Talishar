@@ -402,7 +402,7 @@ function ArsenalHasFaceDownBlueArrow($player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "UP" && ColorContains($arsenal[$i], 3, $player)) return true;
+    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "DOWN" && ColorContains($arsenal[$i], 3, $player)) return true;
   }
   return false;
 }
