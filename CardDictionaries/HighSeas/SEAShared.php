@@ -465,6 +465,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return "Reveals " . CardLink($top, $top) . " and gets +" . $pitch . " power";
       }
       return CardLink($cardID, $cardID). " does not get power because the reveal was prevented";
+    case "midas_touch_yellow":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&MYALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an ally to destroy");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MIDASTOUCH", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+      break;
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

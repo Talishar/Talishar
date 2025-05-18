@@ -627,6 +627,7 @@ function isUnimplemented($cardID) {
         "return_fire_red" => false,
         "cutty_shark_quick_clip_yellow" => false,
         "cogwerx_blunderbuss" => false,
+        "midas_touch_yellow" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
