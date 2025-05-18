@@ -640,12 +640,9 @@ function isUnimplemented($cardID) {
         "smelting_of_the_old_ones_red" => false,
         "disenchantment_of_the_old_ones_red" => false,
         "sawbones_dock_hand_yellow" => false,
-        "grind_them_down_red" => false,
-        "grind_them_down_yellow" => false,
-        "grind_them_down_blue" => false,
-        "crash_and_bash_red" => false,
-        "crash_and_bash_yellow" => false,
-        "crash_and_bash_blue" => false,
+        "grind_them_down_red", "grind_them_down_yellow", "grind_them_down_blue" => false,
+        "crash_and_bash_red", "crash_and_bash_yellow", "crash_and_bash_blue" => false,
+        "flatten_the_field_red", "flatten_the_field_yellow", "flatten_the_field_blue" => false,
         default => true
       };
     default:

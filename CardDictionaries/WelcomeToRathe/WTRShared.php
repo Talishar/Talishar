@@ -546,6 +546,7 @@
       case "smelting_of_the_old_ones_red": 
       case "disenchantment_of_the_old_ones_red":
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
+      case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
         return true;
       default:
         return false;
@@ -655,10 +656,14 @@
         break;
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
         $deck = new Deck($defPlayer);
-        if($deck->Empty()) {
-          break;
-        }
+        if($deck->Empty()) break;
         else DestroyTopCardOpponent($mainPlayer);
+        break;
+      case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
+        $indices = SearchMultizone($mainPlayer, "THEIRAURAS:cardID=seismic_surge");
+        if(empty($indices)) break;
+        MZChooseAndDestroy($mainPlayer, "THEIRAURAS:cardID=seismic_surge", context: "Choose a Seismic Surge token to destroy");
+        WriteLog("Player $mainPlayer destroyed a " . CardLink("seismic_surge", "seismic_surge") . " token");
         break;
       default: return;
     }
