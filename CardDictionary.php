@@ -1299,7 +1299,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
       $effectRestricted = !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
-      if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase()) {
+      if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase() && !IsAllyAttackTarget()) {
         $names .= ",Defense Reaction";
         if ($from != "HAND") $names = "-,Defense Reaction";
       }
@@ -1458,6 +1458,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
+  if ($cardType == "DR" && IsAllyAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
@@ -1560,6 +1561,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else return false;
   }
   if ($cardID == "Cutty_Shark_Quick_Clip_Yellow" && $from == "PLAY") {
+    $ally = GetAllies($currentPlayer);
     if (CheckTapped("MYALLY-$index", $currentPlayer) && $ally[$index + 1] != 2) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0) return true;
     else return false;
