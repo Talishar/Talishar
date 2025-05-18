@@ -668,6 +668,7 @@ function AbilityCost($cardID)
   else if ($set == "AST") return ASTAbilityCost($cardID);
   else if ($set == "AGB") return AGBAbilityCost($cardID);
   else switch ($cardID) {
+    case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
     default:
       return 0;
@@ -1144,6 +1145,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
+    case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
     case "bravo_flattering_showman": return "A";
     case "tusk": return "AA"; // AI custom weapon
     case "wrenchtastic": return "AA"; // AI custom weapon
