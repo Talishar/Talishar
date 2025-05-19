@@ -94,7 +94,7 @@
   {
     global $originalSets;
     $rarityDict = ["T"=>0, "B"=>0, "C"=>1, "R"=>2, "M"=>3, "L"=>4, "F"=>5, "V"=>6, "P"=>7, "S"=>8, "-"=>9];
-    echo("<BR>" . $functionName . "<BR>");
+    echo("\r\n" . $functionName . "\r\n");
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $isString = true;
     $isBool = false;
@@ -286,8 +286,11 @@
           break;
       }
       if($isBool);
-      else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-      if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
+      //else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "\r\n");
+      //else if($propertyName == "rarity" && $data == "T") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "\r\n");
+      //else if($propertyName == "block" && $data == -1) echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "\r\n");
+      //else if($propertyName == "health" && $data == -1) echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "\r\n");
+      else if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
       {
         if ($propertyName != "SIDtoCID") $AA[$cardID] = $data;
         else $AA[$setID] = $cardID;
