@@ -1316,11 +1316,15 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "cogwerx_blunderbuss":
-      $names = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog") == "" ? "-" : "Ability";
+      $names = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog") == "" || SearchCurrentTurnEffects("cogwerx_blunderbuss", $currentPlayer) ? "-" : "Ability";
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return $names;
       if (SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) return $names;
       //catch other edge cases like warmongers later
-      $names .= ",Attack";
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        return $names;
+      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0) {
+        $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      }
       return $names;
     case "chum_friendly_first_mate_yellow":
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
@@ -2840,6 +2844,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "cogwerx_blunderbuss":
       if (!CheckTapped("MYCHAR-$index", $currentPlayer) && $turn[0] == "M") return false;
+      if (SearchCurrentTurnEffects("cogwerx_blunderbuss", $player)) return true;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") != "") return false;
       return true;
     case "dead_threads":

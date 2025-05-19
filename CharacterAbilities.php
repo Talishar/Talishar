@@ -1219,7 +1219,7 @@ function EquipPayAdditionalCosts($cardIndex)
       }
       else {
         $cogIndices = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to fire spitfire");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to give " . CardLink($cardID, $cardID) . " next attack go again");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $cogIndices, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       }
