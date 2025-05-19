@@ -182,7 +182,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $otherPlayerBanish->UnsetModifier("shadowrealm_horror_red");
       }
       if($banish[$index + 1] == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
-      PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH");
+      PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$banish[$index + 1]);
       break;
     case 15: // Their Banish
       $index = $cardID;
@@ -196,7 +196,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $theirBanish[$index];
       if (!IsPlayable($cardID, $turn[0], "THEIRBANISH", $index)) break;
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
-      PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2], zone: "THEIRBANISH");
+      PlayCard($cardID, "THEIRBANISH", -1, $index, $theirBanish[$index + 2], zone: "THEIRBANISH", mod: $theirBanish[$index + 1]);
       break;
     case 16: 
       if (count($decisionQueue) > 0) {
@@ -1473,7 +1473,7 @@ function FinalizeTurn()
   ProcessDecisionQueue();
 }
 
-function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1, $facing=0)
+function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1, $facing=0, $mod="-")
 {
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $CombatChain;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
@@ -1516,7 +1516,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "") {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         elseif ($from == "GY") AddGraveyard($cardID, $currentPlayer, "GY");
-        elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH");
+        elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH", $mod);
+        elseif ($from == "THEIRBANISH") BanishCardForPlayer($cardID, $otherPlayer, "THEIRBANISH", $mod);
         elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
         WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
         PassInput(false);
