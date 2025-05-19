@@ -2858,6 +2858,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
+      if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 1) return true;
@@ -2865,6 +2866,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case "cloud_city_steamboat_blue":
+      if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 2) return true;
@@ -2872,6 +2874,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "palantir_aeronought_red":
     case "jolly_bludger_yellow":
     case "cogwerx_dovetail_red":
+      if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 3) return true;
