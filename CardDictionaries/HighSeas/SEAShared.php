@@ -377,12 +377,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $numResolved = CountCurrentTurnEffects($cardID, $currentPlayer);
         //technically inaccurate, but should be functionally mostly the same
         if ($numResolved == 3) {
-          $indices = [];
-          for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-            if ($combatChain[$i + 1] == $defPlayer) array_push($indices, "COMBATCHAINLINK-$i");
-          }
-          $indices = implode(",", $indices);
-          // AddDecisionQueue("PASSPARAMETER", $currentPlayer, $indices);
           AddDecisionQueue("SEARCHCOMBATCHAIN", $currentPlayer, "-");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card to destroy");
           AddDecisionQueue("CHOOSECARDID", $currentPlayer, "<-", 1);
