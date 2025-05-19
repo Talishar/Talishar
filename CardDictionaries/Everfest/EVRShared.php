@@ -857,7 +857,7 @@
     $deck = &GetDeck($player);
     $indices = "";
     for($i=0; $i<count($deck); $i+=DeckPieces()) {
-      if(CardSubType($deck[$i]) == "Item") {
+      if(SubtypeContains($deck[$i], "Item", $player)) {
         $name = CardName($deck[$i]);
         if(str_contains($name, "Potion") || str_contains($name, "Talisman") || str_contains($name, "Amulet")) {
           if($indices != "") $indices .= ",";
