@@ -1179,9 +1179,10 @@ function AuraPlayAbilities($cardID, $from = "")
     $remove = 0;
     switch ($auras[$i]) {
       case "quicken":
-        if (($cardType == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA"))
-          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA"))
-          || (TypeContains($cardID, "W") && GetResolvedAbilityType($cardID) == "AA" && $from == "EQUIP")) {
+        $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
+        if (($cardType == "AA" && ($resolvedAbilityType == "" ||$resolvedAbilityType == "AA"))
+          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA"))
+          || (TypeContains($cardID, "W") && $resolvedAbilityType == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
