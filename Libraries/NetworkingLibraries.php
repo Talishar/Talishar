@@ -1507,15 +1507,16 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
     if ($resolutionIndex != -1 && !$canPlayAsInstant) {
-      if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
-      elseif ($from == "GY") AddGraveyard($cardID, $currentPlayer, "GY");
-      elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH");
       if (GetResolvedAbilityType($cardID, $from) == "A") {
+        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
         PassInput(false);
         return "";
       }
       if (DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "") {
+        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
+        elseif ($from == "GY") AddGraveyard($cardID, $currentPlayer, "GY");
+        elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH");
         WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
         PassInput(false);
         return "";
