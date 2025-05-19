@@ -1515,9 +1515,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       if (DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "") {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
-        elseif ($from == "GY") AddGraveyard($cardID, $currentPlayer, "GY");
-        elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH", $mod);
-        elseif ($from == "THEIRBANISH") BanishCardForPlayer($cardID, $otherPlayer, "THEIRBANISH", $mod);
+        // elseif ($from == "GY") AddGraveyard($cardID, $currentPlayer, "GY"); these cases not needed?
+        // elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH", $mod);
+        // elseif ($from == "THEIRBANISH") BanishCardForPlayer($cardID, $otherPlayer, "THEIRBANISH", $mod);
         elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
         WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
         PassInput(false);
