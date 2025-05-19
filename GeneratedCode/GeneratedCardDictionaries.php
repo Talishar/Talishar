@@ -2249,6 +2249,7 @@ default => "AA"
 function GeneratedPowerValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"herald_of_sekem_red" => 7,
 "adrenaline_rush_red" => 4,
 "adrenaline_rush_yellow" => 3,
 "adrenaline_rush_blue" => 2,
@@ -5966,6 +5967,7 @@ default => 3
 function GeneratedCardName($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"herald_of_sekem_red" => "Herald of Sekem",
 "10000_year_reunion_red" => "10,000 Year Reunion",
 "a_drop_in_the_ocean_blue" => "A Drop in the Ocean",
 "absorb_in_aether_red" => "Absorb in Aether",
@@ -12411,6 +12413,7 @@ default => 1
 function GeneratedCardCost($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"herald_of_sekem_red" => 2,
 "10000_year_reunion_red" => 8,
 "absorb_in_aether_red" => 1,
 "absorb_in_aether_yellow" => 1,
@@ -16292,6 +16295,7 @@ default => 20
 function GeneratedRarity($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"herald_of_sekem_red" => "M",
 "10000_year_reunion_red" => "M",
 "absorb_in_aether_red" => "R",
 "absorb_in_aether_yellow" => "R",
@@ -18277,6 +18281,7 @@ default => false
 function GeneratedCardClass($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"herald_of_sekem_red" => "ILLUSIONIST",
 "10000_year_reunion_red" => "ILLUSIONIST",
 "absorb_in_aether_red" => "WIZARD",
 "absorb_in_aether_yellow" => "WIZARD",
@@ -21578,6 +21583,7 @@ default => "NONE"
 function GeneratedCardTalent($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"herald_of_sekem_red" => "LIGHT",
 "a_drop_in_the_ocean_blue" => "MYSTIC",
 "aegis_archangel_of_protection" => "LIGHT",
 "aether_ashwing" => "DRACONIC",
@@ -22717,6 +22723,7 @@ default => "NONE"
 function GeneratedIsSpecialization($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"herald_of_sekem_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -26486,6 +26493,7 @@ default => ""
 function GeneratedSetID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"herald_of_sekem_red" => "SEA260",
 "10000_year_reunion_red" => "MST131",
 "a_drop_in_the_ocean_blue" => "MST095",
 "absorb_in_aether_red" => "ARC123",
@@ -30230,6 +30238,7 @@ default => ""
 function GeneratedSetIDtoCardID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"SEA260" => "herald_of_sekem_red",
 "MST131" => "10000_year_reunion_red",
 "MST095" => "a_drop_in_the_ocean_blue",
 "ARC123" => "absorb_in_aether_red",
