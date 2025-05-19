@@ -958,6 +958,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       break;
     case "AERONOUGHT":
+      global $chainLinks;
       $type = CardType($lastResult);
       //AddGraveyard($lastResult, $defPlayer, "CC", $player);
       $ind = -1;
