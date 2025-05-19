@@ -1355,11 +1355,13 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
+      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-,Attack";
       return $names;
     case "cutty_shark_quick_clip_yellow":
       $allies = &GetAllies($currentPlayer);
       $names = "";
       if ($allies[$index + 8] > 0) $names = "Ability";
+      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-,Attack";
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "Ability";
       $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
