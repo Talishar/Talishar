@@ -399,10 +399,13 @@ function ContinueDecisionQueue($lastResult = "")
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
-        if (!count($layers) == LayerPieces() || $layers[0] != "RESOLUTIONSTEP") {
-          $layerPriority[0] = ShouldHoldPriority(1);
-          $layerPriority[1] = ShouldHoldPriority(2);
-        }
+        // there's a bug here where in always hold priority you need to go through 2
+        // priority passes to break the chain if an instant was played in resolution
+        // below was an attempt to fix that led to more issues
+        // if (!count($layers) == LayerPieces() || $layers[0] != "RESOLUTIONSTEP") {
+        $layerPriority[0] = ShouldHoldPriority(1);
+        $layerPriority[1] = ShouldHoldPriority(2);
+        // }
         if ($cardID == "ENDTURN") EndStep();
         else if ($cardID == "ENDPHASE") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
