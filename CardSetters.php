@@ -102,12 +102,12 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($banishedBy == "bonds_of_attraction_red" || $banishedBy == "bonds_of_attraction_yellow" || $banishedBy == "bonds_of_attraction_blue" && count($banish) / BanishPieces() >= 2) {
     $count = count($banish) - BanishPieces();
     $pitchValues = [];
-    for ($i = $count; $i >= 0; $i--) {
+    for ($i = $count-1; $i >= 0; $i--) {
       if ($banish[$i + 1] == "Source-" . $banishedBy) {
-        array_push($pitchValues, PitchValue($banish[$i]));
+        array_push($pitchValues, ColorOverride($banish[$i], $player));
       }
     }
-    if (count($pitchValues) !== count(array_unique($pitchValues))) {
+    if (in_array(ColorOverride($cardID, $player), $pitchValues)) {
       GainHealth(1, $otherPlayer);
     }
     return $rv;
