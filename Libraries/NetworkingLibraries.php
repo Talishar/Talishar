@@ -58,7 +58,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
         if(!IsStaticType(CardType($arsenal[$index], "ARS"), "ARS", $arsenal[$index])) RemoveArsenal($playerID, $index);
-        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS");
+        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$arsenal[$index+1]);
       } else {
         echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -1473,7 +1473,7 @@ function FinalizeTurn()
   ProcessDecisionQueue();
 }
 
-function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1)
+function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1, $facing=0)
 {
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $CombatChain;
   global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
@@ -1517,6 +1517,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         elseif ($from == "GY") AddGraveyard($cardID, $currentPlayer, "GY");
         elseif ($from == "BANISH") BanishCardForPlayer($cardID, $currentPlayer, "BANISH");
+        elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
         WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
         PassInput(false);
         return "";
