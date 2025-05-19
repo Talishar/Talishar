@@ -151,6 +151,11 @@ function deleteDirectory($dir)
       return false;
     }
   }
-  return rmdir($dir);
+
+  if (file_exists($dir)) {
+      return rmdir($dir);
+  } else {
+      return true; // directory already deleted
+  }
 }
-?>
+

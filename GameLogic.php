@@ -2934,7 +2934,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return "";
       }
       $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1]));
-      for ($i = count($indices); $i >= 0; $i--) {
+      for ($i = count($indices)-1; $i >= 0; $i--) {
         //Untap
         Tap($indices[$i], $player, 0);
       }
