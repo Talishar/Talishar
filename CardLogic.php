@@ -399,8 +399,10 @@ function ContinueDecisionQueue($lastResult = "")
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
-        $layerPriority[0] = ShouldHoldPriority(1);
-        $layerPriority[1] = ShouldHoldPriority(2);
+        if (!count($layers) == LayerPieces() || $layers[0] != "RESOLUTIONSTEP") {
+          $layerPriority[0] = ShouldHoldPriority(1);
+          $layerPriority[1] = ShouldHoldPriority(2);
+        }
         if ($cardID == "ENDTURN") EndStep();
         else if ($cardID == "ENDPHASE") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";

@@ -1503,6 +1503,23 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       return;
     }
   }
+  if ($playingCard) {
+    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
+    $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
+    if ($resolutionIndex != -1 && !$canPlayAsInstant) {
+      if (GetResolvedAbilityType($cardID, $from) == "A") {
+        WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
+        PassInput(false);
+        return "";
+      }
+      if (DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
+        AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
+        WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
+        PassInput(false);
+        return "";
+      }
+    }
+  }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     if (IsStaticType($cardType, $from, $cardID)) {
@@ -1514,11 +1531,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (GetAbilityTypes($cardID, $index, $from) == "") {
         if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
       }
-      if (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
-        WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please break the chain (by passing) instead of replaying your card.", highlight: true);
-        RevertGamestate();
-        return "";
-      }
+      // if (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
+      //   WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please break the chain (by passing) instead of replaying your card.", highlight: true);
+      //   RevertGamestate();
+      //   return "";
+      // }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
@@ -1647,7 +1664,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     } 
-    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
@@ -1680,11 +1696,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         $layerIndex -= EndResolutionStep();
         SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
       }
-      if (GetResolvedAbilityType($cardID, $from) == "A" && !$canPlayAsInstant) {
-        //shortcut for activating a NAA closing the chain
-        $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
-        if ($resolutionIndex != -1) $layers[$resolutionIndex] = "CLOSINGCHAIN";
-      }
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
       else SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) . "," . $cardID);
@@ -1700,11 +1711,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           $layerIndex -= EndResolutionStep();
           SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
         }
-      }
-      if (DelimStringContains($cardType, "A") && !$canPlayAsInstant && !GoesOnCombatChain($turn[0], $layers[count($layers)-LayerPieces()], $from, $currentPlayer)) {
-        //shortcut for playing a NAA closing the chain
-        $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
-        if ($resolutionIndex != -1) $layers[$resolutionIndex] = "CLOSINGCHAIN";
       }
       $remorselessCount = CountCurrentTurnEffects("remorseless_red-DMG", $playerID);
       if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {

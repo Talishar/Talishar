@@ -61,7 +61,7 @@ $CID_TekloLegs = "teklo_base_legs";
 function CardType($cardID, $from="")
 {
   global $CS_AdditionalCosts, $currentPlayer;
-  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "CLOSINGCHAIN", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
+  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
   
   // Handle meld cards
@@ -1290,7 +1290,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if($foundNullTime && $from == "HAND") return $names;
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
-      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0) $names .= ",Action";
+      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) $names .= ",Action";
       if($from != "HAND") $names = "-,Action";
       return $names;
     case "shelter_from_the_storm_red":
