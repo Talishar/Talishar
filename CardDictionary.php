@@ -2887,7 +2887,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
 function CountBoatActivations($cardID, $player)
 {
   global $layers;
-  $numResolved = CountCurrentTurnEffects($cardID, $player);
+  $numResolved = CountCurrentTurnEffects($cardID, $player, partial:true);
   $numUnresolved = 0;
   for ($i = 0; $i < count($layers); $i += LayerPieces()) {
     if ($layers[$i] == $cardID) $numUnresolved++;

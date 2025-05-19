@@ -616,16 +616,24 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
   return false;
 }
 
-function CountCurrentTurnEffects($cardID, $player, $remove = false)
+function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = false)
 {
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   $total = 0;
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
-      if ($remove) RemoveCurrentTurnEffect($i);
-      ++$total;
+    if (!$partial){
+      if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
+        if ($remove) RemoveCurrentTurnEffect($i);
+        ++$total;
+      }
+    }
+    else{
+      if (str_contains($currentTurnEffects[$i], $cardID) && $currentTurnEffects[$i + 1] == $player) {
+        if ($remove) RemoveCurrentTurnEffect($i);
+        ++$total;
+      }
     }
   }
   return $total;
