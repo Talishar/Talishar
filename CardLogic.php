@@ -2544,7 +2544,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("GOLDENSKYWARDEN", $player, "-", 1);
+        AddDecisionQueue("GOLDENSKYWARDEN", $player, $target, 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);

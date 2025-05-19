@@ -2943,8 +2943,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (GetMZCard($player, $lastResult) == "golden_cog") {
         PutItemIntoPlayForPlayer("gold", $player, isToken:true, effectController:$player);
         WriteLog("Player " . $player . " created a " . CardLink("gold", "gold") . " token");
+        return $lastResult;
       }
-      return $lastResult;
+      else {
+        MZDestroy($player, $lastResult);
+        CombatChainDefenseModifier($parameter, 1);
+        return "PASS";
+      }
     default:
       return "NOTSTATIC";
   }
