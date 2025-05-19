@@ -204,7 +204,7 @@ function DoBoost($player, $cardID, $boostCount=1)
       //give it the uid of the banished card as a target
       AddLayer("TRIGGER", $player, "hyper_x3", $banish[$topInd + 2]);
     }
-    if(CardSubType($boostedCardID) == "Item" && SearchCurrentTurnEffects("bios_update_red-2", $player, true)) {
+    if(SubtypeContains($boostedCardID, "Item") && SearchCurrentTurnEffects("bios_update_red-2", $player, true)) {
       //give it the uid of the banished card as a target
       AddLayer("TRIGGER", $player, "bios_update_red", $banish[$topInd + 2]);
     }
