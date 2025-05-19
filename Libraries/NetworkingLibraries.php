@@ -1625,9 +1625,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $turn[0] = $turn[2];
     $cardID = $turn[3];
     $from = $turn[4];
-    $index = $turn[5];
-    $uniqueID = $turn[6];
-    $zone = $turn[7];
+    $index = $turn[5] ?? -1;
+    $uniqueID = $turn[6] ?? -1;
+    $zone = $turn[7] ?? -1;    
     $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
   if (GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost) . ".");
