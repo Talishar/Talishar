@@ -19,8 +19,8 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     else if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_BACK.webp";
     else $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $setID . ".webp";
     //$imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/" . $setID . "_yajPa8R.width-450.format-webp.webp";
-    echo("Image for " . $cardID . " does not exist.\r\n");
-    echo("Downloading image from $imageURL \r\n");
+    echo("Image for " . $cardID . " does not exist.<BR>");
+    echo("Downloading image from $imageURL <BR>");
     $handler = fopen($filename, "w");
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $imageURL);
@@ -28,10 +28,10 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     curl_exec($ch);
     curl_close($ch);
     if(filesize($filename) < 10000) { unlink($filename); return; }
-    if(file_exists($filename)) echo("Image for " . $cardID . " successfully retrieved.\r\n");
+    if(file_exists($filename)) echo("Image for " . $cardID . " successfully retrieved.<BR>");
     if(file_exists($filename))
     {
-      echo("Normalizing file size for " . $cardID . ".\r\n");
+      echo("Normalizing file size for " . $cardID . ".<BR>");
       $image = imagecreatefromwebp($filename);
       $image = imagescale($image, 450, 628);
       imagewebp($image, $filename);
@@ -47,10 +47,10 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
   if(!file_exists($concatFilename) || !file_exists($cardSquaresUploadedFolder))
   // if (!file_exists($cardSquaresUploadedFolder))
   {
-    echo("Concat image for " . $cardID . " does not exist.\r\n");
+    echo("Concat image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
     {
-      echo("Attempting to convert image for " . $cardID . " to concat.\r\n");
+      echo("Attempting to convert image for " . $cardID . " to concat.<BR>");
       $image = imagecreatefromwebp($filename);
       $imageTop = imagecrop($image, ['x' => 0, 'y' => 0, 'width' => 450, 'height' => 372]);
       $imageBottom = imagecrop($image, ['x' => 0, 'y' => 550, 'width' => 450, 'height' => 628]);
@@ -66,7 +66,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       imagedestroy($dest);
       imagedestroy($imageTop);
       imagedestroy($imageBottom);
-      if(file_exists($concatFilename)) echo("Image for " . $cardID . " successfully converted to concat.\r\n");
+      if(file_exists($concatFilename)) echo("Image for " . $cardID . " successfully converted to concat.<BR>");
     }
   }
   $cropFilename = "./crops/" . $cardID . "_cropped.png";
@@ -75,16 +75,16 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
   if(!file_exists($cropFilename) || !file_exists($cardCropsUploadedFolder))
   // if (!file_exists($cardCropsUploadedFolder))
   {
-    echo("Crop image for " . $cardID . " does not exist.\r\n");
+    echo("Crop image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
     {
-      echo("Attempting to convert image for " . $cardID . " to crops.\r\n");
+      echo("Attempting to convert image for " . $cardID . " to crops.<BR>");
       $image = imagecreatefromwebp($filename);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
       if(!file_exists($cropFilename)) imagepng($image, $cropFilename);
       if(!file_exists($cardCropsUploadedFolder)) imagepng($image, $cardCropsMissingFolder);
       imagedestroy($image);
-      if(file_exists($cropFilename)) echo("Image for " . $cardID . " successfully converted to crops.\r\n");
+      if(file_exists($cropFilename)) echo("Image for " . $cardID . " successfully converted to crops.<BR>");
     }
   }
 }
