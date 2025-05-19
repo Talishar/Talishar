@@ -815,7 +815,7 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
   $indices = "";
   for ($i = 0; $i < $count; $i += $pieces) {
     if ($character[$i + 1] != 0
-      && CardType($character[$i]) == "E"
+      && TypeContains($character[$i], "E", $player)
       && (($minBlock == -1 && $maxBlock == -1) || (BlockValue($character[$i]) + $character[$i + 4] <= $maxBlock && BlockValue($character[$i]) >= $minBlock))
       && ($onCombatChain == false || $character[$i + 6] > 0)
       && $character[$i + 12] != "DOWN") {

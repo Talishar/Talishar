@@ -478,7 +478,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $character = &GetPlayerCharacter($player);
       $character[8] = 1;//Freeze their character
       for ($i = CharacterPieces(); $i < count($character); $i += CharacterPieces()) {
-        if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) $character[$i + 8] = 1;//Freeze their equipment
+        if (TypeContains($character[$i], "E", $player) && $character[$i + 1] != 0) $character[$i + 8] = 1;//Freeze their equipment
       }
       return $lastResult;
     case "BLESSINGOFFOCUS":

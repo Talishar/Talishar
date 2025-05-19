@@ -434,7 +434,7 @@ function NumEquipment($player)
   $character = &GetPlayerCharacter($player);
   $numEquip = 0;
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) ++$numEquip;
+    if (TypeContains($character[$i], "E", $player) && $character[$i + 1] != 0) ++$numEquip;
   }
   return $numEquip;
 }
