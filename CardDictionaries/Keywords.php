@@ -60,7 +60,7 @@
       switch ($char[$i]) {
         case "puffin_hightail":
         case "puffin":
-          if (GetClassState($player, $CS_NumCranked) == 2) AddLayer("TRIGGER", $player, $char[$i]);
+          if (GetClassState($player, $CS_NumCranked) == 2 && SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
           break;
         default:
           break;

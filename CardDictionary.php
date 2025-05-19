@@ -444,7 +444,7 @@ function CardClass($cardID)
     case "gravy_bones_shipwrecked_looter":
       return "PIRATE,NECROMANCER";
     case "marlynn":
-    case "marylynn_treasure_hunter":
+    case "marlynn_treasure_hunter":
       return "PIRATE,RANGER";
     case "puffin":
     case "puffin_hightail":
@@ -4314,14 +4314,12 @@ function PlayableFromGraveyard($cardID, $mod="-")
 {
   global $currentPlayer;
   if (isFaceDownMod($mod)) return false;
-  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer)) return true;
-  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $currentPlayer)) return true;
-  switch ($cardID) {
-    case "graven_call":
-      return true;
-    default:
-      return false;
-  }
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $currentPlayer) && SearchCharacterActive($currentPlayer, "gravy_bones_shipwrecked_looter")) return true;
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $currentPlayer) && SearchCharacterActive($currentPlayer, "gravy_bones")) return true;
+  return match ($cardID) {
+    "graven_call" => true,
+    default => false,
+  };
 }
 
 function RequiresDieRoll($cardID, $from, $player): bool
