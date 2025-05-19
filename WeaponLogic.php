@@ -34,7 +34,7 @@ function WeaponIndices($chooser, $player, $subtype = "")
   $character = GetPlayerCharacter($player);
   $weapons = "";
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 0 && TypeContains($character[$i], "W", $player) && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
+    if ($character[$i + 1] != 0 && CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
       if ($weapons != "") $weapons .= ",";
       $weapons .= $whoPrefix . "CHAR-" . $i;
     }
@@ -62,6 +62,6 @@ function ApplyEffectToEachWeapon($effectID)
   global $currentPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if (TypeContains($character[$i], "W", $player)) AddCharacterEffect($currentPlayer, $i, $effectID);
+    if (CardType($character[$i]) == "W") AddCharacterEffect($currentPlayer, $i, $effectID);
   }
 }
