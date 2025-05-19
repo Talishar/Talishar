@@ -959,7 +959,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       break;
     case "AERONOUGHT":
       $type = CardType($lastResult);
-      AddGraveyard($lastResult, $defPlayer, "CC", $player);
+      //AddGraveyard($lastResult, $defPlayer, "CC", $player);
       $ind = -1;
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         if ($combatChain[$i] == $lastResult) $ind = $i;
