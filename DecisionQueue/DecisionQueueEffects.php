@@ -956,18 +956,45 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       break;
     case "AERONOUGHT":
-      $ind = intval(explode("-", $lastResult)[1]);
-      $targetCard = $combatChain[$ind];
-      if (TypeContains($targetCard, "E")) {
-        $defChar = GetPlayerCharacter($defPlayer);
-        for ($i = 0; $i < count($defChar); $i += CharacterPieces()) {
-          if ($defChar[$i + 11] == $combatChain[$ind + 8]) DestroyCharacter($defPlayer, $i);
+      $type = CardType($lastResult);
+      AddGraveyard($lastResult, $defPlayer, "CC", $player);
+      $ind = -1;
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == $lastResult) $ind = $i;
+      }
+      //we've chosen a previous chain link
+      if ($ind == -1) {
+        switch ($type) {
+          case "E":
+            $index = FindCharacterIndex($defPlayer, $lastResult);
+            DestroyCharacter($defPlayer, $index);
+            break;
+          default:
+            $index = GetCombatChainIndex($lastResult, $defPlayer);
+            if ($CombatChain->Remove($index) == "") {
+              for ($i = 0; $i < count($chainLinks); ++$i) {
+                for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+                  if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
+                }
+              }
+            }
+            break;
         }
       }
+      //current chain link
       else {
-        AddGraveyard($targetCard, $defPlayer, "COMBATCHAINLINK", $player);
-        for ($i = CombatChainPieces()-1; $i >= 0; --$i) unset($combatChain[$ind+$i]);
-        $combatChain = array_values($combatChain);
+        $targetCard = $combatChain[$ind];
+        if (TypeContains($targetCard, "E")) {
+          $defChar = GetPlayerCharacter($defPlayer);
+          for ($i = 0; $i < count($defChar); $i += CharacterPieces()) {
+            if ($defChar[$i + 11] == $combatChain[$ind + 8]) DestroyCharacter($defPlayer, $i);
+          }
+        }
+        else {
+          AddGraveyard($targetCard, $defPlayer, "COMBATCHAINLINK", $player);
+          for ($i = CombatChainPieces()-1; $i >= 0; --$i) unset($combatChain[$ind+$i]);
+          $combatChain = array_values($combatChain);
+        }
       }
       $cardID = "palantir_aeronought_red";
       WriteLog("The " . CardLink($cardID, $cardID) . " shot down " . CardLink($targetCard, $targetCard));

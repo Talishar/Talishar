@@ -1759,3 +1759,20 @@ function SearchSoulForIndex($cardID, $player)
   }
   return -1;
 }
+
+function SearchCombatChainDefendingCards($player, $cardType = "-")
+{
+  global $chainLinks;
+  $cardType = $cardType == "-" ? "" : $cardType;
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $cardIDList = GetChainLinkCardIDs($otherPlayer, $cardType, exclCardTypes: "C");
+  for ($i = 0; $i < count($chainLinks); ++$i) {
+    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      if ($chainLinks[$i][$j + 1] != $otherPlayer || $chainLinks[$i][$j + 2] != "1") continue;
+      if ($cardType != "" && !TypeContains($chainLinks[$i][$j], $cardType, $player)) continue;
+      if ($cardIDList != "") $cardIDList .= ",";
+      $cardIDList .= $chainLinks[$i][$j];
+    }
+  }
+  return $cardIDList;
+}

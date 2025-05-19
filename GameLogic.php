@@ -346,19 +346,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SEARCHCOMBATCHAIN":
-      $cardIDList = "";
-      $cardType = "";
-      if ($parameter != "-") $cardType = $parameter;
-      $otherPlayer = $player == 1 ? 2 : 1;
-      $cardIDList = GetChainLinkCardIDs($otherPlayer, $cardType, exclCardTypes: "C");
-      for ($i = 0; $i < count($chainLinks); ++$i) {
-        for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-          if ($chainLinks[$i][$j + 1] != $otherPlayer || $chainLinks[$i][$j + 2] != "1") continue;
-          if ($cardType != "" && !TypeContains($chainLinks[$i][$j], $cardType, $player)) continue;
-          if ($cardIDList != "") $cardIDList .= ",";
-          $cardIDList .= $chainLinks[$i][$j];
-        }
-      }
+      $cardIDList = SearchCombatChainDefendingCards($player, $parameter);
       return $cardIDList != "" ? $cardIDList : "PASS";
     case "PLAYABILITY":
       PlayAbility($lastResult, "-", 0);

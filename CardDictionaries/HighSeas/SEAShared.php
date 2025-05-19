@@ -383,7 +383,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
           $indices = implode(",", $indices);
           // AddDecisionQueue("PASSPARAMETER", $currentPlayer, $indices);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $indices);
+          AddDecisionQueue("SEARCHCOMBATCHAIN", $currentPlayer, "-");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card to destroy");
+          AddDecisionQueue("CHOOSECARDID", $currentPlayer, "<-", 1);
           AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
         }
       }
