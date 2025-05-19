@@ -1333,7 +1333,7 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
       }
       break;
     case "big_game_trophy_shot_yellow":
-      if (CardNameContains($combatChain[0], "Harpoon", $mainPlayer, true)){
+      if (CardNameContains($combatChain[0], "Harpoon", $mainPlayer, true) && IsHeroAttackTarget()){
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       }
       break;
