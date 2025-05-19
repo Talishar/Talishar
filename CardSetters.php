@@ -30,7 +30,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     if ($mod != "INT") $mod = "blasmophet_levia_consumed";
   }
   //Do effects that change where it goes, or banish it if not
-  if ($from == "DECK" && (SearchCharacterActive($player, "data_doll_mkii") || SearchCurrentTurnEffects("data_doll_mkii-SHIYANA", $player)) && CardSubType($cardID, $from) == "Item" && CardCost($cardID, $from) <= 2) {
+  if ($from == "DECK" && (SearchCharacterActive($player, "data_doll_mkii") || SearchCurrentTurnEffects("data_doll_mkii-SHIYANA", $player)) && SubtypeContains($cardID, "Item", $player) && CardCost($cardID, $from) <= 2) {
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
