@@ -1459,6 +1459,15 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") {
     $restriction = "Frozen";
     return false;
+  }if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 1]) && $myAllies[$index + 1] == "1") {
+    switch ($cardID) {
+      case "cutty_shark_quick_clip_yellow":
+        //has a once per turn and a non-once per turn ability
+        break;
+      default:
+        $restriction = "Already used";
+        return false;
+    }
   }
   if ($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") {
     $restriction = "Frozen";
