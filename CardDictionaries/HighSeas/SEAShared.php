@@ -232,6 +232,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZBOTTOM", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "🪙" . CardLink($cardID, $cardID). " found some sunken treasure!", 1);
       }
       break;
     case "moray_le_fay_yellow":
