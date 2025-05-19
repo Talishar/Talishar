@@ -1121,7 +1121,7 @@ function AddTowerEffectTrigger($cardID)
   }
 }
 
-function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
+function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
   global $mainPlayer, $defPlayer, $CombatChain, $combatChain;
   $source = $sourceID != "-" ? $sourceID : $CombatChain->AttackCard()->ID();
@@ -1176,7 +1176,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-") // Effects that do no
       }
       break;
     case "savor_bloodshed_red-HIT":
-      if(IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+      if((IsHeroAttackTarget() || $targetPlayer == $defPlayer) && CheckMarked($defPlayer)) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
