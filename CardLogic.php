@@ -3263,11 +3263,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "crash_and_bash_blue":
       if (CanRevealCards($player)) {
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with crush to reveal", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:hasCrush=true");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
         AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-        AddDecisionQueue("PLAYAURA", $player, "embodiment_of_lightning", 1);
+        AddDecisionQueue("PLAYAURA", $player, "seismic_surge", 1);
       }
       break;
     case "loan_shark_yellow":
