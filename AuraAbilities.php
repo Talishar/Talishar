@@ -140,6 +140,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
       $goesWhere = "-";
     }
   }
+  else $uid = "-";
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
     if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
     AddLayer("TRIGGER", $player, "merciful_retribution_yellow", additionalCosts: $uid);

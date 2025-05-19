@@ -1818,7 +1818,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "merciful_retribution_yellow":
       DealArcane(1, 0, "STATIC", $parameter, false, $player);
       $index = SearchDiscardForUniqueID($additionalCosts, $player);
-      if ($index != -1) {
+      if ($additionalCosts != "-" && $index != -1) {
         $graveyard = GetDiscard($player);
         $cardID = $graveyard[$index];
         if (TalentContains($cardID, "LIGHT")) {
