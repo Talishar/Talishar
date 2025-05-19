@@ -4,6 +4,9 @@ function SEAAbilityType($cardID, $from="-"): string
 {
   return match ($cardID) {
     "peg_leg" => "A",
+    "blue_sea_tricorn" => "A",
+    "buccaneers_bounty" => "A",
+    "fish_fingers" => "A",
     "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
     "sawbones_dock_hand_yellow" => "I",
@@ -57,6 +60,8 @@ function SEAAbilityCost($cardID): int
     "swabbie_yellow" => 2,
     "limpit_hop_a_long_yellow" => 1,
     "peg_leg" => 3,
+    "blue_sea_tricorn" => 3,
+    "fish_fingers" => 1,
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
     "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
@@ -74,6 +79,9 @@ function SEAAbilityHasGoAgain($cardID): bool
   return match ($cardID) {
     "limpit_hop_a_long_yellow" => true,
     "peg_leg" => true,
+    "blue_sea_tricorn" => true,
+    "buccaneers_bounty" => true,
+    "fish_fingers" => true,
     "gold_baited_hook" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
@@ -100,6 +108,7 @@ function SEAEffectPowerModifier($cardID): int
     "fire_in_the_hole_red" => 3,
     "monkey_powder_red" => 1,
     "return_fire_red" => 3,
+    "fish_fingers" => 1,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
@@ -117,6 +126,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "gold_baited_hook" => ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer),
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
+    "fish_fingers" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
@@ -143,6 +153,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   switch ($cardID) {
     // Generic cards
     case "peg_leg":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "blue_sea_tricorn":
+      Draw($currentPlayer);
+      break;
+    case "buccaneers_bounty":
+      GainResources($currentPlayer, 1);
+      break;
+    case "fish_fingers":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "patch_the_hole":
