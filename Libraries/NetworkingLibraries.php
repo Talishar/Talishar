@@ -1521,7 +1521,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         return "";
       }
     }
-    WriteLog("HERE?");
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
