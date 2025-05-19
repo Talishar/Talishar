@@ -336,11 +336,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($theirHandContents, JSONRenderedCard($theirBanish[$i], borderColor:7));
     }
   }
+  
   for ($i=0; $i < count($myBanish); $i += BanishPieces()) {
     if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer)) {
       array_push($theirHandContents, JSONRenderedCard($myBanish[$i], borderColor:7));
     }
   }
+
+  for ($i=0; $i < count($theirDiscard); $i += DiscardPieces()) {
+    if (PlayableFromGraveyard($theirDiscard[$i], $theirDiscard[$i+2])) {
+      array_push($theirHandContents, JSONRenderedCard($theirDiscard[$i], borderColor:7));
+    }
+  }
+
   for ($i = 0; $i < count($theirHand); ++$i) {
     if($playerID == 3 && IsCasterMode() || IsGameOver()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
     else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
