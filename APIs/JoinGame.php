@@ -651,6 +651,7 @@ function isUnimplemented($cardID) {
         "flatten_the_field_red", "flatten_the_field_yellow", "flatten_the_field_blue" => false,
         "bravo_flattering_showman" => false,
         "knock_em_off_their_feet_red" => false,
+        "halo_of_lumina_light" => false,
         default => true
       };
     default:
