@@ -683,9 +683,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "embolden_yellow":
     case "embolden_blue":
     case "light_it_up_yellow":
-    case "boltn_shot_red":
-    case "boltn_shot_yellow":
-    case "boltn_shot_blue":
     case "frost_fang_red":
     case "frost_fang_yellow":
     case "frost_fang_blue":
@@ -905,6 +902,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "devotion_never_dies_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "boltn_shot_red":
+    case "boltn_shot_yellow":
+    case "boltn_shot_blue":
+      if(HasIncreasedAttack()){
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
     case "hunters_klaive":
     case "hunters_klaive_r":
     case "mark_of_the_huntsman":
