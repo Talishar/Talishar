@@ -488,7 +488,7 @@
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
     $char = &GetPlayerCharacter($mainPlayer);
-    if($context == "") $context = "if you want to use ".CardLink($char[0], $char[0])." ability:";
+    if($context == "") $context = "if you want to use ".CardLink($char[0], $char[0])." ability";
     if(count($hand) > 0)
     {
       AddDecisionQueue("YESNO", $mainPlayer, $context);
