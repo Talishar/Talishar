@@ -876,9 +876,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "concuss_yellow":
     case "concuss_blue":
     case "pay_up_red":
-    case "down_but_not_out_red":
-    case "down_but_not_out_yellow":
-    case "down_but_not_out_blue":
     case "performance_bonus_red":
     case "performance_bonus_yellow":
     case "performance_bonus_blue":
@@ -906,6 +903,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
       if(HasIncreasedAttack()){
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
+    case "down_but_not_out_red":
+    case "down_but_not_out_yellow":
+    case "down_but_not_out_blue":
+      if (SearchCurrentTurnEffects($cardID, $mainPlayer)) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }

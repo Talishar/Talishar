@@ -1720,6 +1720,7 @@ function GetPlayerNumTokens($player)
   $items = &GetItems($player);
   $ally = &GetAllies($player);
   $permanents = &GetPermanents($player);
+  $char = &GetPlayerCharacter($player);
   $count = 0;
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     if (TypeContains($auras[$i], "T", $player)) ++$count;
@@ -1733,6 +1734,9 @@ function GetPlayerNumTokens($player)
   }
   for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
     if (TypeContains($permanents[$i], "T", $player)) ++$count;
+  }
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if (TypeContains($char[$i], "T", $player)) ++$count;
   }
   return $count;
 }
