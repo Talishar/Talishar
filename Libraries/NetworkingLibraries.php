@@ -1210,11 +1210,6 @@ function FinalizeChainLink($chainClosed = false)
     ResetChainLinkState();
   }
   ProcessDecisionQueue();
-  $triggerCard = ChainBreakTriggerLive();
-  if ($triggerCard != "" && $actionPoints >  0) {
-    $triggerName = CardLink($triggerCard, $triggerCard);
-    WriteLog("<b>$triggerName may trigger when the chain breaks. Break the chain if you want to do a Non-Attack Action!</b>");
-  }
   //when on always pass priority, ENDTURN will be added to the stack before the resolution step finishes
   //in that case just skip the resolution step?
   if (!$chainClosed && SearchLayersForPhase("ENDTURN") == -1) {
