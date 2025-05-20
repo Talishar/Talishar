@@ -1514,6 +1514,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($resolutionIndex != -1 && !$canPlayAsInstant) {
       if (GetResolvedAbilityType($cardID, $from) == "A") {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
+        if ($from == "PLAY") {
+          // reset the status
+          if (TypeContains($cardID, "ALLY")) {
+            $allies = &GetAllies($currentPlayer);
+            $allies[$index + 1] = 2;
+          }
+        }
         WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
         PassInput(false);
         return "";
