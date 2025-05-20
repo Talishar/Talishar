@@ -652,6 +652,7 @@ function isUnimplemented($cardID) {
         "bravo_flattering_showman" => false,
         "knock_em_off_their_feet_red" => false,
         "halo_of_lumina_light" => false,
+        "helm_of_the_arknight" => false,
         default => true
       };
     default:
