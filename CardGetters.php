@@ -25,6 +25,45 @@ function &GetMZZone($player, $zone)
   }  return $rv;
 }
 
+function GetMZZonePieces($zone)
+{
+  $rv = 0;
+  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = CharacterPieces();
+  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = AuraPieces();
+  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = AllyPieces();
+  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = ArsenalPieces();
+  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = HandPieces();
+  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = PitchPieces();
+  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = DiscardPieces();
+  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = PermanentPieces();
+  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = BanishPieces();
+  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = DeckPieces();
+  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = SoulPieces();
+  else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = ItemPieces();
+  else if ($zone == "LAYER") return LayerPieces();
+  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") $rv = CombatChainPieces();
+  else if ($zone == "COMBATCHAINATTACKS") $rv = ChainLinksPieces();
+  return $rv;
+}
+
+function GetMZZoneUIDIndex($zone)
+{
+  return match($zone) {
+    "MYCHAR", "THEIRCHAR" => 11,
+    "MYAURAS", "THEIRAURAS" => 6,
+    "ALLY", "MYALLY", "THEIRALLY" => 5,
+    "MYARS", "THEIRARS" => 5,
+    "MYDISCARD", "THEIRDISCARD" => 1,
+    "PERM", "MYPERM", "THEIRPERM" => 0, //not currently tracked
+    "BANISH", "MYBANISH", "THEIRBANISH" => 2,
+    "ITEMS", "MYITEMS", "THEIRITEMS" => 4,
+    "LAYER" => 6,
+    "CC", "COMBATCHAINLINK" => 7,
+    "COMBATCHAINATTACKS" => 8,
+    default => -1,
+  };
+}
+
 function &GetRelativeMZZone($player, $zone)
 {
   global $layers, $combatChain;

@@ -1254,11 +1254,23 @@ function GetMZCardLink($player, $MZ)
   $zoneDS = &GetMZZone($player, $params[0]);
   $index = $params[1];
   if ($index == "") return "";
-  if (isset($zoneDS[$index]) && is_string($zoneDS[$index])) {
-    if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD") $index += 2;
-    $cardID = $zoneDS[$index] == "runechant_batch" ? "runechant" : $zoneDS[$index];
-    return CardLink($cardID, $cardID);
-  } 
+  if (is_numeric($index)) {
+    if (isset($zoneDS[$index]) && is_string($zoneDS[$index])) {
+      if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD") $index += 2;
+      $cardID = $zoneDS[$index] == "runechant_batch" ? "runechant" : $zoneDS[$index];
+      return CardLink($cardID, $cardID);
+    }
+  }
+  else { //the index was a UID
+    $pieces = GetMZZonePieces($params[0]);
+    $offset = GetMZZoneUIDIndex($params[0]);
+    if ($pieces > 0 && $offset > 0) {
+      for ($i = 0; $i < count($zoneDS); $i += $pieces) {
+        $cardID = $zoneDS[$i];
+        if ($index == $zoneDS[$i + $offset]) return CardLink($cardID, $cardID);
+      }
+    }
+  }
   return "";
 }
 
