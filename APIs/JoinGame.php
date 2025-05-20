@@ -525,9 +525,10 @@ function isCardRestricted($cardID, $format, $count) {
 
   $restrictedCards = [
     "llcc" => [
-      "crippling_crush_red", "oaken_old_red", "awakening_blue", "hypothermia_blue", "warmonger's_diplomacy_blue", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", 
+      "crippling_crush_red", "oaken_old_red", "awakening_blue", "warmongers_diplomacy_blue", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", 
       "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue",
       "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
+      "cull_red", "deadwood_dirge_red", "deadwood_dirge_yellow", "deadwood_dirge_blue", "succumb_to_temptation_yellow",
     ]
   ];
 
@@ -628,6 +629,10 @@ function isUnimplemented($cardID) {
         "cutty_shark_quick_clip_yellow" => false,
         "cogwerx_blunderbuss" => false,
         "midas_touch_yellow" => false,
+        "blue_sea_tricorn" => false,
+        "buccaneers_bounty" => false,
+        "fish_fingers" => false,
+        "herald_of_sekem_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
@@ -645,6 +650,7 @@ function isUnimplemented($cardID) {
         "crash_and_bash_red", "crash_and_bash_yellow", "crash_and_bash_blue" => false,
         "flatten_the_field_red", "flatten_the_field_yellow", "flatten_the_field_blue" => false,
         "bravo_flattering_showman" => false,
+        "knock_em_off_their_feet_red" => false,
         default => true
       };
     default:
@@ -671,22 +677,24 @@ function isBannedInFormat($cardID, $format) {
           "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_blue", "belittle_red", "belittle_yellow", "belittle_blue",
           "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_wildfire",
           "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue",
-          "traverse_the_universe", "zephyr_needle"
+          "traverse_the_universe", "zephyr_needle", "channel_lightning_valley_yellow", "flicker_wisp_yellow", "storm_striders",
+          "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue",
       ],
       "cc" => [
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
           "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
           "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi_livewire",
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
-          "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
-          "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall"
+          "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
+          "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
+          "count_your_blessings_red", "count_your_blessings_yellow", "germinate_blue", "scepter_of_pain",
       ],
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
-          "waning_moon", "zephyr_needle"
+          "waning_moon", "zephyr_needle", "reality_refractor"
       ],
       "llcc" => [
-          "kraken's_aethervein"
+          "kraken's_aethervein", "crown_of_seeds", "carrion_husk"
       ]
   ];
 

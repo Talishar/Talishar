@@ -867,7 +867,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $pitch = &GetPitch($player);
         WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
         array_push($pitch, $cardID);
-        PitchAbility($cardID);
+        PitchAbility($cardID, "DECK");
         $resources = &GetResources($player);
         $resources[0] += PitchValue($cardID);
         $remainingInds = 1;

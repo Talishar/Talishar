@@ -550,12 +550,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   global $mainPlayer, $combatChain, $layers;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
   switch ($cardID) {
-    case "mugenshi_release_yellow":
-    case "hurricane_technique_yellow":
-    case "pounding_gale_red":
-    case "whelming_gustwave_red":
-    case "whelming_gustwave_yellow":
-    case "whelming_gustwave_blue":
     case "dawnblade":
     case "snatch_red":
     case "snatch_yellow":
@@ -597,9 +591,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "rifting_red":
     case "rifting_yellow":
     case "rifting_blue":
-    case "rushing_river_red":
-    case "rushing_river_yellow":
-    case "rushing_river_blue":
     case "soulbead_strike_red":
     case "soulbead_strike_yellow":
     case "soulbead_strike_blue":
@@ -804,7 +795,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wither_red":
     case "wither_yellow":
     case "wither_blue":
-    case "dishonor_blue":
     case "wander_with_purpose_yellow":
     case "be_like_water_red":
     case "be_like_water_yellow":
@@ -931,11 +921,21 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "spinning_wheel_kick_red":
     case "spinning_wheel_kick_yellow":
     case "spinning_wheel_kick_blue":
+    case "mugenshi_release_yellow":
+    case "hurricane_technique_yellow":
+    case "pounding_gale_red":
+    case "whelming_gustwave_red":
+    case "whelming_gustwave_yellow":
+    case "whelming_gustwave_blue":
+    case "rushing_river_red":
+    case "rushing_river_yellow":
+    case "rushing_river_blue":
       if (ComboActive($cardID)) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
       break;
+    case "dishonor_blue":
     case "one_two_punch_red":
     case "one_two_punch_yellow":
     case "one_two_punch_blue": 
@@ -1131,6 +1131,7 @@ function AddCrushEffectTrigger($cardID)
     case "batter_to_a_pulp_red":
     case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
     case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
+    case "knock_em_off_their_feet_red":
       AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
       break;
     case "blinding_of_the_old_ones_red": 
@@ -1643,10 +1644,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "seismic_surge":
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
-      break;
-    case "katsu_the_wanderer":
-    case "katsu":
-      KatsuHit();
       break;
     case "mask_of_momentum":
       Draw($player);
@@ -3040,6 +3037,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $parameter, 1);
       break;
     case "heavy_industry_surveillance":
+      $deck = GetDeck($player);
+      $topCard = $deck[0];
       AddDecisionQueue("DECKCARDS", $defPlayer, "0");
       AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_the_top_card_of_your_deck_with_" . CardLink($parameter, $parameter), 1);
       AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
@@ -3048,7 +3047,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
       AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
       AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "heavy_industry_surveillance", 1);
+      if (ClassContains($topCard, "MECHANOLOGIST", $player)) {
+        AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "heavy_industry_surveillance", 1);
+      }
       break;
     case "heavy_industry_ram_stop":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));

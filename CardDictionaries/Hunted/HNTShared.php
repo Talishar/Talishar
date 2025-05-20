@@ -762,15 +762,17 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
       break;
     case "sound_the_alarm_red";
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
-      AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      if(IsHeroAttackTarget()){
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+        AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
+        AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+      }
       break;
     case "imperial_seal_of_command_red":
       if($from == "PLAY") {

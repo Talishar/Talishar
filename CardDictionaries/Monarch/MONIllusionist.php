@@ -114,6 +114,7 @@
       case "dunebreaker_cenipai_red": case "dunebreaker_cenipai_yellow": case "dunebreaker_cenipai_blue": case "embermaw_cenipai_red": case "embermaw_cenipai_yellow": case "embermaw_cenipai_blue": case "frightmare_red": case "UPR551": return true;
       case "phantasmal_symbiosis_yellow": case "spectral_procession_red": case "spectral_prowler_red": case "spectral_prowler_yellow": case "spectral_prowler_blue": case "spectral_rider_red": case "spectral_rider_yellow": case "spectral_rider_blue":
       case "phantom_tidemaw_blue":
+      case "herald_of_sekem_red":
         return true;
       default: return false;
     }

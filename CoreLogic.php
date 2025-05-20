@@ -3012,9 +3012,9 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   return "";
 }
 
-function PitchAbility($cardID)
+function PitchAbility($cardID, $from="HAND")
 {
-  global $currentPlayer, $CS_NumAddedToSoul;
+  global $currentPlayer, $CS_NumAddedToSoul, $actionPoints;
 
   $pitchValue = PitchValue($cardID);
   if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "vestige_of_sol") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
@@ -3064,6 +3064,14 @@ function PitchAbility($cardID)
     case "will_of_arcana_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       WriteLog(CardLink($cardID, $cardID) . " is amping 1");
+      break;
+    case "back_alley_breakline_red":
+    case "back_alley_breakline_yellow":
+    case "back_alley_breakline_blue":
+      if ($from == "DECK") {
+        WriteLog("Player ". $currentPlayer ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+        ++$actionPoints;
+      }
       break;
     default:
       break;
