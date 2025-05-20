@@ -632,6 +632,7 @@ function isUnimplemented($cardID) {
         "blue_sea_tricorn" => false,
         "buccaneers_bounty" => false,
         "fish_fingers" => false,
+        "herald_of_sekem_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

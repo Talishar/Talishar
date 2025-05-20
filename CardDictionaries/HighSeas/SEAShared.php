@@ -148,7 +148,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $defPlayer, $CombatChain;
+  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -511,7 +511,27 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       } else {
         DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
-      return "";
+      break;
+    case "herald_of_sekem_red":
+        $hand = &GetHand($currentPlayer);
+        if(count($hand) == 0) break;
+        $allies = GetAllies($currentPlayer);
+        $theirAllies = GetAllies($otherPlayer);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to put into your soul", 1);
+        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
+        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($cardID, $cardID), 1);
+        if (ShouldAutotargetOpponent($currentPlayer) && count($allies) <= 0 && count($theirAllies) <= 0) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
+        }
+        else{
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        }
+        AddDecisionQueue("DEALARCANE", $currentPlayer, "2" . "-" . $cardID . "-" . "TRIGGER", 1);
+      break;
     default:
       break;
   }
