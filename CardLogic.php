@@ -1606,10 +1606,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $player);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
-    case "katsu_the_wanderer":
-    case "katsu":
-      KatsuHit();
-      break;
     case "mask_of_momentum":
       Draw($player);
       break;
