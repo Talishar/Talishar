@@ -634,7 +634,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
         elseif (CardName($cardID . "_blue") != "") $cardID .= "_blue";
       }
-      if (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
+      if (TypeContains($cardID, "C")) {
+        WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
+        $char = &GetPlayerCharacter($playerID);
+        $char[0] = $cardID;
+      }
+      elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
         WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
         $hand = &GetHand($playerID);
         array_push($hand, $cardID);
