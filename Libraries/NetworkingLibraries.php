@@ -1088,7 +1088,7 @@ function ResolveCombatDamage($damageDone)
       for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
         if (IsCombatEffectActive($currentTurnEffects[$i])) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-            AddEffectHitTrigger($currentTurnEffects[$i]); // Effects that gives effect to the attack
+            AddEffectHitTrigger($currentTurnEffects[$i], source:$combatChain[$i]); // Effects that gives effect to the attack
           }
         }
       }
@@ -1111,7 +1111,7 @@ function ResolveCombatDamage($damageDone)
     foreach(explode(",", $combatChain[10]) as $effectSetID) {
       $effect = ConvertToCardID($effectSetID);
       if (IsCombatEffectActive($effect) && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddEffectHitTrigger($effect); // Effects that do gives their effect to the attack
+        AddEffectHitTrigger($effect, source:$combatChain[$i]); // Effects that do gives their effect to the attack
       }
     }
     if (IsHeroAttackTarget()) {

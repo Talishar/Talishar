@@ -549,6 +549,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
 {
   global $mainPlayer, $combatChain, $layers;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
+  if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
     case "dawnblade":
     case "snatch_red":
@@ -1097,6 +1098,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
 function AddCrushEffectTrigger($cardID)
 {
   global $mainPlayer, $defPlayer;
+  if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
     case "crippling_crush_red":
     case "spinal_crush_red":
@@ -1145,11 +1147,13 @@ function AddCrushEffectTrigger($cardID)
     default:
       break;
   }
+  return false;
 }
 
 function AddTowerEffectTrigger($cardID)
 {
   global $mainPlayer;
+  if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
     case "colossal_bearing_red":
     case "smack_of_reality_red":
@@ -1158,6 +1162,7 @@ function AddTowerEffectTrigger($cardID)
     default:
       break;
   }
+  return false;
 }
 
 function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
@@ -1230,11 +1235,12 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   }
 }
 
-function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID, $source="-"): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
+  if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($effects[0]) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
@@ -1379,6 +1385,7 @@ function AddEffectHitTrigger($cardID, $source="-"): void // Effects that gives e
     default:
       break;
   }
+  return false;
 }
 
 function AddCharacterPlayCardTrigger($cardID, $playType, $from)
