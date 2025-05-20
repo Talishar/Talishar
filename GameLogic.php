@@ -1971,7 +1971,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
-        DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
+        if (!str_contains($mzIndex[0], "ALLY")) {
+          DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
+        }
+        else {
+          $allies = &GetAllies($target);
+          $allies[$mzIndex[1] + 2] = intval($allies[$mzIndex[1] + 2]) - $params[0];
+          if ($params[0] > 0) AllyDamageTakenAbilities($target, $mzIndex[1]);
+          if ($allies[$mzIndex[1] + 2] <= 0) DestroyAlly($target, $mzIndex[1], false, false, $allies[$mzIndex[1] + 5]);
+        }
       }
       return $lastResult;
     case "MZDESTROY":
