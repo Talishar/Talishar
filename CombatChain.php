@@ -1635,7 +1635,7 @@ function IsHighTideActive()
   return (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer));
 }
 
-function ActiveOnhits(): bool
+function ActiveOnHits(): bool
 {
   global $CombatChain;
   if (!$CombatChain->HasCurrentLink()) return false;
