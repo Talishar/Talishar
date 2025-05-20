@@ -545,7 +545,7 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
   }
 }
 
-function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-"): void
+function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
   global $mainPlayer, $combatChain, $layers;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
@@ -902,13 +902,16 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "splintering_deadwood_blue":
     case "summit_the_unforgiving":
     case "devotion_never_dies_red":
-      AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-      break;
+      if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      return true;
     case "hunters_klaive":
     case "hunters_klaive_r":
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
-      if (IsHeroAttackTarget() || $targetPlayer != "-") AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
+      if (IsHeroAttackTarget() || $targetPlayer != "-") {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
+        return true;
+      }
       break;
     case "find_center_blue":
     case "break_tide_yellow":
@@ -927,9 +930,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "rushing_river_red":
     case "rushing_river_yellow":
     case "rushing_river_blue":
-    case "dishonor_blue":
-      if (ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (ComboActive($cardID)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
+    case "dishonor_blue":
     case "one_two_punch_red":
     case "one_two_punch_yellow":
     case "one_two_punch_blue": 
@@ -937,18 +943,28 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "recoil_yellow":
     case "recoil_blue":
     case "enact_vengeance_red":
-      if (ComboActive($cardID) && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (ComboActive($cardID) && IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "winters_wail":
-      if (SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (SearchCurrentTurnEffects($cardID, $mainPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "blacktek_whisperers":
       if(IsHeroAttackTarget() && ClassContains($combatChain[0], "ASSASSIN", $mainPlayer)) {
-        AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
       }
       break;
     case "bonds_of_agony_blue":
-      if (NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "persuasive_prognosis_blue":
     case "art_of_desire_body_red":
@@ -1010,29 +1026,41 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "red_fin_harpoon_blue":
     case "yellow_fin_harpoon_blue":
     case "blue_fin_harpoon_blue":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "pain_in_the_backside_red":
       if (IsHeroAttackTarget()) {
-        $subtype = "Dagger";
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
-        AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
+        if (!$check) {
+          $subtype = "Dagger";
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
+          AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+          AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
+        }
+        return true;
       }
       break;
     case "runic_reclamation_red":
       if (IsHeroAttackTarget()) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
+        if (!$check) {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+          AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
+        }
+        return true;
       }
       break;
     case "stone_rain_red":
-      if (IsHeroAttackTarget() && HasAimCounter()) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (IsHeroAttackTarget() && HasAimCounter()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "mark_of_the_black_widow_red":
     case "mark_of_the_black_widow_yellow":
@@ -1040,20 +1068,30 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "mark_of_the_funnel_web_red":
     case "mark_of_the_funnel_web_yellow":
     case "mark_of_the_funnel_web_blue":
-      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "burning_blade_dance_red":
     case "hot_on_their_heels_red":
     case "mark_with_magma_red":
-      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     case "art_of_the_dragon_claw_red":
     case "art_of_the_dragon_scale_red":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($cardID, $mainPlayer)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($cardID, $mainPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
       break;
     default:
       break;
   }
+  return false;
 }
 
 function AddCrushEffectTrigger($cardID)
