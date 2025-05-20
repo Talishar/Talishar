@@ -1235,7 +1235,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   }
 }
 
-function AddEffectHitTrigger($cardID, $source="-"): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
@@ -1367,13 +1367,13 @@ function AddEffectHitTrigger($cardID, $source="-"): bool // Effects that gives e
       break;
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $source == "-")) {
+      if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $fromCombat)) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
     case "arakni_funnel_web-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $source == "-")) {
+      if (TypeContains($source, "AA", $mainPlayer) || (IsHeroAttackTarget() && $fromCombat)) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
