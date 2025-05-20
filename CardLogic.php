@@ -550,12 +550,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   global $mainPlayer, $combatChain, $layers;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
   switch ($cardID) {
-    case "mugenshi_release_yellow":
-    case "hurricane_technique_yellow":
-    case "pounding_gale_red":
-    case "whelming_gustwave_red":
-    case "whelming_gustwave_yellow":
-    case "whelming_gustwave_blue":
     case "dawnblade":
     case "snatch_red":
     case "snatch_yellow":
@@ -597,9 +591,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "rifting_red":
     case "rifting_yellow":
     case "rifting_blue":
-    case "rushing_river_red":
-    case "rushing_river_yellow":
-    case "rushing_river_blue":
     case "soulbead_strike_red":
     case "soulbead_strike_yellow":
     case "soulbead_strike_blue":
@@ -804,7 +795,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wither_red":
     case "wither_yellow":
     case "wither_blue":
-    case "dishonor_blue":
     case "wander_with_purpose_yellow":
     case "be_like_water_red":
     case "be_like_water_yellow":
@@ -928,6 +918,16 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "spinning_wheel_kick_red":
     case "spinning_wheel_kick_yellow":
     case "spinning_wheel_kick_blue":
+    case "mugenshi_release_yellow":
+    case "hurricane_technique_yellow":
+    case "pounding_gale_red":
+    case "whelming_gustwave_red":
+    case "whelming_gustwave_yellow":
+    case "whelming_gustwave_blue":
+    case "rushing_river_red":
+    case "rushing_river_yellow":
+    case "rushing_river_blue":
+    case "dishonor_blue":
       if (ComboActive($cardID)) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       break;
     case "one_two_punch_red":
