@@ -604,9 +604,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $health += 1;
       break;
     case 10007:
-      //WriteLog("Player " . $playerID ." manually added 1 life point to themselves.", highlight: true);
-      WriteLog("Subtracting life from your opponent is not allowed");
-      //LoseHealth(1, ($playerID == 1 ? 2 : 1));
+      $targetPlayer = $playerID == 1 ? 2 : 1;
+      if (IsPlayerAI($targetPlayer)) {
+        WriteLog("Manually subtracting 1 life from AI opponent");
+        $health = &GetHealth($targetPlayer);
+        --$health;
+      }
+      else WriteLog("Subtracting life from your opponent is not allowed");
       break;
     case 10008:
       WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true);
