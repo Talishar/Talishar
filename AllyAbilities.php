@@ -459,3 +459,13 @@ function AllyPayAdditionalCosts($cardIndex, $from)
     default: break;
   }
 }
+
+function GetPerchedAllies($player)
+{
+  $perchedAllies = [];
+  $char = GetPlayerCharacter($player);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if (HasPerched($char[$i])) array_push($perchedAllies, $i);
+  }
+  return implode(",", $perchedAllies);
+}
