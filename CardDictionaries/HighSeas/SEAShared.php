@@ -517,7 +517,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if(count($hand) == 0) break;
         $allies = GetAllies($currentPlayer);
         $theirAllies = GetAllies($otherPlayer);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
+        $indices = SearchHand($currentPlayer, pitch: 2);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $indices);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to put into your soul", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
