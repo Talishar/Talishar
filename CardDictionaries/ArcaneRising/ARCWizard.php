@@ -168,8 +168,6 @@ function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $ma
   AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
   AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $targetType, ($isPassable ? 1 : 0));
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
-  $allies = GetAllies($player);
-  $theirAllies = GetAllies($otherPlayer);
   if(ShouldAutotargetOpponent($player) && $targetType == 0) {
     AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
   }
@@ -228,8 +226,6 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
-        $allies = GetAllies($player);
-        $theirAllies = GetAllies($otherPlayer);
         if(ShouldAutotargetOpponent($player) && $target == 0) {
           AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
         }

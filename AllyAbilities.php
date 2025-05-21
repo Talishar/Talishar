@@ -465,18 +465,7 @@ function GetPerchedAllies($player)
   $perchedAllies = [];
   $char = GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (HasPerched($char[$i])) array_push($perchedAllies, $i);
+    if (HasPerched($char[$i]) && $char[$i + 1] != 0) array_push($perchedAllies, $i);
   }
   return implode(",", $perchedAllies);
-}
-
-function CountAllies($player)
-{
-  $ally = &GetAllies($player);
-  $char = GetPlayerCharacter($player);
-  $count = count($ally);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (HasPerched($char[$i])) $count++;
-  }
-  return $count;
 }

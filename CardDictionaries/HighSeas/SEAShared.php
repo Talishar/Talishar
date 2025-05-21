@@ -487,15 +487,26 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
       $uid = explode("-", $target)[1];
-      $index = SearchAlliesForUniqueID($uid, $targetPlayer);
-      if ($index != -1) {
+      $indexAlly = SearchAlliesForUniqueID($uid, $targetPlayer);
+      if ($indexAlly != -1) {
         $allies = GetAllies($targetPlayer);
-        $allyCost = CardCost($allies[$index]);
+        $allyCost = CardCost($allies[$indexAlly]);
         PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$allyCost, isToken:true, effectController:$currentPlayer);
         $token = $allyCost > 1 ? " tokens" : " token";
-        $allyName = CardLink($allies[$index], $allies[$index]);
+        $allyName = CardLink($allies[$indexAlly], $allies[$indexAlly]);
         WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold", "gold") . " $token!");
-        DestroyAlly($targetPlayer, $index);
+        DestroyAlly($targetPlayer, $indexAlly);
+        return "";
+      }
+      $indexChar = SearchCharacterForUniqueID($uid, $targetPlayer);
+      if ($indexChar != -1) {
+        $char = GetPlayerCharacter($targetPlayer);
+        $charCost = CardCost($char[$indexChar]) >= 0 ? CardCost($char[$indexChar]) : 0;
+        PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$currentPlayer);
+        $token = $charCost > 1 ? " tokens" : " token";
+        $CharName = CardLink($char[$indexChar], $char[$indexChar]);
+        WriteLog("Player $targetPlayer's $CharName turned into $charCost " . CardLink("gold", "gold") . " $token!");
+        DestroyCharacter($targetPlayer, $indexChar);
         return "";
       }
       else {
@@ -661,10 +672,7 @@ function GetUntapped($player, $zone, $cond="-")
   }
   $unwavedInds = [];
   $allowedInds = -1;
-  if ($cond != "-") {
-    $allowedInds = explode(",", SearchMultizone($player, "$zone:$cond"));
-  }
-  else $allowedInds = [];
+  $allowedInds = ($cond != "-") ? explode(",", SearchMultizone($player, "$zone:$cond")) : [];
   for ($i = 0; $i < count($arr); $i += $count) {
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
@@ -693,32 +701,13 @@ function GetTapped($player, $zone, $cond="-")
   }
   $unwavedInds = [];
   $allowedInds = -1;
-  if ($cond != "-") {
-    $allowedInds = explode(",", SearchMultizone($player, "$zone:$cond"));
-  }
-  else $allowedInds = [];
+  $allowedInds = ($cond != "-") ? explode(",", SearchMultizone($player, "$zone:$cond")) : [];
   for ($i = 0; $i < count($arr); $i += $count) {
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
     if (CheckTapped($index, $player)) array_push($unwavedInds, $index);
   }
   return implode(",", $unwavedInds);
-}
-
-function TapPermanent($player, $zone, $may=true) {
-  $obj = match($zone) {
-    "MYALLY" => "an ally",
-    "MYITEMS" => "an item",
-    default => "something"
-  };
-  $inds = GetUntapped($player, $zone);
-  if (strlen($inds) > 0) {
-    AddDecisionQueue("SETDQCONTEXT", $player, "choose $obj to tap (or pass)");
-    AddDecisionQueue("PASSPARAMETER", $player, $inds, 1);
-    if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-    else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-    AddDecisionQueue("MZTAP", $player, "<-", 1);
-  }
 }
 
 function Tap($MZindex, $player, $tapState=1)

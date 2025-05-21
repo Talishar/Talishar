@@ -258,7 +258,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "kiss_of_death_red":
       return "Dagger,Attack";
     case "polly_cranka":
-      return "Off-Hand"; //handle being an ally elsewhere
+      return "Off-Hand,Ally"; //handle being an ally elsewhere
     case "polly_cranka_ally":
       return "Ally";
     default:
@@ -4953,4 +4953,15 @@ function ExtractCardID($cardID) {
   $cardID = explode(",", $cardID)[0];
   $cardID = explode("-", $cardID)[0];
   return $cardID;
+}
+
+function CountAllies($player)
+{
+  $ally = &GetAllies($player);
+  $char = GetPlayerCharacter($player);
+  $count = count($ally);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if (HasPerched($char[$i])) $count++;
+  }
+  return $count;
 }
