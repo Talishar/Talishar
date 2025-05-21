@@ -59,13 +59,11 @@ InventoryStartGameAbilities(2);
 // Handle Cogwerx equipment
 handleCogwerxEquipment($p1Char, $p2Char);
 
-//Aria Sanctuary for Rosseta Limited
-/* if($format == "draft"){
-  AddDecisionQueue("PASSPARAMETER", 1, "sanctuary_of_aria");
-  AddDecisionQueue("PUTPLAY", 1, "-");
-  AddDecisionQueue("PASSPARAMETER", 2, "sanctuary_of_aria");
-  AddDecisionQueue("PUTPLAY", 2, "-");
-} */
+//Macro for Limited
+if($format == "draft"){
+  AddDecisionQueue("PASSPARAMETER", "-", "treasure_island");
+  AddDecisionQueue("PUTPLAY", "-", "-");
+}
 
 // Add final game setup decisions
 GameSetup();

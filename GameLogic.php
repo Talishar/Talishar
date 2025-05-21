@@ -339,6 +339,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayAura($lastResult, $player, effectController:$parameter);
         PlayAbility($lastResult, "-", 0);
       }
+      else if (DelimStringContains($subtype, "Landmark")) {
+        PlayLandmark($lastResult, $player);
+      }
       return $lastResult;
     case "SEARCHCOMBATCHAIN":
       $cardIDList = SearchCombatChainDefendingCards($player, $parameter);

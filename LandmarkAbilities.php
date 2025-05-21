@@ -14,7 +14,7 @@ function PlayLandmark($cardID, $player, $from="-")
   array_push($landmarks, 0); // counters
   switch ($cardID) {
     case "treasure_island":
-      AddCurrentTurnEffect($cardID, $mainPlayer);
+      AddCurrentTurnEffect($cardID, $player);
       break;
     default:
       break;
