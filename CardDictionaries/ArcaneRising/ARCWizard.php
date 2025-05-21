@@ -449,18 +449,24 @@ function GetArcaneTargetIndices($player, $target): string
     for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) $rv .= ",THEIRALLY-" . $i;
     $myAllies = &GetAllies($player);
     for ($i = 0; $i < count($myAllies); $i += AllyPieces()) $rv .= ",MYALLY-" . $i;
-    $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
-    foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
-    $myPerched = explode(",", GetPerchedAllies($player));
-    foreach($myPerched as $i) $rv .= ",MYCHAR-" . $i;
+    if (GetPerchedAllies($otherPlayer) != "") {
+      $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
+      foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
+    }
+    if (GetPerchedAllies($player) != "") {
+      $myPerched = explode(",", GetPerchedAllies($player));
+      foreach($myPerched as $i) $rv .= ",MYCHAR-" . $i;
+    }
   } else if ($target == 3 || $target == 5) {
     $theirAllies = &GetAllies($otherPlayer);
     for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
       if ($rv != "") $rv .= ",";
       $rv .= "THEIRALLY-" . $i;
     }
-    $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
-    foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
+    if (GetPerchedAllies($otherPlayer) != "") {
+      $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
+      foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
+    }
   }
   $targets = explode(",", $rv);
   $targetsSelected = GetClassState($player, $CS_ArcaneTargetsSelected);
