@@ -57,8 +57,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $uniqueID = $arsenal[$index + 5];
         if (SubtypeContains($arsenal[$index], "Arrow")) SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
+        $facing = $arsenal[$index+1];
         if(!IsStaticType(CardType($arsenal[$index], "ARS"), "ARS", $arsenal[$index])) RemoveArsenal($playerID, $index);
-        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$arsenal[$index+1]);
+        PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$facing);
       } else {
         echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
         return false;
@@ -1097,7 +1098,7 @@ function ResolveCombatDamage($damageDone)
       for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
         if (IsCombatEffectActive($currentTurnEffects[$i])) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-            AddEffectHitTrigger($currentTurnEffects[$i], source:$combatChain[$i]); // Effects that gives effect to the attack
+            AddEffectHitTrigger($currentTurnEffects[$i], source:$combatChain[0]); // Effects that gives effect to the attack
           }
         }
       }
@@ -1120,7 +1121,7 @@ function ResolveCombatDamage($damageDone)
     foreach(explode(",", $combatChain[10]) as $effectSetID) {
       $effect = ConvertToCardID($effectSetID);
       if (IsCombatEffectActive($effect) && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddEffectHitTrigger($effect, source:$combatChain[$i]); // Effects that do gives their effect to the attack
+        AddEffectHitTrigger($effect, source:$combatChain[0]); // Effects that do gives their effect to the attack
       }
     }
     if (IsHeroAttackTarget()) {
