@@ -426,7 +426,10 @@ function PlayerTargetedAbility($player, $card, $lastResult)
 
 function filterIndices($indices, $zone, $dqVars, $condition) {
   $filteredIndices = array_filter($indices, function($index) use ($zone, $dqVars, $condition) {
-      $block = isset($zone[$index]) ? BlockValue($zone[$index]) : -1;
+      if (!isset($zone[$index])) {
+        return false; // skip this index if it doesn't exist in $zone
+      }
+      $block = BlockValue($zone[$index]);
       $type = CardType($zone[$index]);
       return $block > -1 && $condition($block, $dqVars) && (DelimStringContains($type, "A") || $type == "AA");
   });
