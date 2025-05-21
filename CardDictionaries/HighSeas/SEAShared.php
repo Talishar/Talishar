@@ -728,6 +728,10 @@ function Tap($MZindex, $player, $tapState=1)
   global $CS_NumGoldCreated;
   $zoneName = explode("-", $MZindex)[0];
   $zone = &GetMZZone($player, $zoneName);
+  if (!isset(explode("-", $MZindex)[1])) {
+    WriteLog("Something odd happened, please submit a bug report");
+    return;
+  }
   $index = intval(explode("-", $MZindex)[1]);
   //Untap
   if($tapState == 0 && !isUntappedPrevented($zone[$index], $zoneName, $player)) {
