@@ -513,11 +513,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "herald_of_sekem_red":
-        $hand = &GetHand($currentPlayer);
-        if(count($hand) == 0) break;
         $allies = GetAllies($currentPlayer);
         $theirAllies = GetAllies($otherPlayer);
         $indices = SearchHand($currentPlayer, pitch: 2);
+        if ($indices == "") break;
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $indices);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to put into your soul", 1);
         AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-");
