@@ -284,7 +284,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $parameter = "THEIRCHAR:subtype=Ally&$parameter";
       }
       $rv = SearchMultizone($player, $parameter);
-      WriteLog("RV: $rv - $parameter");
       return $rv == "" ? "PASS" : $rv;
     case "SCOURINDICES":
       $targPlayer = explode("|", $parameter)[0];
