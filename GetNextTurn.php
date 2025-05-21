@@ -1339,7 +1339,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $searchType = $option[0] == "THEIRALLY" || $option[0] == "MYALLY" ? "Ally" : "Aura";
           $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
           if ($index != "") {
-              $params = explode("|", $layers[$index[0] + 2]);              
+              $params = explode("|", $layers[intval($index[0]) + 2]);              
               if (isset($params[2]) && $option[1] == $params[2]) {
                 $label = "Attacking";
               }
