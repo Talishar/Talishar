@@ -500,12 +500,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       $indexChar = SearchCharacterForUniqueID($uid, $targetPlayer);
       if ($indexChar != -1) {
-        $char = GetAllies($targetPlayer);
-        $charCost = CardCost($char[$indexChar]);
+        $char = GetPlayerCharacter($targetPlayer);
+        $charCost = CardCost($char[$indexChar]) >= 0 ? CardCost($char[$indexChar]) : 0;
         PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$currentPlayer);
         $token = $charCost > 1 ? " tokens" : " token";
-        $allyName = CardLink($char[$indexChar], $char[$indexChar]);
-        WriteLog("Player $targetPlayer's $allyName turned into $charCost " . CardLink("gold", "gold") . " $token!");
+        $CharName = CardLink($char[$indexChar], $char[$indexChar]);
+        WriteLog("Player $targetPlayer's $CharName turned into $charCost " . CardLink("gold", "gold") . " $token!");
         DestroyCharacter($targetPlayer, $indexChar);
         return "";
       }
