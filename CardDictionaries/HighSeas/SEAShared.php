@@ -487,15 +487,26 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
       $uid = explode("-", $target)[1];
-      $index = SearchAlliesForUniqueID($uid, $targetPlayer);
-      if ($index != -1) {
+      $indexAlly = SearchAlliesForUniqueID($uid, $targetPlayer);
+      if ($indexAlly != -1) {
         $allies = GetAllies($targetPlayer);
-        $allyCost = CardCost($allies[$index]);
+        $allyCost = CardCost($allies[$indexAlly]);
         PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$allyCost, isToken:true, effectController:$currentPlayer);
         $token = $allyCost > 1 ? " tokens" : " token";
-        $allyName = CardLink($allies[$index], $allies[$index]);
+        $allyName = CardLink($allies[$indexAlly], $allies[$indexAlly]);
         WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold", "gold") . " $token!");
-        DestroyAlly($targetPlayer, $index);
+        DestroyAlly($targetPlayer, $indexAlly);
+        return "";
+      }
+      $indexChar = SearchCharacterForUniqueID($uid, $targetPlayer);
+      if ($indexChar != -1) {
+        $char = GetAllies($targetPlayer);
+        $charCost = CardCost($char[$indexChar]);
+        PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$currentPlayer);
+        $token = $charCost > 1 ? " tokens" : " token";
+        $allyName = CardLink($char[$indexChar], $char[$indexChar]);
+        WriteLog("Player $targetPlayer's $allyName turned into $charCost " . CardLink("gold", "gold") . " $token!");
+        DestroyCharacter($targetPlayer, $indexChar);
         return "";
       }
       else {

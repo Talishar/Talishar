@@ -156,7 +156,7 @@ function SearchInner(
 )
 {
   $cardList = "";
-  if (!is_array($talents)) $talents = ($talents == "" ? [] : explode(",", $talents));
+  if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
   for ($i = 0; $i < count($array); $i += $count) {
     if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
@@ -1463,7 +1463,6 @@ function SearchMultizone($player, $searches)
             break;
           case "isSameName":
             $name = CardName($condition[1]);
-
             switch ($zone) {
               case "MYDECK":
                 $searchResult = SearchDeckByName($player, $name);
@@ -1535,7 +1534,7 @@ function SearchMultizone($player, $searches)
         }
       }
     }
-    $searchPlayer = (substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
+    $searchPlayer = substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1);
     $searchResult = "";
     if (!$isCardID && !$isSameName) {
       switch ($zone) {

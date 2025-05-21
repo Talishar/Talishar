@@ -258,7 +258,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "kiss_of_death_red":
       return "Dagger,Attack";
     case "polly_cranka":
-      return "Off-Hand"; //handle being an ally elsewhere
+      return "Off-Hand,Ally"; //handle being an ally elsewhere
     case "polly_cranka_ally":
       return "Ally";
     default:
