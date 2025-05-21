@@ -3167,7 +3167,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     }
   }
   $hand = array_values($hand);
-  return $hand[count($hand) - 1];
+  $index = count($hand) - 1 ;
+  return $index >= 0 ? $hand[$index] : -1;
 }
 
 function ChooseToPay($player, $cardID, $amounts)
