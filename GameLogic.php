@@ -364,7 +364,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($params) < 3) array_push($params, "");
       $mzIndices = "";
       for ($i = 0; $i < count($cards); ++$i) {
-        $index = BanishCardForPlayer($cards[$i], $player, $params[0], isset($params[1]) ? $params[1] : "-", isset($params[2]) ? $params[2] : "");
+        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1] ?? "-", $params[2] ?? "");
         if ($mzIndices != "") $mzIndices .= ",";
         $mzIndices .= "BANISH-$index";
       }
@@ -1352,8 +1352,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $player);
         if ($warcryIndex != -1) {
           $params = explode(",", $currentTurnEffects[$warcryIndex]);
-          $amount = isset($params[1]) ? $params[1] : 0;
-          $uniqueID = isset($params[2]) ? $params[2] : "-";
+          $amount = $params[1] ?? 0;
+          $uniqueID = $params[2] ?? "-";
           $wepIndex = SearchCharacterForUniqueID($uniqueID, $playerSource);
           $char = GetPlayerCharacter($playerSource);
           if($wepIndex != -1 && $damage <= $amount && $char[$wepIndex] == $source) {
@@ -1524,7 +1524,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChainState[$parameter] = $lastResult;
       return $lastResult;
     case "INCREMENTCOMBATCHAINSTATE":
-      $combatChainState[$parameter] = $combatChainState[$parameter] + 1;
+      $combatChainState[$parameter]++;
       return $lastResult;
     case "INCREMENTCOMBATCHAINSTATEBY":
       $combatChainState[$parameter] = $combatChainState[$parameter] + $lastResult;
@@ -1932,7 +1932,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MODAL":
       $params = explode(",", $parameter);
-      return ModalAbilities($player, $params[0], $lastResult, isset($params[1]) ? $params[1] : -1);
+      return ModalAbilities($player, $params[0], $lastResult, $params[1] ?? -1);
     case "MELDTARGETTING":
       switch ($parameter) {
         case "pulsing_aether__life_red":
@@ -2249,8 +2249,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
       if ($warcryIndex != -1 && $sourceUID != -1) {
         $params = explode(",", $currentTurnEffects[$warcryIndex]);
-        $amount = isset($params[1]) ? $params[1] : 0;
-        $uniqueID = isset($params[2]) ? $params[2] : "-";
+        $amount = $params[1] ?? 0;
+        $uniqueID = $params[2] ?? "-";
         $damageDone = 1; // hacky for now, should only hit this line on flicks
         if($damageDone <= $amount && $uniqueID == $sourceUID) {
           AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
@@ -2411,8 +2411,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       if ($lastResult == "YES") --$items[$parameter + 1];
       else {
-        DestroyItemForPlayer($player, $parameter);
         WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
+        DestroyItemForPlayer($player, $parameter);
       }
       return "";
     case "REMOVECOUNTERITEMORDESTROYUID":
@@ -2529,19 +2529,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $additional = "";
       $params = explode(",", $parameter);
       $target = (count($params) < 2) ? $lastResult : $params[1];
+      $targetedPlayer = ($player == 1) ? 2 : 1;
       $targetClass = TriggerTargets($params[0]);
       if ($targetClass != "") {
-        $targettedPlayer = (DelimStringContains($lastResult, "THEIR", true)) ? (($player == 1) ? 2 : 1) : $player;        
-        WriteLog(GetMZCardLink($targettedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
+        $targetedPlayer = (DelimStringContains($lastResult, "THEIR", true)) ? (($player == 1) ? 2 : 1) : $player;        
+        WriteLog(GetMZCardLink($targetedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
       switch ($params[0]) {
         case "runic_reclamation_red":
-          AddLayer("TRIGGER", $mainPlayer, $params[0], GetMZUID($targettedPlayer, $target), $additional);
+          AddLayer("TRIGGER", $mainPlayer, $params[0], GetMZUID($targetedPlayer, $target), $additional);
           break;
         case "blast_to_oblivion_red": //these targetting effects need UID
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
-          AddLayer("TRIGGER", $player, $params[0], "$targettedPlayer-" . GetMZUID($targettedPlayer, $target));
+          AddLayer("TRIGGER", $player, $params[0], "$targetedPlayer-" . GetMZUID($targetedPlayer, $target));
           break;
         case "pain_in_the_backside_red":
           $targetLoc = explode("-", $target)[0];
