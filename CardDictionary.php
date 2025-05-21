@@ -4954,3 +4954,14 @@ function ExtractCardID($cardID) {
   $cardID = explode("-", $cardID)[0];
   return $cardID;
 }
+
+function CountAllies($player)
+{
+  $ally = &GetAllies($player);
+  $char = GetPlayerCharacter($player);
+  $count = count($ally);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if (HasPerched($char[$i])) $count++;
+  }
+  return $count;
+}
