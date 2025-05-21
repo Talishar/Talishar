@@ -946,7 +946,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
-    case "dishonor_blue":
     case "one_two_punch_red":
     case "one_two_punch_yellow":
     case "one_two_punch_blue": 
@@ -1037,6 +1036,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "red_fin_harpoon_blue":
     case "yellow_fin_harpoon_blue":
     case "blue_fin_harpoon_blue":
+    case "dishonor_blue":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
