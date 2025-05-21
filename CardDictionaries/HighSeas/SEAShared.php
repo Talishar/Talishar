@@ -513,8 +513,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "herald_of_sekem_red":
-        $allies = GetAllies($currentPlayer);
-        $theirAllies = GetAllies($otherPlayer);
         $indices = SearchHand($currentPlayer, pitch: 2);
         if ($indices == "") break;
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $indices);
@@ -524,7 +522,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($cardID, $cardID), 1);
-        if (ShouldAutotargetOpponent($currentPlayer) && count($allies) <= 0 && count($theirAllies) <= 0) {
+        if (ShouldAutotargetOpponent($currentPlayer) && CountAllies($currentPlayer) <= 0 && CountAllies($otherPlayer) <= 0) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
         }
         else{
