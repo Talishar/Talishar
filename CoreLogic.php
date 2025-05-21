@@ -1417,7 +1417,7 @@ function GetBanishModifier($index)
 function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
-  global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers;
+  global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
   global $combatChainState, $CCS_EclecticMag;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
@@ -1516,7 +1516,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "tip_off_blue":
     case "war_cry_of_themis_yellow":
     case "war_cry_of_bellona_yellow":
-    case "burn_bare":
       return $from == "HAND";
     case "under_the_trap_door_blue":
       return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
@@ -1526,6 +1525,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
       return SearchAuras("spectral_shield", $currentPlayer);
     case "succumb_to_temptation_yellow":
       return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "burn_bare":
+      if ($from != "HAND") return false;
+      return IsPhantasmActive();
     default:
       break;
   }
