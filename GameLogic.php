@@ -1288,6 +1288,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           return "";
         }
       }
+      elseif (($target[0] == "THEIRCHAR" || $target[0] == "MYCHAR")) { //perched allies targeted without UID
+        $index = $target[1];
+        $dqVars[0] = $damage;
+        if ($damage > 0 && $index > 0) {
+          // for now life tracking isn't necessary
+          DestroyCharacter($targetPlayer, $index);
+          return "";
+        }
+      }
       AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
       $target = $targetPlayer;
       $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
