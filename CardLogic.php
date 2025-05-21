@@ -2595,6 +2595,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "golden_skywarden_yellow":
       $myItems = GetItems($player);
       $maxRepeats = count($myItems);
+      for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
+        if ($myItems[$i] == "golden_cog") ++$maxRepeats; // you can galvanize the gold made by glavanizing a cog
+      }
       for ($i = 0; $i < $maxRepeats; $i += itemPieces()) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize", 1);
