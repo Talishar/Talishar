@@ -993,7 +993,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if (TypeContains($targetCard, "E")) {
           $defChar = GetPlayerCharacter($defPlayer);
           for ($i = 0; $i < count($defChar); $i += CharacterPieces()) {
-            if ($defChar[$i + 11] == $combatChain[$ind + 8]) DestroyCharacter($defPlayer, $i);
+            if ($defChar[$i + 11] == $combatChain[$ind + 8]) {
+              DestroyCharacter($defPlayer, $i);
+              break;
+            }
           }
         }
         else {
