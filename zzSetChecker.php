@@ -18,7 +18,7 @@ for ($number = 0; $number < 300; ++$number) {
   if($type == "AR" && PowerValue($card) != 0) echo($card . " Attack Reaction has attack " . PowerValue($card) . ".<BR>");
   if ($type == "AA" && $card != "fractal_replication_red" && PowerValue($card) == 0) echo ($card . " Attack action has no attack.<br>");
   if (($type != "C" && $type != "E" && $type != "W" && $type != "T") && PitchValue($card) == 0) echo ($card . " has no pitch value.<br>");
-  CheckImage($card);
+  CheckImage($set, $card);
 }
 echo ("Total missing: " . $count);
 

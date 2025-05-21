@@ -345,7 +345,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   for ($i=0; $i < count($theirDiscard); $i += DiscardPieces()) {
-    if (PlayableFromGraveyard($theirDiscard[$i], $theirDiscard[$i+2])) {
+    if (PlayableFromGraveyard($theirDiscard[$i], $theirDiscard[$i+2], $otherPlayer)) {
       array_push($theirHandContents, JSONRenderedCard($theirDiscard[$i], borderColor:7));
     }
   }
