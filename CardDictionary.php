@@ -3662,6 +3662,7 @@ function CharacterDefaultActiveState($cardID)
     case "beaten_trackers":
     case "quiver_of_abyssal_depths":
     case "quiver_of_rustling_leaves":
+    case "enchanted_quiver":
     case "driftwood_quiver":
     case "evo_circuit_breaker_red_equip":
     case "evo_atom_breaker_red_equip":
