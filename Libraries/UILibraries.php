@@ -328,6 +328,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
   if ($isPlayable && ComboActive($cardID)) return 3;
   if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
   if ($isPlayable && HasRupture($cardID) && RuptureActive(true, (CardType($cardID) != "AA"))) return 3;
+  if ($isPlayable && HasEffectActive($cardID)) return 3;
   else if ($isPlayable) return 6;
   return 0;
 }

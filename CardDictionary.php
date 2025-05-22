@@ -3757,7 +3757,6 @@ function HasReprise($cardID)
   }
 }
 
-//Is it active AS OF THIS MOMENT?
 function RepriseActive()
 {
   global $currentPlayer, $mainPlayer;
@@ -4964,4 +4963,15 @@ function CountAllies($player)
     if (HasPerched($char[$i])) $count++;
   }
   return $count;
+}
+
+//Function used for cosmetic effect to show when something is active. e.g. Hold the Line
+function HasEffectActive($cardID) {
+  global $CS_NumCardsDrawn, $playerID;
+  $otherPlayer = $playerID == 1 ? 2 : 1;
+  switch ($cardID) {
+  case "hold_the_line_blue": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
+  default:
+    return false;
+  }
 }
