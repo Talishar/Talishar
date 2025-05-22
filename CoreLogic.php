@@ -2362,6 +2362,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     }
     $character = GetPlayerCharacter($player);
     for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+      if ($character[$i + 1] != 2) continue;
       switch ($character[$i]) {
         case "silversheen_needle":
           if (CardNameContains($cardID, "Fabric", $player, true)) $hasGoAgain = true;
