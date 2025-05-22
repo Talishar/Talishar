@@ -493,7 +493,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       {
         AddCurrentTurnEffect($cardID, $currentPlayer);
         IncrementClassState($currentPlayer, $CS_DamagePrevention, 3);
-        WriteLog("Prevents the next 3 damage");
+        WriteLog(CardLink($cardID, $cardID) . " prevents the next 3 damage");
       }
       return "";
     case "hack_to_reality_yellow":

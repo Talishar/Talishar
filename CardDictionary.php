@@ -3705,7 +3705,7 @@ function AuraDefaultHoldTriggerState($cardID): int
   };
 }
 
-function ItemDefaultHoldTriggerState($cardID)
+function ItemDefaultHoldTriggerState($cardID, $player)
 {
   switch ($cardID) {
     case "teklo_core_blue":
@@ -3715,8 +3715,9 @@ function ItemDefaultHoldTriggerState($cardID)
     case "signal_jammer_blue":
       return 1;
     default:
-      return 2;
+      break;
   }
+  return ETASteamCounters($cardID) > 0 ? 0 : 2;
 }
 
 function IsCharacterActive($player, $index) 

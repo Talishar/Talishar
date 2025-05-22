@@ -12,9 +12,9 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   if ($number <= 0) return; // there's no event in this case
   $items = &GetItems($player);
-  $myHoldState = ItemDefaultHoldTriggerState($item);
+  $myHoldState = ItemDefaultHoldTriggerState($item, $player);
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
-  $theirHoldState = ItemDefaultHoldTriggerState($item);
+  $theirHoldState = ItemDefaultHoldTriggerState($item, $otherPlayer);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for ($i = 0; $i < $number; ++$i) {
     $uniqueID = GetUniqueId($item, $player);
@@ -266,14 +266,19 @@ function StealItem($srcPlayer, $index, $destPlayer, $from)
   $srcItems = array_values($srcItems);
 }
 
-function GetItemGemState($player, $cardID)
+function GetItemGemState($player, $cardID, $index=-1)
 {
   global $currentPlayer;
   $items = &GetItems($player);
-  $offset = ($currentPlayer == $player ? 5 : 6);
-  $state = 0;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == $cardID && $items[$i + $offset] > $state) $state = $items[$i + $offset];
+  if($index == -1) {
+    $offset = $currentPlayer == $player ? 5 : 6;
+    $state = 0;
+    for ($i = 0; $i < count($items); $i += ItemPieces()) {
+      if ($items[$i] == $cardID && $items[$i + $offset] > $state) $state = $items[$i + $offset];
+    }
+  }
+  else {
+    return $items[$index + 5];
   }
   return $state;
 }
@@ -407,7 +412,11 @@ function ItemStartTurnAbility($index)
     case "clamp_press_blue":
     case "golden_cog":
     case "copper_cog_blue":
-      if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
+      if ($mainItems[$index + 1] > 0 && GetItemGemState($mainPlayer, $mainItems[$index], $index)) --$mainItems[$index + 1];
+      else if($mainItems[$index + 1] > 0) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to remove a Steam Counter and keep " . CardLink($mainItems[$index], $mainItems[$index]) . " and keep it in play?");
+        AddDecisionQueue("REMOVECOUNTERITEMORDESTROYUID", $mainPlayer, $mainItems[$index + 4]);
+      }
       else DestroyItemForPlayer($mainPlayer, $index);
       break;
     case "tick_tock_clock_red":

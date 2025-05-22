@@ -726,7 +726,7 @@ function CheckContracts($banishedBy, $cardBanished)
 function ImperialWarHorn($player, $term)
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $term . "ALLY&" . $term . "AURAS&"  . $term . "ITEMS&LANDMARK");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to destroy", 1);
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card you want to destroy", 1);
   AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }

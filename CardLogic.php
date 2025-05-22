@@ -1479,7 +1479,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "mask_of_the_pouncing_lynx":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "to_destroy_".Cardlink($cardID, $cardID));
+      AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);

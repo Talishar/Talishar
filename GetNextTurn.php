@@ -863,7 +863,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerAllies = $myAlliesOutput;
 
   //my auras
-  $auraTileMap = [];
   $myAurasOutput = [];
   for ($i = 0; $i + AuraPieces() - 1 < count($myAuras); $i += AuraPieces()) {
     $playable = $currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction) : false;
@@ -875,8 +874,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
-    if (isset($auraTileMap[$myAuras[$i]])) $gem = $auraTileMap[$myAuras[$i]];
-    else $auraTileMap[$myAuras[$i]] = $gem;
     array_push($myAurasOutput, JSONRenderedCard(
       cardNumber: $myAuras[$i],
       overlay: $myAuras[$i + 1] != 2 ? 1 : 0,
@@ -895,7 +892,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerAuras = $myAurasOutput;
 
   //my items
-  $itemTileMap = [];
   $myItemsOutput = [];
   for ($i = 0; $i + ItemPieces() - 1 < count($myItems); $i += ItemPieces()) {
     $type = CardType($myItems[$i]);
@@ -906,8 +902,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
-    if (isset($itemTileMap[$myItems[$i]])) $gem = $itemTileMap[$myItems[$i]];
-    else $itemTileMap[$myItems[$i]] = $gem;
     $rustCounters = null;
     $verseCounters = null;
     $flowCounters = null;
