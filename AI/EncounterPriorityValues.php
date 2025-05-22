@@ -38,7 +38,7 @@
 
 function GetPriority($cardID, $heroID, $type)
 {
-  global $currentPlayer;
+  global $currentPlayer, $combatChain;
   switch($heroID)
   {
     case "ira_crimson_haze"://Ira
@@ -117,6 +117,9 @@ function GetPriority($cardID, $heroID, $type)
           case "warmongers_diplomacy_blue": $priority = [0.8, 0.1, 0.1, 0, 0, 3.5, 0.1, 0]; return $priority[$type];
           case "stab_wound_blue": $priority = [0.8, 0.4, 0.4, 0, 0, 3.5, 0.1, 0]; return $priority[$type];
           case "lava_vein_loyalty_blue": $priority = [0.8, 0.5, 0.5, 0, 0, 3.1, 0.1, 0]; return $priority[$type];
+          case "snapdragon_scalers":
+            $priority = DoesAttackHaveGoAgain() ? [0, 0, 0, 0, 0, 0, 0, 0] : [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; 
+            return $priority[$type];
           default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
         }
     default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
