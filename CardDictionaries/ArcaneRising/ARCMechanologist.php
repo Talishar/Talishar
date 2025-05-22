@@ -189,7 +189,7 @@ function DoBoost($player, $cardID, $boostCount=1)
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
-    if($deck->Empty()) { WriteLog("Could not boost"); return; }
+    if($deck->Empty()) { WriteLog("⚠️ Cannot boost!"); return; }
     ItemBoostEffects();
     GainActionPoints(CountCurrentTurnEffects("high_octane_red", $player), $player);
     GainResources($player, CountCurrentTurnEffects("heavy_industry_power_plant", $player));
@@ -233,7 +233,7 @@ function DoBoost($player, $cardID, $boostCount=1)
       }
     }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
-    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " go again.");
+    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
     IncrementClassState($player, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChainState[$CCS_IsBoosted] = 1;
