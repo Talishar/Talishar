@@ -539,28 +539,29 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
 }
 
-function MZChooseAndDestroy($player, $search, $may = false, $context = "")
+function MZChooseAndDestroy($player, $search, $may = false, $context = "Choose a card to destroy")
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
+  AddDecisionQueue("SETDQCONTEXT", $player, $context);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
 
-function MZChooseAndBanish($player, $search, $fromMod, $may = false)
+function MZChooseAndBanish($player, $search, $fromMod, $may = false, $context = "Choose a card to banish")
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+  AddDecisionQueue("SETDQCONTEXT", $player, $context);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
 }
 
-function MZChooseAndBounce($player, $search, $may = false, $context = "")
+function MZChooseAndBounce($player, $search, $may = false, $context = "Choose a card to bounce")
 {
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
+  AddDecisionQueue("SETDQCONTEXT", $player, $context);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZBOUNCE", $player, "-", 1); //Goes the the Owner's hand

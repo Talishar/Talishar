@@ -117,9 +117,9 @@
     if(ArsenalFull($player))
     {
       AddDecisionQueue("PASSPARAMETER", $player, "PASS");//Pass any subsequent load effects
-      return "Your arsenal is full, you cannot put an arrow in arsenal";
+      return "🏹 Your arsenal is full, you cannot put an arrow in arsenal";
     }
-    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing . "," .$counters, may:true, silent:true);
+    MZMoveCard($player, "MYHAND:subtype=Arrow", "MYARS,HAND," . $facing . "," .$counters, may:true, silent:true, DQContext:"Choose an arrow to put face-" . strtolower($facing) . " in your arsenal");
   }
 
   function Reload($player=0)
