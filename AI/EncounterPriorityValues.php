@@ -73,7 +73,7 @@ function GetPriority($cardID, $heroID, $type)
           //TODO: Allowing blocking if threatened by lethal damage
           $priority = [0, 0, 0, 0, 0, 0, 0, 0];
           return $priority[$type];
-        default: return 0;
+        default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
       }
       case "fai_rising_rebellion"://Fai
         $resources = &GetResources(2);
@@ -103,7 +103,7 @@ function GetPriority($cardID, $heroID, $type)
           case "ronin_renegade_red": $priority = [0.1, 0.8, 0.8, 0, 0, 1.1, 0.5, 0]; return $priority[$type];
           case "blaze_headlong_red": $priority = [0.1, 0.7, 0.7, 0, 0, 1.1, 0.6, 0]; return $priority[$type];
           case "lava_burst_red": $priority = [0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0]; return $priority[$type];
-          case "phoenix_flame_red": $priority = [0, 0.7, 0.7, 0, 0, 0, 0.2, 0]; return $priority[$type];
+          case "phoenix_flame_red": $priority = [0, 0.7, 0.7, 0, 0, 0.1, 0.2, 0]; return $priority[$type];
           case "double_strike_red": $priority = [0.1, 0.8, 0.8, 0, 0, 1.1, 0.5, 0]; return $priority[$type];
           case "ancestral_empowerment_red": $priority = [0.1, 0.9, 0.9, 0, 0, 1.1, 0.5, 0]; return $priority[$type];
           case "snatch_red": $priority = [0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0]; return $priority[$type];
@@ -117,9 +117,9 @@ function GetPriority($cardID, $heroID, $type)
           case "warmongers_diplomacy_blue": $priority = [0.8, 0.1, 0.1, 0, 0, 3.5, 0.1, 0]; return $priority[$type];
           case "stab_wound_blue": $priority = [0.8, 0.4, 0.4, 0, 0, 3.5, 0.1, 0]; return $priority[$type];
           case "lava_vein_loyalty_blue": $priority = [0.8, 0.5, 0.5, 0, 0, 3.1, 0.1, 0]; return $priority[$type];
-          default: return 0;
+          default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
         }
-      default: return 0;
+    default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
   }
 }
 
