@@ -276,7 +276,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
       case "head_shot_red":
       case "head_shot_yellow":
       case "head_shot_blue":
-        AddCurrentTurnEffectNextAttack($cardID, $player);
+        AddCurrentTurnEffectNextAttack($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
         break;
       case "ridge_rider_shot_red":
       case "ridge_rider_shot_yellow":
@@ -284,7 +284,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         Opt($cardID, 1);
         break;
       case "remorseless_red":
-        AddCurrentTurnEffect($cardID, $otherPlayer);
+        AddCurrentTurnEffect($cardID, $otherPlayer, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
         break;
       case "spire_sniping_red":
       case "spire_sniping_yellow":
