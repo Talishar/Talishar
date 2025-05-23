@@ -3413,6 +3413,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
       AddDecisionQueue("PUTPLAY", $player, "0", 1);
       break;
+    case "on_the_horizon_red":
+    case "on_the_horizon_yellow":
+    case "on_the_horizon_blue":
+      LookAtTopCard($player, $parameter);
+      break;
     default:
       break;
   }

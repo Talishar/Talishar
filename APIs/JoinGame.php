@@ -679,6 +679,7 @@ function isUnimplemented($cardID) {
         "swindlers_grift_red", "swindlers_grift_yellow", "swindlers_grift_blue" => false,
         "amethyst_amulet_blue", "onyx_amulet_blue", "opal_amulet_blue", "pearl_amulet_blue", "platinum_amulet_blue",
         "pounamu_amulet_blue", "ruby_amulet_blue", "sapphire_amulet_blue" => false,
+        "on_the_horizon_red", "on_the_horizon_yellow", "on_the_horizon_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

@@ -985,6 +985,9 @@ function OnBlockResolveEffects($cardID = "")
       case "cogwerx_tinker_rings":
       case "pinion_sentry_blue":
       case "washed_up_wave":
+      case "on_the_horizon_red":
+      case "on_the_horizon_yellow":
+      case "on_the_horizon_blue":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":
