@@ -671,6 +671,7 @@ function isUnimplemented($cardID) {
         "swiftwater_sloop_red", "swiftwater_sloop_yellow", "swiftwater_sloop_blue" => false,
         "pilfer_the_wreck_red", "pilfer_the_wreck_yellow", "pilfer_the_wreck_blue" => false,
         "saltwater_swell_red", "saltwater_swell_yellow", "saltwater_swell_blue" => false,
+        "sea_floor_salvage_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
