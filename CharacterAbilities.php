@@ -1192,6 +1192,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "puffin":
     case "marlynn_treasure_hunter":
     case "marlynn":
+    case "scurv_stowaway":
       $goldIndex = GetItemIndex("gold", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $goldIndex);
       Tap("MYCHAR-$cardIndex", $currentPlayer);
@@ -1211,6 +1212,10 @@ function EquipPayAdditionalCosts($cardIndex)
     case "polly_cranka":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       BanishCardForPlayer("polly_cranka", $currentPlayer, "EQUIP");
+      DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
+      break;
+    case "sticky_fingers":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
       DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
       break;
     case "rust_belt":

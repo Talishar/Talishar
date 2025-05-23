@@ -34,13 +34,13 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
     array_push($items, 0); //enters untapped
     if (HasCrank($item, $player)) Crank($player, $index, $mainPhase);
   }
+
+  $char = &GetPlayerCharacter($player);
+  $hero = ShiyanaCharacter($char[0], $player);
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
-    $char = &GetPlayerCharacter($player);
     if ($char[$symbiosisIndex + 2] < 6) ++$char[$symbiosisIndex + 2];
   }
   if ($item == "gold") {
-    $char = &GetPlayerCharacter($player);
-    $hero = ShiyanaCharacter($char[0], $player);
     IncrementClassState($player, $CS_NumGoldCreated, $number);
     UndestroyHook($player);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
@@ -48,6 +48,9 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
     }
+  }
+  if ($item == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($player, 0)) {
+    AddLayer("TRIGGER", $player, $hero);
   }
   //enters the arena triggers
   switch ($item) {

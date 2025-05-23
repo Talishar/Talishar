@@ -360,7 +360,7 @@
       case "Generic": case "Warrior": case "Ninja": case "Brute": case "Guardian":
       case "Wizard": case "Mechanologist": case "Ranger": case "Runeblade":
       case "Illusionist": case "Assassin": case "Necromancer": case "Pirate": 
-      case "Shapeshifter": case "Merchant": case "Arbiter": case "Bard": case "Thieft":
+      case "Shapeshifter": case "Merchant": case "Arbiter": case "Bard": case "Thief":
         return true;
       default: return false;
     }
@@ -402,6 +402,7 @@
   {
     return match($cardID) {
       "polly_cranka" =>  true,
+      "sticky_fingers" => true,
       default => false
     };
   }

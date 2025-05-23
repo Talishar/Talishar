@@ -258,10 +258,6 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ash";
     case "kiss_of_death_red":
       return "Dagger,Attack";
-    case "polly_cranka":
-      return "Off-Hand,Ally"; //handle being an ally elsewhere
-    case "polly_cranka_ally":
-      return "Ally";
     default:
       break;
   }
@@ -393,8 +389,6 @@ function CardSet($cardID)
     case "promising_terrain_blue":
     case "batter_to_a_pulp_red":
       return "MPG";
-    case "polly_cranka": case "polly_cranka_ally":
-      return "SEA";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);
@@ -2808,13 +2802,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "puffin":
     case "marlynn_treasure_hunter":
     case "marlynn":
-      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+    case "scurv_stowaway":
+    if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
     case "gold_baited_hook":
     case "redspine_manta":
     case "hammerhead_harpoon_cannon":
     case "polly_cranka":
+    case "sticky_fingers":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "rust_belt":
       return GetUntapped($player, "MYITEMS", "subtype=Cog") == "";
@@ -2837,6 +2833,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "barnacle_yellow":
     case "wailer_humperdinck_yellow":
     case "polly_cranka_ally":
+    case "sticky_fingers_ally":
     case "scooba_salty_sea_dog_yellow":
       if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
@@ -3634,6 +3631,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "marlynn":
     case "marlynn_treasure_hunter":
     case "gold_baited_hook":
+    case "scurv_stowaway":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  

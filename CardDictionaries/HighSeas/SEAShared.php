@@ -43,7 +43,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $from == "PLAY" ? "I": "AA",
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $from == "PLAY" ? "I": "AA",
     "polly_cranka", "polly_cranka_ally" => "A",
-
+    "sticky_fingers", "sticky_fingers_ally" => "AA",
     "redspine_manta" => "A",
     "marlynn_treasure_hunter" => "A",
     "marlynn" => "A",
@@ -89,6 +89,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "gold_baited_hook" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
+    "scurv_stowaway" => true,
     "marlynn" => true,
     "glidewell_fins" => true,
     "hammerhead_harpoon_cannon" => true,
@@ -421,6 +422,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         RemoveBanish($currentPlayer, $index);
       }
       break;
+    case "sticky_fingers": case "sticky_fingers_ally":
+      PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:type=T;cardID=gold");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
+      break;
     case "cogwerx_blunderbuss":
       if (GetResolvedAbilityType($cardID) == "I") {
         AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
@@ -548,6 +555,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cogwerx_zeppelin_blue":
       if ($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "scurv_stowaway":
+      PutItemIntoPlayForPlayer("goldkiss_rum", $currentPlayer);
+      break;
     // Marlynn cards
     case "redspine_manta":
       LoadArrow($currentPlayer);
@@ -948,6 +958,7 @@ function HasPerched($cardID): bool
 {
   return match($cardID) {
     "polly_cranka" => true,
+    "sticky_fingers" => true,
     default => false
   };
 }

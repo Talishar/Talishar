@@ -88,6 +88,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
       "yendurai" => "invoke_yendurai_red",
       "suraya_archangel_of_knowledge" => "invoke_suraya_yellow",
       "polly_cranka_ally" => "polly_cranka",
+      "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
     if (IsTokenAlly($id)) return;
@@ -100,6 +101,7 @@ function AllyHealth($cardID)
 {
   return match($cardID) {
     "polly_cranka_ally" => 1,
+    "sticky_fingers_ally" => 2,
     default => GeneratedCharacterHealth($cardID)
   };
 }
@@ -440,6 +442,7 @@ function AllyPayAdditionalCosts($cardIndex, $from)
     case "scooba_salty_sea_dog_yellow":
     case "shelly_hardened_traveler_yellow":
     case "moray_le_fay_yellow":
+    case "sticky_finger":
       Tap("MYALLY-$cardIndex", $currentPlayer);
       $ally[$cardIndex + 1] = 2;//Not once per turn effects
       break;

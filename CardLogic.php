@@ -3292,6 +3292,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "marlynn":
       LoadArrow($player);
       break;
+    case "scurv_stowaway":
+      GainResources($player, 1);
+      break;
     case "sunken_treasure_blue":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRDISCARD&MYDISCARD");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to turn face-down");

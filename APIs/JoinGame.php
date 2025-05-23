@@ -664,6 +664,8 @@ function isUnimplemented($cardID) {
         "scouting_shot_red" => false,
         "swift_shot_red" => false,
         "call_in_the_big_guns_red", "call_in_the_big_guns_yellow", "call_in_the_big_guns_blue" => false,
+        "scurv_stowaway" => false,
+        "sticky_fingers" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
