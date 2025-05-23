@@ -509,7 +509,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "sticky_fingers": case "sticky_fingers_ally":
-      PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true);
+      if ($cardID == "sticky_fingers") PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:type=T;cardID=gold");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
