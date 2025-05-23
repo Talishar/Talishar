@@ -4700,6 +4700,9 @@ function HasGalvanize($cardID)
     case "infuse_titanium_blue":
     case "steel_street_hoons_blue":
     case "golden_skywarden_yellow":
+    case "tough_old_wrench_red":
+    case "tough_old_wrench_yellow":
+    case "tough_old_wrench_blue":
       return true;
     default:
       return false;

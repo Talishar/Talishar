@@ -2597,7 +2597,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "infuse_titanium_yellow":
     case "infuse_titanium_blue":
     case "steel_street_hoons_blue": //Galvanize
-      MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize");
+      MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect");
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
@@ -2609,13 +2609,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       for ($i = 0; $i < $maxRepeats; $i += itemPieces()) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("GOLDENSKYWARDEN", $player, $target, 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);
       }
+      break;
+    case "tough_old_wrench_red":
+    case "tough_old_wrench_yellow":
+    case "tough_old_wrench_blue":
+      MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect");
+      AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
+      AddDecisionQueue("PUTPLAY", $player, "0", 1);
       break;
     case "stasis_cell_blue":
       AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
