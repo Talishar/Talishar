@@ -73,7 +73,8 @@ function CardType($cardID, $from="")
     "pulsing_aether__life_red",
     "comet_storm__shock_red",
     "regrowth__shock_blue",
-    "consign_to_cosmos__shock_yellow"
+    "consign_to_cosmos__shock_yellow",
+    "everbloom__life_blue"
   ];
 
   if (in_array($cardID, $meldCards)) {
@@ -459,6 +460,8 @@ function CardClass($cardID)
     case "puffin":
     case "puffin_hightail":
       return "PIRATE,MECHANOLOGIST";
+    case "everbloom__life_blue":
+      return "NONE";
     default:
       break;
   }
@@ -527,6 +530,8 @@ function CardTalent($cardID, $from="-")
       return "EARTH,LIGHTNING";
     case "consign_to_cosmos__shock_yellow":
       return "LIGHTNING";
+    case "everbloom__life_blue":
+      return "EARTH";
     default:
       break;
   }
@@ -4888,6 +4893,7 @@ function HasMeld($cardID){
     case "comet_storm__shock_red":
     case "regrowth__shock_blue":
     case "consign_to_cosmos__shock_yellow":
+    case "everbloom__life_blue":
       return true;
     default:
       return false;

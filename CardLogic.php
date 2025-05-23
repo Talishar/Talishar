@@ -3916,6 +3916,19 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
       break;
+    case "everbloom__life_blue":
+      $maxCost = GetClassState($player, $CS_HealthGained) - 1;
+      $indices = SearchMultizone($player, "MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost&");
+      if (GetMZCard($player, explode(",", $indices)[-1]) == $parameter) {
+        //removing itself from the list of choices
+        $indices = implode(",", array_slice(explode(",", $indices), 0, -1));
+      }
+      AddDecisionQueue("PASSPARAMETER", $player, $indices);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an action to put on the bottom of your deck", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+      break;
     default:
       break;
   }
