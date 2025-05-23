@@ -192,7 +192,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain;
+  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks;;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -238,6 +238,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "sapphire_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "divvy_up_blue":
+      $treasureID = SearchLandmarksForID("treasure_island");
+      $char = GetPlayerCharacter($currentPlayer);
+      if ($treasureID != -1) {
+        ClassContains($char[0], "Thief", $currentPlayer) ? $numGold = $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
+        $landmarks[$treasureID + 3] -= $numGold;
+        PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
+        WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
+      }
       break;
     case "peg_leg":
       AddCurrentTurnEffect($cardID, $currentPlayer);
