@@ -909,7 +909,7 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
     case "hms_barracuda_yellow":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY&THEIRCHAR:subtype:Ally");
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an ally to destroy", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
