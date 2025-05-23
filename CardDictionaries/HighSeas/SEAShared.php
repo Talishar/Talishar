@@ -249,6 +249,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
       }
       break;
+    case "thievn_varmints_red":
+      AddDecisionQueue("YESNO", $currentPlayer, "if you want to remove a gold counter from " . CardLink("treasure_island", "treasure_island"), 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $currentPlayer, 1, 1);
+      break;
     case "peg_leg":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
