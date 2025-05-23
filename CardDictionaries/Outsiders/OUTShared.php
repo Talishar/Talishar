@@ -752,6 +752,7 @@ function OUTAbilityCost($cardID)
       case "reapers_call_red": case "reapers_call_yellow": case "reapers_call_blue":
       case "scuttle_the_canal_red": case "scuttle_the_canal_yellow": case "scuttle_the_canal_blue":
       case "graphene_chelicera":
+      case "undercover_acquisition_red":
         return true;
       default:
         return false;

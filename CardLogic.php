@@ -1045,6 +1045,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "pilfer_the_wreck_red":
     case "pilfer_the_wreck_yellow":
     case "pilfer_the_wreck_blue":
+    case "undercover_acquisition_red":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;

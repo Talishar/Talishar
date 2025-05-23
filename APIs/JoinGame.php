@@ -681,6 +681,7 @@ function isUnimplemented($cardID) {
         "pounamu_amulet_blue", "ruby_amulet_blue", "sapphire_amulet_blue" => false,
         "on_the_horizon_red", "on_the_horizon_yellow", "on_the_horizon_blue" => false,
         "helmsmans_peak" => false,
+        "undercover_acquisition_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

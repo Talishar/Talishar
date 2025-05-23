@@ -932,6 +932,11 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("MZOP", $mainPlayer, "TURNDISCARDFACEDOWN", 1);
       AddDecisionQueue("SPECIFICCARD", $mainPlayer, "SUNKENTREASURE", 1);
       break;
+    case "undercover_acquisition_red":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+      break;
     default:
       break;
   }
