@@ -3377,6 +3377,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PutItemIntoPlayForPlayer("golden_cog", $player);
       break;
     case "washed_up_wave":
+    case "blood_in_the_water_red":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND", 1);
       AddDecisionQueue("APPENDLASTRESULT", $player, ",MYDECK-0", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
