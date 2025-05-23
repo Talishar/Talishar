@@ -676,6 +676,7 @@ function isUnimplemented($cardID) {
         "scrub_the_deck_blue" => false,
         "golden_tipple_red", "golden_tipple_yellow", "golden_tipple_blue" => false,
         "gold_hunter_lightsail_yellow", "gold_hunter_longboat_yellow", "gold_hunter_marauder_yellow", "gold_hunter_ketch_yellow" => false,
+        "swindlers_grift_red", "swindlers_grift_yellow", "swindlers_grift_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

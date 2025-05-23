@@ -284,6 +284,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "golden_tipple_red":
     case "golden_tipple_yellow":
     case "golden_tipple_blue":
+    case "swindlers_grift_red":
+    case "swindlers_grift_yellow":
+    case "swindlers_grift_blue":
       MZMoveCard($currentPlayer, "MYHAND:pitch=2", "MYDISCARD", true);
       AddDecisionQueue("ALLCARDCOLORORPASS", $currentPlayer, "2", 1);
       AddDecisionQueue("DRAW", $currentPlayer, $cardID, 1);
