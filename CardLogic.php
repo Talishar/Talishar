@@ -3416,6 +3416,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "on_the_horizon_red":
     case "on_the_horizon_yellow":
     case "on_the_horizon_blue":
+    case "helmsmans_peak":
       LookAtTopCard($player, $parameter);
       break;
     default:
