@@ -644,7 +644,8 @@ function isUnimplemented($cardID) {
         "teeth_of_the_cog_red", "teeth_of_the_cog_yellow", "teeth_of_the_cog_blue" => false,
         "tough_old_wrench_red", "tough_old_wrench_yellow", "tough_old_wrench_blue" => false,
         "goldwing_turbine_red", "goldwing_turbine_yellow", "goldwing_turbine_blue" => false,
-        "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => true,
+        "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => false,
+        "washed_up_wave" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

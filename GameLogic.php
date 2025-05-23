@@ -1018,6 +1018,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (!TypeContains($cards[$i], $parameter, $player)) return "PASS";
       }
       return $lastResult;
+    case "ALLCARDWATERYGRAVEORPASS":
+      $cards = explode(",", $lastResult);
+      for ($i = 0; $i < count($cards); ++$i) {
+        if (!HasWateryGrave($cards[$i])) return "PASS";
+      }
+      return $lastResult;
     case "NONECARDTYPEORPASS":
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {

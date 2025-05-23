@@ -3376,6 +3376,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "cogwerx_tinker_rings":
       PutItemIntoPlayForPlayer("golden_cog", $player);
       break;
+    case "washed_up_wave":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard or pass for your top deck", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-$target", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZSETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+      AddDecisionQueue("MZADDZONE", $player, "MYHAND,MYDISCARD", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("ALLCARDWATERYGRAVEORPASS", $player, "<-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+      break;
     case "pinion_sentry_blue":
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;
