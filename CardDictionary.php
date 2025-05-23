@@ -2816,6 +2816,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "hammerhead_harpoon_cannon":
     case "polly_cranka":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
+    case "rust_belt":
+      return GetUntapped($player, "MYITEMS", "subtype=Cog") == "";
     case "spitfire":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
@@ -3176,6 +3178,8 @@ function HasBattleworn($cardID)
     case "drive_brake":
     case "fist_pump":
     case "gold_baited_hook":
+    case "rust_belt":
+    case "unicycle":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);

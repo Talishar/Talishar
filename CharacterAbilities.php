@@ -1099,6 +1099,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "blue_sea_tricorn":
     case "buccaneers_bounty":
     case "fish_fingers":
+    case "unicycle":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
@@ -1209,6 +1210,12 @@ function EquipPayAdditionalCosts($cardIndex)
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       BanishCardForPlayer("polly_cranka", $currentPlayer, "EQUIP");
       DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
+      break;
+    case "rust_belt":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      //for some reason DQs aren't working here, for now just automatically choose the first cog
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
       break;
     case "spitfire":
       Tap("MYCHAR-$cardIndex", $currentPlayer);

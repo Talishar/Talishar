@@ -10,7 +10,8 @@ function SEAAbilityType($cardID, $from="-"): string
     "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
     "sawbones_dock_hand_yellow" => "I",
-
+    "rust_belt" => "I",
+    "unicycle" => "I",
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
@@ -65,7 +66,6 @@ function SEAAbilityCost($cardID): int
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
     "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
-
     "cutty_shark_quick_clip_yellow" => 1,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
@@ -154,6 +154,17 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     // Generic cards
     case "peg_leg":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "rust_belt":
+      GainResources($currentPlayer, 1);
+      break;
+    case "unicycle":
+      $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a cog you control");
+      //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
     case "blue_sea_tricorn":
       Draw($currentPlayer);
