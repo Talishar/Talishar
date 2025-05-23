@@ -3360,6 +3360,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "return_fire_red":
       MZMoveCard($player, "MYHAND:subtype=Arrow", "MYBANISH,HAND,RETURNFIRE", may:true, DQContext:"Choose an arrow to banish (or pass)");
       break;
+    case "cogwerx_tinker_rings":
+      PutItemIntoPlayForPlayer("golden_cog", $player);
+      break;
     default:
       break;
   }

@@ -634,6 +634,8 @@ function isUnimplemented($cardID) {
         "fish_fingers" => false,
         "herald_of_sekem_red" => false,
         "riches_of_tropal_dhani_yellow" => false,
+        "cogwerx_tinker_rings" => false,
+
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
