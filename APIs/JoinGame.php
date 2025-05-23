@@ -693,6 +693,7 @@ function isUnimplemented($cardID) {
         "nimby_red", "nimby_yellow", "nimby_blue" => false,
         "everbloom__life_blue" => false,
         "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => false,
+        "strike_gold_red", "strike_gold_yellow", "strike_gold_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

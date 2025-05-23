@@ -897,6 +897,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "splintering_deadwood_blue":
     case "summit_the_unforgiving":
     case "devotion_never_dies_red":
+    case "strike_gold_red":
+    case "strike_gold_yellow":
+    case "strike_gold_blue":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
     case "boltn_shot_red":

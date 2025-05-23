@@ -994,6 +994,11 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("MZOP", $mainPlayer, "TURNDISCARDFACEDOWN", 1);
       AddDecisionQueue("SPECIFICCARD", $mainPlayer, "SUNKENTREASURE", 1);
       break;
+    case "strike_gold_red":
+    case "strike_gold_yellow":
+    case "strike_gold_blue":
+      PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+      break;
     case "undercover_acquisition_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
