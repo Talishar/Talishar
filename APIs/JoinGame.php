@@ -646,6 +646,7 @@ function isUnimplemented($cardID) {
         "goldwing_turbine_red", "goldwing_turbine_yellow", "goldwing_turbine_blue" => false,
         "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => false,
         "washed_up_wave" => false,
+        "rusty_harpoon_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
