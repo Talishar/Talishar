@@ -2617,6 +2617,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);
       }
       break;
+    case "teeth_of_the_cog_red":
+    case "teeth_of_the_cog_yellow":
+    case "teeth_of_the_cog_blue":
     case "tough_old_wrench_red":
     case "tough_old_wrench_yellow":
     case "tough_old_wrench_blue":

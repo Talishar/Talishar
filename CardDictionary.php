@@ -4704,6 +4704,9 @@ function HasGalvanize($cardID)
     case "infuse_titanium_blue":
     case "steel_street_hoons_blue":
     case "golden_skywarden_yellow":
+    case "teeth_of_the_cog_red":
+    case "teeth_of_the_cog_yellow":
+    case "teeth_of_the_cog_blue":
     case "tough_old_wrench_red":
     case "tough_old_wrench_yellow":
     case "tough_old_wrench_blue":
