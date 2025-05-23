@@ -12,6 +12,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "sawbones_dock_hand_yellow" => "I",
     "rust_belt" => "I",
     "unicycle" => "I",
+    "head_stone" => "I",
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
@@ -182,6 +183,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
+    case "head_stone":
+        $deck = new Deck($currentPlayer);
+        if($deck->Empty()) {
+          break;
+        }
+        DestroyTopCard($currentPlayer);
       break;
     case "blue_sea_tricorn":
       Draw($currentPlayer);

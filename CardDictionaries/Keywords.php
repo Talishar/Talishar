@@ -155,10 +155,11 @@
     switch($cardID)
     {
       case "millers_grindstone":
+        $otherPlayer = $playerID == 1 ? 2 : 1;
         if($deck->Empty()) {
           break;
         }
-        if ($playerID == $mainPlayer) DestroyTopCardOpponent($playerID);
+        if ($playerID == $mainPlayer) DestroyTopCard($otherPlayer);
         else {
           $character = &GetPlayerCharacter($mainPlayer);
           $index = $combatChainState[$CCS_WeaponIndex];

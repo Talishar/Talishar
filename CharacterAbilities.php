@@ -1100,6 +1100,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "buccaneers_bounty":
     case "fish_fingers":
     case "unicycle":
+    case "head_stone":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":

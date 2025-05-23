@@ -138,11 +138,9 @@ function DestroyTopCardTarget($player): void
   AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
 }
 
-function DestroyTopCardOpponent($player): void
+function DestroyTopCard($player): void
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
-  AddDecisionQueue("WRITELOG", $otherPlayer, "Destroys the top card of Player " . $otherPlayer . " deck", 1);
-  AddDecisionQueue("DESTROYTOPCARD", $otherPlayer, "0", 1);
+  AddDecisionQueue("DESTROYTOPCARD", $player, "0", 1);
 }
 
 function DestroyItemWithoutSteamCounter($cardID, $player): bool

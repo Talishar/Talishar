@@ -658,7 +658,7 @@
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
         $deck = new Deck($defPlayer);
         if($deck->Empty()) break;
-        else DestroyTopCardOpponent($mainPlayer);
+        else DestroyTopCard($defPlayer);
         break;
       case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
         $indices = SearchMultizone($mainPlayer, "THEIRAURAS:cardID=seismic_surge");

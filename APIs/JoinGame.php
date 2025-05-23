@@ -653,6 +653,7 @@ function isUnimplemented($cardID) {
         "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => false,
         "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => false,
         "restless_bones_red", "restless_bones_yellow", "restless_bones_blue" => false,
+        "head_stone" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
