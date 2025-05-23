@@ -673,6 +673,8 @@ function isUnimplemented($cardID) {
         "saltwater_swell_red", "saltwater_swell_yellow", "saltwater_swell_blue" => false,
         "sea_floor_salvage_blue" => false,
         "consign_to_cosmos__shock_yellow" => false,
+        "scrub_the_deck_blue" => false,
+        "golden_tipple_red", "golden_tipple_yellow", "golden_tipple_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

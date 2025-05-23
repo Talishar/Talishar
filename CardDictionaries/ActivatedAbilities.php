@@ -117,12 +117,12 @@ function EVOAbilityHasGoAgain($cardID): bool
   };
 }
 
-function DestroyTopCardTarget($player): void
+function DestroyTopCardTarget($player, $target=false): void
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
   AddDecisionQueue("SETDQVAR", $player, "1");
-  if (ShouldAutotargetOpponent($player)) {
+  if (ShouldAutotargetOpponent($player) && !$target) {
     AddDecisionQueue("PASSPARAMETER", $player, "Target_Opponent");
   } else {
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");

@@ -273,6 +273,21 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZOP", $currentPlayer, "TURNDISCARDFACEDOWN", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUNKENTREASURE", 1);
       break;
+    case "scrub_the_deck_blue":
+      DestroyTopCardTarget($currentPlayer, true);
+      AddDecisionQueue("ALLCARDCOLORORPASS", $currentPlayer, "2", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+      break;
+    case "golden_tipple_red":
+    case "golden_tipple_yellow":
+    case "golden_tipple_blue":
+      MZMoveCard($currentPlayer, "MYHAND:pitch=2", "MYDISCARD", true);
+      AddDecisionQueue("ALLCARDCOLORORPASS", $currentPlayer, "2", 1);
+      AddDecisionQueue("DRAW", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+      break;
     case "angry_bones_red": case "angry_bones_yellow": case "angry_bones_blue":
     case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
