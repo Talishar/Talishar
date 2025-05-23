@@ -114,6 +114,9 @@ function SEAEffectPowerModifier($cardID): int
     "goldwing_turbine_red" => 3,
     "goldwing_turbine_yellow" => 2, 
     "goldwing_turbine_blue" => 1,
+    "call_in_the_big_guns_red" => 3,
+    "call_in_the_big_guns_yellow" => 2,
+    "call_in_the_big_guns_blue" => 1,
     "spitfire" => 1,
     "dry_powder_shot_red" => 2,
     "glidewell_fins" => 1,
@@ -166,6 +169,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
     "spitfire" => true,
     "return_fire_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "call_in_the_big_guns_red", "call_in_the_big_guns_yellow", "call_in_the_big_guns_blue" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "gold_the_tip_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "drop_the_anchor_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
@@ -587,6 +591,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "monkey_powder_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer);
+      break;
+    case "call_in_the_big_guns_red": 
+    case "call_in_the_big_guns_yellow": 
+    case "call_in_the_big_guns_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      MZMoveCard($currentPlayer, "MYHAND:subtype=Arrow", "MYARS,HAND,UP", may:true, silent:true);
       break;
       //other cards
     case "tip_the_barkeep_blue":
