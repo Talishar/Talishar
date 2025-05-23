@@ -266,8 +266,7 @@ function OUTAbilityCost($cardID)
         SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $currentPlayer, true);
         if($abilityName == "Load") LoadArrow($currentPlayer);
         else if($abilityName == "Aim") {
-          $arsenalFaceDown = ArsenalFaceDownCard($currentPlayer);
-          if($arsenalFaceDown != "" && CardSubType($arsenalFaceDown) == "Arrow") {
+          if(ArsenalHasArrowCardFacing($currentPlayer, "DOWN")) {
             SetArsenalFacing("UP", $currentPlayer);
             $arsenal = &GetArsenal($currentPlayer);
             $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;

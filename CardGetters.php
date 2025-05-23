@@ -401,15 +401,6 @@ function HasTakenDamage($player)
   return GetClassState($player, $CS_DamageTaken) > 0;
 }
 
-function ArsenalFaceDownCard($player)
-{
-  $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i + 1] == "DOWN") return $arsenal[$i];
-  }
-  return "";
-}
-
 function ArsenalHasFaceDownCard($player)
 {
   $arsenal = &GetArsenal($player);
@@ -428,32 +419,24 @@ function ArsenalHasFaceUpCard($player)
   return false;
 }
 
-function ArsenalHasFaceUpArrowCard($player)
+function ArsenalHasArrowCardFacing($player, $facing)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "UP") return true;
+    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == $facing) return true;
   }
   return false;
 }
 
-function ArsenalHasFaceDownBlueArrow($player)
+function ArsenalHasArrowFacingColor($player, $facing, $color)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "DOWN" && ColorContains($arsenal[$i], 3, $player)) return true;
+    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == $facing && ColorContains($arsenal[$i], $color, $player)) return true;
   }
   return false;
 }
 
-function ArsenalHasFaceDownArrowCard($player)
-{
-  $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == "DOWN") return true;
-  }
-  return false;
-}
 
 function ArsenalFull($player)
 {

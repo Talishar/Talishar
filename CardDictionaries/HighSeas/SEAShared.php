@@ -118,6 +118,7 @@ function SEAEffectPowerModifier($cardID): int
     "monkey_powder_red" => 1,
     "return_fire_red" => 3,
     "fish_fingers" => 1,
+    "gold_the_tip_yellow" => 3,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
@@ -156,6 +157,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "spitfire" => true,
     "return_fire_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "gold_the_tip_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "sealace_sarong" => true,
@@ -526,6 +528,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "marlynn_treasure_hunter":
     case "marlynn":
       AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
+      break;
+    case "gold_the_tip_yellow":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if(ArsenalHasArrowFacingColor($currentPlayer, "UP", "Yellow")) PutItemIntoPlayForPlayer("gold", $currentPlayer);
       break;
     case "hammerhead_harpoon_cannon":
       AddCurrentTurnEffect($cardID, $currentPlayer);
