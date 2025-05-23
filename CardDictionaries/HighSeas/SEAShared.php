@@ -277,7 +277,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ALLCARDWATERYGRAVEORPASS", $currentPlayer, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chum_friendly_first_mate_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
