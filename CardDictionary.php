@@ -3527,6 +3527,7 @@ function DoesEffectGrantsOverpower($cardID): bool
     "heave_ho_blue" => true,
     "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
     "sinker_blue" => true,
+    "mutiny_on_the_nimbus_sovereign_blue" => true,
     default => false,
   };
 }

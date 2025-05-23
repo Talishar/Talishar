@@ -1606,143 +1606,94 @@ function CurrentEffectGrantsGoAgain()
         case "driving_blade_red":
         case "driving_blade_yellow":
         case "driving_blade_blue":
-          return true;
         case "snapdragon_scalers":
-          return true;
         case "rapid_fire_yellow":
-          return true;
         case "art_of_war_yellow-3":
-          return true;
         case "breeze_rider_boots":
-          return true;
         case "flood_of_force_yellow":
-          return true;
         case "spoils_of_war_red":
-          return true;
         case "hit_and_run_red-1":
         case "hit_and_run_yellow-1":
         case "hit_and_run_blue-1":
-          return true;
         case "perch_grapplers":
-          return true;
         case "mauvrion_skies_red":
         case "mauvrion_skies_yellow":
         case "mauvrion_skies_blue":
-          return true;
         case "dread_screamer_red":
         case "dread_screamer_yellow":
         case "dread_screamer_blue":
-          return true;
         case "seeping_shadows_red":
         case "seeping_shadows_yellow":
         case "seeping_shadows_blue":
-          return true;
         case "shadow_puppetry_red":
-          return true;
         case "rouse_the_ancients_blue":
-          return true;
         case "captains_call_red-2":
         case "captains_call_yellow-2":
         case "captains_call_blue-2":
-          return true;
         case "lexi_livewire-1":
-          return true;
         case "voltaire_strike_twice-2":
-          return true;
         case "fulminate_yellow-GA":
-          return true;
         case "flash_red":
         case "flash_yellow":
         case "flash_blue":
+        case "amulet_of_lightning_blue":
+        case "bravo_star_of_the_show":
+        case "ride_the_tailwind_red":
+        case "ride_the_tailwind_yellow":
+        case "ride_the_tailwind_blue":
+        case "life_of_the_party_red-3":
+        case "life_of_the_party_yellow-3":
+        case "life_of_the_party_blue-3":
+        case "glistening_steelblade_yellow":
+        case "on_a_knife_edge_yellow":
+        case "soaring_strike_red":
+        case "soaring_strike_yellow":
+        case "soaring_strike_blue":
+        case "burn_away_red":
+        case "precision_press_red":
+        case "precision_press_yellow":
+        case "precision_press_blue":
+        case "tear_through_the_portal_red":
+        case "tear_through_the_portal_yellow":
+        case "tear_through_the_portal_blue":
+        case "agility":
+        case "coercive_tendency_blue":
+        case "beckoning_mistblade":
+        case "slither":
+        case "first_tenet_of_chi_wind_blue":
+        case "shadowrealm_horror_red-2":
+        case "flight_path":
+        case "arc_lightning_yellow-GOAGAIN":
+        case "agility_stance_yellow":
+        case "dragonscaler_flight_path":
+        case "path_of_vengeance":
+        case "trot_along_blue":
+        case "the_hand_that_pulls_the_strings":
+        case "bank_breaker":
+        case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
+        case "peg_leg": case "goldkiss_rum":
+        case "sealace_sarong":
+        case "cogwerx_blunderbuss":
+        case "avast_ye_blue":
+        case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
+        case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
+        case "line_blue":
+        case "swift_shot_red":
+        case "mutiny_on_the_swiftwater_blue":
           return true;
         case "weave_lightning_red":
         case "weave_lightning_yellow":
         case "weave_lightning_blue":
           if ($combatChainState[$CCS_AttackFused] == 1) return true;
           else break;
-        case "amulet_of_lightning_blue":
-          return true;
-        case "bravo_star_of_the_show":
-          return true;
-        case "ride_the_tailwind_red":
-        case "ride_the_tailwind_yellow":
-        case "ride_the_tailwind_blue":
-          return true;
-        case "life_of_the_party_red-3":
-        case "life_of_the_party_yellow-3":
-        case "life_of_the_party_blue-3":
-          return true;
-        case "glistening_steelblade_yellow":
-          return true;
-        case "on_a_knife_edge_yellow":
-          return true;
-        case "soaring_strike_red":
-        case "soaring_strike_yellow":
-        case "soaring_strike_blue":
-          return true;
-        case "burn_away_red":
-          return true;
-        case "precision_press_red":
-        case "precision_press_yellow":
-        case "precision_press_blue":
-          return true;
-        case "tear_through_the_portal_red":
-        case "tear_through_the_portal_yellow":
-        case "tear_through_the_portal_blue":
-          return true;
-        case "agility":
-          return true;
         case "luminaris_angels_glow-1":
         case "luminaris_angels_glow-2":
           if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") break;
           if (SearchPitchForColor($mainPlayer, 2) > 0) return true;
           else break;
-        case "coercive_tendency_blue":
-          return true;
-        case "beckoning_mistblade":
-          return true;
-        case "slither":
-          return true;
-        case "first_tenet_of_chi_wind_blue":
-          return true;
-        case "shadowrealm_horror_red-2":
-          return true;
-        case "flight_path":
-          return true;
-        case "arc_lightning_yellow-GOAGAIN":
-          return true;
         case "machinations_of_dominion_blue":
           if(GetClassState($mainPlayer, $CS_NumAuras) >= 1) return true;
           else break;
-        case "agility_stance_yellow":
-          return true;
-        case "dragonscaler_flight_path":
-        case "path_of_vengeance":
-          return true;
-        case "trot_along_blue":
-          return true;
-        case "the_hand_that_pulls_the_strings":
-          return true;
-        case "bank_breaker":
-          return true;
-        case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
-          return true;
-        case "peg_leg": case "goldkiss_rum":
-          return true;
-        case "sealace_sarong":
-          return true;
-        case "cogwerx_blunderbuss":
-          return true;
-        case "avast_ye_blue":
-          return true;
-        case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
-          return true;
-        case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
-          return true;
-        case "line_blue":
-          return true;
-        case "swift_shot_red":
-          return true;
         default:
           break;
       }

@@ -116,6 +116,7 @@ function SEAEffectPowerModifier($cardID): int
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
+    "mutiny_on_the_battalion_barque_blue" => 2,
     "goldwing_turbine_red" => 3,
     "goldwing_turbine_yellow" => 2, 
     "goldwing_turbine_blue" => 1,
@@ -155,6 +156,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hoist_em_up_red" => true,
     "fish_fingers" => true,
     "gold_hunter_longboat_yellow" => true,
+    "mutiny_on_the_battalion_barque_blue", "mutiny_on_the_nimbus_sovereign_blue", "mutiny_on_the_swiftwater_blue" => true,
     "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => true,
     "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
     "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => true,
@@ -247,6 +249,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $landmarks[$treasureID + 3] -= $numGold;
         PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
         WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
+      }
+      break;
+    case "mutiny_on_the_battalion_barque_blue":
+    case "mutiny_on_the_nimbus_sovereign_blue":
+    case "mutiny_on_the_swiftwater_blue":
+      $myNumGold = CountItem("gold", $currentPlayer);
+      $theirNumGold = CountItem("gold", $otherPlayer);
+      if ($myNumGold < $theirNumGold) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:type=T;cardID=gold");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
     case "thievn_varmints_red":
@@ -368,9 +382,17 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
     case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND", 1);
-      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+      $hand = &GetHand($currentPlayer);
+      $handCount = count($hand);
+      if ($handCount == 0) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDECK-0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from the top of your deck (or pass)", 1);
+      } 
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+      }
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZSETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen: <0>", 1);

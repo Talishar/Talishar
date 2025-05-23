@@ -523,7 +523,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //My soul count
   $response->playerSoulCount = count($mySoul);
 
-  //my discard
+  //My discard
   $playerDiscardArr = [];
   for($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
     $overlay = 0;
@@ -543,6 +543,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerDiscard = $playerDiscardArr;
 
+  //My pitch
   $response->playerPitchCount = $myResources[0];
   $playerPitchArr = [];
   for($i = count($myPitch) - PitchPieces(); $i >= 0; $i -= PitchPieces()) {
@@ -550,6 +551,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerPitch = $playerPitchArr;
 
+  //My deck
   $response->playerDeckCount = count($myDeck);
   $playerHero = ShiyanaCharacter($myCharacter[0], $playerID);
   if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($playerHero == "dash_database" || $playerHero == "dash_io") && $turn[0] != "OPT" && $turn[0] != "P" && $turn[0] != "CHOOSETOPOPPONENT" && $turn[0] != "DOCRANK") {
@@ -559,7 +561,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = [];
   $response->playerDeckPopup = false;
-  if(IsGameOver() || (($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && substr($turn[2], 0, 6) === "MYDECK") || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
+  if(IsGameOver() || (($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0") || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
     for($i=0; $i<count($myDeck); $i+=DeckPieces()) {
       array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
     }
@@ -1437,7 +1439,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         }
         
         //Show Subtitles on MyDeck
-        if(substr($turn[2], 0, 6) === "MYDECK"){
+        if(substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0"){
           $subtitles = "(You can click your deck to see its content during this card resolution)";
         }
 
