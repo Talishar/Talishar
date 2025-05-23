@@ -2843,6 +2843,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
+    case "cloud_skiff_red":
+    case "cloud_skiff_yellow":
+    case "cloud_skiff_blue":
       if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
@@ -4362,6 +4365,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => true,
     "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,

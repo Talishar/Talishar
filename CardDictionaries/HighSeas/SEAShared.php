@@ -36,6 +36,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "cogwerx_blunderbuss" => "I",
     
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
+    "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => $from == "PLAY" ? "I": "AA",
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $from == "PLAY" ? "I": "AA",
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $from == "PLAY" ? "I": "AA",
@@ -99,6 +100,7 @@ function SEAEffectPowerModifier($cardID): int
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
+    "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
@@ -132,7 +134,9 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hoist_em_up_red" => true,
     "fish_fingers" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
+    "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
+    "cloud_skiff_red-GOAGAIN", "cloud_skiff_yellow-GOAGAIN", "cloud_skiff_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red", "cogwerx_dovetail_red-GOAGAIN" => true,
@@ -430,6 +434,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
+    case "cloud_skiff_red":
+    case "cloud_skiff_yellow":
+    case "cloud_skiff_blue":
       if ($from == "PLAY") {
         AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);

@@ -1529,6 +1529,9 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "cogwerx_zeppelin_red":
     case "cogwerx_zeppelin_yellow":
     case "cogwerx_zeppelin_blue":
+    case "cloud_skiff_red":
+    case "cloud_skiff_yellow":
+    case "cloud_skiff_blue":
       //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
