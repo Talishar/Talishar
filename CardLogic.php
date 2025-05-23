@@ -3366,6 +3366,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "cogwerx_tinker_rings":
       PutItemIntoPlayForPlayer("golden_cog", $player);
       break;
+    case "pinion_sentry_blue":
+      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to create a " . CardLink("golden_cog", "golden_cog") . " (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+      break;
     default:
       break;
   }
