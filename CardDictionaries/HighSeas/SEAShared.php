@@ -429,8 +429,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cogwerx_workshop_blue":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer);
       for ($i = 0; $i < 2; ++$i) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a cog to get a steam counter", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:subtype=Cog");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a cog to put a steam counter", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
       }
@@ -710,10 +710,12 @@ function SEAHitEffect($cardID): void
       $inds = GetUntapped($mainPlayer, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $inds);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to create a Golden Cog (or pass)", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to create a ".CardLink("golden_cog", "golden_cog")." (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
-       break;
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+      break;
     //marlynn cards
     case "king_kraken_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
