@@ -504,8 +504,13 @@ function EffectHitEffect($cardID, $from, $source = "-")
       AddDecisionQueue("ELSE", $mainPlayer, "-");
       AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
       break;
+    case "avast_ye_blue":
+    case "heavy_ho_blue":
+    case "yo_ho_ho_blue":
+      PutItemIntoPlayForPlayer("gold", $mainPlayer);
+      break;
     case "big_game_trophy_shot_yellow":
-      PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
+      PutItemIntoPlayForPlayer("gold", $mainPlayer);
       return 1;
     default:
       break;
@@ -1722,6 +1727,8 @@ function CurrentEffectGrantsGoAgain()
         case "sealace_sarong":
           return true;
         case "cogwerx_blunderbuss":
+          return true;
+        case "avast_ye_blue":
           return true;
         default:
           break;

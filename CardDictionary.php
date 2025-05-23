@@ -3511,6 +3511,7 @@ function DoesEffectGrantOverpower($cardID): bool
     "hammerhead_harpoon_cannon" => CardNameContains($attackID, "Harpoon", $mainPlayer, true),
     "jolly_bludger_yellow-OP" => true,
     "monkey_powder_red" => true,
+    "heavy_ho_blue" => true,
     default => false,
   };
 }

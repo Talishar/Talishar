@@ -648,6 +648,7 @@ function isUnimplemented($cardID) {
         "washed_up_wave" => false,
         "rusty_harpoon_blue" => false,
         "blood_in_the_water_red" => false,
+        "avast_ye_blue", "heavy_ho_blue", "yo_ho_ho_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

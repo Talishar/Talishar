@@ -99,6 +99,7 @@ function SEAEffectPowerModifier($cardID): int
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
+    "yo_ho_ho_blue" => 1,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
@@ -143,6 +144,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "goldwing_turbine_red", "goldwing_turbine_yellow", "goldwing_turbine_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
+    "avast_ye_blue", "heavy_ho_blue", "yo_ho_ho_blue" => (ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer)) && SubtypeContains($attackID, "Ally", $mainPlayer),
     "cutty_shark_quick_clip_yellow" => SubtypeContains($attackID, "Ally", $mainPlayer),
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
     "spitfire" => true,
@@ -189,6 +191,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MZMoveCard($currentPlayer, "MYARS", "MYHAND", silent: true);
       break;
     case "gold_baited_hook":
+    case "avast_ye_blue":
+    case "heavy_ho_blue":
+    case "yo_ho_ho_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
