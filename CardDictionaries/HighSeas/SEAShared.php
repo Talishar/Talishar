@@ -263,6 +263,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "dead_threads":
       GainResources($currentPlayer, 1);
       break;
+    case "blood_in_the_water_red":
+      AddLayer("TRIGGER", $currentPlayer, $cardID, SearchCombatChainForIndex($cardID, $currentPlayer));
+      break;
     case "angry_bones_red": case "angry_bones_yellow": case "angry_bones_blue":
     case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":

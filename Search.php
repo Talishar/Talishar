@@ -1799,3 +1799,12 @@ function SearchCombatChainDefendingCards($player, $cardType = "-")
   }
   return $cardIDList;
 }
+
+function SearchCombatChainForIndex($cardID, $player)
+{
+  global $combatChain;
+  for ($i = count($combatChain); $i >= 0; $i -= CombatChainPieces()) {
+    if ($combatChain[$i] == $cardID && $combatChain[$i + 1] == $player) return $i;
+  }
+  return -1;
+}
