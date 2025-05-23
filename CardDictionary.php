@@ -126,6 +126,7 @@ function CardType($cardID, $from="")
     "kelpie_tangled_mess_yellow" => "A",
     "shelly_hardened_traveler_yellow" => "A",
     "polly_cranka" => "Companion",
+    "sticky_fingers" => "Companion",
     "treasure_island" => "Macro",
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W" // AI custom weapon
@@ -2812,7 +2813,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "marlynn_treasure_hunter":
     case "marlynn":
     case "scurv_stowaway":
-    if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       return CountItem("gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
     case "gold_baited_hook":

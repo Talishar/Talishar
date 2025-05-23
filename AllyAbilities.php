@@ -442,7 +442,7 @@ function AllyPayAdditionalCosts($cardIndex, $from)
     case "scooba_salty_sea_dog_yellow":
     case "shelly_hardened_traveler_yellow":
     case "moray_le_fay_yellow":
-    case "sticky_finger":
+    case "sticky_fingers_ally":
       Tap("MYALLY-$cardIndex", $currentPlayer);
       $ally[$cardIndex + 1] = 2;//Not once per turn effects
       break;

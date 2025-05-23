@@ -53,6 +53,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue" => "A",
 
     "goldkiss_rum" => "I",
+    "scurv_stowaway" => "A",
     default => ""
   };
 }
