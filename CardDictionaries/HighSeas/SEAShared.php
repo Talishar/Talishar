@@ -192,7 +192,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks;;
+  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -741,6 +741,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "not_so_fast_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "throw_caution_to_the_wind_blue":
+      $deck = new Deck($currentPlayer);
+      if($deck->Empty()) break;
+      $deck->Reveal(1);
+      $pitchValue = pitchValue($deck->Top());
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, $pitchValue);
+      WriteLog(CardLink($cardID, $cardID) . " prevents the next $pitchValue damage");
       break;
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;

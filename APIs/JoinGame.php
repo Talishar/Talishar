@@ -685,6 +685,7 @@ function isUnimplemented($cardID) {
         "divvy_up_blue" => false,
         "shifting_tides_blue" => false,
         "not_so_fast_yellow" => false,
+        "throw_caution_to_the_wind_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
