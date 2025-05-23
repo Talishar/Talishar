@@ -120,6 +120,7 @@ function SEAEffectPowerModifier($cardID): int
     "call_in_the_big_guns_blue" => 1,
     "spitfire" => 1,
     "dry_powder_shot_red" => 2,
+    "gold_hunter_longboat_yellow" => 2,
     "glidewell_fins" => 1,
     "hook_blue" => 1,
     "drop_the_anchor_red" => 3,
@@ -148,6 +149,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "fish_fingers" => true,
+    "gold_hunter_longboat_yellow" => true,
     "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => true,
     "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
     "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => true,
@@ -287,6 +289,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("DRAW", $currentPlayer, $cardID, 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
+      break;
+    case "gold_hunter_lightsail_yellow":
+      $myNumGold = CountItem("gold", $currentPlayer);
+      $theirNumGold = CountItem("gold", $otherPlayer);
+      if ($myNumGold < $theirNumGold) {
+        GiveAttackGoAgain();
+      }
       break;
     case "angry_bones_red": case "angry_bones_yellow": case "angry_bones_blue":
     case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":

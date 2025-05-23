@@ -465,6 +465,10 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       return (SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1 ? 2 : 0);
     case "skyzyk_red":
       return DoesAttackHaveGoAgain() ? 1 : 0;
+    case "gold_hunter_longboat_yellow":
+      $myNumGold = CountItem("gold", $mainPlayer);
+      $theirNumGold = CountItem("gold", $defPlayer);
+      return $myNumGold < $theirNumGold ? 2 : 0;
     default:
       return 0;
   }
@@ -1445,6 +1449,10 @@ function IsOverpowerActive()
     case "vantage_point_yellow":
     case "vantage_point_blue":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    case "gold_hunter_marauder_yellow":
+      $myNumGold = CountItem("gold", $mainPlayer);
+      $theirNumGold = CountItem("gold", $defPlayer);
+      return $myNumGold < $theirNumGold;
     default:
       break;
   }

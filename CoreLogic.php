@@ -2709,6 +2709,10 @@ function SelfCostModifier($cardID, $from)
       return (-1 * NumDraconicChainLinks());
     case "solid_ground_blue":
       return (-1 * NumSeismicSurge($currentPlayer));
+    case "gold_hunter_ketch_yellow":
+      $myNumGold = CountItem("gold", $currentPlayer);
+      $theirNumGold = CountItem("gold", $otherPlayer);
+      return $myNumGold < $theirNumGold ? -2 : 0;
     default:
       return 0;
   }
