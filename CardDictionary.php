@@ -125,6 +125,7 @@ function CardType($cardID, $from="")
     "moray_le_fay_yellow" => "A",
     "kelpie_tangled_mess_yellow" => "A",
     "shelly_hardened_traveler_yellow" => "A",
+    "oysten_heart_of_gold_yellow" => "A",
     "polly_cranka" => "Companion",
     "sticky_fingers" => "Companion",
     "treasure_island" => "Macro",
@@ -344,6 +345,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
     case "riggermortis_yellow":
+    case "oysten_heart_of_gold_yellow":
       return "Ally";
     default:
       return "";
@@ -439,6 +441,7 @@ function CardClass($cardID)
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
+    case "oysten_heart_of_gold_yellow":
     case "wailer_humperdinck_yellow":
     case "chum_friendly_first_mate_yellow":
     case "chowder_hearty_cook_yellow":
@@ -2841,6 +2844,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
     case "barnacle_yellow":
+    case "oysten_heart_of_gold_yellow":
     case "wailer_humperdinck_yellow":
     case "polly_cranka_ally":
     case "sticky_fingers_ally":

@@ -122,6 +122,9 @@ function AllyDestroyedAbility($player, $index)
       $charIndex = FindCharacterIndex($player, "ghostly_touch");
       if ($charIndex > -1) DestroyCharacter($player, $charIndex);
       break;
+    case "oysten_heart_of_gold_yellow":
+      PutItemIntoPlayForPlayer("gold", $player, isToken:true, from:$cardID);
+      break;
     default:
       break;
   }
@@ -443,6 +446,7 @@ function AllyPayAdditionalCosts($cardIndex, $from)
     case "shelly_hardened_traveler_yellow":
     case "moray_le_fay_yellow":
     case "sticky_fingers_ally":
+    case "oysten_heart_of_gold_yellow":
       Tap("MYALLY-$cardIndex", $currentPlayer);
       $ally[$cardIndex + 1] = 2;//Not once per turn effects
       break;
