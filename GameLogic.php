@@ -3017,6 +3017,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         CombatChainDefenseModifier($parameter, 1);
         return "PASS";
       }
+    case "REMOVETREASUREISLANDCOUNTER":
+      $treasureID = SearchLandmarksForID("treasure_island");
+      $char = GetPlayerCharacter($player);
+      $numGold = $parameter;
+      if ($treasureID != -1) {
+        $landmarks[$treasureID + 3] -= $numGold;
+        if(ClassContains($char[0], "Thief", $player)) {
+          PutItemIntoPlayForPlayer("gold", $player, number:$numGold);
+          WriteLog("Player $player plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
+        }
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
