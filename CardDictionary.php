@@ -1854,6 +1854,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return "-";
     case "tip_the_barkeep_blue":
     case "cog_in_the_machine_red":
+    case "shifting_tides_blue":
       return "-";
     default:
       return "GY";
@@ -3530,6 +3531,7 @@ function DoesEffectGrantsOverpower($cardID): bool
     "heave_ho_blue" => true,
     "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
     "sinker_blue" => true,
+    "mutiny_on_the_nimbus_sovereign_blue" => true,
     default => false,
   };
 }

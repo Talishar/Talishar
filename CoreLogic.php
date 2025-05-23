@@ -3156,6 +3156,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     WriteLog("Draw prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
   }
+  if ($effectSource == "gold" && SearchCurrentTurnEffects("not_so_fast_yellow", $player, true)){
+    $player = $otherPlayer;
+  }
   $deck = new Deck($player);
   $hand = &GetHand($player);
   if ($deck->Empty()) return -1;
@@ -3578,3 +3581,14 @@ function NumSeismicSurge($player)
   }
   return $count;
 }
+
+function Pitch($cardID, $player)
+{
+  $pitch = &GetPitch($player);
+  WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
+  array_push($pitch, $cardID);
+  PitchAbility($cardID, "DECK");
+  $resources = &GetResources($player);
+  $resources[0] += PitchValue($cardID);
+}
+

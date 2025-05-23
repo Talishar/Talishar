@@ -3420,6 +3420,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "helmsmans_peak":
       LookAtTopCard($player, $parameter);
       break;
+    case "lost_in_transit_yellow":
+      AddDecisionQueue("YESNO", $player, "if you want to remove a gold counter from " . CardLink("treasure_island", "treasure_island"), 1);
+      AddDecisionQueue("NOPASS", $player, "-", 1);
+      AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $player, 1, 1);
+      break;
     default:
       break;
   }

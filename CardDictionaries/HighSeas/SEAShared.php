@@ -117,6 +117,7 @@ function SEAEffectPowerModifier($cardID): int
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
+    "mutiny_on_the_battalion_barque_blue" => 2,
     "goldwing_turbine_red" => 3,
     "goldwing_turbine_yellow" => 2, 
     "goldwing_turbine_blue" => 1,
@@ -156,6 +157,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hoist_em_up_red" => true,
     "fish_fingers" => true,
     "gold_hunter_longboat_yellow" => true,
+    "mutiny_on_the_battalion_barque_blue", "mutiny_on_the_nimbus_sovereign_blue", "mutiny_on_the_swiftwater_blue" => true,
     "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => true,
     "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
     "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => true,
@@ -193,7 +195,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain;
+  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -204,7 +206,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($from == "PLAY") {
         Tap("MYCHAR-0", $currentPlayer);
         Tap("THEIRCHAR-0", $otherPlayer);
-        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally", 1);
+        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY", 1);
       }
       break;
     case "opal_amulet_blue":
@@ -239,6 +241,33 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "sapphire_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "divvy_up_blue":
+      $treasureID = SearchLandmarksForID("treasure_island");
+      $char = GetPlayerCharacter($currentPlayer);
+      if ($treasureID != -1) {
+        ClassContains($char[0], "Thief", $currentPlayer) ? $numGold = $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
+        $landmarks[$treasureID + 3] -= $numGold;
+        PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
+        WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
+      }
+      break;
+    case "mutiny_on_the_battalion_barque_blue":
+    case "mutiny_on_the_nimbus_sovereign_blue":
+    case "mutiny_on_the_swiftwater_blue":
+      $myNumGold = CountItem("gold", $currentPlayer);
+      $theirNumGold = CountItem("gold", $otherPlayer);
+      if ($myNumGold < $theirNumGold) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:type=T;cardID=gold");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      break;
+    case "thievn_varmints_red":
+      AddDecisionQueue("YESNO", $currentPlayer, "if you want to remove a gold counter from " . CardLink("treasure_island", "treasure_island"), 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $currentPlayer, 1, 1);
       break;
     case "peg_leg":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -354,9 +383,17 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
     case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND", 1);
-      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+      $hand = &GetHand($currentPlayer);
+      $handCount = count($hand);
+      if ($handCount == 0) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDECK-0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from the top of your deck (or pass)", 1);
+      } 
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+      }
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZSETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen: <0>", 1);
@@ -727,13 +764,20 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck->Reveal(1);
       $top = $deck->Top();
       if(ColorContains($top, 3, $currentPlayer)) {
-        $pitch = &GetPitch($currentPlayer);
-        WriteLog("Player " . $currentPlayer . " pitched " . CardLink($top, $top));
-        array_push($pitch, $top);
-        PitchAbility($top, "DECK");
-        $resources = &GetResources($currentPlayer);
-        $resources[0] += PitchValue($top);
+        Pitch($top, $currentPlayer);
       }
+      break;
+    case "not_so_fast_yellow":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "throw_caution_to_the_wind_blue":
+      $deck = new Deck($currentPlayer);
+      if($deck->Empty()) break;
+      $deck->Reveal(1);
+      $pitchValue = pitchValue($deck->Top());
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      IncrementClassState($currentPlayer, $CS_DamagePrevention, $pitchValue);
+      WriteLog(CardLink($cardID, $cardID) . " prevents the next $pitchValue damage");
       break;
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
