@@ -1826,7 +1826,17 @@ function DoesAttackHaveGoAgain()
     }
   }
   $mainPitch = &GetPitch($mainPlayer);
-  if (HasHighTide($attackID) && HighTideConditionMet($mainPlayer)) return true;
+   if (HasHighTide($attackID) && HighTideConditionMet($mainPlayer)) {
+    switch ($attackID) {
+      case "conqueror_of_the_high_seas_red":
+      case "swiftwater_sloop_red":
+      case "swiftwater_sloop_yellow":
+      case "swiftwater_sloop_blue":
+        return true;
+      default:
+        return false;
+    }
+  }
   switch ($attackID) {
     case "harmonized_kodachi":
     case "harmonized_kodachi_r":

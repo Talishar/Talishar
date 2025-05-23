@@ -807,6 +807,30 @@ function SEAHitEffect($cardID): void
       WriteLog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
       AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
+    case "hms_barracuda_yellow":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY&THEIRCHAR:subtype:Ally");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an ally to destroy", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+      break; 
+    case "hms_kraken_yellow":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an ally to destroy", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+      break; 
+    case "hms_marlin_yellow":   
+      DestroyTopCard($defPlayer);
+      break; 
+    case "pilfer_the_wreck_red":
+    case "pilfer_the_wreck_yellow":
+    case "pilfer_the_wreck_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRDISCARD");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to turn face-down");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "TURNDISCARDFACEDOWN", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "SUNKENTREASURE", 1);
+      break;
     default:
       break;
   }
@@ -940,6 +964,9 @@ function HasHighTide($cardID): bool
 {
   return match($cardID) {
     "conqueror_of_the_high_seas_red" => true,
+    "hms_barracuda_yellow", "hms_kraken_yellow", "hms_marlin_yellow" => true,
+    "battalion_barque_red", "battalion_barque_yellow", "battalion_barque_blue" => true,
+    "swiftwater_sloop_red", "swiftwater_sloop_yellow", "swiftwater_sloop_blue" => true,
     default => false
   };
 }

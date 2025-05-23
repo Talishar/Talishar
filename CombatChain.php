@@ -91,7 +91,21 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   if (HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
-  if (HasHighTide($cardID) && HighTideConditionMet($mainPlayer)) return 1;
+  if (HasHighTide($cardID) && HighTideConditionMet($mainPlayer)) {
+    switch ($cardID) {
+      case "conqueror_of_the_high_seas_red":
+      case "hms_kraken_yellow":
+      case "hms_marlin_yellow":
+      case "hms_barracuda_yellow":
+        return 1;
+      case "battalion_barque_red":
+      case "battalion_barque_yellow":
+      case "battalion_barque_blue":
+        return 2;
+      default:
+        return 0;
+    }
+  }
   switch ($cardID) {
     case "romping_club":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -1374,6 +1388,16 @@ function IsOverpowerActive()
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red" && CachedWagerActive()) return true;
+  }
+  if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
+    switch ($combatChain[0]) {
+    case "hms_barracuda_yellow":
+    case "hms_kraken_yellow":
+    case "hms_marlin_yellow":
+        return true;
+      default:
+        return false;
+    }
   }
   switch ($combatChain[0]) {
     case "merciless_battleaxe":

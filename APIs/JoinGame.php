@@ -666,6 +666,10 @@ function isUnimplemented($cardID) {
         "call_in_the_big_guns_red", "call_in_the_big_guns_yellow", "call_in_the_big_guns_blue" => false,
         "scurv_stowaway" => false,
         "sticky_fingers" => false,
+        "hms_barracuda_yellow", "hms_kraken_yellow", "hms_marlin_yellow" => false,
+        "battalion_barque_red", "battalion_barque_yellow", "battalion_barque_blue" => false,
+        "swiftwater_sloop_red", "swiftwater_sloop_yellow", "swiftwater_sloop_blue" => false,
+        "pilfer_the_wreck_red", "pilfer_the_wreck_yellow", "pilfer_the_wreck_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
