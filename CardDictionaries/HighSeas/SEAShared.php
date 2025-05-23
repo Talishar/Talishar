@@ -116,6 +116,8 @@ function SEAEffectPowerModifier($cardID): int
     "goldwing_turbine_blue" => 1,
     "spitfire" => 1,
     "glidewell_fins" => 1,
+    "hook_blue" => 1,
+    "drop_the_anchor_red" => 3,
     "cutty_shark_quick_clip_yellow" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "fire_in_the_hole_red" => 3,
@@ -147,6 +149,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "restless_bones_red", "restless_bones_yellow", "restless_bones_blue" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => true,
+    "hook_blue", "line_blue", "sinker_blue" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_skiff_red-GOAGAIN", "cloud_skiff_yellow-GOAGAIN", "cloud_skiff_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
@@ -162,6 +165,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "return_fire_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "big_game_trophy_shot_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "gold_the_tip_yellow" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "drop_the_anchor_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "sealace_sarong" => true,
@@ -376,6 +380,22 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CHARTTHEHIGHSEAS");
       break;
+    case "hook_blue": case "line_blue": case "sinker_blue":
+      $deck = GetDeck($currentPlayer);
+      $topCard = $deck[0];
+      if(SubtypeContains($topCard, "Arrow", $currentPlayer)) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put " . CardLink($topCard, $topCard) . " face-up in your arsenal");
+        AddDecisionQueue("YESNO", $currentPlayer, "");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",DECK", 1);
+      }
+      else{
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top card of your deck is " . CardLink($topCard, $topCard), 1);
+        AddDecisionQueue("OK", $currentPlayer, "-", 1);
+      }
+      break;
     case "diamond_amulet_blue":
       if($from == "PLAY") GainActionPoints(1, $currentPlayer);
       break;
@@ -557,6 +577,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
+    case "drop_the_anchor_red":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "monkey_powder_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

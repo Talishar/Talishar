@@ -509,6 +509,11 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "yo_ho_ho_blue":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
       break;
+    case "drop_the_anchor_red":
+      WriteLog(CardLink($cardID, $cardID) . " tap Player ".$defPlayer . ", and all the allies they control.");
+      Tap("THEIRCHAR-0", $defPlayer);
+      AddDecisionQueue("TAPALL", $defPlayer, "THEIRALLY:subtype=Ally", 1);
+      break;
     case "big_game_trophy_shot_yellow":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
       return 1;
@@ -1733,6 +1738,8 @@ function CurrentEffectGrantsGoAgain()
         case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
           return true;
         case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
+          return true;
+        case "line_blue":
           return true;
         default:
           break;

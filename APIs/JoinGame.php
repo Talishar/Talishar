@@ -656,6 +656,8 @@ function isUnimplemented($cardID) {
         "head_stone" => false,
         "gold_the_tip_yellow" => false,
         "glidewell_fins" => false,
+        "drop_the_anchor_red" => false,
+        "hook_blue", "line_blue", "sinker_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
