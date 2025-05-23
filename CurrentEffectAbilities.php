@@ -512,7 +512,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "drop_the_anchor_red":
       WriteLog(CardLink($cardID, $cardID) . " tap Player ".$defPlayer . ", and all the allies they control.");
       Tap("THEIRCHAR-0", $defPlayer);
-      AddDecisionQueue("TAPALL", $defPlayer, "THEIRALLY&THEIRCHAR:subtype=Ally", 1);
+      AddDecisionQueue("TAPALL", $defPlayer, "THEIRALLY", 1);
       break;
     case "big_game_trophy_shot_yellow":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);

@@ -203,7 +203,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($from == "PLAY") {
         Tap("MYCHAR-0", $currentPlayer);
         Tap("THEIRCHAR-0", $otherPlayer);
-        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally", 1);
+        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY", 1);
       }
       break;
     case "opal_amulet_blue":

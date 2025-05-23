@@ -2532,7 +2532,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
       $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "A") {
         $context = "Choose an ally to tangle";
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY&THEIRALLY&MYCHAR:type=C&THEIRCHAR:type=C&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY&THEIRALLY&MYCHAR:type=C&THEIRCHAR:type=C");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
