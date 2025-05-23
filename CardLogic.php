@@ -1118,6 +1118,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
+    case "walk_the_plank_red":
+    case "walk_the_plank_yellow":
+    case "walk_the_plank_blue":
+      $defChar = GetPlayerCharacter($defPlayer);
+      if (IsHeroAttackTarget() && ClassContains($defChar[0], "PIRATE", $defPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
     default:
       break;
   }

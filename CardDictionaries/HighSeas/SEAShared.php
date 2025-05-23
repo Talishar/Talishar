@@ -999,6 +999,16 @@ function SEAHitEffect($cardID): void
     case "strike_gold_blue":
       PutItemIntoPlayForPlayer("gold", $mainPlayer, isToken:true);
       break;
+    case "walk_the_plank_red":
+    case "walk_the_plank_yellow":
+    case "walk_the_plank_blue":
+      $indices = SearchMultizone($mainPlayer, "THEIRALLY");
+      $indices = $indices == "" ? "THEIRCHAR-0" : "$indices,THEIRCHAR-0";
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $indices);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a hero or ally to tap", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
+      break;
     case "undercover_acquisition_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
