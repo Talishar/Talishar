@@ -1442,6 +1442,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $subtitles = "(You can click your deck to see its content during this card resolution)";
         }
 
+        if($option[0] == "MYDECK" && $option[1] == "0" && $turn[0] == "MAYCHOOSEMULTIZONE") {
+          $card = $MyCardBack;
+        }
+
         if ($maxCount < 2)
           array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped));
         else
