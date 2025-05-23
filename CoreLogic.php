@@ -2188,6 +2188,7 @@ function RemoveArsenalEffects($player, $cardToReturn, $uniqueID)
 {
   if ($uniqueID == SearchCurrentTurnEffects("dreadbore", $player, returnUniqueID: true)) SearchCurrentTurnEffects("dreadbore", $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("bulls_eye_bracers", $player, returnUniqueID: true)) SearchCurrentTurnEffects("bulls_eye_bracers", $player, true);
+  if ($uniqueID == SearchCurrentTurnEffects("glidewell_fins", $player, returnUniqueID: true)) SearchCurrentTurnEffects("glidewell_fins", $player, true);
   if ($cardToReturn == "head_shot_red") {
     SearchCurrentTurnEffects("head_shot_red", $player, true);
   }

@@ -9,6 +9,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "fish_fingers" => "A",
     "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
+    "glidewell_fins" => "A",
     "sawbones_dock_hand_yellow" => "I",
     "rust_belt" => "I",
     "unicycle" => "I",
@@ -65,6 +66,7 @@ function SEAAbilityCost($cardID): int
     "peg_leg" => 3,
     "blue_sea_tricorn" => 3,
     "fish_fingers" => 1,
+    "glidewell_fins" => 1,
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
     "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
@@ -88,6 +90,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
     "marlynn" => true,
+    "glidewell_fins" => true,
     "hammerhead_harpoon_cannon" => true,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
     "cutty_shark_quick_clip_yellow" => GetResolvedAbilityType($cardID) == "A",
@@ -112,6 +115,7 @@ function SEAEffectPowerModifier($cardID): int
     "goldwing_turbine_yellow" => 2, 
     "goldwing_turbine_blue" => 1,
     "spitfire" => 1,
+    "glidewell_fins" => 1,
     "cutty_shark_quick_clip_yellow" => 1,
     "big_game_trophy_shot_yellow" => 4,
     "fire_in_the_hole_red" => 3,
@@ -540,6 +544,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
       PummelHit($currentPlayer);
+      break;
+    case "glidewell_fins":
+      LoadArrow($currentPlayer);
+      AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
       break;
     case "fire_in_the_hole_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

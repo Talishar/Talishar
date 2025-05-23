@@ -655,6 +655,7 @@ function isUnimplemented($cardID) {
         "restless_bones_red", "restless_bones_yellow", "restless_bones_blue" => false,
         "head_stone" => false,
         "gold_the_tip_yellow" => false,
+        "glidewell_fins" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
