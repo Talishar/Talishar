@@ -25,17 +25,21 @@
 
   function Crank($player, $index, $mainPhase="True", $zone="MYITEMS")
   {
+    global $mainPlayer;
     $MZZone = match($zone) {
       "MYITEMS" => GetItems($player),
       "MYALLY" => GetAllies($player),
       default => GetItems($player)
     };
+    $message = "Do you want to Crank your " . CardLink($MZZone[$index], $MZZone[$index]) ."?";
+    if ($player != $mainPlayer) $mainPhase = "False"; //you can crank on the opponent's turn, you just won't get an action point
+    if ($mainPhase != "True") $message .= " You won't get an action point.";
     PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
     PrependDecisionQueue("OP", $player, "DOCRANK-MainPhase$mainPhase-$zone", 1);
     PrependDecisionQueue("PASSPARAMETER", $player, $index, 1);
     PrependDecisionQueue("NOPASS", $player, "-");
     PrependDecisionQueue("DOCRANK", $player, "-");
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Do you want to Crank your " . CardLink($MZZone[$index], $MZZone[$index]) ."?", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $player, $message, 1);
     PrependDecisionQueue("SETDQVAR", $player, "0");
   }
 
