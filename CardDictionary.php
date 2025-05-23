@@ -3512,6 +3512,7 @@ function DoesEffectGrantOverpower($cardID): bool
     "jolly_bludger_yellow-OP" => true,
     "monkey_powder_red" => true,
     "heavy_ho_blue" => true,
+    "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
     default => false,
   };
 }

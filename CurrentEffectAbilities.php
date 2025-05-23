@@ -1730,6 +1730,10 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "avast_ye_blue":
           return true;
+        case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
+          return true;
+        case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
+          return true;
         default:
           break;
       }

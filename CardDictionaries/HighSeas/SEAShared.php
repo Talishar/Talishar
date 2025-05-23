@@ -100,6 +100,7 @@ function SEAEffectPowerModifier($cardID): int
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "yo_ho_ho_blue" => 1,
+    "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => 1,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
@@ -134,6 +135,10 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "fish_fingers" => true,
+    "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => true,
+    "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => true,
+    "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => true,
+    "restless_bones_red", "restless_bones_yellow", "restless_bones_blue" => true,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
@@ -231,6 +236,22 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "dead_threads":
       GainResources($currentPlayer, 1);
+      break;
+    case "angry_bones_red": case "angry_bones_yellow": case "angry_bones_blue":
+    case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":
+    case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
+    case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZSETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen: <0>", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYDISCARD", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ALLCARDWATERYGRAVEORPASS", $currentPlayer, "<-", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "-", 1);
       break;
     case "chum_friendly_first_mate_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);

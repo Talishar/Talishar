@@ -649,6 +649,10 @@ function isUnimplemented($cardID) {
         "rusty_harpoon_blue" => false,
         "blood_in_the_water_red" => false,
         "avast_ye_blue", "heavy_ho_blue", "yo_ho_ho_blue" => false,
+        "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => false,
+        "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => false,
+        "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => false,
+        "restless_bones_red", "restless_bones_yellow", "restless_bones_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
