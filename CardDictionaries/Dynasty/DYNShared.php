@@ -496,7 +496,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "gold":
       $rv = "";
       if($from == "PLAY") {
-        Draw($currentPlayer);
+        Draw($currentPlayer, effectSource:$cardID);
       }
       return $rv;
     case "suraya_archangel_of_knowledge":

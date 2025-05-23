@@ -739,6 +739,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         Pitch($top, $currentPlayer);
       }
       break;
+    case "not_so_fast_yellow":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
       $uid = explode("-", $target)[1];
