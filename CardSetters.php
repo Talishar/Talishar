@@ -276,7 +276,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
       case "head_shot_red":
       case "head_shot_yellow":
       case "head_shot_blue":
-        AddCurrentTurnEffectNextAttack($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
         break;
       case "ridge_rider_shot_red":
       case "ridge_rider_shot_yellow":
@@ -290,6 +290,29 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
       case "spire_sniping_yellow":
       case "spire_sniping_blue":
         SpireSnipingAbility($player);
+        break;
+      case "dry_powder_shot_red":
+        AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        break;
+      case "entangling_shot_red":
+        $search = (ShouldAutotargetOpponent($player)) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
+        AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a character to tap", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZTAP", $player, "<-", 1);
+        break;
+      case "nettling_shot_red":
+        $search = (ShouldAutotargetOpponent($player)) ? "THEIRALLY&THEIRCHAR:subtype:Ally" : "THEIRALLY&THEIRCHAR:subtype:Ally&MYALLY&MYCHAR:subtype:Ally";
+        AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an ally to tap", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZTAP", $player, "<-", 1);
+        break;
+      case "scouting_shot_red":
+        LookAtTopCard($player, $cardID);
+        break;
+      case "swift_shot_red":
+        AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
         break;
       default:
         break;

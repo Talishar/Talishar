@@ -658,6 +658,11 @@ function isUnimplemented($cardID) {
         "glidewell_fins" => false,
         "drop_the_anchor_red" => false,
         "hook_blue", "line_blue", "sinker_blue" => false,
+        "dry_powder_shot_red" => false,
+        "entangling_shot_red" => false,
+        "nettling_shot_red" => false,
+        "scouting_shot_red" => false,
+        "swift_shot_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

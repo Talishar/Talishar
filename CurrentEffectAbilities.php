@@ -1741,6 +1741,8 @@ function CurrentEffectGrantsGoAgain()
           return true;
         case "line_blue":
           return true;
+        case "swift_shot_red":
+          return true;
         default:
           break;
       }
