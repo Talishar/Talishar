@@ -677,6 +677,8 @@ function isUnimplemented($cardID) {
         "golden_tipple_red", "golden_tipple_yellow", "golden_tipple_blue" => false,
         "gold_hunter_lightsail_yellow", "gold_hunter_longboat_yellow", "gold_hunter_marauder_yellow", "gold_hunter_ketch_yellow" => false,
         "swindlers_grift_red", "swindlers_grift_yellow", "swindlers_grift_blue" => false,
+        "amethyst_amulet_blue", "onyx_amulet_blue", "opal_amulet_blue", "pearl_amulet_blue", "platinum_amulet_blue",
+        "pounamu_amulet_blue", "ruby_amulet_blue", "sapphire_amulet_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

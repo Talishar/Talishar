@@ -2024,6 +2024,18 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "platinum_amulet_blue":
+      if ($from == "PLAY"){
+        $numOptions = explode(",", GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C"));
+        $options = [];
+        foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+        $options = implode(",", $options);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to buff");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
+      break;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
@@ -3401,6 +3413,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "shred_red":
         case "shred_yellow":
         case "shred_blue":
+        case "platinum_amulet_blue":
           break;
         default:
           $target = GetMzCard($currentPlayer, GetAttackTarget());

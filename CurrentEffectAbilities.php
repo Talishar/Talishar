@@ -512,7 +512,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "drop_the_anchor_red":
       WriteLog(CardLink($cardID, $cardID) . " tap Player ".$defPlayer . ", and all the allies they control.");
       Tap("THEIRCHAR-0", $defPlayer);
-      AddDecisionQueue("TAPALL", $defPlayer, "THEIRALLY:subtype=Ally", 1);
+      AddDecisionQueue("TAPALL", $defPlayer, "THEIRALLY&THEIRCHAR:subtype=Ally", 1);
       break;
     case "big_game_trophy_shot_yellow":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
@@ -1836,6 +1836,7 @@ function CurrentEffectIntellectModifier($remove = false)
         case "nourishing_emptiness_red":
         case "evo_steel_soul_memory_blue":
         case "evo_steel_soul_memory_blue_equip":
+        case "sapphire_amulet_blue":
           if($remove){// Handle transformations (Blasmophet, Dishonor, etc) restarting Intellect
             RemoveCurrentTurnEffect($i);
             break;

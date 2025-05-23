@@ -2876,6 +2876,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 3) return true;
       return false;
+    case "platinum_amulet_blue":
+      return $from == "PLAY" && NumCardsBlocking() < 1;
     case "goldkiss_rum":
       return CheckTapped("MYCHAR-0", $currentPlayer);
     default:

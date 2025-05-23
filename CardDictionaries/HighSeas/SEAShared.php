@@ -49,7 +49,9 @@ function SEAAbilityType($cardID, $from="-"): string
     "marlynn" => "A",
     "hammerhead_harpoon_cannon" => "A",
 
-    "diamond_amulet_blue" => "I",
+    "diamond_amulet_blue", "opal_amulet_blue",  "platinum_amulet_blue", "ruby_amulet_blue" => "I",
+    "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue" => "A",
+
     "goldkiss_rum" => "I",
     default => ""
   };
@@ -93,6 +95,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "marlynn" => true,
     "glidewell_fins" => true,
     "hammerhead_harpoon_cannon" => true,
+    "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue" => true,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
     "cutty_shark_quick_clip_yellow" => GetResolvedAbilityType($cardID) == "A",
     default => false,
@@ -131,6 +134,7 @@ function SEAEffectPowerModifier($cardID): int
     "return_fire_red" => 3,
     "fish_fingers" => 1,
     "gold_the_tip_yellow" => 3,
+    "amethyst_amulet_blue" => 2,
     "flying_high_red" => ColorContains($attackID, 1, $mainPlayer) ? 1 : 0,
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
@@ -159,6 +163,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hook_blue", "line_blue", "sinker_blue" => true,
     "dry_powder_shot_red" => true,
     "swift_shot_red" => true,
+    "amethyst_amulet_blue" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_skiff_red-GOAGAIN", "cloud_skiff_yellow-GOAGAIN", "cloud_skiff_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
@@ -190,6 +195,49 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
+    case "amethyst_amulet_blue":
+      if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      break;
+    case "onyx_amulet_blue":
+      if($from == "PLAY") {
+        Tap("MYCHAR-0", $currentPlayer);
+        Tap("THEIRCHAR-0", $otherPlayer);
+        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally", 1);
+      }
+      break;
+    case "opal_amulet_blue":
+      if($from == "PLAY") Opt($cardID, 2);
+      break;
+    case "pearl_amulet_blue":
+      if($from == "PLAY") {
+        $inds = GetTapped($currentPlayer, "MYITEMS&THEIRITEMS&MYCHAR&THEIRCHAR&MYALLY&THEIRALLY");   
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Untap a permanent", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      }
+      break;
+    case "platinum_amultet_blue":
+      if($from == "PLAY") {
+        $targetCard = GetMZCard($currentPlayer, $target);
+        $targetInd = explode("-", $target)[1];
+        if (TypeContains($targetCard, "E")) {
+          // I'm going to assume that a player can't have two copies of the same blocking equipment
+          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd]);
+        }
+        else {
+          CombatChainDefenseModifier($targetInd, 1);
+        }
+      }
+      return "";
+    case "pounamu_amulet_blue":
+      if($from == "PLAY") GainHealth(2, $currentPlayer);
+      break;
+    case "ruby_amulet_blue":
+      if($from == "PLAY") GainResources($currentPlayer, 2);
+      break;
+    case "sapphire_amulet_blue":
+      if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "peg_leg":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -920,17 +968,30 @@ function GetUntapped($player, $zone, $cond="-")
 
 function GetTapped($player, $zone, $cond="-")
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($zone) {
     case "MYCHAR":
       $arr = GetPlayerCharacter($player);
+      $count = CharacterPieces();
+      break;
+    case "THEIRCHAR":
+      $arr = GetPlayerCharacter($otherPlayer);
       $count = CharacterPieces();
       break;
     case "MYALLY":
       $arr = GetAllies($player);
       $count = AllyPieces();
       break;
+    case "THEIRALLY":
+      $arr = GetAllies($otherPlayer);
+      $count = AllyPieces();
+      break;
     case "MYITEMS":
       $arr = GetItems($player);
+      $count = ItemPieces();
+      break;
+    case "THEIRITEMS":
+      $arr = GetItems($otherPlayer);
       $count = ItemPieces();
       break;
     default:
@@ -1009,6 +1070,8 @@ function HasWateryGrave($cardID): bool
     "kelpie_tangled_mess_yellow" => true,
     "scooba_salty_sea_dog_yellow" => true,
     "cutty_shark_quick_clip_yellow" => true,
+    "amethyst_amulet_blue", "onyx_amulet_blue", "opal_amulet_blue", "pearl_amulet_blue", "platinum_amulet_blue",
+    "pounamu_amulet_blue", "ruby_amulet_blue", "sapphire_amulet_blue" => true,
     default => false
   };
 }
