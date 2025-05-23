@@ -2851,6 +2851,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case "cloud_city_steamboat_blue":
+    case "cogwerx_zeppelin_red":
+    case "cogwerx_zeppelin_yellow":
+    case "cogwerx_zeppelin_blue":
       if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
@@ -4361,6 +4364,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
+    "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,
     default => false
   };
 }

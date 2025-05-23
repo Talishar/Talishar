@@ -638,6 +638,7 @@ function isUnimplemented($cardID) {
         "rust_belt" => false,
         "unicycle" => false,
         "cogwerx_workshop_blue" => false,
+        "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

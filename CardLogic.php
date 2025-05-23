@@ -1036,6 +1036,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "red_fin_harpoon_blue":
     case "yellow_fin_harpoon_blue":
     case "blue_fin_harpoon_blue":
+    case "cogwerx_zeppelin_red":
+    case "cogwerx_zeppelin_yellow":
+    case "cogwerx_zeppelin_blue":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;

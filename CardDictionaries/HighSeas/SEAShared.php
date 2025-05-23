@@ -38,7 +38,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $from == "PLAY" ? "I": "AA",
-
+    "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $from == "PLAY" ? "I": "AA",
     "polly_cranka", "polly_cranka_ally" => "A",
 
     "redspine_manta" => "A",
@@ -100,6 +100,7 @@ function SEAEffectPowerModifier($cardID): int
   return match ($cardID) {
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => 1,
+    "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
     "spitfire" => 1,
@@ -130,6 +131,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
+    "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red", "cogwerx_dovetail_red-GOAGAIN" => true,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
@@ -445,6 +447,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case "cloud_city_steamboat_blue":
+    case "cogwerx_zeppelin_red":
+    case "cogwerx_zeppelin_yellow":
+    case "cogwerx_zeppelin_blue":
       if ($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     // Marlynn cards
@@ -586,6 +591,17 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer ,"<-", 1);
       AddDecisionQueue("MZADDCOUNTER", $mainPlayer, "-", 1);      
       break;
+    case "cogwerx_zeppelin_red":
+    case "cogwerx_zeppelin_yellow":
+    case "cogwerx_zeppelin_blue":
+      $inds = GetUntapped($mainPlayer, "MYITEMS", "subtype=Cog");
+      if(empty($inds)) break;
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $inds);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to create a Golden Cog (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
+      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
     //marlynn cards
     case "king_kraken_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
