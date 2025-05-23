@@ -808,6 +808,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
         return "FAILED";
       }
+    case "nimby_red":
+    case "nimby_yellow":
+    case "nimby_blue":
+      MZMoveCard($currentPlayer, "MYDECK:isSameName=nimblism_red", "MYHAND", may:true, isReveal:true);
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      break;
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

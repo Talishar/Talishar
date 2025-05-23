@@ -690,6 +690,7 @@ function isUnimplemented($cardID) {
         "lost_in_transit_yellow" => false,
         "thievn_varmints_red" => false,
         "mutiny_on_the_battalion_barque_blue", "mutiny_on_the_nimbus_sovereign_blue", "mutiny_on_the_swiftwater_blue" => false,
+        "nimby_red", "nimby_yellow", "nimby_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
