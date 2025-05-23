@@ -2558,6 +2558,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
           break;
+        case "verdance":
+        case "verdance_thorn_of_the_rose":
+          $targetLoc = explode("-", $target)[0];
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
+          break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
           break;
@@ -2759,7 +2764,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       NegateLayer($lastResult);
       return $lastResult;
     case "VERDANCE":
-      DealArcane(1, 3, "ABILITY", $parameter);
+      $source = explode(",", $parameter)[0];
+      $target = explode(",", $parameter)[1];
+      DealArcane(1, 3, "ABILITY", $source, resolvedTarget:$target);
       return $lastResult;
     case "BRUTUS":
       $otherPlayer = $player == 1 ? 2 : 1;

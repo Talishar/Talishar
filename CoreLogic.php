@@ -912,14 +912,19 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           // Now we need to check that we banished 8 earth cards.
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 8) {
-            AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
+            SetArcaneTarget($mainPlayer, $char[$i], 3);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "", 1);
+            AddDecisionQueue("ADDTRIGGER", $mainPlayer, $char[$i], 1);
+            // AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
           break;
         case "verdance":
           // Now we need to check that we banished 4 earth cards.
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 4) {
-            AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
+            SetArcaneTarget($mainPlayer, $char[$i], 3);
+            AddDecisionQueue("ADDTRIGGER", $mainPlayer, $char[$i], 1);
+            // AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
           break;
         default:

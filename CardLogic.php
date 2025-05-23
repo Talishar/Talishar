@@ -2852,7 +2852,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("YESNO", $player, "if you want " . CardLink($parameter, $parameter) . " to deal arcane damage");
         AddDecisionQueue("NOPASS", $player, "-");
       }
-      AddDecisionQueue("VERDANCE", $player, $parameter, 1);
+      AddDecisionQueue("VERDANCE", $player, "$parameter,$target", 1);
       break;
     case "barkskin_of_the_millennium_tree":
       if(SearchCount(SearchBanish($player, talent: "EARTH")) >= 4){
