@@ -736,12 +736,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck->Reveal(1);
       $top = $deck->Top();
       if(ColorContains($top, 3, $currentPlayer)) {
-        $pitch = &GetPitch($currentPlayer);
-        WriteLog("Player " . $currentPlayer . " pitched " . CardLink($top, $top));
-        array_push($pitch, $top);
-        PitchAbility($top, "DECK");
-        $resources = &GetResources($currentPlayer);
-        $resources[0] += PitchValue($top);
+        Pitch($top, $currentPlayer);
       }
       break;
     case "midas_touch_yellow":

@@ -3578,3 +3578,14 @@ function NumSeismicSurge($player)
   }
   return $count;
 }
+
+function Pitch($cardID, $player)
+{
+  $pitch = &GetPitch($player);
+  WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
+  array_push($pitch, $cardID);
+  PitchAbility($cardID, "DECK");
+  $resources = &GetResources($player);
+  $resources[0] += PitchValue($cardID);
+}
+

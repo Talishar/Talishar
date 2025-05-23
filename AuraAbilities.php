@@ -660,6 +660,19 @@ function AuraStartTurnAbilities()
       AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
+    case "shifting_tides_blue":
+      $deck = new Deck($mainPlayer);
+      if($deck->Empty()) break;
+      $top = $deck->Top();
+      Pitch($top, $mainPlayer);
+      if(ColorContains($top, 3, $mainPlayer)) {
+        AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
+      }
+      else {
+        AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+      }
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
     default:
       break;
     }

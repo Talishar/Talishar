@@ -683,6 +683,7 @@ function isUnimplemented($cardID) {
         "helmsmans_peak" => false,
         "undercover_acquisition_red" => false,
         "divvy_up_blue" => false,
+        "shifting_tides_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
