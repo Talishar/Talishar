@@ -732,7 +732,7 @@ function OnAttackEffects($power)
           AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
           AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK!PLAY", 1);
+          AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK!PLAY", 1);
           break;
         case "warband_of_bellona":
           Charge(may: true, player: $mainPlayer);
@@ -785,7 +785,7 @@ function OnAttackEffects($power)
             AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
             AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
             AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "crouching_tiger-");
-            AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-");
+            AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "<-");
             AddDecisionQueue("WRITELOG", $mainPlayer, "📣<b>{0}</b> was chosen");
           }
           break;

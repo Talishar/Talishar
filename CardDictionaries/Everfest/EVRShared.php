@@ -355,7 +355,7 @@
         DealArcane(4, 1, "PLAYCARD", $cardID, resolvedTarget: $target);
         if($currentPlayer != $mainPlayer) {
           AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "aether_wildfire_red,");
-          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+          AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-");
         }
         return "";
       case "scour_blue":

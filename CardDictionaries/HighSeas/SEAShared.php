@@ -251,7 +251,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ALLCARDWATERYGRAVEORPASS", $currentPlayer, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "-", 1);
       break;
     case "chum_friendly_first_mate_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
@@ -335,7 +335,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chart_the_high_seas_blue":
       $deck = GetDeck($currentPlayer);
@@ -400,7 +400,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to buff ".CardLink($cardID, $cardID));
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "cog_in_the_machine_red":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, number:2, isToken: true);
@@ -489,7 +489,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to gain overpower");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "jolly_bludger_yellow-OP", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "jolly_bludger_yellow-OP", 1);
       }
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

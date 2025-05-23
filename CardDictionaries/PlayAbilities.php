@@ -51,7 +51,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "CC," . $cardID, 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       } else {
         WriteLog("<span style='color:red;'>No arsenal is banished because it does not attack a hero.</span>");
       }
@@ -230,7 +230,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20");
       AddDecisionQueue("WRITELOGLASTRESULT", $currentPlayer, "-", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "talk_a_big_game_blue,");
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-");
       return "";
     case "battered_not_broken_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -328,7 +328,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "standing_order_red":
       MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may: true, silent: true);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       return "";
     case "tenacity_yellow":
       $buff = NumCardsBlocking();

@@ -207,7 +207,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;class=GUARDIAN");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which Guardian Off-Hand to buff", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       return "";
     case "tearing_shuko":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
@@ -415,7 +415,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
       AddDecisionQueue("GREATERTHAN0ORPASS", $currentPlayer, "");
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "surgent_aethertide,", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-", 1);
       return "";
     case "seerstone":
       PlayerOpt($currentPlayer, 1, false);
@@ -430,8 +430,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "phantasmal_symbiosis_yellow-{0}");
-      AddDecisionQueue("ADDCURRENTEFFECT", $otherPlayer, "phantasmal_symbiosis_yellow-{0}");
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "phantasmal_symbiosis_yellow-{0}");
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $otherPlayer, "phantasmal_symbiosis_yellow-{0}");
       return "";
     case "tranquil_passing_red": case "tranquil_passing_yellow": case "tranquil_passing_blue":
       if($from == "PLAY") return "";

@@ -1290,7 +1290,7 @@ function IsDominateActive()
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
   $characterEffects = GetCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantDominate($currentTurnEffects[$i])) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
   }
   for ($i = 0; $i < count($characterEffects); $i += CharacterEffectPieces()) {
     if ($characterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
@@ -1372,7 +1372,7 @@ function IsOverpowerActive()
     return true;
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantOverpower($currentTurnEffects[$i])) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red" && CachedWagerActive()) return true;
   }
   switch ($combatChain[0]) {

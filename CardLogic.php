@@ -1477,7 +1477,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $character[$index], 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $character[$index], 1);
       break;
     case "briar_warden_of_thorns":
     case "briar":
@@ -1901,7 +1901,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
           AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
           AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-          if (!SearchCurrentTurnEffects("phantasmal_footsteps", $player)) AddDecisionQueue("ADDCURRENTEFFECT", $player, "phantasmal_footsteps", 1);
+          if (!SearchCurrentTurnEffects("phantasmal_footsteps", $player)) AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "phantasmal_footsteps", 1);
         } else {
           AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_gain_an_action_point", 0, 1);
           AddDecisionQueue("NOPASS", $player, "-", 1);
@@ -1934,7 +1934,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
       AddDecisionQueue("PASSPARAMETER", $player, 2, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
@@ -2000,7 +2000,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, "rampart_of_the_rams_head", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "rampart_of_the_rams_head", 1);
       break;
     case "embolden_red":
     case "embolden_yellow":
@@ -2285,7 +2285,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
       AddDecisionQueue("OP", $player, "LOSEHEALTH", 1);
       if (!SearchCurrentTurnEffects($parameter, $player)) { //The effect only apply to one event of damage. Anti-duplicate.
-        AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
       }
       break;
     case "hornets_sting":
@@ -2455,7 +2455,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter . "-BB", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter . "-BB", 1);
       AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
@@ -2781,7 +2781,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "meridian_pathway":
       AddDecisionQueue("YESNO", $player, "if_you_want_" . CardLink("meridian_pathway", "meridian_pathway") . "_to_gain_Ward_3");
       AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, "MERIDIANWARD", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "MERIDIANWARD", 1);
       break;
     case "waning_vengeance_red":
     case "waning_vengeance_yellow":
@@ -3077,12 +3077,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("NOPASS", $mainPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "hard_knuckle", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "hard_knuckle", 1);
       break;
     case "spark_spray_red":
     case "spark_spray_yellow":
     case "spark_spray_blue":
-      AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $parameter, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $parameter, 1);
       break;
     case "heavy_industry_surveillance":
       $deck = GetDeck($player);
@@ -3096,7 +3096,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
       AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
       if (ClassContains($topCard, "MECHANOLOGIST", $player)) {
-        AddDecisionQueue("ADDCURRENTEFFECT", $defPlayer, "heavy_industry_surveillance", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $defPlayer, "heavy_industry_surveillance", 1);
       }
       break;
     case "heavy_industry_ram_stop":
@@ -3104,7 +3104,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("BUTTONINPUT", $player, "0,1");
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, $parameter, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
       break;
     case "brutus_summa_rudis":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C", 1);
@@ -3305,7 +3305,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       AddDecisionQueue("ADDDISCARD", $player, "-", 1);
       AddDecisionQueue("DRAW", $player, "", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $player, "breaker_helm_protos", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "breaker_helm_protos", 1);
       break;
     case "drive_brake":
       $char = &GetPlayerCharacter($player);

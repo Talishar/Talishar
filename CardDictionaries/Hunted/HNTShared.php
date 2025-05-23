@@ -749,7 +749,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       }
       break;
     case "shelter_from_the_storm_red":
@@ -841,7 +841,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "retrace_the_past_blue-");
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-");
         AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       }
       break;

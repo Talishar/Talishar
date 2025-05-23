@@ -149,10 +149,10 @@ function handleCharacterStartAbilities()
 
   // Victor
   if (SearchCharacterForCard(1, "victor_goldmane_high_and_mighty") || SearchCharacterForCard(1, "victor_goldmane")) {
-    AddDecisionQueue("ADDCURRENTEFFECT", 1, $p1Char[0] . "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", 1, $p1Char[0] . "-1", 1);
   }
   if (SearchCharacterForCard(2, "victor_goldmane_high_and_mighty") || SearchCharacterForCard(2, "victor_goldmane")) {
-    AddDecisionQueue("ADDCURRENTEFFECT", 2, $p2Char[0] . "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", 2, $p2Char[0] . "-1", 1);
   }
 }
 

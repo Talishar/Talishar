@@ -3500,7 +3500,7 @@ function AbilityHasGoAgain($cardID)
   }
 }
 
-function DoesEffectGrantOverpower($cardID): bool
+function DoesEffectGrantsOverpower($cardID): bool
 {
   $cardID = ShiyanaCharacter($cardID);
   global $CombatChain, $mainPlayer;
@@ -3517,7 +3517,7 @@ function DoesEffectGrantOverpower($cardID): bool
   };
 }
 
-function DoesEffectGrantDominate($cardID): bool
+function DoesEffectGrantsDominate($cardID): bool
 {
   global $combatChainState, $CCS_AttackFused;
   $cardID = ShiyanaCharacter($cardID);

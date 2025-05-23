@@ -274,14 +274,14 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "-{1}", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID . "-{1}", 1);
         if($max > 1) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
           AddDecisionQueue("REMOVEPREVIOUSCHOICES", $currentPlayer, "{0}", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
           AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "-{1}", 1);  
+          AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID . "-{1}", 1);  
         }
       }
       return "";

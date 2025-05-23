@@ -911,7 +911,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOGLASTRESULT":
       WriteLog("<b>$lastResult<b> was selected.");
       return $lastResult;
-    case "ADDCURRENTEFFECT":
+    case "ADDCURRENTTURNEFFECT":
       $params = explode("!", $parameter);
       $from = count($params) > 1 ? $params[1] : "";
       $uniqueID = count($params) > 2 ? $params[2] : -1;

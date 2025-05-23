@@ -2219,7 +2219,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "moon_wish_yellow":
     case "moon_wish_blue":
       HandToTopDeck($currentPlayer);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "moon_wish_red", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "moon_wish_red", 1);
       break;
     case "cash_in_yellow":
       if (CountItem("copper", $currentPlayer) >= 4) //Copper
@@ -2227,7 +2227,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_4_" . CardLink("copper", "copper"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "copper-4", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "cash_in_yellow", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "cash_in_yellow", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("copper", "copper") . "_alternative_cost_was_paid.", 1);
       }
       if (CountItem("silver", $currentPlayer) >= 2) //Silver
@@ -2236,7 +2236,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_2_" . CardLink("silver", "silver"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "silver-2", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "cash_in_yellow", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "cash_in_yellow", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("silver", "silver") . "_alternative_cost_was_paid.", 1);
       }
       if (CountItem("gold", $currentPlayer) >= 1) 
@@ -2250,7 +2250,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else
           AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "cash_in_yellow", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "cash_in_yellow", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("gold", "gold") . "_alternative_cost_was_paid.", 1);
       }
       break;
@@ -2265,7 +2265,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "rise_above_yellow":
     case "rise_above_blue":
       HandToTopDeck($currentPlayer);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "rise_above_red", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "rise_above_red", 1);
       break;
     case "life_of_the_party_red":
     case "life_of_the_party_yellow":
@@ -2282,7 +2282,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     //Windups
     case "mighty_windup_red":
@@ -2329,7 +2329,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "double_down_red-PAID", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "double_down_red-PAID", 1);
       break;
     case "10000_year_reunion_red":
       $count = CountAuraPowerCounters($currentPlayer);
@@ -2344,7 +2344,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZOP", $currentPlayer, "REMOVEPOWERCOUNTER", 1);
         }
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       }
       break;
     case "blaze_firemind":
@@ -2588,7 +2588,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
     AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $cardID, 1);
     if (!SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) { //Don't duplicate the effect icon
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "BEATCHEST", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "BEATCHEST", 1);
     }
   }
   switch ($cardID) {
@@ -2628,7 +2628,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "regurgitating_slog_red":
@@ -2638,7 +2638,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "teklo_plasma_pistol":
       $abilityType = GetResolvedAbilityType($cardID);
@@ -2774,7 +2774,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "consuming_aftermath_blue":
       MZMoveCard($currentPlayer, "MYHAND", "MYBANISH,HAND,-", may: true);
       AddDecisionQueue("ALLCARDTALENTORPASS", $currentPlayer, "SHADOW", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "soul_harvest_blue":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "GY");
@@ -3014,7 +3014,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "light_the_way_blue":
       Charge();
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "lumina_lance_yellow":
       $soul = &GetSoul($currentPlayer);
@@ -3086,7 +3086,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       }
       break;

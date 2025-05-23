@@ -113,7 +113,7 @@
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         return "";
       case "fyendals_fighting_spirit_red": case "fyendals_fighting_spirit_yellow": case "fyendals_fighting_spirit_blue":
         if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
@@ -168,7 +168,7 @@
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{$cardID}!{$from}!", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $targetHero, "<-", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $targetHero, "<-", 1);
         if(PlayerHasLessHealth($targetHero)) GainHealth(1, $targetHero);
         return "";
       default: return "";

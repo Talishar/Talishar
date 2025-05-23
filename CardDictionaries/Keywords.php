@@ -246,7 +246,7 @@
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to wager for <0>?");
     AddDecisionQueue("YESNO", $currentPlayer, "-");
     AddDecisionQueue("NOPASS", $currentPlayer, "-");
-    AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID . "!PLAY", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID . "!PLAY", 1);
 
     AddOnWagerEffects();
   }
@@ -264,7 +264,7 @@
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, 2, 1);
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
     }
   }
 

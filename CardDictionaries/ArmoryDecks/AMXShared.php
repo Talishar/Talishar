@@ -54,7 +54,7 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (count(explode(",", $character[$index + 10])) > 0 && $character[$index + 10] != "-") {
         CharacterChooseSubcard($currentPlayer, $index, isMandatory:false);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "bank_breaker", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "bank_breaker", 1);
       }
       return "";
     case "clamp_press_blue":

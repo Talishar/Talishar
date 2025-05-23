@@ -297,7 +297,7 @@ function SpecificAllyAttackAbilities($attackID)
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "metis_archangel_of_tenacity", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "metis_archangel_of_tenacity", 1);
         break;
       case "victoria_archangel_of_triumph":
         $soul = &GetSoul($mainPlayer);

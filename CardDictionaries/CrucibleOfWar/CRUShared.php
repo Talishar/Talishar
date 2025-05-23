@@ -200,7 +200,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("FINDINDICES", $mainPlayer, "TOPDECK", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "<-", 1);
         AddDecisionQueue("MULTIADDHAND", $mainPlayer, "-", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "flood_of_force_yellow", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "flood_of_force_yellow", 1);
       }
       return $rv;
     case "herons_flight_red":

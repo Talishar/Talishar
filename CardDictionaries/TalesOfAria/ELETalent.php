@@ -109,7 +109,7 @@
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $cardID, 1);
         return "";
       case "ice_quake_red": case "ice_quake_yellow": case "ice_quake_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -129,7 +129,7 @@
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         if($from == "ARS") {
           Draw($currentPlayer);
           WriteLog(CardLink($cardID, $cardID) . " draw a card.");

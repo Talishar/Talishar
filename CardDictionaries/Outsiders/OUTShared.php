@@ -224,7 +224,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "head_leads_the_tail_red");
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "head_leads_the_tail_red,");
-        AddDecisionQueue("ADDCURRENTEFFECT", $currentPlayer, "<-");
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-");
         AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
         return "";
       case "visit_the_floating_dojo_blue":
@@ -596,7 +596,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
           AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to <b>{0}</b>", 1);
           AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
-          AddDecisionQueue("ADDCURRENTEFFECT", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "<-", 1);
         }
         break;
       case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue":
