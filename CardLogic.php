@@ -3253,6 +3253,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "terra":
       TerraEndPhaseAbility($parameter, $player);
       break;
+    case "riches_of_tropal_dhani_yellow":
+      PutItemIntoPlayForPlayer("gold", $player);      
+      break;
     case "hoist_em_up_red":
       $inds = GetUntapped($defPlayer, "MYALLY");
       if (strlen($inds) > 0) {

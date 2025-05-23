@@ -3055,6 +3055,7 @@ function PitchAbility($cardID, $from="HAND")
     case "plague_hive_yellow":
     case "light_of_sol_yellow":
     case "schism_of_chaos_blue":
+    case "riches_of_tropal_dhani_yellow":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "master_cog_yellow": // Technically wrong, it should be a trigger, but since we can't reorder those it works better gameplay-wise to not have that one as a trigger

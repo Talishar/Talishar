@@ -5,6 +5,7 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
 {
   global $turn, $EffectContext, $CS_NumGoldCreated;
   $otherPlayer = $player == 1 ? 2 : 1;
+  if ($effectController == "") $effectController = $player;
   if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
   if (TypeContains($item, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
