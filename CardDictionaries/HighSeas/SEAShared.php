@@ -266,6 +266,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "blood_in_the_water_red":
       AddLayer("TRIGGER", $currentPlayer, $cardID, SearchCombatChainForIndex($cardID, $currentPlayer));
       break;
+    case "sea_floor_salvage_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD&MYDISCARD");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "TURNDISCARDFACEDOWN", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUNKENTREASURE", 1);
+      break;
     case "angry_bones_red": case "angry_bones_yellow": case "angry_bones_blue":
     case "burly_bones_red": case "burly_bones_yellow": case "burly_bones_blue":
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
