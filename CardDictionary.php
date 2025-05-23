@@ -2179,6 +2179,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "rally_the_rearguard_red":
     case "rally_the_rearguard_yellow":
     case "rally_the_rearguard_blue":
+    case "rally_the_coast_guard_red":
+    case "rally_the_coast_guard_yellow":
+    case "rally_the_coast_guard_blue":
       if ($index == 0 && $from == "PLAY") return true;
       else if (isset($combatChain[$index + 7]) && $from == "PLAY") return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
       else return false;
@@ -4397,6 +4400,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,
+    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => true,
     default => false
   };
 }

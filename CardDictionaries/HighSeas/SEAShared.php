@@ -52,6 +52,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "diamond_amulet_blue", "opal_amulet_blue",  "platinum_amulet_blue", "ruby_amulet_blue" => "I",
     "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue" => "A",
+    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => $from == "PLAY" ? "I" : "AA",
 
     "goldkiss_rum" => "I",
     "scurv_stowaway" => "A",
@@ -196,6 +197,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
+  global $CS_PlayIndex;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -814,6 +816,14 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MZMoveCard($currentPlayer, "MYDECK:isSameName=nimblism_red", "MYHAND", may:true, isReveal:true);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
+    case "rally_the_coast_guard_red": case "rally_the_coast_guard_yellow": case "rally_the_coast_guard_blue":
+        if($from == "PLAY") {
+          $index = GetClassState($currentPlayer, $CS_PlayIndex);
+          //Safety in case it loses the index when more cards are played at instant
+          if($index == -1) $index = GetCombatChainIndex($cardID, $currentPlayer); 
+          CombatChainDefenseModifier($index, 3);
+        }
+        return "";
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

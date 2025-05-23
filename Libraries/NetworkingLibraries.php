@@ -1251,6 +1251,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       case "rally_the_rearguard_red":
       case "rally_the_rearguard_yellow":
       case "rally_the_rearguard_blue":
+      case "rally_the_coast_guard_red":
+      case "rally_the_coast_guard_yellow":
+      case "rally_the_coast_guard_blue":
       case "puncture_red":
       case "puncture_yellow":
       case "puncture_blue":
@@ -2842,6 +2845,9 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "rally_the_rearguard_red":
     case "rally_the_rearguard_yellow":
     case "rally_the_rearguard_blue":
+    case "rally_the_coast_guard_red":
+    case "rally_the_coast_guard_yellow":
+    case "rally_the_coast_guard_blue":
       if ($from == "PLAY") {
         $hand = &GetHand($currentPlayer);
         if (count($hand) == 0) {
