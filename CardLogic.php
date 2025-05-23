@@ -2852,6 +2852,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("YESNO", $player, "if you want " . CardLink($parameter, $parameter) . " to deal arcane damage");
         AddDecisionQueue("NOPASS", $player, "-");
       }
+      if (str_contains($target, "THEIRCHAR")) {
+        $target = "THEIRCHARUID-" . explode(",", $target)[1];
+      }
+      if (str_contains($target, "MYCHAR")) {
+        $target = "MYCHARUID-" . explode(",", $target)[1];
+      }
       AddDecisionQueue("VERDANCE", $player, "$parameter,$target", 1);
       break;
     case "barkskin_of_the_millennium_tree":
