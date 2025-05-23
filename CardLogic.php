@@ -3897,8 +3897,11 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
     case "consign_to_cosmos__shock_yellow":
       $arcDamage = GetClassState($player, $CS_ArcaneDamageDealt);
       for ($i = 0; $i < $arcDamage; ++$i) {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=I&MYDISCARD:subtype=Aura&THEIRDISCARD:type=I&THEIRDISCARD:subtype=Aura");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=I&MYDISCARD:subtype=Aura&THEIRDISCARD:type=I&THEIRDISCARD:subtype=Aura", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant or aura to banish", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZBANISH", $player, "-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
       }
       break;
     default:

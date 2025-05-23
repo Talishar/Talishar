@@ -1145,14 +1145,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       
     case "YESNO":
     case "DOCRANK":
-      if ($turn[1] == $playerID) {
-        $playerInputPopup->active = true;
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));
-        $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
-      }
+      $playerInputPopup->active = true;
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
+      array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));
+      $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
       break;
-      
     case "PDECK":
       if ($currentPlayer == $playerID) {
         $playerInputPopup->active = true;
