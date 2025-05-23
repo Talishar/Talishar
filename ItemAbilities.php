@@ -117,6 +117,14 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "imperial_seal_of_command_red":
     case "gold":
     case "diamond_amulet_blue":
+    case "amethyst_amulet_blue":
+    case "onyx_amulet_blue":
+    case "opal_amulet_blue":
+    case "pearl_amulet_blue":
+    case "platinum_amulet_blue":
+    case "pounamu_amulet_blue":
+    case "ruby_amulet_blue":
+    case "sapphire_amulet_blue":
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "dissipation_shield_yellow":
