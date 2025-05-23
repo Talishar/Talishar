@@ -258,6 +258,12 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ash";
     case "kiss_of_death_red":
       return "Dagger,Attack";
+    case "polly_cranka":
+    case "sticky_fingers":
+      return "Off-Hand,Ally"; //handle being an ally elsewhere
+    case "polly_cranka_ally":
+    case "sticky_fingers_ally":
+      return "Ally";
     default:
       break;
   }
@@ -389,6 +395,9 @@ function CardSet($cardID)
     case "promising_terrain_blue":
     case "batter_to_a_pulp_red":
       return "MPG";
+    case "polly_cranka": case "polly_cranka_ally":
+    case "sticky_fingers": case "sticky_fingers_ally":
+      return "SEA";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);
