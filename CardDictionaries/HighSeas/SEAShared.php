@@ -405,6 +405,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
+    case "lubricate_blue":
+      $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
+      if(empty($inds)) break;
+      $indices = explode(",", $inds);
+      $maxCogs = count($indices) >= 3 ? 3 : count($indices);
+      for ($i = 0; $i < count($indices); $i++) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap ".($maxCogs-$i)." cogs you control");
+        //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
+        AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      }
+      break;
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
@@ -602,6 +614,7 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
       AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+      break;
     //marlynn cards
     case "king_kraken_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){
