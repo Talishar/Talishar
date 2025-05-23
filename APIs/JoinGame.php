@@ -648,7 +648,7 @@ function isUnimplemented($cardID) {
         "washed_up_wave" => false,
         "rusty_harpoon_blue" => false,
         "blood_in_the_water_red" => false,
-        "avast_ye_blue", "heavy_ho_blue", "yo_ho_ho_blue" => false,
+        "avast_ye_blue", "heave_ho_blue", "yo_ho_ho_blue" => false,
         "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => false,
         "burly_bones_red", "burly_bones_yellow", "burly_bones_blue" => false,
         "jittery_bones_red", "jittery_bones_yellow", "jittery_bones_blue" => false,

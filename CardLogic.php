@@ -1385,7 +1385,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "scar_tissue_blue":
     case "gold_baited_hook":
     case "avast_ye_blue":
-    case "heavy_ho_blue":
+    case "heave_ho_blue":
     case "yo_ho_ho_blue":
     case "drop_the_anchor_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");

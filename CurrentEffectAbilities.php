@@ -505,7 +505,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
       AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
       break;
     case "avast_ye_blue":
-    case "heavy_ho_blue":
+    case "heave_ho_blue":
     case "yo_ho_ho_blue":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
       break;

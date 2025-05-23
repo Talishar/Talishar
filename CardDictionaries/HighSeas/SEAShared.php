@@ -173,7 +173,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "goldwing_turbine_red", "goldwing_turbine_yellow", "goldwing_turbine_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
-    "avast_ye_blue", "heavy_ho_blue", "yo_ho_ho_blue" => (ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer)) && SubtypeContains($attackID, "Ally", $mainPlayer),
+    "avast_ye_blue", "heave_ho_blue", "yo_ho_ho_blue" => (ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer)) && SubtypeContains($attackID, "Ally", $mainPlayer),
     "cutty_shark_quick_clip_yellow" => SubtypeContains($attackID, "Ally", $mainPlayer),
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
     "spitfire" => true,
@@ -274,7 +274,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "gold_baited_hook":
     case "avast_ye_blue":
-    case "heavy_ho_blue":
+    case "heave_ho_blue":
     case "yo_ho_ho_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
