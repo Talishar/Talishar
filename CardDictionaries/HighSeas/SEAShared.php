@@ -632,6 +632,22 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return "Reveals " . CardLink($top, $top) . " and gets +" . $pitch . " power";
       }
       return CardLink($cardID, $cardID). " does not get power because the reveal was prevented";
+    case "saltwater_swell_red":
+    case "saltwater_swell_yellow": 
+    case "saltwater_swell_blue":
+      $deck = new Deck($currentPlayer);
+      if($deck->Empty()) break;
+      $deck->Reveal(1);
+      $top = $deck->Top();
+      if(ColorContains($top, 3, $currentPlayer)) {
+        $pitch = &GetPitch($currentPlayer);
+        WriteLog("Player " . $currentPlayer . " pitched " . CardLink($top, $top));
+        array_push($pitch, $top);
+        PitchAbility($top, "DECK");
+        $resources = &GetResources($currentPlayer);
+        $resources[0] += PitchValue($top);
+      }
+      break;
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
       $uid = explode("-", $target)[1];
