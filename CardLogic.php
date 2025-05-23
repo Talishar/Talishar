@@ -3398,13 +3398,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
       break;
     case "pinion_sentry_blue":
-      $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
+      $inds = GetUntapped($player, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to create a " . CardLink("golden_cog", "golden_cog") . " (or pass)", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
-      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
-      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $inds);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Tap a cog to create a ".CardLink("golden_cog", "golden_cog")." (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZTAP", $player, "<-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
+      AddDecisionQueue("PUTPLAY", $player, "0", 1);
       break;
     default:
       break;
