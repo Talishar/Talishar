@@ -103,6 +103,9 @@ function SEAEffectPowerModifier($cardID): int
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => 1,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => 1,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => 4,
+    "goldwing_turbine_red" => 3,
+    "goldwing_turbine_yellow" => 2, 
+    "goldwing_turbine_blue" => 1,
     "spitfire" => 1,
     "cutty_shark_quick_clip_yellow" => 1,
     "big_game_trophy_shot_yellow" => 4,
@@ -134,6 +137,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red", "cogwerx_dovetail_red-GOAGAIN" => true,
     "draw_back_the_hammer_red", "perk_up_red", "tighten_the_screws_red" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
+    "goldwing_turbine_red", "goldwing_turbine_yellow", "goldwing_turbine_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "jolly_bludger_yellow-OP" => true,
     "cutty_shark_quick_clip_yellow" => SubtypeContains($attackID, "Ally", $mainPlayer),
     "cogwerx_blunderbuss" => $attackID == "cogwerx_blunderbuss",
@@ -405,6 +409,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
+    case "goldwing_turbine_red":
+    case "goldwing_turbine_yellow":
+    case "goldwing_turbine_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      PutItemIntoPlayForPlayer("golden_cog", $currentPlayer);
+      break;
     case "lubricate_blue":
       $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
       if(empty($inds)) break;
@@ -612,9 +622,7 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to create a Golden Cog (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
-      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
-      break;
+       break;
     //marlynn cards
     case "king_kraken_harpoon_red":
       if (GetClassState($mainPlayer, $CS_NumCannonsActivated) == 0){

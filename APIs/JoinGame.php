@@ -642,6 +642,7 @@ function isUnimplemented($cardID) {
         "lubricate_blue" => false,
         "pinion_sentry_blue" => false,
         "tough_old_wrench_red", "tough_old_wrench_yellow", "tough_old_wrench_blue" => false,
+        "goldwing_turbine_red", "goldwing_turbine_yellow", "goldwing_turbine_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
