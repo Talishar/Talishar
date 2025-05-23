@@ -801,6 +801,7 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "photon_splicing_blue":
     case "regrowth__shock_blue":
     case "burn_bare":
+    case "consign_to_cosmos__shock_yellow":
       return true;
     default:
       return false;

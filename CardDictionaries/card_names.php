@@ -25,6 +25,8 @@ function CardName($cardID)
         return "Tusk";
       case "wrenchtastic": // AI custom weapon
         return "Wrench-tastic!";
+      case "consign_to_cosmos__shock_yellow":
+        return "Consign To Cosmos // Shock";
       default:
         break;
     }

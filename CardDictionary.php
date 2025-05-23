@@ -72,7 +72,8 @@ function CardType($cardID, $from="")
     "burn_up__shock_red",
     "pulsing_aether__life_red",
     "comet_storm__shock_red",
-    "regrowth__shock_blue"
+    "regrowth__shock_blue",
+    "consign_to_cosmos__shock_yellow"
   ];
 
   if (in_array($cardID, $meldCards)) {
@@ -417,6 +418,7 @@ function CardClass($cardID)
     case "pulsing_aether__life_red":
     case "null__shock_yellow":
     case "comet_storm__shock_red":
+    case "consign_to_cosmos__shock_yellow":
       if(function_exists("GetClassState")) {
         if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
       }
@@ -516,6 +518,8 @@ function CardTalent($cardID, $from="-")
         elseif (IsMeldLeftSideName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "EARTH";
       }
       return "EARTH,LIGHTNING";
+    case "consign_to_cosmos__shock_yellow":
+      return "LIGHTNING";
     default:
       break;
   }
@@ -4841,6 +4845,7 @@ function HasMeld($cardID){
     case "null__shock_yellow":
     case "comet_storm__shock_red":
     case "regrowth__shock_blue":
+    case "consign_to_cosmos__shock_yellow":
       return true;
     default:
       return false;

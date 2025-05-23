@@ -3832,6 +3832,13 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
         MZMoveCard($player, "MYDISCARD:type=AA;minCost=0;maxCost=" . GetClassState($player, $CS_ArcaneDamageDealt)-1, "MYHAND", DQContext: "Choose an attack action card with cost less than " . GetClassState($player, $CS_ArcaneDamageDealt)-1);
       }
       break;
+    case "consign_to_cosmos__shock_yellow":
+      $arcDamage = GetClassState($player, $CS_ArcaneDamageDealt);
+      for ($i = 0; $i < $arcDamage; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=I&MYDISCARD:subtype=Aura&THEIRDISCARD:type=I&THEIRDISCARD:subtype=Aura");
+        AddDecisionQueue("MZBANISH", $player, "-", 1);
+      }
+      break;
     default:
       break;
   }
