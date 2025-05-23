@@ -22,7 +22,7 @@ function TCCCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "crash_down_red", "earthlore_empowerment_red", "crash_down_yellow", "earthlore_empowerment_yellow" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA",
     "growl_red", "growl_yellow" => CardNameContains($attackID, "Crouching Tiger", $mainPlayer),
-    "lay_down_the_law_red", "lay_down_the_law_red", "final_act_red", "bittering_thorns_red", "might", "evo_scatter_shot_blue_equip" => true,
+    "lay_down_the_law_red", "final_act_red", "bittering_thorns_red", "might", "evo_scatter_shot_blue_equip" => true,
     default => false
   };
 }

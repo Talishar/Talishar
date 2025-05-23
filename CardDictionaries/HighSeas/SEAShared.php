@@ -349,6 +349,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       }
       break;
+    case "cogwerx_workshop_blue":
+      PutItemIntoPlayForPlayer("golden_cog", $currentPlayer);
+      for ($i = 0; $i < 2; ++$i) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a cog to get a steam counter", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:subtype=Cog");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
+      }
+      break;
     case "spitfire":
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;

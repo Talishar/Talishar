@@ -637,6 +637,7 @@ function isUnimplemented($cardID) {
         "cogwerx_tinker_rings" => false,
         "rust_belt" => false,
         "unicycle" => false,
+        "cogwerx_workshop_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
