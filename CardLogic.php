@@ -1439,6 +1439,10 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       }
       break;
+    case "loot_the_hold_blue":
+    case "loot_the_arsenal_blue":
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;
     default:
       break;
   }

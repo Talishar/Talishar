@@ -529,7 +529,19 @@ function EffectHitEffect($cardID, $from, $source = "-")
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to destroy", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
-      break; 
+      break;
+    case "loot_the_hold_blue":
+      $hand = GetHand($defPlayer);
+      if (count($hand) > 0) PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer, isToken:true);
+      PummelHit();
+      break;
+    case "loot_the_arsenal_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you want to destroy from their arsenal", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
+      AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
+      break;
     default:
       break;
   }
@@ -1897,6 +1909,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "AST") return ASTCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AMX") return AMXCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "SEA") return SEACombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "AGB") return AGBCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "MPG") return MPGCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "banneret_of_salvation_yellow":

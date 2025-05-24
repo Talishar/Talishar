@@ -23,7 +23,9 @@ function AGBEffectPowerModifier($cardID): int
 
 function AGBCombatEffectActive($cardID, $attackID): bool
 {
+  global $mainPlayer;
   return match($cardID) {
+    "loot_the_hold_blue", "loot_the_arsenal_blue" => IsAllyAttacking() && ClassContains($attackID, "PIRATE", $mainPlayer),
     default => false
   };
 }
@@ -39,9 +41,13 @@ function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer;
     switch ($cardID) {
-    default:
-      return "";
-  }
+      case "loot_the_hold_blue":
+      case "loot_the_arsenal_blue":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+        break;
+      default:
+        return "";
+    }
 }
 
 function AGBHitEffect($cardID)
