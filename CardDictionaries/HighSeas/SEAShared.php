@@ -840,7 +840,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck = new Deck($currentPlayer);
       if($deck->Empty()) break;
       $deck->Reveal(1);
-      $top = $deck->Top();
+      $top = $deck->Top(true);
       if(ColorContains($top, 3, $currentPlayer)) {
         Pitch($top, $currentPlayer);
       }
