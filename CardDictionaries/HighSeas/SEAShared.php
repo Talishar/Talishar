@@ -83,6 +83,7 @@ function SEAAbilityCost($cardID): int
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
+    "anka_drag_under_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     "quartermasters_boots" => 2,
     "claw_of_vynserakai" => 1,
     default => 0
