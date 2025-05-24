@@ -2135,6 +2135,14 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "scrub_the_deck_blue":
+      $context = "Choose whose deck to scrub";
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-0,THEIRCHAR-0");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      break;
     case "midas_touch_yellow":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&MYALLY");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an ally to destroy");
@@ -2573,12 +2581,12 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
       }
       break;
     case "clap_em_in_irons_blue":
-        $context = "Choose an a target to lock";
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY:class=PIRATE&THEIRALLY:class=PIRATE&MYCHAR:type=C;class=PIRATE&THEIRCHAR:type=C;class=PIRATE");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      $context = "Choose an a target to lock";
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY:class=PIRATE&THEIRALLY:class=PIRATE&MYCHAR:type=C;class=PIRATE&THEIRCHAR:type=C;class=PIRATE");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     default:
       break;

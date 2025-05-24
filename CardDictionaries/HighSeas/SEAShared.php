@@ -410,7 +410,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SUNKENTREASURE", 1);
       break;
     case "scrub_the_deck_blue":
-      DestroyTopCardTarget($currentPlayer, true);
+      $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
+      $topCard = GetDeck($targetPlayer)[0];
+      DestroyTopCard($targetPlayer);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $topCard);
       AddDecisionQueue("ALLCARDCOLORORPASS", $currentPlayer, "2", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
