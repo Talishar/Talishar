@@ -56,6 +56,8 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "goldkiss_rum" => "I",
     "scurv_stowaway" => "A",
+    "bandana_of_the_blue_beyond", "swiftstrike_bracers", "quick_clicks", "captains_coat", "quartermasters_boots" => "A",
+    "old_knocker" => "I",
     default => ""
   };
 }
@@ -79,6 +81,7 @@ function SEAAbilityCost($cardID): int
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
+    "quartermasters_boots" => 2,
     default => 0
   };
 }
@@ -98,6 +101,8 @@ function SEAAbilityHasGoAgain($cardID): bool
     "marlynn" => true,
     "glidewell_fins" => true,
     "hammerhead_harpoon_cannon" => true,
+    "bandana_of_the_blue_beyond" => true,
+    "captains_coat", "swiftstrike_bracers", "quick_clicks", "old_knocker", "quartermasters_boots" => true,
     "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue" => true,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
     "cutty_shark_quick_clip_yellow" => GetResolvedAbilityType($cardID) == "A",
@@ -146,6 +151,7 @@ function SEAEffectPowerModifier($cardID): int
     "chart_a_course_red" => 3,
     "chart_a_course_yellow" => 2,
     "chart_a_course_blue" => 1,
+    "swiftstrike_bracers" => 2,
     default => 0,
   };
 }
@@ -194,6 +200,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
     "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => true,
+    "swiftstrike_bracers", "quick_clicks" => true,
     default => false,
   };
 }
@@ -201,7 +208,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
-  global $CS_PlayIndex, $CS_NumAttacks;
+  global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -838,13 +845,32 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "rally_the_coast_guard_red": case "rally_the_coast_guard_yellow": case "rally_the_coast_guard_blue":
-        if($from == "PLAY") {
-          $index = GetClassState($currentPlayer, $CS_PlayIndex);
-          //Safety in case it loses the index when more cards are played at instant
-          if($index == -1) $index = GetCombatChainIndex($cardID, $currentPlayer); 
-          CombatChainDefenseModifier($index, 3);
-        }
-        return "";
+      if($from == "PLAY") {
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        //Safety in case it loses the index when more cards are played at instant
+        if($index == -1) $index = GetCombatChainIndex($cardID, $currentPlayer); 
+        CombatChainDefenseModifier($index, 3);
+      }
+      return "";
+    case "bandana_of_the_blue_beyond":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:color=3");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a blue card to put on the bottom of your deck");
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDBOTDECK", $currentPlayer, "<-", 1);
+      break;
+    case "old_knocker":
+    case "captains_coat":
+      GainResources($currentPlayer, 1);
+      break;
+    case "swiftstrike_bracers":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "quick_clicks":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "quartermasters_boots":
+      SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
+      return "";
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

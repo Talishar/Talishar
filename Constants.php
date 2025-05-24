@@ -359,7 +359,8 @@ $CS_NumStealthAttacks = 95; //for slippy
 $CS_NumWateryGrave = 96;
 $CS_NumCannonsActivated = 97;
 $CS_NumGoldCreated = 98; //for gold token creation/stolen
-$CS_NumAllyPutInGraveyard = 99; 
+$CS_NumAllyPutInGraveyard = 99;
+$CS_PlayedNimblism = 100;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -587,7 +588,7 @@ function ResetMainClassState()
   global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
   global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
-  global $CS_PowDamageDealt, $CS_NumTimesAttacked, $CS_NumAllyPutInGraveyard;
+  global $CS_PowDamageDealt, $CS_NumTimesAttacked, $CS_NumAllyPutInGraveyard, $CS_PlayedNimblism;
   global $CS_TunicTicks, $CS_NumGoldCreated, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
@@ -688,6 +689,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumCannonsActivated] = 0;
   $mainClassState[$CS_NumGoldCreated] = 0;
   $mainClassState[$CS_NumAllyPutInGraveyard] = 0;
+  $mainClassState[$CS_PlayedNimblism] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

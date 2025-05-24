@@ -1958,7 +1958,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
-  global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn;
+  global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism;
+  global $CS_NumCardsDrawn;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
@@ -2890,6 +2891,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 3) return true;
       return false;
+    case "old_knocker":
+      return CheckTapped("MYCHAR-0", $currentPlayer);
+    case "swiftstrike_bracers":
+    case "quick_clicks":
+      return GetClassState($currentPlayer, $CS_PlayedNimblism) == 0;
+    case "captains_coat":
+      return GetClassState($currentPlayer, $CS_NumCardsDrawn) == 0;
     case "platinum_amulet_blue":
       return $from == "PLAY" && NumCardsBlocking() < 1;
     case "goldkiss_rum":
@@ -3139,6 +3147,9 @@ function HasBladeBreak($cardID)
     case "cogwerx_tinker_rings":
     case "washed_up_wave":
     case "helmsmans_peak":
+    case "old_knocker":
+    case "quartermasters_boots":
+    case "light_fingers":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

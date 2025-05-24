@@ -3469,6 +3469,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           break;
       }
       Tap($MZIndex, $player);
+      break;
+    case "light_fingers":
+      if (!IsAllyAttacking()) {
+        AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "THEIRITEMS:type=T;cardID=gold");
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $defPlayer, "GAINCONTROL", 1);
+        AddDecisionQueue("ELSE", $defPlayer, "-");
+        AddDecisionQueue("PLAYITEM", $defPlayer, "gold", 1);
+      }
+      break;
     default:
       break;
   }

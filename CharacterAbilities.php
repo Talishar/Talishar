@@ -1102,6 +1102,10 @@ function EquipPayAdditionalCosts($cardIndex)
     case "unicycle":
     case "head_stone":
     case "glidewell_fins":
+    case "swiftstrike_bracers":
+    case "quick_clicks":
+    case "captains_coat":
+    case "quartermasters_boots":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
@@ -1240,6 +1244,14 @@ function EquipPayAdditionalCosts($cardIndex)
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $cogIndices, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       }
+    case "bandana_of_the_blue_beyond":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD," . $currentPlayer);
+      break;
+    case "old_knocker":
+      DestroyCharacter($currentPlayer, $cardIndex);
+      Tap("MYCHAR-0", $currentPlayer);
+      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

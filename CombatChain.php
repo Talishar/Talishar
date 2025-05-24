@@ -1046,6 +1046,10 @@ function OnBlockResolveEffects($cardID = "")
           if ($char[$j] == $defendingCard) $char[$j+7] = "1";
         }
         break;
+      case "light_fingers":
+        $defChar = GetPlayerCharacter($defPlayer);
+        if (ClassContains($defChar[0], "THIEF", $defPlayer)) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+        break;
       default:
         break;
     }

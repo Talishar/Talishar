@@ -1680,6 +1680,7 @@ function CurrentEffectGrantsGoAgain()
         case "line_blue":
         case "swift_shot_red":
         case "mutiny_on_the_swiftwater_blue":
+        case "quick_clicks":
           return true;
         case "weave_lightning_red":
         case "weave_lightning_yellow":
