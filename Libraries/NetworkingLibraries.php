@@ -1530,7 +1530,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         PassInput(false);
         return "";
       }
-      elseif (GetResolvedAbilityType($cardID, $from) == "A") {
+      elseif (GetResolvedAbilityType($cardID, $from) == "A" || $cardID == "teklo_plasma_pistol" || $cardID == "plasma_barrel_shot") {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         if ($from == "PLAY") {
           // reset the status
