@@ -59,6 +59,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "scurv_stowaway" => "A",
     "bandana_of_the_blue_beyond", "swiftstrike_bracers", "quick_clicks", "captains_coat", "quartermasters_boots" => "A",
     "old_knocker" => "I",
+    "claw_of_vynserakai" => "AA",
     default => ""
   };
 }
@@ -83,6 +84,7 @@ function SEAAbilityCost($cardID): int
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
     "quartermasters_boots" => 2,
+    "claw_of_vynserakai" => 1,
     default => 0
   };
 }

@@ -4390,7 +4390,7 @@ function SpellVoidAmount($cardID, $player): int
     "arcanite_fortress" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
     "shock_charmers", "ebon_fold", "halo_of_illumination", "halo_of_lumina_light" => 2,
     "dream_weavers", "talisman_of_dousing_yellow", "MON400", "MON401", "MON402", "spellbane_aegis", "spell_fray_tiara", "spell_fray_cloak", "spell_fray_gloves", "spell_fray_leggings" => 1,
-    "widow_veil_respirator", "widow_back_abdomen", "widow_claw_tarsus", "widow_web_crawler" => 1,
+    "widow_veil_respirator", "widow_back_abdomen", "widow_claw_tarsus", "widow_web_crawler", "claw_of_vynserakai" => 1,
     default => 0
   };
 }

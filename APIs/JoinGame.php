@@ -706,6 +706,7 @@ function isUnimplemented($cardID) {
         "tit_for_tat_blue" => false,
         "blow_for_a_blow_red" => false,
         "anka_drag_under_yellow" => false,
+        "claw_of_vynserakai" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
