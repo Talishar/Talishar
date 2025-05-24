@@ -58,7 +58,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "forked_lightning_red":
-      $arcaneBonus = ConsumeArcaneBonus($currentPlayer);
+      $arcaneBonus = ConsumeArcaneBonus($currentPlayer, $cardID);
       $damage = ArcaneDamage($cardID) + $arcaneBonus;
       DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
@@ -566,7 +566,7 @@ function MeldTriggersDealingArcane($source)
 
 function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|string
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
   $modifier = 0;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
@@ -633,6 +633,10 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
         break;
     }
     if ($remove) RemoveCurrentTurnEffect($i);
+  }
+  $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    if ($currentTurnEffects[$i] == "arcane_compliance_blue" && $currentTurnEffects[$i+2] == $uniqueID) $modifier = 0;
   }
   return $modifier;
 }

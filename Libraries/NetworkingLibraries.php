@@ -2142,6 +2142,12 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "arcane_compliance_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A&LAYER:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an action to block arcane buffs on");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
     default:
       break;
   }

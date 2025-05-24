@@ -3392,6 +3392,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         GainHealth(1, $player);
       }
       DestroyAuraUniqueID($player, $uniqueID);
+      break;
+    case "surface_shaking_blue":
+      $numSeismic = CountAura("seismic_surge", $player);
+      AddDecisionQueue("FINDINDICES", $player, "HAND");
+      AddDecisionQueue("PREPENDLASTRESULT", $player, $numSeismic . "-", 1);
+      AddDecisionQueue("MULTICHOOSEHAND", $player, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+      AddDecisionQueue("MULTIADDDECK", $player, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "SIFT", 1);
+      break;
     case "crash_and_bash_red":
     case "crash_and_bash_yellow":
     case "crash_and_bash_blue":

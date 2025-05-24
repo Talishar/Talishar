@@ -563,16 +563,25 @@ function ConsumeArcaneBonus($player, $noRemove = false)
   global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
   $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
   $totalBonus = 0;
+  $activeArcaneCompliance = -1;
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    if ($currentTurnEffects[$i] == "arcane_compliance_blue" && $currentTurnEffects[$i+2] == $uniqueID) $activeArcaneCompliance = $i;
+  }
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
     if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i + 2] == $uniqueID || DelimStringContains($uniqueID, "MELD", true))) {
       $bonus = EffectArcaneBonus($currentTurnEffects[$i]);
       if ($bonus > 0) {
-        $totalBonus += $bonus;
+        if ($activeArcaneCompliance == -1) $totalBonus += $bonus;
         if (!$noRemove) $remove = 1;
       }
     }
     if ($remove == 1) RemoveCurrentTurnEffect($i);
+  }
+  if (!$noRemove) {
+    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+      if ($currentTurnEffects[$i] == "arcane_compliance_blue" && $currentTurnEffects[$i+2] == $uniqueID) RemoveCurrentTurnEffect($i);
+    }
   }
   return $totalBonus;
 }

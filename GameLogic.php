@@ -1623,6 +1623,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $target = $cleanTarget;
           break;
+        case "arcane_compliance_blue":
+          $targetArr = explode("-", $lastResult);
+          $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+          break;
         default:
           $targetArr = explode("-", $lastResult);
           $otherPlayer = $player == 1 ? 2 : 1;
