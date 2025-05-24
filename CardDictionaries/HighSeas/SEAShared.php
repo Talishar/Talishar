@@ -698,7 +698,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "gold_the_tip_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if(ArsenalHasArrowFacingColor($currentPlayer, "UP", "Yellow")) PutItemIntoPlayForPlayer("gold", $currentPlayer);
+      if(ArsenalHasArrowFacingColor($currentPlayer, "UP", 2)) PutItemIntoPlayForPlayer("gold", $currentPlayer);
       break;
     case "hammerhead_harpoon_cannon":
       AddCurrentTurnEffect($cardID, $currentPlayer);
