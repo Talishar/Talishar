@@ -561,8 +561,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "cogwerx_workshop_blue":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, "");
       for ($i = 0; $i < 2; ++$i) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:subtype=Cog");
+        //this indices function removes already selected cogs
+        AddDecisionQueue("COGWERXINDICES", $currentPlayer, "", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a cog to put a steam counter", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
