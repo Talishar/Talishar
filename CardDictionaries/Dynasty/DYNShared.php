@@ -496,7 +496,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "gold":
       $rv = "";
       if($from == "PLAY") {
-        Draw($currentPlayer, effectSource:$cardID);
+        if (SearchCurrentTurnEffects("not_so_fast_yellow", $otherPlayer, true)) {
+          WriteLog("NOT SO FAST");
+          Draw($otherPlayer, effectSource:$cardID);
+        }
+        else Draw($currentPlayer, effectSource:$cardID);
       }
       return $rv;
     case "suraya_archangel_of_knowledge":
