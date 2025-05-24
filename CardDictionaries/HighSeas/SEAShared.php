@@ -923,9 +923,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "bandana_of_the_blue_beyond":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:color=3");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:pitch=3");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a blue card to put on the bottom of your deck");
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "WRITELOG", 1);
       AddDecisionQueue("ADDBOTDECK", $currentPlayer, "<-", 1);
       break;
     case "old_knocker":

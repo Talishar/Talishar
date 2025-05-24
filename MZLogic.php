@@ -63,7 +63,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
   return $lastResult;
 }
 
-function MZRemove($player, $lastResult)
+function MZRemove($player, $lastResult, $parameter)
 {
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -128,6 +128,7 @@ function MZRemove($player, $lastResult)
         break;
     }
   }
+  if ($parameter == "WRITELOG") WriteLog(CardLink($lastResult, $lastResult) . " was chosen");
   return $lastResult;
 }
 
