@@ -26,7 +26,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_LinkBasePower;
-  global $CS_PlayIndex;
+  global $CS_PlayIndex, $landmarks;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -3026,7 +3026,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numGold = $parameter;
       if ($treasureID != -1) {
         $landmarks[$treasureID + 3] -= $numGold;
-        if(ClassContains($char[0], "Thief", $player)) {
+        if(ClassContains($char[0], "THIEF", $player)) {
           PutItemIntoPlayForPlayer("gold", $player, number:$numGold);
           WriteLog("Player $player plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
         }
