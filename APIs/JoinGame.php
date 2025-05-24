@@ -735,6 +735,7 @@ function isUnimplemented($cardID) {
         "knock_em_off_their_feet_red" => false,
         "halo_of_lumina_light" => false,
         "helm_of_the_arknight" => false,
+        "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
         default => true
       };
     default:
