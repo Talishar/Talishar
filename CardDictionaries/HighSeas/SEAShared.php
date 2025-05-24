@@ -938,7 +938,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function SEAHitEffect($cardID): void
 {
-  global $CS_NumCannonsActivated, $mainPlayer, $defPlayer;
+  global $CS_NumCannonsActivated, $mainPlayer, $defPlayer, $combatChain;
   switch ($cardID) {
     //puffin cards
     case "cloud_city_steamboat_red":
@@ -1106,6 +1106,21 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL,Temporary", 1);
+      break;
+    case "money_or_your_life_red":
+    case "money_or_your_life_yellow":
+    case "money_or_your_life_blue":
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
+      AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
+
+      AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+
+      AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
+      AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+      AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
       break;
     default:
       break;

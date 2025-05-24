@@ -1053,6 +1053,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "undercover_acquisition_red":
     case "jack_be_nimble_red":
     case "jack_be_quick_red":
+    case "money_or_your_life_red":
+    case "money_or_your_life_yellow":
+    case "money_or_your_life_blue":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;

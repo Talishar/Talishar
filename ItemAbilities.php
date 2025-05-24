@@ -276,7 +276,6 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
     array_push($destItems, $srcItems[$index + $i]);
     unset($srcItems[$index + $i]);
   }
-  Array_pop($srcItems);
   $srcItems = array_values($srcItems);
 }
 
