@@ -143,6 +143,9 @@ function SEAEffectPowerModifier($cardID): int
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer) ? 4 : 0,
+    "chart_a_course_red" => 3,
+    "chart_a_course_yellow" => 2,
+    "chart_a_course_blue" => 1,
     default => 0,
   };
 }
@@ -190,6 +193,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
+    "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => true,
     default => false,
   };
 }
@@ -197,7 +201,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
-  global $CS_PlayIndex;
+  global $CS_PlayIndex, $CS_NumAttacks;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -812,6 +816,21 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
         return "FAILED";
       }
+    case "chart_a_course_red":
+    case "chart_a_course_yellow":
+    case "chart_a_course_blue":
+      if (GetClassState($currentPlayer, $CS_NumAttacks) == 0) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      else WriteLog("You've already attacked this turn, no buff");
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if ($treasureID != -1) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island", "treasure_island") . "?");
+        AddDecisionQueue("YESNO", $currentPlayer, "-");
+        AddDecisionQueue("NOPASS", $currentPlayer, "-");
+        AddDecisionQueue("ADDCOUNTERLANDMARK", $currentPlayer, $treasureID, 1);
+      }
+      break;
     case "nimby_red":
     case "nimby_yellow":
     case "nimby_blue":
