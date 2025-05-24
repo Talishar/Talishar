@@ -703,6 +703,7 @@ function isUnimplemented($cardID) {
         "money_or_your_life_red", "money_or_your_life_yellow", "money_or_your_life_blue" => false,
         "clap_em_in_irons_blue" => false,
         "regain_composure_blue" => false,
+        "tit_for_tat_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

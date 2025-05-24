@@ -221,6 +221,19 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "regain_composure_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
+    case "tit_for_tat_blue":
+      $inds = GetUntapped($otherPlayer, "MYCHAR", "type=C");
+      if(!empty($inds)) {
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "You may tap a hero");
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, $inds);
+        AddDecisionQueue("MZTAP", $otherPlayer, "1", 1);
+      }
+      $inds = GetTapped($currentPlayer, "MYCHAR", "type=C");
+      if(empty($inds)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a hero");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+      break;
     case "amethyst_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
