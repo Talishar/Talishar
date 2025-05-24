@@ -63,10 +63,10 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "doomsday_blue":
-        PlayAlly("blasmophet_the_soul_harvester", $currentPlayer);
+        PlayAlly("blasmophet_the_soul_harvester", $currentPlayer, from:$from);
         return "";
       case "eclipse_blue":
-        PlayAlly("ursur_the_soul_reaper", $currentPlayer);
+        PlayAlly("ursur_the_soul_reaper", $currentPlayer, from:$from);
         return "";
       case "shadow_puppetry_red":
         AddCurrentTurnEffect($cardID, $currentPlayer);

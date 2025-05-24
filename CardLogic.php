@@ -1051,6 +1051,8 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "crash_down_the_gates_yellow":
     case "crash_down_the_gates_blue":
     case "undercover_acquisition_red":
+    case "jack_be_nimble_red":
+    case "jack_be_quick_red":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;

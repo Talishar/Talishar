@@ -168,9 +168,11 @@ function ArsenalPieces()
 //10 - Dealt Damage to opposing hero
 //11 - Tapped (0 = no, 1 = yes)
 //12 - Steam Counters
+//13 - Where it's played from
+//14 - Modifier - e.g "Temporary" for cards that get stolen for a turn.
 function AllyPieces()
 {
-  return 13;
+  return 15;
 }
 
 //0 - Card ID

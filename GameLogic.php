@@ -589,7 +589,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           MZFreeze($lastResult);
           break;
         case "GAINCONTROL":
-          MZGainControl($player, $lastResult);
+          MZGainControl($player, $lastResult, isset($paramArr[1]) ? $paramArr[1] : 0);
           break;
         case "GETCARDID":
           $ret = GetMZCard($player, $lastResult);
@@ -2291,7 +2291,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       };
       WriteLog(CardLink($cardID, $cardID) . " awakened into " . CardLink($newCardID, $newCardID));
       RemovePermanent($player, $mzArr[1]);
-      PlayAlly($newCardID, $player);
+      PlayAlly($newCardID, $player, from:"MYPERM");
       return "1";
     case "PROCESSDAMAGEPREVENTION":
       $mzIndex = explode("-", $lastResult);

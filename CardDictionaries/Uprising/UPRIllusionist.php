@@ -60,7 +60,7 @@
       case "ghostly_touch":
         $gtIndex = FindCharacterIndex($currentPlayer, "ghostly_touch");
         $char = &GetPlayerCharacter($currentPlayer);
-        $index = PlayAlly("UPR551", $currentPlayer);
+        $index = PlayAlly("UPR551", $currentPlayer, from:$from);
         $allies = &GetAllies($currentPlayer);
         $allies[$index+2] = $char[$gtIndex+2];
         AddCurrentTurnEffect($cardID . "-" . $char[$gtIndex+2], $currentPlayer);
@@ -158,7 +158,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   function ResolveTransform($player, $materialIndex, $into, $firstTransform=true)
   {
     $materialType = RemovePermanent($player, $materialIndex);
-    return PlayAlly($into, $player, $materialType, firstTransform: $firstTransform);
+    return PlayAlly($into, $player, $materialType, firstTransform: $firstTransform, from:"PLAY");
   }
 
   function ResolveTransformPermanent($player, $materialIndex, $into)
@@ -170,7 +170,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   function ResolveTransformAura($player, $materialIndex, $into)
   {
     $materialType = RemoveAura($player, $materialIndex, -1);
-    return PlayAlly($into, $player, $materialType);
+    return PlayAlly($into, $player, $materialType, from:"PLAY");
   }
 
   function GhostlyTouchPhantasmDestroy()

@@ -179,8 +179,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         SearchCurrentTurnEffects("shadowrealm_horror_red-3", $currentPlayer, true);
         $currentPlayerBanish = new Banish($currentPlayer);
         $otherPlayerBanish = new Banish($otherPlayer);
-        $currentPlayerBanish->UnsetModifier("shadowrealm_horror_red");
-        $otherPlayerBanish->UnsetModifier("shadowrealm_horror_red");
+        $currentPlayerBanish->UnsetBanishModifier("shadowrealm_horror_red");
+        $otherPlayerBanish->UnsetBanishModifier("shadowrealm_horror_red");
       }
       if($banish[$index + 1] == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$banish[$index + 1]);
@@ -1450,6 +1450,7 @@ function FinalizeTurn()
   ResetMainClassState();
   ResetCharacterEffects();
   UnsetTurnBanish();
+  ResetStolenCards();
   AuraEndTurnCleanup();
   DoGamestateUpdate();
   //Update all the player neutral stuff
@@ -2640,7 +2641,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "nimble_strike_red":
     case "nimble_strike_yellow":
     case "nimble_strike_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=nimblism_red;cardID=nimblism_yellow;cardID=nimblism_blue");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=nimblism_red");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -2650,7 +2651,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "regurgitating_slog_red":
     case "regurgitating_slog_yellow":
     case "regurgitating_slog_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:cardID=sloggism_red;cardID=sloggism_yellow;cardID=sloggism_blue");
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=sloggism_red");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -3500,7 +3501,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   } else if ($from != "PLAY" && $from != "EQUIP") {
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
-    else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer);
+    else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer, from: $from);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if (DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from: $from);

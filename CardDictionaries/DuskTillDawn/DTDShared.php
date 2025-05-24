@@ -352,7 +352,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("eloquence", $currentPlayer);
       return "";
     case "oblivion_blue":
-      PlayAlly("nasreth_the_soul_harrower", $currentPlayer);
+      PlayAlly("nasreth_the_soul_harrower", $currentPlayer, from:$from);
       return "";
     case "envelop_in_darkness_red": case "envelop_in_darkness_yellow": case "envelop_in_darkness_blue":
       PlayAura("runechant", $currentPlayer);

@@ -282,14 +282,18 @@ function MZBanish($player, $parameter, $lastResult)
   return $lastResult;
 }
 
-function MZGainControl($player, $target)
+function MZGainControl($player, $target, $temporary=0)
 {
   $targetArr = explode("-", $target);
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($targetArr[0]) {
     case "MYITEMS":
     case "THEIRITEMS":
-      StealItem($player == 1 ? 2 : 1, $targetArr[1], $player, $targetArr[0]);
+      StealItem($otherPlayer, $targetArr[1], $player, $targetArr[0], $temporary);
       break;
+    case "MYALLY":
+    case "THEIRALLY":
+      StealAlly($otherPlayer, $targetArr[1], $player, $targetArr[0], $temporary);
     default:
       break;
   }

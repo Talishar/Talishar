@@ -167,7 +167,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "raise_an_army_yellow":
-      PlayAlly("cintari_sellsword", $currentPlayer, number: intval($additionalCosts));
+      PlayAlly("cintari_sellsword", $currentPlayer, number: intval($additionalCosts), from:$from);
       return "";
     case "cut_the_deck_red":
     case "cut_the_deck_yellow":

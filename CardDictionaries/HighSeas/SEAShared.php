@@ -153,6 +153,7 @@ function SEAEffectPowerModifier($cardID): int
     "chart_a_course_blue" => 1,
     "swiftstrike_bracers" => 2,
     "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => 2,
+    "jack_be_nimble_red", "jack_be_quick_red" => 1,
     default => 0,
   };
 }
@@ -179,6 +180,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "dry_powder_shot_red" => true,
     "swift_shot_red" => true,
     "amethyst_amulet_blue" => true,
+    "jack_be_nimble_red", "jack_be_quick_red" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_skiff_red-GOAGAIN", "cloud_skiff_yellow-GOAGAIN", "cloud_skiff_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
@@ -557,12 +559,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "polly_cranka": case "polly_cranka_ally":
       $index = SearchBanishForCard($currentPlayer, "polly_cranka");
       if ($index != -1) {
-        PlayAlly("polly_cranka_ally", $currentPlayer, tapped:true);
+        PlayAlly("polly_cranka_ally", $currentPlayer, tapped:true, from:$from);
         RemoveBanish($currentPlayer, $index);
       }
       break;
     case "sticky_fingers": case "sticky_fingers_ally":
-      if ($cardID == "sticky_fingers") PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true);
+      if ($cardID == "sticky_fingers") PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true, from:$from);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:type=T;cardID=gold");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
@@ -846,6 +848,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MZMoveCard($currentPlayer, "MYDECK:isSameName=nimblism_red", "MYHAND", may:true, isReveal:true);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
+    case "jack_be_nimble_red":
+    case "jack_be_quick_red":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=nimblism_red");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,GY,-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
+      break;
     case "rally_the_coast_guard_red": case "rally_the_coast_guard_yellow": case "rally_the_coast_guard_blue":
       if($from == "PLAY") {
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -1085,6 +1096,16 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+      break;
+    case "jack_be_nimble_red":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL,Temporary", 1);
+      break;
+    case "jack_be_quick_red":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL,Temporary", 1);
       break;
     default:
       break;

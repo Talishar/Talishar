@@ -245,7 +245,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   return $cardID;
 }
 
-function StealItem($srcPlayer, $index, $destPlayer, $from)
+function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
 {
   global $CS_NumGoldCreated;
   $srcItems = &GetItems($srcPlayer);
@@ -262,6 +262,7 @@ function StealItem($srcPlayer, $index, $destPlayer, $from)
       RemoveCharacter($srcPlayer, $indexWeapon);
       SearchCurrentTurnEffects("galvanic_bender-UNDER", $srcPlayer, true);
     }
+    if($i == 8 && $mod != 0) $srcItems[$index + $i] = $mod; //8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
     if($i == 9) //9 - Where it's played from ... Important for where it'll go when destroyed for example.
     {
       if (strpos($srcItems[$index + $i], 'MY') === 0) {
@@ -275,6 +276,7 @@ function StealItem($srcPlayer, $index, $destPlayer, $from)
     array_push($destItems, $srcItems[$index + $i]);
     unset($srcItems[$index + $i]);
   }
+  Array_pop($srcItems);
   $srcItems = array_values($srcItems);
 }
 

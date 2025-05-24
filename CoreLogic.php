@@ -978,27 +978,27 @@ function PlayerWon($playerID)
 function UnsetChainLinkBanish()
 {
   $p1Banish = new Banish(1);
-  $p1Banish->UnsetModifier("TCL");
+  $p1Banish->UnsetBanishModifier("TCL");
   $p2Banish = new Banish(2);
-  $p2Banish->UnsetModifier("TCL");
+  $p2Banish->UnsetBanishModifier("TCL");
 }
 
 function UnsetCombatChainBanish()
 {
   $p1Banish = new Banish(1);
-  $p1Banish->UnsetModifier("TCL");
-  $p1Banish->UnsetModifier("TCC");
-  $p1Banish->UnsetModifier("TCCGorgonsGaze");
+  $p1Banish->UnsetBanishModifier("TCL");
+  $p1Banish->UnsetBanishModifier("TCC");
+  $p1Banish->UnsetBanishModifier("TCCGorgonsGaze");
   $p2Banish = new Banish(2);
-  $p2Banish->UnsetModifier("TCL");
-  $p2Banish->UnsetModifier("TCC");
-  $p2Banish->UnsetModifier("TCCGorgonsGaze");
+  $p2Banish->UnsetBanishModifier("TCL");
+  $p2Banish->UnsetBanishModifier("TCC");
+  $p2Banish->UnsetBanishModifier("TCCGorgonsGaze");
 }
 
 function ReplaceBanishModifier($player, $oldMod, $newMod)
 {
   $banish = new Banish($player);
-  $banish->UnsetModifier($oldMod, $newMod);
+  $banish->UnsetBanishModifier($oldMod, $newMod);
 }
 
 //TT = This Turn
@@ -1008,26 +1008,58 @@ function UnsetTurnBanish()
 {
   global $defPlayer, $mainPlayer;
   $p1Banish = new Banish(1);
-  $p1Banish->UnsetModifier("TT");
-  $p1Banish->UnsetModifier("INST");
-  $p1Banish->UnsetModifier("sonic_boom_yellow");
-  $p1Banish->UnsetModifier("blossoming_spellblade_red");
-  $p1Banish->UnsetModifier("TTFromOtherPlayer");
-  $p1Banish->UnsetModifier("shadowrealm_horror_red");
-  $p1Banish->UnsetModifier("REMOVEGRAVEYARD");
+  $p1Banish->UnsetBanishModifier("TT");
+  $p1Banish->UnsetBanishModifier("INST");
+  $p1Banish->UnsetBanishModifier("sonic_boom_yellow");
+  $p1Banish->UnsetBanishModifier("blossoming_spellblade_red");
+  $p1Banish->UnsetBanishModifier("TTFromOtherPlayer");
+  $p1Banish->UnsetBanishModifier("shadowrealm_horror_red");
+  $p1Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
   $p2Banish = new Banish(2);
-  $p2Banish->UnsetModifier("TT");
-  $p2Banish->UnsetModifier("INST");
-  $p2Banish->UnsetModifier("sonic_boom_yellow");
-  $p2Banish->UnsetModifier("blossoming_spellblade_red");
-  $p2Banish->UnsetModifier("TTFromOtherPlayer");
-  $p2Banish->UnsetModifier("shadowrealm_horror_red");
-  $p2Banish->UnsetModifier("REMOVEGRAVEYARD");
+  $p2Banish->UnsetBanishModifier("TT");
+  $p2Banish->UnsetBanishModifier("INST");
+  $p2Banish->UnsetBanishModifier("sonic_boom_yellow");
+  $p2Banish->UnsetBanishModifier("blossoming_spellblade_red");
+  $p2Banish->UnsetBanishModifier("TTFromOtherPlayer");
+  $p2Banish->UnsetBanishModifier("shadowrealm_horror_red");
+  $p2Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($defPlayer, "NTSTONERAIN", "STONERAIN");
   ReplaceBanishModifier($defPlayer, "TRAPDOOR", "FACEDOWN");
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
+}
+
+function ResetStolenCards()
+{
+  global $mainPlayer;
+  UnsetItemModifier($mainPlayer, "Temporary");
+  UnsetAllyModifier($mainPlayer, "Temporary");
+}
+
+
+function UnsetItemModifier($player, $modifier, $newMod = "-") {
+  $items = &GetItems($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
+    for($i=0; $i<count($items); $i+=ItemPieces()) {
+      $cardModifier = $items[$i+8];
+      if($cardModifier == $modifier) {
+        $items[$i+8] = "-";
+        StealItem($player, $i, $otherPlayer, "THEIRITEM");
+      }
+    }
+}
+
+function UnsetAllyModifier($player, $modifier, $newMod = "-") {
+  $allies = &GetAllies($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
+    for($i=0; $i<count($allies); $i+=AllyPieces()) {
+      $cardModifier = $allies[$i+14];
+      if($cardModifier == $modifier) {
+        $allies[$i+14] = "-";
+        StealAlly($player, $i, $otherPlayer, "THEIRALLY");
+      }
+    }
 }
 
 function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "")

@@ -1,6 +1,6 @@
 <?php
 
-function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true, $tapped = 0)
+function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true, $tapped = 0, $from = "-")
 {
   global $EffectContext;
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -24,6 +24,8 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     array_push($allies, 0); //Damage dealt to the opponent
     array_push($allies, $tapped); //tapped
     array_push($allies, AllySteamCounters($cardID)); //steam counters
+    array_push($allies, $from); //where it's played from
+    array_push($allies, 0); //Modifier - e.g "Temporary" for cards that get stolen for a turn.
     if ($cardID == "ouvia") {
       WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
       Transform($player, "Ash", "aether_ashwing", true);
@@ -475,4 +477,30 @@ function GetPerchedAllies($player)
     if (HasPerched($char[$i]) && $char[$i + 1] != 0) array_push($perchedAllies, $i);
   }
   return implode(",", $perchedAllies);
+}
+
+function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0)
+{
+  $srcAlly = &GetAllies($srcPlayer);
+  $destAlly = &GetAllies($destPlayer);
+  for ($i = 0; $i < AllyPieces(); ++$i) {
+    if($i == 14 && $mod != 0) {
+      $srcAlly[$index + $i] = $mod; //14 - Modifier or e.g "Temporary" for cards that get stolen for a turn.
+      $srcAlly[$index + 11] = 0; //Untap
+    }
+    if($i == 13) //13 - Where it's played from ... Important for where it'll go when destroyed for example.
+    {
+      if (strpos($srcAlly[$index + $i], 'MY') === 0) {
+          $srcAlly[$index + $i] = 'THEIR' . substr($srcAlly[$index + $i], 2);
+      } elseif (strpos($srcAlly[$index + $i], 'THEIR') === 0) {
+          $srcAlly[$index + $i] = 'MY' . substr($srcAlly[$index + $i], 5);
+      } else {
+          $srcAlly[$index + $i] = 'THEIR' . $srcAlly[$index + $i];
+      }
+    }
+    array_push($destAlly, $srcAlly[$index + $i]);
+    unset($srcAlly[$index + $i]);
+  }
+  array_pop($srcAlly);
+  $srcAlly = array_values($srcAlly);
 }
