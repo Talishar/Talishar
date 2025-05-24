@@ -3390,12 +3390,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "promising_terrain_blue":
+      DestroyAuraUniqueID($player, $uniqueID);
       $numSeismic = CountAura("seismic_surge", $player);
       if ($numSeismic >=3) {
         Draw($player, effectSource:$parameter);
         GainHealth(1, $player);
       }
-      DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "surface_shaking_blue":
       $numSeismic = CountAura("seismic_surge", $player);
