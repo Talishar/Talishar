@@ -1017,7 +1017,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "smash_up_red":
     case "tongue_tied_red":
     case "splatter_skull_red":
-    case "kiss_of_death_red":
     case "mark_the_prey_red":
     case "mark_the_prey_yellow":
     case "mark_the_prey_blue":
@@ -1057,6 +1056,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
+    case "kiss_of_death_red":
+      if (IsHeroAttackTarget() || $targetPlayer == $defPlayer) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
     case "dishonor_blue":
       if(IsHeroAttackTarget() && HasAttackName("Surging Strike") && HasAttackName("Descendent Gustwave") && HasAttackName("Bonds of Ancestry"))
       {
@@ -1402,7 +1406,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
     case "drop_the_anchor_red":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      if (IsHeroAttackTarget() || !$fromCombat) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
     case "take_a_stab_yellow":
