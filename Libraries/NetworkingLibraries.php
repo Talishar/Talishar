@@ -2894,7 +2894,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         }
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         AddCurrentTurnEffect($cardID, $currentPlayer, "CC", $combatChain[$index + 7]);
-        MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD," . $currentPlayer, silent: true);
+        MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD", silent: true);
       }
       break;
     case "lexi_livewire":
