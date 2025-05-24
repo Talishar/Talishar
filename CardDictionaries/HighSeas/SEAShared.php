@@ -50,8 +50,8 @@ function SEAAbilityType($cardID, $from="-"): string
     "marlynn" => "A",
     "hammerhead_harpoon_cannon" => "A",
 
-    "diamond_amulet_blue", "opal_amulet_blue",  "platinum_amulet_blue", "ruby_amulet_blue" => "I",
-    "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue" => "A",
+    "diamond_amulet_blue", "opal_amulet_blue",  "platinum_amulet_blue", "ruby_amulet_blue", "amethyst_amulet_blue" => "I",
+    "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue"=> "A",
     "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => $from == "PLAY" ? "I" : "AA",
 
     "goldkiss_rum" => "I",
