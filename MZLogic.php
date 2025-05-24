@@ -63,7 +63,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
   return $lastResult;
 }
 
-function MZRemove($player, $lastResult, $parameter)
+function MZRemove($player, $lastResult, $parameter="-")
 {
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = $player == 1 ? 2 : 1;
