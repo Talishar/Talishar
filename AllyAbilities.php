@@ -42,7 +42,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
 function CheckAllyDeath($player)
 {
   $allies = &GetAllies($player);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
     if ($allies[$i + 2] <= 0) DestroyAlly($player, $i, false, true, $allies[$i + 5]);
   }
 }
