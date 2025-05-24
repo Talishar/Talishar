@@ -3404,7 +3404,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("MULTICHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
       AddDecisionQueue("MULTIADDDECK", $player, "-", 1);
-      AddDecisionQueue("SPECIFICCARD", $player, "SIFT", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "SURFACESHAKING", 1);
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "crash_and_bash_red":

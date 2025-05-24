@@ -474,7 +474,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $numCards = SearchCount($lastResult);
       WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
       for ($i = 0; $i < $numCards; ++$i) {
-        Draw($player);
+        Draw($player, effectSource:"sift_red");
+      }
+      return "1";
+    case "SURFACESHAKING":
+      $numCards = SearchCount($lastResult);
+      WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
+      for ($i = 0; $i < $numCards; ++$i) {
+        Draw($player, effectSource:"surface_shaking_blue");
       }
       return "1";
     case "ENCASEDAMAGE":
