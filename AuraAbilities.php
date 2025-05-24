@@ -13,6 +13,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    return;
+  }
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
   if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
@@ -269,6 +273,7 @@ function AuraPlayCounters($cardID)
 {
   switch ($cardID) {
     case "zen_state":
+    case "preach_modesty_red":
       return 1;
     case "runeblood_incantation_red":
     case "malefic_incantation_red":
@@ -747,6 +752,7 @@ function AuraBeginningActionPhaseAbilities(){
       case "emerging_dominance_yellow":
       case "emerging_dominance_blue":
       case "zen_state":
+      case "preach_modesty_red":
       case "runeblood_barrier_yellow":
       case "soul_shackle":
       case "emerging_avalanche_red":

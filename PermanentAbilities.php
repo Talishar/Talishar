@@ -5,6 +5,10 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   global $EffectContext;
   $permanents = &GetPermanents($player);
   $otherPlayer = $player == 1 ? 2 : 1;
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    return;
+  }
   if(TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);

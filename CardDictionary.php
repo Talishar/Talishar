@@ -3763,7 +3763,7 @@ function AuraDefaultHoldTriggerState($cardID): int
     "forged_for_war_yellow", "show_time_blue", "blessing_of_deliverance_red", "blessing_of_deliverance_yellow", "blessing_of_deliverance_blue", "emerging_power_red", "emerging_power_yellow", "emerging_power_blue", "stonewall_confidence_red", "stonewall_confidence_yellow", "stonewall_confidence_blue",
     "seismic_surge", "eloquence", "tome_of_aeo_blue", "fog_down_yellow", "sigil_of_protection_red", "sigil_of_protection_yellow", "sigil_of_protection_blue", "runeblood_incantation_red", "runeblood_incantation_yellow", "runeblood_incantation_blue", "pyroglyphic_protection_red",
     "pyroglyphic_protection_yellow", "pyroglyphic_protection_blue", "emerging_avalanche_red", "emerging_avalanche_yellow", "emerging_avalanche_blue", "strength_of_sequoia_red", "strength_of_sequoia_yellow", "strength_of_sequoia_blue", "embolden_red", "embolden_yellow", "embolden_blue",
-    "embodiment_of_earth", "embodiment_of_lightning", "frostbite", "stamp_authority_blue", "towering_titan_red", "towering_titan_yellow", "towering_titan_blue", "emerging_dominance_red", "emerging_dominance_yellow", "emerging_dominance_blue", "zen_state",
+    "embodiment_of_earth", "embodiment_of_lightning", "frostbite", "stamp_authority_blue", "towering_titan_red", "towering_titan_yellow", "towering_titan_blue", "emerging_dominance_red", "emerging_dominance_yellow", "emerging_dominance_blue", "zen_state", "preach_modesty_red",
     "runeblood_barrier_yellow", "soul_shackle", "channel_mount_isen_blue" => 0,
     "runechant", "spellbane_aegis" => 1,
     default => 2

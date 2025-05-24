@@ -762,21 +762,21 @@ function CharacterCostModifier($cardID, $from, $cost)
   return CostCantBeModified($cardID) ? 0 : $modifier;
 }
 
-function EquipEquipment($player, $card, $slot = "")
+function EquipEquipment($player, $cardID, $slot = "")
 {
   if ($slot == "") {
-    if (SubtypeContains($card, "Head")) $slot = "Head";
-    else if (SubtypeContains($card, "Chest")) $slot = "Chest";
-    else if (SubtypeContains($card, "Arms")) $slot = "Arms";
-    else if (SubtypeContains($card, "Legs")) $slot = "Legs";
+    if (SubtypeContains($cardID, "Head")) $slot = "Head";
+    else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
+    else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
+    else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
   }
   $char = &GetPlayerCharacter($player);
-  $uniqueID = GetUniqueId($card, $player);
+  $uniqueID = GetUniqueId($cardID, $player);
   $replaced = 0;
   //Replace the first destroyed weapon; if none you can't re-equip
   for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
     if (SubtypeContains($char[$i], $slot, $player, $uniqueID)) {
-      $char[$i] = $card;
+      $char[$i] = $cardID;
       $char[$i + 1] = 2;
       $char[$i + 2] = 0;
       $char[$i + 3] = 0;
@@ -785,10 +785,10 @@ function EquipEquipment($player, $card, $slot = "")
       $char[$i + 6] = 0;
       $char[$i + 7] = 0;
       $char[$i + 8] = 0;
-      $char[$i + 9] = CharacterDefaultActiveState($card);
+      $char[$i + 9] = CharacterDefaultActiveState($cardID);
       $char[$i + 10] = "-";
       $char[$i + 11] = $uniqueID;
-      $char[$i + 12] = HasCloaked($card, $player);
+      $char[$i + 12] = HasCloaked($cardID, $player);
       $char[$i + 13] = 0;
       $char[$i + 14] = 0;
       $replaced = 1;
@@ -796,7 +796,7 @@ function EquipEquipment($player, $card, $slot = "")
   }
   if (!$replaced) {
     $insertIndex = count($char);
-    array_splice($char, $insertIndex, 0, $card);
+    array_splice($char, $insertIndex, 0, $cardID);
     array_splice($char, $insertIndex + 1, 0, 2);
     array_splice($char, $insertIndex + 2, 0, 0);
     array_splice($char, $insertIndex + 3, 0, 0);
@@ -808,14 +808,14 @@ function EquipEquipment($player, $card, $slot = "")
     array_splice($char, $insertIndex + 9, 0, 2);
     array_splice($char, $insertIndex + 10, 0, "-");
     array_splice($char, $insertIndex + 11, 0, $uniqueID);
-    array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
+    array_splice($char, $insertIndex + 12, 0, HasCloaked($cardID, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
     array_splice($char, $insertIndex + 14, 0, 0); //tapped
   }
-  if ($card == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
-  if ($card == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
-  if ($card == "frostbite") AddCurrentTurnEffect("frostbite-" . $uniqueID . "," . $slot, $player);
-  AddEquipTrigger($card, $player);
+  if ($cardID == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
+  if ($cardID == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
+  if ($cardID == "frostbite") AddCurrentTurnEffect("frostbite-" . $uniqueID . "," . $slot, $player);
+  AddEquipTrigger($cardID, $player);
 }
 
 function AddEquipTrigger($cardID, $player)
@@ -844,28 +844,33 @@ function NumOccupiedHands($player)
   return $numHands;
 }
 
-function EquipWeapon($player, $card, $source = "-")
+function EquipWeapon($player, $cardID, $source = "-")
 {
+  global $EffectContext;
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchCurrentTurnEffects("ripple_away_blue", $player) != "" || (SearchCurrentTurnEffects("ripple_away_blue", $otherPlayer)) != "") {
-    if (TypeContains($card, "T", $player, true) && (CardType($source) == "A" || CardType($source) == "AA")) {
+    if (TypeContains($cardID, "T", $player, true) && (CardType($source) == "A" || CardType($source) == "AA")) {
       WriteLog("You can't equip token weapons from an action card under ripple away");
       return;
     }
+  }
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    return;
   }
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;
   $replaced = 0;
   $numHands = NumOccupiedHands($player);
-  $uniqueID = GetUniqueId($card, $player);
+  $uniqueID = GetUniqueId($cardID, $player);
   //check if you have enough hands to equip it
-  if ((Is1H($card) && $numHands < 2) || (!Is1H($card) && $numHands == 0)){
+  if ((Is1H($cardID) && $numHands < 2) || (!Is1H($cardID) && $numHands == 0)){
     //Replace the first destroyed weapon; if none you can't re-equip
     for ($i = CharacterPieces(); $i < count($char) && !$replaced; $i += CharacterPieces()) {
       if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
         $lastWeapon = $i;
         if ($char[$i + 1] == 0) {
-          $char[$i] = $card;
+          $char[$i] = $cardID;
           $char[$i + 1] = 2;
           $char[$i + 2] = 0;
           $char[$i + 3] = 0;
@@ -874,10 +879,10 @@ function EquipWeapon($player, $card, $source = "-")
           $char[$i + 6] = 0;
           $char[$i + 7] = 0;
           $char[$i + 8] = 0;
-          $char[$i + 9] = CharacterDefaultActiveState($card);
+          $char[$i + 9] = CharacterDefaultActiveState($cardID);
           $char[$i + 10] = "-";
           $char[$i + 11] = $uniqueID;
-          $char[$i + 12] = HasCloaked($card, $player);
+          $char[$i + 12] = HasCloaked($cardID, $player);
           $char[$i + 13] = 0;
           $char[$i + 14] = 0;
           $replaced = 1;
@@ -887,7 +892,7 @@ function EquipWeapon($player, $card, $source = "-")
   }
   if ($numHands < 2 && !$replaced) {
     $insertIndex = $lastWeapon + CharacterPieces();
-    array_splice($char, $insertIndex, 0, $card);
+    array_splice($char, $insertIndex, 0, $cardID);
     array_splice($char, $insertIndex + 1, 0, 2);
     array_splice($char, $insertIndex + 2, 0, 0);
     array_splice($char, $insertIndex + 3, 0, 0);
@@ -898,8 +903,8 @@ function EquipWeapon($player, $card, $source = "-")
     array_splice($char, $insertIndex + 8, 0, 0);
     array_splice($char, $insertIndex + 9, 0, 2);
     array_splice($char, $insertIndex + 10, 0, "-");
-    array_splice($char, $insertIndex + 11, 0, GetUniqueId($card, $player));
-    array_splice($char, $insertIndex + 12, 0, HasCloaked($card, $player));
+    array_splice($char, $insertIndex + 11, 0, GetUniqueId($cardID, $player));
+    array_splice($char, $insertIndex + 12, 0, HasCloaked($cardID, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
   }
   return $uniqueID;

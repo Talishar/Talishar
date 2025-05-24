@@ -1790,6 +1790,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "zen_state":
+    case "preach_modesty_red":
       $index = SearchAurasForUniqueID($uniqueID, $player);
       if ($auras[$index + 2] == 0) {
         DestroyAuraUniqueID($player, $uniqueID);
@@ -3887,6 +3888,7 @@ function HasBalanceCounters($cardID)
 {
   switch ($cardID) {
     case "zen_state":
+    case "preach_modesty_red":
       return true;
     default:
       return false;

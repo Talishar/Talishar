@@ -1,46 +1,50 @@
 <?php
 
 
-function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
+function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
-  global $turn, $EffectContext, $CS_NumGoldCreated;
+  global $EffectContext, $CS_NumGoldCreated;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "") $effectController = $player;
-  if (!DelimStringContains(CardSubType($item), "Item") && $item != "levia_redeemed") return;
-  if (TypeContains($item, "T", $player)) $isToken = true;
+  if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    return;
+  }
+  if (TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
   if ($number <= 0) return; // there's no event in this case
   $items = &GetItems($player);
-  $myHoldState = ItemDefaultHoldTriggerState($item, $player);
+  $myHoldState = ItemDefaultHoldTriggerState($cardID, $player);
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
-  $theirHoldState = ItemDefaultHoldTriggerState($item, $otherPlayer);
+  $theirHoldState = ItemDefaultHoldTriggerState($cardID, $otherPlayer);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   for ($i = 0; $i < $number; ++$i) {
-    $uniqueID = GetUniqueId($item, $player);
-    $steamCounters = SteamCounterLogic($item, $player, $uniqueID) + $steamCounterModifier;
+    $uniqueID = GetUniqueId($cardID, $player);
+    $steamCounters = SteamCounterLogic($cardID, $player, $uniqueID) + $steamCounterModifier;
     $index = count($items);
-    array_push($items, $item);
+    array_push($items, $cardID);
     array_push($items, $steamCounters);
     array_push($items, 2);
-    array_push($items, ItemUses($item));
+    array_push($items, ItemUses($cardID));
     array_push($items, $uniqueID);
     array_push($items, $myHoldState);
     array_push($items, $theirHoldState);
     array_push($items, 0);
-    array_push($items, ItemModalities($item));
+    array_push($items, ItemModalities($cardID));
     array_push($items, $from);
     array_push($items, 0); //enters untapped
-    if (HasCrank($item, $player)) Crank($player, $index, $mainPhase);
+    if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
   }
 
   $char = &GetPlayerCharacter($player);
   $hero = ShiyanaCharacter($char[0], $player);
-  if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($item, "MECHANOLOGIST", $player)) {
+  if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($cardID, "MECHANOLOGIST", $player)) {
     if ($char[$symbiosisIndex + 2] < 6) ++$char[$symbiosisIndex + 2];
   }
-  if ($item == "gold") {
+  if ($cardID == "gold") {
     IncrementClassState($player, $CS_NumGoldCreated, $number);
     UndestroyHook($player);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
@@ -49,19 +53,19 @@ function PutItemIntoPlayForPlayer($item, $player, $steamCounterModifier = 0, $nu
       Draw($player);
     }
   }
-  if ($item == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($player, 0)) {
+  if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($player, 0)) {
     AddLayer("TRIGGER", $player, $hero);
   }
   //enters the arena triggers
-  switch ($item) {
+  switch ($cardID) {
     case "stasis_cell_blue":
     case "null_time_zone_blue":
-      AddLayer("TRIGGER", $player, $item);
+      AddLayer("TRIGGER", $player, $cardID);
       break;
     default:
       break;
   }
-  PlayAbility($item, $from, 0);
+  PlayAbility($cardID, $from, 0);
 }
 
 function ItemUses($cardID)
@@ -487,18 +491,18 @@ function ItemDamageTakenAbilities($player, $damage)
   }
 }
 
-function SteamCounterLogic($item, $playerID, $uniqueID)
+function SteamCounterLogic($cardID, $playerID, $uniqueID)
 {
   global $CS_NumBoosted;
-  $counters = ETASteamCounters($item);
-  switch ($item) {
+  $counters = ETASteamCounters($cardID);
+  switch ($cardID) {
     case "absorption_dome_yellow":
       $counters += GetClassState($playerID, $CS_NumBoosted);
       break;
     default:
       break;
   }
-  if (ClassContains($item, "MECHANOLOGIST", $playerID) && CardCost($item) >= 0 && CardCost($item) <= 2) {
+  if (ClassContains($cardID, "MECHANOLOGIST", $playerID) && CardCost($cardID) >= 0 && CardCost($cardID) <= 2) {
     $items = &GetItems($playerID);
     for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
       if ($items[$i] == "plasma_mainline_red") {
@@ -506,7 +510,7 @@ function SteamCounterLogic($item, $playerID, $uniqueID)
       }
     }
   }
-  if(SearchCurrentTurnEffects("master_cog_yellow-".$item, $playerID, true)) $counters += 1;
+  if(SearchCurrentTurnEffects("master_cog_yellow-".$cardID, $playerID, true)) $counters += 1;
   return $counters;
 }
 
