@@ -241,6 +241,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "blow_for_a_blow_red":
       if(PlayerHasLessHealth($currentPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
+      else $rv = "";
       return $rv;
     case "deny_redemption_red":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
