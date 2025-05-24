@@ -114,6 +114,7 @@ function CardType($cardID, $from="")
     "graphene_chelicera" => "W,T",
     "valda_seismic_impact" => "C",
     "chum_friendly_first_mate_yellow" => "A", //gravy allies
+    "anka_drag_under_yellow" => "A",
     "chowder_hearty_cook_yellow" => "A",
     "cutty_shark_quick_clip_yellow" => "A",
     "scooba_salty_sea_dog_yellow" => "A",
@@ -347,6 +348,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "barnacle_yellow":
     case "riggermortis_yellow":
     case "oysten_heart_of_gold_yellow":
+    case "anka_drag_under_yellow":
       return "Ally";
     default:
       return "";
@@ -445,6 +447,7 @@ function CardClass($cardID)
     case "oysten_heart_of_gold_yellow":
     case "wailer_humperdinck_yellow":
     case "chum_friendly_first_mate_yellow":
+    case "anka_drag_under_yellow":
     case "chowder_hearty_cook_yellow":
     case "cutty_shark_quick_clip_yellow":
     case "scooba_salty_sea_dog_yellow":
@@ -1198,6 +1201,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "war_cry_of_bellona_yellow" => "I,AR",
 
     "chum_friendly_first_mate_yellow" => ($from != "PLAY") ? "" : "I,AA",
+    "anka_drag_under_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "moray_le_fay_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "shelly_hardened_traveler_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "sawbones_dock_hand_yellow" => ($from != "PLAY") ? "" : "I,AA",
@@ -1343,6 +1347,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       return $names;
     case "chum_friendly_first_mate_yellow":
+    case "anka_drag_under_yellow":
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
@@ -1579,7 +1584,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if (($cardID == "chum_friendly_first_mate_yellow") && $from == "PLAY") {
+  if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "anka_drag_under_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
@@ -2983,6 +2988,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":
+    case "anka_drag_under_yellow":
     case "sawbones_dock_hand_yellow":
     case "chowder_hearty_cook_yellow":
     case "cutty_shark_quick_clip_yellow":

@@ -17,6 +17,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
+    "anka_drag_under_yellow" => "I",
     "moray_le_fay_yellow" => "I",
     "shelly_hardened_traveler_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
@@ -442,6 +443,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chum_friendly_first_mate_yellow":
+    case "anka_drag_under_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
       break;
@@ -1299,6 +1301,7 @@ function HasWateryGrave($cardID): bool
 {
   return match($cardID) {
     "chum_friendly_first_mate_yellow" => true,
+    "anka_drag_under_yellow" => true,
     "riggermortis_yellow" => true,
     "swabbie_yellow" => true,
     "limpit_hop_a_long_yellow" => true,

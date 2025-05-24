@@ -3198,9 +3198,13 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   $cardID = $deck->Top(remove: true);
   if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
     BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
-  } else {
+  } 
+  else {
     array_push($hand, $cardID);
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
+  }
+  if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true)) {
+    PummelHit($player);
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);

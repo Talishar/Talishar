@@ -2511,6 +2511,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
       AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
       break;
     case "chum_friendly_first_mate_yellow":
+    case "anka_drag_under_yellow":
       $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "I") {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDWATERYGRAVE,-,NOPASS");
