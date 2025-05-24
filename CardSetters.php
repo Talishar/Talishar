@@ -305,8 +305,8 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         $search = (ShouldAutotargetOpponent($player)) ? "THEIRALLY" : "THEIRALLY&MYALLY";
         AddDecisionQueue("MULTIZONEINDICES", $player, $search);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an ally to tap", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZTAP", $player, "<-", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
         break;
       case "scouting_shot_red":
         LookAtTopCard($player, $cardID);

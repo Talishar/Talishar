@@ -3444,6 +3444,31 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $player, 1, 1);
       break;
+    case "nettling_shot_red":
+      $zone = explode("-", $target)[0];
+      $uid = explode("-", $target)[1];
+      $otherPlayer = $player == 1 ? 2 : 1;
+      switch ($zone) {
+        case "THEIRALLY":
+          $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $otherPlayer);
+          break;
+        case "MYALLY":
+          $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $player);
+          break;
+        case "THEIRCHAR":
+          $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer);
+          break;
+        case "THEIRCHARUID":
+          $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer);
+          break;
+        case "MYCHAR":
+          $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $player);
+          break;
+        case "MYCHARUID":
+          $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $player);
+          break;
+      }
+      Tap($MZIndex, $player);
     default:
       break;
   }

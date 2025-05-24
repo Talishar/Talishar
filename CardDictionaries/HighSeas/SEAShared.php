@@ -458,13 +458,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (str_contains($target, "ALLY")) {
           $targetPlayer = $zone == "MYALLY" ? $currentPlayer : $otherPlayer;
           $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
-          Tap("$zone-$allyInd", $targetPlayer);
+          Tap("$zone-$allyInd", $currentPlayer);
         }
         else {
           $targetPlayer = $zone == "MYCHAR" ? $currentPlayer : $otherPlayer;
           $charInd = SearchCharacterForUniqueID($targetUid, $targetPlayer);
           $zone = $zone == "THEIRCHARUID" ? "THEIRCHAR": $zone;
-          Tap("$zone-$charInd", $targetPlayer);
+          Tap("$zone-$charInd", $currentPlayer);
         }
       }
       break;
@@ -1009,7 +1009,7 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $indices);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a hero or ally to tap", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
       break;
     case "undercover_acquisition_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
@@ -1096,14 +1096,16 @@ function Tap($MZindex, $player, $tapState=1)
 {
   global $CS_NumGoldCreated;
   $zoneName = explode("-", $MZindex)[0];
-  $zone = &GetMZZone($player, $zoneName);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $targetPlayer = (str_contains($zoneName, "THEIR")) ? $otherPlayer : $player;
+  $zone = &GetMZZone($targetPlayer, $zoneName);
   if (!isset(explode("-", $MZindex)[1])) {
     WriteLog("Something odd happened, please submit a bug report");
     return;
   }
   $index = intval(explode("-", $MZindex)[1]);
   //Untap
-  if($tapState == 0 && !isUntappedPrevented($zone[$index], $zoneName, $player)) {
+  if($tapState == 0 && !isUntappedPrevented($zone[$index], $zoneName, $targetPlayer)) {
     if($zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1) DestroyCharacter($player, $index);
     elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
