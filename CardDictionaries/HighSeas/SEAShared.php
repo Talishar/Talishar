@@ -454,9 +454,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
       }
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYDISCARD,{0}", 1);
       AddDecisionQueue("MZSETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("WRITELOG", $currentPlayer, "Card chosen: <0>", 1);
-      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYDISCARD", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ALLCARDWATERYGRAVEORPASS", $currentPlayer, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
