@@ -701,6 +701,7 @@ function isUnimplemented($cardID) {
         "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => false,
         "jack_be_nimble_red", "jack_be_quick_red" => false,
         "money_or_your_life_red", "money_or_your_life_yellow", "money_or_your_life_blue" => false,
+        "clap_em_in_irons_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

@@ -483,6 +483,23 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       break;
+    case "clap_em_in_irons_blue":
+      $zone = explode("-", $target)[0];
+      $targetUid = explode("-", $target)[1];
+      if (str_contains($target, "ALLY")) {
+        $targetPlayer = $zone == "MYALLY" ? $currentPlayer : $otherPlayer;
+        $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
+        Tap("$zone-$allyInd", $currentPlayer);
+      }
+      else {
+        $targetPlayer = $zone == "MYCHAR" ? $currentPlayer : $otherPlayer;
+        $charInd = SearchCharacterForUniqueID($targetUid, $targetPlayer);
+        $zone = $zone == "THEIRCHARUID" ? "THEIRCHAR": $zone;
+        Tap("$zone-$charInd", $currentPlayer);
+      }
+      AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
+      AddNextTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
+      break;
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
       break;
@@ -1204,6 +1221,7 @@ function Tap($MZindex, $player, $tapState=1)
   $zoneName = explode("-", $MZindex)[0];
   $otherPlayer = $player == 1 ? 2 : 1;
   $targetPlayer = (str_contains($zoneName, "THEIR")) ? $otherPlayer : $player;
+  
   $zone = &GetMZZone($targetPlayer, $zoneName);
   if (!isset(explode("-", $MZindex)[1])) {
     WriteLog("Something odd happened, please submit a bug report");
@@ -1211,7 +1229,7 @@ function Tap($MZindex, $player, $tapState=1)
   }
   $index = intval(explode("-", $MZindex)[1]);
   //Untap
-  if($tapState == 0 && !isUntappedPrevented($zone[$index], $zoneName, $targetPlayer)) {
+  if($tapState == 0 && !isUntappedPrevented($MZindex, $zoneName, $targetPlayer)) {
     if($zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1) DestroyCharacter($player, $index);
     elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
@@ -1236,12 +1254,17 @@ function CheckTapped($MZindex, $player): bool
   return false;
 }
 
-function isUntappedPrevented($cardID, $zoneName, $player): bool
+function isUntappedPrevented($MZindex, $zoneName, $player): bool
 {
   $untapPrevented = false;
-  if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains($cardID, "PIRATE", $player)) {
-    $untapPrevented = true;
+  $zoneName = explode("-", $MZindex)[0];
+  $index = intval(explode("-", $MZindex)[1]);
+  $zone = &GetMZZone($player, $zoneName);
+  if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
+    return true;
   }
+   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ?? $untapPrevented = true;
+  elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ?? $untapPrevented = true;
   return $untapPrevented;
 }
 

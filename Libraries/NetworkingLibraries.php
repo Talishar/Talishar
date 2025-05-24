@@ -2523,7 +2523,6 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
       }
       break;
     case "moray_le_fay_yellow":
-      $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "I") {
         $context = "Choose an ally to receive ".CardLink($cardID, $cardID)."'s blessing";
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY&THEIRALLY");
@@ -2534,15 +2533,22 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
       }
       break;
     case "kelpie_tangled_mess_yellow":
-      $allies = GetAllies($currentPlayer);
       if (GetResolvedAbilityType($cardID, $from) == "A") {
-        $context = "Choose an ally to tangle";
+        $context = "Choose an a target to tangle";
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY&THEIRALLY&MYCHAR:type=C&THEIRCHAR:type=C");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       }
+      break;
+    case "clap_em_in_irons_blue":
+        $context = "Choose an a target to lock";
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY:class=PIRATE&THEIRALLY:class=PIRATE&MYCHAR:type=C;class=PIRATE&THEIRCHAR:type=C;class=PIRATE");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     default:
       break;
