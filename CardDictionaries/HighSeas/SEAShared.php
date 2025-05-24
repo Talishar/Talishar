@@ -1195,19 +1195,31 @@ function SEAHitEffect($cardID): void
 
 function GetUntapped($player, $zone, $cond="-")
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($zone) {
     case "MYCHAR":
       $arr = GetPlayerCharacter($player);
+      $count = CharacterPieces();
+      break;
+    case "THEIRCHAR":
+      $arr = GetPlayerCharacter($otherPlayer);
       $count = CharacterPieces();
       break;
     case "MYALLY":
       $arr = GetAllies($player);
       $count = AllyPieces();
       break;
+    case "THEIRALLY":
+      $arr = GetAllies($otherPlayer);
+      $count = AllyPieces();
+      break;
     case "MYITEMS":
       $arr = GetItems($player);
       $count = ItemPieces();
       break;
+    case "THEIRITEMS":
+      $arr = GetItems($otherPlayer);
+      $count = ItemPieces();
     default:
       return "";
   }
