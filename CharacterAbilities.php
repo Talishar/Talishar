@@ -605,8 +605,6 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
         case "biting_blade_red":
         case "biting_blade_yellow":
         case "biting_blade_blue":
-        case "cintari_saber":
-        case "cintari_saber_r":
         case "hatchet_of_body":
         case "hatchet_of_mind":
         case "plow_through_red":
@@ -616,6 +614,14 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
           $modifier += 1;
           array_push($powerModifiers, $mainCharacterEffects[$i + 1]);
           array_push($powerModifiers, 1);
+          break;
+        case "cintari_saber":
+        case "cintari_saber_r":
+          if($CombatChain->CurrentAttack() == $mainCharacterEffects[$i + 1]) {
+            $modifier += 1;
+            array_push($powerModifiers, $mainCharacterEffects[$i + 1]);
+            array_push($powerModifiers, 1);
+          }
           break;
         default:
           break;
