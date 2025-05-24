@@ -2501,7 +2501,9 @@ function GetTargetOfAttack($cardID = "")
       PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
       PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
     } elseif ($numTargets == 1) {
-      $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
+      PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+      PrependDecisionQueue("PASSPARAMETER", $mainPlayer, $targets);
+      PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
     }
     else WriteLog("There are no additional targets to attack!");
   }
