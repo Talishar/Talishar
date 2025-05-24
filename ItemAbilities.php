@@ -53,9 +53,6 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
       Draw($player);
     }
   }
-  if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($player, 0)) {
-    AddLayer("TRIGGER", $player, $hero);
-  }
   //enters the arena triggers
   switch ($cardID) {
     case "stasis_cell_blue":

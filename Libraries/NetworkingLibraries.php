@@ -1709,6 +1709,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
       }
     }
+    $hero = GetPlayerCharacter($currentPlayer)[0];
+    if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($currentPlayer, 0)) {
+      AddLayer("TRIGGER", $currentPlayer, $hero);
+    }
     $isFireVein = ($CombatChain->AttackCard()->ID() == "obsidian_fire_vein" || $CombatChain->AttackCard()->ID() == "obsidian_fire_vein_r");
     if($CombatChain->HasCurrentLink() && $isFireVein && $currentPlayer == $mainPlayer && !SearchCurrentTurnEffects("obsidian_fire_vein", $currentPlayer) && !SearchCurrentTurnEffects("obsidian_fire_vein_r", $currentPlayer)) {
       if (!IsStaticType($cardType, $from, $cardID) && (TalentContains($cardID, "DRACONIC", $currentPlayer)) && GetResolvedAbilityType($cardID, $from) != "I") {
