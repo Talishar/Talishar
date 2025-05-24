@@ -2402,7 +2402,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
   $cardType = CardType($cardID);
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from);
   if (IsStaticType($cardType, $from, $cardID)) {
-    $hasGoAgain = AbilityHasGoAgain($cardID);
+    $hasGoAgain = AbilityHasGoAgain($cardID, $from);
     if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
   } else {
     $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID);

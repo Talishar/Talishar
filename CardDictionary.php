@@ -1101,6 +1101,9 @@ function HasGoAgain($cardID, $from="-"): bool|int
     case "plasma_barrel_shot":
     case "kelpie_tangled_mess_yellow":
     case "cutty_shark_quick_clip_yellow":
+    case "onyx_amulet_blue":
+    case "pearl_amulet_blue":
+    case "pounamu_amulet_blue":
       return false;
     case "limpit_hop_a_long_yellow":
       return $from == "ATTACK";
@@ -3509,7 +3512,7 @@ function ETASteamCounters($cardID)
   }
 }
 
-function AbilityHasGoAgain($cardID)
+function AbilityHasGoAgain($cardID, $from)
 {
   global $currentPlayer;
   $cardID = ShiyanaCharacter($cardID);
@@ -3538,7 +3541,7 @@ function AbilityHasGoAgain($cardID)
   else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
   else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
   else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
-  else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID);
+  else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
   switch ($cardID) {
     case "blossom_of_spring":
     case "bravo_flattering_showman":
