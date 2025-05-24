@@ -524,6 +524,12 @@ function EffectHitEffect($cardID, $from, $source = "-")
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $inds);
       AddDecisionQueue("MZTAP", $mainPlayer, "0", 1);
       return 1;
+    case "bam_bam_yellow":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to destroy", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+      break; 
     default:
       break;
   }
@@ -1915,15 +1921,11 @@ function IsCombatEffectPersistent($cardID)
     case "bloodrush_bellow_yellow":
     case "bravo_showstopper":
     case "bravo":
-      return true;
     case "rapid_fire_yellow":
-      return true;
     case "art_of_war_yellow-1":
-      return true;
     case "plunder_run_red-1":
     case "plunder_run_yellow-1":
     case "plunder_run_blue-1":
-      return true;
     case "crater_fist":
     case "breeze_rider_boots":
     case "spoils_of_war_red-2":
@@ -1931,7 +1933,6 @@ function IsCombatEffectPersistent($cardID)
     case "perch_grapplers":
     case "poison_the_tips_yellow":
     case "cash_in_yellow":
-      return true;
     case "lumina_ascension_yellow":
     case "v_of_the_vanguard_yellow":
     case "ray_of_hope_yellow":
@@ -1941,43 +1942,35 @@ function IsCombatEffectPersistent($cardID)
     case "eclipse_existence_blue":
     case "stubby_hammerers":
     case "exude_confidence_red":
-      return true;
     case "blizzard_bolt_red":
     case "blizzard_bolt_yellow":
     case "blizzard_bolt_blue":
-      return true;
     case "buzz_bolt_red":
     case "buzz_bolt_yellow":
     case "buzz_bolt_blue":
-      return true;
     case "chilling_icevein_red":
     case "chilling_icevein_yellow":
     case "chilling_icevein_blue":
-      return true;
     case "frazzle_red":
     case "frazzle_yellow":
     case "frazzle_blue":
-      return true;
     case "force_of_nature_blue-HIT":
     case "explosive_growth_red":
     case "explosive_growth_yellow":
     case "explosive_growth_blue":
     case "fulminate_yellow-BUFF":
     case "fulminate_yellow-GA":
-      return true;
     case "flashfreeze_red-DOM":
     case "flashfreeze_red-BUFF":
     case "amulet_of_earth_blue":
     case "ice_quake_red-HIT":
     case "ice_quake_yellow-HIT":
     case "ice_quake_blue-HIT":
-      return true;
     case "shock_charmers":
     case "electrify_red":
     case "electrify_yellow":
     case "electrify_blue":
     case "rampart_of_the_rams_head":
-      return true;
     case "skull_crushers":
     case "valda_brightaxe":
     case "valda_seismic_impact":
@@ -1985,7 +1978,6 @@ function IsCombatEffectPersistent($cardID)
     case "outland_skirmish_yellow-1":
     case "outland_skirmish_blue-1":
     case "rain_razors_yellow":
-      return true;
     case "this_rounds_on_me_blue":
     case "high_striker_red":
     case "high_striker_yellow":
@@ -1994,15 +1986,12 @@ function IsCombatEffectPersistent($cardID)
     case "smashing_good_time_yellow-1":
     case "smashing_good_time_blue-1":
     case "potion_of_ironhide_blue":
-      return true;
     case "glistening_steelblade_yellow-1":
-      return true;
     case "skittering_sands_red":
     case "skittering_sands_yellow":
     case "skittering_sands_blue":
     case "heat_wave":
     case "spreading_flames_red":
-      return true;
     case "berserk_yellow":
     case "roar_of_the_tiger_yellow":
     case "visit_the_imperial_forge_red":
@@ -2010,71 +1999,42 @@ function IsCombatEffectPersistent($cardID)
     case "visit_the_imperial_forge_blue":
     case "galvanic_bender-UNDER":
     case "immobilizing_shot_red":
-      return true;
     case "head_leads_the_tail_red":
     case "mask_of_shifting_perspectives":
     case "blade_cuff":
     case "knives_out_blue":
     case "premeditate_red-1":
-      return true;
     case "figment_of_triumph_yellow":
-      return true;
     case "beckoning_light_red":
-      return true;
     case "spirit_of_war_red":
-      return true;
     case "blood_dripping_frenzy_blue":
-      return true;
     case "call_down_the_lightning_yellow":
-      return true;
     case "chorus_of_ironsong_yellow":
-      return true;
     case "hack_to_reality_yellow-HIT":
-      return true;
     case "metis_archangel_of_tenacity":
-      return true;
     case "victoria_archangel_of_triumph":
-      return true;
     case "evo_steel_soul_memory_blue_equip":
-      return true;
     case $Card_LifeBanner:
-      return true;
     case $Card_ResourceBanner:
-      return true;
     case "stonewall_impasse":
     case "kassai_of_the_golden_sand":
     case "kassai":
-      return true;
     case "commanding_performance_red":
-      return true;
     case "talk_a_big_game_blue":
-      return true;
     case "fabricate_red":
-      return true;
     case "double_down_red":
-      return true;
     case "coercive_tendency_blue":
-      return true;
     case "ancestral_harmony_blue":
-      return true;
     case "sacred_art_jade_tiger_domain_blue":
-      return true;
     case "dense_blue_mist_blue-DEBUFF":
-      return true;
     case "dense_blue_mist_blue-HITPREVENTION":
-      return true;
     case "stonewall_gauntlet":
-      return true;
     case "target_totalizer":
-      return true;
     case "thrive_yellow":
-      return true;
     case "burn_up__shock_red":
     case "succumb_to_temptation_yellow":
-      return true;
     case "gauntlets_of_the_boreal_domain-E":
     case "gauntlets_of_the_boreal_domain-I":
-      return true;
     case "wrath_of_retribution_red":
     case "fire_and_brimstone_red":
     case "agility_stance_yellow":
@@ -2094,8 +2054,8 @@ function IsCombatEffectPersistent($cardID)
     case "imperial_seal_of_command_red-HIT":
     case "war_cry_of_bellona_yellow-BUFF":
     case "war_cry_of_bellona_yellow-DMG":
-      return true;
     case "fist_pump":
+    case "bam_bam_yellow":
       return true;
     default:
       return false;

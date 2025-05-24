@@ -1208,6 +1208,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "chowder_hearty_cook_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "kelpie_tangled_mess_yellow" => ($from != "PLAY") ? "" : "A,AA",
     "cutty_shark_quick_clip_yellow" => ($from != "PLAY") ? "" : "A,AA",
+    "bam_bam_yellow" => "I,AA",
     "deny_redemption_red" => "I,AA",
     "cogwerx_blunderbuss" => "I,AA",
     default => "",
@@ -1264,6 +1265,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "tip_off_yellow":
     case "tip_off_blue":
     case "deny_redemption_red":
+    case "bam_bam_yellow":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
@@ -2987,6 +2989,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "tip_off_yellow":
     case "tip_off_blue":
     case "deny_redemption_red":
+    case "bam_bam_yellow":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":

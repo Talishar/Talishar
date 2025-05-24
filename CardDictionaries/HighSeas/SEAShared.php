@@ -205,6 +205,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "drop_the_anchor_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
+    "bam_bam_yellow" => TypeContains($attackID, "Club", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
     "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => true,
@@ -245,6 +246,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       elseif(PlayerHasLessHealth($currentPlayer)) DealArcane(1, 1, "PLAYCARD", $cardID);
+      break;
+    case "bam_bam_yellow":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
       break;
     case "amethyst_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
@@ -1104,12 +1110,18 @@ function SEAHitEffect($cardID): void
       break; 
     case "hms_kraken_yellow":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an ally to destroy", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to destroy", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
       break; 
     case "hms_marlin_yellow":   
       DestroyTopCard($defPlayer);
+      break; 
+    case "bam_bam_yellow":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to destroy", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
       break; 
     case "pilfer_the_wreck_red":
     case "pilfer_the_wreck_yellow":

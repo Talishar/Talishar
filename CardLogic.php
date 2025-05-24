@@ -1057,6 +1057,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "money_or_your_life_red":
     case "money_or_your_life_yellow":
     case "money_or_your_life_blue":
+    case "bam_bam_yellow":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
@@ -1413,6 +1414,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
     case "drop_the_anchor_red":
+    case "bam_bam_yellow":
       if (IsHeroAttackTarget() || !$fromCombat) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
