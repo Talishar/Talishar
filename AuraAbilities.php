@@ -790,6 +790,7 @@ function AuraBeginningActionPhaseAbilities(){
       case "crumble_to_eternity_blue":
       case "draw_a_crowd_blue":
       case "promising_terrain_blue":
+      case "escalate_bloodshed_red":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       default:
@@ -800,7 +801,7 @@ function AuraBeginningActionPhaseAbilities(){
 
 function AuraBeginEndPhaseTriggers()
 {
-  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated, $defPlayer;
+  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated, $defPlayer, $CS_AttacksWithWeapon;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
@@ -835,6 +836,11 @@ function AuraBeginEndPhaseTriggers()
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         }
         break;
+      case "escalate_bloodshed_red":
+        if(GetClassState($mainPlayer, $CS_AttacksWithWeapon) == 0) {
+          DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        }
+        break;
       default:
         break;
     }
@@ -845,8 +851,13 @@ function AuraBeginEndPhaseTriggers()
   for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($theirAuras[$i]) {
         case "riddle_with_regret_red":
-        AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $theirAuras[$i + 6]);
-        break;
+          AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $theirAuras[$i + 6]);
+          break;
+        case "escalate_bloodshed_red":
+          if(GetClassState($mainPlayer, $CS_AttacksWithWeapon) == 0) {
+            DestroyAuraUniqueID($defPlayer, $theirAuras[$i + 6]);
+          }
+          break;
       default:
         break;
     }

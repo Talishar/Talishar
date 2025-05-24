@@ -3417,6 +3417,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DestroyAuraUniqueID($player, $uniqueID);
       }
       break;
+    case "escalate_bloodshed_red":
+      Draw($player, effectSource:$parameter);
+      break;
     case "return_fire_red":
       MZMoveCard($player, "MYHAND:subtype=Arrow", "MYBANISH,HAND,RETURNFIRE", may:true, DQContext:"Choose an arrow to banish (or pass)");
       break;

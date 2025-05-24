@@ -3202,6 +3202,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   if ($deck->Empty()) return -1;
   if (CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   $cardID = $deck->Top(remove: true);
+  if ($mainPhase && (SearchAurasForCard("escalate_bloodshed_red", 1) != "" || SearchAurasForCard("escalate_bloodshed_red", 2) != "")) {
+    LoseHealth(1, $player);
+  }
   if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
     BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
   } 
