@@ -986,6 +986,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         AddDecisionQueue("DEALARCANE", $currentPlayer, "2" . "-" . $cardID . "-" . "TRIGGER", 1);
       break;
+    case "surface_shaking_blue":
+      PlayAura("seismic_surge", $currentPlayer, 3, true, effectController:$currentPlayer, effectSource:$cardID);
+      break;
     default:
       break;
   }
