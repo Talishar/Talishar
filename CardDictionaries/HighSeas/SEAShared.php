@@ -116,6 +116,7 @@ function SEAEffectPowerModifier($cardID): int
   $attackID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
     "yo_ho_ho_blue" => 1,
+    "regain_composure_blue" => 1,
     "angry_bones_red", "angry_bones_yellow", "angry_bones_blue" => 1,
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => 1,
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => 1,
@@ -165,6 +166,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "peg_leg" => true,
     // pirate is inconsistently classed as a talent or a class leave it like this until it gets cleaned up
     "gold_baited_hook" => ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer),
+    "regain_composure_blue" => true,
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
     "fish_fingers" => true,
@@ -216,6 +218,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
+    case "regain_composure_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "amethyst_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;

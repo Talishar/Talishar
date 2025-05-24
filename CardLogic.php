@@ -1245,6 +1245,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "premeditate_red-1":
     case "target_totalizer":
     case "hack_to_reality_yellow-HIT":
+    case "regain_composure_blue":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "plunder_run_red-1": //triggers that won't apply on flick

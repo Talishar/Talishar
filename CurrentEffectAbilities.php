@@ -517,6 +517,13 @@ function EffectHitEffect($cardID, $from, $source = "-")
     case "big_game_trophy_shot_yellow":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
       return 1;
+    case "regain_composure_blue":
+      $inds = GetTapped($mainPlayer, "MYCHAR", "type=C");
+      if(empty($inds)) return 1;
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may untap your hero");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $inds);
+      AddDecisionQueue("MZTAP", $mainPlayer, "0", 1);
+      return 1;
     default:
       break;
   }
