@@ -3417,18 +3417,23 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
   for ($i = count($targetArr) - 1; $i >= 0; --$i) {
-    $MZTarget = $targetArr[$i];
-    // remove spectra cards from target
-    if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
-      array_push($spectraTargets, $uidArr[$i]);
-      unset($targetArr[$i]);
-      unset($uidArr[$i]);
-      $targetArr = array_values($targetArr);
-      $uidArr = array_values($uidArr);
-      $isSpectraTarget = true;
+    if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
+      // remove spectra cards from target
+      $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
+      if ($ind != -1) {
+        $MZTarget = "THEIRAURAS-$ind";
+        if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
+          array_push($spectraTargets, $uidArr[$i]);
+          unset($targetArr[$i]);
+          unset($uidArr[$i]);
+          $targetArr = array_values($targetArr);
+          $uidArr = array_values($uidArr);
+          $isSpectraTarget = true;
+        }
+        $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
+        $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
+      }
     }
-    $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
-    $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
   }
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
