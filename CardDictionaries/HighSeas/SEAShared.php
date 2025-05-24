@@ -803,7 +803,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "call_in_the_big_guns_yellow": 
     case "call_in_the_big_guns_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      MZMoveCard($currentPlayer, "MYHAND:subtype=Arrow", "MYARS,HAND,UP", may:true, silent:true);
+      LoadArrow($currentPlayer);
       break;
       //other cards
     case "tip_the_barkeep_blue":
