@@ -90,7 +90,7 @@ function SEAAbilityCost($cardID): int
   };
 }
 
-function SEAAbilityHasGoAgain($cardID): bool
+function SEAAbilityHasGoAgain($cardID, $from): bool
 {
   return match ($cardID) {
     "limpit_hop_a_long_yellow" => true,
@@ -107,7 +107,7 @@ function SEAAbilityHasGoAgain($cardID): bool
     "hammerhead_harpoon_cannon" => true,
     "bandana_of_the_blue_beyond" => true,
     "captains_coat", "swiftstrike_bracers", "quick_clicks", "old_knocker", "quartermasters_boots" => true,
-    "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue" => true,
+    "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue" => $from == "PLAY",
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
     "cutty_shark_quick_clip_yellow" => GetResolvedAbilityType($cardID) == "A",
     default => false,
@@ -204,10 +204,10 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "drop_the_anchor_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
-    "bam_bam_yellow" => TypeContains($attackID, "Club", $mainPlayer),
+    "bam_bam_yellow" => SubtypeContains($attackID, "Club", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
-    "chart_a_course_red" => GetClassState($mainPlayer, $CS_NumAttacks) == 1,
+    "chart_a_course_red" => GetClassState($mainPlayer, $CS_NumAttacks) == 1, 
     "chart_a_course_yellow" => GetClassState($mainPlayer, $CS_NumAttacks) == 2,
     "chart_a_course_blue" => GetClassState($mainPlayer, $CS_NumAttacks) == 3,
     "swiftstrike_bracers", "quick_clicks" => true,
@@ -250,6 +250,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "bam_bam_yellow":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        CardDiscarded($currentPlayer, $cardID, source: $cardID);
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;

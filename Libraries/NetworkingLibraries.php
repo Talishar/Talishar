@@ -3484,7 +3484,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           break;
         default:
           if ($combatChainState[$CCS_AttackTarget] == "") $target = "";
-          else $target = GetMzCards($currentPlayer, GetAttackTarget());
+          else $target = GetMZCards($currentPlayer, GetAttackTarget());
           break;
       }
     }
