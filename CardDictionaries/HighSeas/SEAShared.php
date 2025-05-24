@@ -152,6 +152,7 @@ function SEAEffectPowerModifier($cardID): int
     "chart_a_course_yellow" => 2,
     "chart_a_course_blue" => 1,
     "swiftstrike_bracers" => 2,
+    "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => 2,
     default => 0,
   };
 }
@@ -201,6 +202,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "goldkiss_rum" => true,
     "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => true,
     "swiftstrike_bracers", "quick_clicks" => true,
+    "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => true,
     default => false,
   };
 }
@@ -208,7 +210,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
-  global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain;
+  global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain, $defPlayer, $combatChainState, $CCS_CachedTotalPower;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -871,6 +873,24 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "quartermasters_boots":
       SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
       return "";
+    case "crash_down_the_gates_red":
+    case "crash_down_the_gates_yellow":
+    case "crash_down_the_gates_blue":
+      if (IsHeroAttackTarget()) {
+        $totalPower = 0;
+        $totalDefense = 0;
+        EvaluateCombatChain($totalPower, $totalDefense);
+        $deck = new Deck($defPlayer);
+        if($deck->Reveal()) {
+          $deckPower = ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source:$cardID);
+        }
+        else $deckPower = -1;
+        if ($totalPower > $deckPower) {
+          WriteLog("Your power exceeds the gates!");
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+      }
+      break;
     case "goldkiss_rum":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
@@ -1055,6 +1075,11 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a hero or ally to tap", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
+      break;
+    case "crash_down_the_gates_red":
+    case "crash_down_the_gates_yellow":
+    case "crash_down_the_gates_blue":
+      DestroyTopCard($defPlayer);
       break;
     case "undercover_acquisition_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS");

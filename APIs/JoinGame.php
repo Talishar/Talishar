@@ -698,6 +698,7 @@ function isUnimplemented($cardID) {
         "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => false,
         "bandana_of_the_blue_beyond", "captains_coat", "old_knocker" => false,
         "swiftstrike_bracers", "light_fingers", "quartermasters_boots", "quick_clicks" => false,
+        "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
