@@ -152,9 +152,7 @@ function SEAEffectPowerModifier($cardID): int
     "flying_high_yellow" => ColorContains($attackID, 2, $mainPlayer) ? 1 : 0,
     "flying_high_blue"  => ColorContains($attackID, 3, $mainPlayer) ? 1 : 0,
     "hammerhead_harpoon_cannon" => SubtypeContains($attackID, "Arrow", $mainPlayer) ? 4 : 0,
-    "chart_a_course_red" => 3,
-    "chart_a_course_yellow" => 2,
-    "chart_a_course_blue" => 1,
+    "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => 3,
     "swiftstrike_bracers" => 2,
     "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => 2,
     "jack_be_nimble_red", "jack_be_quick_red" => 1,
@@ -164,7 +162,7 @@ function SEAEffectPowerModifier($cardID): int
 
 function SEACombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
+  global $mainPlayer, $CS_NumAttacks;
   return match ($cardID) {
     "peg_leg" => true,
     // pirate is inconsistently classed as a talent or a class leave it like this until it gets cleaned up
@@ -208,7 +206,9 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "bam_bam_yellow" => TypeContains($attackID, "Club", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
-    "chart_a_course_red", "chart_a_course_yellow", "chart_a_course_blue" => true,
+    "chart_a_course_red" => GetClassState($mainPlayer, $CS_NumAttacks) == 1,
+    "chart_a_course_yellow" => GetClassState($mainPlayer, $CS_NumAttacks) == 2,
+    "chart_a_course_blue" => GetClassState($mainPlayer, $CS_NumAttacks) == 3,
     "swiftstrike_bracers", "quick_clicks" => true,
     "crash_down_the_gates_red", "crash_down_the_gates_yellow", "crash_down_the_gates_blue" => true,
     default => false,
@@ -884,10 +884,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "chart_a_course_red":
     case "chart_a_course_yellow":
     case "chart_a_course_blue":
-      if (GetClassState($currentPlayer, $CS_NumAttacks) == 0) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      else WriteLog("You've already attacked this turn, no buff");
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       $treasureID = SearchLandmarksForID("treasure_island");
       if ($treasureID != -1) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island", "treasure_island") . "?");
