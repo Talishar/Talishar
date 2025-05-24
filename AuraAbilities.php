@@ -668,9 +668,10 @@ function AuraStartTurnAbilities()
     case "shifting_tides_blue":
       $deck = new Deck($mainPlayer);
       if($deck->Empty()) break;
-      $top = $deck->Top();
+      $top = $deck->Top(true);
       Pitch($top, $mainPlayer);
       if(ColorContains($top, 3, $mainPlayer)) {
+        WriteLog("The tides shifted  to the bottom of your deck");
         AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
       }
       else {
