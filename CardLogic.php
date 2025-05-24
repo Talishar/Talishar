@@ -4016,7 +4016,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       break;
     case "everbloom__life_blue":
       $maxCost = GetClassState($player, $CS_HealthGained) - 1;
-      $indices = SearchMultizone($player, "MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost&");
+      $indices = SearchMultizone($player, "MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost");
       if (GetMZCard($player, explode(",", $indices)[-1]) == $parameter) {
         //removing itself from the list of choices
         $indices = implode(",", array_slice(explode(",", $indices), 0, -1));
