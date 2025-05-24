@@ -738,10 +738,48 @@ function GetAttackTarget()
 {
   global $combatChainState, $CCS_AttackTarget, $CCS_AttackTargetUID, $defPlayer;
   $uid = $combatChainState[$CCS_AttackTargetUID];
-  if($uid == "-") return $combatChainState[$CCS_AttackTarget];
-  $mzArr = explode("-", $combatChainState[$CCS_AttackTarget]);
-  $index = SearchZoneForUniqueID($uid, $defPlayer, $mzArr[0]);
-  return $mzArr[0] . "-" . $index . "-" . $uid;
+  $MZTarget = $combatChainState[$CCS_AttackTarget];
+  if ($MZTarget == "NA") return "";
+  if (!str_contains($uid, ",")) {
+    if($uid == "-") return $MZTarget;
+    $mzArr = explode("-", $MZTarget);
+    $index = SearchZoneForUniqueID($uid, $defPlayer, $mzArr[0]);
+    return $mzArr[0] . "-" . $index . "-" . $uid;
+  }
+  else {//multiple attack targets
+    $uidArr = explode(",", $uid);
+    $targetArr = explode(",", $MZTarget);
+    $ret = [];
+    for ($i = 0; $i < count($uidArr); ++$i) {
+      if ($uidArr[$i] == "-") array_push($ret, $targetArr[$i]);
+      else {
+        $mzArr = explode("-", $targetArr[$i]);
+        $index = SearchZoneForUniqueID($uidArr[$i], $defPlayer, $mzArr[0]);
+        array_push($ret, $mzArr[0] . "-" . $index . "-" . $uidArr[$i]);
+      }
+    }
+    return implode(",", $ret);
+  }
+}
+
+function GetAttackTargetNames($player)
+{
+  $targets = GetAttackTarget();
+  $ret = [];
+  foreach(explode(",", $targets) as $target) {
+    array_push($ret, CardName(GetMZCard($player, $target)));
+  }
+  return implode(",", $ret);
+}
+
+function GetAttackTargetRelativeMZCardLink($player)
+{
+  $targets = GetAttackTarget();
+  $ret = [];
+  foreach(explode(",", $targets) as $target) {
+    array_push($ret, CardName(GetRelativeMZCardLink($player, $target)));
+  }
+  return implode(",", $ret);
 }
 
 function GetDamagePrevention($player)

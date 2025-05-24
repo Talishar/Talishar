@@ -1499,7 +1499,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else if ($parameter == "AA") GiveAttackGoAgain();
       return 1;
     case "PROCESSATTACKTARGET":
-      $combatChainState[$CCS_AttackTarget] = $lastResult;
+      if ($combatChainState[$CCS_AttackTarget] == "NA") {
+        $additionalTarget = false;
+        $combatChainState[$CCS_AttackTarget] = $lastResult;
+      }
+      else {
+        $additionalTarget = true;
+        $combatChainState[$CCS_AttackTarget] .= ",$lastResult";
+      }
       $mzArr = explode("-", $lastResult);
       $zone = &GetMZZone($defPlayer, $mzArr[0]);
       $uid = "-";
@@ -1515,9 +1522,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           break;
       }
-      $combatChainState[$CCS_AttackTargetUID] = $uid;
+      if (!$additionalTarget) {
+        $combatChainState[$CCS_AttackTargetUID] = $uid;
+      }
+      else {
+        $combatChainState[$CCS_AttackTargetUID] .= ",$uid";
+      }
       WriteLog("🎯".GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target");
       return 1;
+    case "ADDITIONALATTACKTARGET":
+      GetTargetOfAttack($parameter);
+      return $lastResult;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
       return 1;

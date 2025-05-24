@@ -654,7 +654,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         PlayAura("embodiment_of_earth", $otherPlayer);
       }
       $treasureID = SearchLandmarksForID("treasure_island");
-      if ($treasureID != -1 && !IsAllyAttackTarget()) {
+      if ($treasureID != -1 && IsHeroAttackTarget()) {
         $numGold = min($damage, $landmarks[$treasureID + 3]);
         if ($numGold > 0) AddLayer("TRIGGER", $otherPlayer, "treasure_island", additionalCosts:$damage);  
       }
@@ -2475,23 +2475,29 @@ function GetUniqueId($cardID = "", $player = "")
 
 function IsHeroAttackTarget()
 {
-  $target = explode("-", GetAttackTarget());
-  return $target[0] == "THEIRCHAR";
+  foreach(explode(",", GetAttackTarget()) as $target) {
+    if (explode("-", $target)[0] == "THEIRCHAR") return true;
+  }
+  return false;
 }
 
 function IsAllyAttackTarget()
 {
-  $target = explode("-", GetAttackTarget());
-  return $target[0] == "THEIRALLY";
+  foreach(explode(",", GetAttackTarget()) as $target) {
+    if (explode("-", $target)[0] == "THEIRALLY") return true;
+  }
+  return false;
 }
 
 function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
 {
   global $combatChainState, $CCS_AttackTargetUID;
   $mzTarget = GetAttackTarget();
-  $mzArr = explode("-", $mzTarget);
-  if ($mzArr[0] == "ALLY" || $mzArr[0] == "MYALLY" || $mzArr[0] == "THEIRALLY") {
-    return $index == intval($mzArr[1]) && $uniqueID == $combatChainState[$CCS_AttackTargetUID];
+  foreach(explode(",", $mzTarget) as $target) {
+    $mzArr = explode("-", $target);
+    if ($mzArr[0] == "ALLY" || $mzArr[0] == "MYALLY" || $mzArr[0] == "THEIRALLY") {
+      if ($index == intval($mzArr[1]) && $uniqueID == $combatChainState[$CCS_AttackTargetUID]) return true;
+    }
   }
   return false;
 }
@@ -2500,9 +2506,11 @@ function IsSpecificAuraAttackTarget($player, $index, $uniqueID)
 {
   global $combatChainState, $CCS_AttackTargetUID;
   $mzTarget = GetAttackTarget();
-  $mzArr = explode("-", $mzTarget);
-  if ($mzArr[0] == "AURAS" || $mzArr[0] == "MYAURAS" || $mzArr[0] == "THEIRALLYAURAS") {
-    return $index == intval($mzArr[1]) && $uniqueID == $combatChainState[$CCS_AttackTargetUID];
+  foreach(explode(",", $mzTarget) as $target) {
+    $mzArr = explode("-", $target);
+    if ($mzArr[0] == "AURAS" || $mzArr[0] == "MYAURAS" || $mzArr[0] == "THEIRALLYAURAS") {
+      if ($index == intval($mzArr[1]) && $uniqueID == $combatChainState[$CCS_AttackTargetUID]) return true;
+    }
   }
   return false;
 }

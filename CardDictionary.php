@@ -1322,7 +1322,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
       $effectRestricted = !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
-      if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase() && !IsAllyAttackTarget()) {
+      if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase() && IsHeroAttackTarget()) {
         $names .= ",Defense Reaction";
         if ($from != "HAND") $names = "-,Defense Reaction";
       }
@@ -1497,8 +1497,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
-  if ($phase != "P" && $cardType == "DR" && IsAllyAttackTarget() && $abilityTypes == "") return false;
-  if ($phase == "D" && $cardType == "DR" && IsAllyAttackTarget() && $currentPlayer != $mainPlayer) return false;
+  if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
+  if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
     if ($from == "HAND") {

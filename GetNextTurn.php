@@ -266,7 +266,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     ));
   }
   $activeChainLink->reactions = $combatChainReactions;
-  $activeChainLink->attackTarget = CardName(GetMZCard($mainPlayer, GetAttackTarget()));
+  $activeChainLink->attackTarget = GetAttackTargetNames($mainPlayer);
   $activeChainLink->damagePrevention = (count($combatChain) > 0) ? GetDamagePrevention($defPlayer) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : GetDamagePrevention($defPlayer);
   $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
@@ -325,7 +325,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($layer->isReorderable) ++$numReorderable;
     array_push($reorderableLayers, $layer);
   }
-  $layerObject->target = GetRelativeMZCardLink($mainPlayer, GetAttackTarget());
+  $layerObject->target = GetAttackTargetRelativeMZCardLink($mainPlayer);
   $layerObject->layerContents = $layerContents;
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;

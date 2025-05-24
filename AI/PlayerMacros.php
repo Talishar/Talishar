@@ -15,7 +15,7 @@ function ProcessMacros()
       $somethingChanged = false;
       if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if(($turn[0] == "B") && IsAllyAttackTarget()) { $somethingChanged = true; PassInput(); }
+      else if(($turn[0] == "B") && !IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSECARD" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }

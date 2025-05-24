@@ -1019,26 +1019,28 @@ function ResolveChainLink()
   $combatChainState[$CCS_LinkTotalPower] = $totalPower;
 
   LogCombatResolutionStats($totalPower, $totalDefense);
-
-  $target = explode("-", GetAttackTarget());
-  if ($target[0] == "THEIRALLY") {
-    $index = $target[1];
-    $allies = &GetAllies($defPlayer);
-    $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-    $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT");
-    if ($totalPower < 0) $totalPower = 0;
-    if ($index < count($allies)) {
-      $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
-      if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
-      DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
-      if ($allies[$index + 2] <= 0) DestroyAlly($defPlayer, $index, false, true, $allies[$index + 5]);
+  $targets = GetAttackTarget();
+  foreach(explode(",", $targets) as $target) {
+    $target = explode("-", $target);
+    if ($target[0] == "THEIRALLY") {
+      $index = $target[1];
+      $allies = &GetAllies($defPlayer);
+      $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+      $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT");
+      if ($totalPower < 0) $totalPower = 0;
+      if ($index < count($allies)) {
+        $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
+        if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
+        DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
+      }
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalPower);
+    } else {
+      $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
+      DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
     }
-    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalPower);
-  } else {
-    $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
-    DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
-    AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
   }
+  CheckAllyDeath($defPlayer);
   ProcessDecisionQueue();
 }
 
@@ -2441,29 +2443,41 @@ function GetTargetOfAttack($cardID = "")
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
-  $numTargets = 1;
-  $targets = "THEIRCHAR-0";
+  $numTargets = 0;
+  $currentTargets = $combatChainState[$CCS_AttackTarget];
+  if (!str_contains($currentTargets, "THEIRCHAR-0")) {
+    $targets = "THEIRCHAR-0";
+    ++$numTargets;
+  }
+  else {
+    $targets = "";
+  }
   if (CanOnlyTargetHeroes($cardID)) {
+    if ($targets == "") WriteLog("Something weird happened, please submit a bug report", highlight:true);
     $combatChainState[$CCS_AttackTarget] = $targets;
   } else {
     $auras = &GetAuras($defPlayer);
     $mandatoryTargets = [];
     for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-      if (HasSpectra($auras[$i])) {
-        $targets .= ",THEIRAURAS-" . $i;
+      $targIndex = "THEIRAURAS-$i";
+      if (HasSpectra($auras[$i]) && !str_contains($currentTargets, $targIndex)) {
+        $targets = $targets == "" ? $targIndex : "$targets,$targIndex";
         ++$numTargets;
         if ($auras[$i] == "arc_light_sentinel_yellow") array_push($mandatoryTargets, "THEIRAURAS-$i");
       }
     }
     $allies = &GetAllies($defPlayer);
     for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-      $targets .= ",THEIRALLY-" . $i;
-      ++$numTargets;
-      if ($allies[$i] == "chum_friendly_first_mate_yellow") {
-        for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
-          if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
-            if ($currentTurnEffects[$j+2] == $allies[$i+5]) {
-              array_push($mandatoryTargets, "THEIRALLY-$i");
+      $targIndex = "THEIRALLY-$i";
+      if (!str_contains($currentTargets, $targIndex)) {
+        $targets = $targets == "" ? $targIndex : "$targets,$targIndex";
+        ++$numTargets;
+        if ($allies[$i] == "chum_friendly_first_mate_yellow") {
+          for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
+            if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
+              if ($currentTurnEffects[$j+2] == $allies[$i+5]) {
+                array_push($mandatoryTargets, "THEIRALLY-$i");
+              }
             }
           }
         }
@@ -2476,9 +2490,10 @@ function GetTargetOfAttack($cardID = "")
       PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
       PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
       PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
-    } else {
+    } elseif ($numTargets == 1) {
       $combatChainState[$CCS_AttackTarget] = "THEIRCHAR-0";
     }
+    else WriteLog("There are no additional targets to attack!");
   }
   AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
@@ -3341,6 +3356,14 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
+    case "barbed_barrage_red":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Pay 3 to choose an additional attack target?");
+      AddDecisionQueue("YESNO", $currentPlayer, "", 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, 3, 1);
+      AddDecisionQueue("PAYRESOURCES", $currentPlayer, "", 1);
+      AddDecisionQueue("ADDITIONALATTACKTARGET", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
@@ -3353,7 +3376,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
-  global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves;
+  global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackTarget, $CCS_AttackTargetUID;
   global $landmarks;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
@@ -3379,7 +3402,24 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $skipDRResolution = false;
-  $isSpectraTarget = HasSpectra(GetMzCard($currentPlayer, GetAttackTarget()));
+  $isSpectraTarget = false;
+  $spectraTargets = [];
+  $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
+  $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
+  for ($i = count($targetArr) - 1; $i >= 0; --$i) {
+    $MZTarget = $targetArr[$i];
+    // remove spectra cards from target
+    if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
+      array_push($spectraTargets, $uidArr[$i]);
+      unset($targetArr[$i]);
+      unset($uidArr[$i]);
+      $targetArr = array_values($targetArr);
+      $uidArr = array_values($uidArr);
+      $isSpectraTarget = true;
+    }
+    $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
+    $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
+  }
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
@@ -3433,11 +3473,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "platinum_amulet_blue":
           break;
         default:
-          $target = GetMzCard($currentPlayer, GetAttackTarget());
+          if ($combatChainState[$CCS_AttackTarget] == "") $target = "";
+          else $target = GetMzCards($currentPlayer, GetAttackTarget());
           break;
       }
     }
-    if (!$skipDRResolution && !$isSpectraTarget && $target != "") {
+    if ($isSpectraTarget && $target == "") { //if only spectra was targeted
+      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
+      if(CardType($cardID) != "T" && CardType($cardID) != "Macro") { //Don't need to add to anywhere if it's a token
+        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
+      }
+    }
+    if (!$skipDRResolution && $target != "") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       if ($index == 0) {//if adding an attacking card
         for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
@@ -3449,16 +3496,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
     }
-    if ($isSpectraTarget) {
-      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
-      if(CardType($cardID) != "T" && CardType($cardID) != "Macro") { //Don't need to add to anywhere if it's a token
-        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
-      }
-    }
     if ($index <= 0 && !$skipDRResolution || $isSpectraTarget) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
-      $chainClosed = ProcessAttackTarget();
+      $chainClosed = ProcessAttackTarget($spectraTargets);
       $baseAttackSet = CurrentEffectBaseAttackSet();
       if($baseAttackSet != -1) {
         $powerValue = $baseAttackSet;
@@ -3592,19 +3633,16 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   ProcessDecisionQueue();
 }
 
-function ProcessAttackTarget()
+function ProcessAttackTarget($spectraTargets)
 {
   global $defPlayer;
-  $target = explode("-", GetAttackTarget());
-  if ($target[0] == "THEIRAURAS") {
-    $auras = &GetAuras($defPlayer);
-    if (HasSpectra($auras[$target[1]])) {
-      CloseCombatChain();
-      DestroyAura($defPlayer, $target[1]);
-      return true;
-    }
+  foreach ($spectraTargets as $specTarg) {
+    DestroyAuraUniqueID($defPlayer, $specTarg);
   }
-  if($target[0] == "NA") return true; //Means the target is not legal anymore
+  if (GetAttackTarget() == "") { //no attack targets left
+    CloseCombatChain();
+    return true;
+  }
   return false;
 }
 

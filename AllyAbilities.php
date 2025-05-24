@@ -39,6 +39,14 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   return count($allies) - AllyPieces();
 }
 
+function CheckAllyDeath($player)
+{
+  $allies = &GetAllies($player);
+  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+    if ($allies[$i + 2] <= 0) DestroyAlly($player, $i, false, true, $allies[$i + 5]);
+  }
+}
+
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
 {
   $allies = &GetAllies($player);

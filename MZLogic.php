@@ -461,6 +461,15 @@ function GetMZCard($player, $MZIndex)
   return $zoneDS[$index];
 }
 
+function GetMZCards($player, $MZIndices)
+{
+  $ret = [];
+  foreach(explode(",", $MZIndices) as $MZIndex) {
+    array_push($ret, GetMZCard($player, $MZIndex));
+  }
+  return implode(",", $ret);
+}
+
 function GetMZUID($player, $MZIndex)
 {
   $mzArr = explode("-", $MZIndex);

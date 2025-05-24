@@ -712,6 +712,7 @@ function isUnimplemented($cardID) {
         "escalate_bloodshed_red" => false,
         "preach_modesty_red" => false,
         "bam_bam_yellow" => false,
+        "barbed_barrage_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
