@@ -204,10 +204,10 @@ function MZAddZone($player, $parameter, $lastResult)
         AddBottomDeck($cardIDs[$i], $otherPlayer, "-");
         break;
       case "MYDISCARD":
-        AddGraveyard($cardIDs[$i], $player, isset($params[2]) ? $params[2] : "-", isset($params[1]) ? $params[1] : "");
+        AddGraveyard($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "", $player);
         break;
       case "THEIRDISCARD":
-        AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[2]) ? $params[2] : "-", isset($params[1]) ? $params[1] : "");
+        AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[1]) ? $params[1] : "", $player);
         break;
       case "MYARS":
         AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) && is_numeric($params[3]) ? $params[3] : "0");
