@@ -4411,7 +4411,13 @@ function IsSpecialization($cardID): bool
 
 function Is1H($cardID): bool|int
 {
-  if($cardID == "gavel_of_natural_order") return true;
+  switch ($cardID) {
+    case "claw_of_vynserakai": 
+    case "gavel_of_natural_order":
+      return true;
+    default:
+      break;
+  }
   if (SubtypeContains($cardID, "Off-Hand")) return true;
   return GeneratedIs1H($cardID);
 }
