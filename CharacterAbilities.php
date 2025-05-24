@@ -1244,6 +1244,7 @@ function EquipPayAdditionalCosts($cardIndex)
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $cogIndices, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       }
+      break;
     case "bandana_of_the_blue_beyond":
       DestroyCharacter($currentPlayer, $cardIndex);
       MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD," . $currentPlayer);
