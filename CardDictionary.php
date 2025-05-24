@@ -588,6 +588,7 @@ function CardCost($cardID, $from="-")
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_red":
     case "vigorous_windup_blue":
+    case "bam_bam_yellow":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
     case "ripple_away_blue":
