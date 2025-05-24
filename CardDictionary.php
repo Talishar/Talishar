@@ -2911,6 +2911,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && NumCardsBlocking() < 1;
     case "goldkiss_rum":
       return CheckTapped("MYCHAR-0", $currentPlayer);
+    case "arcane_compliance_blue":
+      return SearchLayer($currentPlayer, type:"A") == "" && SearchLayer($currentPlayer, type:"AA") == "";
     default:
       return false;
   }

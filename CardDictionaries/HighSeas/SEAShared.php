@@ -219,7 +219,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
-  global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain, $defPlayer, $combatChainState, $CCS_CachedTotalPower;
+  global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain, $defPlayer, $combatChainState, $CCS_CachedTotalPower, $layers;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -963,6 +963,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       } else {
         DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       }
+      break;
+    case "arcane_compliance_blue":
+      $layerID = $layers[intval(explode("-", $target)[1]) + 6];
+      AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$layerID);
       break;
     case "herald_of_sekem_red":
         $indices = SearchHand($currentPlayer, pitch: 2);
