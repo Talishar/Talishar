@@ -800,7 +800,7 @@ function AuraBeginningActionPhaseAbilities(){
 
 function AuraBeginEndPhaseTriggers()
 {
-  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated;
+  global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated, $defPlayer;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($auras[$i]) {
@@ -813,6 +813,7 @@ function AuraBeginEndPhaseTriggers()
       case "inertia":
       case "earths_embrace_blue":
       case "sharpened_senses_yellow":
+      case "riddle_with_regret_red":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "channel_mount_heroic_red":
@@ -839,6 +840,18 @@ function AuraBeginEndPhaseTriggers()
     }
   }
   $auras = array_values($auras);
+
+  $theirAuras = &GetAuras($defPlayer);
+  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($theirAuras[$i]) {
+        case "riddle_with_regret_red":
+        AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $theirAuras[$i + 6]);
+        break;
+      default:
+        break;
+    }
+  }
+  $theirAuras = array_values($theirAuras);
 }
 
 function OpponentsAuraBeginEndPhaseTriggers()
