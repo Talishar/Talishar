@@ -1530,7 +1530,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         PassInput(false);
         return "";
       }
-      elseif (GetResolvedAbilityType($cardID, $from) == "A" || (!str_contains(GetAbilityNames($cardID, $index, $from), "Attack") && !str_contains(GetAbilityTypes($cardID, $index, $from), "I"))) {
+      elseif (GetResolvedAbilityType($cardID, $from) == "A") {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         if ($from == "PLAY") {
           // reset the status
