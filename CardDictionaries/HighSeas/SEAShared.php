@@ -204,10 +204,10 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "drop_the_anchor_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
     "flying_high_red", "flying_high_yellow", "flying_high_blue" => true,
     "hammerhead_harpoon_cannon", "fire_in_the_hole_red", "monkey_powder_red" => SubtypeContains($attackID, "Arrow", $mainPlayer),
-    "bam_bam_yellow" => TypeContains($attackID, "Club", $mainPlayer),
+    "bam_bam_yellow" => SubtypeContains($attackID, "Club", $mainPlayer),
     "sealace_sarong" => true,
     "goldkiss_rum" => true,
-    "chart_a_course_red" => GetClassState($mainPlayer, $CS_NumAttacks) == 1,
+    "chart_a_course_red" => GetClassState($mainPlayer, $CS_NumAttacks) == 1, 
     "chart_a_course_yellow" => GetClassState($mainPlayer, $CS_NumAttacks) == 2,
     "chart_a_course_blue" => GetClassState($mainPlayer, $CS_NumAttacks) == 3,
     "swiftstrike_bracers", "quick_clicks" => true,
@@ -250,6 +250,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "bam_bam_yellow":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        CardDiscarded($currentPlayer, $cardID, source: $cardID);
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
