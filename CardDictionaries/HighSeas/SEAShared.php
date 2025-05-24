@@ -240,6 +240,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "blow_for_a_blow_red":
       if(PlayerHasLessHealth($currentPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
       return $rv;
+    case "deny_redemption_red":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      elseif(PlayerHasLessHealth($currentPlayer)) DealArcane(1, 1, "PLAYCARD", $cardID);
+      break;
     case "amethyst_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;

@@ -507,6 +507,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   global $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
+  if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
@@ -892,7 +893,11 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   }
   if (SearchCurrentTurnEffects("dread_scythe", $player) && $preventable) {
     WriteLog(CardLink("dread_scythe", "dread_scythe") . " prevented you from gaining life");
-    return;
+    return false;
+  }
+  if ((SearchCurrentTurnEffects("deny_redemption_red", $player) || SearchCurrentTurnEffects("deny_redemption_red", $otherPlayer)) && $preventable) {
+    WriteLog(CardLink("deny_redemption_red", "deny_redemption_red") . " prevented you from gaining life");
+    return false;
   }
   if ((SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade") && $preventable) && $health > $otherHealth) {
     WriteLog(CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life");
@@ -1553,6 +1558,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "tip_off_blue":
     case "war_cry_of_themis_yellow":
     case "war_cry_of_bellona_yellow":
+    case "deny_redemption_red":
       return $from == "HAND";
     case "under_the_trap_door_blue":
       return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";

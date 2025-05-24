@@ -708,6 +708,7 @@ function isUnimplemented($cardID) {
         "anka_drag_under_yellow" => false,
         "claw_of_vynserakai" => false,
         "riddle_with_regret_red" => false,
+        "deny_redemption_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
