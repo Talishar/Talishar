@@ -234,6 +234,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
+    case "blow_for_a_blow_red":
+      if(PlayerHasLessHealth($currentPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
+      return $rv;
     case "amethyst_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
@@ -1156,6 +1159,12 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
       AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+      break;
+    case "blow_for_a_blow_red":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal 1 damage");
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,DAMAGE," . $cardID, 1);
       break;
     default:
       break;

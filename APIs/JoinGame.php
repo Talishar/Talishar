@@ -704,6 +704,7 @@ function isUnimplemented($cardID) {
         "clap_em_in_irons_blue" => false,
         "regain_composure_blue" => false,
         "tit_for_tat_blue" => false,
+        "blow_for_a_blow_red" => false,
         default => true
       };
     case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":

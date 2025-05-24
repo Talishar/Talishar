@@ -900,6 +900,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "strike_gold_red":
     case "strike_gold_yellow":
     case "strike_gold_blue":
+    case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
     case "boltn_shot_red":
