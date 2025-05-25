@@ -262,8 +262,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "onyx_amulet_blue":
       if($from == "PLAY") {
         Tap("MYCHAR-0", $currentPlayer);
-        Tap("THEIRCHAR-0", $otherPlayer);
-        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY", 1);
+        Tap("THEIRCHAR-0", $currentPlayer);
+        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY", 1);
+        AddDecisionQueue("TAPALL", $currentPlayer, "THEIRALLY", 1);
       }
       break;
     case "opal_amulet_blue":
