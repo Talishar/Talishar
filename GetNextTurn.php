@@ -1443,7 +1443,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $subtitles = "(You can click your deck to see its content during this card resolution)";
         }
 
-        if($option[0] == "MYDECK" && $option[1] == "0" && $turn[0] == "MAYCHOOSEMULTIZONE") {
+        if($option[0] == "MYDECK" && $option[1] == "0" && $turn[0] == "MAYCHOOSEMULTIZONE" && substr_count($turn[2], "MYDECK") == 1) {
           $card = $MyCardBack;
         }
 
