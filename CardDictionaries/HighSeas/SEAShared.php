@@ -271,13 +271,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "pearl_amulet_blue":
       if($from == "PLAY") {
-        $inds = GetTapped($currentPlayer, "MYITEMS&THEIRITEMS&MYCHAR&THEIRCHAR&MYALLY&THEIRALLY");   
+        $indsChar = explode(",", GetTapped($currentPlayer, "MYCHAR"));  
+        $indsItems = explode(",", GetTapped($currentPlayer, "MYITEMS"));  
+        $indsAllies = explode(",", GetTapped($currentPlayer, "MYALLY"));  
+        $inds = CombineSearches(implode(",", $indsChar), implode(",", $indsItems));
+        $inds = CombineSearches($inds, implode(",", $indsAllies));
+        if(empty($inds)) break; 
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Untap a permanent", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
-      }
+      }    
       break;
-    case "platinum_amultet_blue":
+    case "platinum_amulet_blue":
       if($from == "PLAY") {
         $targetCard = GetMZCard($currentPlayer, $target);
         $targetInd = explode("-", $target)[1];
