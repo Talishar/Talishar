@@ -1416,8 +1416,8 @@ function CanAttack($cardID, $index=-1, $zone="-", $isWeapon=false)
   if ($index != -1) {
     switch($zone) {
       case "MYCHAR":
-        $char = GetPlayerCharacter($currentPlayer);
-        if ($char[$index + 2] == 0) return false;
+        // $char = GetPlayerCharacter($currentPlayer);
+        // if ($char[$index + 2] == 0) return false;
         break;
       case "MYALLY":
         $allies = GetAllies($currentPlayer);
