@@ -106,7 +106,7 @@ function SEAAbilityHasGoAgain($cardID, $from): bool
     "glidewell_fins" => true,
     "hammerhead_harpoon_cannon" => true,
     "bandana_of_the_blue_beyond" => true,
-    "captains_coat", "swiftstrike_bracers", "quick_clicks", "old_knocker", "quartermasters_boots" => true,
+    "captains_coat", "swiftstrike_bracers", "quick_clicks", "quartermasters_boots" => true,
     "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue" => $from == "PLAY",
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID) == "A",
     "cutty_shark_quick_clip_yellow" => GetResolvedAbilityType($cardID) == "A",
