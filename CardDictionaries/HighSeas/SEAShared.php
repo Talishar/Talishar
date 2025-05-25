@@ -1186,17 +1186,19 @@ function SEAHitEffect($cardID): void
     case "money_or_your_life_red":
     case "money_or_your_life_yellow":
     case "money_or_your_life_blue":
-      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
-      AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
-
-      AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-
-      AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
-      AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+      $hero = GetPlayerCharacter($mainPlayer);
+      $repeat = ClassContains($hero[0], "THIEF", $mainPlayer) ? 2 : 1;
+      for ($i = 0; $i < $repeat; $i++) {
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
+        AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+        AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+        AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+      }
       break;
     case "blow_for_a_blow_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
