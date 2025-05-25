@@ -3024,7 +3024,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $treasureID = SearchLandmarksForID("treasure_island");
       $char = GetPlayerCharacter($player);
       $numGold = $parameter;
-      if ($treasureID != -1) {
+      if ($treasureID != -1 && $landmarks[$treasureID + 3] > 0) {
+        $numGold = min($numGold, $landmarks[$treasureID + 3]);
         $landmarks[$treasureID + 3] -= $numGold;
         if(ClassContains($char[0], "THIEF", $player)) {
           PutItemIntoPlayForPlayer("gold", $player, number:$numGold);
