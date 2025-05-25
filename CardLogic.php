@@ -4021,11 +4021,13 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
         //removing itself from the list of choices
         $indices = implode(",", array_slice(explode(",", $indices), 0, -1));
       }
-      AddDecisionQueue("PASSPARAMETER", $player, $indices);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an action to put on the bottom of your deck", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+      if ($indices != "") {
+        AddDecisionQueue("PASSPARAMETER", $player, $indices);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an action to put on the bottom of your deck", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+      }
       break;
     default:
       break;
