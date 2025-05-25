@@ -14,7 +14,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
