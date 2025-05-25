@@ -674,9 +674,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "entangle_red":
     case "entangle_yellow":
     case "entangle_blue":
-    case "thump_red":
-    case "thump_yellow":
-    case "thump_blue":
     case "awakening_blue":
     case "tear_asunder_blue":
     case "embolden_red":
@@ -903,6 +900,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "thump_red":
+    case "thump_yellow":
+    case "thump_blue":
+      if (HasIncreasedAttack()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
