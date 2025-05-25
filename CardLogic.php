@@ -3458,9 +3458,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
       }
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("MZADDZONE", $player, "MYDISCARD,{0}", 1);
       AddDecisionQueue("MZSETDQVAR", $player, "0", 1);
       AddDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
-      AddDecisionQueue("MZADDZONE", $player, "MYDISCARD", 1);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       AddDecisionQueue("ALLCARDWATERYGRAVEORPASS", $player, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
