@@ -3212,9 +3212,11 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   if (CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   $cardID = $deck->Top(remove: true);
   if ($mainPhase && (SearchAurasForCard("escalate_bloodshed_red", 1) != "" || SearchAurasForCard("escalate_bloodshed_red", 2) != "")) {
+    WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
     LoseHealth(1, $player);
   }
   if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
+    WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
     BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
   } 
   else {
@@ -3222,7 +3224,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
   }
   if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true)) {
-    PummelHit($player);
+    WriteLog("🦈 You are being dragged under by " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow"));
+    PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);

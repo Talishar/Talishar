@@ -8,7 +8,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if ($effectController == "") $effectController = $player;
   if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -440,6 +440,9 @@ function ItemStartTurnAbility($index)
         DealDamageAsync($mainPlayer, 1);
         WriteLog(CardLink("tick_tock_clock_red", "tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
       }
+      break;
+    case "clap_em_in_irons_blue":
+      DestroyItemForPlayer($mainPlayer, $index);
       break;
     default:
       break;

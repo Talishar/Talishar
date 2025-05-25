@@ -3429,7 +3429,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "riddle_with_regret_red":
       $auras = &GetAuras($player);
-      $countAuras = count($auras);
+      $countAuras = count($auras)/AuraPieces();
       LoseHealth($countAuras, $player);
       if($countAuras >= 3) {
         DestroyAuraUniqueID($player, $uniqueID);

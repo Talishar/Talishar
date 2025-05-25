@@ -185,6 +185,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "swift_shot_red" => true,
     "amethyst_amulet_blue" => true,
     "jack_be_nimble_red", "jack_be_quick_red" => true,
+    "glidewell_fins" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_skiff_red-GOAGAIN", "cloud_skiff_yellow-GOAGAIN", "cloud_skiff_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
@@ -261,8 +262,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "onyx_amulet_blue":
       if($from == "PLAY") {
         Tap("MYCHAR-0", $currentPlayer);
-        Tap("THEIRCHAR-0", $otherPlayer);
-        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY&THEIRALLY", 1);
+        Tap("THEIRCHAR-0", $currentPlayer);
+        AddDecisionQueue("TAPALL", $currentPlayer, "MYALLY", 1);
+        AddDecisionQueue("TAPALL", $currentPlayer, "THEIRALLY", 1);
       }
       break;
     case "opal_amulet_blue":
@@ -270,13 +272,18 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "pearl_amulet_blue":
       if($from == "PLAY") {
-        $inds = GetTapped($currentPlayer, "MYITEMS&THEIRITEMS&MYCHAR&THEIRCHAR&MYALLY&THEIRALLY");   
+        $indsChar = explode(",", GetTapped($currentPlayer, "MYCHAR"));  
+        $indsItems = explode(",", GetTapped($currentPlayer, "MYITEMS"));  
+        $indsAllies = explode(",", GetTapped($currentPlayer, "MYALLY"));  
+        $inds = CombineSearches(implode(",", $indsChar), implode(",", $indsItems));
+        $inds = CombineSearches($inds, implode(",", $indsAllies));
+        if(empty($inds)) break; 
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Untap a permanent", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
-      }
+      }    
       break;
-    case "platinum_amultet_blue":
+    case "platinum_amulet_blue":
       if($from == "PLAY") {
         $targetCard = GetMZCard($currentPlayer, $target);
         $targetInd = explode("-", $target)[1];
@@ -302,7 +309,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $treasureID = SearchLandmarksForID("treasure_island");
       $char = GetPlayerCharacter($currentPlayer);
       if ($treasureID != -1) {
-        $numGold = ClassContains($char[0], "Thief", $currentPlayer) ? $numGold = $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
+        $numGold = ClassContains($char[0], "Thief", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
         $landmarks[$treasureID + 3] -= $numGold;
         PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
         WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
@@ -541,8 +548,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $zone = $zone == "THEIRCHARUID" ? "THEIRCHAR": $zone;
         Tap("$zone-$charInd", $currentPlayer);
       }
-      AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
-      AddNextTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
+      if($target != "-") {
+        AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
+        AddNextTurnEffect($cardID, $otherPlayer, $targetUid);
+      }
       break;
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
@@ -1186,17 +1195,19 @@ function SEAHitEffect($cardID): void
     case "money_or_your_life_red":
     case "money_or_your_life_yellow":
     case "money_or_your_life_blue":
-      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
-      AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
-
-      AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-
-      AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
-      AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+      $hero = GetPlayerCharacter($mainPlayer);
+      $repeat = ClassContains($hero[0], "THIEF", $mainPlayer) ? 2 : 1;
+      for ($i = 0; $i < $repeat; $i++) {
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
+        AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+        AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+        AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+      }
       break;
     case "blow_for_a_blow_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
@@ -1340,8 +1351,8 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
     return true;
   }
-   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ?? $untapPrevented = true;
-  elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ?? $untapPrevented = true;
+  if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
+  elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ? $untapPrevented = true : $untapPrevented = false;
   return $untapPrevented;
 }
 

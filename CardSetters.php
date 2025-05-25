@@ -188,7 +188,11 @@ function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
 
 function AddPlayerHand($cardID, $player, $from, $amount = 1)
 {
-  global $CS_NumCrouchingTigerCreatedThisTurn;
+  global $CS_NumCrouchingTigerCreatedThisTurn, $EffectContext;
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    return;
+  }
   if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
     WriteLog(CardLink($cardID, $cardID) . " is a token. So instead of going to hand, it ceases to exist.");
   }

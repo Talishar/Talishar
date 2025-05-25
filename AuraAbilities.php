@@ -14,7 +14,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog(CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
@@ -671,15 +671,12 @@ function AuraStartTurnAbilities()
       $top = $deck->Top(true);
       Pitch($top, $mainPlayer);
       if(ColorContains($top, 3, $mainPlayer)) {
-        WriteLog("The tides shifted  to the bottom of your deck");
+        WriteLog("🌊 The tides shifted to the bottom of your deck");
         AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
       }
       else {
         AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
       }
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "clap_em_in_irons_blue":
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     default:
