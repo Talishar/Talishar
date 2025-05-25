@@ -548,8 +548,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $zone = $zone == "THEIRCHARUID" ? "THEIRCHAR": $zone;
         Tap("$zone-$charInd", $currentPlayer);
       }
-      AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
-      AddNextTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
+      if($target != "-") {
+        AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $targetUid);
+        AddNextTurnEffect($cardID, $otherPlayer, $targetUid);
+      }
       break;
     case "compass_of_sunken_depths":
       LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
@@ -1348,8 +1350,8 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
     return true;
   }
-   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ?? $untapPrevented = true;
-  elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ?? $untapPrevented = true;
+  if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
+  elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ? $untapPrevented = true : $untapPrevented = false;
   return $untapPrevented;
 }
 

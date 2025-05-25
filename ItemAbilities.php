@@ -441,6 +441,9 @@ function ItemStartTurnAbility($index)
         WriteLog(CardLink("tick_tock_clock_red", "tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
       }
       break;
+    case "clap_em_in_irons_blue":
+      DestroyItemForPlayer($mainPlayer, $index);
+      break;
     default:
       break;
   }

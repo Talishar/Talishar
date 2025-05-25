@@ -679,9 +679,6 @@ function AuraStartTurnAbilities()
       }
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
-    case "clap_em_in_irons_blue":
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
     default:
       break;
     }

@@ -2452,6 +2452,14 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
       }
       break;
+    case "clap_em_in_irons_blue":
+      $context = "Choose an a target to " . CardLink($cardID, $cardID);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY:class=PIRATE&THEIRALLY:class=PIRATE&MYCHAR:type=C;class=PIRATE&THEIRCHAR:type=C;class=PIRATE");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      break;
     default:
       break;
   }
@@ -2579,14 +2587,6 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       }
-      break;
-    case "clap_em_in_irons_blue":
-      $context = "Choose an a target to lock";
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYALLY:class=PIRATE&THEIRALLY:class=PIRATE&MYCHAR:type=C;class=PIRATE&THEIRCHAR:type=C;class=PIRATE");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     default:
       break;
