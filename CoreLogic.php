@@ -3223,7 +3223,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     array_push($hand, $cardID);
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
   }
-  if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true)) {
+  if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true) && $mainPhase) {
     WriteLog("🦈 You are being dragged under by " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow"));
     PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
   }
