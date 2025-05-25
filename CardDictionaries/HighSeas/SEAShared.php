@@ -1180,6 +1180,7 @@ function SEAHitEffect($cardID): void
     case "jack_be_quick_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZTAP", $mainPlayer, "0", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL,Temporary", 1);
       break;
     case "money_or_your_life_red":
