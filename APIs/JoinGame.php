@@ -570,6 +570,7 @@ function isUnimplemented($cardID) {
         "halo_of_lumina_light" => false,
         "helm_of_the_arknight" => false,
         "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
+        "loot_the_hold_blue", "loot_the_arsenal_blue" => false,
         default => true
       };
     default:
