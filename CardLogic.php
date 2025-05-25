@@ -3528,6 +3528,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PLAYITEM", $defPlayer, "gold", 1);
       }
       break;
+    case "anka_drag_under_yellow":
+      PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
+      break;
     default:
       break;
   }

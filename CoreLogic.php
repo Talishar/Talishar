@@ -3225,7 +3225,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   }
   if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true) && $mainPhase) {
     WriteLog("🦈 You are being dragged under by " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow"));
-    PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
+    AddLayer("TRIGGER", $player, "anka_drag_under_yellow");
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
