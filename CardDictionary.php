@@ -4456,15 +4456,18 @@ function Is1H($cardID): bool|int
 
 function AbilityPlayableFromCombatChain($cardID): bool
 {
+  global $currentPlayer, $mainPlayer;
+  $isAttacking = $currentPlayer == $mainPlayer;
   return match ($cardID) {
-    "exude_confidence_red", "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => true,
-    "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => true,
-    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => true,
-    "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => true,
-    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
-    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => true,
-    "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => true,
-    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => true,
+    "exude_confidence_red" => $isAttacking,
+    "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => $isAttacking,
+    "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $isAttacking,
+    "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => $isAttacking,
+    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $isAttacking,
+    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $isAttacking,
+    "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $isAttacking,
+    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking,
+    "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
     default => false
   };
 }
