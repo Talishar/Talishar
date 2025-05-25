@@ -1373,6 +1373,13 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             $preventedDamage += 1;
             RemoveCurrentTurnEffect($i);
           }
+          break;
+        case "throw_caution_to_the_wind_blue":
+          if ($preventable) {
+            $preventedDamage += intval($effects[1]);
+          }
+          $remove = true;
+          break;
         default:
           break;
       }

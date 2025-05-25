@@ -867,8 +867,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($deck->Empty()) break;
       $deck->Reveal(1);
       $pitchValue = pitchValue($deck->Top());
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, $pitchValue);
+      AddCurrentTurnEffect("$cardID-$pitchValue", $currentPlayer);
       WriteLog(CardLink($cardID, $cardID) . " prevents the next $pitchValue damage");
       break;
     case "midas_touch_yellow":
