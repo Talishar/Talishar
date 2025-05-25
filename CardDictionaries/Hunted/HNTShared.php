@@ -412,7 +412,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       RecurDagger($currentPlayer, 1);
       break;
     case "blood_runs_deep_red":
-      AddLayer("TRIGGER", $currentPlayer, "blood_runs_deep_red");
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, "blood_runs_deep_red");
       break;
     case "ignite_red":
       AddLayer("TRIGGER", $currentPlayer, "ignite_red");
