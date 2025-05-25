@@ -185,6 +185,7 @@ function SEACombatEffectActive($cardID, $attackID): bool
     "swift_shot_red" => true,
     "amethyst_amulet_blue" => true,
     "jack_be_nimble_red", "jack_be_quick_red" => true,
+    "glidewell_fins" => true,
     "sky_skimmer_red-GOAGAIN", "sky_skimmer_yellow-GOAGAIN", "sky_skimmer_blue-GOAGAIN" => true,
     "cloud_skiff_red-GOAGAIN", "cloud_skiff_yellow-GOAGAIN", "cloud_skiff_blue-GOAGAIN" => true,
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => true,
@@ -302,7 +303,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $treasureID = SearchLandmarksForID("treasure_island");
       $char = GetPlayerCharacter($currentPlayer);
       if ($treasureID != -1) {
-        $numGold = ClassContains($char[0], "Thief", $currentPlayer) ? $numGold = $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
+        $numGold = ClassContains($char[0], "Thief", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
         $landmarks[$treasureID + 3] -= $numGold;
         PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
         WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));

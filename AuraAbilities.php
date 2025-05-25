@@ -671,7 +671,7 @@ function AuraStartTurnAbilities()
       $top = $deck->Top(true);
       Pitch($top, $mainPlayer);
       if(ColorContains($top, 3, $mainPlayer)) {
-        WriteLog("The tides shifted  to the bottom of your deck");
+        WriteLog("🌊 The tides shifted to the bottom of your deck");
         AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
       }
       else {
