@@ -255,7 +255,7 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
     IncrementClassState($destPlayer, $CS_NumGoldCreated);
   }
   $destItems = &GetItems($destPlayer);
-  for ($i = 0; $i < ItemPieces(); ++$i) {
+  for ($i = ItemPieces() - 1; $i >= 0; --$i) {
     if ($srcItems[$i] == "nitro_mechanoidc") {
       $indexEquipment = FindCharacterIndex($srcPlayer, "nitro_mechanoidb");
       RemoveCharacter($srcPlayer, $indexEquipment);
@@ -274,7 +274,7 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
           $srcItems[$index + $i] = 'THEIR' . $srcItems[$index + $i];
       }
     }
-    array_push($destItems, $srcItems[$index + $i]);
+    array_unshift($destItems, $srcItems[$index + $i]);
     unset($srcItems[$index + $i]);
   }
   $srcItems = array_values($srcItems);
