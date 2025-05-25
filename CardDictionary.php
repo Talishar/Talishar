@@ -1295,10 +1295,11 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "haunting_rendition_red": case "mental_block_blue":
       return "Block,Ability";
     case "restless_coalescence_yellow":
+      $canAttack = CanAttack($cardID, $index, "MYAURA", isWeapon:true);
       if ($auras[$index + 3] > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $auras[$index + 1] == 2 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) {
+      } else if ($canAttack) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
@@ -1343,23 +1344,24 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names .= ",Attack Reaction";
       return $names;
     case "cogwerx_blunderbuss":
+      $canAttack = CanAttack($cardID, $index, "MYCHAR", true);
       $names = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog") == "" || SearchCurrentTurnEffects("cogwerx_blunderbuss", $currentPlayer) ? "-" : "Ability";
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return $names;
-      if (SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) return $names;
       //catch other edge cases like warmongers later
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0) {
+      } else if ($canAttack) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
     case "chum_friendly_first_mate_yellow":
     case "anka_drag_under_yellow":
+      $canAttack = CanAttack($cardID, $index, "MYALLY");
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "") $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+      } else if ($canAttack) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
@@ -1367,35 +1369,69 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "chowder_hearty_cook_yellow":
     case "moray_le_fay_yellow":
     case "shelly_hardened_traveler_yellow":
+      $canAttack = CanAttack($cardID, $index, "MYALLY");
       $names = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+      } else if ($canAttack) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
       return $names;
     case "kelpie_tangled_mess_yellow":
+      $canAttack = CanAttack($cardID, $index, "MYALLY");
       $names = "Tangle";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return "";
-      } else if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && $allies[$index + 3] == 0) {
+      } else if ($canAttack) {
         $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       }
-      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-,Attack";
+      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
+        return $canAttack ? "-,Attack" : "-";
+      }
       return $names;
     case "cutty_shark_quick_clip_yellow":
+      $canAttack = CanAttack($cardID, $index, "MYALLY");
       $allies = &GetAllies($currentPlayer);
       $names = "";
       if ($allies[$index + 8] > 0) $names = "Ability";
-      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-,Attack";
+      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $canAttack) return "-,Attack";
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "Ability";
-      $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
     default:
       return "";
   }
+}
+
+// checks for stuff like warmongers
+function CanAttack($cardID, $index=-1, $zone="-", $isWeapon=false)
+{
+  global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers;
+  $layerCount = count($layers);
+  if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
+  if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $layerCount > LayerPieces() || $actionPoints == 0) return false;
+  if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
+  if ($index != -1) {
+    switch($zone) {
+      case "MYCHAR":
+        $char = GetPlayerCharacter($currentPlayer);
+        if ($char[$index + 2] == 0) return false;
+        break;
+      case "MYALLY":
+        $allies = GetAllies($currentPlayer);
+        if ($allies[$index + 3] != 0) return false;
+        break;
+      case "MYAURA":
+        $auras = GetAuras($currentPlayer);
+        if ($auras[$index + 1] != 2) return false;
+        break;
+      default:
+        break;
+    }
+  }
+  return true;
 }
 
 function GetAbilityIndex($cardID, $index, $abilityName)
@@ -1433,12 +1469,6 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
   else return "";
 }
 
-// I intend to fill this out later, this can be where we throw a bunch of attack restrictions instead of rechecking everywhere
-// link with IsAttackRestricted?
-function CanAttack($cardID): bool
-{
-  return true;
-}
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
 {
@@ -1593,13 +1623,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "anka_drag_under_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
-    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
+    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID, $index, "MYALLY")) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
     else return false;
   }
   if (($cardID == "sawbones_dock_hand_yellow" || $cardID == "chowder_hearty_cook_yellow" || $cardID == "moray_le_fay_yellow"|| $cardID == "shelly_hardened_traveler_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
-    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID)) return true;
+    else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID, $index, "MYALLY")) return true;
     else if (CanPlayInstant($phase)) return true;
     else return false;
   }
