@@ -471,7 +471,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddArsenal($deck->Top(), $player, $from, $facing);
         return $lastResult;
       } else {
-        WriteLog("Player $player arsenal is full, no card was puit in arsenal");
+        WriteLog("Player $player arsenal is full, no card was put in arsenal");
         return "PASS";
       }
     case "ADDARSENALFROMDECK": //needed for schism so pass doesn't skip the other player
