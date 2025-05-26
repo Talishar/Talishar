@@ -399,13 +399,9 @@ function ContinueDecisionQueue($lastResult = "")
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
-        // there's a bug here where in always hold priority you need to go through 2
-        // priority passes to break the chain if an instant was played in resolution
-        // below was an attempt to fix that led to more issues
-        // if (!count($layers) == LayerPieces() || $layers[0] != "RESOLUTIONSTEP") {
         $layerPriority[0] = ShouldHoldPriority(1);
         $layerPriority[1] = ShouldHoldPriority(2);
-        // }
+
         if ($cardID == "ENDTURN") EndStep();
         else if ($cardID == "ENDPHASE") FinishTurnPass();
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
@@ -497,7 +493,7 @@ function ContinueDecisionQueue($lastResult = "")
   $phase = array_shift($decisionQueue); 
   $player = array_shift($decisionQueue);
   $parameter = array_shift($decisionQueue);
-  //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
+  // WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
   if (count($dqVars) > 0) {
     if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
     if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
@@ -3597,8 +3593,9 @@ function IsReactionPhase()
 //Return whether priority should be held for the player by default/settings
 function ShouldHoldPriority($player, $layerCard = "")
 {
-  global $mainPlayer;
+  global $mainPlayer, $layers;
   $prioritySetting = HoldPrioritySetting($player);
+  if ($player == $mainPlayer && count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") return 1;
   if ($prioritySetting == 0 || $prioritySetting == 1) return 1;
   if (($prioritySetting == 2 || $prioritySetting == 3) && $player != $mainPlayer) return 1;
   return 0;

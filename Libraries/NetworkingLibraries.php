@@ -489,7 +489,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
-        PassInput(false);
+        if ($playerID == $mainPlayer && count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") {
+          PassInput(false, true);
+        }
+        else PassInput(false);
       }
       break;
     case 100: //Break Chain
@@ -902,7 +905,7 @@ function PassInput($autopass = true, $doublePass=false)
         BeginTurnPass();
       } else PassTurn();
     }
-    if (HoldPrioritySetting($currentPlayer) != 3 || $doublePass) {
+    if (HoldPrioritySetting($currentPlayer) != 4 || $doublePass) {
       // without this line the turn player needs to pass twice to break the chain
       // but including the line makes auto-passers automatically pass through the resolution step
       // for now only turn enable this line if you aren't on always pass
@@ -1279,7 +1282,7 @@ function BeginTurnPass()
   global $mainPlayer, $layers;
 
   // Only attempt to end turn if no triggers remain on stack
-  if (empty($layers) || ($layers[0] != "RESOLUTIONSTEP" && $layers[0] != 'TRIGGER')) {
+  if (empty($layers)) {
     WriteLog("Player $mainPlayer passed priority. Attempting to end turn.");
     AddLayer("ENDTURN", $mainPlayer, "-");
   }  
