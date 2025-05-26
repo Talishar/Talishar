@@ -2914,10 +2914,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("NOPASS", $player, "-");
       }
       if (str_contains($target, "THEIRCHAR")) {
-        $target = "THEIRCHARUID-" . explode(",", $target)[1];
+        $target = "THEIRCHARUID-" . explode("-", $target)[1];
       }
       if (str_contains($target, "MYCHAR")) {
-        $target = "MYCHARUID-" . explode(",", $target)[1];
+        $target = "MYCHARUID-" . explode("-", $target)[1];
       }
       AddDecisionQueue("VERDANCE", $player, "$parameter,$target", 1);
       break;

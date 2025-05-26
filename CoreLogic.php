@@ -918,7 +918,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 8) {
             SetArcaneTarget($mainPlayer, $char[$i], 3);
-            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "", 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
             AddDecisionQueue("ADDTRIGGER", $mainPlayer, $char[$i], 1);
             // AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
@@ -928,6 +928,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 4) {
             SetArcaneTarget($mainPlayer, $char[$i], 3);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
             AddDecisionQueue("ADDTRIGGER", $mainPlayer, $char[$i], 1);
             // AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
