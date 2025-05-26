@@ -97,114 +97,114 @@ function GetCardBack($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
-  switch($settings[$SET_Cardback]) {
-    case 1: return "CBBlack";
-    case 2: return "CBCreamWhite";
-    case 3: return "CBGold";
-    case 4: return "CBWhite";
-    case 5: return "CBRed";
-    case 6: return "CBParchment";
-    case 7: return "CBBlue";
-    case 8: return "CBRuneblood";
-    case 9: return "CBPushThePoint";
-    case 10: return "CBGoAgainGaming";
-    case 11: return "CBGAG_AzaleaCult";
-    case 12: return "CBGAG_Azalea";
-    case 13: return "CBGAG_AzaleaShot";
-    case 14: return "CBGAG_Dorinthea";
-    case 15: return "CBGAG_Dromai";
-    case 16: return "CBGAG_Kassai";
-    case 17: return "CBRedZoneRogue";
-    case 18: return "CBRZR_10k";
-    case 19: return "CBRZR_KadikosLibrary";
-    case 20: return "CBRZR_Vehya";
-    case 21: return "CBFabrary1";
-    case 22: return "CBFabrary2";
-    case 23: return "CBManSant";
-    case 24: return "CBAttackActionPodcast";
-    case 25: return "CBArsenalPass";
-    case 26: return "CBTekloFoundry";
-    case 27: return "CBPummelowanko";
-    case 28: return "CBDragonShieldProTeamWB";
-    case 29: return "CBFleshAndCommonBlood";
-    case 30: return "CBSinOnStream";
-    case 31: return "CBFreshAndBuds";
-    case 32: return "CBSloopdoop";
-    case 33: return "CBDMArmada";
-    case 34: return "CBInstantSpeed";
-    case 35: return "CBTheCardGuyz";
-    case 36: return "CBHomeTownTCG";
-    case 37: return "CBAscentGaming";
-    case 38: return "CBFleshAndPod";
-    case 39: return "CBKappolo";
-    case 40: return "CBLibrariansOfSolana";
-    case 41: return "CBTheMetrixMetagame";
-    case 42: return "CBEternalOracles";
-    case 43: return "CBTheTablePit";
-    case 44: return "CBTCGTed";
-    case 45: return "CBLuminaris";
-    case 46: return "CBFaBLab";
-    case 47: return "CBCardAdvantage";
-    case 48: return "CBOnHit";
-    case 49: return "CBSecondCycle";
-    case 50: return "CBRavenousBabble";
-    case 51: return "CBBlackWingStudio";
-    case 52: return "CBManSantBlack";
-    case 53: return "CBOnHitEffect";
-    case 54: return "CBDaganWhite";
-    case 55: return "CBSonicDoom";
-    case 56: return "CBBrandao";
-    case 57: return "CBFabrary3";
-    case 58: return "CBFabrary4";
-    case 59: return "CBFabrary5";
-    case 60: return "CBFabrary6";
-    case 61: return "CBFabrary7";
-    case 62: return "CBFabrary8";
-    case 63: return "CBOffTheRailsTCG";
-    case 64: return "CBPummel";
-    case 65: return "CBNxi";
-    case 66: return "CBPvtVoid";
-    case 67: return "CBEmperorsRome";
-    case 68: return "CBWeMakeBest";
-    case 69: return "CBWeMakeBest2";
-    case 70: return "CBSunflowerSamurai";
-    case 71: return "CBMnRCast";
-    case 72: return "CBOnTheBauble";
-    case 73: return "CBGorganianTome";
-    case 74: return "CBFABChaos";
-    case 75: return "CBColdFoilControl";
-    case 76: return "CBDailyFab";
-    case 77: return "CBRighteousGaming";
-    case 78: return "CBRighteousGaming2";
-    case 79: return "CBThePlagueHive";
-    case 80: return "CBDropcast";
-    case 81: return "CBSunflowerSamurai";
-    case 82: return "CBTalisharTeam";
-    case 83: return "CBTalisharTeam2";
-    case 84: return "CBTideBreakers";
-    case 85: return "CBCD1";
-    case 86: return "CBCD2";
-    case 87: return "CBCupofTCG";
-    case 88: return "CBScowlingFleshBag";
-    case 89: return "CBDazzyfizzle";
-    case 90: return "CBDazzyfizzle1";
-    case 91: return "CBDazzyfizzle2";
-    case 92: return "CBDazzyfizzle3";
-    case 93: return "CBDazzyfizzle4";
-    case 94: return "CBDazzyfizzle5";
-    case 95: return "CBDazzyfizzle6";
-    case 96: return "CBThaiCardsShop";
-    case 97: return "CBNikobru";
-    case 98: return "CBDazzyfizzle7";
-    case 99: return "CBDazzyfizzle8";
-    case 100: return "CBSmilingFleshBag";
-    case 101: return "CBDashciples";
-    case 102: return "CBBlitzkriegMeph";
-    case 103: return "CBHamMan215";
-    case 104: return "CBNewHorizons";
-    case 105: return "CBMetalFab";
-    default: return "CardBack";
-  }
+  return match ($settings[$SET_Cardback]) {
+    1 => "CBBlack",
+    2 => "CBCreamWhite",
+    3 => "CBGold",
+    4 => "CBWhite",
+    5 => "CBRed",
+    6 => "CBParchment",
+    7 => "CBBlue",
+    8 => "CBRuneblood",
+    9 => "CBPushThePoint",
+    10 => "CBGoAgainGaming",
+    11 => "CBGAG_AzaleaCult",
+    12 => "CBGAG_Azalea",
+    13 => "CBGAG_AzaleaShot",
+    14 => "CBGAG_Dorinthea",
+    15 => "CBGAG_Dromai",
+    16 => "CBGAG_Kassai",
+    17 => "CBRedZoneRogue",
+    18 => "CBRZR_10k",
+    19 => "CBRZR_KadikosLibrary",
+    20 => "CBRZR_Vehya",
+    21 => "CBFabrary1",
+    22 => "CBFabrary2",
+    23 => "CBManSant",
+    24 => "CBAttackActionPodcast",
+    25 => "CBArsenalPass",
+    26 => "CBTekloFoundry",
+    27 => "CBPummelowanko",
+    28 => "CBDragonShieldProTeamWB",
+    29 => "CBFleshAndCommonBlood",
+    30 => "CBSinOnStream",
+    31 => "CBFreshAndBuds",
+    32 => "CBSloopdoop",
+    33 => "CBDMArmada",
+    34 => "CBInstantSpeed",
+    35 => "CBTheCardGuyz",
+    36 => "CBHomeTownTCG",
+    37 => "CBAscentGaming",
+    38 => "CBFleshAndPod",
+    39 => "CBKappolo",
+    40 => "CBLibrariansOfSolana",
+    41 => "CBTheMetrixMetagame",
+    42 => "CBEternalOracles",
+    43 => "CBTheTablePit",
+    44 => "CBTCGTed",
+    45 => "CBLuminaris",
+    46 => "CBFaBLab",
+    47 => "CBCardAdvantage",
+    48 => "CBOnHit",
+    49 => "CBSecondCycle",
+    50 => "CBRavenousBabble",
+    51 => "CBBlackWingStudio",
+    52 => "CBManSantBlack",
+    53 => "CBOnHitEffect",
+    54 => "CBDaganWhite",
+    55 => "CBSonicDoom",
+    56 => "CBBrandao",
+    57 => "CBFabrary3",
+    58 => "CBFabrary4",
+    59 => "CBFabrary5",
+    60 => "CBFabrary6",
+    61 => "CBFabrary7",
+    62 => "CBFabrary8",
+    63 => "CBOffTheRailsTCG",
+    64 => "CBPummel",
+    65 => "CBNxi",
+    66 => "CBPvtVoid",
+    67 => "CBEmperorsRome",
+    68 => "CBWeMakeBest",
+    69 => "CBWeMakeBest2",
+    70 => "CBSunflowerSamurai",
+    71 => "CBMnRCast",
+    72 => "CBOnTheBauble",
+    73 => "CBGorganianTome",
+    74 => "CBFABChaos",
+    75 => "CBColdFoilControl",
+    76 => "CBDailyFab",
+    77 => "CBRighteousGaming",
+    78 => "CBRighteousGaming2",
+    79 => "CBThePlagueHive",
+    80 => "CBDropcast",
+    81 => "CBSunflowerSamurai",
+    82 => "CBTalisharTeam",
+    83 => "CBTalisharTeam2",
+    84 => "CBTideBreakers",
+    85 => "CBCD1",
+    86 => "CBCD2",
+    87 => "CBCupofTCG",
+    88 => "CBScowlingFleshBag",
+    89 => "CBDazzyfizzle",
+    90 => "CBDazzyfizzle1",
+    91 => "CBDazzyfizzle2",
+    92 => "CBDazzyfizzle3",
+    93 => "CBDazzyfizzle4",
+    94 => "CBDazzyfizzle5",
+    95 => "CBDazzyfizzle6",
+    96 => "CBThaiCardsShop",
+    97 => "CBNikobru",
+    98 => "CBDazzyfizzle7",
+    99 => "CBDazzyfizzle8",
+    100 => "CBSmilingFleshBag",
+    101 => "CBDashciples",
+    102 => "CBBlitzkriegMeph",
+    103 => "CBHamMan215",
+    104 => "CBNewHorizons",
+    105 => "CBMetalFab",
+    default => "CardBack",
+  };
 }
 
 function IsManualMode($player)
@@ -321,7 +321,7 @@ function AltArtsDisabled($player)
 
 function ParseSettingsStringValueToIdInt(string $value)
 {
-  $settingsToId = array(
+  $settingsToId = [
     "HoldPrioritySetting" => 0,
     "TryReactUI" => 1,
     "DarkMode" => 2,
@@ -342,7 +342,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "AlwaysAllowUndo" => 24,
     "DisableAltArts" => 25,
     "ManualTunic" => 26,
-  );
+  ];
   return $settingsToId[$value];
 }
 

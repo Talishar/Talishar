@@ -76,7 +76,8 @@ class BanishCard {
 
     function Modifier()
     {
-      return $this->banish[$this->index+1];
+        $key = $this->index + 1;
+        return $this->banish[$key] ?? null;
     }
 
     function UniqueID()
@@ -103,4 +104,3 @@ class BanishCard {
     }
 }
 
-?>

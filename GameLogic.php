@@ -2995,7 +2995,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
-      $indices = explode(",", GetUntapped($currentPlayer, $zone, $params[1]));
+      $indices = explode(",", GetUntapped($currentPlayer, $zone, isset($params[1]) ? $params[1] : "-"));
       for ($i = count($indices)-1; $i >= 0; $i--) {
         Tap($indices[$i], $player);
       }
@@ -3003,7 +3003,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "UNTAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
-      $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1]));
+      $indices = explode(",", GetTapped($currentPlayer, $zone, isset($params[1]) ? $params[1] : "-"));
       for ($i = count($indices)-1; $i >= 0; $i--) {
         //Untap
         Tap($indices[$i], $player, 0);

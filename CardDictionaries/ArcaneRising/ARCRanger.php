@@ -19,7 +19,7 @@
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",DECK", 1);
         return "";
       case "death_dealer":
-        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is full, you cannot reload";
+        if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, you cannot reload";
         LoadArrow($currentPlayer);
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
@@ -27,7 +27,7 @@
         Opt($cardID, 1);
         return "";
       case "bulls_eye_bracers":
-        if(!ArsenalEmpty($currentPlayer)) return "Your arsenal is full, you cannot reload";
+        if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, you cannot reload";
         LoadArrow($currentPlayer);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
@@ -54,7 +54,7 @@
         Reload();
         return "";
       case "silver_the_tip_red": case "silver_the_tip_yellow": case "silver_the_tip_blue":
-        if(!ArsenalEmpty($currentPlayer)) return "It does nothing because your arsenal is full";
+        if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, " . CardLink($cardID, $cardID) . " does nothing.";
         if($cardID == "silver_the_tip_red") $count = 4;
         else if($cardID == "silver_the_tip_yellow") $count = 3;
         else $count = 2;
@@ -127,7 +127,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(!ArsenalEmpty($player)) { WriteLog("Reload does nothing, because your arsenal is not empty"); return; }
+    if(!ArsenalEmpty($player)) { WriteLog("🏹 Reload does nothing, because your arsenal is not empty"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true);
   }
 
@@ -135,7 +135,7 @@
   {
     global $currentPlayer;
     if($player == 0) $player = $currentPlayer;
-    if(ArsenalFull($player)) { WriteLog("Your arsenal is full, you cannot arsenal a card"); return; }
+    if(ArsenalFull($player)) { WriteLog("🏹 Your arsenal is full, you cannot arsenal a card"); return; }
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true, DQContext:"Choose a card to put face down in arsenal");
   }
 

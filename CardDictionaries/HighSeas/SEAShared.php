@@ -1336,9 +1336,9 @@ function CheckTapped($MZindex, $player): bool
   $zoneName = explode("-", $MZindex)[0];
   $zone = &GetMZZone($player, $zoneName);
   $index = intval(explode("-", $MZindex)[1]);
-  if (str_contains($zoneName, "CHAR")) return $zone[$index + 14] == 1;
-  elseif (str_contains($zoneName, "ALLY")) return $zone[$index + 11] == 1;
-  elseif (str_contains($zoneName, "ITEM")) return $zone[$index + 10] == 1;
+  if (str_contains($zoneName, "CHAR")) return isset($zone[$index + 14]) && $zone[$index + 14] == 1;
+  elseif (str_contains($zoneName, "ALLY")) return isset($zone[$index + 11]) && $zone[$index + 11] == 1;
+  elseif (str_contains($zoneName, "ITEM")) return isset($zone[$index + 10]) && $zone[$index + 10] == 1;
   return false;
 }
 
