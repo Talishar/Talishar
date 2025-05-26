@@ -716,7 +716,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   }
   if (HasWateryGrave($cardID) && $from == "PLAY") {
     $grave = GetDiscard($player);
-    AddLayer("LAYER", $player, "WATERYGRAVE", target:$grave[count($grave) - DiscardPieces() + 1]);
+    AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$grave[count($grave) - DiscardPieces() + 1]);
   }
 }
 

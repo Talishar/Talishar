@@ -536,13 +536,6 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
     case "MIRAGE":
       MirageLayer();
       break;
-    case "WATERYGRAVE":
-      $grave = &GetDiscard($player);
-      $index = SearchDiscardForUniqueID($target, $player);
-      if ($index != -1) {
-        $grave[$index + 2] = "FACEDOWN";
-      }
-      break;
     default:
       break;
   }
@@ -3533,6 +3526,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "anka_drag_under_yellow":
       PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
+      break;
+    case "WATERYGRAVE":
+      $grave = &GetDiscard($player);
+      $index = SearchDiscardForUniqueID($target, $player);
+      if ($index != -1) {
+        $grave[$index + 2] = "FACEDOWN";
+      }
       break;
     default:
       break;
