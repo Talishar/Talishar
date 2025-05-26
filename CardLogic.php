@@ -814,9 +814,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "humble_red":
     case "humble_yellow":
     case "humble_blue":
-    case "wreck_havoc_red":
-    case "wreck_havoc_yellow":
-    case "wreck_havoc_blue":
     case "cut_down_to_size_red":
     case "cut_down_to_size_yellow":
     case "cut_down_to_size_blue":
@@ -1059,6 +1056,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "money_or_your_life_yellow":
     case "money_or_your_life_blue":
     case "bam_bam_yellow":
+    case "wreck_havoc_red":
+    case "wreck_havoc_yellow":
+    case "wreck_havoc_blue":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
