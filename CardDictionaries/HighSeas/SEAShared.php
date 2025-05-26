@@ -931,8 +931,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($from == "PLAY") {
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         //Safety in case it loses the index when more cards are played at instant
-        if($index == -1) $index = GetCombatChainIndex($cardID, $currentPlayer); 
-        CombatChainDefenseModifier($index, 3);
+        if($index == -1) $index = GetCombatChainIndex($cardID, $currentPlayer);
+        //in case the card gets destroyed
+        if($index != -1) CombatChainDefenseModifier($index, 3);
       }
       return "";
     case "bandana_of_the_blue_beyond":
