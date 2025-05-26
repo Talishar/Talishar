@@ -655,7 +655,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext;
-  if ($from == "DECK" && ($cardID == "back_alley_breakline_red" || $cardID == "back_alley_breakline_yellow" || $cardID == "back_alley_breakline_blue") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
+  if (str_contains($from, "DECK") && ($cardID == "back_alley_breakline_red" || $cardID == "back_alley_breakline_yellow" || $cardID == "back_alley_breakline_blue") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player))) {
     if ($player == $mainPlayer) {
       WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
       GainActionPoints(1);
