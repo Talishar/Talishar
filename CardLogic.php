@@ -540,13 +540,6 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
     case "MIRAGE":
       MirageLayer();
       break;
-    case "WATERYGRAVE":
-      $grave = &GetDiscard($player);
-      $index = SearchDiscardForUniqueID($target, $player);
-      if ($index != -1) {
-        $grave[$index + 2] = "FACEDOWN";
-      }
-      break;
     default:
       break;
   }
