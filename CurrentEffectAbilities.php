@@ -1369,10 +1369,10 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           break;
         case "sawbones_dock_hand_yellow":
           $character = &GetPlayerCharacter($player);
-          if(ClassContains($character[0], "PIRATE", $player)) {
+          if(ClassContains($character[0], "PIRATE", $player) && $preventable) {
             $preventedDamage += 1;
-            RemoveCurrentTurnEffect($i);
           }
+          $remove = true;
           break;
         case "throw_caution_to_the_wind_blue":
           if ($preventable) {
