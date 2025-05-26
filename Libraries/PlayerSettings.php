@@ -652,7 +652,7 @@ function IsTeamMetalFab($userID)
 {
   switch($userID) {
       case "PvtVoid":
-      case "Deathstalker182":
+      case "deathstalker182":
       case "Closetnerds":
       case "Diene9":
       case "acroriver":
