@@ -704,7 +704,8 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
     default:
       break;
   }
-  $mods = (HasWateryGrave($cardID) && $from == "PLAY") ? "FACEDOWN" : "-";
+  // $mods = (HasWateryGrave($cardID) && $from == "PLAY") ? "FACEDOWN" : "-";
+  $mods = "-";
   IncrementClassState($player, $CS_CardsEnteredGY);
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) AddSpecificGraveyard($cardID, $mainDiscard, $from, $mods);
@@ -712,6 +713,10 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   } else {
     if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from, $mods);
     else AddSpecificGraveyard($cardID, $theirDiscard, $from, $mods);
+  }
+  if (HasWateryGrave($cardID) && $from == "PLAY") {
+    $grave = GetDiscard($player);
+    AddLayer("LAYER", $player, "WATERYGRAVE", target:$grave[count($grave) - DiscardPieces() + 1]);
   }
 }
 
