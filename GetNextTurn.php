@@ -1283,6 +1283,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $minCount = 0;
       $countOffset = 0;
       $subtitles = "";
+      $source = [];
       for ($i = 0; $i < count($options); ++$i) {
         $option = explode("-", $options[$i]);
         if ($option[0] == "MYAURAS") $source = $myAuras;

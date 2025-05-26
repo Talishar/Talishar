@@ -4284,7 +4284,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   if ($player == "") $player = $currentPlayer;
-  $mod = explode("-", $mod)[0];
+  $mod = explode("-", ($mod ?? ""))[0];
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "spew_shadow_red" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
@@ -4375,7 +4375,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
 function AbilityPlayableFromBanish($cardID, $mod = "")
 {
   global $currentPlayer, $mainPlayer;
-  $mod = explode("-", $mod)[0];
+  $mod = explode("-", ($mod ?? ""))[0];
   if (isFaceDownMod($mod)) return false;
   switch ($cardID) {
     case "guardian_of_the_shadowrealm_red":
