@@ -15843,7 +15843,7 @@ return match($cardID) {
 "clamp_press_blue" => "Item",
 "clap_em_in_irons_blue" => "Item",
 "clarity_potion_blue" => "Item",
-"claw_of_vynserakai" => "Dagger,(1H)",
+"claw_of_vynserakai" => "Dagger",
 "cloak_of_darkness" => "Chest",
 "coat_of_allegiance" => "Chest",
 "coat_of_frost" => "Chest",
