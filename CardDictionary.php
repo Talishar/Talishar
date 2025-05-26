@@ -1409,9 +1409,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 function CanAttack($cardID, $index=-1, $zone="-", $isWeapon=false)
 {
   global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers;
-  $layerCount = count($layers);
   if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
-  if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $layerCount > LayerPieces() || $actionPoints == 0) return false;
+  if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
   if ($index != -1) {
     switch($zone) {
