@@ -381,7 +381,7 @@
   {
     switch($term)
     {
-      case "1H": case "2H": case "(1H)": return true;
+      case "1H": case "2H": return true;
       default: return false;
     }
   }

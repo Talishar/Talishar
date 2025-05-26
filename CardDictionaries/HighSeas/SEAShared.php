@@ -606,6 +606,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put " . CardLink($topCard, $topCard) . " face-up in your arsenal");
         AddDecisionQueue("YESNO", $currentPlayer, "");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
         AddDecisionQueue("ADDARSENAL", $currentPlayer, "DECK-UP", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",DECK", 1);
