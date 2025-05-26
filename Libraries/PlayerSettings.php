@@ -202,6 +202,7 @@ function GetCardBack($player)
     case 102: return "CBBlitzkriegMeph";
     case 103: return "CBHamMan215";
     case 104: return "CBNewHorizons";
+    case 105: return "CBMetalFab";
     default: return "CardBack";
   }
 }
@@ -643,7 +644,31 @@ function IsTeamRighteousGaming($userID)
     case "PvtVoid":
       return true;
     default: break;
+  }
+  return false;
 }
 
-return false;
+function IsTeamMetalFab($userID)
+{
+  switch($userID) {
+      case "PvtVoid":
+      case "Deathstalker182":
+      case "Closetnerds":
+      case "Diene9":
+      case "acroriver":
+      case "ShadowGriffin":
+      case "Kentshero":
+      case "thekingg21":
+      case "lupinefiasco":
+      case "onlyrunverynoob":
+      case "Brishen":
+      case "Sinthrandir":
+      case "killerbrews":
+      case "Z-Gin":
+      case "Obliterage":
+      case "Redbeard":
+      return true;
+    default: break;
+  }
+  return false;
 }
