@@ -2586,7 +2586,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from == "GY") return CountItem("silver", $currentPlayer) < 2; else return false;
     case "mask_of_recurring_nightmares":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (IsAllyAttackTarget()) return true;
+      if (!IsHeroAttackTarget()) return true;
       return false;
     case "pass_over_blue":
       return count($otherPlayerDiscard) <= 0;
@@ -2833,9 +2833,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
     case "outed_red":
-      return CheckMarked($currentPlayer);
+      return CheckMarked($currentPlayer) && IsHeroAttackTarget();
     case "lay_low_yellow":
-      return CheckMarked($currentPlayer);
+      return CheckMarked($currentPlayer) && !IsAllyAttacking();
     case "exposed_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CheckMarked($currentPlayer)) return true;

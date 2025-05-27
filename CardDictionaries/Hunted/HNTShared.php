@@ -508,7 +508,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "provoke_blue":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer) && !IsAllyAttacking() && !IsAllyAttackTarget()) {
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer) && IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
@@ -645,10 +645,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "danger_digits":
-      ThrowWeapon("Dagger", $cardID, target:$target);
+      if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, target:$target);
       break;
     case "throw_dagger_blue":
-      ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
+      if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
       break;
     case "up_sticks_and_run_red":
     case "up_sticks_and_run_yellow":
@@ -800,7 +800,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "exposed_blue";
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      MarkHero($otherPlayer);
+      if(IsHeroAttackTarget()){
+        MarkHero($otherPlayer);
+      }
       break;
     case "nip_at_the_heels_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);

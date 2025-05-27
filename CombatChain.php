@@ -339,7 +339,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "soul_butcher_yellow":
     case "soul_butcher_blue":
       $theirSoul = &GetSoul($defPlayer);
-      return (count($theirSoul) > 0 ? 2 : 0);
+      return (count($theirSoul) > 0 && IsHeroAttackTarget() ? 2 : 0);
     case "teklo_leveler":
       return EvoUpgradeAmount($mainPlayer) >= 4;
     case "annihilator_engine_red":
@@ -359,7 +359,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       return NumEquipBlock();
     case "show_no_mercy_red":
       $hand = &GetHand($defPlayer);
-      return $combatChain[0] == "show_no_mercy_red" && count($hand) == 0 ? 3 : 0;
+      return $combatChain[0] == "show_no_mercy_red" && count($hand) == 0 && IsHeroAttackTarget() ? 3 : 0;
     case "beast_mode_red":
     case "beast_mode_yellow":
     case "beast_mode_blue":
@@ -440,7 +440,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "hand_of_vengeance":
       return 1;
     case "hunt_to_the_ends_of_rathe_red":
-      return (!IsAllyAttackTarget() && CheckMarked($defPlayer)) ? 2 : 0;
+      return (IsHeroAttackTarget() && CheckMarked($defPlayer)) ? 2 : 0;
     case "cut_through_red":
     case "cut_through_yellow":
     case "cut_through_blue":
@@ -452,11 +452,11 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
       return $numDaggerHits > 0 ? 1 : 0;
     case "to_the_point_red":
-      return CheckMarked($defPlayer) ? 4 : 3;
+      return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 4 : 3;
     case "to_the_point_yellow":
-      return CheckMarked($defPlayer) ? 3 : 2;
+      return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 3 : 2;
     case "to_the_point_blue":
-      return CheckMarked($defPlayer) ? 2 : 1;
+      return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 2 : 1;
     case "incision_red": return 3;
     case "incision_yellow": return 2;
     case "incision_blue": return 1;
@@ -1461,7 +1461,7 @@ function IsOverpowerActive()
     case "over_the_top_blue":
       return HasIncreasedAttack();
     case "pay_up_red":
-      return CountItem("gold", $defPlayer) > 0;
+      return IsHeroAttackTarget() && CountItem("gold", $defPlayer) > 0;
     case "vantage_point_red":
     case "vantage_point_yellow":
     case "vantage_point_blue":

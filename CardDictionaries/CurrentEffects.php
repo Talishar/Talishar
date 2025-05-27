@@ -85,7 +85,7 @@ function HVYCombatEffectActive($cardID, $attackID)
   return match ($cardID) {
     "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue" => ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer),
     "big_bop_red-BUFF", "big_bop_yellow-BUFF", "big_bop_blue-BUFF", "bigger_than_big_red-BUFF", "bigger_than_big_yellow-BUFF", "bigger_than_big_blue-BUFF" => ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer),
-    "kassai_of_the_golden_sand", "kassai" => TypeContains($attackID, "W", $mainPlayer) && !IsAllyAttackTarget(),
+    "kassai_of_the_golden_sand", "kassai" => TypeContains($attackID, "W", $mainPlayer) && IsHeroAttackTarget(),
     "blade_flurry_red" => TypeContains($attackID, "W", $mainPlayer),
     "commanding_performance_red", "commanding_performance_red-BUFF", "draw_swords_red", "draw_swords_yellow", "draw_swords_blue", "edge_ahead_red-BUFF", "edge_ahead_yellow-BUFF", "edge_ahead_blue-BUFF", "engaged_swiftblade_red",
     "engaged_swiftblade_yellow", "engaged_swiftblade_blue", "hold_em_red-BUFF", "hold_em_yellow-BUFF", "hold_em_blue-BUFF" => ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer),

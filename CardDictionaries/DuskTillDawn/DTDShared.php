@@ -393,7 +393,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "soul_cleaver_red": case "soul_cleaver_yellow": case "soul_cleaver_blue":
       $theirSoul = &GetSoul($otherPlayer);
-      if(count($theirSoul) > 0) GiveAttackGoAgain();
+      if(count($theirSoul) > 0 && IsHeroAttackTarget()) GiveAttackGoAgain();
       return "";
     case "beseech_the_demigon_red": case "beseech_the_demigon_yellow": case "beseech_the_demigon_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=AA");
@@ -428,7 +428,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
       return "";
-    case "call_down_the_lightning_yellow"://Call Down the Lightning
+    case "call_down_the_lightning_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "dig_up_dinner_blue":

@@ -296,7 +296,7 @@
         }
         return $rv;
       case "t_bone_red": case "t_bone_yellow": case "t_bone_blue":
-        if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+        if($combatChainState[$CCS_NumBoosted] && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
         return "";
       case "zoom_in_red": case "zoom_in_yellow": case "zoom_in_blue":
         Opt($cardID, $combatChainState[$CCS_NumBoosted]);
