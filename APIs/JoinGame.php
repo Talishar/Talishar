@@ -572,6 +572,7 @@ function isUnimplemented($cardID) {
         "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
         "loot_the_hold_blue", "loot_the_arsenal_blue" => false,
         "tricorn_of_saltwater_death" => false,
+        "graven_justaucorpse" => false,
         default => true
       };
     default:

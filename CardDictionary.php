@@ -3270,6 +3270,7 @@ function HasBattleworn($cardID)
     case "unicycle":
     case "head_stone":
     case "glidewell_fins":
+    case "graven_justaucorpse":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);

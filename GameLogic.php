@@ -2070,6 +2070,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GAINRESOURCES":
       GainResources($player, $parameter);
       return $lastResult;
+    case "GAINRESOURCESLASTRESULT":
+      WriteLog("Player $player gained " . PitchValue($lastResult) . " resources.");
+      GainResources($player, PitchValue($lastResult));
+      return $lastResult;
     case "TRANSFORM":
       $params = explode(",", $parameter);
       return "ALLY-" . ResolveTransform($player, $lastResult, $params[0], $params[1]);

@@ -3,6 +3,7 @@
 function AGBAbilityType($cardID): string
 {
   return match ($cardID) {
+    "graven_justaucorpse" => "I",
     default => ""
   };
 }
@@ -44,6 +45,10 @@ function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "loot_the_hold_blue":
       case "loot_the_arsenal_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        break;
+      case "graven_justaucorpse":
+        PummelHit($currentPlayer);
+        AddDecisionQueue("GAINRESOURCESLASTRESULT", $currentPlayer, "<-", 1);
         break;
       default:
         return "";
