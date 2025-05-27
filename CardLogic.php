@@ -3524,8 +3524,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "THEIRITEMS:type=T;cardID=gold");
         AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $defPlayer, "GAINCONTROL", 1);
-        AddDecisionQueue("ELSE", $defPlayer, "-");
-        AddDecisionQueue("PLAYITEM", $defPlayer, "gold", 1);
       }
       break;
     case "anka_drag_under_yellow":
