@@ -1526,6 +1526,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
     if ($resolutionIndex != -1 && !$canPlayAsInstant) {
+      //cards with more complicated logic to figure out whether they can be used with an open chain
+      //block the shortcut if they can't attack
+      $blockShortcut = match ($cardID) {
+        "teklo_plasma_pistol", "plasma_barrel_shot" => !str_contains(GetAbilityNames($cardID, $index, $from), "Attack"),
+        "default" => false,
+      };
+      WriteLog("HERE: " .  GetAbilityNames($cardID, $index, $from));
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "" && !HasMeld($cardID)) {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
@@ -1533,7 +1540,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         PassInput(false);
         return "";
       }
-      elseif (GetResolvedAbilityType($cardID, $from) == "A" || $cardID == "teklo_plasma_pistol" || $cardID == "plasma_barrel_shot") {
+      elseif (GetResolvedAbilityType($cardID, $from) == "A" && !$blockShortcut) {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         if ($from == "PLAY") {
           // reset the status

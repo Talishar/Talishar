@@ -1236,7 +1236,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
       if ($index == -1) return "";
-      $rv = "Add_a_steam_counter";
+      $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($character[$index + 2] > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) $rv .= ",Attack";
       return $rv;
     case "barbed_castaway":
@@ -2123,6 +2123,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
       if ($subtype == "Sword" || $subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") <= 1)) return false;
       return true;
+    case "teklo_plasma_pistol":
+    case "plasma_barrel_shot":
+      return GetAbilityNames($cardID, $index, $from) == "-";
     case "teklo_foundry_heart":
       return GetClassState($player, $CS_NumBoosted) < 1;
     case "achilles_accelerator":
