@@ -496,7 +496,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100: //Break Chain
-      WriteLog("$playerID passes priority in the Resolution Step");
+      WriteLog("Player $playerID passes priority in the Resolution Step");
       PassInput(false, doublePass:true);
       break;
     case 101: //Pass block and Reactions
