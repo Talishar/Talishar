@@ -3330,6 +3330,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "puffin_hightail":
     case "puffin":
       Draw($player, effectSource:$parameter);
+      WriteLog("Player " . $player . " drew a card from " . CardLink($parameter, $parameter));
       break;
     case "marlynn_treasure_hunter":
     case "marlynn":
