@@ -87,6 +87,8 @@
     if($set == "LGS" && $cardNumber > 178) return false;
     if($set == "HER" && $cardNumber != 117 && $cardNumber != 100 && $cardNumber != 123 && $cardNumber != 130) return false;
     if($set == "FAB" && $cardNumber < 500) return false;
+    if($set == "HNT" && $cardNumber == 261) return false;
+    if($set == "SEA" && $cardNumber > 261) return false;
     return true;
   }
 
