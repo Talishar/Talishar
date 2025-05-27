@@ -3609,7 +3609,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
       if ($definedCardType == "AA" || GetResolvedAbilityType($cardID, $from) == "AA"){
         $treasureID = SearchLandmarksForID("treasure_island");
-        if (!IsAllyAttackTarget() && $treasureID != -1 && SearchCurrentTurnEffects("treasure_island", $mainPlayer, true)) {
+        if (IsHeroAttackTarget() && $treasureID != -1 && SearchCurrentTurnEffects("treasure_island", $mainPlayer, true)) {
           WriteLog("More gold discovered on ".CardLink("treasure_island", "treasure_island")."!");
           $landmarks[$treasureID + 3]++;
         }

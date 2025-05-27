@@ -113,7 +113,7 @@
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "HAND,NA", 1);
-        if(!IsAllyAttackTarget()) {
+        if(IsHeroAttackTarget()) {
           AddDecisionQueue("PASSPARAMETER", $otherPlayer, "0", 1);
           AddDecisionQueue("MULTIBANISHSOUL", $otherPlayer, "-", 1);
         }

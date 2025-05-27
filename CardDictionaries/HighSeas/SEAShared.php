@@ -733,7 +733,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "palantir_aeronought_red":
-      if($from != "PLAY" && !IsAllyAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+      if($from != "PLAY" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
       elseif($from == "PLAY") {
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $numResolved = CountCurrentTurnEffects($cardID, $currentPlayer);

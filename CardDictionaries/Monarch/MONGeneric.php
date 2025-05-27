@@ -29,7 +29,7 @@
         }
         return "";
       case "frontline_scout_red": case "frontline_scout_yellow": case "frontline_scout_blue":
-        if(!IsAllyAttackTarget()) {
+        if(IsHeroAttackTarget()) {
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
@@ -89,7 +89,7 @@
     for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
       $card = $CombatChain->Card($i, cardNumber:true);
       $powerValue = ModifiedPowerValue($card->ID(), $defPlayer, "CC", source:"exude_confidence_red");
-      if(!IsAllyAttackTarget() && $card->PlayerID() == $defPlayer && $powerValue >= CachedTotalPower()) $found = true;
+      if(IsHeroAttackTarget() && $card->PlayerID() == $defPlayer && $powerValue >= CachedTotalPower()) $found = true;
     }
     return $found;
   }

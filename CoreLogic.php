@@ -1936,7 +1936,7 @@ function DoesAttackHaveGoAgain()
       return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "soul_reaping_red":
     case "ursur_the_soul_reaper":
-      return (count(GetSoul($defPlayer)) > 0 && !IsAllyAttackTarget());
+      return (count(GetSoul($defPlayer)) > 0 && IsHeroAttackTarget());
     case "pulping_red":
     case "pulping_yellow":
     case "pulping_blue":
@@ -2478,14 +2478,6 @@ function IsHeroAttackTarget()
 {
   foreach(explode(",", GetAttackTarget()) as $target) {
     if (explode("-", $target)[0] == "THEIRCHAR") return true;
-  }
-  return false;
-}
-
-function IsAllyAttackTarget()
-{
-  foreach(explode(",", GetAttackTarget()) as $target) {
-    if (explode("-", $target)[0] == "THEIRALLY") return true;
   }
   return false;
 }

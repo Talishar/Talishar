@@ -288,7 +288,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "meganetic_shockwave_blue":
-      if($combatChainState[$CCS_NumBoosted] && !IsAllyAttackTarget()) {
+      if($combatChainState[$CCS_NumBoosted] && IsHeroAttackTarget()) {
         if ($combatChainState[$CCS_NumBoosted] > 1 && IsOverpowerActive()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
         else $combatChainState[$CCS_RequiredEquipmentBlock] = $combatChainState[$CCS_NumBoosted];
         $rv .= "Requires you to block with " . $combatChainState[$CCS_NumBoosted] . " equipment if able";

@@ -2359,7 +2359,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "crown_of_dominion":
-      PutItemIntoPlayForPlayer("gold", $player, effectController: $player);
+      PutItemIntoPlayForPlayer("gold", $player, mainPhase:"Skip", effectController: $player);
       WriteLog(CardLink($parameter, $parameter) . " created a Gold token");
       break;
     case "ponder":
@@ -2791,6 +2791,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "clash_of_vigor_blue":
     case "test_of_vigor_red":
     case "test_of_strength_red":
+    case "clash_of_mountains_red":
+    case "clash_of_mountains_yellow":
+    case "clash_of_mountains_blue":
       Clash($parameter, effectController: $player);
       break;
     case "nasty_surprise_blue":
@@ -3327,6 +3330,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "puffin_hightail":
     case "puffin":
       Draw($player, effectSource:$parameter);
+      WriteLog("Player " . $player . " drew a card from " . CardLink($parameter, $parameter));
       break;
     case "marlynn_treasure_hunter":
     case "marlynn":
@@ -3520,8 +3524,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "THEIRITEMS:type=T;cardID=gold");
         AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $defPlayer, "GAINCONTROL", 1);
-        AddDecisionQueue("ELSE", $defPlayer, "-");
-        AddDecisionQueue("PLAYITEM", $defPlayer, "gold", 1);
       }
       break;
     case "anka_drag_under_yellow":
@@ -3534,6 +3536,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $grave[$index + 2] = "FACEDOWN";
       }
       break;
+    case "tricorn_of_saltwater_death":
+    if (SearchHand($player, hasWateryGrave: true) != "") {
+        AddDecisionQueue("FINDINDICES", $player, "HANDWATERYGRAVE,-,NOPASS");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with watery grave to discard");
+        AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+        AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
+        AddDecisionQueue("DRAW", $player, "-", 1);
+    }
+    break;
     default:
       break;
   }

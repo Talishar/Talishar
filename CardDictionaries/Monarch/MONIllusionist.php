@@ -16,7 +16,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "phantasmaclasm_red":
-        if(!IsAllyAttackTarget()) {
+        if(IsHeroAttackTarget()) {
           AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
@@ -50,7 +50,7 @@
         Draw($mainPlayer);
         break;
       case "herald_of_judgment_yellow":
-        if(!IsAllyAttackTarget()) {
+        if(IsHeroAttackTarget()) {
           AddCurrentTurnEffect($cardID, $defPlayer);
           AddNextTurnEffect($cardID, $defPlayer);
         }

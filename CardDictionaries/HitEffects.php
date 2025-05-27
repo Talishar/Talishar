@@ -133,7 +133,7 @@ function EVOHitEffect($cardID)
       }
       break;
     case "intoxicating_shot_blue":
-      if (!IsAllyAttackTarget()) {
+      if (IsHeroAttackTarget()) {
         PlayAura("courage", $defPlayer);
         PlayAura("quicken", $defPlayer);
       }

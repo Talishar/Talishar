@@ -201,7 +201,7 @@ function OUTAbilityCost($cardID)
       case "spreading_plague_yellow":
         for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
         {
-          if($combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
+          if(IsHeroAttackTarget() && $combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         }
         return "";
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red":
