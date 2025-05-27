@@ -1051,6 +1051,13 @@ function OnBlockResolveEffects($cardID = "")
         $defChar = GetPlayerCharacter($defPlayer);
         if (ClassContains($defChar[0], "THIEF", $defPlayer)) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
+      case "clash_of_mountains_red":
+      case "clash_of_mountains_yellow":
+      case "clash_of_mountains_blue":
+        if (ClassContains($combatChain[0], "GUARDIAN", $mainPlayer)) {
+          AddLayer("TRIGGER", $defPlayer, $cardID, $cardID, "CRUSHEFFECT");
+        }
+        break;
       default:
         break;
     }

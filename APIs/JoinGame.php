@@ -573,6 +573,7 @@ function isUnimplemented($cardID) {
         "loot_the_hold_blue", "loot_the_arsenal_blue" => false,
         "tricorn_of_saltwater_death" => false,
         "graven_justaucorpse" => false,
+        "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
         default => true
       };
     default:
