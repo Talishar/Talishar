@@ -3196,6 +3196,7 @@ function HasBladeBreak($cardID)
     case "old_knocker":
     case "quartermasters_boots":
     case "light_fingers":
+    case "tricorn_of_saltwater_death":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
