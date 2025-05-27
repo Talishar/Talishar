@@ -386,7 +386,7 @@ function MainCharacterBeginEndPhaseAbilities()
         break;
     }
     //untap
-    Tap("MYCHAR-$i", $mainPlayer, 0);
+    Tap("MYCHAR-$i", $mainPlayer, 0, endStepUntap:true);
   }
 
   $defCharacter = &GetPlayerCharacter($defPlayer);

@@ -455,7 +455,7 @@ function ItemEndTurnAbilities()
   $items = &GetItems($mainPlayer);
   for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
     //untap
-    Tap("MYITEMS-$i", $mainPlayer, 0);
+    Tap("MYITEMS-$i", $mainPlayer, 0, endStepUntap:true);
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_balance_blue":

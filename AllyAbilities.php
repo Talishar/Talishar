@@ -430,7 +430,7 @@ function AllyEndTurnAbilities()
   $allies = &GetAllies($mainPlayer);
   for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
     //untap
-    Tap("MYALLY-$i", $mainPlayer, 0);
+    Tap("MYALLY-$i", $mainPlayer, 0, endStepUntap:true);
     switch ($allies[$i]) {
       case "UPR551":
         DestroyAlly($mainPlayer, $i, true);
