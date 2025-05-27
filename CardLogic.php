@@ -2717,7 +2717,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Clash($parameter, effectController: $player);
       break;
     case "gauntlets_of_iron_will":
-      AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower(), $mainPlayer);
+      if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower(), $mainPlayer);
       break;
     case "golden_glare":
       $yellowPitchCards = 0;
