@@ -71,9 +71,13 @@
     $diabolicOfferingCount = 0;
     for($i = 0; $i < 3; $i++) {
       $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
-      if(ModifiedPowerValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
-      elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
-      // $cardID = RemoveDiscard($currentPlayer, $index);
+      $facing = $discard[$index + 2];
+      $modifier = $facing == "FACEDOWN" ? "FACEDOWN" : $modifier;
+      if($facing != "FACEDOWN") {
+        if(ModifiedPowerValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
+        elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
+        // $cardID = RemoveDiscard($currentPlayer, $index);
+      }
       $cardID = RemoveGraveyard($currentPlayer, $index);
       BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
       $discard = array_values($discard);
