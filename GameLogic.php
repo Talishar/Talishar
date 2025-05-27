@@ -1267,73 +1267,79 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
     case "DEALARCANE":
-      $dqState[7] = $lastResult;
-      $target = explode("-", $lastResult);
-      $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
-      $parameters = explode("-", $parameter);
-      $damage = $parameters[0];
-      $source = $parameters[1];
-      $type = $parameters[2];
-      $sourceType = CardType($source);
-      if ($type == "PLAYCARD") {
-        $damage += ConsumeArcaneBonus($player);
-        if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
-        WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
-      }
-      if ($type == "ARCANESHOCK") {
-        $damage += ConsumeArcaneBonus($player, noRemove: true);
-        if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
-        WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
-      }
-      if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
-        $allies = &GetAllies($targetPlayer);
-        $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, "ARCANE");
-        $allies[$target[1] + 2] -= $damage;
-        $dqVars[0] = $damage;
-        if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if ($allies[$target[1] + 2] <= 0) {
-          DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
-        } else {
-          AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
+      if ($lastResult != "-") { // make sure the target is still there
+        $dqState[7] = $lastResult;
+        $target = explode("-", $lastResult);
+        $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
+        $parameters = explode("-", $parameter);
+        $damage = $parameters[0];
+        $source = $parameters[1];
+        $type = $parameters[2];
+        $sourceType = CardType($source);
+        if ($type == "PLAYCARD") {
+          $damage += ConsumeArcaneBonus($player);
+          if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
+          WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
         }
-        return "";
-      }
-      elseif (($target[0] == "THEIRCHARUID" || $target[0] == "MYCHARUID")) { //perched allies
-        $index = SearchCharacterForUniqueID($target[1], $targetPlayer);
-        $dqVars[0] = $damage;
-        if ($damage > 0 && $index > 0) {
-          // for now life tracking isn't necessary
-          DestroyCharacter($targetPlayer, $index);
+        if ($type == "ARCANESHOCK") {
+          $damage += ConsumeArcaneBonus($player, noRemove: true);
+          if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
+          WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
+        }
+        if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
+          $allies = &GetAllies($targetPlayer);
+          $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, "ARCANE");
+          $allies[$target[1] + 2] -= $damage;
+          $dqVars[0] = $damage;
+          if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
+          if ($allies[$target[1] + 2] <= 0) {
+            DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
+          } else {
+            AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
+          }
           return "";
         }
-      }
-      elseif (($target[0] == "THEIRCHAR" || $target[0] == "MYCHAR")) { //perched allies targeted without UID
-        $index = $target[1];
-        $dqVars[0] = $damage;
-        if ($damage > 0 && $index > 0) {
-          // for now life tracking isn't necessary
-          DestroyCharacter($targetPlayer, $index);
-          return "";
+        elseif (($target[0] == "THEIRCHARUID" || $target[0] == "MYCHARUID")) { //perched allies
+          $index = SearchCharacterForUniqueID($target[1], $targetPlayer);
+          $dqVars[0] = $damage;
+          if ($damage > 0 && $index > 0) {
+            // for now life tracking isn't necessary
+            DestroyCharacter($targetPlayer, $index);
+            return "";
+          }
         }
+        elseif (($target[0] == "THEIRCHAR" || $target[0] == "MYCHAR")) { //perched allies targeted without UID
+          $index = $target[1];
+          $dqVars[0] = $damage;
+          if ($damage > 0 && $index > 0) {
+            // for now life tracking isn't necessary
+            DestroyCharacter($targetPlayer, $index);
+            return "";
+          }
+        }
+        AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
+        $target = $targetPlayer;
+        $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
+        PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
+        PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
+        CheckSpellvoid($target, $damage);
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
+        DoQuell($target, $damage);
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
+        PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1);
+        PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1);
+        PrependDecisionQueue("SETDQVAR", $target, "1", 1);
+        PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
+        PrependDecisionQueue("SETDQVAR", $target, "0", 1);
+        PrependDecisionQueue("PASSPARAMETER", $target, "$damage-$source", 1);
+        return $parameter;
       }
-      AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
-      $target = $targetPlayer;
-      $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
-      PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
-      PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
-      CheckSpellvoid($target, $damage);
-      PrependDecisionQueue("INCDQVAR", $target, "1", 1);
-      if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
-      DoQuell($target, $damage);
-      PrependDecisionQueue("INCDQVAR", $target, "1", 1);
-      PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
-      PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1);
-      PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1);
-      PrependDecisionQueue("SETDQVAR", $target, "1", 1);
-      PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
-      PrependDecisionQueue("SETDQVAR", $target, "0", 1);
-      PrependDecisionQueue("PASSPARAMETER", $target, "$damage-$source", 1);
-      return $parameter;
+      else {
+        WriteLog("The arcane target is gone!");
+        return "PASS";
+      }
     case "ARCANEHITEFFECT":
       if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //player, source, target, damage
       if ($dqVars[0] > 0) IncrementClassState($player, $CS_ArcaneDamageDealt, $dqVars[0]);

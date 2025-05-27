@@ -153,13 +153,26 @@ function ARCWizardHitEffect($cardID)
 function GetArcaneTargetFromUID($player, $target) {
   $otherPlayer = $player == 1 ? 2 : 1;
   $targetArr = explode("-", $target);
+  $indexTarget = "-";
   if (is_numeric($targetArr[1])) return $target; // it's already an index
   if (str_contains($targetArr[0], "ALLY")) {
     $targetPlayer = $targetArr[0] == "MYALLY" ? $player : $otherPlayer;
     $allyInd = SearchAlliesForUniqueID($targetArr[1], $targetPlayer);
-    $target = "$targetArr[0]-$allyInd";
+    if ($allyInd != -1) $indexTarget = "$targetArr[0]-$allyInd";
   }
-  return $target;
+  elseif (str_contains($targetArr[0], "CHAR")) {
+    if (str_contains($targetArr[0], "MY")) {
+      $targetPlayer = $player;
+      $zone = "MYCHAR";
+    }
+    else {
+      $targetPlayer = $otherPlayer;
+      $zone = "THEIRCHAR";
+    }
+    $charInd = SearchCharacterForUniqueID($targetArr[1], $targetPlayer);
+    if ($charInd != -1) $indexTarget = "$zone-$charInd";
+  }
+  return $indexTarget;
 }
 
 function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False) {
@@ -222,7 +235,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         $cleanTarget = GetArcaneTargetFromUID($player, $resolvedTarget);
         AddDecisionQueue("PASSPARAMETER", $player, $cleanTarget, ($isPassable ? 1 : 0));
       } else {
-        AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
+        AddDecisionQueue("PASSPARAMETER", $player, $source, subsequent: ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
         AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
