@@ -3248,7 +3248,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   }
   $hand = array_values($hand);
   $index = count($hand) - 1 ;
-  WriteLog("Player " . $player . " draw a card from " . CardLink($EffectContext, $EffectContext));
+  WriteLog("Player " . $player . " draw a card from " . CardLink($context, $context));
   return $index >= 0 ? $hand[$index] : -1;
 }
 
