@@ -1530,7 +1530,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //block the shortcut if they can't attack
       $blockShortcut = match ($cardID) {
         "teklo_plasma_pistol", "plasma_barrel_shot" => !str_contains(GetAbilityNames($cardID, $index, $from), "Attack"),
-        "default" => false,
+        default => false,
       };
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "" && !HasMeld($cardID)) {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
