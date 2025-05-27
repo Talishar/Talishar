@@ -2160,7 +2160,10 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "arcane_compliance_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A&LAYER:type=AA");
+      $indices = explode(",", SearchLayersCardType("A", "AA"));
+      $formattedIndices = [];
+      foreach ($indices as $index) array_push($formattedIndices, "LAYER-$index");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $formattedIndices));
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an action to block arcane buffs on");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  

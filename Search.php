@@ -1808,3 +1808,18 @@ function SearchCombatChainForIndex($cardID, $player)
   }
   return -1;
 }
+
+// needed to catch meld card types
+function SearchLayersCardType($type, $type2="-")
+{
+  global $layers;
+  $found = [];
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    $cardType = CardType($layers[$i], "STACK", $layers[$i+1]);
+    if (DelimStringContains($cardType, $type) || ($type2 != "-" && DelimStringContains($cardType, $type2))) {
+      array_push($found, $i);
+    }
+  }
+  if (count($found) == 0) return "";
+  else return implode(",", $found);
+}

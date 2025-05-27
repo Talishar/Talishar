@@ -59,9 +59,10 @@ $CID_TekloChest = "teklo_base_chest";
 $CID_TekloArms = "teklo_base_arms";
 $CID_TekloLegs = "teklo_base_legs";
 
-function CardType($cardID, $from="")
+function CardType($cardID, $from="", $controller="-")
 {
   global $CS_AdditionalCosts, $currentPlayer;
+  $controller = $controller == "-" ? $currentPlayer : $controller;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
   
@@ -80,7 +81,7 @@ function CardType($cardID, $from="")
   if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
     if (function_exists("GetClassState")) {
-      $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
+      $additionalCosts = GetClassState($controller, $CS_AdditionalCosts);
       if ($additionalCosts == "Both") return "A,I";
       if (IsMeldInstantName($additionalCosts)) return "I";
       if (IsMeldActionName($additionalCosts)) return "A";
@@ -2947,7 +2948,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "goldkiss_rum":
       return CheckTapped("MYCHAR-0", $currentPlayer);
     case "arcane_compliance_blue":
-      return SearchLayer($currentPlayer, type:"A") == "" && SearchLayer($currentPlayer, type:"AA") == "";
+      return SearchLayersCardType("A") == "" && SearchLayersCardType("AA") == "";
     default:
       return false;
   }
