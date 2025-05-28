@@ -819,7 +819,6 @@ function AuraBeginEndPhaseTriggers()
       case "inertia":
       case "earths_embrace_blue":
       case "sharpened_senses_yellow":
-      case "riddle_with_regret_red":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
         break;
       case "channel_mount_heroic_red":
@@ -845,6 +844,11 @@ function AuraBeginEndPhaseTriggers()
         if(GetClassState($mainPlayer, $CS_AttacksWithWeapon) == 0) {
           DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         }
+        break;
+      case "riddle_with_regret_red":
+        $auras = &GetAuras($mainPlayer);
+        $countAuras = count($auras)/AuraPieces();
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, $auras[$i + 6]);
         break;
       default:
         break;

@@ -3433,10 +3433,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
       break;
     case "riddle_with_regret_red":
-      $auras = &GetAuras($player);
-      $countAuras = count($auras)/AuraPieces();
-      LoseHealth($countAuras, $player);
-      if($countAuras >= 3) {
+      WriteLog("You are riddled with the regret of $additionalCosts auras");
+      LoseHealth($additionalCosts, $player);
+      if($additionalCosts >= 3) {
         DestroyAuraUniqueID($player, $uniqueID);
       }
       break;
