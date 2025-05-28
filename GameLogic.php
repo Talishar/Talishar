@@ -782,7 +782,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDBOTDECK":
       $deck = new Deck($player);
       $deck->AddBottom($lastResult);
-      if($parameter != "Skip") WriteLog("⤵️A card was put on the bottom of the deck.");
+      if($parameter != "Skip") WriteLog("⤵️ A card was put on the bottom of the deck.");
       return $lastResult;
     case "ADDTOPDECK":
       $deck = new Deck($player);
@@ -804,7 +804,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = explode(",", $lastResult);
       for ($i = 0; $i < count($cards); ++$i) {
         if (CardName($cards[$i]) != "") $deck->AddBottom($cards[$i]);
-        else WriteLog("There was an error adding a card to your deck, please submit a bug report");
+        else WriteLog("There was an error adding a card to your deck, please submit a bug report", highlight: true);
       }
       return $lastResult;
     case "MULTIADDTOPDECK":

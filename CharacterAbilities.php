@@ -856,7 +856,7 @@ function EquipWeapon($player, $cardID, $source = "-")
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchCurrentTurnEffects("ripple_away_blue", $player) != "" || (SearchCurrentTurnEffects("ripple_away_blue", $otherPlayer)) != "") {
     if (TypeContains($cardID, "T", $player, true) && (CardType($source) == "A" || CardType($source) == "AA")) {
-      WriteLog("You can't equip token weapons from an action card under ripple away");
+      WriteLog("🌊 You can't equip token weapons from an action card under " . CardLink("ripple_away_blue", "ripple_away_blue"));
       return;
     }
   }
@@ -1508,13 +1508,13 @@ function CharacterAttackAbilities($attackID)
       case "evo_scatter_shot_blue_equip":
         if ($attackID == "teklo_blaster") {
           AddCurrentTurnEffect($char[$i], $mainPlayer);
-          WriteLog("Evo Scatter Shot gives +1");
+          WriteLog(CardLink($char[$i], $char[$i]) . " gives +1");
         }
         break;
       case "evo_rapid_fire_blue_equip":
         if ($attackID == "teklo_blaster") {
           GiveAttackGoAgain();
-          WriteLog("Evo Rapid Fire gives Go Again");
+          WriteLog(CardLink($char[$i], $char[$i]) . " gives Go Again");
         }
         break;
       case "cosmo_scroll_of_ancestral_tapestry":
