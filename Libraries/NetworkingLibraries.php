@@ -421,7 +421,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($cardName != "") $inputText = $cardName;
       if ($turn[2] == "head_leads_the_tail_red" && $inputText == "Head Leads the Tail") //Validate the name
       {
-        WriteLog("Must name another card");
+        WriteLog(CardLink($turn[2], $turn[2]) . " cannot name itself, your must name another card", highlight: true);
         break;
       }
       ContinueDecisionQueue(GamestateSanitize($inputText));
@@ -2230,7 +2230,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         $names[0] = "-";
     }
     if ($names[0] == "-" && $names[1] == "-") {
-      WriteLog("Both sides of the meld card are blocked, reverting play");
+      WriteLog("Both sides of the meld card are blocked, reverting play", highlight: true);
       RevertGamestate();
     }
     elseif ($names[0] == "-") $option = $names[1];
@@ -2911,7 +2911,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if (ArsenalHasFaceDownCard($currentPlayer)) {
         $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
         AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
-        WriteLog("Lexi turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
+        WriteLog(CardLink($cardID, $cardID) . " turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
       }
       break;
     case "crown_of_seeds":
@@ -3625,14 +3625,14 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
             if ($target != "-") {
               if (!$CombatChain->HasCurrentLink()) {
                 //chain link closed prematurely
-                WriteLog("Lightning Press fizzles due to missing target");
+                WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
                 $fizzled = true;
               }
               elseif (explode("-", $target)[0] == "COMBATCHAINLINK") {
                 //chain link didn't close but target is still gone
                 $targetIndex = intval(explode("-", $target)[1]);
                 if ($targetIndex == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
-                  WriteLog("Lightning Press fizzles due to missing target");
+                  WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
                   $fizzled = true;
                 }
               }

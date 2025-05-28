@@ -151,7 +151,7 @@ function AllyStartTurnAbilities($player)
   for ($i = 0; $i < count($allies); $i += AllyPieces()) {
     switch ($allies[$i]) {
       case "ouvia":
-        WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an Ashwing.");
+        WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an ".CardLink("aether_ashwing", "aether_ashwing").".");
         Transform($player, "Ash", "aether_ashwing", true);
         break;
       default:
@@ -349,7 +349,7 @@ function AllyDamageTakenAbilities($player, $i)
       $allies[$i + 2] -= 1;
       $allies[$i + 7] -= 1;
       PutPermanentIntoPlay($player, "ash");
-      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 life counter and created an ash token");
+      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 life counter and created an ".CardLink("ash", "ash")." token");
       break;
     default:
       break;

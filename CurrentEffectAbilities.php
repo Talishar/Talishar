@@ -305,7 +305,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
       if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
       break;
     case "mask_of_shifting_perspectives":
-      WriteLog("Mask of Shifting Perspectives lets you sink a card");
+      WriteLog(CardLink($cardID, $cardID) . " lets you sink a card");
       BottomDeck($mainPlayer, true, shouldDraw: true);
       break;
     case "concealed_blade_blue":
@@ -458,7 +458,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
         $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
         ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
       }
-      else WriteLog("A strange error has happened with twist and turn. Please submit a bug report");
+      else WriteLog("A strange error has happened with twist and turn. Please submit a bug report", highlight: true);
       return 0;
     case "hunt_a_killer_red":
     case "hunt_a_killer_yellow":
@@ -510,7 +510,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
       break;
     case "drop_the_anchor_red":
-      WriteLog(CardLink($cardID, $cardID) . " tap Player ".$defPlayer . ", and all the allies they control.");
+      WriteLog(CardLink($cardID, $cardID) . " tap Player " . $defPlayer . ", and all the allies they control.");
       Tap("THEIRCHAR-0", $mainPlayer);
       AddDecisionQueue("TAPALL", $mainPlayer, "THEIRALLY", 1);
       break;
@@ -1027,7 +1027,7 @@ function CurrentEffectCostModifiers($cardID, $from)
             $costModifier -= 1;
             $remove = true;
             if ($cardID == "fealty") {
-              WriteLog("Ignite is discounting your fealty, this is not a bug. You need to use the fealty in response to your ignite");
+              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is discounting your fealty, this is not a bug. You need to use the fealty in response to your " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " ability.");
             }
           }
           break;
@@ -2091,7 +2091,7 @@ function BeginEndPhaseEffects()
     switch ($currentTurnEffects[$i]) {
       case "revel_in_runeblood_red":
         if (CountAura("runechant", $mainPlayer) > 0) {
-          WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your Runechant tokens");
+          WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your ".CardLink("runechant", "runechant")." tokens");
           DestroyAllThisAura($currentTurnEffects[$i + 1], "runechant");
         }
         break;
@@ -2251,7 +2251,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
     }
   }
   if ($revertNeeded && $restrictedBy != "") {
-    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.", highlight: true);
     RevertGamestate();
     return true;
   }
@@ -2346,7 +2346,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
     return true;
   }
   if ($revertNeeded && $restrictedBy != "") {
-    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.");
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.", highlight: true);
     RevertGamestate();
     return true;
   }

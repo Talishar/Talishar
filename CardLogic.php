@@ -1835,7 +1835,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "hyper_x3":
       $banish = GetBanish($player);
       $index = SearchBanishForUID($player, $target);
-      if ($index == -1) WriteLog("Hyper X3's trigger fails");
+      if ($index == -1) WriteLog(CardLink($parameter, $parameter)."'s trigger fails");
       else {
         EquipmentBoostEffect($player, "hyper_x3", $banish[$index]);
         RemoveBanish($player, $index);
@@ -1844,7 +1844,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "bios_update_red":
       $banish = GetBanish($player);
       $index = SearchBanishForUID($player, $target);
-      if ($index == -1) WriteLog("Bios Update's trigger fails");
+      if ($index == -1) WriteLog(CardLink($parameter, $parameter)."'s trigger fails");
       else {
         PutItemIntoPlayForPlayer($banish[$index], $player);
         RemoveBanish($player, $index);
@@ -2454,7 +2454,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
-      WriteLog("Trap triggered and puts a -1 counter on an equipment");
+      WriteLog(CardLink($parameter, $parameter) . " triggered and puts a -1 counter on an equipment");
       TrapTriggered($parameter);
       break;
     case "pendulum_trap_yellow":
@@ -2476,7 +2476,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "virulent_touch_red":
     case "virulent_touch_yellow":
     case "virulent_touch_blue":
-      WriteLog(CardLink($parameter, $parameter) . " creates a Bloodrot Pox from being blocked from hand.");
+      WriteLog(CardLink($parameter, $parameter) . " creates a ".CardLink($CID_BloodRotPox, $CID_BloodRotPox)." from being blocked from hand.");
       PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
       break;
     case "bloodrot_trap_red":
@@ -2726,12 +2726,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       if ($yellowPitchCards >= 2) {
         PutItemIntoPlayForPlayer("gold", $player, effectController: $player);
-        WriteLog(CardLink("golden_glare", "golden_glare") . " created a Gold token");
+        WriteLog(CardLink("golden_glare", "golden_glare") . " created a ".CardLink("gold", "gold")." token");
       }
       break;
     case "the_golden_son_yellow":
       PutItemIntoPlayForPlayer("gold", $player, effectController: $player);
-      WriteLog(CardLink($parameter, $parameter) . " created a Gold Token for Player " . $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("gold", "gold")." token for Player " . $player);
       break;
     case "trounce_red":
       Clash($parameter, effectController: $player);
@@ -2740,13 +2740,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "thunk_yellow":
     case "thunk_blue":
       PlayAura("might", $player); 
-      WriteLog(CardLink($parameter, $parameter) . " created a Might Token for Player " . $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("might", "might")." token for Player " . $player);
       break;
     case "wallop_red":
     case "wallop_yellow":
     case "wallop_blue":
       PlayAura("vigor", $player); 
-      WriteLog(CardLink($parameter, $parameter) . " created a Vigor Token for Player " . $player);
+      WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("vigor", "vigor")." token for Player " . $player);
       break;
     case "commanding_performance_red":
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
@@ -3104,7 +3104,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "truce_blue":
       if($target == "truce_blue-1") {
-      WriteLog("Congrats! You didn't kill each other!🤝");
+      WriteLog("🤝 Congrats! You didn't kill each other!");
       DestroyAuraUniqueID($defPlayer, $uniqueID);
       // effect controller performs the instruction first
       GainHealth(3, $defPlayer);

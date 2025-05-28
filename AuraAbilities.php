@@ -146,7 +146,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   }
   else $uid = "-";
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-    if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from Merciful Retribution because it is a token copy</span>");
+    if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from " . CardLink("merciful_retribution_yellow", "merciful_retribution_yellow") . " because it is a token copy</span>");
     AddLayer("TRIGGER", $player, "merciful_retribution_yellow", additionalCosts: $uid);
   }
   if (HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
@@ -563,7 +563,7 @@ function AuraStartTurnAbilities()
       break;
     case "chains_of_mephetis_blue":
       if ($auras[$i + 2] > 0) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Doom_Counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_doom_counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
         AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
       } else {
         WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
@@ -1329,7 +1329,7 @@ function AuraAttackAbilities($attackID)
         break;
       case "passing_mirage_blue":
         if ($auras[$i + 5] > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn lose Phantasm");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn loses phantasm");
           --$auras[$i + 5];
           AddCurrentTurnEffect("passing_mirage_blue", $mainPlayer, true);
         }

@@ -109,7 +109,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
             for ($i = 0; $i < count($char); $i += CharacterPieces()) {
               if ($char[$i + 11] == $combatChain[8]) $charID = $i;
             }
-            if ($charID == -1) WriteLog("something went wrong, please submit a bug report");
+            if ($charID == -1) WriteLog("something went wrong, please submit a bug report", highlight: true);
             if (SearchLayersForCardID($combatChain[0]) == -1 && $char[$charID + 7] != "1") {
               AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
             }
@@ -669,7 +669,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
     AuraDamageDealtAbilities($otherPlayer, $damage);
     if (SearchAuras("ode_to_wrath_yellow", $otherPlayer)) {
       LoseHealth(CountAura("ode_to_wrath_yellow", $otherPlayer), $player);
-      WriteLog("Lost life from Ode to Wrath");
+      WriteLog("Lost life from " . CardLink("ode_to_wrath_yellow", "ode_to_wrath_yellow"));
     }
     $classState[$CS_DamageTaken] += $damage;
     if (!IsAllyAttacking()) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
@@ -1409,11 +1409,11 @@ function AfterDieRoll($player)
   $skullCrusherIndex = FindCharacterIndex($player, "skull_crushers");
   if ($skullCrusherIndex > -1 && IsCharacterAbilityActive($player, $skullCrusherIndex)) {
     if ($roll == 1) {
-      WriteLog("Skull Crushers was destroyed");
+      WriteLog(CardLink("skull_crushers", "skull_crushers") . " was destroyed");
       DestroyCharacter($player, $skullCrusherIndex);
     }
     if ($roll == 5 || $roll == 6) {
-      WriteLog("Skull Crushers gives +1 this turn");
+      WriteLog(CardLink("skull_crushers", "skull_crushers") . " gives +1 this turn");
       AddCurrentTurnEffect("skull_crushers", $player);
     }
   }
@@ -3088,12 +3088,12 @@ function PitchAbility($cardID, $from="HAND")
   if ($pitchValue == 1) {
     $talismanOfRecompenseIndex = GetItemIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
-      WriteLog("Talisman of Recompense gained 3 instead of 1 and destroyed itself");
+      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources($currentPlayer, 2);
     }
     if (ColorContains($cardID, 1, $currentPlayer) && SearchCharacterActive($currentPlayer, "dromai_ash_artist") || SearchCharacterActive($currentPlayer, "dromai") || SearchCurrentTurnEffects("dromai_ash_artist-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("dromai-SHIYANA", $currentPlayer)) {
-      WriteLog("Dromai creates an Ash");
+      WriteLog("Dromai creates an " . CardLink("ash", "ash"));
       PutPermanentIntoPlay($currentPlayer, "ash");
     }
   }
