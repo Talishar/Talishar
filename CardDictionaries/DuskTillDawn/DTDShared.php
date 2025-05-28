@@ -411,7 +411,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
       AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, $cardID . ",", 1);
       return "";
-    case "anthem_of_spring_blue"://Anthem of Spring
+    case "anthem_of_spring_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "northern_winds_blue":

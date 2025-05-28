@@ -451,14 +451,22 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
       $hand = &GetHand($currentPlayer);
       $handCount = count($hand);
+      $deck = &GetDeck($currentPlayer);
+      $deckCount = count($deck);
+      $context = "Choose a card to discard from your hand or destroy from the top of your deck (or pass)";
+      if ($handCount == 0 && $deckCount == 0) break;
       if ($handCount == 0) {
+        $context = "Choose a card to destroy from the top of your deck (or pass)";
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDECK-0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from the top of your deck (or pass)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
       } 
       else {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND", 1);
-        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+        if($deckCount > 0) {
+          AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, ",MYDECK-0", 1);
+        }
+        else $context = "Choose a card to discard from your hand (or pass)";
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context, 1);
       }
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);

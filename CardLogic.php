@@ -3454,12 +3454,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $handCount = count($hand);
       if ($handCount == 0) {
         AddDecisionQueue("PASSPARAMETER", $player, "MYDECK-0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard from the top of your deck (or pass)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to destroy from the top of your deck (or pass)", 1);
       } 
       else {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND", 1);
         AddDecisionQueue("APPENDLASTRESULT", $player, ",MYDECK-0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard from your hand or top of your deck (or pass)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to discard from your hand or destroy from the top of your deck (or pass)", 1);
       }
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
