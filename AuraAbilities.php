@@ -1539,3 +1539,24 @@ function AurasAttackYouControlModifiers($cardID, $player)
   }
   return $powerModifier;
 }
+
+function isSpectraAttackTarget() {
+
+  global $defPlayer, $currentPlayer, $combatChainState, $CCS_AttackTarget, $CCS_AttackTargetUID;
+  $isSpectraTarget = false;
+  $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
+  $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
+  for ($i = count($targetArr) - 1; $i >= 0; --$i) {
+    if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
+      // remove spectra cards from target
+      $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
+      if ($ind != -1) {
+        $MZTarget = "THEIRAURAS-$ind";
+        if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
+          $isSpectraTarget = true;
+        }
+      }
+    }
+  }
+  return $isSpectraTarget;
+}

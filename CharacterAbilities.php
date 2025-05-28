@@ -1232,7 +1232,7 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "sticky_fingers":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
-      DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
+      if(!isSpectraAttackTarget()) DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
       break;
     case "rust_belt":
       DestroyCharacter($currentPlayer, $cardIndex);
