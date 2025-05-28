@@ -76,11 +76,13 @@
       if($facing != "FACEDOWN") {
         if(ModifiedPowerValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
         elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
-        // $cardID = RemoveDiscard($currentPlayer, $index);
+        $cardID = RemoveGraveyard($currentPlayer, $index);
+        BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
+        $discard = array_values($discard);
       }
-      $cardID = RemoveGraveyard($currentPlayer, $index);
-      BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
-      $discard = array_values($discard);
+      else {
+        $i--;
+      }
     }
     if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
     return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;

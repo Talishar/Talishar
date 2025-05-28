@@ -19,7 +19,11 @@ class Discard {
   }
 
   function NumCards() {
-    return count($this->discard)/DiscardPieces();
+    $count = 0;
+    for ($i=0; $i < count($this->discard); $i += DiscardPieces()) {
+      if($this->discard[$i+2] != "FACEDOWN") $count++;
+    }
+    return $count;
   }
 
   function RemoveRandom($count=1) {
