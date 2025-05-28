@@ -1531,8 +1531,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "" && !HasMeld($cardID)) {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
-        WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
-        PassInput(false);
+        if(HoldPrioritySetting($currentPlayer) == 3 || HoldPrioritySetting($currentPlayer) == 4)
+        {
+          ProcessInput($currentPlayer, 99, "", $cardID, 0, "");
+        }
+        else {
+          WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
+          PassInput(false);
+        }
         return "";
       }
       elseif (GetResolvedAbilityType($cardID, $from) == "A" && !$blockShortcut) {
@@ -1548,8 +1554,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
             ++$items[$index + 3]; // give it back a use
           }
         }
-        WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
-        PassInput(false);
+        if(HoldPrioritySetting($currentPlayer) == 3 || HoldPrioritySetting($currentPlayer) == 4)
+        {
+          ProcessInput($currentPlayer, 99, "", $cardID, 0, "");
+        }
+        else {
+          WriteLog("You cannot play/activate Non-attack actions while the combat chain is open, passing priority to close the chain first");
+          PassInput(false);
+        }
         return "";
       }
     }
