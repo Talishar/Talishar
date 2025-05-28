@@ -1259,7 +1259,7 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "bandana_of_the_blue_beyond":
       DestroyCharacter($currentPlayer, $cardIndex);
-      MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD," . $currentPlayer);
+      MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD");
       break;
     case "old_knocker":
       DestroyCharacter($currentPlayer, $cardIndex);
