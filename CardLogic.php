@@ -2523,6 +2523,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "figment_of_ravages_yellow":
       DealArcane(1, 2, "PLAYCARD", "figment_of_ravages_yellow", false, $player, resolvedTarget: $target);
       break;
+    case "suraya_archangel_of_knowledge":
+      AddDecisionQueue("FINDINDICES", $player, "SOUL");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to banish");
+      AddDecisionQueue("MAYCHOOSEMYSOUL", $player, "<-", 1);
+      AddDecisionQueue("MULTIBANISHSOUL", $player, "-", 1);
+      AddDecisionQueue("THREATENARCANE", $player, "$parameter,$target", 1);
+      break;
     case "soulbond_resolve":
       Charge();
       break;

@@ -1264,7 +1264,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       return $prevented;
     case "THREATENARCANE":
-      DealArcane(1, 2, "ABILITY", $parameter, true);
+      $paramArr = explode(",", $parameter);
+      if (isset($paramArr[1])) {
+        DealArcane(1, 2, "ABILITY", $paramArr[0], resolvedTarget:$paramArr[1]);
+      }
+      else DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
     case "DEALARCANE":
       if ($lastResult != "-") { // make sure the target is still there

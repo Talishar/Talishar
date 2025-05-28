@@ -508,11 +508,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "suraya_archangel_of_knowledge":
       $soul = &GetSoul($currentPlayer);
       if(count($soul) > 0){
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SOUL");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish");
-        AddDecisionQueue("MAYCHOOSEMYSOUL", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
-        AddDecisionQueue("THREATENARCANE", $currentPlayer, $cardID, 1);
+        SetArcaneTarget($currentPlayer, "suraya_archangel_of_knowledge", 2);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $currentPlayer, "suraya_archangel_of_knowledge", 1);
       }
       return "";
     case "mask_of_perdition":
