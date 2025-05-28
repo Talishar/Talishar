@@ -1481,7 +1481,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $message .= CardLink($cards[$i], $cards[$i]);
       }
       WriteLog($message);
-      if ($numAA == 1 && $numNAA == 1) DealArcane(2, 0, "PLAYCARD", "invert_existence_blue", true, $player);
+      if ($numAA == 1 && $numNAA == 1) DealArcane(2, 0, "PLAYCARD", "invert_existence_blue", true, $player, resolvedTarget:"THEIRCHAR-0");
       return $lastResult;
     case "ROUSETHEANCIENTS":
       $cards = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
