@@ -86,6 +86,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "Rolled $roll and gained " . intval($roll / 2) . " action points";
     case "no_fear_red":
       AddCurrentTurnEffect($cardID . "-" . $additionalCosts, $currentPlayer);
+      WriteLog(CardLink($cardID, $cardID) . " prevents the next <b>" . $additionalCosts*2 . " damage</b>");
       return "";
     case "rawhide_rumble_red":
     case "rawhide_rumble_yellow":
