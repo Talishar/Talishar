@@ -589,7 +589,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           MZFreeze($lastResult);
           break;
         case "GAINCONTROL":
-          MZGainControl($player, $lastResult, isset($paramArr[1]) ? $paramArr[1] : 0);
+          MZGainControl($player, $lastResult, $paramArr[1] ?? 0);
           break;
         case "GETCARDID":
           $ret = GetMZCard($player, $lastResult);
@@ -1534,7 +1534,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else {
         $combatChainState[$CCS_AttackTargetUID] .= ",$uid";
       }
-      WriteLog("🎯".GetMZCardLink($defPlayer, $lastResult) . " was chosen as the attack target");
+      WriteLog("🎯" . GetMZCardLink($defPlayer, $lastResult) . " was chosen as the target.");
       return 1;
     case "ADDITIONALATTACKTARGET":
       GetTargetOfAttack($parameter);
@@ -1561,7 +1561,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChainState[$parameter]++;
       return $lastResult;
     case "INCREMENTCOMBATCHAINSTATEBY":
-      $combatChainState[$parameter] = $combatChainState[$parameter] + $lastResult;
+      $combatChainState[$parameter] += $lastResult;
       return $lastResult;
     case "SETLAYERTARGET":
       global $layers;
@@ -2036,7 +2036,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       break;
     case "MELD":
       $lastResultArr = explode("|", $lastResult);
-      $target = isset($lastResultArr[1]) ? $lastResultArr[1] : "-";
+      $target = $lastResultArr[1] ?? "-";
       MeldCards($player, $parameter, $lastResultArr[0], target:$target);
       return $lastResult;
     case "SETABILITYTYPE":
@@ -3050,7 +3050,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
-      $indices = explode(",", GetUntapped($currentPlayer, $zone, isset($params[1]) ? $params[1] : "-"));
+      $indices = explode(",", GetUntapped($currentPlayer, $zone, $params[1] ?? "-"));
       for ($i = count($indices)-1; $i >= 0; $i--) {
         Tap($indices[$i], $player);
       }
@@ -3058,7 +3058,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "UNTAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
-      $indices = explode(",", GetTapped($currentPlayer, $zone, isset($params[1]) ? $params[1] : "-"));
+      $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1] ?? "-"));
       for ($i = count($indices)-1; $i >= 0; $i--) {
         //Untap
         Tap($indices[$i], $player, 0);

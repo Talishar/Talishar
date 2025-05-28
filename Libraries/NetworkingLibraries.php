@@ -126,8 +126,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 11: //CHOOSEDECK
       if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSETHEIRDECK") {
-        if ($turn[0] == "CHOOSETHEIRDECK") $player = $playerID == 1 ? 2 : 1;
-        else $player = $playerID;
+        $player = ($turn[0] == "CHOOSETHEIRDECK") ? $playerID == 1 ? 2 : 1 : $playerID;
         $deck = new Deck($player);
         $index = $cardID;
         $cardID = $deck->Remove($index);
@@ -281,8 +280,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $params = explode("-", $turn[2]);
       $maxSelect = intval($params[0]);
       $options = explode(",", $params[1]);
-      if (count($params) > 2) $minSelect = intval($params[2]);
-      else $minSelect = -1;
+      $minSelect = (count($params) > 2) ? intval($params[2]) : -1;
       if (count($chkInput) > $maxSelect) {
         WriteLog("You selected " . count($chkInput) . " items, but a maximum of " . $maxSelect . " is allowed. Reverting gamestate prior to that effect.", highlight: true);
         RevertGamestate();
@@ -374,8 +372,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         include "MenuFiles/ParseGamefile.php";
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
-        if ($playerID == 1) $userID = $p1id;
-        else $userID = $p2id;
+        $userID = ($playerID == 1) ? $p1id : $p2id;
       }
       $params = explode("-", $buttonInput);
       ChangeSetting($playerID, $params[0], $params[1], $userID);
@@ -740,8 +737,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       include_once "./includes/functions.inc.php";
       $myName = ($playerID == 1 ? $p1uid : $p2uid);
       $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-      if ($playerID == 1) $userID = $p1id;
-      else $userID = $p2id;
+      $userID = ($playerID == 1) ? $p1id : $p2id;
       if ($userID != "") {
         AwardBadge($userID, 3);
         WriteLog($myName . " gave a badge to " . $theirName);
@@ -1181,7 +1177,7 @@ function FinalizeChainLink($chainClosed = false)
   ResolutionStepAttackTriggers();
   
 
-  array_push($chainLinks, array());
+  array_push($chainLinks, []);
   $CLIndex = count($chainLinks) - 1;
   for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) {
     $cardType = CardType($combatChain[$i - 1]);
@@ -1560,10 +1556,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
-    if (IsStaticType($cardType, $from, $cardID)) {
-      $abilityType = GetResolvedAbilityType($cardID, $from);
-    }
-    else $abilityType = "-";
+    $abilityType = (IsStaticType($cardType, $from, $cardID)) ? GetResolvedAbilityType($cardID, $from) : "-";
     if ($playingCard) {
       // handle modal elsewhere
       if (GetAbilityTypes($cardID, $index, $from) == "") {
@@ -1628,8 +1621,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $dynCost = "";
       if ($playingCard && substr($from, 0, 5) == "THEIR") {
         if ((SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer)) && ColorContains($cardID, 3, $otherPlayer)) {
-          if($cardID == "staunch_response_red" || $cardID == "staunch_response_yellow" || $cardID == "staunch_response_blue") $dynCost = "0,4"; //It's cost when played by Nuu
-          else $dynCost = 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
+          $dynCost = ($cardID == "staunch_response_red" || $cardID == "staunch_response_yellow" || $cardID == "staunch_response_blue") ? "0,4" : 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
           SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
         }
       } 
@@ -1938,8 +1930,7 @@ function GetLayerTarget($cardID, $from)
     case "sow_tomorrow_yellow":
     case "sow_tomorrow_blue":
       if($cardID == "sow_tomorrow_red") $minCost = 0;
-      else if($cardID == "sow_tomorrow_yellow") $minCost = 1;
-      else $minCost = 2;
+      else $minCost = ($cardID == "sow_tomorrow_yellow") ? 1 : 2;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=A;talent=EARTH,ELEMENTAL;minCost=" . $minCost . "&MYDISCARD:type=AA;talent=EARTH,ELEMENTAL;minCost=" . $minCost);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target action card");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -3329,8 +3320,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "long_whisker_loyalty_red":
-      if (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power,Additional_Attack,Mark";
-      else $modalities = "Additional_Attack,Mark";
+      $modalities = (SubtypeContains($combatChain[0], "Dagger")) ? "Buff_Power,Additional_Attack,Mark" : "Additional_Attack,Mark";
       $numModes = min(count(explode(",", $modalities)), NumDraconicChainLinks());
       if ($numModes > 0) {
         if ($numModes < 3) {
@@ -3510,8 +3500,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "platinum_amulet_blue":
           break;
         default:
-          if ($combatChainState[$CCS_AttackTarget] == "") $target = "";
-          else $target = GetMZCards($currentPlayer, GetAttackTarget());
+          $target = ($combatChainState[$CCS_AttackTarget] == "") ? "" : GetMZCards($currentPlayer, GetAttackTarget());
           break;
       }
     }
@@ -3542,8 +3531,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $powerValue = $baseAttackSet;
       }
       else {
-        if(TypeContains( $cardID, "W", $currentPlayer)) $powerValue = GeneratedPowerValue($cardID);
-        else $powerValue = PowerValue($cardID);
+        $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID);
       }
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
       $combatChainState[$CCS_LinkBasePower] = BasePowerModifiers($cardID, $powerValue);

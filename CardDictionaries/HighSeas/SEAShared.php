@@ -972,10 +972,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $totalDefense = 0;
         EvaluateCombatChain($totalPower, $totalDefense);
         $deck = new Deck($defPlayer);
-        if($deck->Reveal()) {
-          $deckPower = ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source:$cardID);
-        }
-        else $deckPower = -1;
+        $deckPower = ($deck->Reveal()) ? ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source: $cardID) : -1;
         if ($totalPower > $deckPower) {
           WriteLog("Your power exceeds the gates!");
           AddCurrentTurnEffect($cardID, $currentPlayer);
