@@ -1713,6 +1713,7 @@ function CurrentEffectGrantsGoAgain()
         case "swift_shot_red":
         case "mutiny_on_the_swiftwater_blue":
         case "quick_clicks":
+        case "breakwater_undertow-GOAGAIN":
           return true;
         case "weave_lightning_red":
         case "weave_lightning_yellow":

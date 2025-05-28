@@ -1118,6 +1118,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "captains_coat":
     case "quartermasters_boots":
     case "graven_justaucorpse":
+    case "breakwater_undertow":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":

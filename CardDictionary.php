@@ -1166,7 +1166,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "AMX") return AMXAbilityType($cardID);
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($set == "ASR") return ASRAbilityType($cardID);
-  else if ($set == "AGB") return AGBAbilityType($cardID);
+  else if ($set == "AGB") return AGBAbilityType($cardID, $from);
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
@@ -2948,6 +2948,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-0", $currentPlayer);
     case "arcane_compliance_blue":
       return SearchLayersCardType("A") == "" && SearchLayersCardType("AA") == "";
+    case "breakwater_undertow":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      return !ClassContains($CombatChain->CurrentAttack(), "PIRATE", $mainPlayer) || !SubtypeContains($CombatChain->CurrentAttack(), "Ally", $mainPlayer);
     default:
       return false;
   }
@@ -3200,6 +3203,7 @@ function HasBladeBreak($cardID)
     case "quartermasters_boots":
     case "light_fingers":
     case "tricorn_of_saltwater_death":
+    case "breakwater_undertow":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

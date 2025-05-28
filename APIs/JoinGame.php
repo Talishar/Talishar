@@ -575,6 +575,9 @@ function isUnimplemented($cardID) {
         "tricorn_of_saltwater_death" => false,
         "graven_justaucorpse" => false,
         "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
+        "anka_drag_under_yellow" => false,
+        "oysten_heart_of_gold_yellow" => false,
+        "breakwater_undertow" => false,
         default => true
       };
     default:

@@ -1,9 +1,12 @@
 <?php
 
-function AGBAbilityType($cardID): string
+function AGBAbilityType($cardID, $from): string
 {
   return match ($cardID) {
     "graven_justaucorpse" => "I",
+    "breakwater_undertow" => "AR",
+    "anka_drag_under_yellow" => "I",
+    "oysten_heart_of_gold_yellow" => $from == "PLAY" ? "AA" : "A",
     default => ""
   };
 }
@@ -27,6 +30,7 @@ function AGBCombatEffectActive($cardID, $attackID): bool
   global $mainPlayer;
   return match($cardID) {
     "loot_the_hold_blue", "loot_the_arsenal_blue" => IsAllyAttacking() && ClassContains($attackID, "PIRATE", $mainPlayer),
+    "breakwater_undertow-GOAGAIN" => ClassContains($attackID, "PIRATE", $mainPlayer) && SubtypeContains($attackID, "Ally", $mainPlayer),
     default => false
   };
 }
@@ -40,7 +44,7 @@ function AGBAbilityCost($cardID): int
 
 function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer;
+  global $currentPlayer, $combatChain;
     switch ($cardID) {
       case "loot_the_hold_blue":
       case "loot_the_arsenal_blue":
@@ -50,6 +54,10 @@ function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PummelHit($currentPlayer);
         AddDecisionQueue("GAINRESOURCESLASTRESULT", $currentPlayer, "<-", 1);
         break;
+    case "breakwater_undertow":
+      AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:"breakwater_undertow-".$combatChain[8]);
+      AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
+      break;
       default:
         return "";
     }

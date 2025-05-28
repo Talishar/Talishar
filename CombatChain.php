@@ -1555,6 +1555,12 @@ function CombatChainClosedTriggers()
       $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
       if ($index != -1) DestroyCharacter($mainPlayer, $index);
     }
+    if (($effectID == "breakwater_undertow") && $currentTurnEffects[$i + 1] == $mainPlayer) {
+      $uniqueID = explode("-", $currentTurnEffects[$i+2])[1];
+      $index = SearchAlliesForUniqueID($uniqueID, $mainPlayer);
+      if ($index != -1) DestroyAlly($mainPlayer, $index);
+      RemoveCurrentTurnEffect($i);
+    }
   }
 }
 
