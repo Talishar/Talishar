@@ -3193,7 +3193,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "mask_of_deceit":
       $char = &GetPlayerCharacter($player);
-      if (CheckMarked($mainPlayer)) AddDecisionQueue("CHOOSECARD", $player, "arakni_black_widow,arakni_funnel_web,arakni_orb_weaver,arakni_redback,arakni_tarantula,arakni_trap_door");
+      if (CheckMarked($mainPlayer) && !IsAllyAttacking()) AddDecisionQueue("CHOOSECARD", $player, "arakni_black_widow,arakni_funnel_web,arakni_orb_weaver,arakni_redback,arakni_tarantula,arakni_trap_door");
       else AddDecisionQueue("PASSPARAMETER", $player, -1);
       AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
       break;
