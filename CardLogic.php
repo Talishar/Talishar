@@ -4052,7 +4052,9 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose an action to put on the bottom of your deck", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
-          AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+          AddDecisionQueue("SETDQVAR", $player, "0", 1);
+          AddDecisionQueue("WRITELOG", $player, "⤵️ <0> was put on the bottom of the deck.", 1);
+          AddDecisionQueue("ADDBOTDECK", $player, "Skip", 1);
         }
       }
       break;
