@@ -122,11 +122,11 @@ function handleCharacterStartAbilities()
   // Crown of Dominion
   if (SearchCharacterForCard(1, "crown_of_dominion")) {
     AddDecisionQueue("PASSPARAMETER", 1, "gold");
-    AddDecisionQueue("PUTPLAY", 1, "-");
+    AddDecisionQueue("PUTPLAY", 1, "Skip");
   }
   if (SearchCharacterForCard(2, "crown_of_dominion")) {
     AddDecisionQueue("PASSPARAMETER", 2, "gold");
-    AddDecisionQueue("PUTPLAY", 2, "-");
+    AddDecisionQueue("PUTPLAY", 2, "Skip");
   }
 
   // Seasoned Saviour
