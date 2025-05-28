@@ -1350,7 +1350,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "high_striker_yellow":
     case "high_striker_blue":
     case "buckle_blue":
-    case "mask_of_perdition":
     case "cleave_red":
     case "dead_eye_yellow":
     case "runic_reaping_red-HIT":
@@ -1416,6 +1415,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "yo_ho_ho_blue":
     case "drop_the_anchor_red":
     case "bam_bam_yellow":
+    case "mask_of_perdition":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
