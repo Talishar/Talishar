@@ -2937,13 +2937,19 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($target != "-") {
-    $targetArr = explode("-", $target);
-    if ($targetArr[0] == "LAYERUID") {
-      $targetArr[0] = "LAYER";
-      $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
+    $targets = explode(",", $target);
+    $cleanedTargets = [];
+    foreach ($targets as $targ) {
+      $targetArr = explode("-", $targ);
+      if ($targetArr[0] == "LAYERUID") {
+        $targetArr[0] = "LAYER";
+        $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
+      }
+      if (isset($targetArr[1])) $cleanedTarget = $targetArr[0] . "-" . $targetArr[1];
+      else $cleanedTarget = $targetArr[0];
+      array_push($cleanedTargets, $cleanedTarget);
     }
-    if (isset($targetArr[1])) $target = $targetArr[0] . "-" . $targetArr[1];
-    else $target = $targetArr[0];
+    $target = implode(",", $cleanedTargets);
   }
   if (($set == "ELE" || $set == "UPR") && $additionalCosts != "-" && HasFusion($cardID)) {
     FuseAbility($cardID, $currentPlayer, $additionalCosts);
@@ -2951,7 +2957,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if (IsCardNamed($currentPlayer, $cardID, "Crouching Tiger")) IncrementClassState($currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn);
   if (HasMeld($cardID)) {
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-$target", 1);
+    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "|$target", 1);
     AddDecisionQueue("MELD", $currentPlayer, $cardID, 1);
     return "";
   }

@@ -1681,9 +1681,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
           break;
       }
+      // in the long run *everything* should use clean target, but to make sure this doesn't break anything
+      // only add stuff that we're sure has been modified to use UIDs
+      $target = match ($parameter) {
+        "comet_storm__shock_red" => $cleanTarget,
+        "null__shock_yellow" => $cleanTarget,
+        "consign_to_cosmos__shock_yellow" => $cleanTarget,
+        default => $target,
+      };
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-        if ($layers[$i] == $parameter && $layers[$i + 3] == "-") {
-          $layers[$i + 3] = $target;
+        if ($layers[$i] == $parameter) {
+          if ($layers[$i + 3] == "-") {
+            $layers[$i + 3] = $target;
+          }
+          else {// already has a target, add another one
+            $layers[$i + 3] .= ",$target";
+          }
+          return $cleanTarget;
         }
       }
       return $cleanTarget;
@@ -1985,13 +1999,44 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
           }
           break;
+        case "null__shock_yellow":
+        case "consign_to_cosmos__shock_yellow":
+          if ($lastResult == "Both" || $lastResult == "Shock") {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+          }
+          break;
+        case "comet_storm__shock_red":
+          if ($lastResult == "Comet_Storm" || $lastResult == "Both") {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Comet Storm", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+          }
+          if ($lastResult == "Shock" || $lastResult == "Both") {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Shock", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);}
+          break;
         default:
           break;
       }
       break;
     case "MELD":
-      $lastResultArr = explode("-", $lastResult);
-      $target = isset($lastResultArr[2]) ? "$lastResultArr[1]-$lastResultArr[2]" : $lastResultArr[1];
+      $lastResultArr = explode("|", $lastResult);
+      $target = isset($lastResultArr[1]) ? $lastResultArr[1] : "-";
       MeldCards($player, $parameter, $lastResultArr[0], target:$target);
       return $lastResult;
     case "SETABILITYTYPE":

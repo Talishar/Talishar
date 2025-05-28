@@ -1068,8 +1068,9 @@ function MeldCards($player, $cardID, $lastResult, $target="-"){
         GainHealth(1, $player);
         break;
       case "Shock":
+        $shockTarget = str_contains($target, ",") ? explode(",", $target)[1] : $target;
         $type = count($names) > 1 && IsDoubleArcane($cardID) ? "ARCANESHOCK" : "PLAYCARD";
-        DealArcane(1, 2, $type, $cardID, false, $player, meldState: $meldState);
+        DealArcane(1, 2, $type, $cardID, false, $player, meldState: $meldState, resolvedTarget:$shockTarget);
         break;
       default:
         if($lastResult != "Both") {

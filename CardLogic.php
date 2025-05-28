@@ -4020,8 +4020,9 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       }
       break;
     case "comet_storm__shock_red":
+      $stormTarget = str_contains($target, ",") ? explode(",", $target)[0] : $target;
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
-      DealArcane(5, 2, "PLAYCARD", $parameter, player:$player, meldState: $meldState);
+      DealArcane(5, 2, "PLAYCARD", $parameter, player:$player, meldState: $meldState, resolvedTarget:$stormTarget);
       break;
     case "regrowth__shock_blue":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
