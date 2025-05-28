@@ -1533,7 +1533,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
-  if ($phase != "P" && $cardType == "AR" && IsAllyAttacking() && $currentPlayer == $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
     if ($from == "HAND") {
       if (!DelimStringContains($abilityTypes, "I", true) && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) return false;
