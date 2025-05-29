@@ -1160,7 +1160,8 @@ function ProcessSurge($cardID, $player, $target)
     case "pop_the_bubble_red":
     case "pop_the_bubble_yellow":
     case "pop_the_bubble_blue":
-      MZChooseAndDestroy($player, "THEIRAURAS");
+      $zone = strpos($target, "MY") !== false ? "MYAURAS" : "THEIRAURAS";
+      MZChooseAndDestroy($player, $zone);
       break;
     case "etchings_of_arcana_red":
     case "etchings_of_arcana_yellow":
