@@ -44,7 +44,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($cardID, "MECHANOLOGIST", $player)) {
     if ($char[$symbiosisIndex + 2] < 6) $char[$symbiosisIndex + 2] += $number;
   }
-  if ($cardID == "gold" && $mainPhase != "Skip") { //We skip gold created during 4.1.8 pre turn 0
+  if ($cardID == "gold" && $mainPhase != "False") { //We skip gold created during 4.1.8 pre turn 0
     IncrementClassState($player, $CS_NumGoldCreated, $number);
     UndestroyHook($player);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {

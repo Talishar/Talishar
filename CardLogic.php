@@ -2359,7 +2359,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "crown_of_dominion":
-      PutItemIntoPlayForPlayer("gold", $player, mainPhase:"Skip", effectController: $player);
+      PutItemIntoPlayForPlayer("gold", $player, mainPhase:"False", effectController: $player);
       WriteLog(CardLink($parameter, $parameter) . " created a Gold token");
       break;
     case "ponder":
