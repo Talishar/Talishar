@@ -752,12 +752,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // their allies
   $theirAlliesOutput = [];
   $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
+
   for ($i = 0; $i + AllyPieces() - 1 < count($theirAllies); $i += AllyPieces()) {
     $label = "";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
     if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
+    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
     elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
     array_push($theirAlliesOutput, 
       JSONRenderedCard(
@@ -842,6 +844,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
     if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
+    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
     elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
     array_push($myAlliesOutput, JSONRenderedCard(
       cardNumber: $myAllies[$i],

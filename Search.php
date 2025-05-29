@@ -923,6 +923,15 @@ function SearchLayersForUniqueID($uniqueID)
   return -1;
 }
 
+function SearchLayersForTargetUniqueID($uniqueID)
+{
+  global $layers;
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    if (str_contains($layers[$i + 3], $uniqueID)) return $i;
+  }
+  return -1;
+}
+
 function SearchAurasForUniqueID($uniqueID, $player)
 {
   $auras = &GetAuras($player);
