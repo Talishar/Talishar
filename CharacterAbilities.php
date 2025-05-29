@@ -1210,6 +1210,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "marlynn_treasure_hunter":
     case "marlynn":
     case "scurv_stowaway":
+      //!Bugged - Currently doesn't take in consideration non-token gold. e.g. Aurum Aegis
       $goldIndex = GetItemIndex("gold", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $goldIndex);
       Tap("MYCHAR-$cardIndex", $currentPlayer);

@@ -1642,9 +1642,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $EffectContext = $parameter;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($additionalCosts == "ONHITEFFECT") {
-    if(isset($combatChain) && count($combatChain) > 2) {
-      ProcessHitEffect($parameter, $combatChain[2], $uniqueID, target:$target);
-    }
+    ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
     return;
   }
   if ($additionalCosts == "CRUSHEFFECT") {

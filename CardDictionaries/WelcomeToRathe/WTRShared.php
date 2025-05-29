@@ -449,7 +449,9 @@
           LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
         }
         break;
-      case "whelming_gustwave_red": case "whelming_gustwave_yellow": case "whelming_gustwave_blue": if(ComboActive()) { Draw($mainPlayer); } break;
+      case "whelming_gustwave_red": case "whelming_gustwave_yellow": case "whelming_gustwave_blue": 
+        Draw($mainPlayer);
+        break;
       case "dawnblade":
         if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1) {
           $mainCharacter = &GetPlayerCharacter($mainPlayer);
