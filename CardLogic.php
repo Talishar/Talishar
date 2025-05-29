@@ -1288,7 +1288,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   }
 }
 
-function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
@@ -1406,9 +1406,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "stabbing_pain_red":
       if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
-    case "scar_tissue_red":
-    case "scar_tissue_yellow":
-    case "scar_tissue_blue":
     case "gold_baited_hook":
     case "avast_ye_blue":
     case "heave_ho_blue":
@@ -1423,6 +1420,10 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true): bool // Ef
     case "take_a_stab_blue":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
+    case "scar_tissue_red":
+    case "scar_tissue_yellow":
+    case "scar_tissue_blue":
+      if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer && !$fromCombat) || (IsHeroAttackTarget() && $fromCombat)) {
