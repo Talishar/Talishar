@@ -1643,9 +1643,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $EffectContext = $parameter;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($additionalCosts == "ONHITEFFECT") {
-    if(isset($combatChain) && count($combatChain) > 2) {
-      ProcessHitEffect($parameter, $combatChain[2], $uniqueID, target:$target);
-    }
+    ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
     return;
   }
   if ($additionalCosts == "CRUSHEFFECT") {
@@ -2360,7 +2358,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       DestroyAuraUniqueID($player, $uniqueID);
       break;
     case "crown_of_dominion":
-      PutItemIntoPlayForPlayer("gold", $player, mainPhase:"Skip", effectController: $player);
+      PutItemIntoPlayForPlayer("gold", $player, mainPhase:"False", effectController: $player);
       WriteLog(CardLink($parameter, $parameter) . " created a Gold token");
       break;
     case "ponder":
@@ -3540,7 +3538,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $grave = &GetDiscard($player);
       $index = SearchDiscardForUniqueID($target, $player);
       if ($index != -1) {
-        $grave[$index + 2] = "FACEDOWN";
+        $grave[$index + 2] = "DOWN";
       }
       break;
     case "tricorn_of_saltwater_death":

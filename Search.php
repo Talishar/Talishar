@@ -696,7 +696,7 @@ function SearchBanishForCard($playerID, $cardID)
   $count = count($banish);
   $pieces = BanishPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($banish[$i] == $cardID && $banish[$i + 1] != "FACEDOWN") return $i;
+    if ($banish[$i] == $cardID && $banish[$i + 1] != "DOWN") return $i;
   }
   return -1;
 }
@@ -707,7 +707,7 @@ function SearchBanishForUID($playerID, $UID)
   $count = count($banish);
   $pieces = BanishPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($banish[$i + 2] == $UID && $banish[$i + 1] != "FACEDOWN") return $i;
+    if ($banish[$i + 2] == $UID && $banish[$i + 1] != "DOWN") return $i;
   }
   return -1;
 }

@@ -401,5 +401,5 @@ function GetMyBanishForDisplay($playerID)
 
 function isFaceDownMod($mod)
 {
-  return $mod == "INT" || $mod == "FACEDOWN" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR";
+  return $mod == "INT" || $mod == "DOWN" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR";
 }

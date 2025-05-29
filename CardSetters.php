@@ -156,13 +156,13 @@ function RemoveBanish($player, $index)
 function TurnBanishFaceDown($player, $index)
 {
   $banish = &GetBanish($player);
-  $banish[$index + 1] = "FACEDOWN";
+  $banish[$index + 1] = "DOWN";
 }
 
 function TurnDiscardFaceDown($player, $index)
 {
   $discard = &GetDiscard($player);
-  $discard[$index + 2] = "FACEDOWN";
+  $discard[$index + 2] = "DOWN";
 }
 
 function AddBottomDeck($cardID, $player, $from)
@@ -336,7 +336,8 @@ function SetArsenalFacing($facing, $player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($facing == "UP" && $arsenal[$i + 1] == "DOWN") {
+    WriteLog($facing . " | " . $arsenal[$i + 1]);
+    if ($facing == "UP" && $arsenal[$i + 1] != "UP") {
       $arsenal[$i + 1] = "UP";
       ArsenalTurnFaceUpAbility($arsenal[$i], $player);
       return $arsenal[$i];
@@ -704,7 +705,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
     default:
       break;
   }
-  // $mods = (HasWateryGrave($cardID) && $from == "PLAY") ? "FACEDOWN" : "-";
+  // $mods = (HasWateryGrave($cardID) && $from == "PLAY") ? "DOWN" : "-";
   $mods = "-";
   IncrementClassState($player, $CS_CardsEnteredGY);
   if ($mainPlayerGamestateStillBuilt) {

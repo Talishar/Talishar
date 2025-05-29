@@ -530,7 +530,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
     $mod = explode("-", $myDiscard[$i + 2])[0];
     $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $mod);
-    if($mod == "FACEDOWN") {
+    if($mod == "DOWN") {
       $overlay = 1;
       $border = 0;
     }
@@ -579,7 +579,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $mod = explode("-", $myBanish[$i + 1])[0];
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
     $cardID = $myBanish[$i];
-    if($mod == "FACEDOWN") {
+    if($mod == "DOWN") {
       $overlay = 1;
       $border = 0;
     }

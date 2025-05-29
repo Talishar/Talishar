@@ -795,7 +795,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $cardList = [];
       for($i=2; $i>=0; $i--) {
         WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]) . " was banished.");
-        BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "FACEDOWN", "murky_water_red");
+        BanishCardForPlayer($discard[$lastResult[$i]], $player, "GY", "DOWN", "murky_water_red");
         array_push($cardList, $discard[$lastResult[$i]]);
       }
       if(!ArsenalFull($player)) {

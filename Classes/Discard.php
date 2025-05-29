@@ -21,7 +21,7 @@ class Discard {
   function NumCards() {
     $count = 0;
     for ($i=0; $i < count($this->discard); $i += DiscardPieces()) {
-      if($this->discard[$i+2] != "FACEDOWN") $count++;
+      if($this->discard[$i+2] != "DOWN") $count++;
     }
     return $count;
   }
