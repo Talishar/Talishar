@@ -3539,7 +3539,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $grave = &GetDiscard($player);
       $index = SearchDiscardForUniqueID($target, $player);
       if ($index != -1) {
-        $grave[$index + 2] = "FACEDOWN";
+        $grave[$index + 2] = "DOWN";
       }
       break;
     case "tricorn_of_saltwater_death":

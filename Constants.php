@@ -22,7 +22,7 @@ function HandPieces()
 
 //0 - Card ID
 //1 - Unique ID
-//2 - Mods "FACEDOWN" = Face Down
+//2 - Mods "DOWN" = Face Down
 function DiscardPieces()
 {
   return 3;
@@ -49,7 +49,7 @@ function CharacterPieces()
 }
 
 //0 - Card ID
-//1 - Mods (INT == Intimidated) or "FACEDOWN" == Face Down
+//1 - Mods (INT == Intimidated) or "DOWN" == Face Down
 //2 - Unique ID?
 function BanishPieces()
 {
