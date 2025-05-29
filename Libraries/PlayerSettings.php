@@ -659,14 +659,14 @@ function IsTeamMetalFab($userID)
       case "ShadowGriffin":
       case "Kentshero":
       case "thekingg21":
-      case "lupinefiasco":
+      case "Lupinefiasco":
       case "onlyrunverynoob":
       case "Brishen":
       case "Sinthrandir":
       case "killerbrews":
       case "Z-Gin":
       case "Obliterage":
-      case "Redbeard":
+      case "RedBeard":
       return true;
     default: break;
   }
