@@ -70,14 +70,15 @@
     $BanishedIncludes6 = 0;
     $diabolicOfferingCount = 0;
     for($i = 0; $i < 3; $i++) {
+      $banishMod = $modifier;
       $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
       $facing = $discard[$index + 2];
-      $modifier = $facing == "DOWN" ? "DOWN" : $modifier;
+      if($facing == "DOWN") $banishMod = "DOWN";
       if($facing != "DOWN") {
         if(ModifiedPowerValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
         elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
         $cardID = RemoveGraveyard($currentPlayer, $index);
-        BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $modifier);
+        BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
         $discard = array_values($discard);
       }
       else {
