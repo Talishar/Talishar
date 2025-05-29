@@ -3498,6 +3498,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $player, 1, 1);
       break;
+    case "entangling_shot_red":
     case "nettling_shot_red":
       $zone = explode("-", $target)[0];
       $uid = explode("-", $target)[1];
@@ -3542,15 +3543,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "tricorn_of_saltwater_death":
-    if (SearchHand($player, hasWateryGrave: true) != "") {
-        AddDecisionQueue("FINDINDICES", $player, "HANDWATERYGRAVE,-,NOPASS");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with watery grave to discard");
-        AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
-        AddDecisionQueue("DRAW", $player, "-", 1);
-    }
-    break;
+      if (SearchHand($player, hasWateryGrave: true) != "") {
+          AddDecisionQueue("FINDINDICES", $player, "HANDWATERYGRAVE,-,NOPASS");
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with watery grave to discard");
+          AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+          AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+          AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
+          AddDecisionQueue("DRAW", $player, "-", 1);
+      }
+      break;
     default:
       break;
   }

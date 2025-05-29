@@ -303,7 +303,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         AddDecisionQueue("MULTIZONEINDICES", $player, $search);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a character to tap", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZTAP", $player, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
         break;
       case "nettling_shot_red":
         $search = (ShouldAutotargetOpponent($player)) ? "THEIRALLY" : "THEIRALLY&MYALLY";
