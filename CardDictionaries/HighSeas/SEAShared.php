@@ -924,7 +924,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "nimby_red":
     case "nimby_yellow":
     case "nimby_blue":
-      MZMoveCard($currentPlayer, "MYDECK:isSameName=nimblism_red", "MYHAND", may:true, isReveal:true);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to search your deck for a <b>Nimblism</b>?");;
+      AddDecisionQueue("YESNO", $currentPlayer, "-", 1);
+      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+      MZMoveCard($currentPlayer, "MYDECK:isSameName=nimblism_red", "MYHAND", may:true, isReveal:true, isSubsequent:true);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
       break;
     case "jack_be_nimble_red":
