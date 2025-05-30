@@ -203,6 +203,7 @@ function GetCardBack($player)
     case 103: return "CBHamMan215";
     case 104: return "CBNewHorizons";
     case 105: return "CBMetalFab";
+    case 106: return "CBPotatoSquad";
     default: return "CardBack";
   };
 }
@@ -667,6 +668,23 @@ function IsTeamMetalFab($userID)
       case "Z-Gin":
       case "Obliterage":
       case "RedBeard":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamPotatoSquad($userID)
+{
+  switch($userID) {
+    case "PvtVoid":
+    case "Corry":
+    case "Gibbie":
+    case "sycotik":
+    case "ruin":
+    case "Xandorion":
+    case "ObiJohn":
+    case "tader":
       return true;
     default: break;
   }
