@@ -1588,7 +1588,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (count($layers) > 0 && $layers[count($layers) - LayerPieces()] == "ENDTURN") $layers[count($layers) - LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
   }
-  if ($turn[0] == "A" && $currentPlayer == $mainPlayer) {
+  if ($turn[0] == "A" || $turn[0] == "D" && $currentPlayer == $mainPlayer) {
     ++$combatChainState[$CCS_NumUsedInReactions];
   }
   if ($turn[0] != "P") {
