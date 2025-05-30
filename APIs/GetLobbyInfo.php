@@ -112,7 +112,10 @@ if($handler) {
         $numHands = 0;
         $handItem->isQuiver = true;
       }
-      else if(HasPerched($cardID)) $numHands = 0;
+      else if(HasPerched($cardID)) {
+        $numHands = 0;
+        $handItem->isOffhand = true;
+      }
       else if(DelimStringContains($subtype, "Off-Hand")) {
         $numHands = 1;
         $handItem->isOffhand = true;
@@ -167,6 +170,10 @@ if($handler) {
     if(DelimStringContains($subtype, "Quiver")) {
       $numHands = 0;
       $handItem->isQuiver = true;
+    }
+    else if(HasPerched($cardID)) {
+      $numHands = 0;
+      $handItem->isOffhand = true;
     }
     else if(DelimStringContains($subtype, "Off-Hand")) {
       $numHands = 1;
