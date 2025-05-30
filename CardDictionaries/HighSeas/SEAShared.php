@@ -928,7 +928,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("YESNO", $currentPlayer, "-", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       MZMoveCard($currentPlayer, "MYDECK:isSameName=nimblism_red", "MYHAND", may:true, isReveal:true, isSubsequent:true);
-      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       break;
     case "jack_be_nimble_red":
     case "jack_be_quick_red":
