@@ -990,7 +990,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $cardID = explode("-", $currentTurnEffects[$i])[0];
       $cardID = explode(",", $cardID)[0];
-      // $cardID = explode("_", $cardID)[0]; TODO: keep an eye on if removing this breaks anything
       if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2") continue; //Don't show useless administrative effect
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
 
@@ -1007,7 +1006,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + CurrentTurnEffectsPieces() - 1 < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $cardID = explode("-", $currentTurnEffects[$i])[0];
       $cardID = explode(",", $cardID)[0];
-      // $cardID = explode("_", $cardID)[0]; TODO: keep an eye on if removing this breaks anything
       if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2") continue; //Don't show useless administrative effect
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
       $BorderColor = $isFriendly ? "blue" : "red";
