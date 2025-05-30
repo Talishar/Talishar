@@ -3054,19 +3054,37 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
+      $otherPlayer = $player == 1 ? 2 : 1;
       $indices = explode(",", GetUntapped($currentPlayer, $zone, $params[1] ?? "-"));
       for ($i = count($indices)-1; $i >= 0; $i--) {
         Tap($indices[$i], $player);
+      }
+      if (substr($zone, 0, 2) == "MY" && GetPerchedAllies($player) != "") {
+        $myPerched = explode(",", GetPerchedAllies($player));
+        foreach($myPerched as $j) Tap("MYCHAR-".$j, $player);
+      }
+      else if(substr($zone, 0, 5) == "THEIR" && GetPerchedAllies($otherPlayer) != "") {
+        $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
+        foreach($theirPerched as $j) Tap("THEIRCHAR-".$j, $player);
       }
       return $lastResult;
     case "UNTAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
+      $otherPlayer = $player == 1 ? 2 : 1;
       $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1] ?? "-"));
       for ($i = count($indices)-1; $i >= 0; $i--) {
-        //Untap
         Tap($indices[$i], $player, 0);
       }
+      if (substr($zone, 0, 2) == "MY" && GetPerchedAllies($player) != "") {
+        $myPerched = explode(",", GetPerchedAllies($player));
+        foreach($myPerched as $j) Tap("MYCHAR-".$j, $player, 0);
+      }
+      else if(substr($zone, 0, 5) == "THEIR" && GetPerchedAllies($otherPlayer) != "") {
+        $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
+        foreach($theirPerched as $j) Tap("THEIRCHAR-".$j, $player, 0);
+      }
+
       return $lastResult;
     case "GOLDENSKYWARDEN":
       if (GetMZCard($player, $lastResult) == "golden_cog") {
