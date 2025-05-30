@@ -3,12 +3,13 @@
 include "CardDictionary.php";
 include "CoreLogic.php";
 
-function PummelHit($player = -1, $passable = false, $fromDQ = false, $context = "Choose a card to discard")
+function PummelHit($player = -1, $passable = false, $fromDQ = false, $context = "Choose a card to discard", $effectController="-")
 {
   global $defPlayer;
   if ($player == -1) $player = $defPlayer;
   if ($fromDQ) {
-    PrependDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+    if ($effectController == "-") PrependDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+    else PrependDecisionQueue("DISCARDCARD", $player, "HAND-$effectController", 1);
     PrependDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
     if ($passable) PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
@@ -20,7 +21,8 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false, $context = 
     if ($passable) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-    AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+    if ($effectController == "-") AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);
+    else AddDecisionQueue("DISCARDCARD", $player, "HAND-$effectController", 1);
   }
 }
 

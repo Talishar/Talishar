@@ -805,7 +805,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "big_game_trophy_shot_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
-      PummelHit($currentPlayer);
+      PummelHit($currentPlayer, effectController:$currentPlayer);
       break;
     case "glidewell_fins":
       LoadArrow($currentPlayer);
