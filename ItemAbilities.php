@@ -43,6 +43,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   $hero = ShiyanaCharacter($char[0], $player);
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($cardID, "MECHANOLOGIST", $player)) {
     if ($char[$symbiosisIndex + 2] < 6) $char[$symbiosisIndex + 2] += $number;
+    if ($char[$symbiosisIndex + 2] > 6) $char[$symbiosisIndex + 2] = 6;
   }
   if ($cardID == "gold" && $mainPhase != "False") { //We skip gold created during 4.1.8 pre turn 0
     IncrementClassState($player, $CS_NumGoldCreated, $number);
