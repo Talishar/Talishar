@@ -1874,7 +1874,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $defPlayer;
   switch ($cardID) {
     case "rout_red":
     case "singing_steelblade_yellow":
@@ -2035,7 +2035,7 @@ function GetLayerTarget($cardID, $from)
       break;
     case "platinum_amulet_blue":
       if ($from == "PLAY"){
-        $numOptions = explode(",", GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C"));
+        $numOptions = explode(",", GetChainLinkCards($defPlayer, "", "C"));
         $options = [];
         foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
         $options = implode(",", $options);
