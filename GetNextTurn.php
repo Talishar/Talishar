@@ -458,7 +458,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       array_push($characterContents, JSONRenderedCard(
         $theirChar,
         borderColor: $border,
-        overlay: $theirCharacter[$i + 1] != 2 ? 1 : 0,
+        overlay: $theirCharacter[$i + 1] != 2 && $theirChar != "DUMMYDISHONORED" ? 1 : 0,
         counters: $counters,
         defCounters: $theirCharacter[$i + 4],
         powerCounters: $powerCounters,
@@ -654,7 +654,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         array_push($myCharData, JSONRenderedCard(
           $myChar, //CardID
           $currentPlayer == $playerID && $playable ? 3 : 0,
-          $myCharacter[$i + 1] != 2 ? 1 : 0, //Overlay
+          $myCharacter[$i + 1] != 2 && $myChar != "DUMMYDISHONORED"? 1 : 0, //Overlay
           $border,
           $myCharacter[$i + 1] != 0 ? $counters : 0, //Counters
           strval($i), //Action Data Override
