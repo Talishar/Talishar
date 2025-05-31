@@ -803,6 +803,12 @@ function PitchValue($cardID)
 function BlockValue($cardID)
 {
   global $defPlayer;
+  switch ($cardID) { //cards with a mistake in GeneratedBlockValue
+    case "shock_frock":
+      return 1;
+    default:
+      break;
+  }
   if (!$cardID) return "";
   $set = CardSet($cardID);
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($defPlayer) * 2;
