@@ -233,7 +233,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "TOP,BOTTOM", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Top,Bottom", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
         AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
@@ -241,7 +241,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "TOP,BOTTOM", 1);
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Top,Bottom", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
         AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         return "";
