@@ -2086,7 +2086,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $mzIndex = explode("-", $lastResultArr[$i]);
         $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
         if (!str_contains($mzIndex[0], "ALLY")) {
-          DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
+          if ($mzIndex[1] == 0) {
+            DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
+          }
+          else { //perched allies
+            if ($params[0] > 0) {
+              // for now life isn't being tracked for perched allies
+              $targetCard = GetMZCard($player, $lastResultArr[$i]);
+              WriteLog(CardLink($targetCard, $targetCard) . " was shot down from its perch!");
+              DestroyCharacter($targetPlayer, $mzIndex[1]);
+            }
+          }
         }
         else {
           $allies = &GetAllies($target);
