@@ -438,7 +438,7 @@ function FrozenOffsetMZ($zone)
 function MZIsPlayer($MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
-  if (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR") return true;
+  if($indexArr[1] == 0 && (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR")) return true;
   return false;
 }
 
