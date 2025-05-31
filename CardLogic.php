@@ -545,7 +545,7 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
 
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
-  global $mainPlayer, $combatChain, $layers;
+  global $mainPlayer, $combatChain, $layers, $CS_NumAuras;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
@@ -696,7 +696,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "timidity_point_red":
     case "timidity_point_yellow":
     case "timidity_point_blue":
-    case "swarming_gloomveil_red":
     case "drowning_dire_red":
     case "drowning_dire_yellow":
     case "drowning_dire_blue":
@@ -1140,6 +1139,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "walk_the_plank_blue":
       $defChar = GetPlayerCharacter($defPlayer);
       if (IsHeroAttackTarget() && ClassContains($defChar[0], "PIRATE", $defPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+    case "swarming_gloomveil_red":
+      if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
