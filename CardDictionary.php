@@ -1583,7 +1583,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
-  if ($cardType == "") return false;
+  // don't block cards with multiple abilities where one hasn't been decided yet
+  if ($cardType == "" && GetAbilityNames($cardID, $index, $from) == "") return false;
   if (RequiresDiscard($cardID) || $cardID == "enlightened_strike_red") {
     if ($from == "HAND" && count($myHand) < 2) return false;
     else if (count($myHand) < 1) return false;
