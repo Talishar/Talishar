@@ -1430,6 +1430,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
       if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;  
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer && !$fromCombat) || (IsHeroAttackTarget() && $fromCombat)) {
