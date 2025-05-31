@@ -229,20 +229,28 @@ function PopLayer()
 
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
-  global $layers, $dqState;
-  //Layers are on a stack, so you need to push things on in reverse order
-  array_unshift($layers, GetUniqueId($cardID, $player));
-  array_unshift($layers, $uniqueID);
-  array_unshift($layers, $additionalCosts);
-  array_unshift($layers, $target);
-  array_unshift($layers, $parameter);
-  array_unshift($layers, $player);
-  array_unshift($layers, $cardID);
-  if ($cardID == "TRIGGER") {
-    $orderableIndex = isset($dqState[8]) ? intval($dqState[8]) : -1;
-    if ($orderableIndex == -1) $dqState[8] = 0;
-    else $dqState[8] += LayerPieces();
-  } else $dqState[8] = -1;//If it's not a trigger, it's not orderable
+  global $layers, $dqState, $preLayers;
+  $preLayers = [];
+  if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
+    array_unshift($preLayers, GetUniqueId($cardID, $player));
+    array_unshift($preLayers, $uniqueID);
+    array_unshift($preLayers, $additionalCosts);
+    array_unshift($preLayers, $target);
+    array_unshift($preLayers, $parameter);
+    array_unshift($preLayers, $player);
+    array_unshift($preLayers, $cardID);
+  }
+  else {
+    //Layers are on a stack, so you need to push things on in reverse order
+    array_unshift($layers, GetUniqueId($cardID, $player));
+    array_unshift($layers, $uniqueID);
+    array_unshift($layers, $additionalCosts);
+    array_unshift($layers, $target);
+    array_unshift($layers, $parameter);
+    array_unshift($layers, $player);
+    array_unshift($layers, $cardID);
+  }
+
   return count($layers);//How far it is from the end
 }
 
@@ -344,12 +352,25 @@ function IsGamePhase($phase)
   }
 }
 
+function AddTriggersToStack()
+{
+  global $layers, $preLayers, $mainPlayer;
+  if (isset($preLayers) && count($preLayers) > 0) {
+    // AddDecisionQueue("WRITELOG", $mainPlayer, "HERE");
+    WriteLog("HERE!");
+    array_push($layers, $preLayers);
+    $preLayers = [];
+  }
+}
+
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
+  
+  AddTriggersToStack();
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
     }
