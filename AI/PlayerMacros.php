@@ -130,6 +130,10 @@ function HasPlayableCard($player, $phase)
       if(IsPlayable($deck[0], $phase, "DECK", 0)) return true;
     }
   }
+  $allies = GetAllies($player);
+  for($i=0; $i<count($allies); $i+=AllyPieces()) {
+    if(IsPlayable($allies[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+  }
   return false;
 }
 
