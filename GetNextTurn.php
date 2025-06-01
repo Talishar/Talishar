@@ -406,7 +406,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if (isFaceDownMod($mod)) {
       $cardID = "CardBack";
     }
-    else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $mod);
+    else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $playerID, $mod);
 
     array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i)));
   }
@@ -509,7 +509,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       $playable = ($playerID == $currentPlayer) ? $turn[0] == "ARS" || IsPlayable($myHand[$i], $turn[0], "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || ($actionType == 16 && $turn[0] != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "") : false;
-      $border = CardBorderColor($myHand[$i], "HAND", $playable);
+      $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
       $actionTypeOut = ($currentPlayer == $playerID) && $playable == 1 ? $actionType : 0;
       if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
       $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i];
@@ -529,7 +529,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $overlay = 0;
     $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
     $mod = explode("-", $myDiscard[$i + 2])[0];
-    $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $mod);
+    $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod);
     if($mod == "DOWN") {
       $overlay = 1;
       $border = 0;
@@ -577,7 +577,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turn[0], "BANISH", $i) ? 14 : 0;
     $mod = explode("-", $myBanish[$i + 1])[0];
-    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $mod);
+    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $playerID, $mod);
     $cardID = $myBanish[$i];
     if($mod == "DOWN") {
       $overlay = 1;
@@ -613,7 +613,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($myCharacter[$i + 1] == 4) $myChar = "DUMMYDISHONORED";
     if ($myCharacter[$i + 2] > 0) $counters = $myCharacter[$i + 2];
     $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
-    $border = CardBorderColor($myChar, "CHAR", $playable);
+    $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11]));
@@ -717,7 +717,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         ));
       } else {
         $playable = $playerID == $currentPlayer && $turn[0] != "P" && IsPlayable($myArsenal[$i], $turn[0], "ARS", $i, $restriction);
-        $border = CardBorderColor($myArsenal[$i], "ARS", $playable);
+        $border = CardBorderColor($myArsenal[$i], "ARS", $playable, $playerID);
         $actionTypeOut = ($currentPlayer == $playerID) && $playable == 1 ? 5 : 0;
         if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
         $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : "";
@@ -840,7 +840,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $sType = CardSubType($myAllies[$i]);
     $playable = $currentPlayer == $playerID ? IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && ($myAllies[$i + 1] == 2 || !CheckTapped("MYALLY-".$i, $currentPlayer)) : false;
     $actionType = ($currentPlayer == $playerID && $turn[0] != "P" && $playable) ? 24 : 0;
-    $border = CardBorderColor($myAllies[$i], "PLAY", $playable);
+    $border = CardBorderColor($myAllies[$i], "PLAY", $playable, $playerID);
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
     if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
@@ -872,7 +872,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + AuraPieces() - 1 < count($myAuras); $i += AuraPieces()) {
     $playable = $currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction) : false;
     if($myAuras[$i] == "restless_coalescence_yellow" && $currentPlayer == $playerID && IsPlayable($myAuras[$i], $turn[0], "PLAY", $i, $restriction)) $playable = true;
-    $border = CardBorderColor($myAuras[$i], "PLAY", $playable);
+    $border = CardBorderColor($myAuras[$i], "PLAY", $playable, $playerID);
     $counters = $myAuras[$i + 2];
     $powerCounters = $myAuras[$i + 3];
     $action = $currentPlayer == $playerID && $turn[0] != "P" && $playable ? 22 : 0;
@@ -902,7 +902,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($myItems[$i]);
     $sType = CardSubType($myItems[$i]);
     $playable = $currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false;
-    $border = CardBorderColor($myItems[$i], "PLAY", $playable);
+    $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = ($currentPlayer == $playerID) && $playable == 1 ? 10 : 0;
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
@@ -943,7 +943,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($myPermanents[$i]);
     $sType = CardSubType($myPermanents[$i]);
     $playable = $currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turn[0], "PLAY", $i, $restriction) : false;
-    $border = CardBorderColor($myPermanents[$i], "PLAY", $playable);
+    $border = CardBorderColor($myPermanents[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = ($currentPlayer == $playerID) && $playable == 1 ? 34 : 0;
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
@@ -956,7 +956,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   for ($i = 0; $i + LandmarkPieces() - 1 < count($landmarks); $i += LandmarkPieces()) {
     $playable = $currentPlayer == $playerID ? IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction) : false;
     $action = $playable && $currentPlayer == $playerID ? 25 : 0;
-    $border = CardBorderColor($landmarks[$i], "PLAY", $playable);
+    $border = CardBorderColor($landmarks[$i], "PLAY", $playable, $playerID);
     $counters = $landmarks[$i + 3];
     $type = CardType($landmarks[$i]);
     $sType = CardSubType($landmarks[$i]);
@@ -1380,7 +1380,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if ($option[0] == "THEIRBANISH") {
           $mod = explode("-", $theirBanish[$index + 1])[0];
           $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
-          $borderColor = CardBorderColor($card, "BANISH", $action > 0, $mod);
+          $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
           if($borderColor == 7) $label = "Playable";
           if (isFaceDownMod($source[$index + 1])) $card = "CardBack";
         }
