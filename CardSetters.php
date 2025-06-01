@@ -313,7 +313,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
         break;
       case "scouting_shot_red":
-        LookAtTopCard($player, $cardID);
+        LookAtTopCard($player, $cardID, setPlayer:$player);
         break;
       case "swift_shot_red":
         AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
