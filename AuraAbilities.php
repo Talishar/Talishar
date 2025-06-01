@@ -717,7 +717,7 @@ function AuraStartTurnAbilities()
 }
 
 function AuraBeginningActionPhaseAbilities(){
-  global $mainPlayer, $EffectContext, $CS_NumSeismicSurgeDestroyed;
+  global $mainPlayer, $EffectContext, $CS_NumSeismicSurgeDestroyed, $defPlayer;
   $auras = &GetAuras($mainPlayer);
   //check seismic surges first so by default they'll resolve last
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -800,8 +800,18 @@ function AuraBeginningActionPhaseAbilities(){
         break;
       default:
         break;
-      }
     }
+  }
+  $theirAuras = &GetAuras($defPlayer);
+  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($theirAuras[$i]) {
+      case "escalate_bloodshed_red":
+        AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $auras[$i + 6]);
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 function AuraBeginEndPhaseTriggers()
