@@ -2,10 +2,10 @@
 
 
 //Return 1 if the effect should be removed
-function EffectHitEffect($cardID, $from, $source = "-")
+function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
-  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers;
+  global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers, $EffectContext;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($source == "-") {
     if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
@@ -498,6 +498,7 @@ function EffectHitEffect($cardID, $from, $source = "-")
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
     case "gold_baited_hook":
+      $EffectContext = $effectSource;
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);

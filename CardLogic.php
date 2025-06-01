@@ -1663,7 +1663,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   }
   if ($additionalCosts == "EFFECTHITEFFECT") {
     if(isset($combatChain) && count($combatChain) > 2) {
-      if (EffectHitEffect($target, $combatChain[2], $uniqueID)) {
+      if (EffectHitEffect($target, $combatChain[2], $uniqueID, effectSource:$combatChain[0])) {
         $index = FindCurrentTurnEffectIndex($player, $target);
         if ($index != -1) RemoveCurrentTurnEffect($index);
       }
