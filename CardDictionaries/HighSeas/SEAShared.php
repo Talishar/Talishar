@@ -17,7 +17,6 @@ function SEAAbilityType($cardID, $from="-"): string
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
-    "anka_drag_under_yellow" => "I",
     "moray_le_fay_yellow" => "I",
     "shelly_hardened_traveler_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
@@ -83,7 +82,6 @@ function SEAAbilityCost($cardID): int
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
-    "anka_drag_under_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     "quartermasters_boots" => 2,
     "claw_of_vynserakai" => 1,
     default => 0
@@ -480,7 +478,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chum_friendly_first_mate_yellow":
-    case "anka_drag_under_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
       break;
