@@ -545,7 +545,7 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
 
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
-  global $mainPlayer, $combatChain, $layers, $CS_NumAuras;
+  global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
@@ -643,12 +643,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wartune_herald_yellow":
     case "wartune_herald_blue":
     case "galaxxi_black":
-    case "bolt_of_courage_red":
-    case "bolt_of_courage_yellow":
-    case "bolt_of_courage_blue":
-    case "engulfing_light_red":
-    case "engulfing_light_yellow":
-    case "engulfing_light_blue":
     case "nourishing_emptiness_red":
     case "brandish_red":
     case "brandish_yellow":
@@ -894,14 +888,20 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
-    case "thump_red":
-    case "thump_yellow":
-    case "thump_blue":
-      if (HasIncreasedAttack()) {
+    case "bolt_of_courage_red":
+    case "bolt_of_courage_yellow":
+    case "bolt_of_courage_blue":
+    case "engulfing_light_red":
+    case "engulfing_light_yellow":
+    case "engulfing_light_blue":
+      if (GetClassState($mainPlayer, $CS_NumCharged) > 0) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
       break;
+    case "thump_red":
+    case "thump_yellow":
+    case "thump_blue":
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
