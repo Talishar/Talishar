@@ -303,7 +303,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 
 function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AttacksWithWeapon, $CS_NumAttackCards;
+  global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AttacksWithWeapon, $CS_NumAttackCardsAttacked;
   global $CS_NumBoosted, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   global $chainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -759,7 +759,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "dual_threat_yellow":
       if(GetClassState($currentPlayer, $CS_AttacksWithWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
-      if(GetClassState($currentPlayer, $CS_NumAttackCards) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
+      if(GetClassState($currentPlayer, $CS_NumAttackCardsAttacked) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
       break;
     case "sound_the_alarm_red";
       if(IsHeroAttackTarget()){
