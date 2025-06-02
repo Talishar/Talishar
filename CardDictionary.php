@@ -2360,7 +2360,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "spellfire_cloak":
       return $player == $mainPlayer;
     case "rewind_blue":
-      return SearchLayer($otherPlayer, "A") == "";
+      return SearchLayer($otherPlayer, "A") == "" && GetResolvedAbilityType($cardID, $from) != "";
     //Invocations must target Ash
     case "silken_form":
     case "invoke_dracona_optimai_red":
