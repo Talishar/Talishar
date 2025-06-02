@@ -45,6 +45,7 @@
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
   GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "");
+  GenerateFunction($cardArray, $handler, "IsLegendary", "legendary", "");
   GenerateFunction($cardArray, $handler, "SetID", "setID", "");
   GenerateFunction($cardArray, $handler, "SetIDtoCardID", "SIDtoCID", "");
   GenerateFunction($cardArray, $handler, "GoAgain", "goAgain", "false");
@@ -101,7 +102,7 @@
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H" || $propertyName == "goAgain") $isString = false;
-    if($propertyName == "1H" || $propertyName == "specialization" || $propertyName == "goAgain") $isBool = true;
+    if($propertyName == "1H" || $propertyName == "specialization" || $propertyName == "legendary" || $propertyName == "goAgain") $isBool = true;
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "return match(\$cardID) {\r\n");
     $associativeArray = [];
@@ -245,6 +246,16 @@
             $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
             for($l=0; $l<count($keywordArray); ++$l) {
               if($keywordArray[$l] == "Specialization") $data = "true";
+            }
+          }
+          break;
+        case "legendary":
+          $data = "false";
+          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
+          {
+            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
+            for($l=0; $l<count($keywordArray); ++$l) {
+              if($keywordArray[$l] == "Legendary") $data = "true";
             }
           }
           break;

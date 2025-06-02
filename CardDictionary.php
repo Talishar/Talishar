@@ -4458,6 +4458,11 @@ function IsSpecialization($cardID): bool
   return GeneratedIsSpecialization($cardID) == "true";
 }
 
+function IsLegendary($cardID): bool
+{
+  return GeneratedIsLegendary($cardID) == "true";
+}
+
 function Is1H($cardID): bool|int
 {
   switch ($cardID) {
