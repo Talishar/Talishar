@@ -1696,7 +1696,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AssignArcaneBonus($currentPlayer);
       }
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
-    } 
+    }
+    else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
