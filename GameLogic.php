@@ -920,7 +920,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGLASTRESULT":
-      WriteLog("<b>$lastResult<b> was selected.");
+      WriteLog("<b>$lastResult</b> was selected.");
       return $lastResult;
     case "ADDCURRENTTURNEFFECT":
       $params = explode("!", $parameter);
@@ -984,6 +984,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETCLASSSTATE":
       $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
       SetClassState($player, $parameter, $data);
+      if($parameter == (string) $CS_AdditionalCosts) WriteLog("An additional cost of <b>$lastResult</b> was paid.");
       return $lastResult;
     case "GETCLASSSTATE":
       return GetClassState($player, $parameter);
