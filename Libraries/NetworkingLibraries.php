@@ -644,7 +644,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $char = &GetPlayerCharacter($playerID);
         $char[0] = $cardID;
       }
-      elseif (CardType($cardID) == "E"){
+      elseif (CardType($cardID) == "E" || CardType($cardID) == "W"){
         WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
         EquipEquipment($playerID, $cardID);
       }
