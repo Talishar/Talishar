@@ -241,7 +241,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       AbilityPlayableFromCombatChain($combatChain[$i]) &&
       IsPlayable($combatChain[$i], $turn[0], "PLAY", $i) ? 21 : 0;
 
-    $borderColor = $action == 21 ? 5 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
+    $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
     $countersMap = new stdClass();
     if (HasAimCounter() && $i == 0) $countersMap->aim = 1;
 
