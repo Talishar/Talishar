@@ -852,14 +852,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "under_loop_blue":
     case "already_dead_red":
     case "intoxicating_shot_blue":
-    case "send_packing_yellow":
     case "millers_grindstone":
-    case "command_respect_red":
-    case "command_respect_yellow":
-    case "command_respect_blue":
-    case "concuss_red":
-    case "concuss_yellow":
-    case "concuss_blue":
     case "pay_up_red":
     case "performance_bonus_red":
     case "performance_bonus_yellow":
@@ -902,6 +895,17 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "thump_red":
     case "thump_yellow":
     case "thump_blue":
+    case "concuss_red":
+    case "concuss_yellow":
+    case "concuss_blue":
+    case "command_respect_red":
+    case "command_respect_yellow":
+    case "command_respect_blue":
+      if(HasIncreasedAttack() && IsHeroAttackTarget()){
+          if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+          return true;
+        }
+        break;
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
@@ -1060,6 +1064,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wreck_havoc_red":
     case "wreck_havoc_yellow":
     case "wreck_havoc_blue":
+    case "send_packing_yellow":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
