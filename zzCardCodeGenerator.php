@@ -46,6 +46,10 @@
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
   GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "");
   GenerateFunction($cardArray, $handler, "IsLegendary", "legendary", "");
+  GenerateFunction($cardArray, $handler, "HasBladeBreak", "bladeBreak", "");
+  GenerateFunction($cardArray, $handler, "HasBattleworn", "battleworn", "");
+  GenerateFunction($cardArray, $handler, "HasGuardwell", "guardwell", "");
+  GenerateFunction($cardArray, $handler, "HasTemper", "temper", "");
   GenerateFunction($cardArray, $handler, "SetID", "setID", "");
   GenerateFunction($cardArray, $handler, "SetIDtoCardID", "SIDtoCID", "");
   GenerateFunction($cardArray, $handler, "GoAgain", "goAgain", "false");
@@ -256,6 +260,46 @@
             $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
             for($l=0; $l<count($keywordArray); ++$l) {
               if($keywordArray[$l] == "Legendary") $data = "true";
+            }
+          }
+          break;
+        case "bladeBreak":
+          $data = "false";
+          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
+          {
+            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
+            for($l=0; $l<count($keywordArray); ++$l) {
+              if($keywordArray[$l] == "Blade" && $keywordArray[$l+1] == "Break") $data = "true";
+            }
+          }
+          break;
+        case "battleworn":
+          $data = "false";
+          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
+          {
+            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
+            for($l=0; $l<count($keywordArray); ++$l) {
+              if($keywordArray[$l] == "Battleworn") $data = "true";
+            }
+          }
+          break;
+        case "temper":
+          $data = "false";
+          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
+          {
+            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
+            for($l=0; $l<count($keywordArray); ++$l) {
+              if($keywordArray[$l] == "Temper") $data = "true";
+            }
+          }
+          break;
+        case "guardwell":
+          $data = "false";
+          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
+          {
+            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
+            for($l=0; $l<count($keywordArray); ++$l) {
+              if($keywordArray[$l] == "Guardwell") $data = "true";
             }
           }
           break;
