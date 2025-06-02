@@ -832,7 +832,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $deck->Remove($lastResult);
     case "PLAYAURA":
       $params = explode("-", $parameter);
-      if (isset($params[1])) PlayAura($params[0], $player, $params[1]);
+      $cardID = $params[0];
+      $num = isset($params[1]) ? $params[1] : 1;
+      $effectSource = isset($params[2]) ? $params[2] : "-";
+      if (isset($params[1])) PlayAura($cardID, $player, $num, effectSource:$effectSource);
       else PlayAura($params[0], $player);
       break;
     case "DESTROYALLY":
