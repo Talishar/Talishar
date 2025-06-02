@@ -134,6 +134,7 @@ function HasPlayableCard($player, $phase)
   for($i=0; $i<count($allies); $i+=AllyPieces()) {
     if(IsPlayable($allies[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
+  if(AbilityPlayableFromCombatChain($CombatChain->CurrentAttack()) && !IsPlayRestricted($CombatChain->CurrentAttack(), $restriction, "PLAY", 0, $player)) return true;
   return false;
 }
 
