@@ -162,11 +162,8 @@ function SearchInner(
     if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
     if ($zone == "DISCARD" && isFaceDownMod($array[$i + 2])) continue;
     $cardID = $array[$i];
-
-    if($type != "" && GetResolvedAbilityType($cardID, $zone) != $type && GetResolvedAbilityType($cardID, $zone) != "") continue;
-
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
-      if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D") || ($type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone)) && GetResolvedAbilityType($cardID, $zone) == "")
+      if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D") || ($type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone)))
         && ($subtype == "" || SubtypeContains($cardID, $subtype, $player))
         && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
