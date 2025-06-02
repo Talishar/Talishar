@@ -269,7 +269,7 @@
           {
             $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
             for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "BladeBreak") $data = "true";
+              if($keywordArray[$l] == "Blade" && $keywordArray[$l+1] == "Break") $data = "true";
             }
           }
           break;
