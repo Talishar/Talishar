@@ -1974,7 +1974,7 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCOURTARGETTING", 1);
       break;
     case "rewind_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "NAALAYER");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);

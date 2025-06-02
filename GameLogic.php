@@ -52,6 +52,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();
           break;
+        case "NAALAYER":
+          global $layers;
+          $found = [];
+          for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+            $cardType = CardType($layers[$i], "STACK", $layers[$i+1]);
+            if (DelimStringContains($cardType, "A") && GetResolvedAbilityType($layers[$i]) == "" || GetResolvedAbilityType($layers[$i]) == "A") {
+              array_push($found, "LAYER-" . $i);
+            }
+          }
+          $rv = (count($found) == 0) ? "" : implode(",", $found);
+          break;
         case "mugenshi_release_yellow":
           $rv = SearchDeckForCard($player, "lord_of_wind_blue");
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
