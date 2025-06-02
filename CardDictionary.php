@@ -3221,7 +3221,7 @@ function HasBladeBreak($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return false;
+      return GeneratedHasBladeBreak($cardID);
   }
 }
 
@@ -3293,7 +3293,7 @@ function HasBattleworn($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return false;
+      return GeneratedHasBattleworn($cardID);
   }
 }
 
@@ -3346,7 +3346,7 @@ function HasTemper($cardID)
     case "puffer_jacket":
       return true;
     default:
-      return false;
+      return GeneratedHasTemper($cardID);
   }
 }
 
@@ -3362,7 +3362,7 @@ function HasGuardwell($cardID)
     case "testament_of_valahai":
       return true;
     default:
-      return false;
+      return GeneratedHasGuardwell($cardID);
   }
 }
 
