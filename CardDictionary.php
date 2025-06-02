@@ -2910,6 +2910,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "polly_cranka_ally":
     case "sticky_fingers_ally":
     case "scooba_salty_sea_dog_yellow":
+    case "kelpie_tangled_mess_yellow":
       if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
     case "sky_skimmer_red":
