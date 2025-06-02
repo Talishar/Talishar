@@ -10,7 +10,6 @@ function SEAAbilityType($cardID, $from="-"): string
     "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
     "glidewell_fins" => "A",
-    "sawbones_dock_hand_yellow" => "I",
     "rust_belt" => "I",
     "unicycle" => "I",
     "head_stone" => "I",
@@ -28,7 +27,6 @@ function SEAAbilityType($cardID, $from="-"): string
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
     "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
-    "oysten_heart_of_gold_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
     "dead_threads" => "I",
     "sealace_sarong" => "I",
@@ -77,7 +75,6 @@ function SEAAbilityCost($cardID): int
     "glidewell_fins" => 1,
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
-    "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     "cutty_shark_quick_clip_yellow" => 1,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
@@ -488,10 +485,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cutty_shark_quick_clip_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "A") AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
-    case "sawbones_dock_hand_yellow":
-      $abilityType = GetResolvedAbilityType($cardID, $from);
-      if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "scooba_salty_sea_dog_yellow":
       if ($from == "PLAY") {

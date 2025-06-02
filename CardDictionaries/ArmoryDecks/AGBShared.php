@@ -7,6 +7,7 @@ function AGBAbilityType($cardID, $from): string
     "breakwater_undertow" => "AR",
     "anka_drag_under_yellow" => "I",
     "oysten_heart_of_gold_yellow" => $from == "PLAY" ? "AA" : "A",
+    "sawbones_dock_hand_yellow" => "I",
     default => ""
   };
 }
@@ -39,6 +40,7 @@ function AGBAbilityCost($cardID): int
 {
   return match($cardID) {
     "anka_drag_under_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
+    "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     default => 0
   };
 }
@@ -63,6 +65,10 @@ function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       case "anka_drag_under_yellow":
         $abilityType = GetResolvedAbilityType($cardID, $from);
         if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
+        break;
+      case "sawbones_dock_hand_yellow":
+        $abilityType = GetResolvedAbilityType($cardID, $from);
+        if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
         break;
       default:
         return "";
