@@ -1180,7 +1180,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "$params[0]-$indices-0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
-      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true);
+      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$target);
       return 1;
     case "CHARGE":
       DQCharge();

@@ -63,7 +63,7 @@
         AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDHAND", $currentPlayer, "1", 1);
-        AddDecisionQueue("SONATAARCANIXSTEP2", $currentPlayer, "-", 1);
+        AddDecisionQueue("SONATAARCANIXSTEP2", $currentPlayer, $target, 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return "";
       case "vexing_malice_red": case "vexing_malice_yellow": case "vexing_malice_blue":
