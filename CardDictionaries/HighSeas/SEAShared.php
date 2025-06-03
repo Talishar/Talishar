@@ -285,7 +285,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $targetInd = explode("-", $target)[1];
         if (TypeContains($targetCard, "E")) {
           // I'm going to assume that a player can't have two copies of the same blocking equipment
-          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd]);
+          AddCurrentTurnEffect($cardID, $defPlayer, uniqueID:$combatChain[$targetInd+8]);
+          CombatChainDefenseModifier($targetInd, 1);
         }
         else {
           CombatChainDefenseModifier($targetInd, 1);
