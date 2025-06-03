@@ -4064,7 +4064,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       $maxCost = GetClassState($player, $CS_HealthGained) - 1;
       if ($maxCost >= 0) {
         $indices = SearchMultizone($player, "MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost");
-        if (GetMZCard($player, explode(",", $indices)[-1]) == $parameter) {
+        if (isset(explode(",", $indices)[-1]) && GetMZCard($player, explode(",", $indices)[-1]) == $parameter) {
           //removing itself from the list of choices
           $indices = implode(",", array_slice(explode(",", $indices), 0, -1));
         }
