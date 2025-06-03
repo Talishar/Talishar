@@ -207,7 +207,7 @@ function CombatChainPowerModifier($index, $amount)
 function CombatChainDefenseModifier($index, $amount)
 {
   global $combatChain;
-  if (isset($comabtChain[$index])) {
+  if (isset($combatChain[$index])) {
     if ($amount < 0) {
       $defense = BlockingCardDefense($index);
       if ($amount < $defense * -1) $amount = $defense * -1;
