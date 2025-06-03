@@ -1427,10 +1427,12 @@ function CanAttack($cardID, $index=-1, $zone="-", $isWeapon=false)
         break;
       case "MYALLY":
         $allies = GetAllies($currentPlayer);
+        if (!isset($allies[$index])) return false;
         if ($allies[$index + 3] != 0) return false;
         break;
       case "MYAURA":
         $auras = GetAuras($currentPlayer);
+        if (!isset($auras[$index])) return false;
         if ($auras[$index + 1] != 2) return false;
         break;
       default:
