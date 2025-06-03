@@ -59,7 +59,7 @@ $CID_TekloChest = "teklo_base_chest";
 $CID_TekloArms = "teklo_base_arms";
 $CID_TekloLegs = "teklo_base_legs";
 
-function CardType($cardID, $from="", $controller="-")
+function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 {
   global $CS_AdditionalCosts, $currentPlayer;
   $controller = $controller == "-" ? $currentPlayer : $controller;
@@ -81,7 +81,7 @@ function CardType($cardID, $from="", $controller="-")
   if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
     if (function_exists("GetClassState")) {
-      $additionalCosts = GetClassState($controller, $CS_AdditionalCosts);
+      $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
       if ($additionalCosts == "Both") return "A,I";
       if (IsMeldInstantName($additionalCosts)) return "I";
       if (IsMeldActionName($additionalCosts)) return "A";
@@ -5015,6 +5015,8 @@ Function IsMeldActionName($term){
       case "Thistle_Bloom":
       case "Burn_Up":
       case "Regrowth":
+      case "Consign_To_Cosmos":
+      case "Everbloom":
       return true;
     default:
       return false;
