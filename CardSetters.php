@@ -336,7 +336,6 @@ function SetArsenalFacing($facing, $player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    WriteLog($facing . " | " . $arsenal[$i + 1]);
     if ($facing == "UP" && $arsenal[$i + 1] != "UP") {
       $arsenal[$i + 1] = "UP";
       ArsenalTurnFaceUpAbility($arsenal[$i], $player);
