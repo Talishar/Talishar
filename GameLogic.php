@@ -2330,7 +2330,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $activeEffects = explode(",", $chainLinks[$index][6]);
         foreach ($activeEffects as $effectSetID) {
           $effect = ConvertToCardID($effectSetID);
-          AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetHero);
+          AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetPlayer);
           AddOnHitTrigger($effect, source:$cardID); // this probably doesn't need to be here
           AddCardEffectHitTrigger($effect, $cardID); // this probably doesn't need to be here
         }
