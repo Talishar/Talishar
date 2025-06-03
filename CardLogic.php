@@ -1392,9 +1392,11 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "evo_command_center_yellow_equip":
     case "kassai_of_the_golden_sand":
     case "kassai":
-    case "talk_a_big_game_blue":
     case "hood_of_red_sand":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      break;
+    case "talk_a_big_game_blue":
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "just_a_nick_red-HIT":
     case "maul_yellow-HIT":
