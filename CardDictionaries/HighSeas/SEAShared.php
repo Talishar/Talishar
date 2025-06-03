@@ -306,7 +306,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $treasureID = SearchLandmarksForID("treasure_island");
       $char = GetPlayerCharacter($currentPlayer);
       if ($treasureID != -1) {
-        $numGold = ClassContains($char[0], "Thief", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
+        $numGold = ClassContains($char[0], "THIEF", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
         $landmarks[$treasureID + 3] -= $numGold;
         PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
         WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
