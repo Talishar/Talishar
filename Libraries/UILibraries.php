@@ -367,7 +367,7 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
           $color = "#1a1a1a";
           break;
         } else {
-          $color = "#888";
+          $color = "#696969";
           break;
         }
     }

@@ -1773,9 +1773,9 @@ function RevealCards($cards, $player = "", $look=false)
   if (!$look && !CanRevealCards($player)) return false;
   if ($cards == "") return true;
   $cardArray = explode(",", $cards);
-  $string = "";
+  $string = "👁️‍🗨️";
   for ($i = 0; $i < count($cardArray); ++$i) {
-    if ($string != "") $string .= ", ";
+    if ($string != "👁️‍🗨️") $string .= ", ";
     if (CardName($cardArray[$i]) == "") { //in case the card gets passed as an MZIndex
       $card = GetMZCard($player, $cardArray[$i]);
     }
