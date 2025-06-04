@@ -355,22 +355,41 @@ function IsGamePhase($phase)
 
 function AddTriggersToStack()
 {
-  global $layers, $preLayers, $mainPlayer, $currentPlayer;
+  global $layers, $preLayers, $mainPlayer, $defPlayer;
   if (isset($preLayers) && count($preLayers) > 0) {
-    for ($i = count($preLayers); $i >= 0; --$i) unset($preLayers[$i]);
     $mainPreLayers = [];
     $defPreLayers = [];
     for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
-      if ($preLayers[$i+1] == $mainPlayer) $mainPreLayers = array_merge($mainPreLayers, array_slice($preLayers, $i, LayerPieces()));
-      else $defPreLayers = array_merge($defPreLayers, array_slice($preLayers, $i, LayerPieces()));
+      if ($preLayers[$i+1] == $mainPlayer) array_push($mainPreLayers, $i);
+      else $defPreLayers = array_push($defPreLayers, $i);
     }
-    if (count($mainPreLayers) > 0 && count($defPreLayers) > 0) {
-      AddDecisionQueue("BUTTONINPUT", $mainPlayer, "My triggers resolve first,Their triggers resolve first");
+    if (count($mainPreLayers) > 0 && count($defPreLayers) > 0 && HoldPrioritySetting($mainPlayer) == "1") {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Whose triggers do you want to resolve first?");
+      AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Mine,Theirs");
     }
-    // AddDecisionQueue()
-    $layers = array_merge($preLayers, $defPreLayers);
-    $layers = array_merge($preLayers, $mainPreLayers);
-    
+    else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "Theirs");
+    for ($i = 0; $i < count($mainPreLayers); ++$i) {
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
+    }
+    for ($i = 0; $i < count($defPreLayers); ++$i) {
+      AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
+    }
+    AddDecisionQueue("ELSE", $mainPlayer, "-");
+    for ($i = 0; $i < count($defPreLayers); ++$i) {
+      AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
+    }
+    for ($i = 0; $i < count($mainPreLayers); ++$i) {
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
+    }
+    ProcessDecisionQueue();
   }
 }
 
