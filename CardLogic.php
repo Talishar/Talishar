@@ -1366,18 +1366,12 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "runic_reaping_red-HIT":
     case "runic_reaping_yellow-HIT":
     case "runic_reaping_blue-HIT":
-    case "spike_with_bloodrot_red":
-    case "spike_with_frailty_red":
-    case "spike_with_inertia_red":
     case "melting_point_red":
     case "lace_with_bloodrot_red":
     case "lace_with_frailty_red":
     case "lace_with_inertia_red":
     case "concealed_blade_blue":
     case "toxic_tips":
-    case "toxicity_red":
-    case "toxicity_yellow":
-    case "toxicity_blue":
     case "beckoning_light_red":
     case "spirit_of_war_red":
     case "light_the_way_red":
@@ -1433,9 +1427,15 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "take_a_stab_blue":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
-    case "scar_tissue_red":
+    case "scar_tissue_red": //should trigger when attacking a hero or flicking at a hero
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
+    case "toxicity_red":
+    case "toxicity_yellow":
+    case "toxicity_blue":
+    case "spike_with_bloodrot_red":
+    case "spike_with_frailty_red":
+    case "spike_with_inertia_red":
       if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;  
     case "arakni_black_widow-HIT":
