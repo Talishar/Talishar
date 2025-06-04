@@ -566,7 +566,7 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
 
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
-  global $mainPlayer, $combatChain, $layers;
+  global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged;
   $defPlayer = $mainPlayer == 1 ? 0 : 1;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
@@ -664,12 +664,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wartune_herald_yellow":
     case "wartune_herald_blue":
     case "galaxxi_black":
-    case "bolt_of_courage_red":
-    case "bolt_of_courage_yellow":
-    case "bolt_of_courage_blue":
-    case "engulfing_light_red":
-    case "engulfing_light_yellow":
-    case "engulfing_light_blue":
     case "nourishing_emptiness_red":
     case "brandish_red":
     case "brandish_yellow":
@@ -717,7 +711,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "timidity_point_red":
     case "timidity_point_yellow":
     case "timidity_point_blue":
-    case "swarming_gloomveil_red":
     case "drowning_dire_red":
     case "drowning_dire_yellow":
     case "drowning_dire_blue":
@@ -880,14 +873,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "under_loop_blue":
     case "already_dead_red":
     case "intoxicating_shot_blue":
-    case "send_packing_yellow":
     case "millers_grindstone":
-    case "command_respect_red":
-    case "command_respect_yellow":
-    case "command_respect_blue":
-    case "concuss_red":
-    case "concuss_yellow":
-    case "concuss_blue":
     case "pay_up_red":
     case "performance_bonus_red":
     case "performance_bonus_yellow":
@@ -916,14 +902,31 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
-    case "thump_red":
-    case "thump_yellow":
-    case "thump_blue":
-      if (HasIncreasedAttack()) {
+    case "bolt_of_courage_red":
+    case "bolt_of_courage_yellow":
+    case "bolt_of_courage_blue":
+    case "engulfing_light_red":
+    case "engulfing_light_yellow":
+    case "engulfing_light_blue":
+      if (GetClassState($mainPlayer, $CS_NumCharged) > 0) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
       break;
+    case "thump_red":
+    case "thump_yellow":
+    case "thump_blue":
+    case "concuss_red":
+    case "concuss_yellow":
+    case "concuss_blue":
+    case "command_respect_red":
+    case "command_respect_yellow":
+    case "command_respect_blue":
+      if(HasIncreasedAttack() && IsHeroAttackTarget()){
+          if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+          return true;
+        }
+        break;
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
@@ -1082,6 +1085,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wreck_havoc_red":
     case "wreck_havoc_yellow":
     case "wreck_havoc_blue":
+    case "send_packing_yellow":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
@@ -1161,6 +1165,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "walk_the_plank_blue":
       $defChar = GetPlayerCharacter($defPlayer);
       if (IsHeroAttackTarget() && ClassContains($defChar[0], "PIRATE", $defPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+    case "swarming_gloomveil_red":
+      if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
@@ -1404,9 +1413,11 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "evo_command_center_yellow_equip":
     case "kassai_of_the_golden_sand":
     case "kassai":
-    case "talk_a_big_game_blue":
     case "hood_of_red_sand":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      break;
+    case "talk_a_big_game_blue":
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "just_a_nick_red-HIT":
     case "maul_yellow-HIT":
@@ -1447,6 +1458,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
       if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;  
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer && !$fromCombat) || (IsHeroAttackTarget() && $fromCombat)) {
@@ -1679,7 +1691,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   }
   if ($additionalCosts == "EFFECTHITEFFECT") {
     if(isset($combatChain) && count($combatChain) > 2) {
-      if (EffectHitEffect($target, $combatChain[2], $uniqueID)) {
+      if (EffectHitEffect($target, $combatChain[2], $uniqueID, effectSource:$combatChain[0])) {
         $index = FindCurrentTurnEffectIndex($player, $target);
         if ($index != -1) RemoveCurrentTurnEffect($index);
       }
@@ -4073,7 +4085,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       $maxCost = GetClassState($player, $CS_HealthGained) - 1;
       if ($maxCost >= 0) {
         $indices = SearchMultizone($player, "MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost");
-        if (GetMZCard($player, explode(",", $indices)[-1]) == $parameter) {
+        if (isset(explode(",", $indices)[-1]) && GetMZCard($player, explode(",", $indices)[-1]) == $parameter) {
           //removing itself from the list of choices
           $indices = implode(",", array_slice(explode(",", $indices), 0, -1));
         }

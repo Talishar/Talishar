@@ -467,7 +467,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         if(IsRoyal($currentPlayer))
         {
-          $rv .= CardLink($cardID, $cardID) . " revealed the opponent's hand";
+          $rv .= "👁️‍🗨️" .CardLink($cardID, $cardID) . " revealed the opponent's hand";
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);

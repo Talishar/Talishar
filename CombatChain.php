@@ -1210,6 +1210,11 @@ function OnBlockEffects($index, $from)
             $remove = true;
           }
           break;
+        case "platinum_amulet_blue":
+          if(SearchCharacterForUniqueID($currentTurnEffects[$i+2], $defPlayer) != -1) {
+            $chainCard->ModifyDefense(1);
+          }
+          break;
         default:
           break;
       }

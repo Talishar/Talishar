@@ -59,7 +59,7 @@ $CID_TekloChest = "teklo_base_chest";
 $CID_TekloArms = "teklo_base_arms";
 $CID_TekloLegs = "teklo_base_legs";
 
-function CardType($cardID, $from="", $controller="-")
+function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 {
   global $CS_AdditionalCosts, $currentPlayer;
   $controller = $controller == "-" ? $currentPlayer : $controller;
@@ -81,7 +81,7 @@ function CardType($cardID, $from="", $controller="-")
   if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
     if (function_exists("GetClassState")) {
-      $additionalCosts = GetClassState($controller, $CS_AdditionalCosts);
+      $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
       if ($additionalCosts == "Both") return "A,I";
       if (IsMeldInstantName($additionalCosts)) return "I";
       if (IsMeldActionName($additionalCosts)) return "A";
@@ -1427,10 +1427,12 @@ function CanAttack($cardID, $index=-1, $zone="-", $isWeapon=false)
         break;
       case "MYALLY":
         $allies = GetAllies($currentPlayer);
+        if (!isset($allies[$index])) return false;
         if ($allies[$index + 3] != 0) return false;
         break;
       case "MYAURA":
         $auras = GetAuras($currentPlayer);
+        if (!isset($auras[$index])) return false;
         if ($auras[$index + 1] != 2) return false;
         break;
       default:
@@ -2360,7 +2362,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "spellfire_cloak":
       return $player == $mainPlayer;
     case "rewind_blue":
-      return SearchLayer($otherPlayer, "A") == "";
+      return SearchLayersForNAA() == "";
     //Invocations must target Ash
     case "silken_form":
     case "invoke_dracona_optimai_red":
@@ -2910,6 +2912,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "polly_cranka_ally":
     case "sticky_fingers_ally":
     case "scooba_salty_sea_dog_yellow":
+    case "kelpie_tangled_mess_yellow":
       if($from == "PLAY") return CheckTapped("MYALLY-$index", $currentPlayer);
       return false;
     case "sky_skimmer_red":
@@ -2958,6 +2961,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "breakwater_undertow":
       if (!$CombatChain->HasCurrentLink()) return true;
       return !ClassContains($CombatChain->CurrentAttack(), "PIRATE", $mainPlayer) || !SubtypeContains($CombatChain->CurrentAttack(), "Ally", $mainPlayer);
+    case "midas_touch_yellow":
+      return SearchMultizone($player, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally") == "";
     default:
       return false;
   }
@@ -3219,7 +3224,7 @@ function HasBladeBreak($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return false;
+      return GeneratedHasBladeBreak($cardID) == "true";
   }
 }
 
@@ -3291,7 +3296,7 @@ function HasBattleworn($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return false;
+      return GeneratedHasBattleworn($cardID) == "true";
   }
 }
 
@@ -3344,7 +3349,7 @@ function HasTemper($cardID)
     case "puffer_jacket":
       return true;
     default:
-      return false;
+      return GeneratedHasTemper($cardID) == "true";
   }
 }
 
@@ -3360,7 +3365,7 @@ function HasGuardwell($cardID)
     case "testament_of_valahai":
       return true;
     default:
-      return false;
+      return GeneratedHasGuardwell($cardID) == "true";
   }
 }
 
@@ -4456,6 +4461,11 @@ function IsSpecialization($cardID): bool
   return GeneratedIsSpecialization($cardID) == "true";
 }
 
+function IsLegendary($cardID): bool
+{
+  return GeneratedIsLegendary($cardID) == "true";
+}
+
 function Is1H($cardID): bool|int
 {
   switch ($cardID) {
@@ -5007,6 +5017,8 @@ Function IsMeldActionName($term){
       case "Thistle_Bloom":
       case "Burn_Up":
       case "Regrowth":
+      case "Consign_To_Cosmos":
+      case "Everbloom":
       return true;
     default:
       return false;

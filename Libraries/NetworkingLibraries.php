@@ -644,6 +644,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $char = &GetPlayerCharacter($playerID);
         $char[0] = $cardID;
       }
+      elseif (CardType($cardID) == "E" || CardType($cardID) == "W"){
+        WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
+        EquipEquipment($playerID, $cardID);
+      }
       elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
         WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
         $hand = &GetHand($playerID);
@@ -1692,7 +1696,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AssignArcaneBonus($currentPlayer);
       }
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
-    } 
+    }
+    else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
@@ -1821,6 +1826,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if(DelimStringContains($cardType, "AR") || DelimStringContains($abilityType, "AR")) {
       if(isset($combatChainState[$CCS_NumReactionPlayedActivated])) ++$combatChainState[$CCS_NumReactionPlayedActivated];
     }
+    if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")) {
+      IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+    } 
     if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
       if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
@@ -1874,7 +1882,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer;
+  global $currentPlayer, $defPlayer;
   switch ($cardID) {
     case "rout_red":
     case "singing_steelblade_yellow":
@@ -1966,7 +1974,7 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCOURTARGETTING", 1);
       break;
     case "rewind_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "LAYER:type=A");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "NAALAYER");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -2035,7 +2043,7 @@ function GetLayerTarget($cardID, $from)
       break;
     case "platinum_amulet_blue":
       if ($from == "PLAY"){
-        $numOptions = explode(",", GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C"));
+        $numOptions = explode(",", GetChainLinkCards($defPlayer, "", "C"));
         $options = [];
         foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
         $options = implode(",", $options);
@@ -2157,6 +2165,15 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "sonata_arcanix_red":
+      $inds = GetArcaneTargetIndices($currentPlayer, 0);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to deal arcane to");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }
@@ -3394,7 +3411,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $turn, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
   global $CS_CharacterIndex, $CS_PlayCCIndex, $CCS_LinkBasePower;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
-  global $CS_NumDragonAttacks, $CS_NumAttackCards, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
+  global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
   global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackTarget, $CCS_AttackTargetUID;
   global $landmarks;
@@ -3608,7 +3625,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+      if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
     if($playText != "FAILED") //Meaning that the layer hasn't failed and resolve.

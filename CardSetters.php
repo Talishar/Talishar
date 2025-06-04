@@ -313,7 +313,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
         break;
       case "scouting_shot_red":
-        LookAtTopCard($player, $cardID);
+        LookAtTopCard($player, $cardID, setPlayer:$player);
         break;
       case "swift_shot_red":
         AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
@@ -336,7 +336,6 @@ function SetArsenalFacing($facing, $player)
 {
   $arsenal = &GetArsenal($player);
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    WriteLog($facing . " | " . $arsenal[$i + 1]);
     if ($facing == "UP" && $arsenal[$i + 1] != "UP") {
       $arsenal[$i + 1] = "UP";
       ArsenalTurnFaceUpAbility($arsenal[$i], $player);
@@ -553,7 +552,7 @@ function ClearNextCardArcaneBuffs($player, $playedCard = "", $from = "")
         case "blessing_of_aether_red":
         case "blessing_of_aether_yellow":
         case "blessing_of_aether_blue":
-          if (!IsStaticType(CardType($playedCard), $from, $playedCard)) $remove = 1;
+          if (!IsStaticType(CardType($playedCard), $from, $playedCard) && GetResolvedAbilityType($playedCard, $from) != "I") $remove = 1;
           break;
         default:
           break;

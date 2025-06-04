@@ -94,7 +94,7 @@ function HasPlayableCard($player, $phase)
   $character = &GetPlayerCharacter($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   for($i=0; $i<count($character); $i+=CharacterPieces()) {
-    if($character[$i+1] == 2 && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
+    if($character[$i+1] == 2 && GetCharacterGemState($player, $character[$i]) && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
   $hand = &GetHand($player);
   for($i=0; $i<count($hand); $i+=HandPieces()) {
@@ -130,6 +130,11 @@ function HasPlayableCard($player, $phase)
       if(IsPlayable($deck[0], $phase, "DECK", 0)) return true;
     }
   }
+  $allies = GetAllies($player);
+  for($i=0; $i<count($allies); $i+=AllyPieces()) {
+    if(IsPlayable($allies[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+  }
+  if(AbilityPlayableFromCombatChain($CombatChain->CurrentAttack()) && !IsPlayRestricted($CombatChain->CurrentAttack(), $restriction, "PLAY", 0, $player)) return true;
   return false;
 }
 

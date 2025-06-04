@@ -163,17 +163,15 @@ function HVYHitEffect($cardID)
     case "command_respect_red":
     case "command_respect_yellow":
     case "command_respect_blue":
-      if (IsHeroAttackTarget() && HasIncreasedAttack()) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you want to destroy from their arsenal", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
-      }
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card you want to destroy from their arsenal", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
       break;
     case "concuss_red":
     case "concuss_yellow":
     case "concuss_blue":
-      if (IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();
+      PummelHit();
       break;
     case "pay_up_red":
       if (IsHeroAttackTarget()) {

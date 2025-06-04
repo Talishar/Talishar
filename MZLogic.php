@@ -157,7 +157,7 @@ function MZReveal($player, $parameter, $lastResult)
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]];
-    WriteLog(CardLink($cardID, $cardID) . " was revealed");
+    WriteLog("👁️‍🗨️" .CardLink($cardID, $cardID) . " was revealed");
   }
   return $lastResult;
 }
@@ -438,7 +438,7 @@ function FrozenOffsetMZ($zone)
 function MZIsPlayer($MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
-  if (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR") return true;
+  if($indexArr[1] == 0 && (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR")) return true;
   return false;
 }
 

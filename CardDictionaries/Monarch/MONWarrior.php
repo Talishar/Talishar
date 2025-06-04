@@ -61,10 +61,10 @@
     switch($cardID)
     {
       case "bolt_of_courage_red": case "bolt_of_courage_yellow": case "bolt_of_courage_blue":
-        if(GetClassState($mainPlayer, $CS_NumCharged) > 0) Draw($mainPlayer);
+        Draw($mainPlayer);
         break;
       case "engulfing_light_red": case "engulfing_light_yellow": case "engulfing_light_blue":
-        if(GetClassState($mainPlayer, $CS_NumCharged) > 0) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
         break;
       default: break;
     }

@@ -1824,11 +1824,26 @@ function SearchLayersCardType($type, $type2="-")
   global $layers;
   $found = [];
   for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-    $cardType = CardType($layers[$i], "STACK", $layers[$i+1]);
+    $cardType = CardType($layers[$i], "STACK", $layers[$i+1], $layers[$i+4]);
     if (DelimStringContains($cardType, $type) || ($type2 != "-" && DelimStringContains($cardType, $type2))) {
       array_push($found, $i);
     }
   }
   if (count($found) == 0) return "";
   else return implode(",", $found);
+}
+
+function SearchLayersForNAA() {
+    global $layers;
+    $found = [];
+    for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      $playerID = $layers[$i+1];
+      $from = explode("|",$layers[$i+2])[0];
+      $cardType = CardType($layers[$i], $from, $playerID);
+      if (DelimStringContains($cardType, "A") && ($from != "PLAY" || GetResolvedAbilityType($layers[$i], $from, $playerID) == "A")) {
+        array_push($found, "LAYER-" . $i);
+      }
+    }
+    $rv = (count($found) == 0) ? "" : implode(",", $found);
+    return $rv;
 }

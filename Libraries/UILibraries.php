@@ -309,9 +309,10 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
   return $result;
 }
 
-function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
+function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
 {
   global $turn;
+  $hero = GetPlayerCharacter($playerID)[0];
   if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
@@ -323,6 +324,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $mod = "-")
   }
   if ($from == "GY") {
     if ($isPlayable || PlayableFromGraveyard($cardID)) return 7;
+      if (($hero == "gravy_bones" || $hero == "gravy_bones_shipwrecked_looter") && HasWateryGrave($cardID)) return 7;
     return 0;
   }
   if ($isPlayable && ComboActive($cardID)) return 3;
@@ -365,7 +367,7 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
           $color = "#1a1a1a";
           break;
         } else {
-          $color = "#888";
+          $color = "#696969";
           break;
         }
     }

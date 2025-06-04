@@ -10,14 +10,12 @@ function SEAAbilityType($cardID, $from="-"): string
     "patch_the_hole" => "I",
     "gold_baited_hook" => "A",
     "glidewell_fins" => "A",
-    "sawbones_dock_hand_yellow" => "I",
     "rust_belt" => "I",
     "unicycle" => "I",
     "head_stone" => "I",
     "gravy_bones_shipwrecked_looter" => "I",
     "gravy_bones" => "I",
     "chum_friendly_first_mate_yellow" => "I",
-    "anka_drag_under_yellow" => "I",
     "moray_le_fay_yellow" => "I",
     "shelly_hardened_traveler_yellow" => "I",
     "kelpie_tangled_mess_yellow" => "A",
@@ -29,7 +27,6 @@ function SEAAbilityType($cardID, $from="-"): string
     "swabbie_yellow" => $from == "PLAY" ? "AA" : "A",
     "limpit_hop_a_long_yellow" => $from == "PLAY" ? "AA" : "A",
     "barnacle_yellow" => $from == "PLAY" ? "AA" : "A",
-    "oysten_heart_of_gold_yellow" => $from == "PLAY" ? "AA" : "A",
     "compass_of_sunken_depths" => "I",
     "dead_threads" => "I",
     "sealace_sarong" => "I",
@@ -78,12 +75,10 @@ function SEAAbilityCost($cardID): int
     "glidewell_fins" => 1,
     "scooba_salty_sea_dog_yellow" => 3,
     "hammerhead_harpoon_cannon" => 4,
-    "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     "cutty_shark_quick_clip_yellow" => 1,
     "moray_le_fay_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 1 : 0,
     "shelly_hardened_traveler_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "I" ? 0 : 3,
     "kelpie_tangled_mess_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "A" ? 1 : 0,
-    "anka_drag_under_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     "quartermasters_boots" => 2,
     "claw_of_vynserakai" => 1,
     default => 0
@@ -290,7 +285,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $targetInd = explode("-", $target)[1];
         if (TypeContains($targetCard, "E")) {
           // I'm going to assume that a player can't have two copies of the same blocking equipment
-          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd]);
+          AddCurrentTurnEffect($cardID, $defPlayer, uniqueID:$combatChain[$targetInd+8]);
+          CombatChainDefenseModifier($targetInd, 1);
         }
         else {
           CombatChainDefenseModifier($targetInd, 1);
@@ -310,7 +306,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $treasureID = SearchLandmarksForID("treasure_island");
       $char = GetPlayerCharacter($currentPlayer);
       if ($treasureID != -1) {
-        $numGold = ClassContains($char[0], "Thief", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
+        $numGold = ClassContains($char[0], "THIEF", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
         $landmarks[$treasureID + 3] -= $numGold;
         PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
         WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
@@ -480,7 +476,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "chum_friendly_first_mate_yellow":
-    case "anka_drag_under_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
       break;
@@ -491,10 +486,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cutty_shark_quick_clip_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "A") AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
-    case "sawbones_dock_hand_yellow":
-      $abilityType = GetResolvedAbilityType($cardID, $from);
-      if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "scooba_salty_sea_dog_yellow":
       if ($from == "PLAY") {

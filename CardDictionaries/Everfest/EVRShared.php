@@ -657,7 +657,7 @@
         }
         break;
       case "swarming_gloomveil_red":
-        if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) AddCurrentTurnEffect("swarming_gloomveil_red", $defPlayer);
+        AddCurrentTurnEffect("swarming_gloomveil_red", $defPlayer);
         break;
       case "drowning_dire_red": case "drowning_dire_yellow": case "drowning_dire_blue":
         MZMoveCard($mainPlayer, "MYDISCARD:type=A", "MYBOTDECK", may:true);

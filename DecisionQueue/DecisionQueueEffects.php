@@ -1011,9 +1011,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
           for ($i = CombatChainPieces()-1; $i >= 0; --$i) unset($combatChain[$ind+$i]);
           $combatChain = array_values($combatChain);
         }
-      }
-      $cardID = "palantir_aeronought_red";
+        $cardID = "palantir_aeronought_red";
       WriteLog("The " . CardLink($cardID, $cardID) . " shot down " . CardLink($targetCard, $targetCard));
+      }
       break;
     case "TAYLOR":
       $cardID = GetMZCard($player, $lastResult);

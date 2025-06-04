@@ -65,7 +65,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
   global $mainPlayer, $CCS_EclecticMag, $CS_DamageDealt, $CS_ArcaneDamageDealt;
-  global $combatChainState, $CS_ActionsPlayed;
+  global $combatChainState, $CS_ActionsPlayed, $EffectContext;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "germinate_blue":
@@ -359,7 +359,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("PLAYAURA", $currentPlayer, "runechant-" . $numRunechants, 1);
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "runechant-$numRunechants-$cardID", 1);
       return "";
     case "aether_bindings_of_the_third_age":
       AddCurrentTurnEffect("aether_bindings_of_the_third_age", $currentPlayer);

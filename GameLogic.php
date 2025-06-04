@@ -52,6 +52,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();
           break;
+        case "NAALAYER":
+          $rv = SearchLayersForNAA(); 
+          break;
         case "mugenshi_release_yellow":
           $rv = SearchDeckForCard($player, "lord_of_wind_blue");
           if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
@@ -792,7 +795,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       $card = explode(",", $lastResult)[0];
       $loc = explode(",", $lastResult)[1];
-      if ($loc == "TOP") $deck->AddTop($card);
+      if ($loc == "Top") $deck->AddTop($card);
       else $deck->AddBOTTOM($card);
       return $card;
     case "REMOVEDECK":
@@ -821,7 +824,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $deck->Remove($lastResult);
     case "PLAYAURA":
       $params = explode("-", $parameter);
-      if (isset($params[1])) PlayAura($params[0], $player, $params[1]);
+      $cardID = $params[0];
+      $num = isset($params[1]) ? $params[1] : 1;
+      $effectSource = isset($params[2]) ? $params[2] : "-";
+      if (isset($params[1])) PlayAura($cardID, $player, $num, effectSource:$effectSource);
       else PlayAura($params[0], $player);
       break;
     case "DESTROYALLY":
@@ -920,7 +926,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGLASTRESULT":
-      WriteLog("<b>$lastResult<b> was selected.");
+      WriteLog("<b>$lastResult</b> was selected.");
       return $lastResult;
     case "ADDCURRENTTURNEFFECT":
       $params = explode("!", $parameter);
@@ -984,6 +990,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETCLASSSTATE":
       $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
       SetClassState($player, $parameter, $data);
+      if($parameter == (string) $CS_AdditionalCosts) WriteLog("An additional cost of <b>$lastResult</b> was paid.");
       return $lastResult;
     case "GETCLASSSTATE":
       return GetClassState($player, $parameter);
@@ -1173,7 +1180,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "$params[0]-$indices-0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
-      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true);
+      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$target);
       return 1;
     case "CHARGE":
       DQCharge();
@@ -2323,7 +2330,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $activeEffects = explode(",", $chainLinks[$index][6]);
         foreach ($activeEffects as $effectSetID) {
           $effect = ConvertToCardID($effectSetID);
-          AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetHero);
+          AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetPlayer);
           AddOnHitTrigger($effect, source:$cardID); // this probably doesn't need to be here
           AddCardEffectHitTrigger($effect, $cardID); // this probably doesn't need to be here
         }

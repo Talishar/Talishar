@@ -204,8 +204,7 @@ if ($decklink != "") {
   $unsupportedCards = "";
   $bannedCard = "";
   $restrictedCard = "";
-  $isDeckBlitzLegal = "";
-  $isDeckCCLegal = "";
+  $isDeckLegal = "";
   $character = "";
   $head = "";
   $chest = "";
@@ -254,14 +253,18 @@ if ($decklink != "") {
       if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
         if (($format == "blitz" || $format == "compblitz" || $format == "clash") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
-          if ($isDeckBlitzLegal != "") $isDeckBlitzLegal .= ", ";
-          $isDeckBlitzLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+          if ($isDeckLegal != "") $isDeckLegal .= ", ";
+          $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
       }
       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
       if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
-        if ($isDeckCCLegal != "") $isDeckCCLegal .= ", ";
-        $isDeckCCLegal .= CardName($id);
+        if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
+        $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+      }
+      if(($format != "draft" && $format != "openformatcc" && $format != "openformatblitz") && isLegendary($id) && $cardCounts[$id] > 1) {
+        if ($isDeckLegal != "") $isDeckLegal .= ", ";
+        $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
     }
     $deckLoaded = true;
@@ -273,14 +276,8 @@ if ($decklink != "") {
     exit;
   }
 
-  if($isDeckBlitzLegal != "") {
-    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckBlitzLegal . ".";
-    echo (json_encode($response));
-    exit;
-  }
-
-  if($isDeckCCLegal != "") {
-    $response->error = "⚠️ The deck contains extra copies of cards and isn't legal: " . $isDeckCCLegal . ".";
+  if($isDeckLegal != "") {
+    $response->error = "⚠️ The deck isn't legal because it contains extra copies of the following cards: " . $isDeckLegal . ".";
     echo (json_encode($response));
     exit;
   }

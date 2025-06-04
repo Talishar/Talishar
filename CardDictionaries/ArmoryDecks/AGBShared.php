@@ -7,6 +7,7 @@ function AGBAbilityType($cardID, $from): string
     "breakwater_undertow" => "AR",
     "anka_drag_under_yellow" => "I",
     "oysten_heart_of_gold_yellow" => $from == "PLAY" ? "AA" : "A",
+    "sawbones_dock_hand_yellow" => "I",
     default => ""
   };
 }
@@ -38,6 +39,8 @@ function AGBCombatEffectActive($cardID, $attackID): bool
 function AGBAbilityCost($cardID): int
 {
   return match($cardID) {
+    "anka_drag_under_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
+    "sawbones_dock_hand_yellow" => GetResolvedAbilityType($cardID, "PLAY") == "AA" ? 1 : 0,
     default => 0
   };
 }
@@ -45,6 +48,7 @@ function AGBAbilityCost($cardID): int
 function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $combatChain;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch ($cardID) {
       case "loot_the_hold_blue":
       case "loot_the_arsenal_blue":
@@ -54,10 +58,18 @@ function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PummelHit($currentPlayer);
         AddDecisionQueue("GAINRESOURCESLASTRESULT", $currentPlayer, "<-", 1);
         break;
-    case "breakwater_undertow":
-      AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:"breakwater_undertow-".$combatChain[8]);
-      AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
-      break;
+      case "breakwater_undertow":
+        AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:"breakwater_undertow-".$combatChain[8]);
+        AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
+        break;
+      case "anka_drag_under_yellow":
+        $abilityType = GetResolvedAbilityType($cardID, $from);
+        if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID: $target);
+        break;
+      case "sawbones_dock_hand_yellow":
+        $abilityType = GetResolvedAbilityType($cardID, $from);
+        if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($cardID, $currentPlayer);
+        break;
       default:
         return "";
     }

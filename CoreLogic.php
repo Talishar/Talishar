@@ -207,18 +207,20 @@ function CombatChainPowerModifier($index, $amount)
 function CombatChainDefenseModifier($index, $amount)
 {
   global $combatChain;
-  if ($amount < 0) {
-    $defense = BlockingCardDefense($index);
-    if ($amount < $defense * -1) $amount = $defense * -1;
+  if (isset($combatChain[$index])) {
+    if ($amount < 0) {
+      $defense = BlockingCardDefense($index);
+      if ($amount < $defense * -1) $amount = $defense * -1;
+    }
+    $combatChain[$index + 6] += $amount;
+    switch ($combatChain[0]) {
+      case "zephyr_needle":
+      case "zephyr_needle_r":
+      EvaluateCombatChain($totalPower, $totalBlock);
+    }
+    if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
+    else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
   }
-  $combatChain[$index + 6] += $amount;
-  switch ($combatChain[0]) {
-    case "zephyr_needle":
-    case "zephyr_needle_r":
-    EvaluateCombatChain($totalPower, $totalBlock);
-  }
-  if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
-  else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
   return $index;
 }
 
@@ -1773,9 +1775,9 @@ function RevealCards($cards, $player = "", $look=false)
   if (!$look && !CanRevealCards($player)) return false;
   if ($cards == "") return true;
   $cardArray = explode(",", $cards);
-  $string = "";
+  $string = "👁️‍🗨️";
   for ($i = 0; $i < count($cardArray); ++$i) {
-    if ($string != "") $string .= ", ";
+    if ($string != "👁️‍🗨️") $string .= ", ";
     if (CardName($cardArray[$i]) == "") { //in case the card gets passed as an MZIndex
       $card = GetMZCard($player, $cardArray[$i]);
     }
