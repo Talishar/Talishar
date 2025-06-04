@@ -3394,7 +3394,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "barbed_barrage_red":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Pay 3 to choose an additional attack target?");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 3 to choose an additional attack target?");
       AddDecisionQueue("YESNO", $currentPlayer, "", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, 3, 1);
