@@ -230,8 +230,9 @@ function PopLayer()
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers, $dqState, $preLayers;
-  $preLayers = [];
+  if (!isset($preLayers)) $preLayers = [];
   if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
+    WriteLog("HERE setting a pre-layer: $parameter");
     array_unshift($preLayers, GetUniqueId($cardID, $player));
     array_unshift($preLayers, $uniqueID);
     array_unshift($preLayers, $additionalCosts);
@@ -354,12 +355,22 @@ function IsGamePhase($phase)
 
 function AddTriggersToStack()
 {
-  global $layers, $preLayers, $mainPlayer;
+  global $layers, $preLayers, $mainPlayer, $currentPlayer;
   if (isset($preLayers) && count($preLayers) > 0) {
-    // AddDecisionQueue("WRITELOG", $mainPlayer, "HERE");
-    WriteLog("HERE!");
-    array_push($layers, $preLayers);
-    $preLayers = [];
+    for ($i = count($preLayers); $i >= 0; --$i) unset($preLayers[$i]);
+    $mainPreLayers = [];
+    $defPreLayers = [];
+    for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+      if ($preLayers[$i+1] == $mainPlayer) $mainPreLayers = array_merge($mainPreLayers, array_slice($preLayers, $i, LayerPieces()));
+      else $defPreLayers = array_merge($defPreLayers, array_slice($preLayers, $i, LayerPieces()));
+    }
+    if (count($mainPreLayers) > 0 && count($defPreLayers) > 0) {
+      AddDecisionQueue("BUTTONINPUT", $mainPlayer, "My triggers resolve first,Their triggers resolve first");
+    }
+    // AddDecisionQueue()
+    $layers = array_merge($preLayers, $defPreLayers);
+    $layers = array_merge($preLayers, $mainPreLayers);
+    
   }
 }
 
@@ -368,7 +379,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $preLayers;
   
   AddTriggersToStack();
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
@@ -408,6 +419,7 @@ function ContinueDecisionQueue($lastResult = "")
           return;
         }
         CloseDecisionQueue();
+        
         $cardID = array_shift($layers);
         $player = array_shift($layers);
         $parameter = array_shift($layers);
