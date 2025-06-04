@@ -2412,6 +2412,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
+      SearchCurrentTurnEffects("mage_master_boots", $player, true);
     }
     $character = GetPlayerCharacter($player);
     for ($i = 0; $i < count($character); $i += CharacterPieces()) {
