@@ -568,9 +568,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "salvage_shot_red":
     case "salvage_shot_yellow":
     case "salvage_shot_blue":
-    case "searing_shot_red":
-    case "searing_shot_yellow":
-    case "searing_shot_blue":
     case "nebula_blade":
     case "arknight_ascendancy_red":
     case "command_and_conquer_red":
@@ -983,6 +980,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
+    case "searing_shot_red":
+    case "searing_shot_yellow":
+    case "searing_shot_blue":
     case "persuasive_prognosis_blue":
     case "art_of_desire_body_red":
     case "art_of_desire_soul_yellow":
