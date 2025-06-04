@@ -919,6 +919,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if($cards != "") WriteLog("Hand content: $cards.");
       return $lastResult;
+    case "WRITELASTRESULT":
+      WriteLog(GamestateUnsanitize($parameter . "<b>".$lastResult."</b>"));
+      return $lastResult;
     case "WRITELOG":
       WriteLog(GamestateUnsanitize($parameter));
       return $lastResult;
@@ -990,7 +993,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETCLASSSTATE":
       $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
       SetClassState($player, $parameter, $data);
-      if($parameter == (string) $CS_AdditionalCosts) WriteLog("An additional cost of <b>$lastResult</b> was paid.");
       return $lastResult;
     case "GETCLASSSTATE":
       return GetClassState($player, $parameter);

@@ -2771,6 +2771,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+      AddDecisionQueue("WRITELASTRESULT", $currentPlayer, CardLink($cardID, $cardID)." was paid with an additional cost of ", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
