@@ -972,7 +972,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "goldkiss_rum":
-      if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
+      if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
     case "burn_bare":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
