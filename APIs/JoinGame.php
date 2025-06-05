@@ -541,6 +541,9 @@ function isSpecialUsePromo($cardID) {
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
   $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP"];
+  // promos that are made legal ahead of thier set
+  $specialReleases = ["valda_seismic_impact", "promising_terrain_blue", "draw_a_crowd_blue", "batter_to_a_pulp_red"];
+  if (in_array($cardID, $specialReleases)) return false;
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
 
