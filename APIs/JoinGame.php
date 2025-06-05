@@ -540,16 +540,14 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["SEA", "AGB", "APR", "AVS", "MPG", "BDD", "SMP"];
+  $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP"];
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
 
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "SEA":
-      return false;
-    case "AGB": case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
+    case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
       return match($cardID) {
         "valda_seismic_impact" => false,
         "testament_of_valahai" => false,
@@ -559,7 +557,6 @@ function isUnimplemented($cardID) {
         "blinding_of_the_old_ones_red" => false,
         "smelting_of_the_old_ones_red" => false,
         "disenchantment_of_the_old_ones_red" => false,
-        "sawbones_dock_hand_yellow" => false,
         "grind_them_down_red", "grind_them_down_yellow", "grind_them_down_blue" => false,
         "crash_and_bash_red", "crash_and_bash_yellow", "crash_and_bash_blue" => false,
         "flatten_the_field_red", "flatten_the_field_yellow", "flatten_the_field_blue" => false,
@@ -568,13 +565,7 @@ function isUnimplemented($cardID) {
         "halo_of_lumina_light" => false,
         "helm_of_the_arknight" => false,
         "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
-        "loot_the_hold_blue", "loot_the_arsenal_blue" => false,
-        "tricorn_of_saltwater_death" => false,
-        "graven_justaucorpse" => false,
         "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
-        "anka_drag_under_yellow" => false,
-        "oysten_heart_of_gold_yellow" => false,
-        "breakwater_undertow" => false,
         default => true
       };
     default:
