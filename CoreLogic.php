@@ -3190,7 +3190,7 @@ function UnityEffect($cardID)
 
 function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-")
 {
-  global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
+  global $EffectContext, $mainPlayer, $CS_NumCardsDrawn, $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("talisman_of_tithes_blue", $otherPlayer);
@@ -3225,9 +3225,17 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     array_push($hand, $cardID);
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
   }
-  if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true) && $mainPhase) {
-    WriteLog("🦈 You are being dragged under by " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow"));
-    AddLayer("TRIGGER", $player, "anka_drag_under_yellow");
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    switch ($currentTurnEffects[$i]) {
+      case "anka_drag_under_yellow":
+        if ($mainPhase){
+          WriteLog("🦈 You are being dragged under by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
+          AddLayer("TRIGGER", $player, $currentTurnEffects[$i]);
+        }
+        break;
+      default:
+        break;
+    }
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
