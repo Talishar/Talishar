@@ -26,7 +26,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_LinkBasePower;
-  global $CS_PlayIndex, $landmarks;
+  global $CS_PlayIndex, $landmarks, $preLayers;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -272,6 +272,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             if (ColorContains($topX[$i], 3, $player)) array_push($rv, "MYDECK-$i");
           }
           $rv = implode(",", $rv);
+          break;
+        case "PRELAYERS":
+          if (!isset($preLayers)) $rv = "";
+          else {
+            $rv = [];
+            for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+              if ($preLayers[$i + 1] == $player) array_push($rv, "PRELAYERS-$i");
+            }
+            $rv = implode(",", $rv);
+          }
+          WriteLog("HERE Available rvs: $rv");
           break;
         default:
           $rv = "";
@@ -2679,6 +2690,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
           break;
+      }
+      return $lastResult;
+    case "ADDPRELAYERTOSTACK":
+      WriteLog("HERE adding prelayer to stack: $lastResult - ");
+
+      $ind = explode("-", $lastResult)[1] ?? "-";
+      if ($ind != "-") {
+        $layers = array_merge(array_slice($preLayers, $ind, LayerPieces()), $layers);
+        for ($i = $ind + LayerPieces() - 1; $i >= $ind; --$i) {
+          unset($preLayers[$i]);
+        }
+        $preLayers = array_values($preLayers);
       }
       return $lastResult;
     case "UNDERCURRENTDESIRES":

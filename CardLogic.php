@@ -357,39 +357,43 @@ function AddTriggersToStack()
 {
   global $layers, $preLayers, $mainPlayer, $defPlayer;
   if (isset($preLayers) && count($preLayers) > 0) {
-    $mainPreLayers = [];
-    $defPreLayers = [];
+    $mainPreLayers = 0;
+    $defPreLayers = 0;
     for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
-      if ($preLayers[$i+1] == $mainPlayer) array_push($mainPreLayers, $i);
-      else $defPreLayers = array_push($defPreLayers, $i);
+      if ($preLayers[$i+1] == $mainPlayer) ++$mainPreLayers;
+      else ++$defPreLayers;
     }
-    if (count($mainPreLayers) > 0 && count($defPreLayers) > 0 && HoldPrioritySetting($mainPlayer) == "1") {
+    if ($mainPreLayers > 0 && $defPreLayers > 0 && HoldPrioritySetting($mainPlayer) == "1") {
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Whose triggers do you want to resolve first?");
-      AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Mine,Theirs");
+      AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Mine,Theirs", 1);
     }
     else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "Theirs");
-    for ($i = 0; $i < count($mainPreLayers); ++$i) {
+    AddDecisionQueue("NOTEQUALPASS", $mainPlayer, "Theirs", 1);
+    for ($i = 0; $i < $mainPreLayers; ++$i) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
       AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
     }
-    for ($i = 0; $i < count($defPreLayers); ++$i) {
+    for ($i = 0; $i < $defPreLayers; ++$i) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
       AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
-    for ($i = 0; $i < count($defPreLayers); ++$i) {
+    for ($i = 0; $i < $defPreLayers; ++$i) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
       AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
     }
-    for ($i = 0; $i < count($mainPreLayers); ++$i) {
+    for ($i = 0; $i < $mainPreLayers; ++$i) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
       AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
     }
-    ProcessDecisionQueue();
   }
 }
 
@@ -400,9 +404,13 @@ function ContinueDecisionQueue($lastResult = "")
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $preLayers;
   
-  AddTriggersToStack();
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
+    }
+    if (count($decisionQueue) == 0 && isset($preLayers) && count($preLayers) > 0) {
+      AddTriggersToStack();
+      ProcessDecisionQueue();
+      return;
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
