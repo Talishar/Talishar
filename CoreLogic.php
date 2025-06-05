@@ -3225,12 +3225,14 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     array_push($hand, $cardID);
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 1] != $player) continue;
     switch ($currentTurnEffects[$i]) {
       case "anka_drag_under_yellow":
         if ($mainPhase){
           WriteLog("🦈 You are being dragged under by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
           AddLayer("TRIGGER", $player, $currentTurnEffects[$i]);
+          RemoveCurrentTurnEffect($i);
         }
         break;
       default:
