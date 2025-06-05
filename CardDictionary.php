@@ -804,6 +804,10 @@ function BlockValue($cardID)
 {
   global $defPlayer;
   switch ($cardID) { //cards with a mistake in GeneratedBlockValue
+    case "crash_and_bash_red":
+    case "crash_and_bash_yellow":
+    case "crash_and_bash_blue":
+      return 3;
     case "shock_frock":
       return 1;
     default:
