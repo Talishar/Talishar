@@ -960,20 +960,20 @@ function EquipPayAdditionalCosts($cardIndex)
     case "jinglewood_smash_hit":
     case "hidden_agenda":
       break; //Unlimited uses
-    case "spellbound_creepers": //Spellbound Creepers - Bind counters
+    case "spellbound_creepers": 
       ++$character[$cardIndex + 2];//Add a counter
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
       break;
-    case "ghostly_touch": //Ghostly Touch - Haunt counters
+    case "ghostly_touch":
       $character[$cardIndex + 2] -= 1;//Remove a counter
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
       break;
-    case "alluvion_constellas": //Alluvion Constellas - Energy counters
+    case "alluvion_constellas":
       $character[$cardIndex + 2] -= 2;
       break;
-    case "hanabi_blaster": //Hanabi Blaster - Steam counters, once per turn
+    case "hanabi_blaster":
       $character[$cardIndex + 2] -= 2;
       $character[$cardIndex + 1] = 1;
       break;
