@@ -51,7 +51,8 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
 {
   $allies = &GetAllies($player);
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
-  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat)) {
+  $inDamageStep = SearchLayersForPhase("FINALIZECHAINLINK") != -1;
+  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat && !$inDamageStep)) {
     CloseCombatChain();
   }
   $cardID = $allies[$index];
