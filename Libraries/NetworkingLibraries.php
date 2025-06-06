@@ -1041,7 +1041,8 @@ function ResolveChainLink()
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
-      if(!IsGameOver()) ResolveCombatDamage($damage, "HERO");
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,ALLY");
+      // if(!IsGameOver()) ResolveCombatDamage($damage, "HERO");
     }
   }
   CheckAllyDeath($defPlayer);
