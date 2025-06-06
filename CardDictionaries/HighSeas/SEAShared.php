@@ -628,10 +628,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, isToken: true);
       break;
     case "polly_cranka": case "polly_cranka_ally":
-      $index = SearchBanishForCard($currentPlayer, "polly_cranka");
+      $owner = SearchCurrentTurnEffects("polly_cranka", $currentPlayer, remove:true) ? $otherPlayer : $currentPlayer;
+      $index = SearchBanishForCard($owner, "polly_cranka");
       if ($index != -1) {
-        PlayAlly("polly_cranka_ally", $currentPlayer, tapped:true, from:$from);
-        RemoveBanish($currentPlayer, $index);
+        PlayAlly("polly_cranka_ally", $owner, tapped:true, from:$from);
+        RemoveBanish($owner, $index);
       }
       break;
     case "sticky_fingers": case "sticky_fingers_ally":
