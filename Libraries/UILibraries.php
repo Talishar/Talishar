@@ -372,7 +372,7 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
         }
     }
   }
-  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID)) $pitchText = "";
+  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID) && !IsColorblindMode($playerID == 1 ? 2 : 1)) $pitchText = "";
   $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
   return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
 }
