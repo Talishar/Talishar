@@ -1036,18 +1036,19 @@ function ResolveChainLink()
         if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
         DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
       }
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, $totalPower);
+      //we may eventually want to move this out of a decision queue
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-");
+      if(!IsGameOver()) ResolveCombatDamage($damage, "HERO");
     }
   }
   CheckAllyDeath($defPlayer);
   ProcessDecisionQueue();
 }
 
-function ResolveCombatDamage($damageDone)
+function ResolveCombatDamage($damageDone, $damageTarget="HERO")
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
@@ -1103,7 +1104,7 @@ function ResolveCombatDamage($damageDone)
       for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
         if (IsCombatEffectActive($currentTurnEffects[$i])) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-            AddEffectHitTrigger($currentTurnEffects[$i], source:$combatChain[0]); // Effects that gives effect to the attack
+            AddEffectHitTrigger($currentTurnEffects[$i], source:$combatChain[0], target:$damageTarget); // Effects that gives effect to the attack
           }
         }
       }
@@ -1126,7 +1127,7 @@ function ResolveCombatDamage($damageDone)
     foreach(explode(",", $combatChain[10]) as $effectSetID) {
       $effect = ConvertToCardID($effectSetID);
       if (IsCombatEffectActive($effect) && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddEffectHitTrigger($effect, source:$combatChain[0]); // Effects that do gives their effect to the attack
+        AddEffectHitTrigger($effect, source:$combatChain[0], target:$damageTarget); // Effects that do gives their effect to the attack
       }
     }
     if (IsHeroAttackTarget()) {

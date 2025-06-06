@@ -478,11 +478,11 @@ function ContinueDecisionQueue($lastResult = "")
       CloseDecisionQueue();
       ResolveChainLink();
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE") {
-      $parameter = $decisionQueue[2];
-      if ($parameter != "-") $damageDone = $parameter;
+      $parameters = explode(",", $decisionQueue[2]);
+      if ($parameters[0] != "-") $damageDone = $parameters[0];
       else $damageDone = $dqState[6];
       CloseDecisionQueue();
-      if(!IsGameOver()) ResolveCombatDamage($damageDone);
+      if(!IsGameOver()) ResolveCombatDamage($damageDone, $parameters[1]);
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN") {
       CloseDecisionQueue();
       PassTurn();
@@ -1417,10 +1417,12 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "avast_ye_blue":
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
-    case "drop_the_anchor_red":
     case "bam_bam_yellow":
     case "mask_of_perdition":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;
+    case "drop_the_anchor_red":
+      if ($target == "HERO") AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
     case "take_a_stab_yellow":
