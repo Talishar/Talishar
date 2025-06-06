@@ -3444,22 +3444,24 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $spectraTargets = [];
   $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
-  for ($i = count($targetArr) - 1; $i >= 0; --$i) {
-    if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
-      // remove spectra cards from target
-      $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
-      if ($ind != -1) {
-        $MZTarget = "THEIRAURAS-$ind";
-        if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
-          array_push($spectraTargets, $uidArr[$i]);
-          unset($targetArr[$i]);
-          unset($uidArr[$i]);
-          $targetArr = array_values($targetArr);
-          $uidArr = array_values($uidArr);
-          $isSpectraTarget = true;
+  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
+    for ($i = count($targetArr) - 1; $i >= 0; --$i) {
+      if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
+        // remove spectra cards from target
+        $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
+        if ($ind != -1) {
+          $MZTarget = "THEIRAURAS-$ind";
+          if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
+            array_push($spectraTargets, $uidArr[$i]);
+            unset($targetArr[$i]);
+            unset($uidArr[$i]);
+            $targetArr = array_values($targetArr);
+            $uidArr = array_values($uidArr);
+            $isSpectraTarget = true;
+          }
+          $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
+          $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
         }
-        $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
-        $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
       }
     }
   }
