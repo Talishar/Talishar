@@ -518,7 +518,7 @@ function WarmongersDiplomacy($player)
 {
   AddDecisionQueue("BUTTONINPUT", $player, "War,Peace");
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
-  AddDecisionQueue("WRITELOG", $player, "Player $player chose {0}", 1);
+  AddDecisionQueue("WRITELOG", $player, "Player $player chose <b>{0}</b>", 1);
   AddDecisionQueue("PREPENDLASTRESULT", $player, "Warmongers");
 }
 
