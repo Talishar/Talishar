@@ -3094,9 +3094,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(":", $parameter); 
       $zone = $params[0];
       $otherPlayer = $player == 1 ? 2 : 1;
-      $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1] ?? "-"));
-      for ($i = count($indices)-1; $i >= 0; $i--) {
-        Tap($indices[$i], $player, 0);
+      $tapped = GetTapped($currentPlayer, $zone, $params[1] ?? "-");
+      if ($tapped != "") {
+        $indices = explode(",", $tapped);
+        for ($i = count($indices)-1; $i >= 0; $i--) {
+          Tap($indices[$i], $player, 0);
+        }
       }
       if (substr($zone, 0, 2) == "MY" && GetPerchedAllies($player) != "") {
         $myPerched = explode(",", GetPerchedAllies($player));
