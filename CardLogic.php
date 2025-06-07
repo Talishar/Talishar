@@ -232,7 +232,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   global $layers, $dqState;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
   if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
-    array_unshift($layers, values: $layerUID);
+    array_unshift($layers, $layerUID);
     array_unshift($layers, $uniqueID);
     array_unshift($layers, $additionalCosts);
     array_unshift($layers, $target);
