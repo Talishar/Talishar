@@ -930,6 +930,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if($cards != "") WriteLog("Hand content: $cards.");
       return $lastResult;
+    case "WRITELASTRESULT":
+      WriteLog(GamestateUnsanitize($parameter . "<b>".$lastResult."</b>"));
+      return $lastResult;
     case "WRITELOG":
       WriteLog(GamestateUnsanitize($parameter));
       return $lastResult;
@@ -1001,7 +1004,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETCLASSSTATE":
       $data = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
       SetClassState($player, $parameter, $data);
-      if($parameter == (string) $CS_AdditionalCosts) WriteLog("An additional cost of <b>$lastResult</b> was paid.");
       return $lastResult;
     case "GETCLASSSTATE":
       return GetClassState($player, $parameter);
@@ -1242,6 +1244,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($damage < 0) $damage = 0;
           --$allies[$target[1] + 6];
         }
+        $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, $type);
         $allies[$target[1] + 2] -= $damage;
         if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
         if ($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
@@ -2100,15 +2103,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZDAMAGE":
       $lastResultArr = explode(",", $lastResult);
       $params = explode(",", $parameter);
+      $damage = $params[0];
       for ($i = 0; $i < count($lastResultArr); ++$i) {
         $mzIndex = explode("-", $lastResultArr[$i]);
         $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
         if (!str_contains($mzIndex[0], "ALLY")) {
           if ($mzIndex[1] == 0) {
-            DamageTrigger($target, $params[0], $params[1], GetMZCard($target, $lastResultArr[$i]));
+            DamageTrigger($target, $damage, $params[1], GetMZCard($target, $lastResultArr[$i]));
           }
           else { //perched allies
-            if ($params[0] > 0) {
+            if ($damage > 0) {
               // for now life isn't being tracked for perched allies
               $targetCard = GetMZCard($player, $lastResultArr[$i]);
               WriteLog(CardLink($targetCard, $targetCard) . " was shot down from its perch!");
@@ -2118,8 +2122,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         else {
           $allies = &GetAllies($target);
-          $allies[$mzIndex[1] + 2] = intval($allies[$mzIndex[1] + 2]) - $params[0];
-          if ($params[0] > 0) AllyDamageTakenAbilities($target, $mzIndex[1]);
+          $damage = AllyDamagePrevention($target, $mzIndex[1], $damage);
+          $allies[$mzIndex[1] + 2] = intval($allies[$mzIndex[1] + 2]) - $damage;
+          if ($damage > 0) AllyDamageTakenAbilities($target, $mzIndex[1]);
           if ($allies[$mzIndex[1] + 2] <= 0) DestroyAlly($target, $mzIndex[1], false, false, $allies[$mzIndex[1] + 5]);
         }
       }
@@ -3112,9 +3117,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(":", $parameter); 
       $zone = $params[0];
       $otherPlayer = $player == 1 ? 2 : 1;
-      $indices = explode(",", GetTapped($currentPlayer, $zone, $params[1] ?? "-"));
-      for ($i = count($indices)-1; $i >= 0; $i--) {
-        Tap($indices[$i], $player, 0);
+      $tapped = GetTapped($currentPlayer, $zone, $params[1] ?? "-");
+      if ($tapped != "") {
+        $indices = explode(",", $tapped);
+        for ($i = count($indices)-1; $i >= 0; $i--) {
+          Tap($indices[$i], $player, 0);
+        }
       }
       if (substr($zone, 0, 2) == "MY" && GetPerchedAllies($player) != "") {
         $myPerched = explode(",", GetPerchedAllies($player));

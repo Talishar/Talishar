@@ -771,17 +771,7 @@ function GetAttackTargetNames($player)
   foreach(explode(",", $targets) as $target) {
     array_push($ret, CardName(GetMZCard($player, $target)));
   }
-  return implode(",", $ret);
-}
-
-function GetAttackTargetRelativeMZCardLink($player)
-{
-  $targets = GetAttackTarget();
-  $ret = [];
-  foreach(explode(",", $targets) as $target) {
-    array_push($ret, CardName(GetRelativeMZCardLink($player, $target)));
-  }
-  return implode(",", $ret);
+  return implode("|", $ret);
 }
 
 function GetDamagePrevention($player)

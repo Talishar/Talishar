@@ -50,13 +50,16 @@ function CheckAllyDeath($player)
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
 {
   $allies = &GetAllies($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $owner = ($allies[$index+14] == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
-  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat)) {
+  $inDamageStep = SearchLayersForPhase("FINALIZECHAINLINK") != -1;
+  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat && !$inDamageStep)) {
     CloseCombatChain();
   }
   $cardID = $allies[$index];
-  AllyAddGraveyard($player, $cardID, toBanished:$toBanished);
-  AllyAddGraveyard($player, $allies[$index + 4], toBanished:$toBanished);
+  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
+  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished);
   for ($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
   return $cardID;
@@ -467,7 +470,12 @@ function AllyPayAdditionalCosts($cardIndex, $from)
       break;
     case "polly_cranka_ally":
       Tap("MYALLY-$cardIndex", $currentPlayer);
+      if ($ally[$cardIndex+14] == "Temporary") {
+        //indicator to  give it back to the opponent
+        AddCurrentTurnEffect("polly_cranka", $currentPlayer);
+      }
       DestroyAlly($currentPlayer, $cardIndex, skipDestroy:true, toBanished:true);
+      
       break;
     case "cutty_shark_quick_clip_yellow":
       if(GetResolvedAbilityType($cardID, $from, $currentPlayer) == "AA") {

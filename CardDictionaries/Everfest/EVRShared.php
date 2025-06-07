@@ -61,6 +61,7 @@
         if($from == "PLAY") return "I";
         else return "A";
       case "silver": return "A";
+      case "talisman_of_featherfoot_yellow": return "AR";
       default: return "";
     }
   }

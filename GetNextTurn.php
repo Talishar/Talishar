@@ -325,7 +325,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($layer->isReorderable) ++$numReorderable;
     array_push($reorderableLayers, $layer);
   }
-  $layerObject->target = GetAttackTargetRelativeMZCardLink($mainPlayer);
+  $layerObject->target = GetAttackTargetNames($mainPlayer);
   $layerObject->layerContents = $layerContents;
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
@@ -759,8 +759,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
     if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
+    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1 && SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Targeted/Effect Active";
     elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
+    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
     array_push($theirAlliesOutput, 
       JSONRenderedCard(
         cardNumber: $theirAllies[$i], 

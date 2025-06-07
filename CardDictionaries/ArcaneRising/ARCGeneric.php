@@ -18,6 +18,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       return $rv;
     case "mage_master_boots":
       SetClassState($currentPlayer, $CS_NextNAACardGoAgain, 1);
+      AddCurrentTurnEffect($cardID, $currentPlayer); 
       return "";
     case "art_of_war_yellow":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);

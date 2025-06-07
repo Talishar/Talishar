@@ -849,26 +849,19 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   }
 }
 
-function AttackDamageAbilities($damageDone)
+function AttackDamageAbilitiesTrigger($damageDone)
 {
   global $combatChain, $defPlayer, $mainPlayer;
   $attackID = $combatChain[0];
   switch ($attackID) {
     case "light_it_up_yellow":
       if (IsHeroAttackTarget() && $damageDone >= NumEquipment($defPlayer)) {
-        AddCurrentTurnEffect("light_it_up_yellow", $defPlayer);
-        AddNextTurnEffect("light_it_up_yellow", $defPlayer);
+        AddLayer("TRIGGER", $defPlayer, $attackID, $damageDone, "COMBAT");
       }
       break;
     case "jolly_bludger_yellow":
       if (IsHeroAttackTarget() && $damageDone > 0) {
-        $items = GetItems($defPlayer);
-        $reps = min($damageDone, intdiv(count($items), ItemPieces()));
-        for ($i = 0; $i < $reps; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-        }
+        AddLayer("TRIGGER", $mainPlayer, $attackID, $damageDone, "COMBAT");
       }
       break;
     default:
@@ -2412,6 +2405,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
+      SearchCurrentTurnEffects("mage_master_boots", $player, true);
     }
     $character = GetPlayerCharacter($player);
     for ($i = 0; $i < count($character); $i += CharacterPieces()) {
@@ -3189,7 +3183,7 @@ function UnityEffect($cardID)
 
 function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-")
 {
-  global $EffectContext, $mainPlayer, $CS_NumCardsDrawn;
+  global $EffectContext, $mainPlayer, $CS_NumCardsDrawn, $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("talisman_of_tithes_blue", $otherPlayer);
@@ -3224,9 +3218,19 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     array_push($hand, $cardID);
     IncrementClassState($player, $CS_NumCardsDrawn, 1);
   }
-  if(SearchCurrentTurnEffects("anka_drag_under_yellow", $player, true) && $mainPhase) {
-    WriteLog("🦈 You are being dragged under by " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow"));
-    AddLayer("TRIGGER", $player, "anka_drag_under_yellow");
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 1] != $player) continue;
+    switch ($currentTurnEffects[$i]) {
+      case "anka_drag_under_yellow":
+        if ($mainPhase){
+          WriteLog("🦈 You are being dragged under by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
+          AddLayer("TRIGGER", $player, $currentTurnEffects[$i]);
+          RemoveCurrentTurnEffect($i);
+        }
+        break;
+      default:
+        break;
+    }
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);

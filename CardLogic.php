@@ -538,11 +538,11 @@ function ContinueDecisionQueue($lastResult = "")
       CloseDecisionQueue();
       ResolveChainLink();
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE") {
-      $parameter = $decisionQueue[2];
-      if ($parameter != "-") $damageDone = $parameter;
+      $parameters = explode(",", $decisionQueue[2]);
+      if ($parameters[0] != "-") $damageDone = $parameters[0];
       else $damageDone = $dqState[6];
       CloseDecisionQueue();
-      if(!IsGameOver()) ResolveCombatDamage($damageDone);
+      if(!IsGameOver()) ResolveCombatDamage($damageDone, $parameters[1]);
     } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN") {
       CloseDecisionQueue();
       PassTurn();
@@ -628,9 +628,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "salvage_shot_red":
     case "salvage_shot_yellow":
     case "salvage_shot_blue":
-    case "searing_shot_red":
-    case "searing_shot_yellow":
-    case "searing_shot_blue":
     case "nebula_blade":
     case "arknight_ascendancy_red":
     case "command_and_conquer_red":
@@ -1043,6 +1040,9 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
+    case "searing_shot_red":
+    case "searing_shot_yellow":
+    case "searing_shot_blue":
     case "persuasive_prognosis_blue":
     case "art_of_desire_body_red":
     case "art_of_desire_soul_yellow":
@@ -1426,18 +1426,12 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "runic_reaping_red-HIT":
     case "runic_reaping_yellow-HIT":
     case "runic_reaping_blue-HIT":
-    case "spike_with_bloodrot_red":
-    case "spike_with_frailty_red":
-    case "spike_with_inertia_red":
     case "melting_point_red":
     case "lace_with_bloodrot_red":
     case "lace_with_frailty_red":
     case "lace_with_inertia_red":
     case "concealed_blade_blue":
     case "toxic_tips":
-    case "toxicity_red":
-    case "toxicity_yellow":
-    case "toxicity_blue":
     case "beckoning_light_red":
     case "spirit_of_war_red":
     case "light_the_way_red":
@@ -1483,19 +1477,27 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "avast_ye_blue":
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
-    case "drop_the_anchor_red":
     case "bam_bam_yellow":
     case "mask_of_perdition":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;
+    case "drop_the_anchor_red":
+      if ($target == "HERO") AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "take_a_stab_red":
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
       if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
-    case "scar_tissue_red":
+    case "scar_tissue_red": //should trigger when attacking a hero or flicking at a hero
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
+    case "toxicity_red":
+    case "toxicity_yellow":
+    case "toxicity_blue":
+    case "spike_with_bloodrot_red":
+    case "spike_with_frailty_red":
+    case "spike_with_inertia_red":
       if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;  
     case "arakni_black_widow-HIT":
@@ -3516,7 +3518,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog("You are riddled with the regret of $additionalCosts auras");
       LoseHealth($additionalCosts, $player);
       if($additionalCosts >= 3) {
-        DestroyAuraUniqueID($player, $uniqueID);
+        $controller = str_contains($uniqueID, "MYAURAS") ? $player : $otherPlayer;
+        $uniqueID = str_contains($uniqueID, "-") ? explode("-", $uniqueID)[1] : "-";
+        DestroyAuraUniqueID($controller, $uniqueID);
       }
       break;
     case "escalate_bloodshed_red":
@@ -3626,6 +3630,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("DRAW", $player, "-", 1);
       }
       break;
+   case "light_it_up_yellow":
+      AddCurrentTurnEffect("light_it_up_yellow", $player);
+      AddNextTurnEffect("light_it_up_yellow", $player);
+      break;
+    case "jolly_bludger_yellow":
+      $items = GetItems($otherPlayer);
+      $reps = min($target, intdiv(count($items), ItemPieces()));
+      for ($i = 0; $i < $reps; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+      }
     default:
       break;
   }
