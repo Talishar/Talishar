@@ -1055,10 +1055,12 @@ function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=
 }
 
 function MeldCards($player, $cardID, $lastResult, $target="-"){
+  global $CS_ResolvingLayerUniqueID;
   if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
   else $names[] = GamestateUnsanitize($lastResult);
   if($lastResult == "Both") {
-    AddLayer("MELD", $player, $cardID, target:$target);
+    $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
+    AddLayer("MELD", $player, $cardID, target:$target, layerUID:$uniqueID);
     $meldState = CardType($cardID);
   }
   else $meldState = "I";
