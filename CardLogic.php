@@ -3568,6 +3568,18 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("DRAW", $player, "-", 1);
       }
       break;
+   case "light_it_up_yellow":
+      AddCurrentTurnEffect("light_it_up_yellow", $player);
+      AddNextTurnEffect("light_it_up_yellow", $player);
+      break;
+    case "jolly_bludger_yellow":
+      $items = GetItems($otherPlayer);
+      $reps = min($target, intdiv(count($items), ItemPieces()));
+      for ($i = 0; $i < $reps; ++$i) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+      }
     default:
       break;
   }

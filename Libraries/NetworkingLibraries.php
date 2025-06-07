@@ -1115,7 +1115,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
       ArsenalHitEffects();
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
-      AttackDamageAbilities($damageDone);
+      AttackDamageAbilitiesTrigger($damageDone);
     }
     $count = count($currentTurnEffects);
     $pieces = CurrentTurnEffectsPieces();

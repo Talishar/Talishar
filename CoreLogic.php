@@ -849,26 +849,19 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   }
 }
 
-function AttackDamageAbilities($damageDone)
+function AttackDamageAbilitiesTrigger($damageDone)
 {
   global $combatChain, $defPlayer, $mainPlayer;
   $attackID = $combatChain[0];
   switch ($attackID) {
     case "light_it_up_yellow":
       if (IsHeroAttackTarget() && $damageDone >= NumEquipment($defPlayer)) {
-        AddCurrentTurnEffect("light_it_up_yellow", $defPlayer);
-        AddNextTurnEffect("light_it_up_yellow", $defPlayer);
+        AddLayer("TRIGGER", $defPlayer, $attackID, $damageDone, "COMBAT");
       }
       break;
     case "jolly_bludger_yellow":
       if (IsHeroAttackTarget() && $damageDone > 0) {
-        $items = GetItems($defPlayer);
-        $reps = min($damageDone, intdiv(count($items), ItemPieces()));
-        for ($i = 0; $i < $reps; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-        }
+        AddLayer("TRIGGER", $mainPlayer, $attackID, $damageDone, "COMBAT");
       }
       break;
     default:
