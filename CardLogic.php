@@ -229,17 +229,15 @@ function PopLayer()
 
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
-  global $layers, $dqState, $preLayers;
-  if (!isset($preLayers)) $preLayers = [];
+  global $layers, $dqState;
   if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
-    WriteLog("HERE setting a pre-layer: $parameter");
-    array_unshift($preLayers, GetUniqueId($cardID, $player));
-    array_unshift($preLayers, $uniqueID);
-    array_unshift($preLayers, $additionalCosts);
-    array_unshift($preLayers, $target);
-    array_unshift($preLayers, $parameter);
-    array_unshift($preLayers, $player);
-    array_unshift($preLayers, $cardID);
+    array_unshift($layers, GetUniqueId($cardID, $player));
+    array_unshift($layers, $uniqueID);
+    array_unshift($layers, $additionalCosts);
+    array_unshift($layers, $target);
+    array_unshift($layers, $parameter);
+    array_unshift($layers, $player);
+    array_unshift($layers, "PRETRIGGER");
   }
   else {
     //Layers are on a stack, so you need to push things on in reverse order
@@ -355,8 +353,9 @@ function IsGamePhase($phase)
 
 function AddTriggersToStack()
 {
-  global $layers, $preLayers, $mainPlayer, $defPlayer;
-  if (isset($preLayers) && count($preLayers) > 0) {
+  global $layers, $mainPlayer, $defPlayer;
+  $preLayers = GetPreLayers();
+  if (count($preLayers) > 0) {
     $mainPreLayers = 0;
     $defPreLayers = 0;
     for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
@@ -370,27 +369,29 @@ function AddTriggersToStack()
     else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "Theirs");
     AddDecisionQueue("NOTEQUALPASS", $mainPlayer, "Theirs", 1);
     for ($i = 0; $i < $mainPreLayers; ++$i) {
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
       AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
     }
     for ($i = 0; $i < $defPreLayers; ++$i) {
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
+      
       AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     for ($i = 0; $i < $defPreLayers; ++$i) {
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
+      
       AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
     }
     for ($i = 0; $i < $mainPreLayers; ++$i) {
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)");
       AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
     }
@@ -402,12 +403,13 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $preLayers;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
   
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
     }
-    if (count($decisionQueue) == 0 && isset($preLayers) && count($preLayers) > 0) {
+    $preLayers = GetPreLayers();
+    if (count($decisionQueue) == 0 && count($preLayers) > 0) {
       AddTriggersToStack();
       ProcessDecisionQueue();
       return;
@@ -490,7 +492,13 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
-        } else if ($cardID == "MELD") {
+        }
+        else if ($cardID == "PRETRIGGER") {
+          WriteLog("This block should not have been reached, please submit a bug report");
+          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessDecisionQueue();
+        }
+        else if ($cardID == "MELD") {
           ProcessMeld($player, $parameter, $cardID, target:$target);
           ProcessDecisionQueue();
         } else {

@@ -107,7 +107,6 @@ function ParseGamestate()
   $dqVars = GetStringArray($gamestateContent[50]);
   $dqState = GetStringArray($gamestateContent[51]);
   $layers = GetStringArray($gamestateContent[52]);
-  $preLayers = [];
   $layerPriority = GetStringArray($gamestateContent[53]);
   $mainPlayer = trim($gamestateContent[54]);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
