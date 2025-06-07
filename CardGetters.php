@@ -377,6 +377,16 @@ function &GetMainCharacterEffects($player)
   }
 }
 
+
+function GetPreLayers() {
+  global $layers;
+  $preLayers = [];
+  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    if ($layers[$i] == "PRETRIGGER") $preLayers = array_merge($preLayers, array_slice($layers, $i, LayerPieces()));
+  }
+  return $preLayers;
+}
+
 function GetCombatChainAttacks()
 {
   global $chainLinks;

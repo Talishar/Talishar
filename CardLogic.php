@@ -230,19 +230,26 @@ function PopLayer()
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers, $dqState;
-  //Layers are on a stack, so you need to push things on in reverse order
-  array_unshift($layers, GetUniqueId($cardID, $player));
-  array_unshift($layers, $uniqueID);
-  array_unshift($layers, $additionalCosts);
-  array_unshift($layers, $target);
-  array_unshift($layers, $parameter);
-  array_unshift($layers, $player);
-  array_unshift($layers, $cardID);
-  if ($cardID == "TRIGGER") {
-    $orderableIndex = isset($dqState[8]) ? intval($dqState[8]) : -1;
-    if ($orderableIndex == -1) $dqState[8] = 0;
-    else $dqState[8] += LayerPieces();
-  } else $dqState[8] = -1;//If it's not a trigger, it's not orderable
+  if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
+    array_unshift($layers, GetUniqueId($cardID, $player));
+    array_unshift($layers, $uniqueID);
+    array_unshift($layers, $additionalCosts);
+    array_unshift($layers, $target);
+    array_unshift($layers, $parameter);
+    array_unshift($layers, $player);
+    array_unshift($layers, "PRETRIGGER");
+  }
+  else {
+    //Layers are on a stack, so you need to push things on in reverse order
+    array_unshift($layers, GetUniqueId($cardID, $player));
+    array_unshift($layers, $uniqueID);
+    array_unshift($layers, $additionalCosts);
+    array_unshift($layers, $target);
+    array_unshift($layers, $parameter);
+    array_unshift($layers, $player);
+    array_unshift($layers, $cardID);
+  }
+
   return count($layers);//How far it is from the end
 }
 
@@ -344,14 +351,78 @@ function IsGamePhase($phase)
   }
 }
 
+function AddTriggersToStack()
+{
+  global $layers, $mainPlayer, $defPlayer;
+  $preLayers = GetPreLayers();
+  if (count($preLayers) > 0) {
+    $mainPreLayers = 0;
+    $defPreLayers = 0;
+    for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+      if ($preLayers[$i+1] == $mainPlayer) ++$mainPreLayers;
+      else ++$defPreLayers;
+    }
+    if ($mainPreLayers > 0 && $defPreLayers > 0 && HoldPrioritySetting($mainPlayer) == "1") {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Whose triggers do you want to resolve first?");
+      AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Mine,Theirs", 1);
+    }
+    else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "Theirs");
+    AddDecisionQueue("NOTEQUALPASS", $mainPlayer, "Theirs", 1);
+    for ($i = 0; $i < $mainPreLayers; ++$i) {
+      if (HoldPrioritySetting($mainPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "PRELAYERS-0", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
+    }
+    for ($i = 0; $i < $defPreLayers; ++$i) {
+      if (HoldPrioritySetting($defPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $defPlayer, "PRELAYERS-0", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
+    }
+    AddDecisionQueue("ELSE", $mainPlayer, "-");
+    for ($i = 0; $i < $defPreLayers; ++$i) {
+      if (HoldPrioritySetting($defPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $defPlayer, "PRELAYERS-0", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
+    }
+    for ($i = 0; $i < $mainPreLayers; ++$i) {
+      if (HoldPrioritySetting($mainPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "PRELAYERS-0", 1);
+      AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
+    }
+  }
+}
+
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
+  
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
+    }
+    $preLayers = GetPreLayers();
+    if (count($decisionQueue) == 0 && count($preLayers) > 0) {
+      AddTriggersToStack();
+      ProcessDecisionQueue();
+      return;
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
@@ -387,6 +458,7 @@ function ContinueDecisionQueue($lastResult = "")
           return;
         }
         CloseDecisionQueue();
+        
         $cardID = array_shift($layers);
         $player = array_shift($layers);
         $parameter = array_shift($layers);
@@ -430,7 +502,13 @@ function ContinueDecisionQueue($lastResult = "")
         } else if ($cardID == "TRIGGER") {
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
-        } else if ($cardID == "MELD") {
+        }
+        else if ($cardID == "PRETRIGGER") {
+          WriteLog("This block should not have been reached, please submit a bug report");
+          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessDecisionQueue();
+        }
+        else if ($cardID == "MELD") {
           ProcessMeld($player, $parameter, $cardID, target:$target);
           ProcessDecisionQueue();
         } else {

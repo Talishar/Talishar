@@ -311,14 +311,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $layerObject = new stdClass;
   $layerContents = [];
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
-    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" ? $layers[$i + 2] : $layers[$i];
+    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" ? $layers[$i + 2] : $layers[$i];
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
   $reorderableLayers = [];
   $numReorderable = 0;
   for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
     $layer = new stdClass();
-    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" ? $layers[$i + 2] : $layers[$i];
+    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" ? $layers[$i + 2] : $layers[$i];
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP");
     $layer->layerID = $i;
     $layer->isReorderable = $playerID == $mainPlayer && $i <= $dqState[8] && ($i > 0 || $numReorderable > 0);
@@ -1317,6 +1317,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($option[0] == "CC") $source = $combatChain;
         else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
         else if ($option[0] == "COMBATCHAINATTACKS") $source = GetCombatChainAttacks();
+        else if ($option[0] == "PRELAYERS") $source = GetPreLayers();
         else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
         else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
         $counters = 0;
@@ -1376,7 +1377,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
         $index = intval($option[1]);
         $card = ($option[0] != "CARDID" && isset($source[$index])) ? $source[$index] : $option[1];
-        if ($option[0] == "LAYER" && ($card == "TRIGGER" || $card == "MELD")) $card = $source[$index + 2];
+        if (($option[0] == "LAYER" || $option[0] == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER")) $card = $source[$index + 2];
 
         if ($option[0] == "THEIRBANISH") {
           $mod = explode("-", $theirBanish[$index + 1])[0];
@@ -1388,8 +1389,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
         else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
         else if ($option[0] == "CC") $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
-        else if ($option[0] == "LAYER") {
-          $borderColor = $layers[$index + 1] == $playerID ? 1 : 2;
+        else if ($option[0] == "LAYER" || $option[0] == "PRELAYERS") {
+          $borderColor = $source[$index + 1] == $playerID ? 1 : 2;
         }
         else if ($option[0] == "COMBATCHAINATTACKS") {
           $borderColor = 1;

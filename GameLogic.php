@@ -273,6 +273,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "PRELAYERS":
+          $preLayers = GetPreLayers();
+          $rv = [];
+          for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+            if ($preLayers[$i + 1] == $player) array_push($rv, "PRELAYERS-$i");
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;
@@ -2684,6 +2692,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
           break;
+      }
+      return $lastResult;
+    case "ADDPRELAYERTOSTACK":
+      $ind = explode("-", $lastResult)[1] ?? "-";
+      if ($ind != "-") {
+        $currentInd = -1 * LayerPieces();
+        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+          if ($layers[$i] == "PRETRIGGER") $currentInd += LayerPieces();
+          if ($currentInd == $ind) {
+            $pretrigger = array_slice($layers, $i, LayerPieces());
+            $pretrigger[0] = "TRIGGER";
+            for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
+              unset($layers[$j]);
+            }
+            $layers = array_merge($pretrigger, $layers);
+            $preLayers = GetPreLayers();
+            return $lastResult;
+          }
+        }
       }
       return $lastResult;
     case "UNDERCURRENTDESIRES":
