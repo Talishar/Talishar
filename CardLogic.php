@@ -227,12 +227,11 @@ function PopLayer()
   return count($layers);//How far it is from the end
 }
 
-function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-", $layerUID = "-")
+function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers, $dqState;
-  $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
   if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
-    array_unshift($layers, values: $layerUID);
+    array_unshift($layers, GetUniqueId($cardID, $player));
     array_unshift($layers, $uniqueID);
     array_unshift($layers, $additionalCosts);
     array_unshift($layers, $target);
@@ -242,7 +241,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   }
   else {
     //Layers are on a stack, so you need to push things on in reverse order
-    array_unshift($layers, $layerUID);
+    array_unshift($layers, GetUniqueId($cardID, $player));
     array_unshift($layers, $uniqueID);
     array_unshift($layers, $additionalCosts);
     array_unshift($layers, $target);
