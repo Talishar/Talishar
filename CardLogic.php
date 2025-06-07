@@ -2748,6 +2748,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "golden_skywarden_yellow":
       $myItems = GetItems($player);
       $maxRepeats = count($myItems);
+      // check to make sure it's still there before giving it a buff
+      $foundSkywarden = false;
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == "golden_skywarden_yellow") $foundSkywarden = true;
+      }
       for ($i = 0; $i < count($myItems); $i += ItemPieces()) {
         if ($myItems[$i] == "golden_cog") ++$maxRepeats; // you can galvanize the gold made by glavanizing a cog
       }
@@ -2758,7 +2763,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("GOLDENSKYWARDEN", $player, $target, 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);
+        if ($foundSkywarden) AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "1", 1);
       }
       break;
     case "teeth_of_the_cog_red":
