@@ -858,7 +858,7 @@ function AuraBeginEndPhaseTriggers()
       case "riddle_with_regret_red":
         $auras = &GetAuras($mainPlayer);
         $countAuras = count($auras)/AuraPieces();
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, $auras[$i + 6]);
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, "MYAURAS-" . $auras[$i + 6]);
         break;
       default:
         break;
@@ -872,7 +872,7 @@ function AuraBeginEndPhaseTriggers()
         case "riddle_with_regret_red":
           $auras = &GetAuras($mainPlayer);
           $countAuras = count($auras)/AuraPieces();
-          AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", $countAuras, $theirAuras[$i + 6]);
+          AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", $countAuras, "THEIRAURAS-" . $theirAuras[$i + 6]);
           break;
         case "escalate_bloodshed_red":
           if(GetClassState($mainPlayer, $CS_AttacksWithWeapon) == 0) {

@@ -3458,7 +3458,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog("You are riddled with the regret of $additionalCosts auras");
       LoseHealth($additionalCosts, $player);
       if($additionalCosts >= 3) {
-        DestroyAuraUniqueID($player, $uniqueID);
+        $controller = str_contains($uniqueID, "MYAURAS") ? $player : $otherPlayer;
+        $uniqueID = str_contains($uniqueID, "-") ? explode("-", $uniqueID)[1] : "-";
+        DestroyAuraUniqueID($controller, $uniqueID);
       }
       break;
     case "escalate_bloodshed_red":
