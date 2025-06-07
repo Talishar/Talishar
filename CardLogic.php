@@ -369,30 +369,40 @@ function AddTriggersToStack()
     else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "Theirs");
     AddDecisionQueue("NOTEQUALPASS", $mainPlayer, "Theirs", 1);
     for ($i = 0; $i < $mainPreLayers; ++$i) {
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      if (HoldPrioritySetting($mainPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "PRELAYERS-0", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
     }
     for ($i = 0; $i < $defPreLayers; ++$i) {
-      
-      AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
-      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      if (HoldPrioritySetting($defPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $defPlayer, "PRELAYERS-0", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     for ($i = 0; $i < $defPreLayers; ++$i) {
-      
-      AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
-      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      if (HoldPrioritySetting($defPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $defPlayer, "PRELAYERS-0", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
     }
     for ($i = 0; $i < $mainPreLayers; ++$i) {
-      AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      if (HoldPrioritySetting($mainPlayer) == "1") {
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Add a trigger to the stack (triggers resolve in REVERSE order that you add them)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      }
+      else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "PRELAYERS-0", 1);
       AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
     }
   }
