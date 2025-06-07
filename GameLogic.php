@@ -600,7 +600,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           MZFreeze($lastResult);
           break;
         case "GAINCONTROL":
-          MZGainControl($player, $lastResult, $paramArr[1] ?? 0);
+          if ($lastResult != "") MZGainControl($player, $lastResult, $paramArr[1] ?? 0);
           break;
         case "GETCARDID":
           $ret = GetMZCard($player, $lastResult);

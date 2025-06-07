@@ -3653,13 +3653,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddNextTurnEffect("light_it_up_yellow", $player);
       break;
     case "jolly_bludger_yellow":
-      $items = GetItems($otherPlayer);
-      $reps = min($target, intdiv(count($items), ItemPieces()));
+      // for some reason GetItems is overwriting the turn player's items
+      // $items = GetItems($defPlayer);
+      // I'm adjusting MZOP-GAINCONTROL to just skip if nothing is passed to it
+      // so we don't need to explicitly truncate the number of loops
+      $reps = $target;//min($target, intdiv(count($items), ItemPieces()));
       for ($i = 0; $i < $reps; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
+      break;
     default:
       break;
   }
