@@ -874,7 +874,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "withering_shot_red":
     case "withering_shot_yellow":
     case "withering_shot_blue":
-    case "stab_wound_blue":
     case "plunge_red":
     case "plunge_yellow":
     case "plunge_blue":
@@ -957,6 +956,97 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "searing_shot_red":
+    case "searing_shot_yellow":
+    case "searing_shot_blue":
+    case "persuasive_prognosis_blue":
+    case "art_of_desire_body_red":
+    case "art_of_desire_soul_yellow":
+    case "art_of_desire_mind_blue":
+    case "bonds_of_attraction_red":
+    case "bonds_of_attraction_yellow":
+    case "bonds_of_attraction_blue":
+    case "double_trouble_red":
+    case "double_trouble_yellow":
+    case "double_trouble_blue":
+    case "bonds_of_memory_red":
+    case "bonds_of_memory_yellow":
+    case "bonds_of_memory_blue":
+    case "desires_of_flesh_red":
+    case "desires_of_flesh_yellow":
+    case "desires_of_flesh_blue":
+    case "impulsive_desire_red":
+    case "impulsive_desire_yellow":
+    case "impulsive_desire_blue":
+    case "minds_desire_red":
+    case "minds_desire_yellow":
+    case "minds_desire_blue":
+    case "rowdy_locals_blue":
+    case "the_weakest_link_red":
+    case "blanch_red":
+    case "blanch_yellow":
+    case "blanch_blue":
+    case "factfinding_mission_red":
+    case "factfinding_mission_yellow":
+    case "factfinding_mission_blue":
+    case "static_shock_red":
+    case "static_shock_yellow":
+    case "snuff_out_red":
+    case "cut_through_the_facade_red":
+    case "hand_behind_the_pen_red":
+    case "smash_up_red":
+    case "tongue_tied_red":
+    case "splatter_skull_red":
+    case "mark_the_prey_red":
+    case "mark_the_prey_yellow":
+    case "mark_the_prey_blue":
+    case "tag_the_target_red":
+    case "tag_the_target_yellow":
+    case "tag_the_target_blue":
+    case "trap_and_release_red":
+    case "trap_and_release_yellow":
+    case "trap_and_release_blue":
+    case "pursue_to_the_edge_of_oblivion_red":
+    case "pursue_to_the_pits_of_despair_red":
+    case "king_kraken_harpoon_red":
+    case "king_shark_harpoon_red":
+    case "conqueror_of_the_high_seas_red":
+    case "cogwerx_dovetail_red":
+    case "cloud_city_steamboat_red":
+    case "cloud_city_steamboat_yellow":
+    case 'cloud_city_steamboat_blue':
+    case "red_fin_harpoon_blue":
+    case "yellow_fin_harpoon_blue":
+    case "blue_fin_harpoon_blue":
+    case "cogwerx_zeppelin_red":
+    case "cogwerx_zeppelin_yellow":
+    case "cogwerx_zeppelin_blue":
+    case "hms_barracuda_yellow":
+    case "hms_kraken_yellow":
+    case "hms_marlin_yellow":
+    case "pilfer_the_wreck_red":
+    case "pilfer_the_wreck_yellow":
+    case "pilfer_the_wreck_blue":
+    case "crash_down_the_gates_red":
+    case "crash_down_the_gates_yellow":
+    case "crash_down_the_gates_blue":
+    case "undercover_acquisition_red":
+    case "jack_be_nimble_red":
+    case "jack_be_quick_red":
+    case "money_or_your_life_red":
+    case "money_or_your_life_yellow":
+    case "money_or_your_life_blue":
+    case "bam_bam_yellow":
+    case "wreck_havoc_red":
+    case "wreck_havoc_yellow":
+    case "wreck_havoc_blue":
+    case "send_packing_yellow":
+    case "stab_wound_blue":
+      if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
     case "bolt_of_courage_red":
     case "bolt_of_courage_yellow":
     case "bolt_of_courage_blue":
@@ -1055,96 +1145,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
       break;
     case "bonds_of_agony_blue":
       if (NumAttackReactionsPlayed() > 2 && IsHeroAttackTarget()) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return true;
-      }
-      break;
-    case "searing_shot_red":
-    case "searing_shot_yellow":
-    case "searing_shot_blue":
-    case "persuasive_prognosis_blue":
-    case "art_of_desire_body_red":
-    case "art_of_desire_soul_yellow":
-    case "art_of_desire_mind_blue":
-    case "bonds_of_attraction_red":
-    case "bonds_of_attraction_yellow":
-    case "bonds_of_attraction_blue":
-    case "double_trouble_red":
-    case "double_trouble_yellow":
-    case "double_trouble_blue":
-    case "bonds_of_memory_red":
-    case "bonds_of_memory_yellow":
-    case "bonds_of_memory_blue":
-    case "desires_of_flesh_red":
-    case "desires_of_flesh_yellow":
-    case "desires_of_flesh_blue":
-    case "impulsive_desire_red":
-    case "impulsive_desire_yellow":
-    case "impulsive_desire_blue":
-    case "minds_desire_red":
-    case "minds_desire_yellow":
-    case "minds_desire_blue":
-    case "rowdy_locals_blue":
-    case "the_weakest_link_red":
-    case "blanch_red":
-    case "blanch_yellow":
-    case "blanch_blue":
-    case "factfinding_mission_red":
-    case "factfinding_mission_yellow":
-    case "factfinding_mission_blue":
-    case "static_shock_red":
-    case "static_shock_yellow":
-    case "snuff_out_red":
-    case "cut_through_the_facade_red":
-    case "hand_behind_the_pen_red":
-    case "smash_up_red":
-    case "tongue_tied_red":
-    case "splatter_skull_red":
-    case "mark_the_prey_red":
-    case "mark_the_prey_yellow":
-    case "mark_the_prey_blue":
-    case "tag_the_target_red":
-    case "tag_the_target_yellow":
-    case "tag_the_target_blue":
-    case "trap_and_release_red":
-    case "trap_and_release_yellow":
-    case "trap_and_release_blue":
-    case "pursue_to_the_edge_of_oblivion_red":
-    case "pursue_to_the_pits_of_despair_red":
-    case "king_kraken_harpoon_red":
-    case "king_shark_harpoon_red":
-    case "conqueror_of_the_high_seas_red":
-    case "cogwerx_dovetail_red":
-    case "cloud_city_steamboat_red":
-    case "cloud_city_steamboat_yellow":
-    case 'cloud_city_steamboat_blue':
-    case "red_fin_harpoon_blue":
-    case "yellow_fin_harpoon_blue":
-    case "blue_fin_harpoon_blue":
-    case "cogwerx_zeppelin_red":
-    case "cogwerx_zeppelin_yellow":
-    case "cogwerx_zeppelin_blue":
-    case "hms_barracuda_yellow":
-    case "hms_kraken_yellow":
-    case "hms_marlin_yellow":
-    case "pilfer_the_wreck_red":
-    case "pilfer_the_wreck_yellow":
-    case "pilfer_the_wreck_blue":
-    case "crash_down_the_gates_red":
-    case "crash_down_the_gates_yellow":
-    case "crash_down_the_gates_blue":
-    case "undercover_acquisition_red":
-    case "jack_be_nimble_red":
-    case "jack_be_quick_red":
-    case "money_or_your_life_red":
-    case "money_or_your_life_yellow":
-    case "money_or_your_life_blue":
-    case "bam_bam_yellow":
-    case "wreck_havoc_red":
-    case "wreck_havoc_yellow":
-    case "wreck_havoc_blue":
-    case "send_packing_yellow":
-      if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
