@@ -54,6 +54,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $owner = ($allies[$index+14] == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $inDamageStep = SearchLayersForPhase("FINALIZECHAINLINK") != -1;
+  RemoveAllyEffects($player, $uniqueID);
   if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat && !$inDamageStep)) {
     CloseCombatChain();
   }
@@ -64,6 +65,13 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $allies = array_values($allies);
   return $cardID;
 }
+
+function RemoveAllyEffects($player, $uniqueID)
+{
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
+}
+
 
 function IsTokenAlly($cardID)
 {
