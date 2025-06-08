@@ -1408,9 +1408,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $canAttack = CanAttack($cardID, $index, "MYALLY");
       $allies = &GetAllies($currentPlayer);
       $names = "";
-      if ($allies[$index + 8] > 0) $names = "Ability";
-      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $canAttack) return "-,Attack";
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "Ability";
+      if (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $canAttack) return "-,Attack";
+      if ($allies[$index + 8] > 0) $names = "Ability";
       if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
     default:
