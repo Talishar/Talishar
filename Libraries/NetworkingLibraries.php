@@ -486,7 +486,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
-        if ($playerID == $mainPlayer && count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") {
+        if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") {
           PassInput(false, true);
         }
         else PassInput(false);
@@ -1537,6 +1537,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && GetAbilityTypes($cardID, $index, $from) == "" && !HasMeld($cardID)) {
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
+        $layerPriority[$currentPlayer - 1] = "0";
         ProcessInput($currentPlayer, 99, "", $cardID, 0, "");
         return "";
       }
@@ -1553,6 +1554,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
             ++$items[$index + 3]; // give it back a use
           }
         }
+        $layerPriority[$currentPlayer - 1] = "0";
         ProcessInput($currentPlayer, 99, "", $cardID, 0, "");
         return "";
       }
