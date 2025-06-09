@@ -189,7 +189,7 @@ function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
 function AddPlayerHand($cardID, $player, $from, $amount = 1)
 {
   global $CS_NumCrouchingTigerCreatedThisTurn, $EffectContext;
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") && !str_contains($from, "DISCARD") && !str_contains($from, "BANISH")) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }

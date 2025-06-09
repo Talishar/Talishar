@@ -193,22 +193,22 @@ function MZAddZone($player, $parameter, $lastResult)
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "MYHAND":
-        AddPlayerHand($cardIDs[$i], $player, "-");
+        AddPlayerHand($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "-");
         break;
       case "MYTOPDECK":
-        AddTopDeck($cardIDs[$i], $player, "-", $deckIndexModifier);
+        AddTopDeck($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "-", $deckIndexModifier);
         break;
       case "MYBOTDECK":
-        AddBottomDeck($cardIDs[$i], $player, "-");
+        AddBottomDeck($cardIDs[$i], $player,  isset($params[1]) ? $params[1] : "-");
         break;
       case "THEIRBOTDECK":
-        AddBottomDeck($cardIDs[$i], $otherPlayer, "-");
+        AddBottomDeck($cardIDs[$i], $otherPlayer,  isset($params[1]) ? $params[1] : "-");
         break;
       case "MYDISCARD":
-        AddGraveyard($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "", $player);
+        AddGraveyard($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "-", $player);
         break;
       case "THEIRDISCARD":
-        AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[1]) ? $params[1] : "", $player);
+        AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[1]) ? $params[1] : "-", $player);
         break;
       case "MYARS":
         AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) && is_numeric($params[3]) ? $params[3] : "0");
