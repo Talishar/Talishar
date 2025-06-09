@@ -1352,7 +1352,7 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   $zoneName = explode("-", $MZindex)[0];
   $index = intval(explode("-", $MZindex)[1]);
   $zone = &GetMZZone($player, $zoneName);
-  if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && str_contains($zoneName, "CHAR") && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
+  if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && $MZindex == "MYCHAR-0" && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
     return true;
   }
   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
