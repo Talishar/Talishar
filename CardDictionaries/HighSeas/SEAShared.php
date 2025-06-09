@@ -973,7 +973,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "goldkiss_rum":
-      if($from == "PLAY") AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+      if($from == "PLAY") {
+        AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
+        AddCurrentTurnEffect("$cardID-PREVENTION", $currentPlayer);
+      }
       break;
     case "burn_bare":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
@@ -1349,7 +1352,7 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   $zoneName = explode("-", $MZindex)[0];
   $index = intval(explode("-", $MZindex)[1]);
   $zone = &GetMZZone($player, $zoneName);
-  if(SearchCurrentTurnEffects("goldkiss_rum", $player) && str_contains($zoneName, "CHAR") && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
+  if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && str_contains($zoneName, "CHAR") && !TalentContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
     return true;
   }
   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
