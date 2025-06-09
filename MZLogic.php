@@ -455,11 +455,24 @@ function GetMZCard($player, $MZIndex)
   $params = explode("-", ($MZIndex ?? ""));
   if (count($params) < 2) return "";
   if (substr($params[0], 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
-  $zoneDS = &GetMZZone($player, $params[0]);
-  $index = $params[1];
-  if (isset($zoneDS[$index]) && ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD")) $index += 2;
-  if ($index == "" || !isset($zoneDS[$index])) return "";
-  return $zoneDS[$index];
+  if (str_contains($params[0], "UID")) {
+    switch ($params[0]) {
+      case "THEIRCHARUID":
+      case "MYCHARUID":
+        $index = SearchCharacterForUniqueID($params[1], $player);
+        $char = GetPlayerCharacter($player);
+        return $char[$index];
+      default:
+        return "";
+    }
+  }
+  else {
+    $zoneDS = &GetMZZone($player, $params[0]);
+    $index = $params[1];
+    if (isset($zoneDS[$index]) && ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD")) $index += 2;
+    if ($index == "" || !isset($zoneDS[$index])) return "";
+    return $zoneDS[$index];
+  }
 }
 
 function GetMZCards($player, $MZIndices)
