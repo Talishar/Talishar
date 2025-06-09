@@ -2413,6 +2413,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":
+      for ($i = 0; $i < count($chainLinks); ++$i) {
+        if (ClassContains($chainLinks[$i][0], "ASSASSIN", $mainPlayer)) {
+          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+            if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
+          }
+        }
+      }
       return NumCardsBlocking() < 1 || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer);
     case "cut_to_the_chase_red":
     case "cut_to_the_chase_yellow":
@@ -2725,6 +2732,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "tarantula_toxin_red":
       if (!$CombatChain->HasCurrentLink()) return true;
+      for ($i = 0; $i < count($chainLinks); ++$i) {
+        if (HasStealth($chainLinks[$i][0])) {
+          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+            if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
+          }
+        }
+      }
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
       return true;

@@ -2036,14 +2036,20 @@ function GetLayerTarget($cardID, $from)
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":
-      $numOptions = explode(",", GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C"));
-      $options = [];
-      foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
-      $options = implode(",", $options);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
+      if ($numOptions != "") {
+        $numOptions = explode(",", $numOptions);
+        $options = [];
+        foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+        $options = implode(",", $options);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
+      else {
+        WriteLog(CardLink($cardID, $cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
+      }
       break;
     case "platinum_amulet_blue":
       if ($from == "PLAY"){
