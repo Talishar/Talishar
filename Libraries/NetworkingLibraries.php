@@ -2451,12 +2451,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
       }
       AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Action", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
       $targetType = 2;
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
