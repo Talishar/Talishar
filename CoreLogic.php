@@ -3208,6 +3208,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     switch ($myAuras[$i]) {
       case "escalate_bloodshed_red":
         if ($mainPhase) {
+          //TODO rework this to be a respondable trigger
           WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
           LoseHealth(1, $player);
         }
@@ -3221,6 +3222,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     switch ($theirAuras[$i]) {
       case "escalate_bloodshed_red":
         if ($mainPhase) {
+          //TODO rework this to be a respondable trigger
           WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
           LoseHealth(1, $player);
         }
