@@ -1135,6 +1135,7 @@ function TriggerTargets($cardID)
     "blast_to_oblivion_yellow" => "aura_permanent",
     "blast_to_oblivion_blue" => "aura_permanent",
     "figment_of_ravages_yellow" => "any_arcane",
+    "azvolai" => "any_arcane",
     default => ""
   };
 }

@@ -1296,7 +1296,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DEALARCANE":
       if ($lastResult != "-") { // make sure the target is still there
         $dqState[7] = $lastResult;
-        $target = explode("-", $lastResult);
+        //handle the case where a unique id gets passed here, needed for cases where there are multiple targets
+        //and one may die before the second gets damaged
+        //if it's already an MZIndex, this should have no effect
+        $target = GetArcaneTargetFromUID($player, $lastResult);
+        $target = explode("-", $target);
         $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
         $parameters = explode("-", $parameter);
         $damage = $parameters[0];
@@ -2666,11 +2670,28 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $targetedPlayer = (DelimStringContains($lastResult, "THEIR", true)) ? (($player == 1) ? 2 : 1) : $player;        
         WriteLog(GetMZCardLink($targetedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
-      switch ($params[0]) {
+      switch ($params[0]) { //these targetting effects need UID
         case "runic_reclamation_red":
           AddLayer("TRIGGER", $mainPlayer, $params[0], GetMZUID($targetedPlayer, $target), $additional);
           break;
-        case "blast_to_oblivion_red": //these targetting effects need UID
+        case "azvolai":
+          if ($target != "-") {
+            if (!str_contains($target, ",")) {
+              $targetLoc = explode("-", $target)[0];
+              AddLayer("TRIGGER", $mainPlayer, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
+            }
+            else {
+              $targetArr = explode(",", $target);
+              $targetUids = [];
+              foreach ($targetArr as $targ) {
+                $targetLoc = explode("-", $targ)[0];
+                array_push($targetUids, "$targetLoc-" . GetMZUID($targetedPlayer, $targ));
+              }
+              AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional);
+            }
+          }
+          break;
+        case "blast_to_oblivion_red":
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
           AddLayer("TRIGGER", $player, $params[0], "$targetedPlayer-" . GetMZUID($targetedPlayer, $target));

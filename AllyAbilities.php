@@ -256,10 +256,10 @@ function AllyAttackAbilities($attackID)
 //NOTE: This is for the actual attack abilities that allies have
 function SpecificAllyAttackAbilities($attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_ArcaneTargetsSelected;
   $allies = &GetAllies($mainPlayer);
   $i = $combatChainState[$CCS_WeaponIndex];
-  if (isset($allies[$i])) {
+  if (isset($allies[$i]) && $attackID == $allies[$i]) {
     switch ($allies[$i]) {
       case "dracona_optimai":
       case "tomeltai":
@@ -269,7 +269,28 @@ function SpecificAllyAttackAbilities($attackID)
         }
         return "";
       case "azvolai":
-        AddLayer("TRIGGER", $mainPlayer, $allies[$i], "-", "-", $allies[$i + 5]);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $allies[$i]);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "ARCANETARGET,2", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a first target for Azvolai", 1);
+        if (ShouldAutotargetOpponent($mainPlayer) && CountAllies($mainPlayer) <= 0 && CountAllies($defPlayer) <= 0) {
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0", 1);
+        }
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+        AddDecisionQueue("SETCLASSSTATE", $mainPlayer, $CS_ArcaneTargetsSelected, 1);
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "ARCANETARGET,2", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a second target for Azvolai", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, ",{0}", 1);
+        AddDecisionQueue("SETCLASSSTATE", $mainPlayer, $CS_ArcaneTargetsSelected, 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $allies[$i], 1);
+        
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("GETCLASSSTATE", $mainPlayer, $CS_ArcaneTargetsSelected, 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $allies[$i], 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "-");
+        AddDecisionQueue("SETCLASSSTATE", $mainPlayer, $CS_ArcaneTargetsSelected);
         return "";
       case "cromai":
         if ($attackID == $allies[$i] && $allies[$i + 8] > 0) {

@@ -2347,8 +2347,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "azvolai":
-      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, true, true);
-      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, true, false);
+      $targetArr = explode(",", $target);
+      DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, resolvedTarget:$targetArr[0], useUIDs:true);
+      if (isset($targetArr[1])) DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, resolvedTarget:$targetArr[1], useUIDs:true);
       break;
     case "beaten_trackers":
       $index = FindCharacterIndex($player, $parameter);
