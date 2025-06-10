@@ -2439,8 +2439,29 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "photon_splicing_red":
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
-    case "war_cry_of_themis_yellow":
     case "burn_bare":
+      $names = GetAbilityNames($cardID, $index, $from);
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      } elseif ($names != "" && $from == "HAND"){
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      } else{
+        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
+      }
+      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Action", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>");
+      $targetType = 2;
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "war_cry_of_themis_yellow":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
