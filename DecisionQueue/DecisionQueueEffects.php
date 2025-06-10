@@ -625,7 +625,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       GainResources($player, $numBD);
       return 1;
     case "DIMENXXIONALGATEWAY":
-      if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", $EffectContext, true);
+      if(ClassContains($lastResult, "RUNEBLADE", $player)) DealArcane(1, 0, "PLAYCARD", $EffectContext, true, resolvedTarget:"THIERCHAR-0");
       if(TalentContains($lastResult, "SHADOW", $player)) {
         PrependDecisionQueue("MULTIBANISH", $player, "DECK,-", 1);
         PrependDecisionQueue("MULTIREMOVEDECK", $player, "<-", 1);
