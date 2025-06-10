@@ -655,11 +655,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         $otherCharacter[1] = 1;
         PlayAura("embodiment_of_earth", $otherPlayer);
       }
-      $treasureID = SearchLandmarksForID("treasure_island");
-      if ($treasureID != -1 && IsHeroAttackTarget()) {
-        $numGold = min($damage, $landmarks[$treasureID + 3]);
-        if ($numGold > 0) AddLayer("TRIGGER", $otherPlayer, "treasure_island", additionalCosts:$damage);  
-      }
       if ($source == "cryptic_crossing_yellow" && SearchCurrentTurnEffects("cryptic_crossing_yellow", $mainPlayer, true)) {
         WriteLog("Player " . $mainPlayer . " drew a card and Player " . $otherPlayer . " must discard a card");
         Draw($mainPlayer);

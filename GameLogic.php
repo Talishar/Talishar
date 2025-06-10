@@ -1263,6 +1263,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source);
       if ($type == "COMBAT") $dqState[6] = $damage;
+      $treasureID = SearchLandmarksForID("treasure_island");
+      if ($treasureID != -1) {
+        $numGold = min($damage, $landmarks[$treasureID + 3]);
+        if ($numGold > 0) AddLayer("TRIGGER", $otherPlayer, "treasure_island", additionalCosts:$damage);  
+      }
       WriteLog("Player $player took $damage damage from " . Cardlink($source, $source));
       return $damage;
     case "AFTERQUELL":
