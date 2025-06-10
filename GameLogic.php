@@ -1350,7 +1350,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         DoQuell($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
-        PrependDecisionQueue("ARCANECHOSEN", $target, "-", 1);
+        PrependDecisionQueue("ARCANECHOSEN", $target, $source, 1);
         PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1);
         PrependDecisionQueue("SETDQVAR", $target, "1", 1);
         PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
@@ -1367,7 +1367,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($dqVars[0] > 0) IncrementClassState($player, $CS_ArcaneDamageDealt, $dqVars[0]);
       return $lastResult;
     case "ARCANECHOSEN":
-      if ($lastResult > 0) {
+      if ($lastResult > 0 && CanDamageBePrevented($player, $lastResult, "ARCANE", $parameter)) {
         if (SearchCharacterActive($player, "alluvion_constellas")) {
           $char = &GetPlayerCharacter($player);
           $index = FindCharacterIndex($player, "alluvion_constellas");
