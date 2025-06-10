@@ -3203,9 +3203,31 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   if ($deck->Empty()) return -1;
   if (CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
   $cardID = $deck->Top(remove: true);
-  if ($mainPhase && (SearchAurasForCard("escalate_bloodshed_red", 1) != "" || SearchAurasForCard("escalate_bloodshed_red", 2) != "")) {
-    WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
-    LoseHealth(1, $player);
+  $myAuras = GetAuras($player);
+  for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($myAuras[$i]) {
+      case "escalate_bloodshed_red":
+        if ($mainPhase) {
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          LoseHealth(1, $player);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  $theirAuras = GetAuras($otherPlayer);
+  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($theirAuras[$i]) {
+      case "escalate_bloodshed_red":
+        if ($mainPhase) {
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          LoseHealth(1, $player);
+        }
+        break;
+      default:
+        break;
+    }
   }
   if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
     WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
