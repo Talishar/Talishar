@@ -101,7 +101,7 @@
         $allies[$index+7] -= 1;
         PutPermanentIntoPlay($mainPlayer, "ash");
         break;
-      case "vynserakai": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer); } break;
+      case "vynserakai": if(IsHeroAttackTarget()) { DealArcane(3, 0, "ABILITY", $cardID, true, $mainPlayer, resolvedTarget:"THEIRCHAR-0"); } break;
       default: break;
     }
   }
