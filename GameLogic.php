@@ -1371,9 +1371,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (SearchCharacterActive($player, "alluvion_constellas")) {
           $char = &GetPlayerCharacter($player);
           $index = FindCharacterIndex($player, "alluvion_constellas");
+          $arrayOfArcaneBarrierChoices = ArcaneBarrierChoices($player, $lastResult, true);
           if ($char[$index + 2] < 4 && GetClassState($player, $CS_AlluvionUsed) == 0) {
-            ++$char[$index + 2];
-            SetClassState($player, $CS_AlluvionUsed, 1);
+            $shouldAddCounter = true;
+            if ($lastResult == 2 && $arrayOfArcaneBarrierChoices[1] < 2) {
+              $shouldAddCounter = false;
+            } elseif ($lastResult == 3 && ($arrayOfArcaneBarrierChoices[1] < 3 || ($arrayOfArcaneBarrierChoices[1] < 1 && $arrayOfArcaneBarrierChoices[2] < 1))) {
+              $shouldAddCounter = false;
+            }
+            if ($shouldAddCounter) {
+              ++$char[$index + 2];
+              SetClassState($player, $CS_AlluvionUsed, 1);
+            }
           }
         }
         LogDamagePreventedStats($player, $lastResult);

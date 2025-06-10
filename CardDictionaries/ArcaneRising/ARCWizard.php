@@ -825,7 +825,7 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
   }
 }
 
-function ArcaneBarrierChoices($playerID, $max)
+function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
 {
   global $currentTurnEffects;
   $barrierArray = [];
@@ -1021,6 +1021,7 @@ function ArcaneBarrierChoices($playerID, $max)
         break;
     }
   }
+  if($returnBarrierArray) return $barrierArray;
   $choiceArray = [];
   array_push($choiceArray, 0);
   if ($barrierArray[1] > 0) array_push($choiceArray, 1);
