@@ -1446,9 +1446,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "runic_reaping_yellow-HIT":
     case "runic_reaping_blue-HIT":
     case "melting_point_red":
-    case "lace_with_bloodrot_red":
-    case "lace_with_frailty_red":
-    case "lace_with_inertia_red":
     case "concealed_blade_blue":
     case "toxic_tips":
     case "beckoning_light_red":
@@ -1469,6 +1466,9 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "talk_a_big_game_blue":
+    case "lace_with_bloodrot_red":
+    case "lace_with_frailty_red":
+    case "lace_with_inertia_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "just_a_nick_red-HIT":
