@@ -431,6 +431,8 @@ function PlayRequiresTarget($cardID, $from)
       return 0;//Trailblazing Aether
     case "aether_arc_blue":
       return 1;
+    case "burn_bare":
+      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1;
     default:
       return -1;
   }
