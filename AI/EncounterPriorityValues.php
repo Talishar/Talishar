@@ -73,7 +73,7 @@ function GetPriority($cardID, $heroID, $type)
           //TODO: Allowing blocking if threatened by lethal damage
           $priority = [0, 0, 0, 0, 0, 0, 0, 0];
           return $priority[$type];
-        default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
+        default: return 0;
       }
       case "fai_rising_rebellion"://Fai
         $resources = &GetResources(2);
@@ -120,9 +120,9 @@ function GetPriority($cardID, $heroID, $type)
           case "snapdragon_scalers":
             $priority = DoesAttackHaveGoAgain() ? [0, 0, 0, 0, 0, 0, 0, 0] : [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; 
             return $priority[$type];
-          default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
+          default: return 0;
         }
-    default: $priority = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; return $priority[$type];
+    default: return 0;
   }
 }
 
