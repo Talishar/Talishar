@@ -1385,7 +1385,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $shouldAddCounter = true;
             if ($lastResult == 2 && $arrayOfArcaneBarrierChoices[1] < 2) {
               $shouldAddCounter = false;
-            } elseif ($lastResult == 3 && ($arrayOfArcaneBarrierChoices[1] < 3 || ($arrayOfArcaneBarrierChoices[1] < 1 && $arrayOfArcaneBarrierChoices[2] < 1))) {
+            } elseif ($lastResult == 3 && ($arrayOfArcaneBarrierChoices[1] < 3 && $arrayOfArcaneBarrierChoices[2] < 1)) {
               $shouldAddCounter = false;
             }
             if ($shouldAddCounter) {
