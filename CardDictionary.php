@@ -2724,7 +2724,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "arakni_tarantula":
-      if (!($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer))) return true;
+      $activeDagger = ($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer));
+      $prevLinks = GetCombatChainAttacks();
+      $prevDagger = false;
+      for ($i = 0; $i < count($prevLinks); $i += ChainLinksPieces()) {
+        if (SubtypeContains($prevLinks[$i], "Dagger", $currentPlayer)) $prevDagger = true;
+      }
+      if (!$activeDagger && !$prevDagger) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "take_up_the_mantle_yellow":

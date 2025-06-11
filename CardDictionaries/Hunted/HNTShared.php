@@ -322,7 +322,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (HasStealth($CombatChain->AttackCard()->ID())) GiveAttackGoAgain();
       break;
     case "arakni_tarantula":
-      AddCurrentTurnEffect("arakni_tarantula", $currentPlayer);
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) {
+        AddCurrentTurnEffect("arakni_tarantula", $currentPlayer);
+      }
+      else {
+        WriteLog("A previous chain link was targeted by " . CardLink($cardID, $cardID) . ", currently this will have no effect");
+      }
       break;
     case "under_the_trap_door_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
