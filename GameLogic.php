@@ -2087,9 +2087,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;
-      // restless coalescence using play index rather than character index
+      // restless coalescence and gravy allies using play index rather than character index
       $piece = match($parameter) {
-        "restless_coalescence_yellow" => $CS_PlayIndex,
+        "restless_coalescence_yellow",
+        "chowder_hearty_cook_yellow",
+        "sawbones_dock_hand_yellow",
+        "moray_le_fay_yellow",
+        "anka_drag_under_yellow",
+        "chum_friendly_first_mate_yellow",
+        "cutty_shark_quick_clip_yellow",
+        "kelpie_tangled_mess_yellow",
+        "shelly_hardened_travleer" => $CS_PlayIndex,
         default => $CS_CharacterIndex
       };
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);
