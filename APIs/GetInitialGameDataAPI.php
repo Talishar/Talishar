@@ -31,7 +31,7 @@ ob_end_clean();
 
 $response->p1Name = $p1uid;
 $response->p2Name = $p2uid;
-$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn"];
+$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
 $response->p1IsPatron = $p1IsPatron == "" ? false : true;
 $response->p1IsContributor = in_array($response->p1Name, $contributors);
 $response->p2IsPatron = $p2IsPatron == "" ? false : true;
