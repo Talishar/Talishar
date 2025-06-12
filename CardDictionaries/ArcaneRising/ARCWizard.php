@@ -1116,7 +1116,6 @@ function ProcessSurge($cardID, $player, $target)
       $deck = &GetDeck($targetPlayer);
       while (count($hand) > 0) array_push($deck, array_shift($hand));
       for ($i = 0; $i < $numToDraw; ++$i) Draw($targetPlayer, effectSource: $cardID);
-      WriteLog("Mind Warp warps the target's mind.");
       AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
       break;
     case "swell_tidings_red":
