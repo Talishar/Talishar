@@ -89,11 +89,13 @@ function AJVEffectPowerModifier($cardID): int
 }
 
 function FrostbiteExposed($otherPlayer, $player, $may=false) {
-  AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("frostbite", "frostbite"), 1);
-  AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
-  AddDecisionQueue("SETDQVAR", $player, "0", 1);
-  AddDecisionQueue("EQUIPCARD", $otherPlayer, "frostbite-{0}", 1);
+  if(CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer) <= 0) {
+    AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("frostbite", "frostbite"), 1);
+    AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
+    AddDecisionQueue("SETDQVAR", $player, "0", 1);
+    AddDecisionQueue("EQUIPCARD", $otherPlayer, "frostbite-{0}", 1);
+  }
 }
 
 function CheckHeavy($player) {

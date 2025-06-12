@@ -23,6 +23,7 @@ echo ("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%
   <form action='./BanPlayer.php'>
     <label for="ipToBan" style='font-weight:bolder; margin-left:10px;'>Game to IP ban from:</label>
     <input type="text" id="ipToBan" name="ipToBan" value="">
+    <br>
     <label for="playerNumberToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban? (1 or 2):</label>
     <input type="text" id="playerNumberToBan" name="playerNumberToBan" value="">
     <input type="submit" value="Ban">
@@ -36,6 +37,14 @@ echo ("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%
     <input type="submit" value="Close Game">
   </form>
 
+  <br>
+
+  <form action='./BanPlayer.php'>
+  <label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
+  <input type="text" id="playerToBan" name="playerToBan" value="">
+  <input type="submit" value="Ban">
+  </form>
+
 <?php
 
 echo ("<h1>Banned players:</h1>");
@@ -45,16 +54,6 @@ while (!feof($banfileHandler)) {
   echo ($bannedPlayer . "<BR>");
 }
 fclose($banfileHandler);
-
-echo ("<br><br><form  action='./BanPlayer.php'>");
-?>
-<label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
-<input type="text" id="playerToBan" name="playerToBan" value="">
-<input type="submit" value="Ban">
-</form>
-
-<?php
-
 
 $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
 $conn = GetDBConnection();
@@ -69,7 +68,7 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
 mysqli_stmt_execute($stmt);
 
 // "Get result" returns the results from a prepared statement
-echo ("<br><div>Most recently created accounts:</div>");
+echo ("<br><h1>Most recently created accounts:</h1>");
 $userData = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_array($userData, MYSQLI_NUM)) {
   echo ($row[0] . "<BR>");
