@@ -201,8 +201,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
         AddDecisionQueue("PUTCOMBATCHAINDEFENSE0", $otherPlayer, "-", 1);
         AddDecisionQueue("PUTINANYORDER", $currentPlayer, $amount - 1);
-        AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       }
+      AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "venomous_bite_red":
     case "venomous_bite_yellow":
