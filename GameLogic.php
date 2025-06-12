@@ -860,7 +860,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $zone = array_values($zone);
       }
       $zone = $destArr;
-      if ($parameter != "SKIPSEED") WriteLog("🔄Player $player deck was shuffled");
+      if ($parameter != "SKIPSEED") {
+        WriteLog("🔄player $player deck was shuffled");
+        AddEvent("SHUFFLE", $player);
+      }
       return $lastResult;
     case "EXHAUSTCHARACTER":
       $character = &GetPlayerCharacter($player);
