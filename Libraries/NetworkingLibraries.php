@@ -1503,7 +1503,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
-  global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism;
+  global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1850,7 +1850,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     PayAdditionalCosts($cardID, $from, index: $index);
     ResetCardPlayed($cardID, $from);
   }
-  if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+  if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
+    IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
+    IncrementClassState($currentPlayer, $CS_NumAttackCardsBlocked); //Played or blocked
+  }
   if ($from == "BANISH") {
     $banish = new Banish($currentPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));

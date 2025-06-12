@@ -649,7 +649,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "salvage_shot_blue":
     case "nebula_blade":
     case "arknight_ascendancy_red":
-    case "command_and_conquer_red":
     case "life_for_a_life_red":
     case "life_for_a_life_yellow":
     case "life_for_a_life_blue":
@@ -956,6 +955,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "command_and_conquer_red":
     case "searing_shot_red":
     case "searing_shot_yellow":
     case "searing_shot_blue":

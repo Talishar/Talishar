@@ -440,6 +440,12 @@ function AllyBeginEndTurnEffects()
 
   $defAllies = &GetAllies($defPlayer);
   UpdateAllyHealth($defAllies);
+
+  $mainChar = &GetPlayerCharacter($mainPlayer);
+  UpdatePerchedAllyHealth($mainChar);
+
+  $defChar = &GetPlayerCharacter($defPlayer);
+  UpdatePerchedAllyHealth($defChar);
 }
 
 function UpdateAllyHealth(&$allies)
@@ -452,6 +458,17 @@ function UpdateAllyHealth(&$allies)
       $allies[$i + 2] = AllyHealth($allies[$i]) + $allies[$i + 7];
       $allies[$i + 8] = 1;
       $allies[$i + 10] = 0;
+    }
+  }
+}
+
+function UpdatePerchedAllyHealth(&$char)
+{
+  $pieces = CharacterPieces();
+  $count = count($char);
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if(HasPerched($char[$i]) && isset($char[$i + 1]) && $char[$i + 1] != 0) {
+      $char[$i + 4] = 0;
     }
   }
 }
