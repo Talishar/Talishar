@@ -36,6 +36,14 @@ echo ("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%
     <input type="submit" value="Close Game">
   </form>
 
+  <br>
+
+  <form action='./BanPlayer.php'>
+  <label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
+  <input type="text" id="playerToBan" name="playerToBan" value="">
+  <input type="submit" value="Ban">
+  </form>
+
 <?php
 
 echo ("<h1>Banned players:</h1>");
@@ -45,16 +53,6 @@ while (!feof($banfileHandler)) {
   echo ($bannedPlayer . "<BR>");
 }
 fclose($banfileHandler);
-
-echo ("<br><br><form  action='./BanPlayer.php'>");
-?>
-<label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
-<input type="text" id="playerToBan" name="playerToBan" value="">
-<input type="submit" value="Ban">
-</form>
-
-<?php
-
 
 $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
 $conn = GetDBConnection();
