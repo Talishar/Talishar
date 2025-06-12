@@ -980,7 +980,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "burn_bare":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
-        AddLayer("LAYER", $currentPlayer, "PHANTASM", $combatChain[0], $cardID);
+        if ($combatChain[10] != "PHANTASM") AddLayer("LAYER", $currentPlayer, "PHANTASM", $combatChain[0], $cardID);
       } else {
         DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       }

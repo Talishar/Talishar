@@ -183,7 +183,7 @@
 
   function PhantasmLayer($source)
   {
-    global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers;
+    global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers, $combatChain;
     if(IsPhantasmStillActive($source))
     {
       $attackID = $CombatChain->AttackCard()->ID();
@@ -198,6 +198,7 @@
       } else if(SubtypeContains($attackID, "Aura", $mainPlayer)) {
         DestroyAura($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
       }
+      $combatChain[10] = "PHANTASM"; //indicates that the attack has been destroyed
       CloseCombatChain();
       ProcessDecisionQueue();
     }
