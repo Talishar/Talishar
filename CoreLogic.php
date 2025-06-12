@@ -1039,8 +1039,16 @@ function UnsetItemModifier($player, $modifier, $newMod = "-") {
   $otherPlayer = $player == 1 ? 2 : 1;
     for($i=0; $i<count($items); $i+=ItemPieces()) {
       $cardModifier = $items[$i+8];
-      if($cardModifier == $modifier) {
-        $items[$i+8] = "-";
+      if(DelimStringContains($cardModifier, $modifier)) {
+        if ($cardModifier == $modifier) $items[$i+8] = "-";
+        else {
+          $mods = explode(",", $cardModifier);
+          $newMods = [];
+          foreach ($mods as $mod) {
+            if ($mod != $modifier) array_push($newMods, $mod);
+          }
+          $items[$i+8] = implode(",", $newMods);
+        }
         StealItem($player, $i, $otherPlayer, "THEIRITEM");
       }
     }

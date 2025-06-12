@@ -264,7 +264,9 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
       RemoveCharacter($srcPlayer, $indexWeapon);
       SearchCurrentTurnEffects("galvanic_bender-UNDER", $srcPlayer, true);
     }
-    if($i == 8 && $mod != 0) $srcItems[$index + $i] = $mod; //8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
+    if($i == 8 && $mod != 0) {//8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
+      $srcItems[$index + $i] = $srcItems[$index + $i] == "-" ? $mod : $srcItems[$index + $i] . ",$mod";
+    }
     if($i == 9) //9 - Where it's played from ... Important for where it'll go when destroyed for example.
     {
       if (strpos($srcItems[$index + $i], 'MY') === 0) {

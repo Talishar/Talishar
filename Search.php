@@ -1068,7 +1068,7 @@ function SearchItemForModalities($modality, $player, $cardID)
 {
   $items = &GetItems($player);
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == $cardID && $items[$i + 8] == $modality) {
+    if ($items[$i] == $cardID && DelimStringContains($items[$i + 8], $modality)) {
       return $i;
     }
   }
