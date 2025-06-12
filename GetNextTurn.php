@@ -1502,7 +1502,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($turn[1] == $playerID) {
       $playerInputPopup->active = true;
       $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your arsenal:";
-      $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2], 16, $caption);
+      $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2], 16, $caption, "", "ARSENAL");
     }
     break;
 
@@ -1706,13 +1706,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   exit;
 }
 
-function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments = "")
+function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments = "", $MZName = "", $label = "")
 {
   $options = explode(",", $options);
   $cardList = [];
-
   for ($i = 0; $i < count($options); ++$i) {
-    array_push($cardList, JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i])));
+    if($MZName == "ARSENAL" && $zone[$options[$i]+1] == "DOWN") $label = "Face Down";
+    array_push($cardList, JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i]), label: $label));
   }
 
   return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", additionalComments: $additionalComments, cardsArray: $cardList);

@@ -297,10 +297,9 @@ function OUTAbilityCost($cardID)
               $deck->Top(remove:true);
             }
             DestroyCharacter($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
-            $rv = "The top card was an arrow, so Quiver of Rustling Leaves is destroyed.";
           }
         }
-        return $rv;
+        return "";
       case "driftwood_quiver":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
         AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
