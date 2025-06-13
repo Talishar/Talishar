@@ -58,7 +58,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "forked_lightning_red":
-      $arcaneBonus = ConsumeArcaneBonus($currentPlayer, $cardID);
+      $arcaneBonus = ConsumeArcaneBonus($currentPlayer);
       $damage = ArcaneDamage($cardID) + $arcaneBonus;
       DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       DealArcane($damage, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
