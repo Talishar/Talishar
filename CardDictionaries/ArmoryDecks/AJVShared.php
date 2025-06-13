@@ -36,7 +36,7 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (DelimStringContains($additionalCosts, "ICE")) {
         Mangle();
       }
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayer = $currentPlayer == 1 ? 2 : 1;
       FrostbiteExposed($otherPlayer, $currentPlayer);
       return "";
     default:
@@ -48,7 +48,6 @@ function AJVCombatEffectActive($cardID, $attackID)
 {
 switch($cardID) {
     case "summit_the_unforgiving": return true;
-    // case "gauntlets_of_the_boreal_domain": return CardNameContains($attackID, "Mangle");//check if I need to do this or the next 2 line
     case "gauntlets_of_the_boreal_domain-E": return CardNameContains($attackID, "Mangle");
     case "gauntlets_of_the_boreal_domain-I": return CardNameContains($attackID, "Mangle");
     case "crumble_to_eternity_blue": return true;
@@ -105,5 +104,3 @@ function CheckHeavy($player) {
   $numOffHands = $offHands != "" ? count(explode(",", $offHands)) : 0;
   return $numWeapons + $numOffHands == 1;
 }
-
-?>
