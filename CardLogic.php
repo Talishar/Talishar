@@ -1497,7 +1497,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
     case "bam_bam_yellow":
-    case "mask_of_perdition":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
     case "drop_the_anchor_red":
@@ -1517,6 +1516,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "spike_with_bloodrot_red":
     case "spike_with_frailty_red":
     case "spike_with_inertia_red":
+    case "mask_of_perdition":
       if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;  
     case "arakni_black_widow-HIT":
