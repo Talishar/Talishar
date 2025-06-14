@@ -95,7 +95,7 @@ function TypeToPlay($phase)
     case "INSTANT":
       return "an instant";
     case "ENDPHASE":
-      return "an order for triggers";
+      return "an order for trigger (enable Always Hold Priority to reorder)";
     case "CHOOSEFIRSTPLAYER":
       return "who will be the first player";
     case "MAYCHOOSETHEIRDISCARD":
