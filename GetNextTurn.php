@@ -1098,7 +1098,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     } else {
       if ($currentPlayerActivity == 2 && $playerID != 3) {
         $helpText .= " — Opponent is inactive";
-        array_push($promptButtons, CreateButtonAPI($playerID, "Claim Victory", 100007, 0, "16px"));
+        array_push($promptButtons, CreateButtonAPI($playerID, "Leave Game", 100007, 0, "16px"));
       }
     }
   }
