@@ -542,6 +542,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
         $damage -= $classState[$CS_ArcaneDamagePrevention];
         $classState[$CS_ArcaneDamagePrevention] = 0;
       }
+      SearchCurrentTurnEffects("enchanted_quiver", $player, remove:true);
     }
     if ($damage > 0) {
       CheckIfPreventionEffectIsActive($player, $damage);
