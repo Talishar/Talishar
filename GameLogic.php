@@ -811,11 +811,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck->Remove($lastResult);
       return $deck->Remove($lastResult);
     case "MULTIADDDECK":
-      $deck = new Deck($player);
-      $cards = explode(",", $lastResult);
-      for ($i = 0; $i < count($cards); ++$i) {
-        if (CardName($cards[$i]) != "") $deck->AddBottom($cards[$i]);
-        else WriteLog("There was an error adding a card to your deck, please submit a bug report", highlight: true);
+      if ($lastResult != "") {
+        $deck = new Deck($player);
+        $cards = explode(",", $lastResult);
+        for ($i = 0; $i < count($cards); ++$i) {
+          if (CardName($cards[$i]) != "") $deck->AddBottom($cards[$i]);
+          else WriteLog("There was an error adding a card to your deck, please submit a bug report", highlight: true);
+        }
       }
       return $lastResult;
     case "MULTIADDTOPDECK":
