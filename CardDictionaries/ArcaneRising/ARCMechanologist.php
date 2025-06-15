@@ -190,7 +190,6 @@ function DoBoost($player, $cardID, $boostCount=1)
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
     if($deck->Empty()) { WriteLog("⚠️ Cannot boost!"); return; }
-    ItemBoostEffects();
     GainActionPoints(CountCurrentTurnEffects("high_octane_red", $player), $player);
     GainResources($player, CountCurrentTurnEffects("heavy_industry_power_plant", $player));
     $boostedCardID = $deck->Top(remove:true);
@@ -198,6 +197,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     CharacterBoostAbilities($player);
     OnBoostedEffects($player, $boostedCardID);
     BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+    ItemBoostEffects();
     $banish = GetBanish($player);
     $topInd = count($banish) - BanishPieces(); // index of card that just got banished
     if (CardNameContains($boostedCardID, "Hyper Driver", $player) && SearchCharacterActive($player, "hyper_x3")) {
