@@ -90,7 +90,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") {
         AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
       }
-      return CardLink($cardID, $cardID) . " is amping 1";
+      return CardLink($cardID, $cardID) . " <b>amp 1</b>";
     case "heartbeat_of_candlehold_blue":
       GainHealth(1, $currentPlayer);
       GainHealth(1, $currentPlayer);
@@ -105,7 +105,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($ampAmount > 0) {
         AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "ABILITY");
       }
-      return CardLink($cardID, $cardID) . " is amping " . $ampAmount .".";
+      return CardLink($cardID, $cardID) . " <b>amp " . $ampAmount . "</b>";
     case "sanctuary_of_aria":
       if($from != "MANUAL") { //"MANUAL" is used for the ability to put this macro into play
         $params = explode("-", $target);
@@ -251,7 +251,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "high_voltage_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " is amping 1");
+      WriteLog(CardLink($cardID, $cardID) . " <b>amp 1</b>");
       return "";
     case "blast_to_oblivion_red":
     case "blast_to_oblivion_yellow":
@@ -424,7 +424,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         "exploding_aether_blue" => 1
       };
       AddCurrentTurnEffect($cardID . "," . $ampAmount, $currentPlayer, "PLAY");
-      return CardLink($cardID, $cardID) . " is amping " . $ampAmount;
+      return CardLink($cardID, $cardID) . " <b>amp " . $ampAmount . "</b>";
     case "destructive_aethertide_blue"://destructive aethertide
     case "eternal_inferno_red"://eternal inferno
     case "pop_the_bubble_red":

@@ -1078,7 +1078,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       break;
     case "sigil_of_aether_blue":
       AddCurrentTurnEffect($source, $player);
-      WriteLog(CardLink($source, $source) . " is amping 1");
+      WriteLog(CardLink($source, $source) . " <b>amp 1</b>");
       break;
     default:
       break;

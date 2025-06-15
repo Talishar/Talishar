@@ -3130,7 +3130,7 @@ function PitchAbility($cardID, $from="HAND")
       break;
     case "will_of_arcana_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " is amping 1");
+      WriteLog(CardLink($cardID, $cardID) . " <b>amp 1</b>");
       break;
     case "back_alley_breakline_red":
     case "back_alley_breakline_yellow":

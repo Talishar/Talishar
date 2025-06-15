@@ -3203,7 +3203,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("runechant", $player, $numRunechantsCreated);
       break;
     case "aether_bindings_of_the_third_age":
-      WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " is amping 1");
+      WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " <b>amp 1</b>");
       AddCurrentTurnEffect("aether_bindings_of_the_third_age-AMP", $player);
     case "sigil_of_aether_blue":
       if($additionalCosts == "Arcane") DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $player);
@@ -4132,7 +4132,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
     case "rampant_growth__life_yellow":
       $ampAmount = GetClassState($player, $CS_HealthGained);
       AddCurrentTurnEffect($parameter . "," . $ampAmount, $player, "ABILITY");
-      WriteLog(CardLink($parameter, $parameter) . " is amping " . $ampAmount);
+      WriteLog(CardLink($parameter, $parameter) . " <b>amp " . $ampAmount . "</b>");
       break;
     case "pulsing_aether__life_red":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
