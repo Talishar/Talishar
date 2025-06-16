@@ -2356,7 +2356,6 @@ function CanPassPhase($phase)
     case "CHOOSEHANDCANCEL":
     case "MULTICHOOSEDISCARD":
     case "CHOOSEDISCARDCANCEL":
-    case "CHOOSEARCANE":
     case "CHOOSEARSENAL":
     case "CHOOSEDISCARD":
     case "MULTICHOOSEHAND":

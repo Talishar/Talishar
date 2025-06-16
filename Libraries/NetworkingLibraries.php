@@ -309,7 +309,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 20: //YESNO
-
       if (($turn[0] == "YESNO" || $turn[0] == "DOCRANK") && ($buttonInput == "YES" || $buttonInput == "NO")) ContinueDecisionQueue($buttonInput);
       break;
     case 21: //Combat chain ability
@@ -896,6 +895,9 @@ function PassInput($autopass = true, $doublePass=false)
   } 
   elseif($turn[0] == "YESNO") {
     ContinueDecisionQueue("NO");
+  }
+  elseif($turn[0] == "CHOOSEARCANE") {
+    ContinueDecisionQueue("0");
   }
   else {
     if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");

@@ -1156,6 +1156,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
       }
       break;
+      
     case "PDECK":
       if ($currentPlayer == $playerID) {
         $playerInputPopup->active = true;
