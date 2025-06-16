@@ -879,7 +879,26 @@ function HasCard($cardID)
 function PassInput($autopass = true, $doublePass=false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
-  //WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
+  // WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
+  if (str_contains($turn[2], "PRELAYER")) {
+    $currPreLayers = 0;
+    $preLayers = GetPreLayers();
+    for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+      if ($preLayers[$i+1] == $currentPlayer) ++$currPreLayers;
+    }
+    $addedTriggers = [];
+    for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+      if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $currentPlayer) {
+        $pretrigger = array_slice($layers, $i, LayerPieces());
+        $pretrigger[0] = "TRIGGER";
+        for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
+          unset($layers[$j]);
+        }
+        $addedTriggers = array_merge($pretrigger, $addedTriggers);
+      }
+    }
+    $layers = array_merge($addedTriggers, $layers);
+  }
   if ($turn[0] == "B") {
     $uniqueID = SearchCurrentTurnEffects("meganetic_lockwave_blue", $mainPlayer, returnUniqueID: true);
     if ($uniqueID != -1) {
