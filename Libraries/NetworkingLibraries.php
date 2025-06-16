@@ -879,6 +879,7 @@ function HasCard($cardID)
 function PassInput($autopass = true, $doublePass=false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
+  //WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
   if ($turn[0] == "B") {
     $uniqueID = SearchCurrentTurnEffects("meganetic_lockwave_blue", $mainPlayer, returnUniqueID: true);
     if ($uniqueID != -1) {
