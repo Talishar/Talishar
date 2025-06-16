@@ -4446,11 +4446,11 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
 
 function PlayableFromGraveyard($cardID, $mod="-", $player = "")
 {
-  global $currentPlayer;
+  global $currentPlayer, $mainPlayer;
   if ($player == "") $player = $currentPlayer;
   if (isFaceDownMod($mod)) return false;
-  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter")) return true;
-  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")) return true;
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $mainPlayer) return true;
+  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $mainPlayer) return true;
   return match ($cardID) {
     "graven_call" => true,
     default => false,
