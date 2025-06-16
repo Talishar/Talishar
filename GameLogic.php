@@ -2171,6 +2171,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return MZBanish($player, $parameter, $lastResult);
     case "MZREMOVE":
       return MZRemove($player, $lastResult, $parameter);
+    case "MZADDTOBOTDECK":
+      $card = MZRemove($player, $lastResult, $parameter);
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $owner = str_contains($lastResult, "MY") ? $player : $otherPlayer;
+      $deck = new Deck($owner);
+      $deck->AddBottom($card);
+      return $card;
     case "MZDISCARD":
       return MZDiscard($player, $parameter, $lastResult);
     case "MZADDZONE":
