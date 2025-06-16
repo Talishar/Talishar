@@ -880,7 +880,7 @@ function PassInput($autopass = true, $doublePass=false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
   // WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
-  if (str_contains($turn[2], "PRELAYER")) {
+  if (isset($turn[2]) && str_contains($turn[2], "PRELAYER")) {
     $currPreLayers = 0;
     $preLayers = GetPreLayers();
     for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
