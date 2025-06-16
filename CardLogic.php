@@ -4162,7 +4162,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
         $indices = SearchMultizone($player, "THEIRDISCARD:type=AA;maxCost=$maxCost&THEIRDISCARD:type=A;maxCost=$maxCost&MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost");
         $indicesArr = explode(",", $indices);
         $lastCard = $indicesArr[count($indicesArr) - 1] ?? "-";
-        if ($lastCard != "-" && GetMZCard($player, $lastCard) == $parameter) {
+        if (!(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") && $lastCard != "-" && GetMZCard($player, $lastCard) == $parameter) {
           //removing itself from the list of choices
           $indices = implode(",", array_slice($indicesArr, 0, -1));
         }
