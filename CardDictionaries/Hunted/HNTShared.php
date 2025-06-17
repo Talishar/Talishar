@@ -352,8 +352,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else AddCurrentTurnEffect("$cardID", $currentPlayer);
       break;
     case "tarantula_toxin_red":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      if (HasStealth($CombatChain->AttackCard()->ID()) || SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+        AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+      }
+      else {
+        WriteLog("A previous chain link was targeted, resolving with no effect");
+      }
       break;
     case "anaphylactic_shock_blue":
       if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
