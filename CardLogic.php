@@ -355,7 +355,6 @@ function IsGamePhase($phase)
 function AddTriggersToStack()
 {
   global $layers, $mainPlayer, $defPlayer;
-  WriteLog("HERE adding triggers to stack");
   $preLayers = GetPreLayers();
   if (count($preLayers) > 0) {
     $mainPreLayers = 0;
