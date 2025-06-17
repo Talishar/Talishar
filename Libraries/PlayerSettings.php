@@ -204,6 +204,9 @@ function GetCardBack($player)
     case 104: return "CBNewHorizons";
     case 105: return "CBMetalFab";
     case 106: return "CBPotatoSquad";
+    case 107: return "CBThreeFloating1";
+    case 108: return "CBThreeFloating2";
+    case 109: return "CBThreeFloating3";
     default: return "CardBack";
   };
 }
