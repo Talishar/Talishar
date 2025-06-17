@@ -1048,6 +1048,7 @@ function CheckSpellvoid($player, $damage)
 
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
+  global $CS_ArcaneDamageDealt;
   switch ($source) {
     case "encase_red":
       if (MZIsPlayer($target) && $damage > 0) {
@@ -1089,7 +1090,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     switch ($auras[$i]) {
       case "ring_of_roses_yellow":
-        if ($auras[$i+5] > 0) {
+        if ($auras[$i+5] > 0 && GetClassState($player, $CS_ArcaneDamageDealt) == 0) {
           AddLayer("TRIGGER", $player, $auras[$i]);
           $auras[$i+5] -= 1;
         }
