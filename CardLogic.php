@@ -894,9 +894,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "jinglewood_smash_hit":
     case "bittering_thorns_red":
     case "banksy":
-    case "annihilator_engine_red":
-    case "terminator_tank_red":
-    case "war_machine_red":
     case "heist_red":
     case "spring_a_leak_red":
     case "spring_a_leak_yellow":
@@ -1034,6 +1031,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "send_packing_yellow":
     case "stab_wound_blue":
       if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
+    case "annihilator_engine_red":
+    case "terminator_tank_red":
+    case "war_machine_red":
+      if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) >= 1) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
