@@ -13,6 +13,8 @@ SetHeaders();
 
 $response = new stdClass();
 $response->cardBacks = [];
+$numDefaultPlaymats = 16;
+$response->playmats = [];
 
 //Add default card back
 $cardBack = new stdClass();
@@ -20,11 +22,18 @@ $cardBack->name = "Default";
 $cardBack->id = 0;
 array_push($response->cardBacks, $cardBack);
 
-$response->playmats = [];
+//Add default playmats
+for ($i = 0; $i < 16; ++$i) {
+  if($i == 7) continue;
+  $playmat = new stdClass();
+  $playmat->id = $i;
+  $playmat->name = GetPlaymatName($i);
+  array_push($response->playmats, $playmat);
+}
+
 if(IsUserLoggedIn()) {
   foreach(PatreonCampaign::cases() as $campaign) {
     if(isset($_SESSION[$campaign->SessionID()]) || (isset($_SESSION["useruid"]) && $campaign->IsTeamMember($_SESSION["useruid"]))) {
-      //Check card backs first
       $cardBacks = $campaign->CardBacks();
       $cardBacks = explode(",", $cardBacks);
       for($i = 0; $i < count($cardBacks); ++$i) {
@@ -33,15 +42,18 @@ if(IsUserLoggedIn()) {
         $cardBack->id = $cardBacks[$i];
         array_push($response->cardBacks, $cardBack);
       }
-    }
-  }
 
-  for ($i = 0; $i < 17; ++$i) {
-    if($i == 7) continue;
-    $playmat = new stdClass();
-    $playmat->id = $i;
-    $playmat->name = GetPlaymatName($i);
-    array_push($response->playmats, $playmat);
+    $playmats = $campaign->Playmats();
+    $playmats = explode(",", $playmats);
+    for($i = 0; $i < count($playmats); ++$i) {
+      $playmat = new stdClass();
+      $playmat->name = $campaign->CampaignName() . (count($playmats) > 1 ? " " . $i + 1 : "");
+      $playmat->id = $playmats[$i];
+      if (!empty($playmat->id)) {
+        array_push($response->playmats, $playmat);
+      }
+    }
+    }
   }
 }
 

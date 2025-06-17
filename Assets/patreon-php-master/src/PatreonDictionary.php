@@ -303,7 +303,7 @@ enum PatreonCampaign : string
       case "7329070": return ($userName == "GoAgainGamingAz");
       case "1787491": return ($userName == "RedZoneRogue");
       case "8997252": return ($userName == "phillip");
-      case "8955846": return ($userName == "Man_Sant" || $userName == "Aegisworn" || $userName == "PvtVoid");
+      case "8955846": return ($userName == "Man_Sant" || "PollyCranka" || $userName == "Aegisworn" || $userName == "PvtVoid");
       case "6839952": return ($userName == "chonigman" || $userName == "Ijaque");
       case "7285727": return ($userName == "Brendan" || $userName == "TheClub");
       case "8635931": return ($userName == "TheTekloFoundry");
@@ -609,6 +609,15 @@ enum PatreonCampaign : string
       case "13035399": return "103";
       case "13905903": return "104";
       case "11527692": return "107,108,109";
+      default: return "";
+    }
+  }
+
+  public function PlayMats(): string
+  {
+    switch($this->value)
+    {
+      case "11527692": return "22";
       default: return "";
     }
   }
