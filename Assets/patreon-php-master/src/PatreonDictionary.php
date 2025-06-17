@@ -139,6 +139,7 @@ enum PatreonCampaign : string
   case BlitzkriegMeph = "13969806";
   case HamMan215 = "13035399";
   case NewHorizons = "13905903";
+  case ThreeFloating = "11527692";
 
   public function SessionID(): string
   {
@@ -190,6 +191,7 @@ enum PatreonCampaign : string
       case "13969806": return "isBlitzkriegMephPatron";
       case "13035399": return "isHamMan215Patron";
       case "13905903": return "isNewHorizonsPatron";
+      case "11527692": return "isThreeFloatingPatron";
       default: return "";
     }
   }
@@ -266,6 +268,7 @@ enum PatreonCampaign : string
       case "13969806": return "Blitzkrieg Meph";
       case "13035399": return "HamMan215";
       case "13905903": return "New Horizons FAB";
+      case "11527692": return "Three Floating";
       default: return "";
     }
   }
@@ -300,7 +303,7 @@ enum PatreonCampaign : string
       case "7329070": return ($userName == "GoAgainGamingAz");
       case "1787491": return ($userName == "RedZoneRogue");
       case "8997252": return ($userName == "phillip");
-      case "8955846": return ($userName == "Man_Sant" || $userName == "Aegisworn");
+      case "8955846": return ($userName == "Man_Sant" || "PollyCranka" || $userName == "Aegisworn" || $userName == "PvtVoid");
       case "6839952": return ($userName == "chonigman" || $userName == "Ijaque");
       case "7285727": return ($userName == "Brendan" || $userName == "TheClub");
       case "8635931": return ($userName == "TheTekloFoundry");
@@ -342,6 +345,7 @@ enum PatreonCampaign : string
       case "13969806": return ($userName == "PvtVoid" || $userName == "BlitzkriegMeph");
       case "13035399": return ($userName == "PvtVoid" || $userName == "HamMan215");
       case "13905903": return ($userName == "PvtVoid" || $userName == "Towelie" || $userName == "Abyssion" || $userName == "Siege" || $userName == "Alithos");
+      case "11527692": return ($userName == "PvtVoid" || $userName == "Bones503" || $userName == "kwasneski");
       default: return "";
     }
   }
@@ -500,8 +504,9 @@ enum PatreonCampaign : string
         $altArts = [
           "levia_shadowborn_abomination=MON119-ManSant",
           "levia=MON120-ManSant",
-          "agility=HVY240-ManSant",
-          "might=TCC105-ManSant"
+          "agility=agility-ManSant",
+          "might=might-ManSant",
+          "quicken=quicken-ManSant",
         ];
         break;
       case "279086": // Brandao
@@ -603,6 +608,16 @@ enum PatreonCampaign : string
       case "13969806": return "102";
       case "13035399": return "103";
       case "13905903": return "104";
+      case "11527692": return "107,108,109";
+      default: return "";
+    }
+  }
+
+  public function PlayMats(): string
+  {
+    switch($this->value)
+    {
+      case "11527692": return "22";
       default: return "";
     }
   }
