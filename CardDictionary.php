@@ -1425,6 +1425,9 @@ function CanAttack($cardID, $index=-1, $zone="-", $isWeapon=false)
   global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers;
   if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
   if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
+  $layerCount = count($layers);
+  if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
+  if ($layerCount > LayerPieces()) return false;
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
   if ($index != -1) {
     switch($zone) {
