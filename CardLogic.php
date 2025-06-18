@@ -805,7 +805,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "urgent_delivery_red":
     case "urgent_delivery_yellow":
     case "urgent_delivery_blue":
-    case "spiders_bite":
     case "eradicate_yellow":
     case "regicide_blue":
     case "leave_no_witnesses_red":
@@ -839,12 +838,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "hemorrhage_bore_red":
     case "hemorrhage_bore_yellow":
     case "hemorrhage_bore_blue":
-    case "nerve_scalpel":
-    case "nerve_scalpel_r":
-    case "orbitoclast":
-    case "orbitoclast_r":
-    case "scale_peeler":
-    case "scale_peeler_r":
     case "infiltrate_red":
     case "shake_down_red":
     case "infect_red":
@@ -1097,6 +1090,13 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "hunters_klaive_r":
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
+    case "spiders_bite":
+    case "nerve_scalpel":
+    case "nerve_scalpel_r":
+    case "orbitoclast":
+    case "orbitoclast_r":
+    case "scale_peeler":
+    case "scale_peeler_r":
       if (IsHeroAttackTarget() || $targetPlayer != "-") {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
         return true;

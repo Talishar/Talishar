@@ -508,19 +508,13 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "nerve_scalpel": case "nerve_scalpel_r":
-        if (IsHeroAttackTarget()) {
-          AddCurrentTurnEffect($cardID, $defPlayer);
-        }
+        AddCurrentTurnEffect($cardID, $defPlayer);
         break;
       case "orbitoclast": case "orbitoclast_r":
-        if (IsHeroAttackTarget()) {
-          AddCurrentTurnEffect($cardID, $defPlayer);
-        }
+        AddCurrentTurnEffect($cardID, $defPlayer);
         break;
       case "scale_peeler": case "scale_peeler_r":
-        if (IsHeroAttackTarget()) {
-          AddCurrentTurnEffect($cardID, $defPlayer);
-        }
+        AddCurrentTurnEffect($cardID, $defPlayer);
         break;
       case "infiltrate_red":
         if(IsHeroAttackTarget())

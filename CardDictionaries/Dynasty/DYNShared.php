@@ -537,7 +537,7 @@ function DYNHitEffect($cardID, $from, $attackID)
     case "urgent_delivery_red": case "urgent_delivery_yellow": case "urgent_delivery_blue":
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
-    case "spiders_bite": if(IsHeroAttackTarget()) AddCurrentTurnEffect($cardID, $defPlayer); break;
+    case "spiders_bite": AddCurrentTurnEffect($cardID, $defPlayer); break;
     case "blacktek_whisperers": GiveAttackGoAgain(); break;
     case "eradicate_yellow":
       if(IsHeroAttackTarget()) {
