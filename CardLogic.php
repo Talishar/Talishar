@@ -2991,12 +2991,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       IncrementClassState($player, $CS_DamagePrevention, 1);
       break;
     case "stone_rain_red":
-      $banish = &GetBanish($player);
-      $hand = &GetHand($player);
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $banish = &GetBanish($otherPlayer);
+      $hand = &GetHand($otherPlayer);
       for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
         if ($banish[$i + 1] == "STONERAIN") {
           array_push($hand, $banish[$i]);
-          RemoveBanish($player, $i);
+          RemoveBanish($otherPlayer, $i);
         }
       }
       break;

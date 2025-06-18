@@ -1343,6 +1343,7 @@ function UndoShiyanaBaseLife() // Technically not a End Step Trigger but it's th
 
 function UndoIntimidate($player)
 {
+  global $defPlayer;
   $banish = &GetBanish($player);
   $hand = &GetHand($player);
   for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
@@ -1355,7 +1356,7 @@ function UndoIntimidate($player)
       AddLayer("TRIGGER", $player, "no_fear_red", "-");
     }
     if ($banish[$i + 1] == "STONERAIN" && SearchLayersForCardID("stone_rain_red") == -1) {
-      AddLayer("TRIGGER", $player, "stone_rain_red", "-");
+      AddLayer("TRIGGER", $defPlayer, "stone_rain_red", "-");
     }
   }
 }
