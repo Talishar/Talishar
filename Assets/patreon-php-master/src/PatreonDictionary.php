@@ -318,7 +318,7 @@ enum PatreonCampaign : string
       case "9361474": return ($userName == "kappolo");
       case "3828539": return ($userName == "Tee");
       case "8951973": return ($userName == "Wes" || $userName == "Brandon");
-      case "9370276": return ($userName == "TheTablePitYT" || $userName == "TunaTCG");
+      case "9370276": return ($userName == "TheTablePitYT" || $userName == "TunaTCG" || $userName == "PvtVoid");
       case "9404423": return ($userName == "TCGTed");
       case "8040288": return IsTeamCardAdvantage($userName);
       case "10147920": return ($userName == "RavenousBabble" || $userName == "Arty" || $userName == "jargowsky" || $userName == "Nick52cost" || $userName == "Boomerang" || $userName == "matthias" || $userName == "Repas801");
@@ -618,6 +618,8 @@ enum PatreonCampaign : string
     switch($this->value)
     {
       case "11527692": return "22";
+      case "8955846": return "23";
+      case "9370276": return "24";
       default: return "";
     }
   }
