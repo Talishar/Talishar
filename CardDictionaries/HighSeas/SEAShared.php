@@ -1420,7 +1420,7 @@ function UndestroyHook($player)
   if (SearchCurrentTurnEffects("gold_baited_hook", $player)) {
     $char = GetPlayerCharacter($player);
     for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-      if ($char[$i] == "gold_baited_hook") UndestroyCharacter($player, $i, false);
+      if ($char[$i] == "gold_baited_hook" && $char[$i+1] != 0) UndestroyCharacter($player, $i, false);
     }
   }
 }
