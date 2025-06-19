@@ -135,28 +135,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cadaverous_tilling_red":
     case "cadaverous_tilling_yellow":
     case "cadaverous_tilling_blue":
-      $totalBanishes = 3;
-      $earthBanishes = 2; 
-      // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
-      $countInDiscard = SearchCount(
-        SearchRemoveDuplicates(
-          CombineSearches(
-            SearchDiscard($currentPlayer, talent: "EARTH"),
-            CombineSearches(
-              SearchDiscard($currentPlayer, "A"),
-              SearchDiscard($currentPlayer
-              , "AA"))
-            )
-          )
-        );
-      // Must have the minimum # of earth cards too.
-      $earthCountInDiscard = SearchCount(SearchDiscard($currentPlayer, talent: "EARTH"));
-      // This is a MAY ability.
-      if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
-        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_Decompose");
-        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
-      }
+      AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
       return "";
     case "channel_the_millennium_tree_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
