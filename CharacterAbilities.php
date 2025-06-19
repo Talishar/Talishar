@@ -860,9 +860,11 @@ function EquipWeapon($player, $cardID, $source = "-")
       return;
     }
   }
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
-    return;
+  if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) { 
+    if (TypeContains($cardID, "T", $player, true)) {
+      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+      return;
+    }
   }
   $char = &GetPlayerCharacter($player);
   $lastWeapon = 0;
