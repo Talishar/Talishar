@@ -719,6 +719,13 @@ function AuraStartTurnAbilities()
 function AuraBeginningActionPhaseAbilities(){
   global $mainPlayer, $EffectContext, $CS_NumSeismicSurgeDestroyed, $defPlayer;
   $auras = &GetAuras($mainPlayer);
+  //check seismic surges first so by default they'll resolve last
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    if ($auras[$i] == "seismic_surge") {
+      IncrementClassState($mainPlayer, $CS_NumSeismicSurgeDestroyed, 1);
+      AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+    }
+  }
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
     switch ($auras[$i]) {
@@ -793,13 +800,6 @@ function AuraBeginningActionPhaseAbilities(){
         break;
       default:
         break;
-    }
-  }
-  //check seismic surges last so by default they'll resolve last
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    if ($auras[$i] == "seismic_surge") {
-      IncrementClassState($mainPlayer, $CS_NumSeismicSurgeDestroyed, 1);
-      AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
     }
   }
   $theirAuras = &GetAuras($defPlayer);

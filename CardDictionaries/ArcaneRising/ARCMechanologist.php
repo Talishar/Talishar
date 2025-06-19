@@ -193,11 +193,11 @@ function DoBoost($player, $cardID, $boostCount=1)
     GainActionPoints(CountCurrentTurnEffects("high_octane_red", $player), $player);
     GainResources($player, CountCurrentTurnEffects("heavy_industry_power_plant", $player));
     $boostedCardID = $deck->Top(remove:true);
+    ItemBoostEffects();
     SelfBoostEffects($player, $boostedCardID, $cardID);
     CharacterBoostAbilities($player);
     OnBoostedEffects($player, $boostedCardID);
     BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
-    ItemBoostEffects();
     $banish = GetBanish($player);
     $topInd = count($banish) - BanishPieces(); // index of card that just got banished
     if (CardNameContains($boostedCardID, "Hyper Driver", $player) && SearchCharacterActive($player, "hyper_x3")) {

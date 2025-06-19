@@ -2753,13 +2753,29 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDPRELAYERTOSTACK":
       $ind = explode("-", $lastResult)[1] ?? "-";
-      if ($ind != "-") {
+      if ($ind == "FIRST") {
+        for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+          if (($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) || $currentInd == $ind) {
+            $pretrigger = array_slice($layers, $i, LayerPieces());
+            $pretrigger[0] = "TRIGGER";
+            WriteLog("HERE adding $pretrigger[2]");
+            for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
+              unset($layers[$j]);
+            }
+            $layers = array_merge($pretrigger, $layers);
+            $preLayers = GetPreLayers();
+            return $lastResult;
+          }
+        }
+      }
+      elseif ($ind != "-") {
         $currentInd = -1 * LayerPieces();
         for ($i = 0; $i < count($layers); $i += LayerPieces()) {
           if ($layers[$i] == "PRETRIGGER") $currentInd += LayerPieces();
-          if (($layers[$i] == "PRETRIGGER" && $ind == "FIRST" && $layers[$i+1] == $player) || $currentInd == $ind) {
+          if ($currentInd == $ind) {
             $pretrigger = array_slice($layers, $i, LayerPieces());
             $pretrigger[0] = "TRIGGER";
+            WriteLog("HERE adding $pretrigger[2]");
             for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
               unset($layers[$j]);
             }
