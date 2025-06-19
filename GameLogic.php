@@ -2758,7 +2758,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if (($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) || $currentInd == $ind) {
             $pretrigger = array_slice($layers, $i, LayerPieces());
             $pretrigger[0] = "TRIGGER";
-            WriteLog("HERE adding $pretrigger[2]");
             for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
               unset($layers[$j]);
             }
@@ -2775,7 +2774,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($currentInd == $ind) {
             $pretrigger = array_slice($layers, $i, LayerPieces());
             $pretrigger[0] = "TRIGGER";
-            WriteLog("HERE adding $pretrigger[2]");
             for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
               unset($layers[$j]);
             }
