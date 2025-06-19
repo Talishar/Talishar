@@ -89,6 +89,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AttacksWithWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
+  $attackID = $CombatChain->AttackCard()->ID();
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   if (HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
   if (HasHighTide($cardID) && HighTideConditionMet($mainPlayer)) {
@@ -452,14 +453,17 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
       return $numDaggerHits > 0 ? 1 : 0;
     case "to_the_point_red":
+      if (!SubtypeContains($attackID, "Dagger")) return 0;
       return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 4 : 3;
     case "to_the_point_yellow":
+      if (!SubtypeContains($attackID, "Dagger")) return 0;
       return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 3 : 2;
     case "to_the_point_blue":
+      if (!SubtypeContains($attackID, "Dagger")) return 0;
       return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 2 : 1;
-    case "incision_red": return 3;
-    case "incision_yellow": return 2;
-    case "incision_blue": return 1;
+    case "incision_red": return SubtypeContains($attackID, "Dagger") ? 3 : 0;
+    case "incision_yellow": return SubtypeContains($attackID, "Dagger") ? 2 : 0;
+    case "incision_blue": return SubtypeContains($attackID, "Dagger") ? 1 : 0;
     case "outed_red": return CheckMarked($defPlayer) ? 1 : 0;
     case "retrace_the_past_blue":
       return (SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1 ? 2 : 0);

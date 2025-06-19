@@ -2870,6 +2870,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
+      for ($i = 0; $i < count($chainLinks); ++$i) {
+        if (SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinks[$i][2] == 1) {
+          return false;
+        }
+      }
       return !DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Dagger");
     case "bunker_beard":
       if (!$CombatChain->HasCurrentLink()) return true;
