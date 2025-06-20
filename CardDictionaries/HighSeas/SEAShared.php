@@ -236,10 +236,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
-    case "blow_for_a_blow_red":
-      if(PlayerHasLessHealth($currentPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
-      else $rv = "";
-      return $rv;
     case "deny_redemption_red":
       if (GetResolvedAbilityType($cardID, "HAND") == "I") {
         AddCurrentTurnEffect($cardID, $currentPlayer);

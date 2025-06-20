@@ -1820,6 +1820,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "steelblade_supremacy_red":
       Draw($mainPlayer);
       break;
+    case "scar_for_a_scar_red":
+    case "scar_for_a_scar_yellow":
+    case "scar_for_a_scar_blue":
+    case "life_for_a_life_red":
+    case "life_for_a_life_yellow":
+    case "life_for_a_life_blue":
+    case "blow_for_a_blow_red":
+    case "blow_for_a_blow_yellow":
+    case "blow_for_a_blow_blue":
+      if(PlayerHasLessHealth($mainPlayer)) GiveAttackGoAgain();
+      break;
     case "eye_of_ophidia_blue":
       Opt($parameter, 2);
       break;

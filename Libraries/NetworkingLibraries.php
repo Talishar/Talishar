@@ -1892,7 +1892,21 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
+    switch ($cardID) {
+      case "scar_for_a_scar_red":
+      case "scar_for_a_scar_yellow":
+      case "scar_for_a_scar_blue":
+      case "life_for_a_life_red":
+      case "life_for_a_life_yellow":
+      case "life_for_a_life_blue":
+      case "blow_for_a_blow_red":
+        AddLayer("TRIGGER", $mainPlayer, $cardID);
+        break;
+      default:
+        break;
+    }
     if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
+    
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID) . "|" . $zone);
   ProcessDecisionQueue();

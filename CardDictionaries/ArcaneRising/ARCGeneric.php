@@ -30,9 +30,6 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
       AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "chains_of_eminence_red,{0}");
       return "";
-    case "life_for_a_life_red": case "life_for_a_life_yellow": case "life_for_a_life_blue":
-      if(PlayerHasLessHealth($currentPlayer)) GiveAttackGoAgain();
-      return "";
     case "plunder_run_red": case "plunder_run_yellow": case "plunder_run_blue":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       if($from == "ARS") {

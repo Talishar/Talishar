@@ -393,9 +393,6 @@
       case "flock_of_the_feather_walkers_red": case "flock_of_the_feather_walkers_yellow": case "flock_of_the_feather_walkers_blue":
         PlayAura("quicken", $currentPlayer);
         return "";
-      case "scar_for_a_scar_red": case "scar_for_a_scar_yellow": case "scar_for_a_scar_blue":
-        if(PlayerHasLessHealth($mainPlayer)) { GiveAttackGoAgain(); $rv = "Gains go again"; }
-        return $rv;
       case "scour_the_battlescape_red": case "scour_the_battlescape_yellow": case "scour_the_battlescape_blue":
         BottomDeck($currentPlayer, true, shouldDraw:true);
         if($from == "ARS") { GiveAttackGoAgain(); $rv = "Gains go again"; }
