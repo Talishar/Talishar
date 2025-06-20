@@ -204,7 +204,7 @@ function AllyDamagePrevention($player, $index, $damage, $type = "")
       switch ($currentTurnEffects[$i]) {
         case "sawbones_dock_hand_yellow":
           if(ClassContains($cardID, "PIRATE", $player)) {
-            $preventedDamage += 1;
+            if ($canBePrevented) $preventedDamage += 1;
             RemoveCurrentTurnEffect($i);
           }
           break;
@@ -213,15 +213,12 @@ function AllyDamagePrevention($player, $index, $damage, $type = "")
       }
     }
   }
-  $damage -= $preventedDamage;
   //checking for allies that can prevent damage
   switch ($cardID) {
     case "yendurai":
       if ($allies[$index + 6] > 0) {
         if ($damage > 0) --$allies[$index + 6];
         if ($canBePrevented) $preventedDamage += 3;
-        $damage -= $preventedDamage;
-        if ($damage < 0) $damage = 0;
       }
       break;
     default:
@@ -231,6 +228,8 @@ function AllyDamagePrevention($player, $index, $damage, $type = "")
     $preventedDamage -= 1;
     SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   }
+  $damage -= $preventedDamage;
+  if ($damage < 0) $damage = 0;
   return $damage;
 }
 
