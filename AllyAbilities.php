@@ -191,13 +191,13 @@ function AllySteamCounters($cardID)
   }
 }
 
-function AllyDamagePrevention($player, $index, $damage, $type = "")
+function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-")
 {
   global $currentTurnEffects;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
   $preventedDamage = 0;
-  $canBePrevented = CanDamageBePrevented($player, $damage, $type);
+  $canBePrevented = CanDamageBePrevented($player, $damage, $type, $source);
   //checking for effects that prevent damage on allies
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {

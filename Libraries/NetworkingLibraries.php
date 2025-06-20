@@ -1051,7 +1051,7 @@ function ResolveChainLink()
       $index = $target[1];
       $allies = &GetAllies($defPlayer);
       $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-      $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT");
+      $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT", $combatChain[0]);
       if ($totalPower < 0) $totalPower = 0;
       if ($index < count($allies)) {
         $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
