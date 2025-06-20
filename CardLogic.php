@@ -1829,7 +1829,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "blow_for_a_blow_red":
     case "blow_for_a_blow_yellow":
     case "blow_for_a_blow_blue":
-      if(PlayerHasLessHealth($mainPlayer)) GiveAttackGoAgain();
+      if(PlayerHasLessHealth($mainPlayer)) {
+        WriteLog(CardLink($parameter, $parameter) . " gains Go Again!");
+        GiveAttackGoAgain();
+      }
       break;
     case "eye_of_ophidia_blue":
       Opt($parameter, 2);
