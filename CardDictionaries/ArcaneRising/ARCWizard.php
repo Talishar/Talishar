@@ -692,6 +692,7 @@ function ActionsThatDoXArcaneDamage($cardID)
 
 function ActionsThatDoArcaneDamage($cardID, $playerID)
 {
+  global $CS_AdditionalCosts;
   switch ($cardID) {
     case "sonic_boom_yellow":
     case "forked_lightning_red":
@@ -781,11 +782,6 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
       return true;
     case "aether_arc_blue":
       return true;
-    case "vaporize__shock_yellow":
-    case "burn_up__shock_red":
-    case "pulsing_aether__life_red":
-    case "comet_storm__shock_red":
-    case "null__shock_yellow":
     case "destructive_aethertide_blue":
     case "eternal_inferno_red":
     case "chorus_of_the_amphitheater_red":
@@ -820,8 +816,17 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "photon_splicing_blue":
     case "regrowth__shock_blue":
     case "burn_bare":
-    case "consign_to_cosmos__shock_yellow":
+    case "comet_storm__shock_red":
       return true;
+    case "vaporize__shock_yellow":
+    case "burn_up__shock_red":
+    case "null__shock_yellow":
+    case "consign_to_cosmos__shock_yellow":
+      $meldState = GetClassState($playerID, $CS_AdditionalCosts);
+      return ($meldState == "Both" || $meldState == "Shock");
+    case "pulsing_aether__life_red":
+      $meldState = GetClassState($playerID, $CS_AdditionalCosts);
+      return $meldState != "Life";
     default:
       return false;
   }
