@@ -654,7 +654,7 @@ function CardPlayTrigger($cardID, $from)
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged;
-  $defPlayer = $mainPlayer == 1 ? 0 : 1;
+  $defPlayer = $mainPlayer == 1 ? 2 : 1;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
     case "dawnblade":
