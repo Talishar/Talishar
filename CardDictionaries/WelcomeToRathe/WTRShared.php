@@ -397,9 +397,6 @@
         BottomDeck($currentPlayer, true, shouldDraw:true);
         if($from == "ARS") { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
-      case "wounded_bull_red": case "wounded_bull_yellow": case "wounded_bull_blue":
-        if(PlayerHasLessHealth($mainPlayer)) { AddCurrentTurnEffect($cardID, $mainPlayer); $rv = "Gains +1 attack"; }
-        return $rv;
       case "pummel_red": case "pummel_yellow": case "pummel_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

@@ -623,6 +623,34 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
   }
 }
 
+// For "when this is played" triggers
+function CardPlayTrigger($cardID, $from)
+{
+  global $mainPlayer;
+  switch ($cardID) {
+      case "scar_for_a_scar_red":
+      case "scar_for_a_scar_yellow":
+      case "scar_for_a_scar_blue":
+      case "life_for_a_life_red":
+      case "life_for_a_life_yellow":
+      case "life_for_a_life_blue":
+      case "blow_for_a_blow_red":
+      case "pound_for_pound_red":
+      case "pound_for_pound_yellow":
+      case "pound_for_pound_blue":
+      case "adrenaline_rush_red":
+      case "adrenaline_rush_yellow":
+      case "adrenaline_rush_blue":
+      case "wounded_bull_red":
+      case "wounded_bull_yellow":
+      case "wounded_bull_blue":
+        AddLayer("TRIGGER", $mainPlayer, $cardID);
+        break;
+      default:
+        break;
+    }
+}
+
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged;
@@ -1832,6 +1860,30 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if(PlayerHasLessHealth($mainPlayer)) {
         WriteLog(CardLink($parameter, $parameter) . " gains Go Again!");
         GiveAttackGoAgain();
+      }
+      break;
+    case "pound_for_pound_red":
+    case "pound_for_pound_yellow":
+    case "pound_for_pound_blue":
+      if(PlayerHasLessHealth($mainPlayer)) {
+        WriteLog(CardLink($parameter, $parameter) . " gains Dominate!");
+        AddCurrentTurnEffect($parameter, $player);
+      }
+      break;
+    case "adrenaline_rush_red":
+    case "adrenaline_rush_yellow":
+    case "adrenaline_rush_blue":
+      if(PlayerHasLessHealth($mainPlayer)) {
+        WriteLog(CardLink($parameter, $parameter) . " gains +3 Power!");
+        AddCurrentTurnEffect($parameter, $player);
+      }
+      break;
+    case "wounded_bull_red":
+    case "wounded_bull_yellow":
+    case "wounded_bull_blue":
+      if(PlayerHasLessHealth($mainPlayer)) {
+        WriteLog(CardLink($parameter, $parameter) . " gains +1 Power!");
+        AddCurrentTurnEffect($parameter, $player);
       }
       break;
     case "eye_of_ophidia_blue":

@@ -19,9 +19,6 @@
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, $cardID, 1);
         return "";
-      case "adrenaline_rush_red": case "adrenaline_rush_yellow": case "adrenaline_rush_blue":
-        if(PlayerHasLessHealth($currentPlayer)) { AddCurrentTurnEffect($cardID, $currentPlayer); $rv = "Gets +3 power"; }
-        return $rv;
       case "belittle_red": case "belittle_yellow": case "belittle_blue":
         if(DelimStringContains($additionalCosts, "BELITTLE") && CanRevealCards($currentPlayer)) {
           MZMoveCard($currentPlayer, "MYDECK:isSameName=minnowism_red", "MYHAND", may:true, isReveal:true);
@@ -35,9 +32,6 @@
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
         }
         if($from == "ARS") GiveAttackGoAgain();
-        return "";
-      case "pound_for_pound_red": case "pound_for_pound_yellow": case "pound_for_pound_blue":
-        if(PlayerHasLessHealth($currentPlayer)) { AddCurrentTurnEffect($cardID, $currentPlayer); }
         return "";
       case "rally_the_rearguard_red": case "rally_the_rearguard_yellow": case "rally_the_rearguard_blue":
         if($from == "PLAY") {
