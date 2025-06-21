@@ -190,8 +190,14 @@ function CharacterStartTurnAbility($index)
       if ($character[1] < 3) {
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
         MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-");
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "runechant", 1);
-        AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        // this is a little messy, but vynnset's effect context can get messed up inside PlayAura
+        if ((SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+          WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+        }
+        else {
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "runechant", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
+        }
       }
       break;
     case "victor_goldmane_high_and_mighty":
@@ -770,11 +776,18 @@ function CharacterCostModifier($cardID, $from, $cost)
 
 function EquipEquipment($player, $cardID, $slot = "")
 {
+  global $EffectContext;
   if ($slot == "") {
     if (SubtypeContains($cardID, "Head")) $slot = "Head";
     else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
     else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
     else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
+  }
+  if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) { 
+    if (TypeContains($cardID, "T", $player, true)) {
+      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+      return;
+    }
   }
   $char = &GetPlayerCharacter($player);
   $uniqueID = GetUniqueId($cardID, $player);
