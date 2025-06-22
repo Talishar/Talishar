@@ -738,11 +738,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "bunker_beard":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "ARS", 1);
+      $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
+      if (!$overpowerRestricted) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $currentPlayer, "ARS", 1);
+      }
+      else WriteLog("You cannot add your arsenal as a defending card");
       break;
     case "rotten_remains_blue":
       $myMaxCards = SearchCount(SearchDiscard($currentPlayer, maxAttack:1, minAttack:1));
