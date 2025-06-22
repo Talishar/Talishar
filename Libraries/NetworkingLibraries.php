@@ -1199,10 +1199,12 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
   
-  ResolveWagers();
-  ResolutionStepEffectTriggers();
-  ResolutionStepCharacterTriggers();
-  ResolutionStepAttackTriggers();
+  ResolveWagers($chainClosed);
+  if (!$chainClosed) {
+    ResolutionStepEffectTriggers();
+    ResolutionStepCharacterTriggers();
+    ResolutionStepAttackTriggers();
+  }
   
 
   array_push($chainLinks, []);

@@ -273,7 +273,7 @@
     }
   }
 
-  function ResolveWagers() {
+  function ResolveWagers($chainClosed=false) {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $lostWager = $wonWager == $mainPlayer ? $defPlayer : $mainPlayer;
@@ -282,76 +282,108 @@
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     if(SearchCurrentTurnEffects("double_down_red", $wonWager)) $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-      $hasWager = true;
+      $hasWager = $chainClosed ? false : true;
       if(isset($currentTurnEffects[$i])) {
         switch($currentTurnEffects[$i]) {
           case "good_time_chapeau":
             RemoveCurrentTurnEffect($i);
-            PlayAura("might", $wonWager, $amount);
-            PlayAura("vigor", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("might", $wonWager, $amount);
+              PlayAura("vigor", $wonWager, $amount);
+            }
             break;
           case "bet_big_red":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
-            PlayAura("might", $wonWager, $amount);
-            PlayAura("vigor", $wonWager, $amount);
+            if (!$chainClosed) {
+              PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+              PlayAura("might", $wonWager, $amount);
+              PlayAura("vigor", $wonWager, $amount);
+            }
             break;
           case "big_bop_red": case "big_bop_yellow": case "big_bop_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("vigor", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("vigor", $wonWager, $amount);
+            }
             break;
           case "bigger_than_big_red": case "bigger_than_big_yellow": case "bigger_than_big_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("might", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("might", $wonWager, $amount);
+            }
             break;
           case "prized_galea":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            if (!$chainClosed) {
+              PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            }
             break;
           case "up_the_ante_blue-1":
             RemoveCurrentTurnEffect($i);
-            PlayAura("agility", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("agility", $wonWager, $amount);
+            }
             break;
           case "up_the_ante_blue-2":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            if (!$chainClosed) {
+              PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            }
             break;
           case "up_the_ante_blue-3":
             RemoveCurrentTurnEffect($i);
-            PlayAura("vigor", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("vigor", $wonWager, $amount);
+            }
             break;
           case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("agility", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("agility", $wonWager, $amount);
+            }
             break;
           case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("vigor", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("vigor", $wonWager, $amount);
+            }
             break;
           case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("might", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("might", $wonWager, $amount);
+            }
             break;
           case "wage_agility_red": case "wage_agility_yellow": case "wage_agility_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("agility", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("agility", $wonWager, $amount);
+            }
             break;
           case "wage_vigor_red": case "wage_vigor_yellow": case "wage_vigor_blue":
             RemoveCurrentTurnEffect($i);
-            PlayAura("vigor", $wonWager, $amount);
+            if (!$chainClosed) {
+              PlayAura("vigor", $wonWager, $amount);
+            }
             break;
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            if (!$chainClosed) {
+              PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            }
             break;
           case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
             RemoveCurrentTurnEffect($i);
-            PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            if (!$chainClosed) {
+              PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+            }
             break;
           case "drink_em_under_the_table_red":
             RemoveCurrentTurnEffect($i);
-            Draw($wonWager);
-            PummelHit($lostWager);
+            if (!$chainClosed) {
+              Draw($wonWager);
+              PummelHit($lostWager);
+            }
             break;
           default:
             $hasWager = false;
