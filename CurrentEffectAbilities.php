@@ -1284,7 +1284,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           break;
         case "no_fear_red":
-          if ($preventable) $preventedDamage += 2 + intval($effects[1]);
+          if ($preventable) $preventedDamage += intval($effects[1]);
           $remove = true;
           break;
         case "battered_not_broken_red":
