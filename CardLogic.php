@@ -2861,12 +2861,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
       } else {
         $index = FindCharacterIndex($player, "evo_magneto_blue_equip");
-        CharacterChooseSubcard($player, $index, isMandatory: false);
-        AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+        if ($index != -1) {
+          CharacterChooseSubcard($player, $index, isMandatory: false);
+          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+        }
       }
       break;
     case "kayo_armed_and_dangerous":
