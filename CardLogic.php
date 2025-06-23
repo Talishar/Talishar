@@ -823,7 +823,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "soaring_strike_blue":
     case "take_the_tempo_red":
     case "liquefy_red":
-    case "breaking_point_red":
     case "stoke_the_flames_red":
     case "erase_face_red":
     case "vipox_red":
@@ -974,6 +973,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "breaking_point_red":
+      if(IsHeroAttackTarget() && RuptureActive()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
     case "command_and_conquer_red":
     case "searing_shot_red":
     case "searing_shot_yellow":
