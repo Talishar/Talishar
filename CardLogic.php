@@ -3189,15 +3189,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       break;
     case "gone_in_a_flash_red":
-      CleanUpCombatEffects();
-      if (SearchLayersForPhase("RESOLUTIONSTEP") == -1) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
-      else $chainLinks[count($chainLinks)-1][2] = 0;
-      AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
-      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
-        //only close the chain if removed before the resolution step
-        CloseCombatChain(false);
-      }
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
       break;
     case "channel_lightning_valley_yellow":
       if ($additionalCosts == "CHANNEL") {

@@ -1736,10 +1736,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //we're in the resolution step of gone's chain link
     $goneActive = $goneActive || (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1 && SearchLayersForCardID("gone_in_a_flash_red") == -1);
     if($goneActive && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
-      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true) || SearchLayersForPhase("RESOLUTIONSTEP") != -1) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
+      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
+        AddLayer("TRIGGER", $mainPlayer, "gone_in_a_flash_red");
       }
     }
     $hero = GetPlayerCharacter($currentPlayer)[0];
@@ -3886,6 +3884,7 @@ function ReportBug()
 
 function EndResolutionStep()
 {
+  global $mainPlayer;
   $layerIndex = 0;
   $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
   if ($resolutionIndex != -1) {
@@ -3898,5 +3897,6 @@ function EndResolutionStep()
     $layerIndex += LayerPieces();
   }
   UnsetChainLinkBanish();
+  SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true);
   return $layerIndex;
 }

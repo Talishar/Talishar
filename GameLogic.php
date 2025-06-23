@@ -26,7 +26,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_LinkBasePower;
-  global $CS_PlayIndex, $landmarks;
+  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves;
   $rv = "";
   switch ($phase) {
     case "FINDINDICES":
@@ -2960,7 +2960,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResult = str_replace(",,", ",", $lastResult);
       return $lastResult;
     case "GONEINAFLASH":
-      AddLayer("TRIGGER", $player, "gone_in_a_flash_red");
+      CleanUpCombatEffects();
+      if (SearchLayersForPhase("RESOLUTIONSTEP") == -1) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
+      else $chainLinks[count($chainLinks)-1][2] = 0;
+      AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
+      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
+        //only close the chain if removed before the resolution step
+        CloseCombatChain(false);
+      }
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("truce_blue", $defPlayer, remove: true)){

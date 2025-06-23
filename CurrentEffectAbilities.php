@@ -731,6 +731,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "poisoned_blade_yellow":
       case "poisoned_blade_blue":
       case "quickdodge_flexors":
+      case "gone_in_a_flash_red":
         $remove = 1;
         break;
       default:
