@@ -133,7 +133,9 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "sticky_fingers" => "Companion",
     "treasure_island" => "Macro",
     "tusk" => "W", // AI custom weapon
-    "wrenchtastic" => "W" // AI custom weapon
+    "wrenchtastic" => "W", // AI custom weapon
+    "okana_scar_wraps" => "E",
+    "iris_of_the_blossom" => "E" //temporary while waiting for fabcube
   ];
 
   if (isset($specialCases[$cardID])) {
@@ -269,6 +271,10 @@ function CardSubType($cardID, $uniqueID = -1)
     case "polly_cranka_ally":
     case "sticky_fingers_ally":
       return "Ally";
+    case "okana_scar_wraps":
+      return "Arms";
+    case "iris_of_the_blossom":
+      return "Head";
     default:
       break;
   }
@@ -405,6 +411,8 @@ function CardSet($cardID)
     case "polly_cranka": case "polly_cranka_ally":
     case "sticky_fingers": case "sticky_fingers_ally":
       return "SEA";
+    case "okana_scar_wraps": case "iris_of_the_blossom":
+      return "ASR";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);
@@ -812,6 +820,9 @@ function BlockValue($cardID)
       return 2;
     case "shock_frock":
       return 1;
+    case "okana_scar_wraps":
+    case "iris_of_the_blossom":
+      return 2;
     default:
       break;
   }
@@ -3005,6 +3016,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !ClassContains($CombatChain->CurrentAttack(), "PIRATE", $mainPlayer) || !SubtypeContains($CombatChain->CurrentAttack(), "Ally", $mainPlayer);
     case "midas_touch_yellow":
       return SearchMultizone($player, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally") == "";
+    case "iris_of_the_blossom":
+      $hand = GetHand($currentPlayer);
+      // is it possible to hit without dealing Pow damge? And vice versa? I don't think it is
+      if (GetClassState($player, $CS_PowDamageDealt) == 0) return true;
+      return CheckTapped("MYCHAR-$index", $currentPlayer) || count($hand) == 0;
+    case "okana_scar_wraps":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      $attackID = $CombatChain->AttackCard()->ID();
+      if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
+      return CheckTapped("MYCHAR-$index", $currentPlayer) || !SearchCharacterAlive($currentPlayer, "edge_of_autumn");
     default:
       return false;
   }
@@ -3258,6 +3279,8 @@ function HasBladeBreak($cardID)
     case "light_fingers":
     case "tricorn_of_saltwater_death":
     case "breakwater_undertow":
+    case "okana_scar_wraps":
+    case "iris_of_the_blossom":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

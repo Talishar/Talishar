@@ -540,7 +540,7 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP"];
+  $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP", "ASR"];
   // promos that are made legal ahead of thier set
   $specialReleases = ["valda_seismic_impact", "promising_terrain_blue", "draw_a_crowd_blue", "batter_to_a_pulp_red"];
   if (in_array($cardID, $specialReleases)) return false;
@@ -570,6 +570,13 @@ function isUnimplemented($cardID) {
         "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
         "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
         default => true
+      };
+    case "ASR":
+      return match($cardID) {
+        "enact_vengeance_red" => false,
+        "okana_scar_wraps" => true, //missing image
+        "iris_of_the_blossom" => true, //missing image
+        default => true,
       };
     default:
       break;

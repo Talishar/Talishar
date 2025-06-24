@@ -585,6 +585,11 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
+      case "okana_scar_wraps":
+        if (IsCharacterActive($mainPlayer, $i) && CardNameContains($attackID, "Vengeance", $mainPlayer, true)) {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+        }
+        break;
       default:
         break;
     }
@@ -1282,6 +1287,23 @@ function EquipPayAdditionalCosts($cardIndex)
     case "old_knocker":
       DestroyCharacter($currentPlayer, $cardIndex);
       Tap("MYCHAR-0", $currentPlayer);
+      break;
+    case "iris_of_the_blossom":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      PummelHit($currentPlayer);
+      break;
+    case "okana_scar_wraps":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      $char = GetPlayerCharacter($currentPlayer);
+      $ind = SearchCharacterForCards("edge_of_autumn", $currentPlayer);
+      if ($ind != "") {
+        $ind = explode(",", $ind)[0];
+        BanishCardForPlayer("edge_of_autumn", $currentPlayer, "EQUIP");
+        DestroyCharacter($currentPlayer, $ind, true);
+      }
+      else {
+        WriteLog("Something funny happened when trying to banish an edge of autumn, please submit a bug report");
+      }
       break;
     default:
       --$character[$cardIndex + 5];

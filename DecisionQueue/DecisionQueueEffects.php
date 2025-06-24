@@ -1038,6 +1038,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
       AddDecisionQueue("EQUIPCARDINVENTORY", $mainPlayer, "<-");
       return $cardID;
+    case "SCARWRAPS":
+      $ind = SearchBanishForCard($player, "edge_of_autumn");
+      RemoveBanish($player, $ind);
+      EquipWeapon($player, "edge_of_autumn", "okana_scar_wraps");
+      return "";
     default: return "";
   }
 

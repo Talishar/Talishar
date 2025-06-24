@@ -1712,6 +1712,20 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("SPECIFICCARD", $player, "BLOODSPATTEREDVEST", 1);
       break;
+    case "okana_scar_wraps":
+      $openHands = true;
+      $char = GetPlayerCharacter($player);
+      for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
+        if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
+          if ($char[$i + 1] != 0) $openHands = false;
+        }
+      }
+      if (SearchBanishForCard($player, "edge_of_autumn") != -1 && $openHands) {
+        AddDecisionQueue("SETDQCONTEXT", $player, "equip_a_banished_edge_of_autumn");
+        AddDecisionQueue("YESNO", $player, "-", 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("SPECIFICCARD", $player, "SCARWRAPS", "-", 1);
+      }
     default:
       break;
   }
