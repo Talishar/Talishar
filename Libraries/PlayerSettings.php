@@ -207,6 +207,9 @@ function GetCardBack($player)
     case 107: return "CBThreeFloating1";
     case 108: return "CBThreeFloating2";
     case 109: return "CBThreeFloating3";
+    case 110: return "CBSteelfur";
+    case 111: return "CBFleshAndBad";
+    case 112: return "CBFabledBrazil";
     default: return "CardBack";
   };
 }
@@ -688,6 +691,32 @@ function IsTeamPotatoSquad($userID)
     case "Xandorion":
     case "ObiJohn":
     case "tader":
+      return true;
+    default: break;
+  }
+  return false;
+}
+
+function IsTeamFabledBrazil($userID)
+{
+  switch($userID) {
+    case "PvtVoid":
+    case "tetsuo":
+    case "hugodeoz":
+    case "diorge":
+    case "LGB":
+    case "IvanTaranto":
+    case "mishel157":
+    case "DanielDertoni":
+    case "caduads":
+    case "DracaiBR":
+    case "gravebeat":
+    case "LiP":
+    case "Laerte":
+    case "izumi":
+    case "Gandanm":
+    case "DShima":
+    case "FiotzGames":
       return true;
     default: break;
   }

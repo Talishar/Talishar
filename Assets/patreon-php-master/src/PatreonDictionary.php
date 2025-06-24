@@ -92,6 +92,7 @@ enum PatreonCampaign : string
   case ThaiCardsShop = "18";
   case MetalFab = "19";
   case PotatoSquad = "20";
+  case FabledBrazil = "21";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -140,6 +141,8 @@ enum PatreonCampaign : string
   case HamMan215 = "13035399";
   case NewHorizons = "13905903";
   case ThreeFloating = "11527692";
+  case Steelfur = "7330270";
+  case FleshAndBad = "13518995";
 
   public function SessionID(): string
   {
@@ -192,6 +195,8 @@ enum PatreonCampaign : string
       case "13035399": return "isHamMan215Patron";
       case "13905903": return "isNewHorizonsPatron";
       case "11527692": return "isThreeFloatingPatron";
+      case "7330270": return "isSteelfurPatron";
+      case "13518995": return "isFleshAndBadPatron";
       default: return "";
     }
   }
@@ -220,7 +225,8 @@ enum PatreonCampaign : string
       case "17": return "ScowlingFleshBag";
       case "18": return "Thai Cards Shop";
       case "19": return "Metal Fab";
-      case "20": return "TPotato Squad";
+      case "20": return "Potato Squad";
+      case "21": return "Team Fabled Brazil";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -269,6 +275,8 @@ enum PatreonCampaign : string
       case "13035399": return "HamMan215";
       case "13905903": return "New Horizons FAB";
       case "11527692": return "Three Floating";
+      case "7330270": return "Steelfur";
+      case "13518995": return "Flesh and Bad";
       default: return "";
     }
   }
@@ -298,6 +306,7 @@ enum PatreonCampaign : string
       case "18": return IsTeamThaiCardsShop($userName);
       case "19": return IsTeamMetalFab($userName);
       case "20": return IsTeamPotatoSquad($userName);
+      case "21": return IsTeamFabledBrazil($userName);
       case "7198186": return ($userName == "OotTheMonk" || $userName == "Aegisworn");
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
@@ -346,6 +355,8 @@ enum PatreonCampaign : string
       case "13035399": return ($userName == "PvtVoid" || $userName == "HamMan215");
       case "13905903": return ($userName == "PvtVoid" || $userName == "Towelie" || $userName == "Abyssion" || $userName == "Siege" || $userName == "Alithos");
       case "11527692": return ($userName == "PvtVoid" || $userName == "Bones503" || $userName == "kwasneski" || $userName == "Hymoshi");
+      case "7330270": return ($userName == "PvtVoid" || $userName == "Steelfur");
+      case "13518995": return ($userName == "PvtVoid" || $userName == "Tegunn" || $userName == "AurOraOraOraOraORa");
       default: return "";
     }
   }
@@ -561,6 +572,7 @@ enum PatreonCampaign : string
       case "18": return "96";
       case "19": return "105";
       case "20": return "106";
+      case "21": return "112";
       case "7198186": return "1,2,3,4,5,6,7,8,82,83";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";
@@ -609,6 +621,8 @@ enum PatreonCampaign : string
       case "13035399": return "103";
       case "13905903": return "104";
       case "11527692": return "107,108,109";
+      case "7330270": return "110";
+      case "13518995": return "111";
       default: return "";
     }
   }
@@ -620,6 +634,10 @@ enum PatreonCampaign : string
       case "11527692": return "22";
       case "8955846": return "23";
       case "9370276": return "24";
+      case "7330270": return "25";
+      case "13518995": return "26";
+      case "21": return "27";
+      case "13905903": return "28";
       default: return "";
     }
   }
