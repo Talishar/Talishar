@@ -2472,7 +2472,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
-      } elseif ($names != "" && $from == "HAND"){
+      } elseif ($names != "" && $from == "HAND" && $names != "-,Action"){
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
         AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);

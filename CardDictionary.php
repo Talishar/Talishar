@@ -1327,13 +1327,20 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
     case "war_cry_of_themis_yellow":
-    case "burn_bare":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
       if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
       elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
       elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) $names .= ",Action";
       if($from != "HAND") $names = "-,Action";
+      return $names;
+    case "burn_bare":
+      $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
+      if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
+      elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
+      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) $names .= ",Action";
+      if($from != "HAND" || !IsPhantasmActive()) $names = "-,Action";
       return $names;
     case "shelter_from_the_storm_red":
       $names = "Ability";
