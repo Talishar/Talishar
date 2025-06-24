@@ -165,6 +165,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $rv = "";
   switch($cardID) {
     case "emperor_dracai_of_aesir":
+      //this should techhnically come when the layer goes on the stack
+      GetTargetOfAttack($cardID);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:cardID=command_and_conquer_red");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);

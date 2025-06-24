@@ -1904,8 +1904,9 @@ function PlayCardSkipCosts($cardID, $from)
 {
   global $layers, $turn;
   $cardType = CardType($cardID);
-  GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
-  if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
+  // this is now handled earlier
+  // GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
+  // if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     GetLayerTarget($cardID, $from);
   }
