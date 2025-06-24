@@ -2150,6 +2150,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $player, 2, 1);
       AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
       break;
+    case "seeds_of_agony_red":
+    case "seeds_of_agony_yellow":
+    case "seeds_of_agony_blue":
+      WriteLog(CardLink($parameter, $parameter) . " dealt 1 damage.");
+      DealArcane(1, 2, "PLAYCARD", $parameter, false, $player, resolvedTarget: $target);
+      break;
     case "endless_winter_red":
       for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("frostbite", $player, effectController: $mainPlayer);
       break;

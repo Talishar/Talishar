@@ -1423,8 +1423,9 @@ function CurrentEffectAttackAbility()
           else if ($currentTurnEffects[$i] == "seeds_of_agony_yellow") $maxCost = 1;
           else $maxCost = 0;
           if ($attackType == "AA" && CardCost($attackID) <= $maxCost) {
-            WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " dealt 1 damage.");
-            DealArcane(1, 0, "PLAYCARD", $currentTurnEffects[$i], true, $mainPlayer);
+            SetArcaneTarget($mainPlayer, $currentTurnEffects[$i]);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+            AddDecisionQueue("ADDTRIGGER", $mainPlayer, $currentTurnEffects[$i], 1);
             $remove = true;
           }
           break;
