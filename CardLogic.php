@@ -2585,10 +2585,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $cardsToBanish = array();
       for ($i = 0; $i < count($chainLinks); $i++) {
         if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
-        $defendingCards = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
-        if (count($defendingCards) > 0) {
-          $randomIndex = GetRandom(0, count($defendingCards) - 1);
-          array_push($cardsToBanish, $defendingCards[$randomIndex]);
+        $defendingCardIndices = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
+        if (count($defendingCardIndices) > 0) {
+          $randKeys = array_rand($defendingCardIndices, 1);
+          WriteLog("HERE: $randKeys");
+          $index = $defendingCardIndices[$randKeys];
+          $chainLinks[$i][$index + 2] = "0";
+          array_push($cardsToBanish, $chainLinks[$i][$index]);
         }
       }
       $defendingCards = GetChainLinkCards($defPlayer);
