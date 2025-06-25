@@ -867,7 +867,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "hemorrhage_bore_yellow":
     case "hemorrhage_bore_blue":
     case "infiltrate_red":
-    case "shake_down_red":
     case "infect_red":
     case "infect_yellow":
     case "infect_blue":
@@ -1067,6 +1066,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "send_packing_yellow":
     case "stab_wound_blue":
       if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
+    case "shake_down_red":
+      if(NumAttackReactionsPlayed() > 0 && IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
