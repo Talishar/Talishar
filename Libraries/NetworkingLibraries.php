@@ -1915,7 +1915,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer, $defPlayer;
+  global $currentPlayer, $defPlayer, $layers;
   switch ($cardID) {
     case "rout_red":
     case "singing_steelblade_yellow":
@@ -1979,9 +1979,16 @@ function GetLayerTarget($cardID, $from)
     case "lightning_press_red":
     case "lightning_press_yellow":
     case "lightning_press_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:maxCost=1;type=AA&COMBATCHAINLINK:maxCost=1;type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      $botLayer = $layers[count($layers) - LayerPieces()];
+      if (CardType($botLayer) == "AA" && CardCost($botLayer) <= 1) {
+        // targetting attack layer
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
+      }
+      else {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:maxCost=1;type=AA&COMBATCHAINLINK:maxCost=1;type=AA");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      }
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "steadfast_red":
