@@ -2697,7 +2697,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "light_of_sol_yellow":
       $deck = new Deck($player);
-      if ($deck->Reveal() && PitchValue($deck->Top()) == 2) {
+      if ($deck->Reveal() && ColorContains($deck->Top(), 2, $player)) {
         AddDecisionQueue("YESNO", $player, "if_you_want_to_put_the_card_in_your_soul");
         AddDecisionQueue("NOPASS", $player, "-");
         AddDecisionQueue("PASSPARAMETER", $player, "MYDECK-0", 1);
