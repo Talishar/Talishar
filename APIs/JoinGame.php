@@ -574,8 +574,8 @@ function isUnimplemented($cardID) {
     case "ASR":
       return match($cardID) {
         "enact_vengeance_red" => false,
-        "okana_scar_wraps" => true, //missing image
-        "iris_of_the_blossom" => true, //missing image
+        "okana_scar_wraps" => false, //low quality image
+        "iris_of_the_blossom" => false, //low quality image
         default => true,
       };
     default:
