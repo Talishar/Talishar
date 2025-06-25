@@ -545,14 +545,16 @@ function GetPerchedAllies($player)
   return implode(",", $perchedAllies);
 }
 
-function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0)
+function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
 {
   $srcAlly = &GetAllies($srcPlayer);
   $destAlly = &GetAllies($destPlayer);
   for ($i = 0; $i < AllyPieces(); ++$i) {
+    if ($i == 11 && $tapState != "-") {
+      $srcAlly[$index + $i] = $tapState;
+    }
     if($i == 14 && $mod != 0) {
       $srcAlly[$index + $i] = $mod; //14 - Modifier or e.g "Temporary" for cards that get stolen for a turn.
-      $srcAlly[$index + 11] = 0; //Untap
     }
     if($i == 13) //13 - Where it's played from ... Important for where it'll go when destroyed for example.
     {

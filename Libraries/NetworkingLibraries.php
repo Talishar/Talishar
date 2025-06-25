@@ -1424,6 +1424,7 @@ function FinalizeTurn()
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup;
   $EffectContext = "-";
+  ResetStolenCards();
   LogEndTurnStats($mainPlayer);
   CurrentEffectEndTurnAbilities();
   AuraEndTurnAbilities();
@@ -1482,7 +1483,6 @@ function FinalizeTurn()
   ResetMainClassState();
   ResetCharacterEffects();
   UnsetTurnBanish();
-  ResetStolenCards();
   AuraEndTurnCleanup();
   DoGamestateUpdate();
   //Update all the player neutral stuff

@@ -1062,7 +1062,7 @@ function UnsetAllyModifier($player, $modifier, $newMod = "-") {
       $cardModifier = $allies[$i+14];
       if($cardModifier == $modifier) {
         $allies[$i+14] = "-";
-        StealAlly($player, $i, $otherPlayer, "THEIRALLY");
+        StealAlly($player, $i, $otherPlayer, "THEIRALLY", tapState:"-");
       }
     }
 }
