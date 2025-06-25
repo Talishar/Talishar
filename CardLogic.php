@@ -231,7 +231,8 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
 {
   global $layers, $dqState;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  if ($cardID == "TRIGGER") { // put triggers into "pre-layers" where they can be ordered
+  $skipOrdering = ["runechant", "seismic_surge"];
+  if ($cardID == "TRIGGER" && !in_array($parameter, $skipOrdering)) { // put triggers into "pre-layers" where they can be ordered
     array_unshift($layers, $layerUID);
     array_unshift($layers, $uniqueID);
     array_unshift($layers, $additionalCosts);
