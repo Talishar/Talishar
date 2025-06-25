@@ -2227,12 +2227,12 @@ function EffectDefenderPowerModifiers($cardID)
   return $mod;
 }
 
-function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1)
+function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1, $overrideType = "-")
 {
   global $mainPlayer, $currentTurnEffects, $p2IsAI;
   $powerValue = PowerValue($cardID, $index);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
-  $resolvedAbilityType = GetResolvedAbilityType($cardID);
+  $resolvedAbilityType = $overrideType == "-" ? GetResolvedAbilityType($cardID) : $overrideType;
   $abilityType = GetAbilityType($cardID, from: $from);
 
   if ($p2IsAI) return false;
@@ -2244,7 +2244,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
       switch ($effectID) {
         case "star_struck_yellow":
           if ($powerValue <= $effectArr[1] && ($type == "AA" || $resolvedAbilityType == "AA" || $abilityType == "AA") && ($hasNoAbilityTypes || $resolvedAbilityType == "AA")) {
-              $restrictedBy = "star_struck_yellow";
+            $restrictedBy = "star_struck_yellow";
           }
           break;
         case "WarmongersPeace":
