@@ -477,7 +477,9 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $chainLinks, $defPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
-  $targetPlayer = $targetPlayer == -1 ? ($mainPlayer == 1 ? 2 : 1) : $targetPlayer;
+  if (IsHeroAttackTarget()) {
+    $targetPlayer = $targetPlayer == -1 ? ($mainPlayer == 1 ? 2 : 1) : $targetPlayer;
+  }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $isAA = ($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA");
   $damageSource = $cardID != "-" ? $cardID : $attackID;
