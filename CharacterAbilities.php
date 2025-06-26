@@ -575,7 +575,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
       case "fang_dracai_of_blades":
       case "fang":
         if ($mainCharacter[$i+1] < 3) {
-          if (IsHeroAttackTarget() && CheckMarked($targetPlayer)) {
+          if ((IsHeroAttackTarget() || $targetPlayer == $defPlayer) && CheckMarked($targetPlayer)) {
             AddLayer("TRIGGER", $mainPlayer, $characterID,$damageSource, "MAINCHARHITEFFECT");
           }
         }
