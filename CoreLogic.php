@@ -499,8 +499,8 @@ function HasIncreasedAttack()
 
 function DamageTrigger($player, $damage, $type, $source = "NA")
 {
-  PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0");
-  PrependDecisionQueue("PASSPARAMETER", $player, $damage . "-" . $source . "-" . $type, 1);
+  PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);
+  PrependDecisionQueue("PASSPARAMETER", $player, $damage . "-" . $source . "-" . $type);
   return $damage;
 }
 
