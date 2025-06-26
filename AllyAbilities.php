@@ -569,6 +569,5 @@ function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
     array_push($destAlly, $srcAlly[$index + $i]);
     unset($srcAlly[$index + $i]);
   }
-  array_pop($srcAlly);
   $srcAlly = array_values($srcAlly);
 }
