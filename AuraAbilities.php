@@ -669,7 +669,11 @@ function AuraStartTurnAbilities()
       break;
     case "shifting_tides_blue":
       $deck = new Deck($mainPlayer);
-      if($deck->Empty()) break;
+      if($deck->Empty()) {
+        AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      }
       $top = $deck->Top(true);
       Pitch($top, $mainPlayer);
       if(ColorContains($top, 3, $mainPlayer)) {
