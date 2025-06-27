@@ -2525,6 +2525,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("OP", $player, "LOSEHEALTH", 1);
       if (!SearchCurrentTurnEffects($parameter, $player)) { //The effect only apply to one event of damage. Anti-duplicate.
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
+        $message = CardLink($parameter, $parameter) . "'s pain makes a runechant unpreventable!";
+        AddDecisionQueue("WRITELOG", $player, "<b>$message</b>", 1);
       }
       break;
     case "hornets_sting":
