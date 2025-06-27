@@ -1441,7 +1441,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type="-")
 {
   global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers;
-  // if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
+  if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
   $type = $type == "-" ? CardType($cardID, $from) : $type;
   if (EffectAttackRestricted($cardID, $type, $from, index:$index, overrideType:$type) != "") return false;
   if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
