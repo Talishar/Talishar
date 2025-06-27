@@ -2285,7 +2285,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       $mod != "INST" && $mod != "blossoming_spellblade_red" 
       && $cardType != "I"
       && (!$combatChainState[$CCS_EclecticMag]
-      && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0
+      && (GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $currentPlayer))
       && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
       && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A" || SearchLayersForPhase("RESOLUTIONSTEP") != -1)
       || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
