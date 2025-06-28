@@ -545,7 +545,7 @@ function MZStartTurnAbility($player, $MZIndex)
   }
 }
 
-function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "", $logText = "")
+function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "", $logText = "", $passSearch = true)
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($logText == "") $logText = "Card chosen: <0>";
@@ -563,7 +563,9 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
   else AddDecisionQueue("WRITELOG", $player, $logText, 1);
 
-  if ($where != "") AddDecisionQueue("MZADDZONE", $player, $where.",".$search, 1);
+  //may need to set passSearch = false to make a banish not trigger contracts
+  $parameter = $passSearch ? "$where,$search" : "$where,";
+  if ($where != "") AddDecisionQueue("MZADDZONE", $player, $parameter, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
 }
 

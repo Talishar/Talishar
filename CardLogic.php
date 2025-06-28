@@ -2591,7 +2591,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $defendingCardIndices = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
         if (count($defendingCardIndices) > 0) {
           $randKeys = array_rand($defendingCardIndices, 1);
-          WriteLog("HERE: $randKeys");
           $index = $defendingCardIndices[$randKeys];
           $chainLinks[$i][$index + 2] = "0";
           array_push($cardsToBanish, $chainLinks[$i][$index]);
@@ -3657,7 +3656,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Draw($player, effectSource:$parameter);
       break;
     case "return_fire_red":
-      MZMoveCard($player, "MYHAND:subtype=Arrow", "MYBANISH,HAND,RETURNFIRE", may:true, DQContext:"Choose an arrow to banish (or pass)");
+      MZMoveCard($player, "MYHAND:subtype=Arrow", "MYBANISH,HAND,RETURNFIRE", may:true, DQContext:"Choose an arrow to banish (or pass)", passSearch:false);
       break;
     case "cogwerx_tinker_rings":
       PutItemIntoPlayForPlayer("golden_cog", $player);
