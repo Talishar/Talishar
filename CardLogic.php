@@ -1566,13 +1566,14 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
       break;  
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer && !$fromCombat) || (IsHeroAttackTarget() && $fromCombat)) {
+      WriteLog("HERE: $fromCombat");
+      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || (IsHeroAttackTarget() && $fromCombat)) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
     case "arakni_funnel_web-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer && !$fromCombat) || (IsHeroAttackTarget() && $fromCombat)) {
+      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || (IsHeroAttackTarget() && $fromCombat)) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
