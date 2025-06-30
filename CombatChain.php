@@ -498,6 +498,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
         case "shred_blue":
           if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 2;
           break;
+        case "tarantula_toxin_red-SHRED":
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 3;
+          break;
       }
     }
   }

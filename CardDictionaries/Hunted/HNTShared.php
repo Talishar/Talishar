@@ -305,7 +305,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AttacksWithWeapon, $CS_NumAttackCardsAttacked;
   global $CS_NumBoosted, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
-  global $chainLinks;
+  global $chainLinks, $combatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "arakni_black_widow":
@@ -353,8 +353,22 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "tarantula_toxin_red":
       if (HasStealth($CombatChain->AttackCard()->ID()) || SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-        AddDecisionQueue("MODAL", $currentPlayer, "TARANTULATOXIN", 1);
+        if ($additionalCosts == "Buff_Power" || $additionalCosts == "Both") {
+          AddCurrentTurnEffect("tarantula_toxin_red", $currentPlayer);
+        }
+        if ($additionalCosts == "Reduce_Block" || $additionalCosts == "Both") {
+          if ($target != "-") {
+            $targetCard = GetMZCard($currentPlayer, $target);
+            $targetInd = explode("-", $target)[1];
+            if (TypeContains($targetCard, "E")) {
+              // I'm going to assume that a player can't have two copies of the same blocking equipment
+              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$targetInd]);
+            }
+            else {
+              CombatChainDefenseModifier($targetInd, -3);
+            }
+          }
+        }
       }
       else {
         WriteLog("A previous chain link was targeted, resolving with no effect");
