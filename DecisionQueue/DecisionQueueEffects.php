@@ -47,18 +47,6 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         }
       }
       return $lastResult;
-    case "TARANTULATOXIN":
-      switch($lastResult) {
-        case "Buff_Power": AddCurrentTurnEffect("tarantula_toxin_red", $player); break;
-        case "Reduce_Block":
-          Shred($player, -3);
-          break;
-        case "Both":
-          Shred($player, -3);
-          AddCurrentTurnEffect("tarantula_toxin_red", $player); 
-          break;
-      }
-      return $lastResult;
     case "TWOSIDES":
       switch($lastResult) {
         case "Buff_Dagger": AddEffectToCurrentAttack("two_sides_to_the_blade_red-DAGGER"); break;
