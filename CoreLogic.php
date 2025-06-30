@@ -2132,7 +2132,7 @@ function CloseCombatChain($chainClosed = "true")
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
 
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
-  elseif (in_array("DEFENDSTEP", $layers)) PopLayer(); // this line is causing a bug when you bound giaf with electrostatic discharge
+  // elseif (in_array("DEFENDSTEP", $layers)) PopLayer(); // this line is causing a bug when you bound giaf with electrostatic discharge
   if(!$chainClosed) FinalizeChainLink(!$chainClosed);
   elseif (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
   $turn[0] = "M";
