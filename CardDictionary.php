@@ -3031,6 +3031,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $attackID = $CombatChain->AttackCard()->ID();
       if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
       return CheckTapped("MYCHAR-$index", $currentPlayer) || !SearchCharacterAlive($currentPlayer, "edge_of_autumn");
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "kayo_underhanded_cheat":
+    case "pleiades":
+    case "pleiades_superstar":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      return CheckTapped("MYCHAR-$index", $currentPlayer);
     default:
       return false;
   }

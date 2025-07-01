@@ -5,6 +5,7 @@ function SUPAbilityType($cardID): string
   return match ($cardID) {
     "lyath_goldmane" => "I",
     "lyath_goldmane_vile_savant" => "I",
+    "kayo_underhanded_cheat" => "I",
     default => ""
   };
 }
@@ -15,6 +16,7 @@ function SUPAbilityCost($cardID): int
   return match ($cardID) {
     "lyath_goldmane" => 2,
     "lyath_goldmane_vile_savant" => 2,
+    "kayo_underhanded_cheat" => 4,
     default => 0
   };
 }
@@ -42,11 +44,20 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer;
+  global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower;
   switch ($cardID) {
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
+    case "kayo_underhanded_cheat":
+      if ($currentPlayer == $mainPlayer) {
+        //check to make sure they targeted the current chain link
+        $combatChainState[$CCS_LinkBasePower] = 6;
+      }
+      else {
+        // AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$target);
+      }
       break;
     default:
       break;
