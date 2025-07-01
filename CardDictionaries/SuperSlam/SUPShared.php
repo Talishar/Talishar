@@ -3,6 +3,8 @@
 function SUPAbilityType($cardID): string
 {
   return match ($cardID) {
+    "lyath_goldmane" => "I",
+    "lyath_goldmane_vile_savant" => "I",
     default => ""
   };
 }
@@ -11,6 +13,8 @@ function SUPAbilityCost($cardID): int
 {
   global $currentPlayer;
   return match ($cardID) {
+    "lyath_goldmane" => 2,
+    "lyath_goldmane_vile_savant" => 2,
     default => 0
   };
 }
@@ -36,17 +40,52 @@ function SUPCombatEffectActive($cardID, $attackID): bool
   };
 }
 
-function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
+function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
+  global $currentPlayer;
   switch ($cardID) {
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     default:
-      return "";
+      break;
   }
 }
 
 function SUPHitEffect($cardID): void
 {
   switch ($cardID) {
+    default:
+      break;
+  }
+}
+
+function BOO($player)
+{
+  $char = GetPlayerCharacter($player);
+  switch($char[0]) {
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "kayo_underhanded_cheat":
+    //case "young_kayo"
+      AddLayer("TRIGGER", $player, $char[0]);
+      break;
+    default:
+      break;
+  }
+}
+
+function Cheer($player)
+{
+  $char = GetPlayerCharacter($player);
+  switch($char[0]) {
+    case "pleiades":
+    case "pleiades_superstar":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      AddLayer("TRIGGER", $player, $char[0]);
+      break;
     default:
       break;
   }

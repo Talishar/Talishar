@@ -1307,6 +1307,15 @@ function EquipPayAdditionalCosts($cardIndex)
         WriteLog("Something funny happened when trying to banish an edge of autumn, please submit a bug report");
       }
       break;
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "kayo_underhanded_cheat":
+    case "pleiades":
+    case "pleiades_superstar":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

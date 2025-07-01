@@ -3808,6 +3808,13 @@ function CharacterNumUsesPerTurn($cardID)
     case "marlynn_treasure_hunter":
     case "gold_baited_hook":
     case "scurv_stowaway":
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "kayo_underhanded_cheat":
+    case "pleiades":
+    case "pleiades_superstar":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  

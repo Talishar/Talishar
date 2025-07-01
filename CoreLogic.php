@@ -2577,6 +2577,17 @@ function BasePowerModifiers($attackID, $powerValue)
     default:
       break;
   }
+  $char = GetPlayerCharacter($mainPlayer);
+  if ($char[1] < 3) {
+    switch ($char[0]) { //do I need both this and the lines in ModifiedPowerValue?
+      case "lyath_goldmane":
+      case "lyath_goldmane_vile_savant":
+        $powerValue = ceil($powerValue / 2);
+        break;
+      default:
+        break;
+    }
+  }
   return $powerValue;
 }
 

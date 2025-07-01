@@ -3775,6 +3775,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
       break;
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+      PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "kayo_underhanded_cheat":
+      PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "pleiades":
+    case "pleiades_superstar":
+      PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
     default:
       break;
   }
@@ -3992,6 +4007,17 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
     $power += EffectDefenderPowerModifiers($cardID);
   }
   $power += ItemsPowerModifiers($cardID, $player, $from);
+  $char = GetPlayerCharacter($player);//do I need both this and the lines in ModifiedPowerValue? 
+  if ($char[1] < 3) {
+    switch ($char[0]) {
+      case "lyath_goldmane":
+      case "lyath_goldmane_vile_savant":
+        $power = ceil($power / 2);
+        break;
+      default:
+        break;
+    }
+  }
   return $power;
 }
 

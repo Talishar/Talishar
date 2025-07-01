@@ -487,6 +487,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
+  if ($cardType == "AA" || $cardType == "A") {
+    $blockModifier += CountCurrentTurnEffects("lyath_goldmade", $defPlayer);
+    $blockModifier += CountCurrentTurnEffects("lyath_goldmane_vile_savant", $defPlayer);
+  }
   if ($cardType == "E") {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       switch ($currentTurnEffects[$i]) {
