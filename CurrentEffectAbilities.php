@@ -579,6 +579,7 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "SEA") return SEAEffectPowerModifier($cardID);
   else if ($set == "MPG") return MPGEffectPowerModifier($cardID);
   else if ($set == "ASR") return ASREffectPowerModifier($cardID);
+  else if ($set == "SUP") return SUPEffectPowerModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":
       return 1;
@@ -1924,6 +1925,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "AGB") return AGBCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "MPG") return MPGCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "ASR") return ASRCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "SUP") return SUPCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);
