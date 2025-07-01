@@ -6,6 +6,8 @@ function SUPAbilityType($cardID): string
     "lyath_goldmane" => "I",
     "lyath_goldmane_vile_savant" => "I",
     "kayo_underhanded_cheat" => "I",
+    "tuffnut" => "I",
+    "tuffnut_bumbling_hulkster" => "I",
     default => ""
   };
 }
@@ -59,9 +61,19 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         // AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$target);
       }
       break;
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      $deck = new Deck($mainPlayer);
+      $top = $deck->Top(true);
+      Pitch($top, $mainPlayer);
+      if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
+        Cheer($currentPlayer);
+      }
+      break;
     default:
       break;
   }
+  return "";
 }
 
 function SUPHitEffect($cardID): void
