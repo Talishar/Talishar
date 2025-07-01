@@ -223,28 +223,31 @@ function RemoveItem($player, $index)
 function DestroyItemForPlayer($player, $index, $skipDestroy = false)
 {
   global $CS_NumItemsDestroyed;
-  $items = &GetItems($player);
-  if (!$skipDestroy) {
-    if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
-    else $destPlayer = $player;
-    if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
-      AddGraveyard($items[$index], $destPlayer, "PLAY");
-    IncrementClassState($player, $CS_NumItemsDestroyed);
-  }
-  $cardID = $items[$index];
-  for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
-    if ($items[$i] == "nitro_mechanoidc") {
-      $indexWeapon = FindCharacterIndex($player, "nitro_mechanoida");
-      DestroyCharacter($player, $indexWeapon);
-      $indexEquipment = FindCharacterIndex($player, "nitro_mechanoidb");
-      DestroyCharacter($player, $indexEquipment, true);
-      SearchCurrentTurnEffects("galvanic_bender-UNDER", $player, true);
+  if ($index != -1) {
+    $items = &GetItems($player);
+    if (!$skipDestroy) {
+      if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
+      else $destPlayer = $player;
+      if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
+        AddGraveyard($items[$index], $destPlayer, "PLAY");
+      IncrementClassState($player, $CS_NumItemsDestroyed);
     }
-    unset($items[$i]);
+    $cardID = $items[$index];
+    for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
+      if ($items[$i] == "nitro_mechanoidc") {
+        $indexWeapon = FindCharacterIndex($player, "nitro_mechanoida");
+        DestroyCharacter($player, $indexWeapon);
+        $indexEquipment = FindCharacterIndex($player, "nitro_mechanoidb");
+        DestroyCharacter($player, $indexEquipment, true);
+        SearchCurrentTurnEffects("galvanic_bender-UNDER", $player, true);
+      }
+      unset($items[$i]);
+    }
+    $items = array_values($items);
+    if ($cardID == "stasis_cell_blue") AddLayer("TRIGGER", $player, $cardID);
+    return $cardID;
   }
-  $items = array_values($items);
-  if ($cardID == "stasis_cell_blue") AddLayer("TRIGGER", $player, $cardID);
-  return $cardID;
+  else return "";
 }
 
 function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
