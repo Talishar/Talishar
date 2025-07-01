@@ -683,7 +683,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       BanishCardForPlayer($cardID, $player, $from, "NA");
       return;
     case "beast_within_yellow":
-      if ($from != "CC") AddLayer("TRIGGER", $player, $cardID);
+      if ($from != "CC" && $from != "COMBATCHAINLINK") AddLayer("TRIGGER", $player, $cardID);
       break;
     case "drone_of_brutality_red":
     case "drone_of_brutality_yellow":
