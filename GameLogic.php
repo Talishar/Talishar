@@ -2381,43 +2381,46 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $sourceUID = $mainChar[$ind + 11];
       }
       else $sourceUID = -1;
-      AddOnHitTrigger($cardID, $sourceUID, targetPlayer: $targetPlayer);
-      if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
-        $index = intval(explode("-", $location)[1]) / ChainLinksPieces();
-        $activeEffects = explode(",", $chainLinks[$index][6]);
-        foreach ($activeEffects as $effectSetID) {
-          $effect = ConvertToCardID($effectSetID);
-          AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetPlayer);
-          AddOnHitTrigger($effect, source:$cardID); // this probably doesn't need to be here
-          AddCardEffectHitTrigger($effect, $cardID); // this probably doesn't need to be here
+      if (!SearchCurrentTurnEffects("tripwire_trap_red", $mainPlayer)) { //tripwire got an unannounced eratta to block flick hits
+        AddOnHitTrigger($cardID, $sourceUID, targetPlayer: $targetPlayer);
+        if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
+          $index = intval(explode("-", $location)[1]) / ChainLinksPieces();
+          $activeEffects = explode(",", $chainLinks[$index][6]);
+          foreach ($activeEffects as $effectSetID) {
+            $effect = ConvertToCardID($effectSetID);
+            AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetPlayer);
+            AddOnHitTrigger($effect, source:$cardID); // this probably doesn't need to be here
+            AddCardEffectHitTrigger($effect, $cardID); // this probably doesn't need to be here
+          }
+        }
+        for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+          if ($currentTurnEffects[$i] == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
+          if (IsCombatEffectActive($currentTurnEffects[$i], flicked: true) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+            AddCardEffectHitTrigger($currentTurnEffects[$i], $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
+          }
+        }
+        MainCharacterHitTrigger($cardID, $targetPlayer);
+        ArsenalHitEffects(); // should be reworked to add a triggered-layer, but not urgent
+        AuraHitEffects($cardID);
+        ItemHitTrigger($cardID);
+        //mask of momentum
+        $momIndex = FindCharacterIndex($mainPlayer, "mask_of_momentum");
+        if($momIndex != -1 && $mainChar[$momIndex + 5] > 0){
+          --$mainChar[$momIndex + 5];
+        }
+        $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
+        if ($warcryIndex != -1 && $sourceUID != -1) {
+          $params = explode(",", $currentTurnEffects[$warcryIndex]);
+          $amount = $params[1] ?? 0;
+          $uniqueID = $params[2] ?? "-";
+          $damageDone = 1; // hacky for now, should only hit this line on flicks
+          if($damageDone <= $amount && $uniqueID == $sourceUID) {
+            AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
+            RemoveCurrentTurnEffect($warcryIndex);
+          }
         }
       }
-      for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-        if ($currentTurnEffects[$i] == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
-        if (IsCombatEffectActive($currentTurnEffects[$i], flicked: true) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-          AddCardEffectHitTrigger($currentTurnEffects[$i], $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
-        }
-      }
-      MainCharacterHitTrigger($cardID, $targetPlayer);
-      ArsenalHitEffects(); // should be reworked to add a triggered-layer, but not urgent
-      AuraHitEffects($cardID);
-      ItemHitTrigger($cardID);
-      //mask of momentum
-      $momIndex = FindCharacterIndex($mainPlayer, "mask_of_momentum");
-      if($momIndex != -1 && $mainChar[$momIndex + 5] > 0){
-        --$mainChar[$momIndex + 5];
-      }
-      $warcryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
-      if ($warcryIndex != -1 && $sourceUID != -1) {
-        $params = explode(",", $currentTurnEffects[$warcryIndex]);
-        $amount = $params[1] ?? 0;
-        $uniqueID = $params[2] ?? "-";
-        $damageDone = 1; // hacky for now, should only hit this line on flicks
-        if($damageDone <= $amount && $uniqueID == $sourceUID) {
-          AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
-          RemoveCurrentTurnEffect($warcryIndex);
-        }
-      }
+      else WriteLog(CardLink("tripwire_trap_red", "tripwire_trap_red") . " received an eratta that causes to prevent flick effects.");
       //handling flick knives and mark
       if (CheckMarked($defPlayer)) {
         RemoveMark($defPlayer);
