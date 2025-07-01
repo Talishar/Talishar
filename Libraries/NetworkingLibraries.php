@@ -3388,10 +3388,24 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Buff_Power,Reduce_Block,Both";
       elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power";
       else $modalities = "Reduce_Block";
+      $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Buff_Power", 1);
+      AddDecisionQueue("ELSE", $currentPlayer, "-");
+      if ($numOptions != "") {
+        $numOptions = explode(",", $numOptions);
+        $options = [];
+        foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+        $options = implode(",", $options);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
+      // AddDecisionQueue("WRITELOG", $currentPlayer, "HERE!!!", 1);
       break;
     case "two_sides_to_the_blade_red":
       if (SubtypeContains($combatChain[0], "Dagger", $currentPlayer) && HasStealth($combatChain[0]) && TypeContains($combatChain[0], "AA", $currentPlayer)) $modalities = "Buff_Dagger,Buff_Stealth";
@@ -3582,6 +3596,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "shred_red":
         case "shred_yellow":
         case "shred_blue":
+        case "tarantula_toxin_red":
         case "platinum_amulet_blue":
           break;
         default:
