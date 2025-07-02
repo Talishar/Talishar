@@ -89,7 +89,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AttacksWithWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
-  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $CS_CheeredThisTurn, $CS_BooedThisTurn;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   if (HasPiercing($cardID, $from)) return NumEquipBlock() > 0 ? 1 : 0;
@@ -474,6 +474,10 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       $myNumGold = CountItem("gold", $mainPlayer);
       $theirNumGold = CountItem("gold", $defPlayer);
       return $myNumGold < $theirNumGold ? 2 : 0;
+    case "comeback_kid_red":
+      return GetClassState($mainPlayer, $CS_CheeredThisTurn) ? 1 : 0;
+    case "mocking_blow_red":
+      return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 4 : 0;
     default:
       return 0;
   }

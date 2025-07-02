@@ -49,7 +49,7 @@ include "CardDictionaries/MasteryPacks/MPGShared.php";
 include "CardDictionaries/ArmoryDecks/AGBShared.php";
 include "CardDictionaries/ArmoryDecks/ASRShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
-include "CardDictionaries/HighSeas/SUPShared.php";
+include "CardDictionaries/SuperSlam/SUPShared.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";

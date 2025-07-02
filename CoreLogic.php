@@ -2666,6 +2666,7 @@ function GetDamagePreventionTargetIndices()
 function SelfCostModifier($cardID, $from)
 {
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
+  global $CS_CheeredThisTurn;
   $otherPlayer = ($currentPlayer == 1) ? 2 : 1;
   switch ($cardID) {
     case "arknight_ascendancy_red":
@@ -2765,6 +2766,8 @@ function SelfCostModifier($cardID, $from)
       $myNumGold = CountItem("gold", $currentPlayer);
       $theirNumGold = CountItem("gold", $otherPlayer);
       return $myNumGold < $theirNumGold ? -2 : 0;
+    case "crowd_goes_wild_yellow":
+      return GetClassState($currentPlayer, $CS_CheeredThisTurn) > 0 ? 0 : 3;
     default:
       return 0;
   }

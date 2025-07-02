@@ -77,6 +77,11 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "pleiades_superstar":
       //put a suspense counter on an aura of suspense you control
       break;
+    case "comback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
+    case "mocking_blow_red":
+    case "bully_tactics_red":
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
+      break;
     default:
       break;
   }
@@ -93,6 +98,8 @@ function SUPHitEffect($cardID): void
 
 function BOO($player)
 {
+  global $CS_BooedThisTurn;
+  SetClassState($player, $CS_BooedThisTurn, 1);
   $char = GetPlayerCharacter($player);
   switch($char[0]) {
     case "lyath_goldmane":
@@ -108,6 +115,8 @@ function BOO($player)
 
 function Cheer($player)
 {
+  global $CS_CheeredThisTurn;
+  SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
   switch($char[0]) {
     case "pleiades":

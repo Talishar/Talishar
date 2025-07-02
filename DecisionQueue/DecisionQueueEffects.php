@@ -1031,6 +1031,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       RemoveBanish($player, $ind);
       EquipWeapon($player, "edge_of_autumn", "okana_scar_wraps");
       return "";
+    case "BULLY":
+      for ($i = 0; $i < $lastResult; ++$i) {
+        Intimidate($defPlayer);
+      }
     default: return "";
   }
 

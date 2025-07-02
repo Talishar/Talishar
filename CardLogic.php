@@ -3790,6 +3790,22 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "tuffnut_bumbling_hulkster":
       PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
+    case "comeback_kid_red":
+      if(PlayerHasLessHealth($mainPlayer)) {
+        Cheer($mainPlayer);
+      }
+      break;
+    case "mocking_blow_red":
+      if(PlayerHasLessHealth($defPlayer)) {
+        BOO($mainPlayer);
+      }
+      break;
+    case "bully_tactics_red":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
+      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "BULLY", 1);
+      break;
     default:
       break;
   }
