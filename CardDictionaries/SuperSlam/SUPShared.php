@@ -83,7 +83,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "comback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
     case "mocking_blow_red":
     case "bully_tactics_red":
-      AddLayer("TRIGGER", $currentPlayer, $cardID);
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     default:
       break;
