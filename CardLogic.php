@@ -2273,7 +2273,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "signal_jammer_blue":
       $index = SearchItemsForUniqueID($uniqueID, $player);
-      if ($items[$index + 1] > 0) {
+      if ($items[$index + 1] > 0 && GetItemGemState($mainPlayer, $items[$index], $index) == 0) --$items[$index + 1];
+      elseif($items[$index + 1] > 0) {
         AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
       } else {
