@@ -1981,7 +1981,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "zephyr_needle_r":
       EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
+        $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
         if ($totalBlock > 0 && ($blockVal > $totalPower) && $combatChain[$i + 1] == $defPlayer) {
           DestroyCurrentWeapon();
         }
@@ -3776,6 +3776,40 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
       break;
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+      PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
+      PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "pleiades":
+    case "pleiades_superstar":
+      WriteLog(CardLink($parameter, $parameter) . " will create a confidence once we know what it is");
+      // PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      WriteLog(CardLink($parameter, $parameter) . " will create a toughness once we know what it is");
+      // PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "comeback_kid_red":
+      if(PlayerHasLessHealth($mainPlayer)) {
+        Cheer($mainPlayer);
+      }
+      break;
+    case "mocking_blow_red":
+      if(PlayerHasLessHealth($defPlayer)) {
+        BOO($mainPlayer);
+      }
+      break;
+    case "bully_tactics_red":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
+      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "BULLY", 1);
+      break;
     default:
       break;
   }
@@ -3990,10 +4024,41 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
   } else {
     // effect that only affect CC
+    $char = GetPlayerCharacter($player);
+    if ($char[1] < 3) {
+      switch ($char[0]) {
+        case "lyath_goldmane":
+        case "lyath_goldmane_vile_savant":
+          $power = ceil($power / 2);
+          break;
+        default:
+          break;
+      }
+    }
     $power += EffectDefenderPowerModifiers($cardID);
   }
   $power += ItemsPowerModifiers($cardID, $player, $from);
   return $power;
+}
+
+function ModifiedBlockValue($cardID, $player, $from, $source="")
+{
+  if ($cardID == "") return 0;
+  $block = BlockValue($cardID);
+  if ($from == "CC") {
+    $char = GetPlayerCharacter($player);
+    if ($char[1] < 3) {
+      switch ($char[0]) {
+        case "lyath_goldmane":
+        case "lyath_goldmane_vile_savant":
+          $block = ceil($block / 2);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  return $block;
 }
 
 function Intimidate($player = "")

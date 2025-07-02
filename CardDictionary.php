@@ -49,6 +49,7 @@ include "CardDictionaries/MasteryPacks/MPGShared.php";
 include "CardDictionaries/ArmoryDecks/AGBShared.php";
 include "CardDictionaries/ArmoryDecks/ASRShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
+include "CardDictionaries/SuperSlam/SUPShared.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";
@@ -388,6 +389,12 @@ function CharacterIntellect($cardID)
       return 3;
     case "teklovossen_the_mechropotent":
       return 3;
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+      return 5;
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      return 3;
     default:
       return 4;
   }
@@ -697,6 +704,7 @@ function AbilityCost($cardID)
   else if ($set == "SEA") return SEAAbilityCost($cardID);
   else if ($set == "AST") return ASTAbilityCost($cardID);
   else if ($set == "AGB") return AGBAbilityCost($cardID);
+  else if ($set == "SUP") return SUPAbilityCost($cardID);
   else switch ($cardID) {
     case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
@@ -1191,6 +1199,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($set == "ASR") return ASRAbilityType($cardID);
   else if ($set == "AGB") return AGBAbilityType($cardID, $from);
+  else if ($set == "SUP") return SUPAbilityType($cardID);
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
@@ -3028,6 +3037,32 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $attackID = $CombatChain->AttackCard()->ID();
       if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
       return CheckTapped("MYCHAR-$index", $currentPlayer) || !SearchCharacterAlive($currentPlayer, "edge_of_autumn");
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      return CheckTapped("MYCHAR-$index", $currentPlayer);
+    case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+      if ($currentPlayer == $mainPlayer) {
+        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1) return true;
+        $previousLink = SearchCombatChainAttacks($currentPlayer, type:"AA") == "";
+        $currentLink = !TypeContains($CombatChain->AttackCard()->ID(), "AA", $currentPlayer);
+        if ($previousLink && $currentLink) return true;
+      }
+      else {
+        //for now only support buffing cards on the current chain link
+        $numOptions = GetChainLinkCards($currentPlayer, "", "C");
+        if ($numOptions == "") return true;
+      }
+      return false;
+    case "pleiades":
+    case "pleiades_superstar":
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+      //check that there's an aura with a suspense counter
+      if (count(GetSuspenseAuras()) == 0) return true;
+      return false;
     default:
       return false;
   }
@@ -3661,6 +3696,7 @@ function AbilityHasGoAgain($cardID, $from)
   else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
   else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
   else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
+  else if ($set == "SUP") return SUPAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "bravo_flattering_showman":
@@ -3804,6 +3840,14 @@ function CharacterNumUsesPerTurn($cardID)
     case "marlynn_treasure_hunter":
     case "gold_baited_hook":
     case "scurv_stowaway":
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
+    case "pleiades":
+    case "pleiades_superstar":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  

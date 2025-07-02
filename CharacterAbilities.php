@@ -953,7 +953,7 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex)
 {
-  global $currentPlayer, $CS_TunicTicks;
+  global $currentPlayer, $CS_TunicTicks, $mainPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
@@ -1306,6 +1306,44 @@ function EquipPayAdditionalCosts($cardIndex)
       else {
         WriteLog("Something funny happened when trying to banish an edge of autumn, please submit a bug report");
       }
+      break;
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "tuffnut":
+    case "tuffnut_bumbling_hulkster":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      break;
+    case "pleiades":
+    case "pleiades_superstar":
+      // remove a suspense counter
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      break;
+    case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
+      if ($currentPlayer == $mainPlayer) {
+        if (ShouldAutotargetOpponent($currentPlayer)) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "ACTIVEATTACK:type=AA");
+        }
+        else AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:type=AA&ACTIVEATTACK:type=AA");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack action card");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
+      else {
+        $numOptions = GetChainLinkCards($currentPlayer, "", "C");
+        if ($numOptions != "") {
+          $numOptions = explode(",", $numOptions);
+          $options = [];
+          foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+          $options = implode(",", $options);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to buff the power of");
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
+          AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+          AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+        }
+      }
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     default:
       --$character[$cardIndex + 5];

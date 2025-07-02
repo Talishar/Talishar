@@ -17,7 +17,9 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     else if($number >= 400 && $set == "UPR") $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_A_Back.webp";
     else if($number >= 400 && $set == "DYN") $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_Back.webp";
     else if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_BACK.webp";
-    else $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $setID . ".webp";
+    // else $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $setID . ".webp";
+    // else $imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/$setID.width-450.format-webp.webp"; // SUP seems to use both these URL formats?
+    else $imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/$setID" . "_BYfTULR.width-450.format-webp.webp";
     //$imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/" . $setID . "_yajPa8R.width-450.format-webp.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");
     echo("Downloading image from $imageURL <BR>");
