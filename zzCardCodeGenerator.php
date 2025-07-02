@@ -61,6 +61,7 @@
 
   function GetCardIdentifier($name, $pitch, $delimiter="_")
   {
+    if ($name == "Goldfin Harpoon") return "goldfin_harpoon_yellow";
     $cardID = strtolower($name);
     $cardID = str_replace("//", $delimiter, $cardID);
     $cardID = str_replace(array("ā", "ä", "ö", "ü", "ß", "ṣ"), array("a", "a", "o", "u", "s", "s"), $cardID);
