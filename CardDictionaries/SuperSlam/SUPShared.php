@@ -8,6 +8,8 @@ function SUPAbilityType($cardID): string
     "kayo_underhanded_cheat" => "I",
     "tuffnut" => "I",
     "tuffnut_bumbling_hulkster" => "I",
+    "pleiades_superstar" => "I",
+    "pleiades" => "I",
     default => ""
   };
 }
@@ -50,6 +52,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   switch ($cardID) {
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
+      BOO($currentPlayer);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "kayo_underhanded_cheat":
@@ -69,6 +72,10 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
         Cheer($currentPlayer);
       }
+      break;
+    case "pleiades":
+    case "pleiades_superstar":
+      //put a suspense counter on an aura of suspense you control
       break;
     default:
       break;
@@ -112,4 +119,19 @@ function Cheer($player)
     default:
       break;
   }
+}
+
+function GetSuspenseAuras()
+{
+  return [];
+}
+
+function RemoveSuspense()
+{
+
+}
+
+function AddSuspense()
+{
+
 }

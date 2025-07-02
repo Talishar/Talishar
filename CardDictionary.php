@@ -3033,12 +3033,29 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer) || !SearchCharacterAlive($currentPlayer, "edge_of_autumn");
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
-    case "kayo_underhanded_cheat":
-    case "pleiades":
-    case "pleiades_superstar":
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
+    case "kayo_underhanded_cheat":
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+      if ($currentPlayer == $mainPlayer) {
+        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1) return true;
+        $previousLink = SearchCombatChainAttacks($currentPlayer, type:"AA") == "";
+        $currentLink = !TypeContains($CombatChain->AttackCard()->ID(), "AA", $currentPlayer);
+        if ($previousLink && $currentLink) return true;
+      }
+      else {
+        //for now only support buffing cards on the current chain link
+        $numOptions = GetChainLinkCards($currentPlayer, "", "C");
+        if ($numOptions == "") return true;
+      }
+      return false;
+    case "pleiades":
+    case "pleiades_superstar":
+      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
+      //check that there's an aura with a suspense counter
+      if (count(GetSuspenseAuras()) == 0) return true;
+      return false;
     default:
       return false;
   }

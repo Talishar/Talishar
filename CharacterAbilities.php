@@ -1309,10 +1309,13 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
-    case "pleiades":
-    case "pleiades_superstar":
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
+      Tap("MYCHAR-$cardIndex", $currentPlayer);
+      break;
+    case "pleiades":
+    case "pleiades_superstar":
+      // remove a suspense counter
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "kayo_underhanded_cheat":
