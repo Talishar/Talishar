@@ -206,7 +206,7 @@ function ChainLinkObject($link)
     }
     else $powerValue = 0;
 
-    if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = BlockValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 5];
+    if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = ModifiedBlockValue($chainLinks[$link][$i], $defPlayer, "CC") + $chainLinks[$link][$i + 5];
     else $blockValue = 0;
 
     if($card->Player == $mainPlayer) $card->modifier = $powerValue;

@@ -102,7 +102,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       case "zephyr_needle":
       case "zephyr_needle_r":
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
+          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
@@ -148,7 +148,7 @@ function BlockingCardDefense($index)
   $cardID = isset($combatChain[$index]) ? $combatChain[$index] : "-";
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = (isset($combatChain[$index + 3]) ? intval($combatChain[$index + 3]) : 0) + intval($baseCost);
-  $defense = intval(BlockValue($cardID)) + (BlockCantBeModified($cardID) ? 0 : (isset($combatChain[$index + 6]) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0));
+  $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC")) + (BlockCantBeModified($cardID) ? 0 : (isset($combatChain[$index + 6]) ? intval(BlockModifier($cardID, $from, $resourcesPaid)) + intval($combatChain[$index + 6]) : 0));
   if (TypeContains($cardID, "E", $defPlayer)) {
     $defCharacter = &GetPlayerCharacter($defPlayer);
     $charIndex = isset($combatChain[$index + 8]) ? SearchCharacterForUniqueID($combatChain[$index + 8], $defPlayer) : null;
@@ -1235,7 +1235,7 @@ function CombatChainClosedCharacterEffects()
             $character[$charIndex + 4] -= 1; //Add -1 block counter
             $character[$charIndex + 6] = 0;
           }
-          if ((BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
+          if ((ModifiedBlockValue($character[$charIndex], $defPlayer, "CC") + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($defPlayer, $charIndex);
           }
         } 
@@ -1244,7 +1244,7 @@ function CombatChainClosedCharacterEffects()
         }
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-        $blockModifier = (BlockValue($character[$charIndex]) + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
+        $blockModifier = (ModifiedBlockValue($character[$charIndex], $defPlayer, "CC") + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
         $bladeBeckoner = ["blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots"];
         if (IsWeapon($chainLinks[$i][0], "PLAY") && in_array($chainLinks[$i][$j], $bladeBeckoner)) {
           $blockModifier += 1;

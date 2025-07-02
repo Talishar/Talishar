@@ -402,11 +402,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINDEFENSEMODIFIER":
       return CombatChainDefenseModifier($lastResult, $parameter);
     case "HALVEBASEDEFENSE":
-      $combatChain[$lastResult + 6] -= floor(BlockValue($combatChain[$lastResult]) / 2);
+      $combatChain[$lastResult + 6] -= floor(ModifiedBlockValue($combatChain[$lastResult], $defPlayer, "CC") / 2);
       return $lastResult;
     case "PUTCOMBATCHAINDEFENSE0":
       $index = GetCombatChainIndex($lastResult, $player);
-      $combatChain[$index + 6] -= BlockValue($lastResult);
+      $combatChain[$index + 6] -= ModifiedBlockValue($lastResult, $defPlayer, "CC");
       return $lastResult;
     case "PUTINANYORDER":
       $deck = new Deck($player == 1 ? 2 : 1);
@@ -1042,7 +1042,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "EQUIPDEFENSE":
       $char = &GetPlayerCharacter($player);
-      $defense = BlockValue($char[$lastResult]) + $char[$lastResult + 4];
+      $defense = ModifiedBlockValue($char[$lastResult], $defPlayer, "CC") + $char[$lastResult + 4];
       if ($defense < 0) $defense = 0;
       return $defense;
     case "ALLCARDTYPEORPASS":

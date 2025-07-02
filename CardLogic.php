@@ -1981,7 +1981,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "zephyr_needle_r":
       EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        $blockVal = (intval(BlockValue($combatChain[$i])) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
+        $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
         if ($totalBlock > 0 && ($blockVal > $totalPower) && $combatChain[$i + 1] == $defPlayer) {
           DestroyCurrentWeapon();
         }
@@ -4021,21 +4021,41 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
   } else {
     // effect that only affect CC
+    $char = GetPlayerCharacter($player);
+    if ($char[1] < 3) {
+      switch ($char[0]) {
+        case "lyath_goldmane":
+        case "lyath_goldmane_vile_savant":
+          $power = ceil($power / 2);
+          break;
+        default:
+          break;
+      }
+    }
     $power += EffectDefenderPowerModifiers($cardID);
   }
   $power += ItemsPowerModifiers($cardID, $player, $from);
-  $char = GetPlayerCharacter($player);//do I need both this and the lines in ModifiedPowerValue? 
-  if ($char[1] < 3) {
-    switch ($char[0]) {
-      case "lyath_goldmane":
-      case "lyath_goldmane_vile_savant":
-        $power = ceil($power / 2);
-        break;
-      default:
-        break;
+  return $power;
+}
+
+function ModifiedBlockValue($cardID, $player, $from, $source="")
+{
+  if ($cardID == "") return 0;
+  $block = BlockValue($cardID);
+  if ($from == "CC") {
+    $char = GetPlayerCharacter($player);
+    if ($char[1] < 3) {
+      switch ($char[0]) {
+        case "lyath_goldmane":
+        case "lyath_goldmane_vile_savant":
+          $block = ceil($block / 2);
+          break;
+        default:
+          break;
+      }
     }
   }
-  return $power;
+  return $block;
 }
 
 function Intimidate($player = "")
