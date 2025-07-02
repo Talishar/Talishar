@@ -50,7 +50,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower;
+  global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower, $combatChain;
   switch ($cardID) {
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
@@ -64,7 +64,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $combatChainState[$CCS_LinkBasePower] = 6;
       }
       else {
-        // AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$target);
+        $targetIndex = intval(explode("-", $target)[1]);
+        CombatChainPowerModifier($targetIndex, 6 - $combatChain[$targetIndex + 5]);
       }
       break;
     case "tuffnut":
