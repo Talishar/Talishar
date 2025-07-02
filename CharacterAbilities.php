@@ -1319,6 +1319,7 @@ function EquipPayAdditionalCosts($cardIndex)
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
       if ($currentPlayer == $mainPlayer) {
         if (ShouldAutotargetOpponent($currentPlayer)) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "ACTIVEATTACK:type=AA");

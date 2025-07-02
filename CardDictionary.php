@@ -3037,6 +3037,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "tuffnut_bumbling_hulkster":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       if ($currentPlayer == $mainPlayer) {
         if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1) return true;
@@ -3836,6 +3837,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
     case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
     case "pleiades":
     case "pleiades_superstar":
     case "tuffnut":

@@ -3780,6 +3780,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
     case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
       PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
     case "pleiades":

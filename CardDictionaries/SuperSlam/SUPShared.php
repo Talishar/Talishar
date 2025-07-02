@@ -6,6 +6,7 @@ function SUPAbilityType($cardID): string
     "lyath_goldmane" => "I",
     "lyath_goldmane_vile_savant" => "I",
     "kayo_underhanded_cheat" => "I",
+    "kayo_strong_arm" => "I",
     "tuffnut" => "I",
     "tuffnut_bumbling_hulkster" => "I",
     "pleiades_superstar" => "I",
@@ -21,6 +22,7 @@ function SUPAbilityCost($cardID): int
     "lyath_goldmane" => 2,
     "lyath_goldmane_vile_savant" => 2,
     "kayo_underhanded_cheat" => 4,
+    "kayo_strong_arm" => 4,
     default => 0
   };
 }
@@ -56,6 +58,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "kayo_underhanded_cheat":
+    case "kayo_strong_arm":
       if ($currentPlayer == $mainPlayer) {
         //check to make sure they targeted the current chain link
         $combatChainState[$CCS_LinkBasePower] = 6;
@@ -105,7 +108,7 @@ function BOO($player)
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
     case "kayo_underhanded_cheat":
-    //case "young_kayo"
+    case "kayo_strong_arm":
       AddLayer("TRIGGER", $player, $char[0]);
       break;
     default:
