@@ -778,7 +778,7 @@ function PitchValue($cardID)
 {
   if (!$cardID) return "";
   $set = CardSet($cardID);
-  if ($cardID == "goldfin_harpoon_yellow") return -1;
+  if ($cardID == "goldfin_harpoon") return -1;
   if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
   switch ($cardID) {
     case "MST000_inner_chi_blue":

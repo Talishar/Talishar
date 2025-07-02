@@ -677,7 +677,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       $cardID = GetCardIDBeforeTransform($cardID);
     }
   }
-  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow") return;
+  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon") return;
   switch ($cardID) {
     case "mark_of_the_beast_yellow":
       BanishCardForPlayer($cardID, $player, $from, "NA");

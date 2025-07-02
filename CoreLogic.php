@@ -1644,7 +1644,7 @@ function NameOverride($cardID, $player = "")
 function ColorOverride($cardID, $player = "")
 {
   $pitch = PitchValue($cardID);
-  if ($cardID == "goldfin_harpoon_yellow") $pitch = 2;
+  if ($cardID == "goldfin_harpoon") $pitch = 2;
   if (SearchCurrentTurnEffects("blanch_red", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_yellow", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_blue", $player)) $pitch = 0;
