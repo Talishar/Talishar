@@ -3785,11 +3785,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "pleiades":
     case "pleiades_superstar":
-      PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      WriteLog(CardLink($parameter, $parameter) . " will create a confidence once we know what it is");
+      // PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
-      PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      WriteLog(CardLink($parameter, $parameter) . " will create a toughness once we know what it is");
+      // PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
     case "comeback_kid_red":
       if(PlayerHasLessHealth($mainPlayer)) {
