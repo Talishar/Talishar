@@ -287,6 +287,11 @@ function SearchArsenalForCard($player, $card, $facing = "-")
 
 function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    return "";
+  }
   $deck = &GetDeck($player);
   $count = count($deck);
   $pieces = DeckPieces();
@@ -303,6 +308,11 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 
 function SearchDeckByName($player, $name)
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    return "";
+  }
   $deck = &GetDeck($player);
   $cardList = "";
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $cardList;

@@ -334,7 +334,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             break;
           case "Search_for_Skyzyk":
             $search = "MYDECK:isSameName=skyzyk_red";
-            $fromMod = "Deck,TT"; //pull it out of the deck, playable "This Turn"
+            $fromMod = "DECK,TT"; //pull it out of the deck, playable "This Turn"
             AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
             AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
