@@ -80,7 +80,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
   ];
 
   if (in_array($cardID, $meldCards)) {
-    if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH") return "A,I";
+    if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from = "ARS") return "A,I";
     if (function_exists("GetClassState")) {
       $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
       if ($additionalCosts == "Both") return "A,I";
@@ -1532,7 +1532,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $auras = &GetAuras($player);
   $discard = &GetDiscard($currentPlayer);
   $restriction = "";
-  $cardType = CardType($cardID);
+  $cardType = CardType($cardID, $from, $currentPlayer);
   $subtype = CardSubType($cardID);
   $abilityType = GetAbilityType($cardID, $index, $from);
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
