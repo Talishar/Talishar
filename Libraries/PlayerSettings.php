@@ -527,6 +527,7 @@ function IsTeamTideBreakers($userID)
   switch($userID) {
     case "OotTheMonk": case "Yarandor": case "grossmaul2130": case "EggShot": case "Kasadoom": case "Gulto":
     case "FinnElbe": case "Stardragon": case "DragonSlayer": case "TerranceSkill": case "TaddelDown":
+    case "Ilya": case "PastaPaul": case "DragonSlayer":
       return true;
     default: break;
   }
