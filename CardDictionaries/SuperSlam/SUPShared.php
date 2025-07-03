@@ -70,9 +70,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
-      $deck = new Deck($mainPlayer);
+      $deck = new Deck($currentPlayer);
       $top = $deck->Top(true);
-      Pitch($top, $mainPlayer);
+      Pitch($top, $currentPlayer);
       if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
         Cheer($currentPlayer);
       }
