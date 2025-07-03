@@ -84,7 +84,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "comback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
     case "mocking_blow_red":
     case "bully_tactics_red":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID);
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       break;
     default:
       break;
@@ -105,6 +105,7 @@ function BOO($player)
   global $CS_BooedThisTurn;
   SetClassState($player, $CS_BooedThisTurn, 1);
   $char = GetPlayerCharacter($player);
+  WriteLog("BOOOOO! The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
   switch($char[0]) {
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
@@ -122,6 +123,7 @@ function Cheer($player)
   global $CS_CheeredThisTurn;
   SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
+  WriteLog("Let's go! The crowd cheers for " . CardLink($char[0], $char[0]) . "!");
   switch($char[0]) {
     case "pleiades":
     case "pleiades_superstar":

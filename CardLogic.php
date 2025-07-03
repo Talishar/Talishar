@@ -1825,6 +1825,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     ProcessItemsEffect($parameter, $player, $target, $uniqueID);
     return;
   }
+  if ($additionalCosts == "ATTACKTRIGGER") {
+    ProcessAttackTrigger($parameter, $player, $target, $uniqueID);
+  }
   switch ($parameter) {
     case "HEAVE":
       Heave();
@@ -3794,6 +3797,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog(CardLink($parameter, $parameter) . " will create a toughness once we know what it is");
       // PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
+    default:
+      break;
+  }
+}
+
+function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
+{
+  global $mainPlayer, $defPlayer;
+  switch($cardID) {
     case "comeback_kid_red":
       if(PlayerHasLessHealth($mainPlayer)) {
         Cheer($mainPlayer);
