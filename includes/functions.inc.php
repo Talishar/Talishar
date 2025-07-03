@@ -438,13 +438,15 @@ function HashPlayerName($name, $salt) {
 
 function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID)
 {
-	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt;
+	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
     // Skip AI games
     if ($p2IsAI == "1") return;
 
     // Hash player names
     $hashedP1Name = HashPlayerName($p1uid, $playerHashSalt);
     $hashedP2Name = HashPlayerName($p2uid, $playerHashSalt);
+	$hashedP1Deck = HashPlayerName($p1DeckLink, $deckHashSalt);
+	$hashedP2Deck = HashPlayerName($p2DeckLink, $deckHashSalt);
 
     // Your Azure Function endpoint URL
     $url = "https://fab-insights.azurewebsites.net/api/send_results";
@@ -455,8 +457,8 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr['gameName'] = $gameName;
     $payloadArr['player1Name'] = $hashedP1Name;
     $payloadArr['player2Name'] = $hashedP2Name;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1DeckLink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2DeckLink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
+    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 
     // Initialize cURL
