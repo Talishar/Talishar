@@ -1148,6 +1148,9 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "cut_from_the_same_cloth_red" => true,
     "cut_from_the_same_cloth_yellow" => true,
     "cut_from_the_same_cloth_blue" => true,
+    "prismatic_leyline_yellow-RED" => true,
+    "prismatic_leyline_yellow-YELLOW" => true,
+    "prismatic_leyline_yellow-BLUE" => true,
     default => false
   };
 }
