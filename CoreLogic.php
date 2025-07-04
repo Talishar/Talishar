@@ -323,6 +323,7 @@ function MZStartTurnIndices()
         break;
       case "loyalty_beyond_the_grave_red":
         $foundLoyalties = SearchDiscard($mainPlayer, nameIncludes:"Loyalty,Beyond,the,Grave");
+        WriteLog("HERE: $foundLoyalties");
         if (count(explode(",", $foundLoyalties)) >= 2) $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
         break;
       default:
@@ -1693,7 +1694,6 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
 {
   global $currentTurnEffects;
   $cardName = NameOverride($cardID, $player);
-  if ($cardName == $name) return true; //Card is breaking due to comma
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $modName = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
@@ -1708,6 +1708,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
     $cardName = explode(" ", $cardName);
     $cardName = implode(",", $cardName);
   }
+  if ($cardName == $name) return true; //Card is breaking due to comma
   return DelimStringContains($cardName, $name, $partial);
 }
 
