@@ -692,6 +692,7 @@ function IsTeamPotatoSquad($userID)
     case "Xandorion":
     case "ObiJohn":
     case "tader":
+    case "Wittman1":
       return true;
     default: break;
   }
