@@ -3499,6 +3499,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "remove_hero_abilities", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Target a hero to lose abilities", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $targets, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "numbskull_charm_yellow":
@@ -3518,6 +3519,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "deal_2_damage", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Target a deal 2 damage 2", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $targets, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     default:
