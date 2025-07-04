@@ -580,7 +580,7 @@ function isUnimplemented($cardID) {
         "robe_of_autumns_fall" => false,
         "seek_vengeance_blue" => false,
         "seek_vengeance_red" => false,
-        "vengeance_never_rests" => false,
+        "vengeance_never_rests_blue" => false,
         "legacy_of_ikaru_blue" => false,
         default => true,
       };
