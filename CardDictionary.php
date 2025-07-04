@@ -75,7 +75,8 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "pulsing_aether__life_red",
     "comet_storm__shock_red",
     "regrowth__shock_blue",
-    "everbloom__life_blue"
+    "everbloom__life_blue",
+    "consign_to_cosmos__shock_yellow"
   ];
 
   if (in_array($cardID, $meldCards)) {
