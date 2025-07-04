@@ -2567,6 +2567,7 @@ function CanRevealCards($player)
 
 function BasePowerModifiers($attackID, $powerValue)
 {
+  // this needs to be reworked to be constantly checking rather than only checking on play/activation
   global $currentTurnEffects, $mainPlayer, $CS_Num6PowBan;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;

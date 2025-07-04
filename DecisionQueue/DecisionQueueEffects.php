@@ -1043,6 +1043,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       WriteLog("This will make toughness once we know what that is");
       // PlayAura("toughness", $player, $lastResult, true, effectController:$player, effectSource:$initiator);
       return "";
+    case "LIAR":
+      $char = &GetPlayerCharacter($player);
+      $char[1] = 3;
+      AddCurrentTurnEffect("liars_charm_yellow", $player);
     default: return "";
   }
 

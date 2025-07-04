@@ -50,7 +50,8 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower, $combatChain;
+  global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower, $combatChain, $chainLinkSummary, $chainLinks;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
@@ -94,6 +95,130 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "bask_in_your_own_greatness_yellow":
     case "bask_in_your_own_greatness_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
+      break;
+    case "thespian_charm_yellow":
+      $params = explode(",", $additionalCosts);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "destroy_a_might_or_vigor":
+            $search = "THEIRAURAS:cardID=might;cardID=vigor";
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
+            break;
+          case "cheer":
+            Cheer($currentPlayer);
+            break;
+          case "bounce_an_aura":
+            $search = "MYAURAS";
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to return to hand", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("MZBOUNCE", $currentPlayer, "<-", 1);
+            break;
+          default: break;
+        }
+      }
+      break;
+    case "liars_charm_yellow":
+      $params = explode(",", $additionalCosts);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "steal_a_toughness_or_vigor":
+            $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
+            break;
+          case "boo":
+            Boo($currentPlayer);
+            break;
+          case "remove_hero_abilities":
+            $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
+            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or lose your hero ability.");
+            AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
+            AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
+            AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
+            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
+            AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+            AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
+            AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+            AddDecisionQueue("ELSE", $targetPlayer, "-");
+            AddDecisionQueue("SPECIFICCARD", $targetPlayer, "LIAR", 1);
+            break;
+          default: break;
+        }
+      }
+      break;
+    case "numbskull_charm_yellow":
+      $params = explode(",", $additionalCosts);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "destroy_a_confidence_or_might":
+            $search = "THEIRAURAS:cardID=confidence;cardID=might";
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
+            break;
+          case "cheer":
+            Cheer($currentPlayer);
+            break;
+          case "pitch_top_card":
+            $deck = new Deck($currentPlayer);
+            $top = $deck->Top(true);
+            Pitch($top, $currentPlayer);
+            if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
+              PlayAura("vigor", $currentPlayer, isToken:true, effectController:$currentPlayer, effectSource:$cardID);
+            }
+            break;
+          default: break;
+        }
+      }
+      break;
+    case "cheaters_charm_yellow":
+      $params = explode(",", $additionalCosts);
+      for($i = 0; $i < count($params); ++$i) {
+        switch($params[$i]) {
+          case "steal_a_confidence_or_toughness":
+            $search = "THEIRAURAS:cardID=confidence;cardID=toughness";
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
+            break;
+          case "boo":
+            Boo($currentPlayer);
+            break;
+          case "deal_2_damage":
+            $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
+            $condition = false;
+            for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+              if ($combatChain[$i + 1] == $currentPlayer && ModifiedPowerValue($combatChain[$i], $currentPlayer, "CC") + $combatChain[$i+5] >= 6) $condition = true;
+              foreach ($chainLinks as $link) {
+                for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+                  if ($link[$i+1] == $currentPlayer && ModifiedPowerValue($link[$i], $currentPlayer, "CC") + $link[$i+4] > 6) $condition = true;
+                }
+              }
+            }
+            if ($condition) {
+              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
+              AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
+              AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
+              AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
+              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
+              AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+              AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
+              AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+              AddDecisionQueue("ELSE", $targetPlayer, "-");
+              AddDecisionQueue("TAKEDAMAGE", $targetPlayer, 2, 1);
+            }
+            break;
+          default: break;
+        }
+      }
       break;
     default:
       break;

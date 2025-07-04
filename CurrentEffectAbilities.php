@@ -2146,6 +2146,14 @@ function BeginEndPhaseEffects()
 function BeginEndPhaseEffectTriggers()
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;
+  if (SearchCurrentTurnEffects("liars_charm_yellow", $mainPlayer, true)) {
+    $mainChar = &GetPlayerCharacter($mainPlayer);
+    $mainChar[1] = 2;
+  }
+  if (SearchCurrentTurnEffects("liars_charm_yellow", $defPlayer, true)) {
+    $defChar = &GetPlayerCharacter($defPlayer);
+    $defChar[1] = 2;
+  }
   $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
   if (!IsImmuneToBloodDebt($mainPlayer) && $numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {

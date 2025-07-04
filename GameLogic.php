@@ -1018,6 +1018,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "NOTEQUALPASS":
       if ($lastResult != $parameter) return "PASS";
       return 1;
+    case "MODENOTCHOSENPASS":
+      foreach($lastResult as $mode) {
+        if ($mode == $parameter) return 1;
+      }
+      return "PASS";
     case "NOPASS":
       if ($lastResult == "NO") return "PASS";
       return 1;

@@ -67,6 +67,27 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if ($cardID == "fealty") IncrementClassState($player, $CS_FealtyCreated, $number);
 }
 
+function StealAura($srcPlayer, $index, $destPlayer, $from)
+{
+  $srcAuras = &GetAuras($srcPlayer);
+  $destAuras = &GetAuras($destPlayer);
+  for ($i = AuraPieces() - 1; $i >= 0; --$i) {
+    if($i == 9) //9 - Where it's played from ... Important for where it'll go when destroyed for example.
+    {
+      if (strpos($srcAuras[$index + $i], 'MY') === 0) {
+          $srcAuras[$index + $i] = 'THEIR' . substr($srcAuras[$index + $i], 2);
+      } elseif (strpos($srcAuras[$index + $i], 'THEIR') === 0) {
+          $srcAuras[$index + $i] = 'MY' . substr($srcAuras[$index + $i], 5);
+      } else {
+          $srcAuras[$index + $i] = 'THEIR' . $srcAuras[$index + $i];
+      }
+    }
+    array_unshift($destAuras, $srcAuras[$index + $i]);
+    unset($srcAuras[$index + $i]);
+  }
+  $srcAuras = array_values($srcAuras);
+}
+
 //cards that instruct the player to create an aura under their opponent's control
 //it still "counts" as the player creating an aura
 function CreatesAuraForOpponent($cardID)

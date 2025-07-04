@@ -296,6 +296,11 @@ function MZGainControl($player, $target, $temporary=0)
     case "MYALLY":
     case "THEIRALLY":
       StealAlly($otherPlayer, $targetArr[1], $player, $targetArr[0], $temporary);
+      break;
+    case "MYAURAS":
+    case "THEIRAURAS":
+      StealAura($otherPlayer, $targetArr[1], $player, $targetArr[0]);
+      break;
     default:
       break;
   }
