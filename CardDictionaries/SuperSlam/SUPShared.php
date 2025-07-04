@@ -82,9 +82,18 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       //put a suspense counter on an aura of suspense you control
       break;
     case "comback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
+    case "comback_kid_yellow":
+    case "comback_kid_blue":
     case "mocking_blow_red":
+    case "mocking_blow_yellow":
+    case "mocking_blow_blue":
     case "bully_tactics_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
+      break;
+    case "bask_in_your_own_greatness_red":
+    case "bask_in_your_own_greatness_yellow":
+    case "bask_in_your_own_greatness_blue":
+      AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       break;
     default:
       break;

@@ -475,9 +475,15 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       $theirNumGold = CountItem("gold", $defPlayer);
       return $myNumGold < $theirNumGold ? 2 : 0;
     case "comeback_kid_red":
+    case "comback_kid_yellow":
+    case "comback_kid_blue":
       return GetClassState($mainPlayer, $CS_CheeredThisTurn) ? 1 : 0;
     case "mocking_blow_red":
       return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 4 : 0;
+    case "mocking_blow_yellow":
+      return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 3 : 0;
+    case "mocking_blow_blue":
+      return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 2 : 0;
     default:
       return 0;
   }
@@ -1007,6 +1013,9 @@ function OnBlockResolveEffects($cardID = "")
       case "helmsmans_peak":
       case "lost_in_transit_yellow":
       case "tricorn_of_saltwater_death":
+      case "dig_in_red":
+      case "dig_in_yellow":
+      case "dig_in_blue":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":

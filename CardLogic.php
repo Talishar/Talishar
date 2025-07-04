@@ -3811,6 +3811,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog(CardLink($parameter, $parameter) . " will create a toughness once we know what it is");
       // PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
+    case "dig_in_red":
+    case "dig_in_yellow":
+    case "dig_in_blue":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
+      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
+      break;
     default:
       break;
   }
@@ -3821,11 +3829,15 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   global $mainPlayer, $defPlayer;
   switch($cardID) {
     case "comeback_kid_red":
+    case "comback_kid_yellow":
+    case "comback_kid_blue":
       if(PlayerHasLessHealth($mainPlayer)) {
         Cheer($mainPlayer);
       }
       break;
     case "mocking_blow_red":
+    case "mocking_blow_yellow":
+    case "mocking_blow_blue":
       if(PlayerHasLessHealth($defPlayer)) {
         BOO($mainPlayer);
       }
@@ -3835,6 +3847,14 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "BULLY", 1);
+      break;
+    case "bask_in_your_own_greatness_red":
+    case "bask_in_your_own_greatness_yellow":
+    case "bask_in_your_own_greatness_blue":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
+      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "BASK,$cardID", 1);
       break;
     default:
       break;

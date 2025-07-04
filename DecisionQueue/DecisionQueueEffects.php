@@ -1035,6 +1035,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       for ($i = 0; $i < $lastResult; ++$i) {
         Intimidate($defPlayer);
       }
+      return "";
+    case "BASK":
+      PlayAura("might", $player, $lastResult, true, effectController:$player, effectSource:$initiator);
+      return "";
+    case "DIGIN":
+      WriteLog("This will make toughness once we know what that is");
+      // PlayAura("toughness", $player, $lastResult, true, effectController:$player, effectSource:$initiator);
+      return "";
     default: return "";
   }
 

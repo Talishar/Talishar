@@ -591,9 +591,16 @@ function isUnimplemented($cardID) {
         "tuffnut_bumbling_hulkster" => false,
         "pleiades_superstar" => false,
         "comback_kid_red" => false,
+        "comback_kid_yellow" => false,
+        "comback_kid_blue" => false,
         "mocking_blow_red" => false,
+        "mocking_blow_yellow" => false,
+        "mocking_blow_blue" => false,
         "bully_tactics_red" => false,
         "crowd_goes_wild_yellow" => false,
+        "bask_in_your_own_greatness_red" => true,
+        "bask_in_your_own_greatness_yellow" => true,
+        "bask_in_your_own_greatness_blue" => true,
         default => true
       };
     default:
