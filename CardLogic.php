@@ -971,6 +971,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "strike_gold_yellow":
     case "strike_gold_blue":
     case "blow_for_a_blow_red":
+    case "bittering_thorns_blue":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
     case "breaking_point_red":
@@ -1171,6 +1172,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "recoil_yellow":
     case "recoil_blue":
     case "enact_vengeance_red":
+    case "vengeance_never_rests_blue":
       if (ComboActive($cardID) && IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
@@ -1585,6 +1587,9 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "loot_the_arsenal_blue":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       break;
+    case "legacy_of_ikaru_blue":
+      AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      break;
     default:
       break;
   }
@@ -1732,6 +1737,15 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "SCARWRAPS", "-", 1);
       }
+      break;
+    case "robe_of_autumns_fall":
+      $index = FindCharacterIndex($player, $cardID);
+      AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID, $cardID));
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+      AddDecisionQueue("GAINRESOURCES", $player, 1, 1);
+      break;
     default:
       break;
   }

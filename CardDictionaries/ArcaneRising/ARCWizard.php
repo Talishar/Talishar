@@ -992,6 +992,9 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
         ++$barrierArray[1];
         $total += 1;
         break;
+      case "robe_of_autumns_fall":
+        ++$barrierArray[1];
+        $total += 1;
       default:
         break;
     }

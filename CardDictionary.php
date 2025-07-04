@@ -3920,6 +3920,7 @@ function CharacterDefaultActiveState($cardID)
     case "leap_frog_slime_skin":
     case "leap_frog_gloves":
     case "leap_frog_leggings":
+    case "robe_of_autumns_fall":
       return 1;
     default:
       return 2;
@@ -4074,6 +4075,9 @@ function HasCombo($cardID)
     case "gustwave_of_the_second_wind_red":
     case "retrace_the_past_blue":
     case "enact_vengeance_red":
+    case "seek_vengeance_red":
+    case "seek_vengeance_blue":
+    case "vengeance_never_rests_blue":
       return true;
     default:
       return false;
@@ -4227,6 +4231,12 @@ function ComboActive($cardID = "")
         if (str_contains($lastAttackName, "Gustwave")) return true;
         break;
       case "enact_vengeance_red":
+        if ($lastAttackName == "Edge of Autumn") return true;
+        if (str_contains($lastAttackName, "Vengeance")) return true;
+        break;
+      case "seek_vengeance_red":
+      case "seek_vengeance_blue":
+      case "vengeance_never_rests_blue":
         if ($lastAttackName == "Edge of Autumn") return true;
         break;
       default:

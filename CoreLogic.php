@@ -2052,6 +2052,10 @@ function DoesAttackHaveGoAgain()
       return $numDaggerHits > 0;
     case "retrace_the_past_blue":
       return SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1;
+    case "seek_vengeance_red":
+    case "seek_vengeance_blue":
+    case "vengeance_never_rests_blue":
+      return ComboActive($attackID);
     default:
       return false;
   }

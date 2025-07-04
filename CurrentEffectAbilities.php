@@ -6,6 +6,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers, $EffectContext;
+  global $chainLinks;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($source == "-") {
     if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
@@ -542,6 +543,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $mainPlayer, false, 1);
       AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
+      break;
+    case "legacy_of_ikaru_blue":
+      $lastAttack = $chainLinks[count($chainLinks) - 1][0];
+      if (CardNameContains($lastAttack, "Edge of Autumn")) {
+        Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
+      }
       break;
     default:
       break;

@@ -20,6 +20,8 @@ function ASREffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "okana_scar_wraps" => 1,
+    "legacy_of_ikaru_blue" => 1,
+    "bittering_thorns_blue" => 1,
     default => 0
   };
 }
@@ -29,6 +31,8 @@ function ASRCombatEffectActive($cardID, $attackID): bool
   global $mainPlayer;
   return match($cardID) {
     "okana_scar_wraps" => ClassContains($attackID, "NINJA", $mainPlayer) && TypeContains($attackID, "AA", $mainPlayer),
+    "legacy_of_ikaru_blue" => ClassContains($attackID, "NINJA", $mainPlayer),
+    "bittering_thorns_blue" => true,
     default => false
   };
 }
@@ -44,6 +48,9 @@ function ASRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $combatChain;
     switch ($cardID) {
+      case "legacy_of_ikaru_blue":
+        AddEffectToCurrentAttack($cardID);
+        return "";
       case "enact_vengeance_red":
         if(ComboActive($cardID)) AddCurrentTurnEffect("enact_vengeance_red", $currentPlayer);
         return "";
@@ -69,11 +76,17 @@ function ASRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function ASRHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
     case "enact_vengeance_red":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);      
       break;
+    case "vengeance_never_rests_blue":
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+      BanishCardForPlayer($cardID, $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer);
+      break;
+    case "bittering_thorns_blue":
+      AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
     default:
       break;
   }

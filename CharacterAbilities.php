@@ -592,6 +592,11 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
+      case "robe_of_autumns_fall":
+        if (IsCharacterActive($mainPlayer, $i) && $attackID == "edge_of_autumn") {
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+        }
+        break;
       default:
         break;
     }
