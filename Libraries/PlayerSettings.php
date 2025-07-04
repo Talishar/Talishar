@@ -637,19 +637,25 @@ function IsTeamColdFoilControl($userID)
 function IsTeamRighteousGaming($userID)
 {
   switch($userID) {
-    case "MisterPNP":
     case "RighteousGaming":
     case "Perodic":
     case "zzdog":
     case "krav":
     case "Motley":
-    case "Pastry Boi":
     case "amodell":
     case "TrentMcB":
     case "pzych":
-    case "TCGTALK":
     case "deragun":
     case "PvtVoid":
+    case "Harvey0209":
+    case "f1av0r":
+    case "Vemnyx":
+    case "mclair":
+    case "FomToolery":
+    case "lostinspacefab":
+    case "SQJ":
+    case "magusoftheguild":
+    case "S1lverback55":
       return true;
     default: break;
   }
