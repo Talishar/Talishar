@@ -1691,12 +1691,23 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
 
 function CardNameContains($cardID, $name, $player = "", $partial = false) // This isn't actually a contains operation. It's an equals unless you turn partial to true.
 {
+  global $currentTurnEffects;
   $cardName = NameOverride($cardID, $player);
+  if ($cardName == $name) return true; //Card is breaking due to comma
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    $effectArr = explode("-", $currentTurnEffects[$i]);
+    $modName = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
+    if ($partial) {
+      $modName = explode(" ", $modName);
+      $modName = implode(",", $modName);
+    }
+    //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
+    if ($modName != "" && $currentTurnEffects[$i + 1] == $player && DelimStringContains($modName, $name, $partial)) return true;
+  }
   if ($partial) {
     $cardName = explode(" ", $cardName);
     $cardName = implode(",", $cardName);
   }
-  if ($cardName == $name) return true; //Card is breaking due to comma
   return DelimStringContains($cardName, $name, $partial);
 }
 
