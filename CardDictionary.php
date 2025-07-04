@@ -75,7 +75,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "pulsing_aether__life_red",
     "comet_storm__shock_red",
     "regrowth__shock_blue",
-    "consign_to_cosmos__shock_yellow",
     "everbloom__life_blue"
   ];
 
