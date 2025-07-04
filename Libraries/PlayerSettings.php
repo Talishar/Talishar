@@ -675,6 +675,7 @@ function IsTeamMetalFab($userID)
       case "Z-Gin":
       case "Obliterage":
       case "RedBeard":
+      case "KillerBrews":
       return true;
     default: break;
   }
@@ -692,6 +693,7 @@ function IsTeamPotatoSquad($userID)
     case "Xandorion":
     case "ObiJohn":
     case "tader":
+    case "Wittman1":
       return true;
     default: break;
   }
