@@ -519,8 +519,6 @@ function AttackReplaced($cardID, $player)
   $combatChain[10] = "-"; // get rid of any layer continuous buffs
   //1.8.10 in the CR
   for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-    WriteLog("HERE: $currentTurnEffects[$i]");
-    WriteLog("1: " . IsCombatEffectActive($currentTurnEffects[$i]) . ", 2: " . IsCombatEffectLimited($i) . ", 3: " . IsLayerContinuousBuff($currentTurnEffects[$i]));
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
       if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($currentTurnEffects[$i]); //saving them as set ids saves space
       else $combatChain[10] .= "," . ConvertToSetID($currentTurnEffects[$i]);

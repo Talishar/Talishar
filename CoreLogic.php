@@ -323,7 +323,6 @@ function MZStartTurnIndices()
         break;
       case "loyalty_beyond_the_grave_red":
         $foundLoyalties = SearchDiscard($mainPlayer, nameIncludes:"Loyalty,Beyond,the,Grave");
-        WriteLog("HERE: $foundLoyalties");
         if (count(explode(",", $foundLoyalties)) >= 2) $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
         break;
       default:

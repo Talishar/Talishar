@@ -958,7 +958,7 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex)
 {
-  global $currentPlayer, $CS_TunicTicks, $mainPlayer;
+  global $currentPlayer, $CS_TunicTicks, $mainPlayer, $chainLinkSummary;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
@@ -1302,15 +1302,31 @@ function EquipPayAdditionalCosts($cardIndex)
     case "okana_scar_wraps":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       $char = GetPlayerCharacter($currentPlayer);
-      $ind = SearchCharacterForCards("edge_of_autumn", $currentPlayer);
-      if ($ind != "") {
-        $ind = explode(",", $ind)[0];
-        BanishCardForPlayer("edge_of_autumn", $currentPlayer, "EQUIP");
-        DestroyCharacter($currentPlayer, $ind, true);
+      $charInd = SearchCharacterForCards("edge_of_autumn", $currentPlayer);
+      $allInds = ["MYCHAR-$charInd"];
+      $attacks = GetCombatChainAttacks();
+      for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
+        $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
+        $attackID = $attacks[$ind];
+        $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
+        if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Edge of Autumn")) {
+          array_push($allInds, "COMBATCHAINATTACKS-$ind");
+        }
       }
-      else {
-        WriteLog("Something funny happened when trying to banish an edge of autumn, please submit a bug report");
-      }
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $allInds));
+      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Edge of Autumn to banish", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
+      // if ($charInd != "") {
+      //   $charInd = explode(",", $charInd)[0];
+      //   BanishCardForPlayer("edge_of_autumn", $currentPlayer, "EQUIP");
+      //   DestroyCharacter($currentPlayer, $charInd, true);
+      // }
+      // else {
+      //   WriteLog("Something funny happened when trying to banish an edge of autumn, please submit a bug report");
+      // }
       break;
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":

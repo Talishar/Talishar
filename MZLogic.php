@@ -124,6 +124,15 @@ function MZRemove($player, $lastResult, $parameter="-")
       case "THEIRITEMS":
         $lastResult = RemoveItem($otherPlayer, $mzIndex[1]);
         break;
+      case "MYCHAR":
+        $lastResult = RemoveCharacter($player, $mzIndex[1]);
+        break;
+      case "THEIRCHAR":
+        $lastResult = RemoveCharacter($otherPlayer, $mzIndex[1]);
+        break;
+      case "COMBATCHAINATTACKS":
+        $lastResult = RemoveCombatChainLink($mzIndex[1]);
+        break;
       default:
         break;
     }
@@ -267,6 +276,10 @@ function MZBanish($player, $parameter, $lastResult)
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
+    if ($mzIndex[0] == "COMBATCHAINATTACKS") {
+      $attacks = GetCombatChainAttacks();
+      $cardOwner = $attacks[$mzIndex[1] + 1];
+    }
     $modifier = count($params) > 1 ? $params[1] : "-";
     $banishedBy = count($params) > 2 ? $params[2] : "";
     if($params[0] == "-") {

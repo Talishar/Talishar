@@ -1736,3 +1736,11 @@ function ActiveOnHits(): bool
   if (AddOnHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
   return false;
 }
+
+function RemoveCombatChainLink($ind) 
+{
+  global $chainLinks;
+  $linkInd = intdiv($ind, ChainLinksPieces());
+  $chainLinks[$linkInd][2] = 0;
+  return $chainLinks[$linkInd][0];
+}
