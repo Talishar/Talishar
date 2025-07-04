@@ -475,8 +475,8 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       $theirNumGold = CountItem("gold", $defPlayer);
       return $myNumGold < $theirNumGold ? 2 : 0;
     case "comeback_kid_red":
-    case "comback_kid_yellow":
-    case "comback_kid_blue":
+    case "comeback_kid_yellow":
+    case "comeback_kid_blue":
       return GetClassState($mainPlayer, $CS_CheeredThisTurn) ? 1 : 0;
     case "mocking_blow_red":
       return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 4 : 0;

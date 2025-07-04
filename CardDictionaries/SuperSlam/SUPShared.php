@@ -82,9 +82,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "pleiades_superstar":
       //put a suspense counter on an aura of suspense you control
       break;
-    case "comback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
-    case "comback_kid_yellow":
-    case "comback_kid_blue":
+    case "comeback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
+    case "comeback_kid_yellow":
+    case "comeback_kid_blue":
     case "mocking_blow_red":
     case "mocking_blow_yellow":
     case "mocking_blow_blue":

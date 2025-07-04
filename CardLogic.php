@@ -3829,8 +3829,8 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   global $mainPlayer, $defPlayer;
   switch($cardID) {
     case "comeback_kid_red":
-    case "comback_kid_yellow":
-    case "comback_kid_blue":
+    case "comeback_kid_yellow":
+    case "comeback_kid_blue":
       if(PlayerHasLessHealth($mainPlayer)) {
         Cheer($mainPlayer);
       }
