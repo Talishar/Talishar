@@ -547,6 +547,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
     case "legacy_of_ikaru_blue":
       $lastAttack = $chainLinks[count($chainLinks) - 1][0];
       if (CardNameContains($lastAttack, "Edge of Autumn")) {
+        WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
         Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
       }
       break;

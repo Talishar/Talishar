@@ -576,6 +576,12 @@ function isUnimplemented($cardID) {
         "enact_vengeance_red" => false,
         "okana_scar_wraps" => false, //low quality image
         "iris_of_the_blossom" => false, //low quality image
+        "bittering_thorns_blue" => false,
+        "robe_of_autumns_fall" => false,
+        "seek_vengeance_blue" => false,
+        "seek_vengeance_red" => false,
+        "vengeance_never_rests" => false,
+        "legacy_of_ikaru_blue" => false,
         default => true,
       };
     case "SUP":
