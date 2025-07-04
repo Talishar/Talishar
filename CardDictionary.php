@@ -80,8 +80,8 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
   ];
 
   if (in_array($cardID, $meldCards)) {
-    if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from = "ARS") return "A,I";
-    if (function_exists("GetClassState")) {
+    if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from == "ARS") return "A,I";
+    if (function_exists("GetClassState")) {      
       $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
       if ($additionalCosts == "Both") return "A,I";
       if (IsMeldInstantName($additionalCosts)) return "I";
