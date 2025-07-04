@@ -2040,46 +2040,46 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch ($parameter) {
         case "pulsing_aether__life_red":
           if ($lastResult == "Both" || $lastResult == "Pulsing_Aether") {
-            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
-            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            PrependDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
           }
           break;
         case "null__shock_yellow":
         case "consign_to_cosmos__shock_yellow":
           if ($lastResult == "Both" || $lastResult == "Shock") {
-            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
-            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+            PrependDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
           }
           break;
         case "comet_storm__shock_red":
-          if ($lastResult == "Comet_Storm" || $lastResult == "Both") {
-            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
-            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Comet Storm", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
-          }
           if ($lastResult == "Shock" || $lastResult == "Both") {
-            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
-            AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-            AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Shock", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-            AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);}
+            PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Shock", 1);
+            PrependDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+          }
+          if ($lastResult == "Comet_Storm" || $lastResult == "Both") {
+            PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Comet Storm", 1);
+            PrependDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+          }
           break;
         default:
           break;
