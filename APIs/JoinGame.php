@@ -598,9 +598,13 @@ function isUnimplemented($cardID) {
         "mocking_blow_blue" => false,
         "bully_tactics_red" => false,
         "crowd_goes_wild_yellow" => false,
-        "bask_in_your_own_greatness_red" => true,
-        "bask_in_your_own_greatness_yellow" => true,
-        "bask_in_your_own_greatness_blue" => true,
+        "bask_in_your_own_greatness_red" => false,
+        "bask_in_your_own_greatness_yellow" => false,
+        "bask_in_your_own_greatness_blue" => false,
+        "liars_charm_yellow" => false,
+        "thespian_charm_yellow" => false,
+        "numbskull_charm_yellow" => false,
+        "cheaters_charm_yellow" => false,
         default => true
       };
     default:
