@@ -434,20 +434,23 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "dig_up_dinner_blue":
       $discard = new Discard($currentPlayer);
       $deck = new Deck($currentPlayer);
-      $cards = explode(",", $discard->RemoveRandom(3));
+      $cardList = $discard->RemoveRandom(3);
+      $cards = explode(",", $cardList);
       $num6plus = 0;
-      for($i=0; $i<count($cards); ++$i)
-      {
-        WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
-        if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
-          ++$num6plus;
-          $deck->AddBottom($cards[$i], "GY");
+      if ($cardList != "") {
+        for($i=0; $i<count($cards); ++$i)
+        {
+          WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
+          if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
+            ++$num6plus;
+            $deck->AddBottom($cards[$i], "GY");
+          }
+          else $discard->Add($cards[$i]);
         }
-        else $discard->Add($cards[$i]);
-      }
-      if($num6plus > 0) {
-        GainHealth($num6plus, $currentPlayer);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        if($num6plus > 0) {
+          GainHealth($num6plus, $currentPlayer);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        }
       }
       return "";
     case "ironsong_versus"://Ironsong Versus
