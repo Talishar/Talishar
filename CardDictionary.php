@@ -946,6 +946,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
     "wrenchtastic" => 4, // AI custom weapon
     default => $basePower,
   };
+  // call BasePowerModifiers here?
   if ($lyathActive) $basePower = ceil($basePower / 2);
   return $basePower;
 }
