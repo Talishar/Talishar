@@ -19,7 +19,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     }
     if ($chainCard->PlayerID() == $mainPlayer) {
       if ($i == 0 && $attackType != "W") $power = $combatChainState[$CCS_LinkBasePower];
-      else $power = PowerValue($chainCard->ID());
+      else $power = PowerValue($chainCard->ID(), $mainPlayer, "CC");
       if ($canGainAttack || $i == 0 || $power < 0) {
         array_push($powerModifiers, $chainCard->ID());
         array_push($powerModifiers, $power);
@@ -120,6 +120,23 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       default:
         break;
     }
+  }
+}
+
+// function to recheck if things should trigger after gamestate change (like Lyath losing his ability)
+function ReEvalCombatChain() {
+  global $combatChain, $CombatChain, $combatChainState, $CCS_LinkBasePower, $mainPlayer, $defPlayer;
+  if ($CombatChain->HasCurrentLink()) {
+    // checking if things should trigger/be modified with the power change
+    $attackID = $CombatChain->AttackCard()->ID();
+    $combatChainState[$CCS_LinkBasePower] = PowerValue($attackID, $mainPlayer, "CC");
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] == $defPlayer) ProcessPhantasmOnBlock($i);
+    }
+    ProcessAllMirage();
+    $totalPower = 0;
+    $totalBlock = 0;
+    EvaluateCombatChain($totalPower, $totalBlock);
   }
 }
 
@@ -1964,11 +1981,11 @@ function DoesAttackHaveGoAgain()
     case "zealous_belting_red":
     case "zealous_belting_yellow":
     case "zealous_belting_blue":
-      return SearchPitchHighestAttack($mainPitch) > PowerValue($attackID);
+      return SearchPitchHighestAttack($mainPitch) > PowerValue($attackID, $mainPlayer, "CC");
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
-      return CachedTotalPower() > PowerValue($attackID);
+      return CachedTotalPower() > PowerValue($attackID, $mainPlayer, "CC");
     case "swarming_gloomveil_red":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "fractal_replication_red":
@@ -2598,17 +2615,6 @@ function BasePowerModifiers($attackID, $powerValue)
       break;
     default:
       break;
-  }
-  $char = GetPlayerCharacter($mainPlayer);
-  if ($char[1] < 3) {
-    switch ($char[0]) { //do I need both this and the lines in ModifiedPowerValue?
-      case "lyath_goldmane":
-      case "lyath_goldmane_vile_savant":
-        $powerValue = ceil($powerValue / 2);
-        break;
-      default:
-        break;
-    }
   }
   return $powerValue;
 }

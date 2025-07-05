@@ -89,7 +89,7 @@
     {
       case "skittering_sands_red": case "skittering_sands_yellow": case "skittering_sands_blue": return true;
       case "heat_wave": return IsCardNamed($mainPlayer, $attackID, "Phoenix Flame");
-      case "spreading_flames_red": return TalentContains($attackID, "DRACONIC", $mainPlayer) && PowerValue($attackID) < NumDraconicChainLinks();
+      case "spreading_flames_red": return TalentContains($attackID, "DRACONIC", $mainPlayer) && PowerValue($attackID, $mainPlayer, "CC") < NumDraconicChainLinks();
       case "mounting_anger_red": case "mounting_anger_yellow": case "mounting_anger_blue": return true;
       case "rise_from_the_ashes_red": case "rise_from_the_ashes_yellow": case "rise_from_the_ashes_blue": return CardType($attackID) == "AA" && (TalentContains($attackID, "DRACONIC", $mainPlayer) || ClassContains($attackID, "NINJA", $mainPlayer));
       case "brand_with_cinderclaw_red": case "brand_with_cinderclaw_yellow": case "brand_with_cinderclaw_blue": return true;

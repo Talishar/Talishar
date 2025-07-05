@@ -118,9 +118,10 @@ function DYNCombatEffectActive($cardID, $attackID)
   global $combatChainState, $CCS_IsBoosted, $mainPlayer;
   $params = explode(",", $cardID);
   $cardID = $params[0];
+  // Blessing of savagery needs to be reworked so it only checks when the attack is played
   switch($cardID) {
     case "savage_beatdown_red": return true;
-    case "blessing_of_savagery_red": case "blessing_of_savagery_yellow": case "blessing_of_savagery_blue": return PowerValue($attackID) >= 6;//Specifies base attack
+    case "blessing_of_savagery_red": case "blessing_of_savagery_yellow": case "blessing_of_savagery_blue": return PowerValue($attackID, $mainPlayer, "LAYER") >= 6;//Specifies base attack
     case "madcap_muscle_red": case "madcap_muscle_yellow": case "madcap_muscle_blue": return true;
     case "rumble_grunting_red": case "rumble_grunting_yellow": case "rumble_grunting_blue": return ClassContains($attackID, "BRUTE", $mainPlayer);
     case "buckle_blue": return ClassContains($attackID, "GUARDIAN", $mainPlayer);

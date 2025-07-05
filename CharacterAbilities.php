@@ -1484,7 +1484,7 @@ function CharacterPlayCardAbilities($cardID, $from)
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
       case "tiger_stripe_shuko":
-        if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID) <= 2) {
+        if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $currentPlayer, "CC") <= 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
         }

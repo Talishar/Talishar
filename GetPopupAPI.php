@@ -198,7 +198,7 @@ function ChainLinkObject($link)
     $card->Player = $chainLinks[$link][$i+1];
     if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR")
     {
-      $powerValue = PowerValue($chainLinks[$link][$i]) + $chainLinks[$link][$i + 4];
+      $powerValue = PowerValue($chainLinks[$link][$i], $mainPlayer, "CC") + $chainLinks[$link][$i + 4];
     }
     elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || DelimStringContains(CardType($chainLinks[$link][$i]), "I")))
     {

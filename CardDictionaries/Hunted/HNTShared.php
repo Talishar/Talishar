@@ -289,7 +289,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "lay_low_yellow" => true,
     "exposed_blue" => true,
     "nip_at_the_heels_blue" => true,
-    "trot_along_blue" => PowerValue($attackID, base:true) <= 3,
+    "trot_along_blue" => PowerValue($attackID, $mainPlayer, "LAYER", base:true) <= 3,
     "public_bounty_red",
     "public_bounty_yellow",
     "public_bounty_blue" => IsHeroAttackTarget() && CheckMarked($defPlayer),

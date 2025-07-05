@@ -2248,7 +2248,7 @@ function EffectDefenderPowerModifiers($cardID)
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1, $overrideType = "-")
 {
   global $mainPlayer, $currentTurnEffects, $p2IsAI;
-  $powerValue = PowerValue($cardID, $index);
+  $powerValue = PowerValue($cardID, $mainPlayer, "LAYER", $index);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = $overrideType == "-" ? GetResolvedAbilityType($cardID) : $overrideType;
   $abilityType = GetAbilityType($cardID, from: $from);

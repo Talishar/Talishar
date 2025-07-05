@@ -4058,7 +4058,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
 {
   global $CS_Num6PowBan;
   if ($cardID == "") return 0;
-  $power = PowerValue($cardID);
+  $power = PowerValue($cardID, $player, $from);
   if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($player) * 2;
   else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Power");
   else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $player);
@@ -4069,18 +4069,6 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
     $characterID = ShiyanaCharacter($char[0]);
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
   } else {
-    // effect that only affect CC
-    $char = GetPlayerCharacter($player);
-    if ($char[1] < 3) {
-      switch ($char[0]) {
-        case "lyath_goldmane":
-        case "lyath_goldmane_vile_savant":
-          $power = ceil($power / 2);
-          break;
-        default:
-          break;
-      }
-    }
     $power += EffectDefenderPowerModifiers($cardID);
   }
   $power += ItemsPowerModifiers($cardID, $player, $from);
@@ -4154,7 +4142,7 @@ function IsWeaponGreaterThanTwiceBasePower()
 {
   global $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
   if (count($combatChain) == 0) return false;
-  if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalPower() > (PowerValue($combatChain[0]) * 2)) return true;
+  if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalPower() > (PowerValue($combatChain[0], $mainPlayer, "CC") * 2)) return true;
   $char = &GetPlayerCharacter($mainPlayer);
   if ($char[CharacterPieces()] == "raydn_duskbane" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
   if ($char[CharacterPieces()] == "beaming_blade" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;

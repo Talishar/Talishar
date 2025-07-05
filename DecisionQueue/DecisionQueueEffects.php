@@ -429,6 +429,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects;
+  global $combatChainState, $CCS_LinkBasePower;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -696,7 +697,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "ALLURINGINDUCEMENT":
       global $combatChain, $combatChainState, $CCS_LinkBasePower;
       $combatChain[0] = $lastResult;
-      $combatChainState[$CCS_LinkBasePower] = PowerValue($combatChain[0]);
+      $combatChainState[$CCS_LinkBasePower] = PowerValue($combatChain[0], $mainPlayer, "CC");
       return $lastResult;
     case "CONSTRUCTNITROMECHANOID":
       sort($lastResult);
@@ -1047,6 +1048,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $char = &GetPlayerCharacter($player);
       $char[1] = 3;
       AddCurrentTurnEffect("liars_charm_yellow", $player);
+      ReEvalCombatChain();
     default: return "";
   }
 

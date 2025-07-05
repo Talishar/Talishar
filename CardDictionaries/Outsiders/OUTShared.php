@@ -135,7 +135,7 @@ function OUTAbilityCost($cardID)
       case "mask_of_many_faces": return CardType($attackID) == "AA";
       case "head_leads_the_tail_red": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
       case "be_like_water_red": case "be_like_water_yellow": case "be_like_water_blue": return true;
-      case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return CardType($attackID) == "AA" && PowerValue($attackID) <= 2;//Base power
+      case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return CardType($attackID) == "AA" && PowerValue($attackID, $mainPlayer, "LAYER") <= 2;//Base power
       case "buzzsaw_trap_blue": return true;
       case "melting_point_red": return CardSubType($attackID) == "Arrow";
       case "fletch_a_red_tail_red": case "fletch_a_yellow_tail_yellow": case "fletch_a_blue_tail_blue": return CardSubType($attackID) == "Arrow";
