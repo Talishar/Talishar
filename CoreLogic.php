@@ -1497,7 +1497,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   else if ($cardID == "requiem_for_the_damned_red") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
   else if ($cardID == "cull_red") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
-  if (SubtypeContains($cardID, "Evo")) {
+  if (SubtypeContains($cardID, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
     if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer) || SearchCurrentTurnEffects("teklovossen", $currentPlayer)) return true;
     if (SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_blue", $currentPlayer)) return true;
   }

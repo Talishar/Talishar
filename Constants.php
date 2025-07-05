@@ -715,7 +715,7 @@ function ResetCardPlayed($cardID, $from="-")
     SearchCurrentTurnEffects("chain_lightning_yellow", $currentPlayer, true);
     $effectRemoved = true;
   }
-  if (SubtypeContains($cardID, "Evo")) {
+  if (SubtypeContains($cardID, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
     //Section below helps with visualization and removing used effects
     SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer, true);
     SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer, true);
