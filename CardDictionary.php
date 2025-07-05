@@ -920,6 +920,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
       default: break;
     }
   }
+  $basePower = -1;
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
     if (SearchCharacterForCard($mainPlayer, "iris_of_reality")) $basePower = 4;
@@ -937,7 +938,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN"))
-    $basePower = GeneratedPowerValue($cardID);
+    $basePower = $basePower == -1 ? GeneratedPowerValue($cardID) : $basePower;
   }
   $basePower = match ($cardID) {
     "nitro_mechanoida" => 5,
@@ -949,7 +950,6 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
   };
   // call BasePowerModifiers here?
   if ($lyathActive) $basePower = ceil($basePower / 2);
-  if ($cardID == "leave_no_witnesses_red") WriteLog("HERE: $basePower");
   return $basePower;
 }
 
