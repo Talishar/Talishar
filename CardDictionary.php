@@ -913,7 +913,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
       case "ball_breaker": return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? $basePower+1 : $basePower;
       case "high_riser": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? $basePower+1 : $basePower;
       case "rotwood_reaper": return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? $basePower+2 : $basePower;
-      case "mark_of_the_huntsman" || $cardID == "mark_of_the_huntsman_r":
+      case "mark_of_the_huntsman":
+      case "mark_of_the_huntsman_r":
         if (!IsHeroAttackTarget()) return $basePower;
         else return CheckMarked($defPlayer) ? $basePower+1 : $basePower;
       default: break;
@@ -948,6 +949,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
   };
   // call BasePowerModifiers here?
   if ($lyathActive) $basePower = ceil($basePower / 2);
+  if ($cardID == "leave_no_witnesses_red") WriteLog("HERE: $basePower");
   return $basePower;
 }
 
