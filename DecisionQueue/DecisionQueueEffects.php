@@ -1051,7 +1051,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   }
 
 }
-function PitchCard($player, $search="MYHAND:pitch=1&MYHAND:pitch=2&MYHAND:pitch=3", $skipGain=false)
+function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3", $skipGain=false)
 {
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
   PrependDecisionQueue("PITCHABILITY", $player, "-", 1);

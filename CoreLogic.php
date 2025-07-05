@@ -1663,6 +1663,12 @@ function ColorContains($cardID, $color, $player)
   return DelimStringContains($cardColor, $color);
 }
 
+function PitchContains($cardID, $pitch)
+{
+  $cardPitch = PitchValue($cardID);
+  return $cardPitch == $pitch;
+}
+
 function TypeContains($cardID, $type, $player = "", $partial = false)
 {
   $cardType = CardType($cardID);
