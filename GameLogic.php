@@ -3026,7 +3026,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " copy and become " . CardLink($lastResult, $lastResult));
-      $combatChainState[$CCS_LinkBasePower] = PowerValue($lastResult);
+      $combatChainState[$CCS_LinkBasePower] = PowerValue($lastResult, $mainPlayer, "CC");
       $combatChain[0] = $lastResult;
       return $lastResult;
     case "EXTRAATTACK":

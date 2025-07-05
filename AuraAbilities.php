@@ -1331,7 +1331,7 @@ function AuraPlayAbilities($cardID, $from = "")
   }
   // handle runechants separately so we can handle large amounts of them
   $runechantCount = count($runechantUIDS);
-  $atkPower = isset($layers[0]) ?  PowerValue($layers[0]) : 0;
+  $atkPower = isset($layers[0]) ?  PowerValue($layers[0], $currentPlayer, "LAYERS") : 0;
   //if there are a lot of runechants, and there are enough runechants to probably be lethal
   //assumes that every card in teh opponent's hand can prevent 3 damage, and the arsenal can prevent 4
   if ($runechantCount > 40 && $runechantCount > GetHealth($defPlayer) + 20 - $atkPower) {

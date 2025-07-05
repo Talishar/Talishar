@@ -889,8 +889,7 @@ function BlockValue($cardID)
   }
 }
 
-// We may need to pass player here to check for lyath
-function PowerValue($cardID, $index=-1, $base=false)
+function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
 {
   global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn;
   if (!$cardID) return "";
@@ -898,60 +897,57 @@ function PowerValue($cardID, $index=-1, $base=false)
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
-  $lyathActive = SearchCharacterActive($mainPlayer, "lyath_goldmane_vile_savant") || SearchCharacterActive($mainPlayer, "lyath_goldmane");
+  $player = $player == "-" ? $mainPlayer : $player;
+  if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
+    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
+  }
+  else $lyathActive = false;
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
-    if ($cardID == "anothos") {
-      // this is a hacky check until we find a better solution
-      if ($lyathActive && SearchCharacterForCard($mainPlayer, $cardID)) {
-        return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 4 : 2;
-      }
-      else return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 4;
-    }
-    if ($cardID == "nebula_blade") return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 4 : 1;
-    if ($cardID == "titans_fist") {
-      // this is a hacky check until we find a better solution
-      if ($lyathActive && SearchCharacterForCard($mainPlayer, $cardID)) {
-        return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 3 : 2;
-      }
-      else return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 4 : 3;
-    }
-    if ($cardID == "hammer_of_havenhold") return SearchPitchForCard($mainPlayer, "chivalry_blue") > -1 ? 4 : 3;
-    if ($cardID == "ball_breaker") return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? 4 : 3;
-    if ($cardID == "high_riser") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
-    if ($cardID == "rotwood_reaper") return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 4 : 2;
-    if ($cardID == "mark_of_the_huntsman" || $cardID == "mark_of_the_huntsman_r") {
-      if (!IsHeroAttackTarget()) return 1;
-      else return CheckMarked($defPlayer) ? 2 : 1;
+    $basePower = PowerValue($cardID, $player, $from, $index, true);
+    switch ($cardID) {
+      case "anothos": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? $basePower+2 : $basePower;
+      case "nebula_blade": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? $basePower+3 : $basePower;
+      case "titans_fist": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? $basePower+1 : $basePower;
+      case "hammer_of_havenhold": return SearchPitchForCard($mainPlayer, "chivalry_blue") > -1 ? $basePower+1 : $basePower;
+      case "ball_breaker": return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? $basePower+1 : $basePower;
+      case "high_riser": return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? $basePower+1 : $basePower;
+      case "rotwood_reaper": return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? $basePower+2 : $basePower;
+      case "mark_of_the_huntsman" || $cardID == "mark_of_the_huntsman_r":
+        if (!IsHeroAttackTarget()) return $basePower;
+        else return CheckMarked($defPlayer) ? $basePower+1 : $basePower;
+      default: break;
     }
   }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
-    if (SearchCharacterForCard($mainPlayer, "luminaris")) return 1;
-    if (SearchCharacterForCard($mainPlayer, "iris_of_reality")) return 4;
-    if (SearchCharacterForCard($mainPlayer, "reality_refractor")) return 5;
+    if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
+    if (SearchCharacterForCard($mainPlayer, "iris_of_reality")) $basePower = 4;
+    if (SearchCharacterForCard($mainPlayer, "reality_refractor")) $basePower = 5;
     if (SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
       if ($index != -1) {
-        return WardAmount($cardID, $mainPlayer, $index);
+        $basePower = WardAmount($cardID, $mainPlayer, $index);
       }
     }
   }
-  if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($mainPlayer) * 2;
-  else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Power");
-  else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $currentPlayer);
+  if ($cardID == "mutated_mass_blue") $basePower = SearchPitchForNumCosts($mainPlayer) * 2;
+  else if ($cardID == "fractal_replication_red") $basePower = FractalReplicationStats("Power");
+  else if ($cardID == "spectral_procession_red") $basePower = CountAura("spectral_shield", $currentPlayer);
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400 || ($set != "MON" && $set != "DYN"))
-    return GeneratedPowerValue($cardID);
+    $basePower = GeneratedPowerValue($cardID);
   }
-  return match ($cardID) {
+  $basePower = match ($cardID) {
     "nitro_mechanoida" => 5,
     "suraya_archangel_of_knowledge" => 4,
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
-    default => 0,
+    default => $basePower,
   };
+  if ($lyathActive) $basePower = ceil($basePower / 2);
+  return $basePower;
 }
 
 function HasGoAgain($cardID, $from="-"): bool|int
@@ -1609,7 +1605,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase == "B" || $phase == "D") {
     if ($cardType == "AA") {
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
-      if ($baseAttackMax > -1 && PowerValue($cardID) > $baseAttackMax) return false;
+      if ($baseAttackMax > -1 && PowerValue($cardID, $mainPlayer, "LAYER") > $baseAttackMax) return false;
     }
     if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
     $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
@@ -1661,10 +1657,10 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     && $player == $defPlayer
     && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
-    $exudeAttack = PowerValue("exude_confidence_red");
+    $exudeAttack = PowerValue("exude_confidence_red", $mainPlayer, "CC");
     for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
       if (DelimStringContains(CardType($combatChain[$i]), "AA")) {
-        $powerValue = PowerValue($combatChain[$i]);
+        $powerValue = PowerValue($combatChain[$i], $defPlayer, "CC");
         if ($powerValue + $combatChain[$i + 5] >= $exudeAttack + $combatChain[5]) {
           $restriction = "";
         }
@@ -2074,7 +2070,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
-  if (SearchCurrentTurnEffects("crush_the_weak_red", $player) && CardType($cardID) == "AA" && PowerValue($cardID) <= 3) {
+  if (SearchCurrentTurnEffects("crush_the_weak_red", $player) && CardType($cardID) == "AA" && PowerValue($cardID, $mainPlayer, "LAYER") <= 3) {
     $restriction = "crush_the_weak_red";
     return true;
   }
@@ -2402,7 +2398,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       else if (count($layers) != 0) return !ClassContains($layers[0], "ILLUSIONIST", $player);
       return true;
     case "tide_flippers":
-      return !$CombatChain->HasCurrentLink() || PowerValue($CombatChain->AttackCard()->ID()) > 2 || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 2 || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "rapid_reflex_red":
     case "rapid_reflex_yellow":
     case "rapid_reflex_blue":
@@ -2507,7 +2503,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "short_and_sharp_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if ($subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && PowerValue($CombatChain->AttackCard()->ID()) <= 2)) return false;
+      if ($subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") <= 2)) return false;
       return true;
     case "mask_of_malicious_manifestations":
       return (count($myHand) + count($myArsenal)) < 2;
@@ -2524,7 +2520,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "fisticuffs":
       return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "fleet_foot_sandals":
-      return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || PowerValue($CombatChain->AttackCard()->ID()) > 1;
+      return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 1;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
       return count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
@@ -2628,7 +2624,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "blade_flurry_red":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
     case "shift_the_tide_of_battle_yellow":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID());
+      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC");
     case "cut_the_deck_red":
     case "cut_the_deck_yellow":
     case "cut_the_deck_blue":
@@ -2931,11 +2927,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "put_in_context_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (PowerValue($CombatChain->AttackCard()->ID()) > 3) return true;
+      if (PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 3) return true;
       return false;
     case "nip_at_the_heels_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (PowerValue($CombatChain->AttackCard()->ID()) > 3) return true;
+      if (PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 3) return true;
       return false;
     case "war_cry_of_bellona_yellow":
       if ($from == "HAND") return false;
@@ -4572,7 +4568,7 @@ function RequiresDieRoll($cardID, $from, $player): bool
   if (GetDieRoll($player) > 0) return false;
   if ($turn[0] == "B") return false;
   $type = CardType($cardID);
-  if ($type == "AA" && (GetResolvedAbilityType($cardID, $from, $player) == "" || GetResolvedAbilityType($cardID, $from, $player) == "AA") && PowerValue($cardID) >= 6 && (SearchCharacterActive($player, "kayo_berserker_runt") || SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $player))) return true;
+  if ($type == "AA" && (GetResolvedAbilityType($cardID, $from, $player) == "" || GetResolvedAbilityType($cardID, $from, $player) == "AA") && PowerValue($cardID, $player, "LAYER") >= 6 && (SearchCharacterActive($player, "kayo_berserker_runt") || SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $player))) return true;
   return match ($cardID) {
     "crazy_brew_blue" => $from == "PLAY",
     "scabskin_leathers", "barkbone_strapping", "bone_head_barrier_yellow", "argh_smash_yellow", "rolling_thunder_red", "bad_beats_red", "bad_beats_yellow", "bad_beats_blue", "knucklehead" => true,

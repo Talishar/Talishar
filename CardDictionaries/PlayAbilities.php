@@ -155,7 +155,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       return "";
     case "shift_the_tide_of_battle_yellow":
-      if (CachedTotalPower() > PowerValue($CombatChain->AttackCard()->ID())) {
+      if (CachedTotalPower() > PowerValue($CombatChain->AttackCard()->ID(), $currentPlayer, "CC")) {
         GiveAttackGoAgain();
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }

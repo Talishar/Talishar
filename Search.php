@@ -1245,10 +1245,10 @@ function SearchArcaneReplacement($player, $zone, $damage)
 
 function SearchChainLinks($minPower = -1, $maxPower = -1, $cardType = "")
 {
-  global $chainLinks;
+  global $chainLinks, $mainPlayer;
   $links = "";
   for ($i = 0; $i < count($chainLinks); ++$i) {
-    $power = PowerValue($chainLinks[$i][0]);
+    $power = PowerValue($chainLinks[$i][0], $mainPlayer, "CC");
     $type = CardType($chainLinks[$i][0]);
     if ($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower) && ($cardType == "" || $type == $cardType)) {
       if ($links != "") $links .= ",";

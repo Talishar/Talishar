@@ -146,7 +146,7 @@
       case "bravo_star_of_the_show": return CardCost($attackID) >= 3;
       case "valda_brightaxe": return HasCrush($attackID);
       case "pulverize_red": return true;
-      case "ride_the_tailwind_red": case "ride_the_tailwind_yellow": case "ride_the_tailwind_blue": return CardType($attackID) == "AA" && PowerValue($attackID) <= 2;//Base attack
+      case "ride_the_tailwind_red": case "ride_the_tailwind_yellow": case "ride_the_tailwind_blue": return CardType($attackID) == "AA" && PowerValue($attackID, $mainPlayer, "LAYER") <= 2;//Base attack
       case "twin_twisters_red-1": case "twin_twisters_yellow-1": case "twin_twisters_blue-1": return true;
       case "twin_twisters_red-2": case "twin_twisters_yellow-2": case "twin_twisters_blue-2": return true;
       case "slice_and_dice_red-1": case "slice_and_dice_yellow-1": case "slice_and_dice_blue-1":
