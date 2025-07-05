@@ -4069,19 +4069,6 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
     $characterID = ShiyanaCharacter($char[0]);
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
   } else {
-    // effect that only affect CC
-    // Don't think we need this
-    // $char = GetPlayerCharacter($player);
-    // if ($char[1] < 3) {
-    //   switch ($char[0]) {
-    //     case "lyath_goldmane":
-    //     case "lyath_goldmane_vile_savant":
-    //       $power = ceil($power / 2);
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // }
     $power += EffectDefenderPowerModifiers($cardID);
   }
   $power += ItemsPowerModifiers($cardID, $player, $from);
