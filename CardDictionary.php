@@ -889,6 +889,7 @@ function BlockValue($cardID)
   }
 }
 
+// We may need to pass player here to check for lyath
 function PowerValue($cardID, $index=-1, $base=false)
 {
   global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn;
@@ -897,12 +898,24 @@ function PowerValue($cardID, $index=-1, $base=false)
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
-
+  $lyathActive = SearchCharacterActive($mainPlayer, "lyath_goldmane_vile_savant") || SearchCharacterActive($mainPlayer, "lyath_goldmane");
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
-    if ($cardID == "anothos") return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 4;
+    if ($cardID == "anothos") {
+      // this is a hacky check until we find a better solution
+      if ($lyathActive && SearchCharacterForCard($mainPlayer, $cardID)) {
+        return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 4 : 2;
+      }
+      else return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 4;
+    }
     if ($cardID == "nebula_blade") return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? 4 : 1;
-    if ($cardID == "titans_fist") return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 4 : 3;
+    if ($cardID == "titans_fist") {
+      // this is a hacky check until we find a better solution
+      if ($lyathActive && SearchCharacterForCard($mainPlayer, $cardID)) {
+        return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 3 : 2;
+      }
+      else return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? 4 : 3;
+    }
     if ($cardID == "hammer_of_havenhold") return SearchPitchForCard($mainPlayer, "chivalry_blue") > -1 ? 4 : 3;
     if ($cardID == "ball_breaker") return GetClassState($mainPlayer, $CS_Num6PowDisc) >= 1 ? 4 : 3;
     if ($cardID == "high_riser") return GetClassState($mainPlayer, $CS_NumCardsDrawn) >= 1 ? 4 : 3;
