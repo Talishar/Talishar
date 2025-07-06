@@ -2825,6 +2825,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
       }
       break;
+    case "big_bertha_red":
+    case "big_bertha_yellow":
+    case "big_bertha_blue":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
+      break;
     case "civic_peak":
       Draw($otherPlayer);
       break;
@@ -2923,6 +2931,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
         }
       }
+      break;
+    case "fast_and_furious_red":
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item with cranked to get a steam counter", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
       break;
     case "kayo_armed_and_dangerous":
     case "kayo":

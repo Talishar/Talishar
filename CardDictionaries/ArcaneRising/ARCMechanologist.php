@@ -250,16 +250,10 @@ function OnBoostedEffects($player, $boosted)
   switch($boosted)
   {
     case "big_bertha_red": case "big_bertha_yellow": case "big_bertha_blue":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Hyper Driver to get a steam counter", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red");
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
+      AddLayer("TRIGGER", $player, $boosted);
       break;
     case "fast_and_furious_red":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item with cranked to get a steam counter", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true");
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
+      AddLayer("TRIGGER", $player, $boosted);
       break;
     default: break;
   }
