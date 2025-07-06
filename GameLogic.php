@@ -3249,6 +3249,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "CHECKALLYDEATH":
+      CheckAllyDeath($player == 1 ? 2 : 1);
+      CheckAllyDeath($player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

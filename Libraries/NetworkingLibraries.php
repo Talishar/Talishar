@@ -1045,6 +1045,7 @@ function ResolveChainLink()
 
   LogCombatResolutionStats($totalPower, $totalDefense);
   $targets = GetAttackTarget();
+  AddDecisionQueue("CHECKALLYDEATH", $mainPlayer, "-", 1);
   foreach(explode(",", $targets) as $target) {
     $target = explode("-", $target);
     if ($target[0] == "THEIRALLY") {
@@ -1067,7 +1068,6 @@ function ResolveChainLink()
       // if(!IsGameOver()) ResolveCombatDamage($damage, "HERO");
     }
   }
-  CheckAllyDeath($defPlayer);
   ProcessDecisionQueue();
 }
 
