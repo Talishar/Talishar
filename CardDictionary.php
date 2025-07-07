@@ -915,7 +915,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
       case "rotwood_reaper": return GetClassState($mainPlayer, $CS_NumAuras) > 0 ? $basePower+2 : $basePower;
       case "mark_of_the_huntsman":
       case "mark_of_the_huntsman_r":
-        if (!IsHeroAttackTarget()) return $basePower;
+        if (!IsHeroAttackTarget() || $from != "CC") return $basePower;
         else return CheckMarked($defPlayer) ? $basePower+1 : $basePower;
       default: break;
     }
