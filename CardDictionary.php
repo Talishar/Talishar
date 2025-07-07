@@ -3049,7 +3049,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $attackID = $CombatChain->AttackCard()->ID();
       if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
       return CheckTapped("MYCHAR-$index", $currentPlayer) || !SearchCharacterAlive($currentPlayer, "edge_of_autumn");
-    case "legacy_of_ikaru":
+    case "legacy_of_ikaru_blue":
       return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player);
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
