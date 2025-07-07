@@ -2055,12 +2055,12 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)
 {
-  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan, $CS_NumCardsDrawn;
+  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn;
+  global $CS_NumCardsDrawn, $chainLinkSummary;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
@@ -3048,7 +3048,17 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       $attackID = $CombatChain->AttackCard()->ID();
       if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
-      return CheckTapped("MYCHAR-$index", $currentPlayer) || !SearchCharacterAlive($currentPlayer, "edge_of_autumn");
+      $edgeThere = SearchCharacterAlive($currentPlayer, "edge_of_autumn");
+      $attacks = GetCombatChainAttacks();
+      for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
+        $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
+        $attackID = $attacks[$ind];
+        $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
+        if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Edge of Autumn")) {
+          $edgeThere = true;
+        }
+      }
+      return CheckTapped("MYCHAR-$index", $currentPlayer) || !$edgeThere;
     case "legacy_of_ikaru_blue":
       return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player);
     case "lyath_goldmane":

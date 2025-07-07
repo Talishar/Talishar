@@ -1303,7 +1303,7 @@ function EquipPayAdditionalCosts($cardIndex)
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       $char = GetPlayerCharacter($currentPlayer);
       $charInd = SearchCharacterForCards("edge_of_autumn", $currentPlayer);
-      $allInds = ["MYCHAR-$charInd"];
+      $allInds = $charInd != "" ? ["MYCHAR-$charInd"] : [];
       $attacks = GetCombatChainAttacks();
       for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
         $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
