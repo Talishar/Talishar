@@ -214,7 +214,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "angelic_wrath_red": case "angelic_wrath_yellow": case "angelic_wrath_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer, "PLAY");
+      if (!$CombatChain->HasCurrentLink()) break;
+      if (CardNameContains($CombatChain->AttackCard()->ID(), "Herald", $currentPlayer, true)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer, "PLAY");
+      }
+      else {
+        WriteLog("A previous chain link was targetted, for now no effect");
+      }
       break;
     case "celestial_reprimand_red": case "celestial_reprimand_yellow": case "celestial_reprimand_blue":
       if($cardID == "celestial_reprimand_red") $amount = -3;
