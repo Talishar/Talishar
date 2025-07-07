@@ -1028,9 +1028,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("EQUIPCARDINVENTORY", $mainPlayer, "<-");
       return $cardID;
     case "SCARWRAPS":
-      $ind = SearchBanishForCard($player, "edge_of_autumn");
-      RemoveBanish($player, $ind);
-      EquipWeapon($player, "edge_of_autumn", "okana_scar_wraps");
+      if ($lastResult != "PASS") {
+        $ind = SearchBanishForCard($player, "edge_of_autumn");
+        RemoveBanish($player, $ind);
+        EquipWeapon($player, "edge_of_autumn", "okana_scar_wraps");
+      }
       return "";
     case "BULLY":
       for ($i = 0; $i < $lastResult; ++$i) {
