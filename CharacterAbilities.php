@@ -1632,7 +1632,7 @@ function GetCharacterGemState($player, $cardID)
 {
   $char = &GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if ($char[$i] == $cardID) return $char[$i + 9];
+    if (isset($char[$i]) && $char[$i] == $cardID) return $char[$i + 9];
   }
   return 0;
 }

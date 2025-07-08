@@ -2763,7 +2763,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $ind = explode("-", $lastResult)[1] ?? "-";
       if ($ind == "FIRST") {
         for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
-          if (($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) || $currentInd == $ind) {
+          if (($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player)) {
             $pretrigger = array_slice($layers, $i, LayerPieces());
             $pretrigger[0] = "TRIGGER";
             for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
