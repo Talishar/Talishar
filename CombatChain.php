@@ -1236,7 +1236,9 @@ function OnBlockEffects($index, $from)
           }
           break;
         case "platinum_amulet_blue":
-          if(SearchCharacterForUniqueID($currentTurnEffects[$i+2], $defPlayer) != -1) {
+          $charInd = SearchCharacterForUniqueID($currentTurnEffects[$i+2], $defPlayer);
+          $defChar = GetPlayerCharacter($defPlayer);
+          if($charInd != -1 && $defChar[$charInd] == $chainCard->ID()) {
             $chainCard->ModifyDefense(1);
           }
           break;
