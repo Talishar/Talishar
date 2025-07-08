@@ -440,7 +440,7 @@ function SearchCharacterForCard($player, $cardID)
   $count = count($character);
   $pieces = CharacterPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($character[$i] == $cardID && $character[$i + 12] != "DOWN" && $character[$i + 1] != 0) return true;
+    if (isset($character[$i]) && $character[$i] == $cardID && $character[$i + 12] != "DOWN" && $character[$i + 1] != 0) return true;
   }
   return false;
 }
