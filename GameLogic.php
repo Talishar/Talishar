@@ -2155,7 +2155,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               // for now life isn't being tracked for perched allies
               $targetCard = GetMZCard($player, $lastResultArr[$i]);
               WriteLog(CardLink($targetCard, $targetCard) . " was shot down from its perch!");
-              DestroyCharacter($targetPlayer, $mzIndex[1]);
+              DestroyCharacter($target, $mzIndex[1]);
             }
           }
         }
