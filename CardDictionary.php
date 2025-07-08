@@ -828,6 +828,8 @@ function BlockValue($cardID)
       return 2;
     case "shock_frock":
       return 1;
+    case "zap_clappers":
+      return 2;
     case "okana_scar_wraps":
     case "iris_of_the_blossom":
       return 2;
