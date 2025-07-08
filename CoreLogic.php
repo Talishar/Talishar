@@ -2223,6 +2223,7 @@ function RemoveCharacter($player, $index)
   for ($i = 0; $i < CharacterPieces(); ++$i) {
     unset($char[$index + $i]);
   }
+  $char = array_values($char);
 }
 
 function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharactersSubcardIndex)
