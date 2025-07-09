@@ -1512,7 +1512,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BUFFARCANEPREVLAYER":
       global $layers;
       $index = 0;
-      for ($index = 0; $index < count($layers) && $layers[$index] == "TRIGGER"; $index += LayerPieces()) ;
+      for ($index = 0; $index < count($layers) && ($layers[$index] == "TRIGGER" || $layers[$index] == "PRETRIGGER"); $index += LayerPieces()) ;
       AddCurrentTurnEffect("metacarpus_node", $player, "PLAY", $layers[$index + 6]);
       return $lastResult;
     case "LASTARSENALADDEFFECT":
