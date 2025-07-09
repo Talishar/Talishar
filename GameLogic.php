@@ -1497,7 +1497,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SUBPITCHVALUE":
-      return $parameter - PitchValue($lastResult);
+      if (PitchValue($lastResult) == "") {
+        WriteLog("Something strange happened, please submit a bug report", highlight:true);
+        return 0;
+      }
+      else return $parameter - PitchValue($lastResult);
     case "GAINPITCHVALUE":
       $resources = &GetResources($player);
       $resources[0] += PitchValue($lastResult);
