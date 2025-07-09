@@ -561,7 +561,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = [];
   $response->playerDeckPopup = false;
-  if(IsGameOver() || (($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0") || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
+  if(IsGameOver() || (($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && (isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0")) || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
     for($i=0; $i<count($myDeck); $i+=DeckPieces()) {
       array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
     }
@@ -1277,7 +1277,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     case "CHOOSEMULTIZONE":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $options = explode(",", $turn[2]);
+        $options = isset($turn[2]) ? explode(",", $turn[2]) : [];
         $otherPlayer = $playerID == 2 ? 1 : 2;
         $theirAllies = &GetAllies($otherPlayer);
       $myAllies = &GetAllies($playerID);

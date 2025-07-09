@@ -1200,7 +1200,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "$params[0]-$indices-0";
     case "SONATAARCANIXSTEP2":
       $numArcane = count(explode(",", $lastResult));
-      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$target);
+      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$parameter);
       return 1;
     case "CHARGE":
       DQCharge();
@@ -1235,7 +1235,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
       if (SearchCharacterActive($player, "soulbond_resolve") && GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0) AddCurrentTurnEffect("soulbond_resolve", $player);
-      if (CardType($EffectContext) == "AA" || CardType($layers[0]) == "AA") ++$combatChainState[$CCS_AttackNumCharged];
+      
+      if (CardType($EffectContext) == "AA" || (isset($layers[0]) && CardType($layers[0]) == "AA")) ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
       $target = is_array($parameter) ? $parameter : explode("-", $parameter);

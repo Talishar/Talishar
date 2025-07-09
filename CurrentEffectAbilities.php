@@ -546,10 +546,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
       break;
     case "legacy_of_ikaru_blue":
-      $lastAttack = $chainLinks[count($chainLinks) - 1][0];
-      if (CardNameContains($lastAttack, "Edge of Autumn")) {
-        WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
-        Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
+      if (count($chainLinks) > 0) {
+        $lastAttack = $chainLinks[count($chainLinks) - 1][0];
+        if (CardNameContains($lastAttack, "Edge of Autumn")) {
+          WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
+          Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
+        }
       }
       break;
     default:

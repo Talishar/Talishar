@@ -171,7 +171,7 @@ if($handler) {
       $numHands = 0;
       $handItem->isQuiver = true;
     }
-    else if(HasPerched($cardID)) {
+    else if(HasPerched($handItem->id)) {
       $numHands = 0;
       $handItem->isOffhand = true;
     }
