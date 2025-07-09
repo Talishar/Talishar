@@ -54,9 +54,11 @@ if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_arra
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
 $output = "<span style='font-weight:bold; color:<PLAYER" . $playerID . "COLOR>;'>" . $displayName . ": </span>" . $chatText;
-fwrite($handler, $output . "\r\n");
-if (GetCachePiece($gameName, 11) >= 3) fwrite($handler, "The lobby is reactivated.\r\n");
-fclose($handler);
+if ($handler) {
+  fwrite($handler, $output . "\r\n");
+  if (GetCachePiece($gameName, 11) >= 3) fwrite($handler, "The lobby is reactivated.\r\n");
+  fclose($handler);
+}
 
 GamestateUpdated($gameName);
 if ($playerID == 1) SetCachePiece($gameName, 11, 0);
