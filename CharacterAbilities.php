@@ -1297,7 +1297,7 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "iris_of_the_blossom":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
-      PummelHit($currentPlayer);
+      PummelHit($currentPlayer, effectController:$currentPlayer);
       break;
     case "okana_scar_wraps":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
