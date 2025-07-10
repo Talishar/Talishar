@@ -3829,7 +3829,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "dig_in_yellow":
     case "dig_in_blue":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
       break;
@@ -3858,7 +3858,7 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       break;
     case "bully_tactics_red":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "BULLY", 1);
       break;
@@ -3866,7 +3866,7 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
     case "bask_in_your_own_greatness_yellow":
     case "bask_in_your_own_greatness_blue":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-      AddDecisionQueue("CHOOSENUMBER", $player, "1,2,3", 1);
+      AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "BASK,$cardID", 1);
       break;
