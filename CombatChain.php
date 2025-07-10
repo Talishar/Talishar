@@ -917,7 +917,7 @@ function OnBlockResolveEffects($cardID = "")
     }
     switch ($defendingCard) {
       case "stalagmite_bastion_of_isenloft":
-        if (!IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard);
+        if (!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard);
         else WriteLog("<span style='color:red;'>No ".CardLink("frostbite", "frostbite")." is created because there is no attacking hero when allies attack.</span>");
         break;
       case "ironhide_helm":

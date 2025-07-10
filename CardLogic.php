@@ -2271,7 +2271,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if(count($combatChain) > 0) DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
       break;
     case "stalagmite_bastion_of_isenloft":
-      PlayAura("frostbite", $player, effectController: $defPlayer);
+      PlayAura("frostbite", $mainPlayer, effectController: $defPlayer);
       break;
     case "blizzard_bolt_red":
     case "blizzard_bolt_yellow":
