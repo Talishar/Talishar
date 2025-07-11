@@ -540,7 +540,7 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP", "ASR", "SUP"];
+  $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP", "SUP"];
   // promos that are made legal ahead of thier set
   $specialReleases = ["valda_seismic_impact", "promising_terrain_blue", "draw_a_crowd_blue", "batter_to_a_pulp_red"];
   if (in_array($cardID, $specialReleases)) return false;
@@ -570,19 +570,6 @@ function isUnimplemented($cardID) {
         "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
         "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
         default => true
-      };
-    case "ASR":
-      return match($cardID) {
-        "enact_vengeance_red" => false,
-        "okana_scar_wraps" => false, //low quality image
-        "iris_of_the_blossom" => false, //low quality image
-        "bittering_thorns_blue" => false,
-        "robe_of_autumns_fall" => false,
-        "seek_vengeance_blue" => false,
-        "seek_vengeance_red" => false,
-        "vengeance_never_rests_blue" => false,
-        "legacy_of_ikaru_blue" => false,
-        default => true,
       };
     case "SUP":
       return match($cardID) {
@@ -641,7 +628,7 @@ function isBannedInFormat($cardID, $format) {
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
-          "count_your_blessings_red", "count_your_blessings_yellow", "germinate_blue", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade"
+          "count_your_blessings_red", "count_your_blessings_yellow", "germinate_blue", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
       ],
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
