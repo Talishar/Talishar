@@ -1598,7 +1598,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
     if ($from == "HAND") {
       if (!DelimStringContains($abilityTypes, "I", true) && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) return false;
-      if (!DelimStringContains($abilityTypes, "I", true) && CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      $benjiActive = CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA";
+      if ((!DelimStringContains($abilityTypes, "I", true) || $phase == "B") && $benjiActive) return false;
     }
     if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
       if (DelimStringContains($cardType, "A") || $cardType == "AA") return false;
