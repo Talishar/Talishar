@@ -6,7 +6,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers, $EffectContext;
-  global $chainLinks;
+  global $chainLinks, $chainLinkSummary;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($source == "-") {
     if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
@@ -547,10 +547,13 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       break;
     case "legacy_of_ikaru_blue":
       if (count($chainLinks) > 0) {
-        $lastAttack = $chainLinks[count($chainLinks) - 1][0];
-        if (CardNameContains($lastAttack, "Edge of Autumn")) {
-          WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
-          Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
+        $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
+        for ($i = 0; $i < count($lastAttackNames); ++$i) {
+          $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
+          if ($lastAttackName == "Edge of Autumn") {
+            WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
+            Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
+          }
         }
       }
       break;
