@@ -3951,6 +3951,8 @@ function CharacterDefaultActiveState($cardID)
     case "leap_frog_gloves":
     case "leap_frog_leggings":
     case "robe_of_autumns_fall":
+    case "prism_awakener_of_sol":
+    case "prism_advent_of_thrones":
       return 1;
     default:
       return 2;

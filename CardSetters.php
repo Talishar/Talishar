@@ -411,10 +411,10 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
     if ($isMainPhase && str_contains(NameOverride($cardID, $player), "Herald") && (SearchCharacterActive($player, "prism_awakener_of_sol") || SearchCharacterActive($player, "prism_advent_of_thrones"))) {
       if ($from != "CC") {
         $char = GetPlayerCharacter($player);
-        AddLayer("TRIGGER", $player, $char[0]);
+        if ($char[9] != 0) AddLayer("TRIGGER", $player, $char[0]);
       } elseif (CardNameContains($combatChain[0], "Herald", $player, true)) {
         $char = GetPlayerCharacter($player);
-        AddLayer("TRIGGER", $player, $char[0]);
+        if ($char[9] != 0) AddLayer("TRIGGER", $player, $char[0]);
       }
     }
     if ($player == $mainPlayer)
