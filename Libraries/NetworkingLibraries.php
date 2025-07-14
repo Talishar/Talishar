@@ -3387,7 +3387,11 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "tarantula_toxin_red":
       if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Buff_Power,Reduce_Block,Both";
       elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power";
-      else $modalities = "Reduce_Block";
+      elseif (HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Reduce_Block";
+      else {
+        WriteLog("A previous chain link was targetted");
+        break;
+      }
       $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);

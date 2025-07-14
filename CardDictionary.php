@@ -2795,6 +2795,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
             if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
           }
         }
+        if (SubtypeContains($chainLinks[$i][0], "Dagger", $currentPlayer)) {
+          if ($chainLinks[$i][2] == 1) return false;
+          if (SearchCharacterForUniqueID($chainLinks[$i][8], $currentPlayer) != -1) return false;
+        }
       }
       if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
