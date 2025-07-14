@@ -2432,7 +2432,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else WriteLog(CardLink("tripwire_trap_red", "tripwire_trap_red") . " received an eratta that causes to prevent flick effects.");
       //handling flick knives and mark
-      if (CheckMarked($defPlayer)) {
+      if (CheckMarked($defPlayer) && $targetPlayer == $defPlayer) {
         RemoveMark($defPlayer);
       }
       return $parameters[0];
