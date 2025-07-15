@@ -717,6 +717,9 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":
       case "brand_with_cinderclaw_blue":
+      case "shred_red":
+      case "shred_yellow":
+      case "shred_blue":
       case "scramble_pulse_red":
       case "scramble_pulse_yellow":
       case "scramble_pulse_blue": 
