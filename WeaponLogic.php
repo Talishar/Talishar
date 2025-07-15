@@ -34,7 +34,7 @@ function WeaponIndices($chooser, $player, $subtype = "")
   $character = GetPlayerCharacter($player);
   $weapons = "";
   for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if ($character[$i + 1] != 0 && CardType($character[$i]) == "W" && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
+    if ($character[$i + 1] != 0 && TypeContains($character[$i], "W") && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
       if ($weapons != "") $weapons .= ",";
       $weapons .= $whoPrefix . "CHAR-" . $i;
     }

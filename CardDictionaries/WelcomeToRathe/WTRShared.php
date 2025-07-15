@@ -260,10 +260,11 @@
         return "";
       case "steelblade_supremacy_red": case "ironsong_determination_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose_target_weapon");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDMZBUFF", $currentPlayer, $cardID, 1);
+        $targetMZInd = SearchCharacterForUniqueID(explode("-", $target)[1], $currentPlayer);
+        if ($targetMZInd != -1) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-$targetMZInd");
+          AddDecisionQueue("ADDMZBUFF", $currentPlayer, $cardID, 1);
+        }
         return "";
       case "rout_red":
         $options = GetChainLinkCards($defPlayer, "", "E,C", exclCardSubTypes:"Evo");
