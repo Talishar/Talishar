@@ -3430,9 +3430,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "schism_of_chaos_blue":
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
-      AddDecisionQueue("ADDARSENALFROMDECK", $mainPlayer, "-");
+      AddDecisionQueue("ADDARSENALFROMDECK", $mainPlayer, "DECK-DOWN");
       AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
-      AddDecisionQueue("ADDARSENALFROMDECK", $defPlayer, "-");
+      AddDecisionQueue("ADDARSENALFROMDECK", $defPlayer, "DECK-DOWN");
       break;
     case "mask_of_deceit":
       $char = &GetPlayerCharacter($player);
