@@ -4324,7 +4324,8 @@ function HasSteamCounter($array, $index, $player)
 function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
 {
   // handles running the left side of meld cards
-  global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts;
+  global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken;
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($parameter) {
     case "thistle_bloom__life_yellow":
       PlayAura("runechant", $player, GetClassState($player, $CS_HealthGained));
@@ -4369,8 +4370,8 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       DealArcane(5, 2, "PLAYCARD", $parameter, player:$player, meldState: $meldState, resolvedTarget:$stormTarget);
       break;
     case "regrowth__shock_blue":
-      if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minCost=0;maxCost=" . GetClassState($player, $CS_ArcaneDamageDealt)-1, "MYHAND", DQContext: "Choose an attack action card with cost less than " . GetClassState($player, $CS_ArcaneDamageDealt)-1);
+      if (GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) {
+        MZMoveCard($player, "MYDISCARD:type=AA;minCost=0;maxCost=" .GetClassState($otherPlayer, $CS_ArcaneDamageTaken) -1, "MYHAND", DQContext: "Choose an attack action card with cost less than " . GetClassState($player, $CS_ArcaneDamageDealt)-1);
       }
       break;
     case "consign_to_cosmos__shock_yellow":

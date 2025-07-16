@@ -1478,7 +1478,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
-  global $combatChainState, $CCS_EclecticMag;
+  global $combatChainState, $CCS_EclecticMag, $CS_ArcaneDamageDealt;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
@@ -1586,7 +1586,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "astral_etchings_blue":
       return SearchAuras("spectral_shield", $currentPlayer);
     case "succumb_to_temptation_yellow":
-      return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
+      return GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0;
     case "burn_bare":
       if ($from != "HAND") return false;
       return IsPhantasmActive();
