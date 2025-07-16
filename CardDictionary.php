@@ -827,6 +827,7 @@ function BlockValue($cardID)
     case "crash_and_bash_blue":
       return 2;
     case "shock_frock":
+    case "starlight_striders":
       return 1;
     case "zap_clappers":
       return 2;
