@@ -91,6 +91,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01J202NH0RG8S0V8WXH1FWB2AH", //boltyn
   "https://fabrary.net/decks/01HWNCK2BYPVKK6701052YYXMZ", //kayo
   "https://fabrary.net/decks/01JVYZ0NCHP49HAP40C23P14E3", //gravy
+  "https://fabrary.net/decks/01JZ97KZ5TQV8E0FYMAM0XVNX7", //ira
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
