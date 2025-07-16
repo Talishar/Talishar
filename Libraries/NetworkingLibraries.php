@@ -3396,7 +3396,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power";
       elseif (HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Reduce_Block";
       else {
-        WriteLog("A previous chain link was targetted");
+        WriteLog("A previous chain link was targeted");
         break;
       }
       $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");

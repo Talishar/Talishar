@@ -777,7 +777,7 @@ function OUTAbilityCost($cardID)
       if ($targets[0] == "COMBATCHAINATTACKS") {
         $ccAttacks = GetCombatChainAttacks();
         if ($ccAttacks[$targetWeapon + 2] != 1) {
-          WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
+          WriteLog("The targeted dagger is no longer there, the layer fails to resolve");
           return;
         }
         $weaponTargetInd = "COMBATCHAINATTACKS-" . $targetWeapon;
@@ -786,7 +786,7 @@ function OUTAbilityCost($cardID)
         $index = SearchCharacterForUniqueID($targetWeapon, $currentPlayer);
         $char = GetPlayerCharacter($currentPlayer);
         if ($index == -1 || $char[$index + 1] == 0) {
-          WriteLog("The targetted dagger is no longer there, the layer fails to resolve");
+          WriteLog("The targeted dagger is no longer there, the layer fails to resolve");
           return;
         }
         $weaponTargetInd = "MYCHAR-$index";

@@ -302,7 +302,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $search = "$targPlayer:maxCost=0&LAYER:subtype=Aura;maxCost=0";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
-      //remove any choices that have already been targetted
+      //remove any choices that have already been targeted
       foreach ($rvOrig as $ind) {
         if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
       }
@@ -313,7 +313,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $search = "MYITEMS:subtype=Cog";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
-      //remove any choices that have already been targetted
+      //remove any choices that have already been targeted
       foreach ($rvOrig as $ind) {
         if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
       }
@@ -2707,7 +2707,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $targetClass = TriggerTargets($params[0]);
       if ($targetClass != "") {
         $targetedPlayer = (DelimStringContains($lastResult, "THEIR", true)) ? (($player == 1) ? 2 : 1) : $player;        
-        WriteLog(GetMZCardLink($targetedPlayer, $lastResult) . " targetted by " . CardLink($params[0], $params[0]) . "'s trigger");
+        WriteLog(GetMZCardLink($targetedPlayer, $lastResult) . " targeted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
       switch ($params[0]) { //these targetting effects need UID
         case "runic_reclamation_red":
