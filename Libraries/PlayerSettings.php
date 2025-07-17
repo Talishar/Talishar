@@ -210,6 +210,7 @@ function GetCardBack($player)
     case 110: return "CBSteelfur";
     case 111: return "CBFleshAndBad";
     case 112: return "CBFabledBrazil";
+    case 113: return "CBSilvarisGarden";
     default: return "CardBack";
   };
 }
@@ -527,7 +528,7 @@ function IsTeamTideBreakers($userID)
   switch($userID) {
     case "OotTheMonk": case "Yarandor": case "grossmaul2130": case "EggShot": case "Kasadoom": case "Gulto":
     case "FinnElbe": case "Stardragon": case "DragonSlayer": case "TerranceSkill": case "TaddelDown":
-    case "Ilya": case "PastaPaul": case "DragonSlayer":
+    case "Ilya": case "PastaPaul":
       return true;
     default: break;
   }
