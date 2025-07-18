@@ -631,6 +631,7 @@ function isBannedInFormat($cardID, $format) {
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
           "count_your_blessings_red", "count_your_blessings_yellow", "germinate_blue", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
+          "azalea_ace_in_the_hole", "death_dealer",
       ],
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
