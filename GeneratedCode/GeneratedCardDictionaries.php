@@ -47894,6 +47894,7 @@ default => ""
 function GeneratedSetID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"pleiades" => "APS002",
 "old_leather_and_vim_red" => "SUP008",
 "uplifting_performance_blue" => "SUP016",
 "outside_interference_blue" => "SUP066",
@@ -47905,6 +47906,9 @@ return match($cardID) {
 "punching_gloves" => "SUP213",
 "topy_jugs" => "SUP214",
 "overcrowded_blue" => "SUP215",
+"standing_ovation_blue" => "APS019",
+"confidence" => "APS031",
+"toughness" => "APS032",
 "10000_year_reunion_red" => "MST131",
 "a_drop_in_the_ocean_blue" => "MST095",
 "absorb_in_aether_red" => "ARC123",
@@ -51844,7 +51848,7 @@ default => ""
 function GeneratedSetIDtoCardID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"" => "yorick_weaver_of_tales",
+"APS002" => "pleiades",
 "SUP008" => "old_leather_and_vim_red",
 "SUP016" => "uplifting_performance_blue",
 "SUP066" => "outside_interference_blue",
@@ -51856,6 +51860,9 @@ return match($cardID) {
 "SUP213" => "punching_gloves",
 "SUP214" => "topy_jugs",
 "SUP215" => "overcrowded_blue",
+"APS019" => "standing_ovation_blue",
+"APS031" => "confidence",
+"APS032" => "toughness",
 "MST131" => "10000_year_reunion_red",
 "MST095" => "a_drop_in_the_ocean_blue",
 "ARC123" => "absorb_in_aether_red",
@@ -52087,6 +52094,7 @@ return match($cardID) {
 "SEA152" => "battalion_barque_red",
 "SEA153" => "battalion_barque_yellow",
 "SEA154" => "battalion_barque_blue",
+"" => "yorick_weaver_of_tales",
 "HVY140" => "battered_not_broken_red",
 "EVR088" => "battering_bolt_red",
 "MON036" => "battlefield_blitz_red",
