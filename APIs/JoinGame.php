@@ -494,7 +494,7 @@ function isCardLegalinHero($cardID, $hero) {
     case "oldhim":
     case "oldhim_grandfather_of_eternity":
     case "jarl_vetreidi":
-      array_push($heroTalent, "LIGHTNING");
+      array_push($heroTalent, "ICE");
       array_push($heroTalent, "EARTH");
       break;
     case "aurora":
