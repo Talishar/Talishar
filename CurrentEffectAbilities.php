@@ -1943,6 +1943,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "MPG") return MPGCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "ASR") return ASRCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "SUP") return SUPCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "APS") return SUPCombatEffectActive($cardID, $cardToCheck); //temporary
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);
