@@ -272,17 +272,41 @@ function Cheer($player)
   }
 }
 
-function GetSuspenseAuras()
+function HasSuspense($cardID)
 {
-  return [];
+  return match($cardID) {
+    "in_the_palm_of_your_hand_red" => true,
+    default => false
+  };
 }
 
-function RemoveSuspense()
+function GetSuspenseAuras($player)
 {
-
+  $auras = GetAuras($player);
+  $susp = [];
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if (HasSuspense($auras[$i])) array_push($susp, "MYAURAS-$i");
+  }
+  return $susp;
 }
 
-function AddSuspense()
+function RemoveSuspense($player, $MZIndex)
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
+  $auras = &GetAuras($targetPlayer);
+  $ind = explode("-", $MZIndex)[1];
+  --$auras[$ind + 2];
+  if ($auras[$ind + 2] == 0) {
+    DestroyAura($targetPlayer, $ind);
+  }
+}
 
+function AddSuspense($player, $MZIndex)
+{
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
+  $auras = &GetAuras($targetPlayer);
+  $ind = explode("-", $MZIndex)[1];
+  ++$auras[$ind + 2];
 }

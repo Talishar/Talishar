@@ -3105,7 +3105,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "pleiades_superstar":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       //check that there's an aura with a suspense counter
-      if (count(GetSuspenseAuras()) == 0) return true;
+      if (count(GetSuspenseAuras($currentPlayer)) == 0) return true;
       return false;
     default:
       return false;
