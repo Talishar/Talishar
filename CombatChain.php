@@ -1242,6 +1242,10 @@ function OnBlockEffects($index, $from)
             $chainCard->ModifyDefense(1);
           }
           break;
+        case "toughness":
+          if (TypeContains($chainCard->ID(), "A") || TypeContains($chainCard->ID(), "AA")) $chainCard->ModifyDefense(1);
+          $remove = true;
+          break;
         default:
           break;
       }

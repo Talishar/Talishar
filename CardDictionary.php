@@ -1769,6 +1769,9 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
   if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
   }
+  if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+    if (NumNonBlocksDefending() >= 1 && !TypeContains($cardID, "B")) return true;
+  }
   //current turn effects
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $defPlayer) {

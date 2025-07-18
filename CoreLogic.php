@@ -1371,6 +1371,19 @@ function NumActionsBlocking()
   return $num;
 }
 
+function NumNonBlocksDefending()
+{
+  global $CombatChain, $defPlayer;
+  $num = 0;
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber: true);
+    if ($chainCard->PlayerID() == $defPlayer) {
+      if (!TypeContains($chainCard->ID(), "B")) ++$num;
+    }
+  }
+  return $num;
+}
+
 function GetCardIDBeforeTransform($cardID)
 {
   $splitCard = explode("_", $cardID);

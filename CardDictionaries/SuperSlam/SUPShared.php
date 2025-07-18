@@ -43,7 +43,9 @@ function SUPEffectPowerModifier($cardID): int
 
 function SUPCombatEffectActive($cardID, $attackID): bool
 {
+  global $mainPlayer;
   return match ($cardID) {
+    "confidence" => TypeContains($attackID, "AA", $mainPlayer),
     default => false,
   };
 }

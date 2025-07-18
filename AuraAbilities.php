@@ -706,6 +706,10 @@ function AuraStartTurnAbilities()
       }
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
+    case "confidence":
+      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
     default:
       break;
     }
@@ -736,6 +740,10 @@ function AuraStartTurnAbilities()
         }
         LoseHealth($eqFrostbiteCount, $mainPlayer);
         WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
+        break;
+      case "toughness":
+        AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY");
+        DestroyAuraUniqueID($defPlayer, $defPlayerAuras[$i + 6]);
         break;
       default:
         break;
