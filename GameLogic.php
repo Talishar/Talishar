@@ -3258,6 +3258,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       CheckAllyDeath($player == 1 ? 2 : 1);
       CheckAllyDeath($player);
       return $lastResult;
+    case "SUSPENSE":
+      switch($parameter) {
+        case "REMOVE":
+          RemoveSuspense($player, $lastResult);
+          break;
+        case "ADD":
+          AddSuspense($player, $lastResult);
+          break;
+        default: break;
+      }
+      break;
     default:
       return "NOTSTATIC";
   }

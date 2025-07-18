@@ -3831,6 +3831,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
       break;
+    case "in_the_palm_of_your_hand_red":
+      Draw($player, effectSource:$parameter);
+      break;
     default:
       break;
   }

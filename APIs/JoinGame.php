@@ -593,6 +593,7 @@ function isUnimplemented($cardID) {
         "thespian_charm_yellow" => false,
         "numbskull_charm_yellow" => false,
         "cheaters_charm_yellow" => false,
+        "in_the_palm_of_your_hand_red" => false,
         default => true
       };
     default:

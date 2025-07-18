@@ -82,7 +82,17 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "pleiades":
     case "pleiades_superstar":
-      //put a suspense counter on an aura of suspense you control
+      $suspAuras = GetSuspenseAuras($currentPlayer);
+      if (count($suspAuras) > 0) {
+        $suspAuras = implode(",", GetSuspenseAuras($currentPlayer));
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $suspAuras);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to add a suspense counter to (or pass)", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SUSPENSE", $currentPlayer, "ADD", 1);
+      }
+      break;
+    case "in_the_palm_of_your_hand_red":
+      AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "comeback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
     case "comeback_kid_yellow":
@@ -104,9 +114,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         switch($params[$i]) {
           case "destroy_a_might_or_vigor":
             $search = "THEIRAURAS:cardID=might;cardID=vigor";
-            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search, 1);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
             break;
           case "cheer":
@@ -116,7 +126,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $search = "MYAURAS";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to return to hand", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZBOUNCE", $currentPlayer, "<-", 1);
             break;
           default: break;
@@ -131,7 +141,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
             break;
           case "boo":
@@ -162,7 +172,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $search = "THEIRAURAS:cardID=confidence;cardID=might";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
             break;
           case "cheer":
@@ -188,7 +198,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $search = "THEIRAURAS:cardID=confidence;cardID=toughness";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "-", 1);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
             break;
           case "boo":

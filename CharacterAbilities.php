@@ -1336,8 +1336,12 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "pleiades":
     case "pleiades_superstar":
-      // remove a suspense counter
       Tap("MYCHAR-$cardIndex", $currentPlayer);
+      $suspAuras = implode(",", GetSuspenseAuras($currentPlayer));
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $suspAuras);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a suspense counter from", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SUSPENSE", $currentPlayer, "REMOVE", 1);
       break;
     case "kayo_underhanded_cheat":
     case "kayo_strong_arm":

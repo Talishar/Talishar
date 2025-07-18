@@ -284,6 +284,9 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       AddDecisionQueue("DISCARDCARD", $player, "HAND-$player", 1);
       AddDecisionQueue("DRAW", $player, $cardID);
       break;
+    case "in_the_palm_of_your_hand_red":
+      AddLayer("TRIGGER", $player, $cardID);
+      break;
     default:
       break;
   }
@@ -294,6 +297,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
 
 function AuraPlayCounters($cardID)
 {
+  if (HasSuspense($cardID)) return 2;
   switch ($cardID) {
     case "zen_state":
     case "preach_modesty_red":
@@ -314,10 +318,10 @@ function AuraPlayCounters($cardID)
   }
 }
 
-function DestroyAuraUniqueID($player, $uniqueID, $location = "AURAS")
+function DestroyAuraUniqueID($player, $uniqueID, $location = "AURAS", $skipTrigger = false)
 {
   $index = $location == "AURAS" ? SearchAurasForUniqueID($uniqueID, $player) : SearchCharacterForUniqueID($uniqueID, $player);
-  if ($index != -1) DestroyAura($player, $index, $uniqueID, $location);
+  if ($index != -1) DestroyAura($player, $index, $uniqueID, $location, $skipTrigger);
 }
 
 function DestroyAuraByID($player, $cardID)
@@ -367,7 +371,7 @@ function &GetAurasLocation($player, $location)
   return $auras;
 }
 
-function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS")
+function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false)
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
   $auras = &GetAurasLocation($player, $location);
@@ -377,7 +381,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS")
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
-  $cardID = RemoveAura($player, $index, $uniqueID, $location);
+  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger);
   AuraDestroyed($player, $cardID, $isToken, $from);
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
@@ -407,9 +411,9 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
   }
 }
 
-function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS")
+function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false)
 {
-  AuraLeavesPlay($player, $index, $uniqueID, $location);
+  if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
     $cardID = $auras[$index];
@@ -709,6 +713,14 @@ function AuraStartTurnAbilities()
     case "confidence":
       AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
+    case "in_the_palm_of_your_hand_red":
+      --$auras[$i + 2];
+      if ($auras[$i + 2] == 0) {
+        // need to do this to pass "mainPhase: false"
+        Draw($mainPlayer, false, true, $auras[$i]);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6], skipTrigger:true);
+      }
       break;
     default:
       break;
