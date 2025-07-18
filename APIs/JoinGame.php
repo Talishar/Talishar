@@ -507,7 +507,7 @@ function isCardLegalinHero($cardID, $hero) {
     case "verdance_thorn_of_the_rose":
     case "florian":
     case "florian_rotwood_harbinger":
-      array_push($heroTalent, "LIGHTNING");
+      array_push($heroTalent, "EARTH");
       break;
     case "iyslander":
     case "iyslander_stormbind":
