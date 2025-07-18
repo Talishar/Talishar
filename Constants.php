@@ -367,6 +367,7 @@ $CS_NumAttackCardsAttacked = 101;
 $CS_NumAttackCardsBlocked = 102;
 $CS_CheeredThisTurn = 103;
 $CS_BooedThisTurn = 104;
+$CS_SuspensePoppedThisTurn = 104;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -596,7 +597,7 @@ function ResetMainClassState()
   global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
   global $CS_PowDamageDealt, $CS_NumTimesAttacked, $CS_NumAllyPutInGraveyard, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
   global $CS_TunicTicks, $CS_NumGoldCreated, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
-  global $CS_CheeredThisTurn, $CS_BooedThisTurn;
+  global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -701,6 +702,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumAttackCardsBlocked] = 0;
   $mainClassState[$CS_CheeredThisTurn] = 0;
   $mainClassState[$CS_BooedThisTurn] = 0;
+  $mainClassState[$CS_SuspensePoppedThisTurn] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

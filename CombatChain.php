@@ -80,6 +80,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   else if ($set == "SEA") return SEAHitEffect($cardID);
   else if ($set == "ASR") return ASRHitEffect($cardID);
   else if ($set == "SUP") return SUPHitEffect($cardID);
+  else if ($set == "APS") return APSHitEffect($cardID);
   else return -1;
 }
 

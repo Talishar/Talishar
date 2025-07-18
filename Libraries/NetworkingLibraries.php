@@ -1423,6 +1423,7 @@ function FinalizeTurn()
   global $mainHand, $defHand, $currentTurnEffectsFromCombat, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup;
+  $extraTurn = SearchCurrentTurnEffects("standing_ovation_blue", $mainPlayer);
   $EffectContext = "-";
   ResetStolenCards();
   LogEndTurnStats($mainPlayer);
@@ -1469,7 +1470,7 @@ function FinalizeTurn()
   $defResources[1] = 0;
   $lastPlayed = [];
   // 4.4.3e The turn player draws cards until the number of cards in their hand is equal to their hero's intellect
-  if ($mainPlayer == $firstPlayer && $currentTurn == 1)//Defender draws up on turn 1
+  if (($mainPlayer == $firstPlayer && $currentTurn == 1) || $extraTurn)//Defender draws up on turn 1
   {
     $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
     for ($i = 0; $i < $toDraw; ++$i) {
@@ -1503,9 +1504,11 @@ function FinalizeTurn()
     } else --$nextTurnEffects[$i + 4];
   }
   $nextTurnEffects = array_values($nextTurnEffects);
-  $defPlayer = $mainPlayer;
-  $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
-  $currentPlayer = $mainPlayer;
+  if (!$extraTurn) {
+    $defPlayer = $mainPlayer;
+    $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
+    $currentPlayer = $mainPlayer;
+  }
   BuildMainPlayerGameState();
   ResetMainClassState();
   //Start of turn effects
@@ -1514,7 +1517,8 @@ function FinalizeTurn()
   $MakeStartTurnBackup = true;
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
-  WriteLog("Player $mainPlayer's turn $currentTurn has begun.");
+  if (!$extraTurn) WriteLog("Player $mainPlayer's turn $currentTurn has begun.");
+  else WriteLog("Player $mainPlayer's  extra turn $currentTurn has begun.");
   DoGamestateUpdate();
   ProcessDecisionQueue();
 }

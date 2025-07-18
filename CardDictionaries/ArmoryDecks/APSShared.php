@@ -1,0 +1,60 @@
+<?php
+
+function APSAbilityType($cardID, $index = -1, $from = "-"): string
+{
+  return match ($cardID) {
+    default => ""
+  };
+}
+
+function APSAbilityHasGoAgain($cardID): bool
+{
+  return match ($cardID) {
+    default => false
+  };
+}
+
+function APSEffectPowerModifier($cardID): int
+{
+  global $currentPlayer, $defPlayer;
+  return match ($cardID) {
+    default => 0
+  };
+}
+
+function APSHitEffect($cardID): void
+{
+  global $mainPlayer;
+  switch ($cardID) {
+    case "standing_ovation_blue":
+      AddCurrentTurnEffect($cardID, $mainPlayer);
+      break;
+    default:
+      break;
+  }
+}
+
+function APSCombatEffectActive($cardID, $attackID): bool
+{
+  global $mainPlayer;
+  return match($cardID) {
+    //right now confidence was first revealed in the armory deck
+    "confidence" => TypeContains($attackID, "AA", $mainPlayer),
+    default => false
+  };
+}
+
+function APSAbilityCost($cardID): int
+{
+  return match($cardID) {
+    default => 0
+  };
+}
+
+function APSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
+{
+  switch ($cardID) {
+    default:
+      return "";
+  }
+}

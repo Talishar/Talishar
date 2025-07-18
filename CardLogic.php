@@ -654,7 +654,7 @@ function CardPlayTrigger($cardID, $from)
 
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
-  global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged;
+  global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   switch ($cardID) {
@@ -1273,11 +1273,19 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
+      break;
     case "swarming_gloomveil_red":
       if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) >= 3) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
+      break;
+    case "standing_ovation_blue":
+      if (GetClassState($mainPlayer, $CS_SuspensePoppedThisTurn) >= 3) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
     default:
       break;
   }

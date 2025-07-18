@@ -50,6 +50,7 @@ include "CardDictionaries/ArmoryDecks/AGBShared.php";
 include "CardDictionaries/ArmoryDecks/ASRShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "CardDictionaries/SuperSlam/SUPShared.php";
+include "CardDictionaries/ArmoryDecks/APSShared.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";
@@ -705,6 +706,7 @@ function AbilityCost($cardID)
   else if ($set == "AST") return ASTAbilityCost($cardID);
   else if ($set == "AGB") return AGBAbilityCost($cardID);
   else if ($set == "SUP") return SUPAbilityCost($cardID);
+  else if ($set == "APS") return APSAbilityCost($cardID);
   else switch ($cardID) {
     case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
@@ -1215,6 +1217,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "ASR") return ASRAbilityType($cardID);
   else if ($set == "AGB") return AGBAbilityType($cardID, $from);
   else if ($set == "SUP") return SUPAbilityType($cardID);
+  else if ($set == "APS") return APSAbilityType($cardID);
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
@@ -3741,6 +3744,7 @@ function AbilityHasGoAgain($cardID, $from)
   else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
   else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
   else if ($set == "SUP") return SUPAbilityHasGoAgain($cardID);
+  else if ($set == "APS") return APSAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "bravo_flattering_showman":

@@ -413,10 +413,12 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
 
 function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false)
 {
+  global $CS_SuspensePoppedThisTurn;
   if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
     $cardID = $auras[$index];
+    if (HasSuspense($cardID)) IncrementClassState($player, $CS_SuspensePoppedThisTurn);
     for ($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
       unset($auras[$i]);
     }
