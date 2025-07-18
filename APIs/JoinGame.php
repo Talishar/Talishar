@@ -596,6 +596,11 @@ function isUnimplemented($cardID) {
         "in_the_palm_of_your_hand_red" => false,
         default => true
       };
+    case "APS":
+      return match($cardID) {
+        "standing_ovation_blue" => false,
+        default => true
+      };
     default:
       break;
   }
