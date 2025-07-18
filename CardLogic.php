@@ -3822,8 +3822,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
-      WriteLog(CardLink($parameter, $parameter) . " will create a toughness once we know what it is");
-      // PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
     case "dig_in_red":
     case "dig_in_yellow":
