@@ -3817,8 +3817,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "pleiades":
     case "pleiades_superstar":
-      WriteLog(CardLink($parameter, $parameter) . " will create a confidence once we know what it is");
-      // PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
