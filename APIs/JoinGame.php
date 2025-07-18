@@ -239,6 +239,10 @@ if ($decklink != "") {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
+      if (!isCardLegalinHero($id, $character)) {
+        if ($bannedCard != "") $bannedCard .= ", ";
+        $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+      }
 
       // Track the count of each card ID
       if (!isset($cardCounts[$id])) {
@@ -465,6 +469,67 @@ function TruncateHeroName($cardID) {
   //   default:
   //     return substr($cardID,0,10);
   // }
+}
+
+// basic checking of card class and talent legality
+function isCardLegalinHero($cardID, $hero) {
+  if (CardClass($cardID) == "GENERIC") return true;
+  if ($hero == "shiyana_diamond_gemini" && IsSpecialization($cardID)) return true;
+  if ($hero == "emperor_dracai_of_aesir" && PitchValue($cardID) > 1) return false; //missing burn bare for now
+  $class = explode(",", CardClass($cardID));
+  $talent = explode(",", CardTalent($cardID));
+  $heroClass = explode(",", CardClass($hero));
+  $heroTalent = explode(",", CardTalent($hero));
+  switch ($hero) {
+    case "lexi":
+    case "lexi_livewire":
+      array_push($heroTalent, "LIGHTNING");
+      array_push($heroTalent, "ICE");
+      break;
+    case "briar":
+    case "briar_warden_of_thorns":
+      array_push($heroTalent, "LIGHTNING");
+      array_push($heroTalent, "EARTH");
+      break;
+    case "oldhim":
+    case "oldhim_grandfather_of_eternity":
+    case "jarl_vetreidi":
+      array_push($heroTalent, "LIGHTNING");
+      array_push($heroTalent, "EARTH");
+      break;
+    case "aurora":
+    case "aurora_shooting_star":
+    case "oscilio":
+    case "oscilio_constella_intelligence":
+      array_push($heroTalent, "LIGHTNING");
+      break;
+    case "verdance":
+    case "verdance_thorn_of_the_rose":
+    case "florian":
+    case "florian_rotwood_harbinger":
+      array_push($heroTalent, "LIGHTNING");
+      break;
+    case "iyslander":
+    case "iyslander_stormbind":
+      array_push($heroTalent, "ICE");
+      break;
+    case "bravo_star_of_the_show":
+      array_push($heroTalent, "LIGHTNING");
+      array_push($heroTalent, "EARTH");
+      array_push($heroTalent, "ICE");
+      break;
+    default:
+      break;
+  }
+  $inClass = false;
+  foreach($class as $c) {
+    if ($c == "NONE" || in_array($c, $heroClass)) $inClass = true;
+  }
+  $inTalent = false;
+  foreach($talent as $t) {
+    if ($t == "NONE" || in_array($t, $heroTalent)) $inTalent = true;
+  }
+  return $inClass && $inTalent;
 }
 
 function isClashLegal($cardID, $character) {
