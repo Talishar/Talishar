@@ -2811,7 +2811,7 @@ function SelfCostModifier($cardID, $from)
       $theirNumGold = CountItem("gold", $otherPlayer);
       return $myNumGold < $theirNumGold ? -2 : 0;
     case "crowd_goes_wild_yellow":
-      return GetClassState($currentPlayer, $CS_CheeredThisTurn) > 0 ? 0 : -3;
+      return GetClassState($currentPlayer, $CS_CheeredThisTurn) > 0 ? -3 : 0;
     default:
       return 0;
   }
