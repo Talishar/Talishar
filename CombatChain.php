@@ -1097,8 +1097,12 @@ function OnBlockResolveEffects($cardID = "")
       case "clash_of_mountains_yellow":
       case "clash_of_mountains_blue":
         if (ClassContains($combatChain[0], "GUARDIAN", $mainPlayer)) {
-          AddLayer("TRIGGER", $defPlayer, $cardID, $cardID, "CRUSHEFFECT");
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, $defendingCard, "CRUSHEFFECT");
         }
+        break;
+      case "overcrowded_blue":
+        //calling it an attack trigger for organization
+        AddLayer("TRIGGER", $defPlayer, $defendingCard, "COMBATCHAIN-$i", "ATTACKTRIGGER");
         break;
       default:
         break;

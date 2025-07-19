@@ -128,6 +128,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "bask_in_your_own_greatness_red":
     case "bask_in_your_own_greatness_yellow":
     case "bask_in_your_own_greatness_blue":
+    case "overcrowded_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       break;
     case "thespian_charm_yellow":

@@ -4945,6 +4945,7 @@ function HasAmbush($cardID)
   switch ($cardID) {
     case "tiger_eye_reflex_yellow":
     case "tiger_eye_reflex_blue":
+    case "overcrowded_blue":
       return true;
     default:
       return false;

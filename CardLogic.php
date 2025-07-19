@@ -3862,7 +3862,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 
 function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $combatChain;
   switch($cardID) {
     case "comeback_kid_red":
     case "comeback_kid_yellow":
@@ -3891,6 +3891,20 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "BASK,$cardID", 1);
+      break;
+    case "overcrowded_blue":
+      $uniqueAuras = [];
+      for($player = 1; $player < 3; ++$player) {
+        $auras = GetAuras($player);
+        for($i = 0; $i < count($auras); $i += AuraPieces()) {
+          $name = NameOverride($auras[$i], $player);
+          if (!in_array($name, $uniqueAuras)) array_push($uniqueAuras, $name);
+        }
+      }
+      if ($target == "-") $index = 0;
+      else $index = explode("-", $target)[1];
+      $combatChain[$index + 5] += count($uniqueAuras);
+      $combatChain[$index + 6] += count($uniqueAuras);
       break;
     default:
       break;
