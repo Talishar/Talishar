@@ -1331,7 +1331,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
-        if (!$warmongersPeace && !$underEdict) {
+        if (!$warmongersPeace && !$underEdict && CanAttack($cardID, $from, $index, type:"AA")) {
           if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names .= ",Attack";
         }
       }
@@ -2093,10 +2093,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
-  if (SearchCurrentTurnEffects("crush_the_weak_red", $player) && CardType($cardID) == "AA" && PowerValue($cardID, $mainPlayer, "LAYER") <= 3) {
-    $restriction = "crush_the_weak_red";
-    return true;
-  }
   if (SearchCurrentTurnEffects("herald_of_judgment_yellow", $player) && $from == "BANISH") {
     $restriction = "herald_of_judgment_yellow";
     return true;

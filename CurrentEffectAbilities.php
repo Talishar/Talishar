@@ -2276,6 +2276,11 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
             $restrictedBy = "star_struck_yellow";
           }
           break;
+        case "crush_the_weak_red":
+          if ($hasNoAbilityTypes || $resolvedAbilityType == "AA") {
+            if (TypeContains($cardID, "AA") && PowerValue($cardID, $mainPlayer, "LAYER") <= 3) $restrictedBy = $effectID;
+          }
+          break;
         case "WarmongersPeace":
           if (($type == "AA" && !str_contains(GetAbilityTypes($cardID, from:$from), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "warmongers_diplomacy_blue";
           break;
