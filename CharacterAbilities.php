@@ -1147,6 +1147,8 @@ function EquipPayAdditionalCosts($cardIndex)
     case "quartermasters_boots":
     case "graven_justaucorpse":
     case "breakwater_undertow":
+    case "garland_of_spring":
+    case "punching_gloves":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
@@ -1369,6 +1371,15 @@ function EquipPayAdditionalCosts($cardIndex)
         }
       }
       Tap("MYCHAR-$cardIndex", $currentPlayer);
+      break;
+    case "helm_of_hindsight":
+      $search = "MYDISCARD:type=AA";
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack to put on top of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      DestroyCharacter($currentPlayer, $cardIndex);
       break;
     default:
       --$character[$cardIndex + 5];

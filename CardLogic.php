@@ -3848,8 +3848,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "up_on_a_pedestal_blue":
       $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=Revered";
-      AddDecisionQueue("MZINDICES", $player, $search);
-      AddDecisionQueue("SETDQCONTECT", $player, "Choose an attack to put on top of your deck (or pass)", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an attack to put on top of your deck (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZADDTOTOPDECK", $player, "-", 1);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);

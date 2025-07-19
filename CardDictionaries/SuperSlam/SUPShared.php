@@ -11,6 +11,9 @@ function SUPAbilityType($cardID): string
     "tuffnut_bumbling_hulkster" => "I",
     "pleiades_superstar" => "I",
     "pleiades" => "I",
+    "helm_of_hindsight" => "I",
+    "garland_of_spring" => "A",
+    "punching_gloves" => "A",
     default => ""
   };
 }
@@ -23,6 +26,8 @@ function SUPAbilityCost($cardID): int
     "lyath_goldmane_vile_savant" => 2,
     "kayo_underhanded_cheat" => 4,
     "kayo_strong_arm" => 4,
+    "helm_of_hindsight" => 3,
+    "punching_gloves" => 2,
     default => 0
   };
 }
@@ -30,6 +35,8 @@ function SUPAbilityCost($cardID): int
 function SUPAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "garland_of_spring" => true,
+    "punching_gloves" => true,
     default => false,
   };
 }
@@ -37,6 +44,7 @@ function SUPAbilityHasGoAgain($cardID): bool
 function SUPEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
+    "punching_gloves" => 2,
     default => 0,
   };
 }
@@ -46,6 +54,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
   global $mainPlayer;
   return match ($cardID) {
     "confidence" => TypeContains($attackID, "AA", $mainPlayer),
+    "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
     default => false,
   };
 }
@@ -55,6 +64,21 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower, $combatChain, $chainLinkSummary, $chainLinks;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
+    case "helm_of_hindsight":
+      $uid = explode("-", $target)[1];
+      $index = SearchDiscardForUniqueID($uid, $currentPlayer);
+      if ($index != -1) {
+        $graveyard = GetDiscard($currentPlayer);
+        AddTopDeck($graveyard[$index], $currentPlayer, "DISCARD");
+        RemoveGraveyard($currentPlayer, $index);
+      }
+      break;
+    case "garland_of_spring":
+      GainResources($currentPlayer, 1);
+      break;
+    case "punching_gloves":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      break;
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
       BOO($currentPlayer);
