@@ -663,6 +663,7 @@ function isUnimplemented($cardID) {
         "uplifting_performance_blue" => false,
         "old_leather_and_vim_red" => false,
         "spew_obscenities_yellow" => false,
+        "overcrowded_blue" => false,
         default => true
       };
     case "APS":
