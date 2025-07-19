@@ -1067,6 +1067,10 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wreck_havoc_blue":
     case "send_packing_yellow":
     case "stab_wound_blue":
+    case "old_leather_and_vim_red":
+    case "uplifting_performance_blue":
+    case "offensive_behavior_blue":
+    case "spew_obscenities_yellow":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
@@ -3841,6 +3845,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "in_the_palm_of_your_hand_red":
       Draw($player, effectSource:$parameter);
+      break;
+    case "up_on_a_pedestal_blue":
+      $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=Revered";
+      AddDecisionQueue("MZINDICES", $player, $search);
+      AddDecisionQueue("SETDQCONTECT", $player, "Choose an attack to put on top of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDTOTOPDECK", $player, "-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "⤴️ <0> was put on the top of the deck.", 1);
       break;
     default:
       break;

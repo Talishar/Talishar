@@ -606,6 +606,7 @@ function CardCost($cardID, $from="-")
     case "fruits_of_the_forest_red":
     case "vigorous_windup_blue":
     case "bam_bam_yellow":
+    case "outside_interference_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
     case "ripple_away_blue":
@@ -1246,7 +1247,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", 
     "ripple_away_blue", "under_the_trap_door_blue", 
     "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
-    "tip_off_red", "tip_off_yellow", "tip_off_blue" => "I,AA",
+    "tip_off_red", "tip_off_yellow", "tip_off_blue", 
+    "outside_interference_blue" => "I,AA",
 
     "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", 
     "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", 
@@ -1323,6 +1325,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
     case "tip_off_blue":
     case "deny_redemption_red":
     case "bam_bam_yellow":
+    case "outside_interference_blue":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
@@ -3190,6 +3193,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "tip_off_blue":
     case "deny_redemption_red":
     case "bam_bam_yellow":
+    case "outside_interference_blue":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":

@@ -485,6 +485,22 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 3 : 0;
     case "mocking_blow_blue":
       return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 2 : 0;
+    case "old_leather_and_vim_red":
+      if (SearchAurasForCard("toughness", $mainPlayer, false) != "") return 1;
+      elseif (SearchAurasForCard("vigor", $mainPlayer, false) != "") return 1;
+      else return 0;
+    case "uplifting_performance_blue":
+      if (SearchAurasForCard("toughness", $mainPlayer, false) != "") return 1;
+      elseif (SearchAurasForCard("confidence", $mainPlayer, false) != "") return 1;
+      else return 0;
+    case "offensive_behavior_blue":
+      if (SearchAurasForCard("might", $mainPlayer, false) != "") return 1;
+      elseif (SearchAurasForCard("vigor", $mainPlayer, false) != "") return 1;
+      else return 0;
+    case "spew_obscenities_yellow":
+      if (SearchAurasForCard("might", $mainPlayer, false) != "") return 1;
+      elseif (SearchAurasForCard("confidence", $mainPlayer, false) != "") return 1;
+      else return 0;
     default:
       return 0;
   }

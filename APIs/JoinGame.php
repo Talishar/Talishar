@@ -659,6 +659,10 @@ function isUnimplemented($cardID) {
         "numbskull_charm_yellow" => false,
         "cheaters_charm_yellow" => false,
         "in_the_palm_of_your_hand_red" => false,
+        "offensive_behavior_blue" => false,
+        "uplifting_performance_blue" => false,
+        "old_leather_and_vim_red" => false,
+        "spew_obscenities_yellow" => false,
         default => true
       };
     case "APS":

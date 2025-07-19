@@ -2188,6 +2188,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($owner);
       $deck->AddBottom($card);
       return $card;
+    case "MZADDTOTOPDECK":
+      $card = MZRemove($player, $lastResult, $parameter);
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $owner = str_contains($lastResult, "MY") ? $player : $otherPlayer;
+      $deck = new Deck($owner);
+      $deck->AddTop($card);
+      return $card;
     case "MZDISCARD":
       return MZDiscard($player, $parameter, $lastResult);
     case "MZADDZONE":
@@ -2490,6 +2497,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if (DelimStringContains(CardType($parameter), "W", true)) EquipWeapon($player, $parameter);
       else EquipEquipment($player, $parameter);
+      return "";
+    case "ADDHANDINVENTORY":
+      if (str_contains($parameter, "-")) {
+        $from = explode('-', $parameter)[1];
+        $parameter = explode('-', $parameter)[0];
+        if ($from == "INVENTORY") {
+          $inventory = &GetInventory($player);
+          $indexToRemove = array_search($parameter, $inventory);
+          if ($indexToRemove !== false) unset($inventory[$indexToRemove]);
+        }
+      }
+      AddPlayerHand($parameter, $player, "INVENTORY");
       return "";
     case "LISTDRACDAGGERGRAVEYARD":
       return ListDracDaggersGraveyard($player);

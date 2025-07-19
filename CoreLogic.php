@@ -1591,6 +1591,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "war_cry_of_bellona_yellow":
     case "deny_redemption_red":
     case "bam_bam_yellow":
+    case "outside_interference_blue":
       return $from == "HAND";
     case "under_the_trap_door_blue":
       return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";

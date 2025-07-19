@@ -71,6 +71,27 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         CombatChainPowerModifier($targetIndex, 6 - $combatChain[$targetIndex + 5]);
       }
       break;
+    case "outside_interference_blue":
+      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
+        $inventory = &GetInventory($mainPlayer);
+        $choices = [];
+        foreach ($inventory as $cardID) {
+          WriteLog("HERE: $cardID");
+          if (TalentContains($cardID, "Reviled", $currentPlayer) && TypeContains($cardID, "AA")) {
+            array_push($choices, $cardID);
+          };
+        }
+        if (count($choices) == 0) {
+          WriteLog("Player " . $mainPlayer . " doesn't have any reviled attacks");
+          return;
+        }
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add to hand");
+        AddDecisionQueue("CHOOSECARD", $currentPlayer, implode(",", $choices), 1);
+        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-INVENTORY", 1);
+        AddDecisionQueue("ADDHANDINVENTORY", $currentPlayer, "<-", 1);
+        CardDiscarded($currentPlayer, $cardID, source: $cardID);
+      }
+      break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
       $deck = new Deck($currentPlayer);
@@ -92,6 +113,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "in_the_palm_of_your_hand_red":
+    case "up_on_a_pedestal_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "comeback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
@@ -240,7 +262,24 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function SUPHitEffect($cardID): void
 {
+  global $mainPlayer;
   switch ($cardID) {
+    case "old_leather_and_vim_red":
+      PlayAura("toughness", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      PlayAura("vigor", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      break;
+    case "uplifting_performance_blue":
+      PlayAura("confidence", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      PlayAura("toughness", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      break;
+    case "offensive_behavior_blue":
+      PlayAura("might", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      PlayAura("vigor", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      break;
+    case "spew_obscenities_yellow":
+      PlayAura("confidence", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      PlayAura("might", $mainPlayer, isToken:true, effectController:$mainPlayer, effectSource:$cardID);
+      break;
     default:
       break;
   }
@@ -286,6 +325,7 @@ function HasSuspense($cardID)
 {
   return match($cardID) {
     "in_the_palm_of_your_hand_red" => true,
+    "up_on_a_pedestal_blue" => true,
     default => false
   };
 }

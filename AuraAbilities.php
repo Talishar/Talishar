@@ -285,6 +285,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       AddDecisionQueue("DRAW", $player, $cardID);
       break;
     case "in_the_palm_of_your_hand_red":
+    case "up_on_a_pedestal_blue":
       AddLayer("TRIGGER", $player, $cardID);
       break;
     default:
@@ -722,6 +723,12 @@ function AuraStartTurnAbilities()
         // need to do this to pass "mainPhase: false"
         Draw($mainPlayer, false, true, $auras[$i]);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6], skipTrigger:true);
+      }
+      break;
+    case "up_on_a_pedestal_blue":
+      --$auras[$i + 2];
+      if ($auras[$i + 2] == 0) {
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       }
       break;
     default:
