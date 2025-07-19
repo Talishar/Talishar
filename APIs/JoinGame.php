@@ -239,7 +239,7 @@ if ($decklink != "") {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
-      if (!isCardLegalinHero($id, $character)) {
+      if (!isCardLegalinHero($id, $character, $format)) {
         if ($bannedCard != "") $bannedCard .= ", ";
         $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -472,7 +472,8 @@ function TruncateHeroName($cardID) {
 }
 
 // basic checking of card class and talent legality
-function isCardLegalinHero($cardID, $hero) {
+function isCardLegalinHero($cardID, $hero, $format) {
+  if (str_contains($format, "open")) return true;
   if (CardClass($cardID) == "GENERIC") return true;
   if ($hero == "shiyana_diamond_gemini" && IsSpecialization($cardID)) return true;
   if ($hero == "emperor_dracai_of_aesir" && PitchValue($cardID) > 1) return false; //missing burn bare for now
