@@ -95,27 +95,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         CombatChainPowerModifier($targetIndex, 6 - $combatChain[$targetIndex + 5]);
       }
       break;
-    case "outside_interference_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        $inventory = &GetInventory($mainPlayer);
-        $choices = [];
-        foreach ($inventory as $cardID) {
-          WriteLog("HERE: $cardID");
-          if (TalentContains($cardID, "Reviled", $currentPlayer) && TypeContains($cardID, "AA")) {
-            array_push($choices, $cardID);
-          };
-        }
-        if (count($choices) == 0) {
-          WriteLog("Player " . $mainPlayer . " doesn't have any reviled attacks");
-          return;
-        }
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add to hand");
-        AddDecisionQueue("CHOOSECARD", $currentPlayer, implode(",", $choices), 1);
-        AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-INVENTORY", 1);
-        AddDecisionQueue("ADDHANDINVENTORY", $currentPlayer, "<-", 1);
-        CardDiscarded($currentPlayer, $cardID, source: $cardID);
-      }
-      break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
       $deck = new Deck($currentPlayer);

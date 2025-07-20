@@ -237,15 +237,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
     case "deny_redemption_red":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      elseif(PlayerHasLessHealth($currentPlayer)) DealArcane(1, 1, "PLAYCARD", $cardID);
-      break;
-    case "bam_bam_yellow":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        CardDiscarded($currentPlayer, $cardID, source: $cardID);
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (GetResolvedAbilityType($cardID, "HAND") != "I") {
+        if(PlayerHasLessHealth($currentPlayer)) DealArcane(1, 1, "PLAYCARD", $cardID);
       }
       break;
     case "amethyst_amulet_blue":
@@ -975,11 +968,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "burn_bare":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
-        if ($combatChain[10] != "PHANTASM") AddLayer("LAYER", $currentPlayer, "PHANTASM", $combatChain[0], $cardID);
-      } else {
-        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
-      }
+      DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       break;
     case "arcane_compliance_blue":
       $layerID = $layers[intval(explode("-", $target)[1]) + 6];

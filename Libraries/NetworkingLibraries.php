@@ -2425,6 +2425,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       } else {
         AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
       }
+      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Ability");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
       break;
     case "double_down_red":
       AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); 
@@ -2469,6 +2473,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "haunting_rendition_red":
     case "mental_block_blue":
       AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
       break;
     case "chorus_of_the_amphitheater_red":
     case "chorus_of_the_amphitheater_yellow":
@@ -2500,6 +2507,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ELSE", $currentPlayer, "-");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
       break;
     case "war_cry_of_themis_yellow":
       $names = GetAbilityNames($cardID, $index, $from);
@@ -2512,6 +2523,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       } else{
         AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
       }
+      // fix this later
       break;
     case "shelter_from_the_storm_red":
       $names = GetAbilityNames($cardID, $index, $from);
@@ -2526,6 +2538,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       else {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
       }
+      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Ability");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
       break;
     case "war_cry_of_bellona_yellow":
       $names = GetAbilityNames($cardID, $index, $from);

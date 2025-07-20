@@ -175,13 +175,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SUMMERSFALL", $currentPlayer, $cardID.",NONE");
       }
       return "";
-    case "fruits_of_the_forest_red":
-    case "fruits_of_the_forest_yellow":
-    case "fruits_of_the_forest_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        GainHealth(2, $currentPlayer);
-      }
-      return "";
     case "fertile_ground_red": //fertile ground red
       $earthCountInBanish = SearchCount(SearchBanish($currentPlayer, talent: "EARTH"));
       WriteLog($earthCountInBanish . " earth cards in banish");
@@ -268,14 +261,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "second_strike_yellow":
     case "second_strike_blue":
       if (GetClassState($currentPlayer, $CS_DamageDealt) + GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) GiveAttackGoAgain();
-    case "trip_the_light_fantastic_red":
-    case "trip_the_light_fantastic_yellow":
-    case "trip_the_light_fantastic_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-        return CardLink($cardID, $cardID) . " is preventing the next 2 damage.";
-      }
       return "";
     case "electrostatic_discharge_red":
     case "electrostatic_discharge_yellow":
@@ -291,10 +276,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "machinations_of_dominion_blue":
     case "succumb_to_temptation_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "haunting_rendition_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
       return "";
     case "splintering_deadwood_red":
     case "splintering_deadwood_yellow":
@@ -349,18 +330,10 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "hold_focus":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "mental_block_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
-      return "";
     case "chorus_of_the_amphitheater_red":
     case "chorus_of_the_amphitheater_yellow":
     case "chorus_of_the_amphitheater_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
-        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
-      } else {
-        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
-      }
+      DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "glyph_overlay_red":
     case "glyph_overlay_yellow":
@@ -388,11 +361,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "arcane_twining_red":
     case "arcane_twining_yellow":
     case "arcane_twining_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
-        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
-      } else {
-        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
-      }
+      DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "exploding_aether_red":
     case "exploding_aether_yellow":
@@ -426,11 +395,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "photon_splicing_red":
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") {
-        AddCurrentTurnEffect($cardID, $currentPlayer, from: "ABILITY");
-      } else {
-        DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
-      }
+      DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "trailblazing_aether_red":
     case "trailblazing_aether_yellow":

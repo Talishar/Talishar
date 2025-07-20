@@ -2120,23 +2120,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
       if($names[$index] == "-") $names[$index] = "Ability";
       WriteLog(GamestateUnsanitize($names[$index]) . " was chosen.");
-      return $lastResult;
+      return $names[$index];
     case "SETABILITYTYPEATTACK":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Attack");
       SetClassState($player, $CS_AbilityIndex, $index);
-      return $lastResult;
+      return "Attack";
     case "SETABILITYTYPEABILITY":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Ability");
       SetClassState($player, $CS_AbilityIndex, $index);
-      return $lastResult;
+      return "Ability";
     case "SETABILITYTYPEATTACKREACTION":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Attack Reaction");
       SetClassState($player, $CS_AbilityIndex, $index);
-      return $lastResult;
+      return "Attack Reaction";
     case "SETABILITYTYPEDEFENSEREACTION":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Defense Reaction");
       SetClassState($player, $CS_AbilityIndex, $index);
-      return $lastResult;
+      return "Defense Reaction";
     case "SETABILITYTYPEACTION":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Action");
       SetClassState($player, $CS_AbilityIndex, $index);
@@ -3288,6 +3288,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default: break;
       }
       break;
+    case "CONVERTLAYERTOABILITY":
+      $layerIndex = -1;
+      for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+        if ($layers[$i] == $parameter) $layerIndex = $i;
+      }
+      if ($layerIndex != -1) {
+        $layers[$layerIndex] = "ABILITY";
+        $layers[$layerIndex + 2] = $parameter;
+      }
+      return $parameter;
     default:
       return "NOTSTATIC";
   }

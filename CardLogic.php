@@ -514,6 +514,10 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "MELD") {
           ProcessMeld($player, $parameter, $cardID, target:$target);
           ProcessDecisionQueue();
+        }
+        else if ($cardID == "ABILITY") {
+          ProcessAbility($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+          ProcessDecisionQueue();
         } else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], isset($params[1]) ? $params[1] : 0, $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
@@ -539,7 +543,7 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
         if ($additionalCosts == "") $additionalCosts = "-";
         $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
-        $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4] . "|" . $params[5];
+        if ($layers[$layerIndex] != "ABILITY") $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4] . "|" . $params[5];
         $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
@@ -1809,6 +1813,116 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
     default:
       break;
   }
+}
+
+function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
+{
+  global $CS_DamagePrevention, $combatChain, $CS_AdditionalCosts;
+  $otherPlayer = $player == 1 ? 2 : 1;
+  switch ($parameter) {
+    case "mighty_windup_red":
+    case "mighty_windup_yellow":
+    case "mighty_windup_blue":
+      PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
+    case "agile_windup_red":
+    case "agile_windup_yellow":
+    case "agile_windup_blue":
+      PlayAura("agility", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "vigorous_windup_red":
+    case "vigorous_windup_yellow":
+    case "vigorous_windup_blue":
+      PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
+    case "ripple_away_blue":
+      AddCurrentTurnEffect($parameter, $player, $from);
+      break;
+    case "fruits_of_the_forest_red":
+    case "fruits_of_the_forest_yellow":
+    case "fruits_of_the_forest_blue":
+      GainHealth(2, $player);
+      break;
+    case "trip_the_light_fantastic_red":
+    case "trip_the_light_fantastic_yellow":
+    case "trip_the_light_fantastic_blue":
+      AddCurrentTurnEffect($parameter, $player);
+      IncrementClassState($player, $CS_DamagePrevention, 2);
+      WriteLog(CardLink($parameter, $parameter) . " is preventing the next 2 damage.");
+      break;
+    case "chorus_of_the_amphitheater_red":
+    case "chorus_of_the_amphitheater_yellow":
+    case "chorus_of_the_amphitheater_blue":
+    case "arcane_twining_red":
+    case "arcane_twining_yellow":
+    case "arcane_twining_blue":
+    case "photon_splicing_red":
+    case "photon_splicing_yellow":
+    case "photon_splicing_blue":
+      AddCurrentTurnEffect($parameter, $player, from: "ABILITY");
+      break;
+    case "haunting_rendition_red":
+    case "mental_block_blue":
+      AddCurrentTurnEffect($parameter, $player);
+      IncrementClassState($player, $CS_DamagePrevention, 2);
+      break;
+    
+    case "under_the_trap_door_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=Trap");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("BANISHCARD", $player, "DISCARD,TT", 1);
+      AddDecisionQueue("UNDERTRAPDOOR", $player, "<-", 1);
+      break;
+    case "reapers_call_red":
+    case "reapers_call_yellow":
+    case "reapers_call_blue":
+    case "tip_off_red":
+    case "tip_off_yellow":
+    case "tip_off_blue":
+      MarkHero($otherPlayer);
+      break;
+    case "shelter_from_the_storm_red":
+      AddCurrentTurnEffect($parameter, $player);
+      break;
+    case "warcry_of_themis_yellow":
+      // leave this as is for now, additional costs seem to not be tracking properly
+      break;
+    case "warcry_of_bellona_yellow":
+      // $params = explode("-", $target);
+      // $uniqueID = $params[1];
+      // AddCurrentTurnEffect($parameter."-DMG,".$additionalCosts.",".$uniqueID, $player);
+      break;
+    case "deny_redemption_red":
+      AddCurrentTurnEffect($parameter, $player);
+      break;
+    case "bam_bam_yellow":
+      AddCurrentTurnEffect($parameter, $player);
+      break;
+    case "burn_bare":
+      if ($combatChain[10] != "PHANTASM") AddLayer("LAYER", $player, "PHANTASM", $combatChain[0], $parameter);
+      break;
+    case "outside_interference_blue":
+      $inventory = &GetInventory($player);
+      $choices = [];
+      foreach ($inventory as $cardID) {
+        WriteLog("HERE: $cardID");
+        if (TalentContains($cardID, "Reviled", $player) && TypeContains($cardID, "AA")) {
+          array_push($choices, $cardID);
+        };
+      }
+      if (count($choices) == 0) {
+        WriteLog("Player " . $player . " doesn't have any reviled attacks");
+        return;
+      }
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to add to hand");
+      AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
+      AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
+      AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
+      break;
+    default:
+      break;
+  }
+  return "";
 }
 
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")

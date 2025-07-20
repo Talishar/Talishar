@@ -329,15 +329,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         WriteLog("A previous chain link was targeted by " . CardLink($cardID, $cardID) . ", currently this will have no effect");
       }
       break;
-    case "under_the_trap_door_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:subtype=Trap");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("BANISHCARD", $currentPlayer, "DISCARD,TT", 1);
-        AddDecisionQueue("UNDERTRAPDOOR", $currentPlayer, "<-", 1);
-      }
-      break;
     case "take_up_the_mantle_yellow":
       global $CombatChain;
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
@@ -410,13 +401,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "orb_weaver_spinneret_blue":
       EquipWeapon($currentPlayer, "graphene_chelicera", $cardID);
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
-    case "reapers_call_red":
-    case "reapers_call_yellow":
-    case "reapers_call_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        MarkHero($otherPlayer);
-      }
       break;
     case "scuttle_the_canal_red":
     case "scuttle_the_canal_yellow":
@@ -780,11 +764,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       }
       break;
-    case "shelter_from_the_storm_red":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      break;
     case "dual_threat_yellow":
       if(GetClassState($currentPlayer, $CS_AttacksWithWeapon) > 0) AddCurrentTurnEffect($cardID."-AA", $currentPlayer);
       if(GetClassState($currentPlayer, $CS_NumAttackCardsAttacked) > 0) AddCurrentTurnEffect($cardID."-WEAPON", $currentPlayer);
@@ -813,13 +792,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "calming_breeze_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
-    case "tip_off_red":
-    case "tip_off_yellow":
-    case "tip_off_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        MarkHero($otherPlayer);
-      }
       break;
     case "lay_low_yellow":
       if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {

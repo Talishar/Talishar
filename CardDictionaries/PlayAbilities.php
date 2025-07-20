@@ -237,14 +237,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "battered_not_broken_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "mighty_windup_red":
-    case "mighty_windup_yellow":
-    case "mighty_windup_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        PlayAura("might", $currentPlayer); 
-        CardDiscarded($currentPlayer, $cardID, source: $cardID);
-      }
-      return "";
     case "wage_might_red":
     case "wage_might_yellow":
     case "wage_might_blue":
@@ -264,14 +256,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "take_it_on_the_chin_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "agile_windup_red":
-    case "agile_windup_yellow":
-    case "agile_windup_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        PlayAura("agility", $currentPlayer); 
-        CardDiscarded($currentPlayer, $cardID, source: $cardID);
-      }
       return "";
     case "wage_agility_red":
     case "wage_agility_yellow":
@@ -295,14 +279,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "slap_happy_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "vigorous_windup_red":
-    case "vigorous_windup_yellow":
-    case "vigorous_windup_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        PlayAura("vigor", $currentPlayer); 
-        CardDiscarded($currentPlayer, $cardID, source: $cardID);
-      }
-      return "";
     case "wage_vigor_red":
     case "wage_vigor_yellow":
     case "wage_vigor_blue":
@@ -322,11 +298,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "sheltered_cove":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "ripple_away_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") {
-        AddCurrentTurnEffect($cardID, $currentPlayer, $from);
-      }
       return "";
     case "standing_order_red":
       MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may: true, silent: true);
