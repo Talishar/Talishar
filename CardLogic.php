@@ -3551,11 +3551,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "starlight_striders":
       if (CanRevealCards($player)) {
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:hasCrush=true");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
         AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-        AddDecisionQueue("PLAYAURA", $player, "seismic_surge", 1);
+        AddDecisionQueue("PLAYAURA", $player, "embodiment_of_lightning", 1);
       }
       break;
     case "channel_mount_heroic_red":
