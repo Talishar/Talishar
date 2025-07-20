@@ -1615,7 +1615,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       }
     }
     if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
-      if (NumNonBlocksDefending() >= 1) return false;
+      if (NumNonBlocksDefending() >= 2) return false;
     }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player)) || $cardID == "down_and_dirty_red" || HasAmbush($cardID))) return false;
@@ -1779,7 +1779,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
   }
   if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
-    if (NumNonBlocksDefending() >= 1 && !TypeContains($cardID, "B")) return true;
+    if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
   }
   //current turn effects
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -1815,7 +1815,7 @@ function CanBlockWithEquipment()
 {
   global $CombatChain, $mainPlayer;
   if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
-    if (NumNonBlocksDefending() >= 1) return false;
+    if (NumNonBlocksDefending() >= 2) return false;
   }
   switch ($CombatChain->AttackCard()->ID()) {
     case "burn_rubber_red":
