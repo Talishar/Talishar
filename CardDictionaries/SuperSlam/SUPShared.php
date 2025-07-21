@@ -233,25 +233,23 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           case "deal_2_damage":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
             $condition = false;
-            for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-              if ($combatChain[$i + 1] == $currentPlayer && ModifiedPowerValue($combatChain[$i], $currentPlayer, "CC") + $combatChain[$i+5] >= 6) $condition = true;
+            if ($currentPlayer == $mainPlayer) {
+              if (ModifiedPowerValue($combatChain[0], $currentPlayer, "CC") + $combatChain[5] >= 6) $condition = true;
               foreach ($chainLinks as $link) {
-                for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
-                  if ($link[$i+1] == $currentPlayer && ModifiedPowerValue($link[$i], $currentPlayer, "CC") + $link[$i+4] > 6) $condition = true;
-                }
+                if (ModifiedPowerValue($link[0], $currentPlayer, "CC") + $link[4] > 6) $condition = true;
               }
-            }
-            if ($condition) {
-              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
-              AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
-              AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
-              AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
-              AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
-              AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-              AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
-              AddDecisionQueue("ELSE", $targetPlayer, "-");
-              AddDecisionQueue("TAKEDAMAGE", $targetPlayer, 2, 1);
+              if ($condition) {
+                AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
+                AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
+                AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
+                AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
+                AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
+                AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+                AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
+                AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+                AddDecisionQueue("ELSE", $targetPlayer, "-");
+                AddDecisionQueue("TAKEDAMAGE", $targetPlayer, 2, 1);
+              }
             }
             break;
           default: break;
