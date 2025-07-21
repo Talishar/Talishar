@@ -1824,6 +1824,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "mighty_windup_yellow":
     case "mighty_windup_blue":
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      break;
     case "agile_windup_red":
     case "agile_windup_yellow":
     case "agile_windup_blue":
