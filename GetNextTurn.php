@@ -1376,8 +1376,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         //Add indication for Attacking Mechanoid
         if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "nitro_mechanoida" || GetMZCard($currentPlayer, $options[$i]) == "teklovossen_the_mechropotenta")) $label = "Attacking";
 
-        $index = intval($option[1]);
-        $card = ($option[0] != "CARDID" && isset($source[$index])) ? $source[$index] : $option[1];
+        $index = intval($option[1]) ?? 0;
+        $card = ($option[0] != "CARDID" && isset($source[$index])) ? $source[$index] : ($option[1] ?? 0);
         if (($option[0] == "LAYER" || $option[0] == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY")) $card = $source[$index + 2];
 
         if ($option[0] == "THEIRBANISH") {

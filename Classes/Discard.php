@@ -41,12 +41,18 @@ class Discard {
   }
 
   function Remove($index) {
-    $cardID = $this->discard[$index];
-    for ($i = DiscardPieces() - 1; $i >= 0; --$i) {
-      unset($this->discard[$index+$i]);
+    if (isset($this->discard[$index])) {
+      $cardID = $this->discard[$index];
+      for ($i = DiscardPieces() - 1; $i >= 0; --$i) {
+        unset($this->discard[$index+$i]);
+      }
+      $this->discard = array_values($this->discard);
+      return $cardID;
     }
-    $this->discard = array_values($this->discard);
-    return $cardID;
+    else {
+      WriteLog("Something went wrong with removing a card from the graveyard, please submit a bug report");
+      return "";
+    }
   }
 
   function Add($cardID, $from="GY", $mods="-") {

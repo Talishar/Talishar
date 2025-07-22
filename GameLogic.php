@@ -2381,6 +2381,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             WriteLog(CardLink($characters[$mzIndex[1]], $characters[$mzIndex[1]]) . " lost all their steam counters");
             break;
           default:
+            $controller = $player;
             break;
         }
       }

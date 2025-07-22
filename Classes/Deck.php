@@ -27,10 +27,13 @@ class Deck {
     $indexArr = explode(",", $indices);
     $cardIDs = "";
     for($i=count($indexArr)-1; $i>= 0; --$i) {
-      if($cardIDs != "") $cardIDs .= ",";
-      $cardIDs .= $this->deck[$indexArr[$i]];
-      unset($this->deck[$indexArr[$i]]);
-      $this->deck = array_values($this->deck);
+      if (isset($this->deck[$indexArr[$i]])) {
+        if($cardIDs != "") $cardIDs .= ",";
+        $cardIDs .= $this->deck[$indexArr[$i]];
+        unset($this->deck[$indexArr[$i]]);
+        $this->deck = array_values($this->deck);
+      }
+      else WriteLog("Something went wrong with removing a card from deck, please submit a bug report");
     }
     return $cardIDs;
   }
