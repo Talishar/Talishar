@@ -2942,17 +2942,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return true;
       });
       return empty($available) ? "PASS" : implode(",", $available);
-      case "LISTEXPOSEDEQUIPSLOTS":
-        $character = &GetPlayerCharacter($player);
-        $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
-          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-            $subtype = CardSubType($character[$i], $character[$i + 11]);
-            $status = $character[$i + 1];
-            if (DelimStringContains($subtype, $slot) && $status != 0) return false;
-          }
-          return true;
-        });
-        return empty($available) ? "PASS" : implode(",", $available);
+    case "LISTEXPOSEDEQUIPSLOTS":
+      return ListExposedEquipSlots($player);
     case "TRANSCEND":
       $params = explode(",", $parameter);
       Transcend($player, $params[0], $params[1]);

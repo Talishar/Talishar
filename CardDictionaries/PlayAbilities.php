@@ -953,10 +953,13 @@ function PhantomTidemawDestroy($player = -1, $index = -1)
 function ModularMove($cardID, $uniqueID)
 {
   global $currentPlayer;
-  AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $currentPlayer, "-");
-  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment zone to move " . CardLink($cardID, $cardID) . " to.", 1);
-  AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-  AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-  AddDecisionQueue("EQUIPCARD", $currentPlayer, $cardID . "-{0}", 1);
-  AddDecisionQueue("REMOVEMODULAR", $currentPlayer, $uniqueID);
+  $exposedSlots = ListExposedEquipSlots($currentPlayer);
+  if ($exposedSlots != "PASS") {
+    AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $currentPlayer, "-");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment zone to move " . CardLink($cardID, $cardID) . " to.", 1);
+    AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+    AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+    AddDecisionQueue("EQUIPCARD", $currentPlayer, $cardID . "-{0}", 1);
+    AddDecisionQueue("REMOVEMODULAR", $currentPlayer, $uniqueID);
+  }
 }
