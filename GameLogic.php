@@ -2620,8 +2620,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($lastResult == "YES") --$items[$index + 1];
       else {
-        DestroyItemForPlayer($player, $index);
         WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
+        DestroyItemForPlayer($player, $index);
       }
       return "";
     case "ADDBOTTOMREMOVETOP":
@@ -2756,7 +2756,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "pain_in_the_backside_red":
           $targetLoc = explode("-", $target)[0];
-          $targetInd = explode("-", $target)[1];
+          $targetInd = explode("-", $target)[1] ?? "-";
           if ($targetLoc == "MYCHAR") {
             $targetInd = GetMZUID($player, $target);
           }
