@@ -2118,9 +2118,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);
       SetClassState($player, $CS_AbilityIndex, $index);
       $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
-      if($names[$index] == "-") $names[$index] = "Ability";
-      WriteLog(GamestateUnsanitize($names[$index]) . " was chosen.");
-      return $names[$index];
+      if (!isset($names[$index])) {
+        WriteLog("An error occurred with " . CardLink($parameter, $parameter) . ". Please submit a bug report.");
+        return "";
+      }
+      else {
+        if($names[$index] == "-") $names[$index] = "Ability";
+        WriteLog(GamestateUnsanitize($names[$index]) . " was chosen.");
+        return $names[$index];
+      }
     case "SETABILITYTYPEATTACK":
       $index = GetAbilityIndex($parameter, GetClassState($player, $CS_CharacterIndex), "Attack");
       SetClassState($player, $CS_AbilityIndex, $index);

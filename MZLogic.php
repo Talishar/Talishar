@@ -188,7 +188,10 @@ function MZAddZone($player, $parameter, $lastResult)
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
-    if(isset($zone[$mzIndex[1]])) array_push($cardIDs, $zone[$mzIndex[1]]);
+    if (!isset($mzIndex[1])) {
+      WriteLog("There was an error, please submit a bug report.");
+    }
+    else if(isset($zone[$mzIndex[1]])) array_push($cardIDs, $zone[$mzIndex[1]]);
   }
   for ($i = 0; $i < count($cardIDs); ++$i) {
     switch ($params[0]) {

@@ -3500,17 +3500,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "heavy_industry_surveillance":
       $deck = GetDeck($player);
-      $topCard = $deck[0];
-      AddDecisionQueue("DECKCARDS", $defPlayer, "0");
-      AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_the_top_card_of_your_deck_with_" . CardLink($parameter, $parameter), 1);
-      AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
-      AddDecisionQueue("PARAMDELIMTOARRAY", $defPlayer, "0", 1);
-      AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "0", 1);
-      AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
-      AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
-      AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
-      if (ClassContains($topCard, "MECHANOLOGIST", $player)) {
-        AddDecisionQueue("ADDCURRENTTURNEFFECT", $defPlayer, "heavy_industry_surveillance", 1);
+      if (isset($deck[0])) {
+        $topCard = $deck[0];
+        AddDecisionQueue("DECKCARDS", $defPlayer, "0");
+        AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_the_top_card_of_your_deck_with_" . CardLink($parameter, $parameter), 1);
+        AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
+        AddDecisionQueue("PARAMDELIMTOARRAY", $defPlayer, "0", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "0", 1);
+        AddDecisionQueue("MULTIBANISH", $defPlayer, "DECK,-", 1);
+        AddDecisionQueue("SETDQVAR", $defPlayer, "0", 1);
+        AddDecisionQueue("WRITELOG", $defPlayer, "<0> was banished.", 1);
+        if (ClassContains($topCard, "MECHANOLOGIST", $player)) {
+          AddDecisionQueue("ADDCURRENTTURNEFFECT", $defPlayer, "heavy_industry_surveillance", 1);
+        }
       }
       break;
     case "heavy_industry_ram_stop":
