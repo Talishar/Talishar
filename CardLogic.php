@@ -4015,7 +4015,9 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         $auras = GetAuras($player);
         for($i = 0; $i < count($auras); $i += AuraPieces()) {
           $name = NameOverride($auras[$i], $player);
-          if (!in_array($name, $uniqueAuras)) array_push($uniqueAuras, $name);
+          if (TypeContains($auras[$i], "T") && !in_array($name, $uniqueAuras)) {
+            array_push($uniqueAuras, $name);
+          }
         }
       }
       if ($target == "-") $index = 0;
