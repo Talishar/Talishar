@@ -27,6 +27,7 @@ function APSHitEffect($cardID): void
   global $mainPlayer;
   switch ($cardID) {
     case "standing_ovation_blue":
+      WriteLog("The crowd demands an encore! Who are you to refuse?", highlight:true);
       AddCurrentTurnEffect($cardID, $mainPlayer);
       break;
     default:
