@@ -419,7 +419,7 @@
 
   function WTRHitEffect($cardID)
   {
-    global $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex;
+    global $CS_HitsWDawnblade, $combatChainState, $CCS_WeaponIndex, $CCS_GoesWhereAfterLinkResolves;
     global $mainPlayer, $defPlayer, $CCS_DamageDealt;
     switch($cardID)
     {
@@ -436,6 +436,7 @@
       case "hurricane_technique_yellow":
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
         if(ComboActive()) {
+          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
           AddDecisionQueue("ADDHAND", $mainPlayer, "-");
         }
         break;
