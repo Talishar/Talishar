@@ -3974,6 +3974,23 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
       AddDecisionQueue("WRITELOG", $player, "⤴️ <0> was put on the top of the deck.", 1);
       break;
+    case "base_of_the_mountain":
+      $search = "MYHAND:type=AA&MYHAND:type=A";
+      $fromMod = "Hand,MOUNTAIN";
+      $choices = SearchMultizone($player, $parameter);
+      if ($choices != "") {
+        $numChoices = count(explode(",", $choices));
+        for ($i = 0; $i < $numChoices; ++$i) {
+          AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
+          AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        }
+        AddDecisionQueue("SPECIFICCARD", $player, "MOUNTAINBASE", 1);
+        AddDecisionQueue("ELSE", $player, "-");
+        AddDecisionQueue("SPECIFICCARD", $player, "MOUNTAINBASE", 1);
+      }
+      break;
     default:
       break;
   }

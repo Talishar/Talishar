@@ -1055,6 +1055,27 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "BREAKSTATURE":
       AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID:NameOverride($lastResult, $otherPlayer));
       return "";
+    case "MOUNTAINBASE":
+      // check if I should go through banish backwards
+      $banish = GetBanish($player);
+      $toRemove = [];
+      for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+        if ($banish[$i + 1] == "MOUNTAIN") {
+          //reset the mod
+          $banish[$i + 1] = "-";
+          //try to add it as defending
+          if (CanBlock($banish[$i], "BANISH")) {
+            AddCombatChain($banish[$i], $player, "BANISH", 0, -1);
+            OnBlockResolveEffects($banish[$i]);
+            //only remove it if it successfully gets added as blocking
+            array_push($toRemove, $i);
+          }
+        }
+      }
+      for ($i = count($toRemove) - 1; $i >= 0; --$i) {
+        RemoveBanish($player, $toRemove[$i]);
+      }
+      return "";
     default: return "";
   }
 

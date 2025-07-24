@@ -821,7 +821,7 @@ function PitchValue($cardID)
 
 function BlockValue($cardID)
 {
-  global $defPlayer;
+  global $defPlayer, $combatChain;
   switch ($cardID) { //cards with a mistake in GeneratedBlockValue
     case "crash_and_bash_red":
       return 4;
@@ -842,9 +842,22 @@ function BlockValue($cardID)
   }
   if (!$cardID) return "";
   $set = CardSet($cardID);
-  if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($defPlayer) * 2;
-  if ($cardID == "fractal_replication_red") return FractalReplicationStats("Block");
-  if ($cardID == "arcanite_fortress") return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
+  switch ($cardID) {
+    case "mutated_mass_blue":
+      return SearchPitchForNumCosts($defPlayer) * 2;
+    case "fractal_replication_red":
+      return FractalReplicationStats("Block");
+    case "arcanite_fortress":
+      return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
+    case "base_of_the_mountain":
+      $blockVal = 0;
+      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        if ((TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA")) && $combatChain[$i + 1] == $defPlayer) ++$blockVal;
+      }
+      return $blockVal;
+    default:
+      break;
+  }
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
@@ -1500,6 +1513,18 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
         break;
     }
   }
+  return true;
+}
+
+function CanBlock($cardID, $from)
+{
+  global $mainPlayer;
+  $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
+  $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
+  $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2;
+  if ($from == "HAND" && $dominateRestricted) return false;
+  if (TypeContains($cardID, "A") || TypeContains($cardID, "AA") && $overpowerRestricted) return false;
+  if (!TypeContains($cardID, "B") && $confidenceRestricted) return false;
   return true;
 }
 
