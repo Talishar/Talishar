@@ -1313,6 +1313,14 @@ function OnBlockEffects($index, $from)
     default:
       break;
   }
+  //bizarre, but technically symbiosis shot gets a counter when an item blocks
+  if (SubtypeContains($chainCard->ID(), "Item", $defPlayer)) {
+    $char = &GetPlayerCharacter($defPlayer);
+    if (($symbiosisIndex = FindCharacterIndex($defPlayer, "symbiosis_shot")) > 0 && ClassContains($chainCard->ID(), "MECHANOLOGIST", $defPlayer)) {
+    if ($char[$symbiosisIndex + 2] < 6) $char[$symbiosisIndex + 2] += 1;
+    if ($char[$symbiosisIndex + 2] > 6) $char[$symbiosisIndex + 2] = 6;
+  }
+  }
 }
 
 function CombatChainCloseAbilities($player, $cardID, $chainLink)
