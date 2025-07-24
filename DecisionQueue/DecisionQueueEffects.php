@@ -1051,6 +1051,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $char[1] = 3;
       AddCurrentTurnEffect("liars_charm_yellow", $player);
       ReEvalCombatChain();
+      return "";
+    case "BREAKSTATURE":
+      AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID:NameOverride($lastResult, $otherPlayer));
+      return "";
     default: return "";
   }
 

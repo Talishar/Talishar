@@ -546,6 +546,7 @@
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
       case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
       case "knock_em_off_their_feet_red":
+      case "break_stature_yellow":
         return true;
       default:
         return false;
@@ -666,6 +667,13 @@
         break;
       case "knock_em_off_their_feet_red":
         Tap("MYCHAR-0", $defPlayer);
+        break;
+      case "break_stature_yellow":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS:type=T");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SHOWCHOSENCARD", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BREAKSTATURE", 1);
         break;
       default: return;
     }

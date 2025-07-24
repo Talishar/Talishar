@@ -2,7 +2,7 @@
 
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
-  global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated;
+  global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -17,6 +17,15 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     if ($isToken) {//this is a band-aid fix for cases where EffectContext isn't updated properly
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
+    }
+  }
+  if ($isToken) {
+    $ind = SearchCurrentTurnEffectsForIndex("break_stature_yellow", $effectController);
+    if ($ind != -1) {
+      if (NameOverride($cardID, $player) == $currentTurnEffects[$ind + 2]) {
+        WriteLog("Your stature has been broken, you cannot create " . $currentTurnEffects[$ind + 2] . " this turn!");
+        return;
+      }
     }
   }
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
