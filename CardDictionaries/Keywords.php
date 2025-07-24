@@ -210,6 +210,12 @@
       case "test_of_strength_red":
         PutItemIntoPlayForPlayer("gold", $playerID, effectController:$effectController);
         break;
+      case "clash_of_bravado_yellow":
+        AddDecisionQueue("MULTIZONEINDICES", $playerID, "THEIRAURAS");
+        AddDecisionQueue("CHOOSEMULTIZONE", $playerID, "<-", 1);
+        AddDecisionQueue("SHOWCHOSENCARD", $playerID, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $playerID, "<-", 1);
+        break;
       default: break;
     }
     }

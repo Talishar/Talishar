@@ -1762,6 +1762,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $cleanTarget;
+    case "SHOWCHOSENCARD":
+      foreach (explode(",", $lastResult) as $targ) {
+        $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+        WriteLog("Player " . $targetPlayer . " chose " . GetMZCardLink($targetPlayer, $targ));
+      }
+      return $lastResult;
     case "SHOWSELECTEDTARGET":
       foreach (explode(",", $lastResult) as $targ) {
         $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
