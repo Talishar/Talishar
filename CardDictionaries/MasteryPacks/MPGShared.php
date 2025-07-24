@@ -52,6 +52,12 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer, effectSource:$cardID);
       Draw($otherPlayer, effectSource:$cardID);
       return "";
+    case "visit_anvilheim_blue":
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;class=GUARDIAN");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
+      AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, $resourcesPaid, 1);
+      return "";
     default:
       return "";
   }
