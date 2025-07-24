@@ -3982,6 +3982,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $numChoices = count(explode(",", $choices));
         for ($i = 0; $i < $numChoices; ++$i) {
           AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Banish an action from hand. (Cards will be added as blocking in the order you banish them)", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
