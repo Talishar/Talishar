@@ -259,6 +259,8 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer, 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("ELSE", $currentPlayer, "-");
+          AddDecisionQueue("WRITELOG", $currentPlayer, "No card was banished from deck!", 1);
         }
         return "";
       case "barbed_castaway":
