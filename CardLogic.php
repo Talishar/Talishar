@@ -3996,6 +3996,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "dimenxxional_crossroads_yellow":
       DealArcane(1, 0, "PLAYCARD", "dimenxxional_crossroads_yellow", resolvedTarget:$target);
       break;
+    case "pec_perfect_red":
+      Clash($parameter, $player);
+      break;
     default:
       break;
   }

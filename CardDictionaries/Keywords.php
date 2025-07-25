@@ -219,6 +219,15 @@
       case "test_of_iron_grip_red":
         $otherPlayer = $playerID == 1 ? 2 : 1;
         PummelHit($otherPlayer, effectController:$defPlayer);
+        break;
+      case "pec_perfect_red":
+        $otherPlayer = $playerID == 1 ? 2 : 1;
+        $deck = new Deck($otherPlayer);
+        if($deck->Empty()) {
+          break;
+        }
+        DestroyTopCard($otherPlayer);
+        break;
       default: break;
     }
     }

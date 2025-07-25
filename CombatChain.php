@@ -744,6 +744,9 @@ function OnDefenseReactionResolveEffects($from, $cardID)
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
         AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
         break;
+    case "pec_perfect_red":
+      AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+      break;
     default:
       break;
   }
@@ -890,6 +893,12 @@ function OnBlockResolveEffects($cardID = "")
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
           AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
+        }
+        break;
+      case "pec_perfect_red":
+        $numBlocking = $cardID == "" ? NumCardsBlocking() : 1;
+        for($i = 0; $i < $numBlocking; ++$i) {
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
         }
         break;
       default:
