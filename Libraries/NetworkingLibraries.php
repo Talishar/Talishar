@@ -1044,10 +1044,12 @@ function ResolveChainLink()
   $combatChainState[$CCS_LinkTotalPower] = $totalPower;
 
   LogCombatResolutionStats($totalPower, $totalDefense);
-  $targets = GetAttackTarget();
+  $targets = explode(",", GetAttackTarget());
   AddDecisionQueue("CHECKALLYDEATH", $mainPlayer, "-", 1);
-  foreach(explode(",", $targets) as $target) {
-    $target = explode("-", $target);
+  for ($i = 0; $i < count($targets); ++$i) {
+  // foreach(explode(",", $targets) as $target) {
+    $target = explode("-", $targets[$i]);
+    WriteLog("HERE: $targets[$i]");
     if ($target[0] == "THEIRALLY") {
       $index = $target[1];
       $allies = &GetAllies($defPlayer);
@@ -1059,14 +1061,13 @@ function ResolveChainLink()
         if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
         DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
       }
-      //we may eventually want to move this out of a decision queue
-      // AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
-      ResolveCombatDamage($totalPower, "ALLY");
+      if ($i == count($targets) - 1) ResolveCombatDamage($totalPower, damageTarget: "ALLY");
+      else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
-      // if(!IsGameOver()) ResolveCombatDamage($damage, "HERO");
+      if ($i == count($targets) - 1 && !IsGameOver()) ResolveCombatDamage($totalPower, damageTarget: "HERO");
+      else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
     }
   }
   ProcessDecisionQueue();
