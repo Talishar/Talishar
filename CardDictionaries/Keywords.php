@@ -216,6 +216,9 @@
         AddDecisionQueue("SHOWCHOSENCARD", $playerID, "<-", 1);
         AddDecisionQueue("MZDESTROY", $playerID, "<-", 1);
         break;
+      case "test_of_iron_grip_red":
+        $otherPlayer = $playerID == 1 ? 2 : 1;
+        PummelHit($otherPlayer, effectController:$defPlayer);
       default: break;
     }
     }

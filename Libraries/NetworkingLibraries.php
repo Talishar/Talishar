@@ -1060,7 +1060,8 @@ function ResolveChainLink()
         DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
       }
       //we may eventually want to move this out of a decision queue
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
+      // AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
+      ResolveCombatDamage($totalPower, "ALLY");
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
@@ -1078,7 +1079,9 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer;
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
-  PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
+  if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+    PrependLayer("FINALIZECHAINLINK", $mainPlayer, "0");
+  }
   WriteLog("Combat resolved with " . ($wasHit ? "a hit for $damageDone damage" : "no hit"));
   if (DoesAttackHaveGoAgain()) $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
   
