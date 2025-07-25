@@ -3171,6 +3171,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "clash_of_mountains_yellow":
     case "clash_of_mountains_blue":
     case "clash_of_bravado_yellow":
+    case "test_of_iron_grip_red":
       Clash($parameter, effectController: $player);
       break;
     case "nasty_surprise_blue":

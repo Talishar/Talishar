@@ -1035,6 +1035,7 @@ function OnBlockResolveEffects($cardID = "")
       case "dig_in_blue":
       case "clash_of_bravado_yellow":
       case "base_of_the_mountain":
+      case "test_of_iron_grip_red":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":
