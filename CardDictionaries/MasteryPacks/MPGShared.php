@@ -29,6 +29,7 @@ function MPGCombatEffectActive($cardID, $attackID): bool
   return match($cardID) {
     "valda_seismic_impact" => HasCrush($attackID),
     "draw_a_crowd_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA"),
+    "leave_a_dent_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer),
     default => false
   };
 }
@@ -57,6 +58,9 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
       AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, $resourcesPaid, 1);
+      return "";
+    case "leave_a_dent_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     default:
       return "";

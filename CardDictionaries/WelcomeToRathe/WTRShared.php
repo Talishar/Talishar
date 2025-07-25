@@ -531,6 +531,8 @@
 
   function HasCrush($cardID)
   {
+    global $mainPlayer;
+    if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && TypeContains($cardID, "GUARDIAN", $mainPlayer)) return true;
     switch($cardID) {
       case "crippling_crush_red": case "spinal_crush_red": case "cranial_crush_blue": case "buckling_blow_red": case "buckling_blow_yellow": case "buckling_blow_blue":
       case "cartilage_crush_red": case "cartilage_crush_yellow": case "cartilage_crush_blue": case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":
@@ -681,6 +683,14 @@
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
         AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
         AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
+        break;
+      case "leave_a_dent_blue":
+        $deck = new Deck($defPlayer);
+        for ($i = 0; $i < 4; ++$i) {
+          if($deck->Empty()) break;
+          else DestroyTopCard($defPlayer);
+        }
+        break;
       default: return;
     }
   }
