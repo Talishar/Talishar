@@ -501,6 +501,10 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       if (SearchAurasForCard("might", $mainPlayer, false) != "") return 1;
       elseif (SearchAurasForCard("confidence", $mainPlayer, false) != "") return 1;
       else return 0;
+    case "headbutt_blue":
+      $mainEmptySlots = ListExposedEquipSlots($mainPlayer);
+      $defEmptySlots = ListExposedEquipSlots($defPlayer);
+      return !str_contains($mainEmptySlots, "Head") && str_contains($defEmptySlots, "Head") ? 1 : 0;
     default:
       return 0;
   }

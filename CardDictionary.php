@@ -1789,6 +1789,12 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
     if ($char[FindCharacterIndex($player, $cardID) + 12] == "DOWN") {
       return true;
     }
+    switch ($CombatChain->AttackCard()->ID()) {
+      case "headbutt_blue":
+        if (!SubtypeContains($cardID, "Head")) return true;
+      default:
+        break;
+    }
   }
   if (SearchCurrentTurnEffects("stasis_cell_blue-B-" . $cardID, $player)) {
     $restriction = "stasis_cell_blue";

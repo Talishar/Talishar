@@ -546,7 +546,7 @@
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
       case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
       case "knock_em_off_their_feet_red":
-      case "break_stature_yellow":
+      case "break_stature_yellow": case "headbutt_blue":
         return true;
       default:
         return false;
@@ -675,6 +675,12 @@
         AddDecisionQueue("MZDESTROY", $mainPlayer, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BREAKSTATURE", 1);
         break;
+      case "headbutt_blue":
+        $index = SearchCharacterIndexSubtype($defPlayer, "Head");
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index);
+        AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
+        AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
       default: return;
     }
   }
