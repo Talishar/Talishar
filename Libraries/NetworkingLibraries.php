@@ -1061,13 +1061,15 @@ function ResolveChainLink()
         if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
         DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
       }
-      if ($i == count($targets) - 1) ResolveCombatDamage($totalPower, damageTarget: "ALLY");
-      else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
+      // if ($i == count($targets) - 1) ResolveCombatDamage($totalPower, damageTarget: "ALLY");
+      // else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
-      if ($i == count($targets) - 1 && !IsGameOver()) ResolveCombatDamage($totalPower, damageTarget: "HERO");
-      else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
+      // if ($i == count($targets) - 1 && !IsGameOver()) ResolveCombatDamage($totalPower, damageTarget: "HERO");
+      // else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
+      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
     }
   }
   ProcessDecisionQueue();
