@@ -3993,6 +3993,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SPECIFICCARD", $player, "MOUNTAINBASE", 1);
       }
       break;
+    case "dimenxxional_crossroads_yellow":
+      DealArcane(1, 0, "PLAYCARD", "dimenxxional_crossroads_yellow", resolvedTarget:$target);
+      break;
     default:
       break;
   }
