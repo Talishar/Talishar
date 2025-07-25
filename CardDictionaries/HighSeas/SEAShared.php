@@ -834,6 +834,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($deck->Reveal(1)) {
         $top = $deck->Top();
         $pitch = PitchValue($top);
+        $pitch = $pitch > -1 ? $pitch : 0;
         $CombatChain->AttackCard()->ModifyPower($pitch);
         return "Reveals " . CardLink($top, $top) . " and gets +" . $pitch . " power";
       }
