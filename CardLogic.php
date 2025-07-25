@@ -838,31 +838,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "urgent_delivery_red":
     case "urgent_delivery_yellow":
     case "urgent_delivery_blue":
-    case "eradicate_yellow":
-    case "regicide_blue":
-    case "leave_no_witnesses_red":
-    case "surgical_extraction_blue":
-    case "plunder_the_poor_red":
-    case "plunder_the_poor_yellow":
-    case "plunder_the_poor_blue":
-    case "rob_the_rich_red":
-    case "rob_the_rich_yellow":
-    case "rob_the_rich_blue":
-    case "annihilate_the_armed_red":
-    case "annihilate_the_armed_yellow":
-    case "annihilate_the_armed_blue":
-    case "fleece_the_frail_red":
-    case "fleece_the_frail_yellow":
-    case "fleece_the_frail_blue":
-    case "nix_the_nimble_red":
-    case "nix_the_nimble_yellow":
-    case "nix_the_nimble_blue":
-    case "sack_the_shifty_red":
-    case "sack_the_shifty_yellow":
-    case "sack_the_shifty_blue":
-    case "slay_the_scholars_red":
-    case "slay_the_scholars_yellow":
-    case "slay_the_scholars_blue":
     case "heat_seeker_red":
     case "immobilizing_shot_red":
     case "drill_shot_red":
@@ -1075,6 +1050,31 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "uplifting_performance_blue":
     case "offensive_behavior_blue":
     case "spew_obscenities_yellow":
+    case "eradicate_yellow":
+    case "regicide_blue":
+    case "leave_no_witnesses_red":
+    case "surgical_extraction_blue":
+    case "plunder_the_poor_red":
+    case "plunder_the_poor_yellow":
+    case "plunder_the_poor_blue":
+    case "rob_the_rich_red":
+    case "rob_the_rich_yellow":
+    case "rob_the_rich_blue":
+    case "annihilate_the_armed_red":
+    case "annihilate_the_armed_yellow":
+    case "annihilate_the_armed_blue":
+    case "fleece_the_frail_red":
+    case "fleece_the_frail_yellow":
+    case "fleece_the_frail_blue":
+    case "nix_the_nimble_red":
+    case "nix_the_nimble_yellow":
+    case "nix_the_nimble_blue":
+    case "sack_the_shifty_red":
+    case "sack_the_shifty_yellow":
+    case "sack_the_shifty_blue":
+    case "slay_the_scholars_red":
+    case "slay_the_scholars_yellow":
+    case "slay_the_scholars_blue":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;

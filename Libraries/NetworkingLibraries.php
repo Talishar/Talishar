@@ -1045,10 +1045,18 @@ function ResolveChainLink()
 
   LogCombatResolutionStats($totalPower, $totalDefense);
   $targets = explode(",", GetAttackTarget());
+  //not strictly accurate, the attacker should get to order the damage, but this fixes most problems
+  $reorderedTargets = [];
+  
+  foreach ($targets as $target) {
+    if ($target != "THEIRCHAR-0") array_push($reorderedTargets, $target);
+  }
+  if (in_array("THEIRCHAR-0", $targets)) array_push($reorderedTargets, "THEIRCHAR-0");
   AddDecisionQueue("CHECKALLYDEATH", $mainPlayer, "-", 1);
-  for ($i = 0; $i < count($targets); ++$i) {
+  
+  for ($i = 0; $i < count($reorderedTargets); ++$i) {
   // foreach(explode(",", $targets) as $target) {
-    $target = explode("-", $targets[$i]);
+    $target = explode("-", $reorderedTargets[$i]);
     if ($target[0] == "THEIRALLY") {
       $index = $target[1];
       $allies = &GetAllies($defPlayer);
@@ -1060,13 +1068,14 @@ function ResolveChainLink()
         if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
         DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
       }
-      // if ($i == count($targets) - 1) ResolveCombatDamage($totalPower, damageTarget: "ALLY");
+      // if ($i > 0 && $i == count($targets) - 1) ResolveCombatDamage($totalPower, damageTarget: "ALLY");
       // else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
       AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0]); //Include prevention
-      // if ($i == count($targets) - 1 && !IsGameOver()) ResolveCombatDamage($totalPower, damageTarget: "HERO");
+      // $damageDone = $totalPower-$totalDefense > 0 ? $totalPower-$totalDefense : 0;
+      // if ($i > 0 && $i == count($targets) - 1 && !IsGameOver()) ResolveCombatDamage($damageDone, damageTarget: "HERO");
       // else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
       AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "-,HERO");
     }
