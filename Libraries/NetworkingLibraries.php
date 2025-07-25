@@ -1049,7 +1049,6 @@ function ResolveChainLink()
   for ($i = 0; $i < count($targets); ++$i) {
   // foreach(explode(",", $targets) as $target) {
     $target = explode("-", $targets[$i]);
-    WriteLog("HERE: $targets[$i]");
     if ($target[0] == "THEIRALLY") {
       $index = $target[1];
       $allies = &GetAllies($defPlayer);
