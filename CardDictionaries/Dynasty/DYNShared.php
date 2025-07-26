@@ -296,7 +296,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $mechanoidIndex = $charCount - $charPieces; // we pushed it, so should be the last element
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if(CardType($char[$i]) != "C" && $char[$i] != "nitro_mechanoida") {
+        if(CardType($char[$i]) != "C" && CardType($char[$i]) != "Companion" && $char[$i] != "nitro_mechanoida") {
           if($char[$i] == "galvanic_bender") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechanoidIndex);
         }
