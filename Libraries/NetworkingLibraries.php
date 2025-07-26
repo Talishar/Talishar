@@ -1053,7 +1053,7 @@ function ResolveChainLink()
   }
   if (in_array("THEIRCHAR-0", $targets)) array_push($reorderedTargets, "THEIRCHAR-0");
   AddDecisionQueue("CHECKALLYDEATH", $mainPlayer, "-", 1);
-  
+
   for ($i = 0; $i < count($reorderedTargets); ++$i) {
   // foreach(explode(",", $targets) as $target) {
     $target = explode("-", $reorderedTargets[$i]);
@@ -2429,6 +2429,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "deny_redemption_red":
     case "bam_bam_yellow":
     case "outside_interference_blue":
+    case "fearless_confrontation_blue":
       $names = GetAbilityNames($cardID, $index, $from);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);

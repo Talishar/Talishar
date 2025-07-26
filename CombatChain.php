@@ -1123,6 +1123,9 @@ function OnBlockResolveEffects($cardID = "")
       default:
         break;
     }
+    if (SearchAuras("daily_grind_blue", $defPlayer)) {
+      AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
+    }
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "mark_of_lightning", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "mark_of_lightning");
@@ -1405,6 +1408,7 @@ function IsDominateActive()
   global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary;
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
   $characterEffects = GetCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
@@ -1796,4 +1800,16 @@ function RemoveCombatChainLink($ind)
   $linkInd = intdiv($ind, ChainLinksPieces());
   $chainLinks[$linkInd][2] = 0;
   return $chainLinks[$linkInd][0];
+}
+
+function IsLayerStep()
+{
+  global $layers, $CombatChain, $mainPlayer;
+  if ($CombatChain->HasCurrentLink()) return false;
+  $layerInd = count($layers) - LayerPieces();
+  $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY"];
+  if (in_array($layers[$layerInd], $nonCardLayers)) return false;
+  if ($layers[$layerInd + 1] != $mainPlayer) return false;
+  $layerFrom = explode("|", $layers[$layerInd + 2])[0];
+  return GoesOnCombatChain("A", $layers[$layerInd], $layerFrom, $mainPlayer);
 }

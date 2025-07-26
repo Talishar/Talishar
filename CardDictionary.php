@@ -607,6 +607,7 @@ function CardCost($cardID, $from="-")
     case "vigorous_windup_blue":
     case "bam_bam_yellow":
     case "outside_interference_blue":
+    case "fearless_confrontation_blue":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
     case "ripple_away_blue":
@@ -1263,7 +1264,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "ripple_away_blue", "under_the_trap_door_blue", 
     "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
     "tip_off_red", "tip_off_yellow", "tip_off_blue", 
-    "outside_interference_blue" => "I,AA",
+    "outside_interference_blue", "fearless_confrontation_blue" => "I,AA",
 
     "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", 
     "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", 
@@ -1292,7 +1293,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 function GetAbilityNames($cardID, $index = -1, $from = "-"): string
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
-  global $defPlayer;
+  global $defPlayer, $CombatChain;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
@@ -1477,6 +1478,21 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $canAttack) return "-,Attack";
       if ($allies[$index + 8] > 0) $names = "Ability";
       if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+      return $names;
+    case "fearless_confrontation_blue":
+      if($foundNullTime && $from == "HAND") return "Ability";
+      $names = ["-", "-"];
+      //can it ability?
+      if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep())) $names[0] = "Ability";
+      // can it attack?
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+        $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
+        $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
+        if (!$warmongersPeace && !$underEdict && CanAttack($cardID, $from, $index, type:"AA")) {
+          if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names[1] = "Attack";
+        }
+      }
+      $names = $names[1] == "-" ? $names[0] : implode(",", $names);
       return $names;
     default:
       return "";
@@ -3223,6 +3239,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "deny_redemption_red":
     case "bam_bam_yellow":
     case "outside_interference_blue":
+    case "fearless_confrontation_blue":
       return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":

@@ -143,6 +143,7 @@
 
   function WonClashAbility($playerID, $cardID, $effectController="") {
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
+    $otherPlayer = $playerID == 1 ? 2 : 1;
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
@@ -217,11 +218,10 @@
         AddDecisionQueue("MZDESTROY", $playerID, "<-", 1);
         break;
       case "test_of_iron_grip_red":
-        $otherPlayer = $playerID == 1 ? 2 : 1;
         PummelHit($otherPlayer, effectController:$defPlayer);
         break;
       case "pec_perfect_red":
-        $otherPlayer = $playerID == 1 ? 2 : 1;
+      case "daily_grind_blue":
         $deck = new Deck($otherPlayer);
         if($deck->Empty()) {
           break;

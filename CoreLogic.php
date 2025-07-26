@@ -1604,6 +1604,11 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "burn_bare":
       if ($from != "HAND") return false;
       return IsPhantasmActive();
+    case "fearless_confrontation_blue":
+      if ($from != "HAND") return false;
+      if ($CombatChain->HasCurrentLink()) return true;
+      if (IsLayerStep()) return true;
+      return false;
     default:
       break;
   }

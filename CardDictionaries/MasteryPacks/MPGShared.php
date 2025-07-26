@@ -19,6 +19,7 @@ function MPGEffectPowerModifier($cardID): int
 {
   return match ($cardID) {
     "draw_a_crowd_blue" => 3,
+    "fearless_confrontation_blue" => -1,
     default => 0
   };
 }
@@ -30,6 +31,7 @@ function MPGCombatEffectActive($cardID, $attackID): bool
     "valda_seismic_impact" => HasCrush($attackID),
     "draw_a_crowd_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA"),
     "leave_a_dent_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer),
+    "fearless_confrontation_blue" => true,
     default => false
   };
 }

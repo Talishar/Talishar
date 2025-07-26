@@ -1822,7 +1822,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $CS_DamagePrevention, $combatChain, $CS_AdditionalCosts;
+  global $CS_DamagePrevention, $combatChain, $CS_AdditionalCosts, $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($parameter) {
     case "mighty_windup_red":
@@ -1924,6 +1924,9 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
       AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
       AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
+      break;
+    case "fearless_confrontation_blue":
+      AddCurrentTurnEffect($parameter, $mainPlayer);
       break;
     default:
       break;
@@ -3176,6 +3179,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "clash_of_mountains_blue":
     case "clash_of_bravado_yellow":
     case "test_of_iron_grip_red":
+    case "daily_grind_blue":
       Clash($parameter, effectController: $player);
       break;
     case "nasty_surprise_blue":
