@@ -1920,6 +1920,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$index + 4] = intval($character[$index + 4]) + $parameter;
       if ($parameter < 0) WriteLog(CardLink($character[$index], $character[$index]) . " gets a -1 counter.");
       return $lastResult;
+    case "REMOVEDEFCOUNTER":
+      if ($lastResult == "") return $lastResult;
+      if (substr($lastResult, 0, 5) == "THEIR") {
+        $index = intval(explode("-", $lastResult)[1]); 
+        $player = $player == 1 ? 2 : 1;
+      }
+      elseif(substr($lastResult, 0, 2) == "MY") {
+        $index = intval(explode("-", $lastResult)[1]);
+      }
+      else {
+        $index = intval($lastResult);
+      }
+      $character = &GetPlayerCharacter($player);
+      if ($character[$index + 4] > 0) return $lastResult;
+      $character[$index + 4] = intval($character[$index + 4]) + $parameter;
+      if ($character[$index + 4] > 0) $character[$index + 4] = 0;
+      return $lastResult;
     case "REMOVECOUNTER":
       $character = &GetPlayerCharacter($player);
       $character[$lastResult + 2] -= 1;

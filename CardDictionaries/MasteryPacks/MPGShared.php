@@ -59,7 +59,7 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;class=GUARDIAN");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
-      AddDecisionQueue("MODDEFCOUNTER", $currentPlayer, $resourcesPaid, 1);
+      AddDecisionQueue("REMOVEDEFCOUNTER", $currentPlayer, $resourcesPaid, 1);
       return "";
     case "leave_a_dent_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
