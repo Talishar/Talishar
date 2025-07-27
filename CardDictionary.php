@@ -4021,6 +4021,7 @@ function CharacterDefaultActiveState($cardID)
     case "robe_of_autumns_fall":
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
+    case "storm_striders":
       return 1;
     default:
       return 2;
