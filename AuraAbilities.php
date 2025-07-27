@@ -27,6 +27,11 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
         return;
       }
     }
+    $ind = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $effectController);
+    if ($ind != -1) {
+      WriteLog("Grandeur has been renounced, you cannot create token auras this turn!");
+      return;
+    }
   }
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event

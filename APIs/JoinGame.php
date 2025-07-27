@@ -637,6 +637,8 @@ function isUnimplemented($cardID) {
         "helm_of_the_arknight" => false,
         "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
         "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
+        "clash_of_bravado_yellow", "break_stature_yellow", "test_of_iron_grip_red", "visit_anvilheim_blue" => false,
+        "fault_line_red", "renounce_grandeur_red", "hostile_encroachment_red" => false,
         default => true
       };
     case "SUP":

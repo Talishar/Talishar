@@ -1344,6 +1344,9 @@ function AddCrushEffectTrigger($cardID)
     case "knock_em_off_their_feet_red":
     case "break_stature_yellow":
     case "headbutt_blue":
+    case "fault_line_red":
+    case "hostile_encroachment_red":
+    case "renounce_grandeur_red":
       AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
       break;
     case "blinding_of_the_old_ones_red": 
@@ -4059,6 +4062,9 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       else $index = explode("-", $target)[1];
       $combatChain[$index + 5] += count($uniqueAuras);
       $combatChain[$index + 6] += count($uniqueAuras);
+      break;
+    case "hostile_encroachment_red":
+      Draw($defPlayer, effectSource:$cardID);
       break;
     default:
       break;

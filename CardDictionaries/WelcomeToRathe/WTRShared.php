@@ -548,7 +548,8 @@
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
       case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
       case "knock_em_off_their_feet_red":
-      case "break_stature_yellow": case "headbutt_blue":
+      case "break_stature_yellow": case "headbutt_blue": case "fault_line_red":
+      case "hostile_encroachment_red": case "renounce_grandeur_red":
         return true;
       default:
         return false;
@@ -690,6 +691,22 @@
           if($deck->Empty()) break;
           else DestroyTopCard($defPlayer);
         }
+        break;
+      case "fault_line_red":
+        for ($player = 1; $player < 3; ++$player) {
+          $arsenal = GetArsenal($player);
+          for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
+            
+            AddBottomDeck($arsenal[$i], $player, "ARS");
+            RemoveArsenal($player, $i);
+          }
+        }
+        break;
+      case "renounce_grandeur_red":
+        AddNextTurnEffect($cardID, $defPlayer);
+        break;
+      case "hostile_encroachment_red":
+        PummelHit($defPlayer, effectController:$mainPlayer);
         break;
       default: return;
     }

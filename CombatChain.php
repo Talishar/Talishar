@@ -505,6 +505,15 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       $mainEmptySlots = ListExposedEquipSlots($mainPlayer);
       $defEmptySlots = ListExposedEquipSlots($defPlayer);
       return !str_contains($mainEmptySlots, "Head") && str_contains($defEmptySlots, "Head") ? 1 : 0;
+    case "fault_line_red":
+      $arsenal = GetArsenal($mainPlayer);
+      return count($arsenal) > 0 ? 1 : 0;
+    case "renounce_grandeur_red":
+      $auras = GetAuras($defPlayer);
+      for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+        if (TypeContains($auras[$i], "T", $defPlayer)) return 1;
+      }
+      return 0;
     default:
       return 0;
   }

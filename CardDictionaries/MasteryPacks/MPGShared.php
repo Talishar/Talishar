@@ -64,6 +64,9 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "leave_a_dent_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "hostile_encroachment_red":
+      AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
+      return "";
     default:
       return "";
   }
