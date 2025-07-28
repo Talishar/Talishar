@@ -2,7 +2,7 @@
 
 function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
-  global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen;
+  global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen, $CCS_LinkBasePower;
   if(isset($lastResult[0])) SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);
   AddDecisionQueue("CURRENTEFFECTAFTERPLAYORACTIVATEABILITY", $player, "<-");
   switch($card)
@@ -16,9 +16,15 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "JUSTANICK":
       switch($lastResult) {
-        case "Buff_Power": AddCurrentTurnEffect("just_a_nick_red-BUFF", $player); break;
-        case "Gain_On-Hit": AddCurrentTurnEffect("just_a_nick_red-HIT", $player); break;
-        case "Both": AddCurrentTurnEffect("just_a_nick_red-BUFF", $player); AddCurrentTurnEffect("just_a_nick_red-HIT", $player); break;
+        case "Buff_Power":
+          if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") AddCurrentTurnEffect("just_a_nick_red-BUFF", $player);
+          break;
+        case "Gain_On-Hit":
+          if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("just_a_nick_red-HIT", $player); break;
+        case "Both":
+          if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") AddCurrentTurnEffect("just_a_nick_red-BUFF", $player);
+          if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("just_a_nick_red-HIT", $player);
+          break;
       }
       return $lastResult;
     case "MAUL":
