@@ -782,7 +782,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
 
 function CurrentEffectDamageModifiers($player, $source, $type)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $mainPlayer;
   $modifier = 0;
   if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -796,7 +796,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
       case "ball_lightning_red":
       case "ball_lightning_yellow":
       case "ball_lightning_blue":
-        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
         break;
       default:
         break;
