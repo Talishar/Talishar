@@ -4025,6 +4025,7 @@ function CharacterDefaultActiveState($cardID)
     case "okana_scar_wraps":
     case "alluvion_constellas":
     case "compass_of_sunken_depths":
+    case "pouncing_paws":
       return 1;
     default:
       return 2;
