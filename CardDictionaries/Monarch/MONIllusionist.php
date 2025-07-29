@@ -202,7 +202,7 @@
       CloseCombatChain();
       ProcessDecisionQueue();
     }
-    else {
+    else if ($combatChain[10] != "PHANTASM") {
       $turn[0] = "A";
       $currentPlayer = $mainPlayer;
       for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
