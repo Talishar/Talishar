@@ -4023,6 +4023,8 @@ function CharacterDefaultActiveState($cardID)
     case "prism_advent_of_thrones":
     case "storm_striders":
     case "okana_scar_wraps":
+    case "alluvion_constellas":
+    case "compass_of_sunken_depths":
       return 1;
     default:
       return 2;
