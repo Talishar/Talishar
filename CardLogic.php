@@ -1755,10 +1755,13 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
           if ($char[$i + 1] != 0) $openHands = false;
         }
       }
+      $index = SearchCharacterForCards($cardID, $player);
       if (SearchBanishForCard($player, "edge_of_autumn") != -1 && $openHands) {
         AddDecisionQueue("SETDQCONTEXT", $player, "equip_a_banished_edge_of_autumn");
-        AddDecisionQueue("YESNO", $player, "-", 1);
-        AddDecisionQueue("NOPASS", $player, "-", 1);
+        if ($index == "" || IsCharacterActive($player, $index)) {
+         AddDecisionQueue("YESNO", $player, "-", 1);
+         AddDecisionQueue("NOPASS", $player, "-", 1);
+        }
         AddDecisionQueue("SPECIFICCARD", $player, "SCARWRAPS", "-", 1);
       }
       break;

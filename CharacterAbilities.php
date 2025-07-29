@@ -588,7 +588,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
         }
         break;
       case "okana_scar_wraps":
-        if (IsCharacterActive($mainPlayer, $i) && CardNameContains($damageSource, "Vengeance", $mainPlayer, true)) {
+        if ($mainCharacter[$i+1] == 2 && CardNameContains($damageSource, "Vengeance", $mainPlayer, true)) {
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
         }
         break;
