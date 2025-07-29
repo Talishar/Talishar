@@ -4013,6 +4013,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "pec_perfect_red":
       Clash($parameter, $player);
       break;
+    case "leyline_of_the_old_ones_blue":
+      if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
+      else if (GetClassState($player, $CS_SeismicSurgesCreated) < 1) DestroyAuraUniqueID($player, explode("-", $uniqueID)[1]);
+      break;
     default:
       break;
   }

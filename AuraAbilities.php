@@ -2,7 +2,7 @@
 
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
-  global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects;
+  global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -79,6 +79,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   else if (CreatesAuraForOpponent($EffectContext)) IncrementClassState($effectController, $CS_NumAuras, $number);
   else if ($cardID != "frostbite") IncrementClassState($player, $CS_NumAuras, $number);
   if ($cardID == "fealty") IncrementClassState($player, $CS_FealtyCreated, $number);
+  if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
 }
 
 function StealAura($srcPlayer, $index, $destPlayer, $from)
@@ -930,6 +931,9 @@ function AuraBeginEndPhaseTriggers()
         $countAuras = count($auras)/AuraPieces();
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, "MYAURAS-" . $auras[$i + 6]);
         break;
+      case "leyline_of_the_old_ones_blue":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", "MYAURAS-" . $auras[$i + 6]);
+        break;
       default:
         break;
     }
@@ -1272,6 +1276,9 @@ function AuraDamageDealtAbilities($player, $damage)
       case "arcane_cussing_yellow":
       case "arcane_cussing_blue":
         $remove = 1;
+        break;
+      case "leyline_of_the_old_ones_blue":
+        AddLayer("TRIGGER", $player, $auras[$i]);
         break;
       default:
         break;
