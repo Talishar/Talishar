@@ -3014,7 +3014,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "BELITTLE", 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
       break;
     case "rally_the_rearguard_red":
