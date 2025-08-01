@@ -67,7 +67,7 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "hostile_encroachment_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       return "";
-    case "leyline_of_the_old_ones_blue":
+    case "ley_line_of_the_old_ones_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       return "";
     default:

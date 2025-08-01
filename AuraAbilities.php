@@ -934,7 +934,7 @@ function AuraBeginEndPhaseTriggers()
         $countAuras = count($auras)/AuraPieces();
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, "MYAURAS-" . $auras[$i + 6]);
         break;
-      case "leyline_of_the_old_ones_blue":
+      case "ley_line_of_the_old_ones_blue":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", "MYAURAS-" . $auras[$i + 6]);
         break;
       default:
@@ -1280,7 +1280,7 @@ function AuraDamageDealtAbilities($player, $damage)
       case "arcane_cussing_blue":
         $remove = 1;
         break;
-      case "leyline_of_the_old_ones_blue":
+      case "ley_line_of_the_old_ones_blue":
         AddLayer("TRIGGER", $player, $auras[$i]);
         break;
       default:
