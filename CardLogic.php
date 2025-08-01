@@ -4285,10 +4285,10 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "")
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
+    $power += ItemsPowerModifiers($cardID, $player, $from);
   } else {
     $power += EffectDefenderPowerModifiers($cardID);
   }
-  $power += ItemsPowerModifiers($cardID, $player, $from);
   return $power;
 }
 
