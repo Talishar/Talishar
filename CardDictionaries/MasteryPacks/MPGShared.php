@@ -65,7 +65,7 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "hostile_encroachment_red":
-      AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
+      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       return "";
     case "leyline_of_the_old_ones_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
