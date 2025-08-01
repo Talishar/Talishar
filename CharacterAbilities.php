@@ -1149,6 +1149,9 @@ function EquipPayAdditionalCosts($cardIndex)
     case "breakwater_undertow":
     case "garland_of_spring":
     case "punching_gloves":
+    case "richter_scale":
+    case "gauntlet_of_boulderhold":
+    case "craterhoof":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":

@@ -707,6 +707,7 @@ function AbilityCost($cardID)
   else if ($set == "SEA") return SEAAbilityCost($cardID);
   else if ($set == "AST") return ASTAbilityCost($cardID);
   else if ($set == "AGB") return AGBAbilityCost($cardID);
+  else if ($set == "MPG") return MPGAbilityCost($cardID);
   else if ($set == "SUP") return SUPAbilityCost($cardID);
   else if ($set == "APS") return APSAbilityCost($cardID);
   else switch ($cardID) {
@@ -1233,6 +1234,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "SEA") return SEAAbilityType($cardID, $from);
   else if ($set == "ASR") return ASRAbilityType($cardID);
   else if ($set == "AGB") return AGBAbilityType($cardID, $from);
+  else if ($set == "MPG") return MPGAbilityType($cardID, $from);
   else if ($set == "SUP") return SUPAbilityType($cardID);
   else if ($set == "APS") return APSAbilityType($cardID);
   else switch ($cardID) {
@@ -3794,6 +3796,7 @@ function AbilityHasGoAgain($cardID, $from)
   else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
   else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
   else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
+  else if ($set == "MPG") return MPGAbilityHasGoAgain($cardID);
   else if ($set == "SUP") return SUPAbilityHasGoAgain($cardID);
   else if ($set == "APS") return APSAbilityHasGoAgain($cardID);
   switch ($cardID) {
@@ -3897,6 +3900,7 @@ function DoesEffectGrantsDominate($cardID): bool
     case "murky_water_red":
     case "stone_rain_red":
     case "gauntlets_of_the_boreal_domain-I":
+    case "craterhoof":
       return true;
     case "weave_ice_red":
     case "weave_ice_yellow":

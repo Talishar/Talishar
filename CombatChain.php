@@ -522,7 +522,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
 function BlockModifier($cardID, $from, $resourcesPaid)
 {
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
-  global $CS_NumBluePlayed, $currentTurnEffects;
+  global $CS_NumBluePlayed, $currentTurnEffects, $combatChain;
   $blockModifier = 0;
   $cardType = CardType($cardID);
   if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
@@ -688,6 +688,11 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       }
       elseif ($countSeismic >= 3) {
         $blockModifier += 2;
+      }
+      break;
+    case "hoarding_of_denial":
+      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        if (CardCost($combatChain[$i]) >= 3 && $combatChain[$i + 1] == $defPlayer) ++$blockModifier;
       }
       break;
     default:

@@ -4,6 +4,9 @@ function MPGAbilityType($cardID, $index = -1, $from = "-"): string
 {
   global $currentPlayer;
   return match ($cardID) {
+    "richter_scale" => "A",
+    "gauntlet_of_boulderhold" => "A",
+    "craterhoof" => "A",
     default => ""
   };
 }
@@ -11,6 +14,8 @@ function MPGAbilityType($cardID, $index = -1, $from = "-"): string
 function MPGAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
+    "gauntlet_of_boulderhold" => true,
+    "craterhoof" => true,
     default => false
   };
 }
@@ -20,17 +25,20 @@ function MPGEffectPowerModifier($cardID): int
   return match ($cardID) {
     "draw_a_crowd_blue" => 3,
     "fearless_confrontation_blue" => -1,
+    "gauntlet_of_boulderhold" => 2,
     default => 0
   };
 }
 
-function MPGCombatEffectActive($cardID, $attackID): bool
+function MPGCombatEffectActive($cardID, $attackID, $from="-"): bool
 {
   global $mainPlayer;
   return match($cardID) {
     "valda_seismic_impact" => HasCrush($attackID),
     "draw_a_crowd_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA"),
     "leave_a_dent_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer),
+    "craterhoof" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA") && AttackPlayedFrom() == "ARS",
+    "gauntlet_of_boulderhold" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA"),
     "fearless_confrontation_blue" => true,
     default => false
   };
@@ -39,6 +47,8 @@ function MPGCombatEffectActive($cardID, $attackID): bool
 function MPGAbilityCost($cardID): int
 {
   return match($cardID) {
+    "gauntlet_of_boulderhold" => 3,
+    "craterhoof" => 3,
     default => 0
   };
 }
@@ -69,6 +79,13 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "ley_line_of_the_old_ones_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
+      return "";
+    case "richter_scale":
+      PlayAura("seismic_surge", $currentPlayer, 2, true, effectController:$currentPlayer, effectSource:$cardID);
+      return "";
+    case "craterhoof":
+    case "gauntlet_of_boulderhold":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     default:
       return "";
