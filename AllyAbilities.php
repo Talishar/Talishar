@@ -398,6 +398,9 @@ function AllyDamageTakenAbilities($player, $i)
       case "arcane_cussing_blue":
         $remove = 1;
         break;
+      case "ley_line_of_the_old_ones_blue":
+        AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i]);
+        break;
       default:
         break;
     }

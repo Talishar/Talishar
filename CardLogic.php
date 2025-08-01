@@ -3992,11 +3992,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "base_of_the_mountain":
       $search = "MYHAND:type=AA&MYHAND:type=A";
       $fromMod = "Hand,MOUNTAIN";
-      $choices = SearchMultizone($player, $parameter);
+      $choices = SearchMultizone($player, $search);
       if ($choices != "") {
         $numChoices = count(explode(",", $choices));
         for ($i = 0; $i < $numChoices; ++$i) {
-          AddDecisionQueue("MULTIZONEINDICES", $player, $search);
+          AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
           AddDecisionQueue("SETDQCONTEXT", $player, "Banish an action from hand. (Cards will be added as blocking in the order you banish them)", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
@@ -4015,7 +4015,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "ley_line_of_the_old_ones_blue":
       if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
-      else if (GetClassState($player, $CS_SeismicSurgesCreated) < 1) DestroyAuraUniqueID($player, explode("-", $uniqueID)[1]);
+      else if (CountAura("seismic_surge", $player) == 0) DestroyAuraUniqueID($player, explode("-", $uniqueID)[1]);
       break;
     default:
       break;

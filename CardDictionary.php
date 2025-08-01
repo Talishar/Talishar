@@ -1537,11 +1537,12 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
 function CanBlock($cardID, $from)
 {
   global $mainPlayer;
+  if (IsBlockRestricted($cardID)) return false;
   $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
   $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
   $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2;
   if ($from == "HAND" && $dominateRestricted) return false;
-  if (TypeContains($cardID, "A") || TypeContains($cardID, "AA") && $overpowerRestricted) return false;
+  if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && $overpowerRestricted) return false;
   if (!TypeContains($cardID, "B") && $confidenceRestricted) return false;
   return true;
 }

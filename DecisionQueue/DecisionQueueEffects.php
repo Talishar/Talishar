@@ -1061,7 +1061,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID:NameOverride($lastResult, $otherPlayer));
       return "";
     case "MOUNTAINBASE":
-      // check if I should go through banish backwards
       $banish = GetBanish($player);
       $toRemove = [];
       for ($i = 0; $i < count($banish); $i += BanishPieces()) {
