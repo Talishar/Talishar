@@ -4024,7 +4024,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 
 function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
-  global $mainPlayer, $defPlayer, $combatChain;
+  global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed;
   switch($cardID) {
     case "comeback_kid_red":
     case "comeback_kid_yellow":
@@ -4072,6 +4072,13 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       break;
     case "hostile_encroachment_red":
       Draw($defPlayer, effectSource:$cardID);
+      break;
+    case "aftershock_red":
+    case "aftershock_yellow":
+    case "aftershock_blue":
+      if (GetClassState($player, $CS_SeismicSurgesCreated) > 0 || CountAura("seismic_surge", $player) > 0 || GetClassState($player, $CS_NumSeismicSurgeDestroyed) > 0) {
+        PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$cardID);
+      }
       break;
     default:
       break;

@@ -643,6 +643,8 @@ function isUnimplemented($cardID) {
         "ley_line_of_the_old_ones_blue", "base_of_the_mountain" => false,
         "richter_scale", "gauntlet_of_boulderhold", "craterhoof", "hoarding_of_denial" => false,
         "tremor_of_resistance", "seismic_shelter_blue" => false,
+        "aftershock_red", "aftershock_yellow", "aftershock_blue" => false,
+        "little_big_foot_blue" => false,
         default => true
       };
     case "SUP":

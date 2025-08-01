@@ -87,6 +87,11 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "gauntlet_of_boulderhold":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
+    case "aftershock_red":
+    case "aftershock_yellow":
+    case "aftershock_blue":
+      AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
+      return "";
     default:
       return "";
   }

@@ -514,6 +514,12 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         if (TypeContains($auras[$i], "T", $defPlayer)) return 1;
       }
       return 0;
+    case "little_big_foot_red":
+      return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 0;
+    case "little_big_foot_yellow":
+      return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 5 : 0;
+    case "little_big_foot_blue":
+      return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 4 : 0;
     default:
       return 0;
   }
