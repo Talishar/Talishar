@@ -625,7 +625,7 @@ function isUnimplemented($cardID) {
         "put_em_in_their_place_red" => false,
         "seismic_eruption_yellow" => false,
         "solid_ground_blue" => false,
-        "blinding_of_the_old_ones_red" => false,
+        // "blinding_of_the_old_ones_red" => false,
         "smelting_of_the_old_ones_red" => false,
         "disenchantment_of_the_old_ones_red" => false,
         "grind_them_down_red", "grind_them_down_yellow", "grind_them_down_blue" => false,
