@@ -1132,7 +1132,7 @@ function OnBlockResolveEffects($cardID = "")
       default:
         break;
     }
-    if (SearchAuras("daily_grind_blue", $defPlayer)) {
+    if (SearchAuras("daily_grind_blue", $defPlayer) && TypeContains($defendingCard, "AA")) {
       AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
     }
   }

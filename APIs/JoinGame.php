@@ -639,6 +639,7 @@ function isUnimplemented($cardID) {
         "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
         "clash_of_bravado_yellow", "break_stature_yellow", "test_of_iron_grip_red", "visit_anvilheim_blue" => false,
         "fault_line_red", "renounce_grandeur_red", "hostile_encroachment_red" => false,
+        "daily_grind_blue", "fearless_confrontation_blue", "headbutt_blue", "leave_a_dent_blue", "pec_perfect_red" => false,
         default => true
       };
     case "SUP":

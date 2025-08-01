@@ -1304,8 +1304,8 @@ function AddCrushEffectTrigger($cardID)
 {
   global $mainPlayer, $defPlayer;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
-  if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && TypeContains($cardID, "GUARDIAN", $mainPlayer)) {
-    AddLayer("TRIGGER", $mainPlayer, "leave_a_dent_blue", $cardID, "CRUSHEFFECT");
+  if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer)) {
+    AddLayer("TRIGGER", $mainPlayer, $cardID, "leave_a_dent_blue", "CRUSHEFFECT");
   }
   switch ($cardID) {
     case "crippling_crush_red":

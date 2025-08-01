@@ -532,7 +532,7 @@
   function HasCrush($cardID)
   {
     global $mainPlayer;
-    if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && TypeContains($cardID, "GUARDIAN", $mainPlayer)) return true;
+    if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
     switch($cardID) {
       case "crippling_crush_red": case "spinal_crush_red": case "cranial_crush_blue": case "buckling_blow_red": case "buckling_blow_yellow": case "buckling_blow_blue":
       case "cartilage_crush_red": case "cartilage_crush_yellow": case "cartilage_crush_blue": case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":

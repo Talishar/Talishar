@@ -746,6 +746,9 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       }
       break;
+    case "daily_grind_blue":
+      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      break;
     default:
       break;
     }
