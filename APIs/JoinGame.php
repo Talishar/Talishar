@@ -642,6 +642,7 @@ function isUnimplemented($cardID) {
         "daily_grind_blue", "fearless_confrontation_blue", "headbutt_blue", "leave_a_dent_blue", "pec_perfect_red" => false,
         "ley_line_of_the_old_ones_blue", "base_of_the_mountain" => false,
         "richter_scale", "gauntlet_of_boulderhold", "craterhoof", "hoarding_of_denial" => false,
+        "tremor_of_resistance", "seismic_shelter_blue" => false,
         default => true
       };
     case "SUP":

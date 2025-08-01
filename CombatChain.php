@@ -557,19 +557,10 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   }
   if (SearchCurrentTurnEffects("pulse_of_isenloft_blue", $defPlayer) && ($cardType == "AA" || DelimStringContains($cardType, "A")) && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   if (SearchCurrentTurnEffects("fabricate_red", $defPlayer) && SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC")) $blockModifier += CountCurrentTurnEffects("fabricate_red", $defPlayer);
+  $blockModifier += AuraBlockModifier($cardID, $from);
+  $blockModifier += ItemBlockModifier($cardID);
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
-  for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
-    if ($defAuras[$i] == "stonewall_confidence_red" && CardCost($cardID, $from) >= 3) $blockModifier += 4;
-    if ($defAuras[$i] == "stonewall_confidence_yellow" && CardCost($cardID, $from) >= 3) $blockModifier += 3;
-    if ($defAuras[$i] == "stonewall_confidence_blue" && CardCost($cardID, $from) >= 3) $blockModifier += 2;
-    if ($defAuras[$i] == "forged_for_war_yellow" && $cardType == "E") $blockModifier += 1;
-    if ($defAuras[$i] == "embodiment_of_earth" && DelimStringContains($cardType, "A")) $blockModifier += 1;
-    if ($defAuras[$i] == "stacked_in_your_favor_red" && $cardType == "AA") $blockModifier += 3;
-    if ($defAuras[$i] == "stacked_in_your_favor_yellow" && $cardType == "AA") $blockModifier += 2;
-    if ($defAuras[$i] == "stacked_in_your_favor_blue" && $cardType == "AA") $blockModifier += 1;
-  }
-  $blockModifier += ItemBlockModifier($cardID);
   switch ($cardID) {
     case "unmovable_red":
     case "unmovable_yellow":
@@ -694,6 +685,9 @@ function BlockModifier($cardID, $from, $resourcesPaid)
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if (CardCost($combatChain[$i]) >= 3 && $combatChain[$i + 1] == $defPlayer) ++$blockModifier;
       }
+      break;
+    case "tremor_of_resistance":
+      if (SearchAuras("seismic_surge", $defPlayer)) $blockModifier += 2;
       break;
     default:
       break;

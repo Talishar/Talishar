@@ -747,6 +747,7 @@ function AuraStartTurnAbilities()
       }
       break;
     case "daily_grind_blue":
+    case "seismic_shelter_blue":
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       break;
     default:
@@ -1655,4 +1656,44 @@ function isSpectraAttackTarget() {
     }
   }
   return $isSpectraTarget;
+}
+
+function AuraBlockModifier($cardID, $from)
+{
+  global $defPlayer;
+  $defAuras = &GetAuras($defPlayer);
+  $blockModifier = 0;
+  $cardType = CardType($cardID);
+  for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
+    switch ($defAuras[$i]) {
+      case "stonewall_confidence_red":
+        if (CardCost($cardID, $from) >= 3) $blockModifier += 4;
+        break;
+      case "stonewall_confidence_yellow":
+        if (CardCost($cardID, $from) >= 3) $blockModifier += 3;
+        break;
+      case "stonewall_confidence_blue":
+        if (CardCost($cardID, $from) >= 3) $blockModifier += 2;
+        break;
+      case "forged_for_war_yellow":
+        if ($cardType == "E") $blockModifier += 1;
+        break;
+      case "embodiment_of_earth":
+        if (DelimStringContains($cardType, "A")) $blockModifier += 1;
+        break;
+      case "stacked_in_your_favor_red":
+        if ($cardType == "AA") $blockModifier += 3;
+        break;
+      case "stacked_in_your_favor_yellow":
+        if ($cardType == "AA") $blockModifier += 2;
+        break;
+      case "stacked_in_your_favor_blue":
+        if ($cardType == "AA") $blockModifier += 1;
+        break;
+      case "seismic_shelter_blue":
+        if ($cardType == "AA") $blockModifier += CountAura("seismic_surge", $defPlayer);
+        break;
+    }
+  }
+  return $blockModifier;
 }
