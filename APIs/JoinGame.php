@@ -644,7 +644,7 @@ function isUnimplemented($cardID) {
         "richter_scale", "gauntlet_of_boulderhold", "craterhoof", "hoarding_of_denial" => false,
         "tremor_of_resistance", "seismic_shelter_blue" => false,
         "aftershock_red", "aftershock_yellow", "aftershock_blue" => false,
-        "little_big_foot_blue" => false,
+        "little_big_foot_red", "little_big_foot_yellow", "little_big_foot_blue" => false,
         "tectonic_instability_blue" => false,
         "clash_of_heads_yellow", "clash_of_chests_yellow", "clash_of_arms_yellow", "clash_of_legs_yellow", "clash_of_shields_yellow" => false,
         "rubble_raise_red", "rubble_raiser_yellow", "rubble_raiser_blue" => false,
