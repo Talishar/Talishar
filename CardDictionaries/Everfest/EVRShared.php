@@ -688,6 +688,8 @@
       case "blinding_of_the_old_ones_red": case "smelting_of_the_old_ones_red": case "disenchantment_of_the_old_ones_red": return 2;
       case "pulverize_red": return 3;
       case "thunder_quake_red": case "thunder_quake_yellow": case "thunder_quake_blue": return 3;
+      case "rubble_raiser_red": case "rubble_raiser_yellow": case "rubble_raiser_blue": return 2;
+      case "overswing_red": case "overswing_yellow": case "overswing_blue": return 2;
       default: return 0;
     }
   }

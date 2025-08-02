@@ -647,6 +647,9 @@ function isUnimplemented($cardID) {
         "little_big_foot_blue" => false,
         "tectonic_instability_blue" => false,
         "clash_of_heads_yellow", "clash_of_chests_yellow", "clash_of_arms_yellow", "clash_of_legs_yellow", "clash_of_shields_yellow" => false,
+        "rubble_raise_red", "rubble_raiser_yellow", "rubble_raiser_blue" => false,
+        "overswing_red", "overswing_yellow", "overswing_blue" => false,
+        "geyser_of_seismic_stirrings_red", "geyser_of_seismic_stirrings_yellow", "geyser_of_seismic_stirrings_blue" => false,
         default => true
       };
     case "SUP":

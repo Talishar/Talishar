@@ -26,6 +26,9 @@ function MPGEffectPowerModifier($cardID): int
     "draw_a_crowd_blue" => 3,
     "fearless_confrontation_blue" => -1,
     "gauntlet_of_boulderhold" => 2,
+    "overswing_red" => 3,
+    "overswing_yellow" => 2,
+    "overswing_blue" => 1,
     default => 0
   };
 }
@@ -40,6 +43,7 @@ function MPGCombatEffectActive($cardID, $attackID, $from="-"): bool
     "craterhoof" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA") && AttackPlayedFrom() == "ARS",
     "gauntlet_of_boulderhold" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA"),
     "fearless_confrontation_blue" => true,
+    "overswing_red", "overswing_yellow", "overswing_blue" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && TypeContains($attackID, "AA"),
     default => false
   };
 }
@@ -108,6 +112,11 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("DRAW", $otherPlayer, "$cardID-THEIRS", 1);
       }
       //seismic surges are being handled by the draw function since it can tell if the draw wasn't replaced
+      return "";
+    case "overswing_red":
+    case "overswing_yellow":
+    case "overswing_blue":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     default:
       return "";

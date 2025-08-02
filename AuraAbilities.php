@@ -320,12 +320,15 @@ function AuraPlayCounters($cardID)
       return 1;
     case "runeblood_incantation_red":
     case "malefic_incantation_red":
+    case "geyser_of_seismic_stirrings_red":
       return 3;
     case "runeblood_incantation_yellow":
     case "malefic_incantation_yellow":
+    case "geyser_of_seismic_stirrings_yellow":
       return 2;
     case "runeblood_incantation_blue":
     case "malefic_incantation_blue":
+    case "geyser_of_seismic_stirrings_blue":
       return 1;
     case "insidious_chill_blue":
       return 3;
@@ -931,12 +934,18 @@ function AuraBeginEndPhaseTriggers()
         }
         break;
       case "riddle_with_regret_red":
-        $auras = &GetAuras($mainPlayer);
         $countAuras = count($auras)/AuraPieces();
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, "MYAURAS-" . $auras[$i + 6]);
         break;
       case "ley_line_of_the_old_ones_blue":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", "MYAURAS-" . $auras[$i + 6]);
+        break;
+      case "geyser_of_seismic_stirrings_red":
+      case "geyser_of_seismic_stirrings_yellow":
+      case "geyser_of_seismic_stirrings_blue":
+        --$auras[$i + 2];
+        PlayAura("seismic_surge", $mainPlayer, 1, true, effectController:$mainPlayer, effectSource:$auras[$i]);
+        if ($auras[$i + 2] == 0) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       default:
         break;

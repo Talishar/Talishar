@@ -4385,6 +4385,9 @@ function HasEnergyCounters($array, $index)
     case "fyendals_spring_tunic":
     case "alluvion_constellas":
     case "blaze_firemind":
+    case "geyser_of_seismic_stirrings_red":
+    case "geyser_of_seismic_stirrings_yellow":
+    case "geyser_of_seismic_stirrings_blue":
       return $array[$index + 2] > 0;
     default:
       return false;
