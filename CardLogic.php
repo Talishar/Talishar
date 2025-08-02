@@ -4023,6 +4023,25 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
       else if (CountAura("seismic_surge", $player) == 0) DestroyAuraUniqueID($player, explode("-", $uniqueID)[1]);
       break;
+    case "sunkwater_lookout":
+    case "sunkwater_exoshell":
+    case "sunkwater_pincers":
+    case "sunkwater_scalers":
+      $arsenal = GetArsenal($player);
+      $inds = [];
+      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+        if ($arsenal[$i + 1] == "UP") array_push($inds, "MYARS-$i");
+      }
+      if (count($inds) > 0) {
+        $context = "Choose a face up card in your arsenal to sink";
+        AddDecisionQueue("PASSPARAMETER", $player, implode(",", $inds), 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+        AddDecisionQueue("DRAW", $player, "-", 1);
+        CombatChainDefenseModifier($target, 1);
+      }
     default:
       break;
   }
