@@ -166,6 +166,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYDISCARDARROW":
           $rv = SearchDiscard($player, "", "Arrow");
           break;
+        case "MYDISCARDATTACKS":
+          $rv = SearchDiscard($player, "AA");
+          break;
         case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
           $rv = RemoveDuplicateCards($player, $index, GetBanish($player));
@@ -3319,6 +3322,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $layers[$layerIndex + 2] = $parameter;
       }
       return $parameter;
+    case "BACKUP":
+      $choices = explode(",", $parameter);
+      $discard = GetDiscard($player);
+      if ($choices[0] == $lastResult) {
+        $topInd = explode("-", $choices[1])[1];
+        $banishInd = explode("-", $choices[0])[1];
+      }
+      else {
+        $topInd = explode("-", $choices[0])[1];
+        $banishInd = explode("-", $choices[1])[1];
+      }
+      AddTopDeck($discard[$topInd], $player, "DISCARD");
+      BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
+      RemoveDiscard($player, explode("-", $choices[1])[1]);
+      RemoveDiscard($player, explode("-", $choices[0])[1]);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

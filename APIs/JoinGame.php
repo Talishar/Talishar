@@ -651,7 +651,7 @@ function isUnimplemented($cardID) {
         "overswing_red", "overswing_yellow", "overswing_blue" => false,
         "geyser_of_seismic_stirrings_red", "geyser_of_seismic_stirrings_yellow", "geyser_of_seismic_stirrings_blue" => false,
         "sunkwater_lookout", "sunkwater_exoshell", "sunkwater_pincers", "sunkwater_scalers" => false,
-        
+        "captain_of_the_guard", "call_for_backup" => false,
         default => true
       };
     case "SUP":

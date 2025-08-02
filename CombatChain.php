@@ -525,7 +525,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   }
 }
 
-function BlockModifier($cardID, $from, $resourcesPaid)
+function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
 {
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumBluePlayed, $currentTurnEffects, $combatChain;
@@ -567,6 +567,34 @@ function BlockModifier($cardID, $from, $resourcesPaid)
   $blockModifier += ItemBlockModifier($cardID);
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
+  foreach($chainLinks as $link) {
+    for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+      if ($link[$i+1] == $defPlayer && $link[$i+2] == 1) {
+        switch ($link[$i]) {
+          case "captain_of_the_guard_blue":
+            if ($index != -1 && PowerValue($cardID, $defPlayer, "CC", $index) > PowerValue($attackID, $mainPlayer, "CC", 0)) {
+              ++$blockModifier;
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i+1] == $defPlayer) {
+      switch ($combatChain[$i]) {
+          case "captain_of_the_guard_blue":
+            if ($index != -1 && PowerValue($cardID, $defPlayer, "CC", $index) > PowerValue($attackID, $mainPlayer, "CC", 0)) {
+              ++$blockModifier;
+            }
+            break;
+          default:
+            break;
+        }
+    }
+  }
   switch ($cardID) {
     case "unmovable_red":
     case "unmovable_yellow":
@@ -1067,6 +1095,7 @@ function OnBlockResolveEffects($cardID = "")
       case "sunkwater_exoshell":
       case "sunkwater_pincers":
       case "sunkwater_scalers":
+      case "call_for_backup_red":
         AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
         break;
       case "apex_bonebreaker":

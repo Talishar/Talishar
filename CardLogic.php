@@ -1951,7 +1951,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = $player == 1 ? 2 : 1;
-  WriteLog("HERE??? $parameter - $additionalCosts");
   if ($additionalCosts == "ONHITEFFECT") {
     ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
     return;
@@ -2140,7 +2139,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "zephyr_needle_r":
       EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-        $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0) + $combatChain[$i + 6]);
+        $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
         if ($totalBlock > 0 && ($blockVal > $totalPower) && $combatChain[$i + 1] == $defPlayer) {
           DestroyCurrentWeapon();
         }
@@ -4042,6 +4041,29 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("DRAW", $player, "-", 1);
         CombatChainDefenseModifier($target, 1);
       }
+      break;
+    case "call_for_backup_red":
+      $names = [];
+      $discard = GetDiscard($player);
+      for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+        $cardName = NameOverride($discard[$i], $player);
+        if (TypeContains($discard[$i], "AA") && $cardName != "") {
+          if (!in_array($cardName, $names)) array_push($names, $cardName);
+        }
+      }
+      if (count($names) >= 2) {
+        AddDecisionQueue("FINDINDICES", $player, "MYDISCARDATTACKS");
+        AddDecisionQueue("PREPENDLASTRESULT", $player, "2-", 1);
+        AddDecisionQueue("MULTICHOOSEDISCARD", $player, "<-", 1);
+        AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $player, "DISCARD", 1);
+        AddDecisionQueue("IMPLODELASTRESULT", $player, ",THEIRDISCARD-", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRDISCARD-", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish (other card will be put on top of deck)", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("BACKUP", $player, "{0}", 1);
+      }
+      break;
     default:
       break;
   }
