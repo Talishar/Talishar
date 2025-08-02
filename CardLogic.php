@@ -1352,6 +1352,9 @@ function AddCrushEffectTrigger($cardID)
     case "blinding_of_the_old_ones_red": 
     case "smelting_of_the_old_ones_red": 
     case "disenchantment_of_the_old_ones_red":
+    case "annexation_of_grandeur_yellow":
+    case "annexation_of_the_forge_yellow":
+    case "annexation_of_all_things_known_yellow":
       $defChar = GetPlayerCharacter($defPlayer);
       if (ClassContains($defChar[0], "GUARDIAN", $defPlayer)) {
         AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");

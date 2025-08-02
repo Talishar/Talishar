@@ -685,12 +685,21 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
       if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
+        $overlay = 0;
+        $border = 0;
+        $cardID = $theirArsenal[$i];
+        $action = $currentPlayer == $playerID && IsPlayable($cardID, $turn[0], "THEIRARS", $i) ? 37 : 0;
+        $border = CardBorderColor($cardID, "THEIRARS", $action > 0, $playerID);
         array_push($theirArse, JSONRenderedCard(
           cardNumber: $theirArsenal[$i],
+          action: $action,
+          overlay: $overlay,
+          borderColor: $border,
           controller: $playerID == 1 ? 2 : 1,
           facing: $theirArsenal[$i + 1],
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
-          isFrozen: $theirArsenal[$i + 4] == 1
+          isFrozen: $theirArsenal[$i + 4] == 1,
+          actionDataOverride: strval($i)
         ));
       } else array_push($theirArse, JSONRenderedCard(
         cardNumber: $TheirCardBack,

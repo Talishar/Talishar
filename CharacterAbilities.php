@@ -849,6 +849,49 @@ function EquipEquipment($player, $cardID, $slot = "")
   AddEquipTrigger($cardID, $player);
 }
 
+function StealEquipment($srcPlayer, $index, $destPlayer, $trueSteal = false)
+{
+  global $CS_NumGoldCreated;
+  $srcChar = GetPlayerCharacter($srcPlayer);
+  $cardID = $srcChar[$index];
+  if (SubtypeContains($cardID, "Head")) $slot = "Head";
+  else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
+  else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
+  else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
+  else if (SubtypeContains($cardID, "Off-Hand")) $slot = "Off-Hand";
+  $destChar = &GetPlayerCharacter($destPlayer);
+  $existingIndex = -1;
+  for ($i = 0; $i < count($destChar); $i += CharacterPieces()) {
+    if ($destChar[$i+1] > 1 && SubtypeContains($destChar[$i], $slot)) {
+      WriteLog("You can't equip over your already equipped " . CardLink($destChar[$i], $destChar[$i]));
+      return "";
+    }
+    else if ($destChar[$i + 1] == 1 && SubtypeContains($destChar[$i], $slot)) $existingIndex = $i;
+  }
+  if ($slot == "Off-Hand" && NumOccupiedHands($destPlayer) > 1) {
+    WriteLog("You don't have a free hand to hold " . CardLink($cardID, $cardID));
+    return "";
+  }
+  // if the equipment has been destroyed but left a ghost
+  if ($existingIndex != -1) {
+    for ($i = 0; $i < CharacterPieces(); ++$i) {
+      $destChar[$existingIndex + $i] = $srcChar[$index + $i];
+    }
+  }
+  else {
+    for ($i = 0; $i < CharacterPieces(); ++$i) {
+      array_push($destChar, $srcChar[$index + $i]);
+    }
+  }
+  $destChar = array_values($destChar);
+  AddEquipTrigger($cardID, $destPlayer);
+  if ($cardID == "aurum_aegis" && $trueSteal) {
+    IncrementClassState($destPlayer, piece: $CS_NumGoldCreated);
+  }
+  RemoveCharacter($srcPlayer, $index);
+  return $cardID;
+}
+
 function AddEquipTrigger($cardID, $player)
 {
   switch ($cardID) {

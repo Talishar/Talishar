@@ -2553,8 +2553,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "EQUIPCARD":
       $params = explode('-', $parameter);
+      $slot = $params[1] ?? "-";
       EquipEquipment($player, $params[0], $params[1]);
       return "";
+    case "STEALEQUIPMENT":
+      $targetPlayer = str_contains($lastResult, "THEIR") ? $otherPlayer : $player;
+      $index = explode("-", $lastResult)[1];
+      $trueSteal = $parameter == "STEAL";
+      StealEquipment($targetPlayer, $index, $player, $trueSteal);
+      return $cardID;
     case "REMOVEMODULAR":
       $character = &GetPlayerCharacter($player);
       $index = -1;

@@ -483,6 +483,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (CanPlayAsInstant($cardID, $index, "GY")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
       PlayCard($cardID, "GY", -1, $index, isset($discard[$index + 2]) ? $discard[$index + 2] : -1, zone: "MYDISCARD");
       break;
+    case 37: // Their Arsenal
+      $index = $cardID;
+      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $theirArs = &GetArsenal($otherPlayer);
+      if ($index < 0 || $index >= count($theirArs)) {
+        echo("Arsenal Index " . $index . " Invalid Input<BR>");
+        return false;
+      }
+      $cardID = $theirArs[$index];
+      $uniqueID = $theirArs[$index + 5];
+      if (!IsPlayable($cardID, $turn[0], "THEIRARS", $index)) break;
+      SetClassState($currentPlayer, $CS_PlayIndex, $index);
+      RemoveArsenal($otherPlayer, $index);
+      PlayCard($cardID, "THEIRARS", -1, $index, $uniqueID, zone: "THEIRARS");
+      break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
         if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") {
@@ -1611,17 +1626,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (GetAbilityTypes($cardID, $index, $from) == "") {
         if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
       }
-      // if (SearchLayersForPhase("CLOSINGCHAIN") != -1) {
-      //   WriteLog("Player $playerID wants to interrupt your shortcut, reverting to the beginning of the resolution step. Please break the chain (by passing) instead of replaying your card.", highlight: true);
-      //   RevertGamestate();
-      //   return "";
-      // }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
     }
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
+    else if ($from == "THEIRARS") WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from their opponnent's arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     else WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
     if ($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
 

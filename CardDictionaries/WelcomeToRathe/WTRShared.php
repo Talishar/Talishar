@@ -550,6 +550,8 @@
       case "knock_em_off_their_feet_red":
       case "break_stature_yellow": case "headbutt_blue": case "fault_line_red":
       case "hostile_encroachment_red": case "renounce_grandeur_red":
+      case "annexation_of_grandeur_yellow": case "annexation_of_the_forge_yellow":
+      case "annexation_of_all_things_known_yellow":
         return true;
       default:
         return false;
@@ -766,6 +768,22 @@
         break;
       case "hostile_encroachment_red":
         PummelHit($defPlayer, effectController:$mainPlayer);
+        break;
+      case "annexation_of_grandeur_yellow":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an aura to gain control");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
+        break;
+      case "annexation_of_the_forge_yellow":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to equip (will fail if you already have something in that slot)");
+        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("STEALEQUIPMENT", $mainPlayer, "-", 1);
+        break;
+      case "annexation_of_all_things_known_yellow":
+        AddNextTurnEffect($cardID, $defPlayer);
+        AddNextTurnEffect("$cardID-MAIN", $mainPlayer);
         break;
       default: return;
     }

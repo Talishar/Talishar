@@ -1876,7 +1876,7 @@ function CurrentEffectIntellectModifier($remove = false)
 
 function CurrentEffectEndTurnAbilities()
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects, $mainPlayer, $defPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     $cardID = ExtractCardID($currentTurnEffects[$i]);
@@ -1950,6 +1950,11 @@ function CurrentEffectEndTurnAbilities()
           $allies[$i] = BlindCard($allies[$i], true);
         }
         $remove = true;
+        break;
+      case "annexation_of_all_things_known_yellow":
+        if (str_contains($currentTurnEffects[$i], "-MAIN") && $currentTurnEffects[$i+1] == $defPlayer) {
+          AddNextTurnEffect($currentTurnEffects[$i], $defPlayer);
+        }
         break;
       default:
         break;

@@ -618,7 +618,9 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "APR": case "AVS": case "MPG": case "BDD": case "SMP":
+    case "MPG":
+      return false;
+    case "APR": case "AVS": case "BDD": case "SMP":
       return match($cardID) {
         "valda_seismic_impact" => false,
         "testament_of_valahai" => false,
@@ -651,7 +653,8 @@ function isUnimplemented($cardID) {
         "overswing_red", "overswing_yellow", "overswing_blue" => false,
         "geyser_of_seismic_stirrings_red", "geyser_of_seismic_stirrings_yellow", "geyser_of_seismic_stirrings_blue" => false,
         "sunkwater_lookout", "sunkwater_exoshell", "sunkwater_pincers", "sunkwater_scalers" => false,
-        "captain_of_the_guard", "call_for_backup" => false,
+        "captain_of_the_guard_blue", "call_for_backup_red" => false,
+        "annexation_of_grandeur_yellow", "annexation_of_all_things_known_yellow", "annexation_of_the_forge_yellow" => false,
         default => true
       };
     case "SUP":

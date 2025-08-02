@@ -1630,7 +1630,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $theirBanish = new Banish($otherPlayer);
     $banishCard = $theirBanish->Card($index);
     if (!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
+  } else if ($from == "THEIRARS") {
+    $theirArs = GetArsenal($otherPlayer);
+    if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
   } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2])) return false;
+  
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
@@ -1657,9 +1661,15 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         return false;
     }
   }
-  if ($from == "ARS" && $phase != "B" && $myArsenal[$index + 4] == "1") {
-    $restriction = "Frozen";
-    return false;
+  if ($from == "ARS" && $phase != "B") {
+    if ($myArsenal[$index + 4] == "1") {
+      $restriction = "Frozen";
+      return false;
+    }
+    if (SearchCurrentTurnEffects("annexation_of_all_things_known_yellow", $player) && $myArsenal[$index + 1] == "UP") {
+      $restriction = "Annexed";
+      return false;
+    }
   }
   if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
@@ -4661,6 +4671,15 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
   if (isFaceDownMod($mod)) return false;
   if (ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("nuu_alluring_desire", $player) || SearchCurrentTurnEffects("nuu", $player))) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
+  else return false;
+}
+
+function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
+{
+  global $currentPlayer;
+  if ($player == "") $player = $currentPlayer;
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if ($face == "UP" && SearchCurrentTurnEffects("annexation_of_all_things_known_yellow-MAIN", $player)) return true;
   else return false;
 }
 

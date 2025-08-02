@@ -1233,44 +1233,53 @@ function CombatChainClosedMainCharacterEffects()
 
 function CombatChainClosedCharacterEffects()
 {
-  global $chainLinks, $defPlayer, $chainLinkSummary;
+  global $chainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
   $character = &GetPlayerCharacter($defPlayer);
+  $mainChar = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($chainLinks); ++$i) {
     $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $defPlayer) continue;
       $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
-      if ($charIndex == -1) continue;
+      if ($charIndex == -1) {
+        $charIndex = SearchCharacterForUniqueID($chainLinks[$i][$j + 8], $mainPlayer);
+        if ($charIndex == -1) continue;
+        $equipCharacter = &$mainChar;
+        $equipPlayer = $mainPlayer;
+      }
+      else {
+        $equipCharacter = &$character;
+        $equipPlayer = $defPlayer;
+      }
       if ($chainLinks[$i][$j] == "carrion_husk") {
         $character[$charIndex + 1] = 0;
         BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
       }
       if (!$nervesOfSteelActive) {
-
         if (HasTemper($chainLinks[$i][$j])) {
-          if ($character[$charIndex + 1] != 0 && $character[$charIndex + 6] != 0) {
-            $character[$charIndex + 4] -= 1; //Add -1 block counter
-            $character[$charIndex + 6] = 0;
+          if ($equipCharacter[$charIndex + 1] != 0 && $equipCharacter[$charIndex + 6] != 0) {
+            $equipCharacter[$charIndex + 4] -= 1; //Add -1 block counter
+            $equipCharacter[$charIndex + 6] = 0;
           }
-          if ((ModifiedBlockValue($character[$charIndex], $defPlayer, "CC") + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
-            DestroyCharacter($defPlayer, $charIndex);
+          if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC") + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
+            DestroyCharacter($equipPlayer, $charIndex);
           }
         } 
-        elseif (HasBattleworn($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-          $character[$charIndex + 4] -= 1;//Add -1 block counter
+        elseif (HasBattleworn($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
+          $equipCharacter[$charIndex + 4] -= 1;//Add -1 block counter
         }
       }
-      if (HasGuardwell($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-        $blockModifier = (ModifiedBlockValue($character[$charIndex], $defPlayer, "CC") + $character[$charIndex + 4] + BlockModifier($character[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
+      if (HasGuardwell($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
+        $blockModifier = (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC") + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
         $bladeBeckoner = ["blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots"];
         if (IsWeapon($chainLinks[$i][0], "PLAY") && in_array($chainLinks[$i][$j], $bladeBeckoner)) {
           $blockModifier += 1;
         }
         $blockModifier = $blockModifier < 0 ? 0 : $blockModifier;
-        $character[$charIndex + 4] -= $blockModifier;
+        $equipCharacter[$charIndex + 4] -= $blockModifier;
       } 
-      elseif (HasBladeBreak($chainLinks[$i][$j]) && $character[$charIndex + 1] != 0) {
-        DestroyCharacter($defPlayer, $charIndex);
+      elseif (HasBladeBreak($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
+        DestroyCharacter($equipPlayer, $charIndex);
       }
       switch ($chainLinks[$i][$j]) {
         case "phantasmal_footsteps":
