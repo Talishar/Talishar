@@ -64,6 +64,7 @@ function JSONRenderedCard(
   $marked = NULL,
   $tapped = NULL,
 ) {
+  $cardNumber = BlindCard($cardNumber, true);
   global $playerID, $CS_NumLightningPlayed;
   $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
   $otherPlayer = $playerID == 1 ? 2 : 1;

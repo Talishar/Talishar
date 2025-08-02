@@ -2,6 +2,7 @@
 
 function CardName($cardID)
 {
+    $cardID = BlindCard($cardID, true);
     if($cardID == NULL) return "";
     if($cardID == "POWERCOUNTER") return "+1 Power Counter";
     switch ($cardID) {

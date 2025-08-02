@@ -64,6 +64,7 @@ $CID_TekloLegs = "teklo_base_legs";
 function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 {
   global $CS_AdditionalCosts, $currentPlayer;
+  $cardID = BlindCard($cardID, true);
   $controller = $controller == "-" ? $currentPlayer : $controller;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
@@ -159,6 +160,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 
 function CardTypeExtended($cardID, $from="") // used to handle evos
 {
+  $cardID = BlindCard($cardID, true);
   $evolutionTypes = [
     "evo_steel_soul_memory_blue" => "A,E",
     "evo_steel_soul_processor_blue" => "A,E",
@@ -223,6 +225,7 @@ function CardTypeExtended($cardID, $from="") // used to handle evos
 
 function SetID($cardID)
 {
+  $cardID = BlindCard($cardID, true);
   $specialCases = [
     "teklovossen_the_mechropotentb" => GeneratedSetID("teklovossen_the_mechropotent"),
     "nitro_mechanoida" => GeneratedSetID("nitro_mechanoid"),
@@ -239,6 +242,7 @@ function SetID($cardID)
 
 //converts cardIDs to setIDs, retaining any trailing tags
 function ConvertToSetID($cardID) {
+  $cardID = BlindCard($cardID, true);
   $bareCardID = ExtractCardID($cardID);
   $tags = substr($cardID, strlen($bareCardID));
   return SetID($bareCardID) . $tags;
@@ -257,6 +261,7 @@ function ConvertToCardID($setID) {
 
 function CardSubType($cardID, $uniqueID = -1)
 {
+  $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
   switch ($cardID) {
     case "sanctuary_of_aria"://Technically false, but helps with Rosetta Limited
@@ -366,6 +371,7 @@ function CardSubType($cardID, $uniqueID = -1)
 
 function CharacterHealth($cardID)
 {
+  $cardID = BlindCard($cardID, true);
   switch ($cardID) {
     case "valda_seismic_impact":
       return 40;
@@ -384,6 +390,7 @@ function CharacterHealth($cardID)
 
 function CharacterIntellect($cardID)
 {
+  $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
     case "data_doll_mkii":
@@ -403,6 +410,7 @@ function CharacterIntellect($cardID)
 
 function CardSet($cardID)
 {
+  $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
   if (substr($cardID, 0, 3) == "DUM") return "DUM";
   switch ($cardID) {
@@ -430,6 +438,7 @@ function CardSet($cardID)
 function CardClass($cardID)
 {
   global $currentPlayer, $CS_AdditionalCosts;
+  $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
   switch ($cardID) {
     case "thistle_bloom__life_yellow":
@@ -522,6 +531,7 @@ function CardClass($cardID)
 function CardTalent($cardID, $from="-")
 {
   global $currentPlayer, $CS_AdditionalCosts;
+  $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
   switch ($cardID) {
     case "thistle_bloom__life_yellow":
@@ -588,6 +598,7 @@ function CardTalent($cardID, $from="-")
 //Minimum cost of the card
 function CardCost($cardID, $from="-")
 {
+  $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   switch ($cardID) {
@@ -721,6 +732,7 @@ function AbilityCost($cardID)
 function DynamicCost($cardID)
 {
   global $currentPlayer;
+  $cardID = BlindCard($cardID, true);
   switch ($cardID) {
     case "staunch_response_red":
     case "staunch_response_yellow":
@@ -783,6 +795,7 @@ function DynamicCost($cardID)
 
 function PitchValue($cardID)
 {
+  $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
   $set = CardSet($cardID);
   if ($cardID == "goldfin_harpoon_yellow") return -1;
@@ -826,6 +839,7 @@ function PitchValue($cardID)
 function BlockValue($cardID)
 {
   global $defPlayer, $combatChain;
+  $cardID = BlindCard($cardID, true);
   switch ($cardID) { //cards with a mistake in GeneratedBlockValue
     case "crash_and_bash_red":
       return 4;
@@ -943,6 +957,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
       default: break;
     }
   }
+  $cardID = BlindCard($cardID, true);
   $basePower = -1;
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
@@ -5358,5 +5373,18 @@ function HasEffectActive($cardID) {
   case "hold_the_line_blue": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
   default:
     return false;
+  }
+}
+
+function BlindCard($cardID, $unblind=false) {
+  $blindMarker = "BLIND";
+  $c = strlen($blindMarker) + 1;
+  if ($unblind) {
+    if (str_contains($cardID, $blindMarker)) return substr($cardID, 0, -$c);
+    else return $cardID;
+  }
+  else {
+    if (str_contains($cardID, $blindMarker)) return $cardID;
+    return "$cardID-$blindMarker";
   }
 }

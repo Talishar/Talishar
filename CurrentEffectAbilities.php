@@ -1899,6 +1899,58 @@ function CurrentEffectEndTurnAbilities()
       case "adaptive_plating": case "adaptive_dissolver": case "frostbite":
         AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
         break;
+      case "blinding_of_the_old_ones_red":
+        $deck = &GetDeck($mainPlayer);
+        for ($i = 0; $i < count($deck); $i += DeckPieces()) {
+          $deck[$i] = BlindCard($deck[$i], true);
+        }
+
+        $discard = &GetDiscard($mainPlayer);
+        for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+          $discard[$i] = BlindCard($discard[$i], true);
+        }
+
+        $banish = &GetBanish($mainPlayer);
+        for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+          $banish[$i] = BlindCard($banish[$i], true);
+        }
+
+        $pitch = &GetPitch($mainPlayer);
+        for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+          $pitch[$i] = BlindCard($pitch[$i], true);
+        }
+
+        $hand = &GetHand($mainPlayer);
+        for ($i = 0; $i < count($hand); $i += HandPieces()) {
+          $hand[$i] = BlindCard($hand[$i], true);
+        }
+
+        $arsenal = &GetArsenal($mainPlayer);
+        for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+          $arsenal[$i] = BlindCard($arsenal[$i], true);
+        }
+
+        $char = &GetPlayerCharacter($mainPlayer);
+        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+          $char[$i] = BlindCard($char[$i], true);
+        }
+
+        $items = &GetItems($mainPlayer);
+        for ($i = 0; $i < count($items); $i += ItemPieces()) {
+          $items[$i] = BlindCard($items[$i], true);
+        }
+
+        $auras = &GetAuras($mainPlayer);
+        for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+          $auras[$i] = BlindCard($auras[$i], true);
+        }
+
+        $allies = &GetAllies($mainPlayer);
+        for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+          $allies[$i] = BlindCard($allies[$i], true);
+        }
+        $remove = true;
+        break;
       default:
         break;
     }

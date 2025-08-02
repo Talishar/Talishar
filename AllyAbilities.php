@@ -124,6 +124,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
 
 function AllyHealth($cardID)
 {
+  $cardID = BlindCard($cardID, true);
   return match($cardID) {
     "polly_cranka_ally" => 1,
     "sticky_fingers_ally" => 2,
