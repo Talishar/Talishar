@@ -1863,5 +1863,5 @@ function IsLayerStep()
   if (in_array($layers[$layerInd], $nonCardLayers)) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2])[0];
-  return GoesOnCombatChain("A", $layers[$layerInd], $layerFrom, $mainPlayer);
+  return GoesOnCombatChain("M", $layers[$layerInd], $layerFrom, $mainPlayer);
 }
