@@ -228,6 +228,28 @@
         }
         DestroyTopCard($otherPlayer);
         break;
+      case "clash_of_mountains_red":
+      case "clash_of_mountains_yellow":
+      case "clash_of_mountains_blue":
+        PlayAura("seismic_surge", $playerID, 1, true, effectController:$effectController, effectSource:$cardID);
+        break;
+      case "clash_of_heads_yellow":
+      case "clash_of_chests_yellow":
+      case "clash_of_arms_yellow":
+      case "clash_of_legs_yellow":
+      case "clash_of_shields_yellow":
+        $subtype = match ($cardID) {
+          "clash_of_heads_yellow" => "Head",
+          "clash_of_chests_yellow" => "Chest",
+          "clash_of_arms_yellow" => "Arms",
+          "clash_of_legs_yellow" => "Legs",
+          "clash_of_shields_yellow" => "Off-Hand",
+        };
+        $index = SearchCharacterIndexSubtype($otherPlayer, $subtype);
+        $otherChar = &GetPlayerCharacter($otherPlayer);
+        if ($index != -1 && $otherChar[$index + 1] > 1) --$otherChar[$index + 4];
+        else LoseHealth(1, $otherPlayer);
+        break;
       default: break;
     }
     }

@@ -1126,8 +1126,13 @@ function OnBlockResolveEffects($cardID = "")
       case "clash_of_mountains_red":
       case "clash_of_mountains_yellow":
       case "clash_of_mountains_blue":
+      case "clash_of_heads_yellow":
+      case "clash_of_chests_yellow":
+      case "clash_of_arms_yellow":
+      case "clash_of_legs_yellow":
+      case "clash_of_shields_yellow":
         if (ClassContains($combatChain[0], "GUARDIAN", $mainPlayer)) {
-          AddLayer("TRIGGER", $defPlayer, $defendingCard, $defendingCard, "CRUSHEFFECT");
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, $defendingCard);
         }
         break;
       case "overcrowded_blue":

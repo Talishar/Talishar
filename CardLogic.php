@@ -1951,6 +1951,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   $otherPlayer = $player == 1 ? 2 : 1;
+  WriteLog("HERE??? $parameter - $additionalCosts");
   if ($additionalCosts == "ONHITEFFECT") {
     ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
     return;
@@ -3186,6 +3187,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "clash_of_bravado_yellow":
     case "test_of_iron_grip_red":
     case "daily_grind_blue":
+    case "clash_of_heads_yellow":
+    case "clash_of_chests_yellow":
+    case "clash_of_arms_yellow":
+    case "clash_of_legs_yellow":
+    case "clash_of_shields_yellow":
       Clash($parameter, effectController: $player);
       break;
     case "nasty_surprise_blue":

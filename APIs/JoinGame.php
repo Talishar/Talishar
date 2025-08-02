@@ -646,6 +646,7 @@ function isUnimplemented($cardID) {
         "aftershock_red", "aftershock_yellow", "aftershock_blue" => false,
         "little_big_foot_blue" => false,
         "tectonic_instability_blue" => false,
+        "clash_of_heads_yellow", "clash_of_chests_yellow", "clash_of_arms_yellow", "clash_of_legs_yellow", "clash_of_shields_yellow" => false,
         default => true
       };
     case "SUP":
