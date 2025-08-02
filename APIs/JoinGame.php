@@ -645,6 +645,7 @@ function isUnimplemented($cardID) {
         "tremor_of_resistance", "seismic_shelter_blue" => false,
         "aftershock_red", "aftershock_yellow", "aftershock_blue" => false,
         "little_big_foot_blue" => false,
+        "tectonic_instability_blue" => false,
         default => true
       };
     case "SUP":

@@ -92,6 +92,23 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "aftershock_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       return "";
+    case "tectonic_instability_blue":
+      if (count(GetArsenal($currentPlayer)) > 0) {
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
+        AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
+        AddDecisionQueue("DRAW", $currentPlayer, $cardID, 1);
+      }
+      if (count(GetArsenal($otherPlayer)) > 0) {
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "ARSENAL", 1);
+        AddDecisionQueue("CHOOSEARSENAL", $otherPlayer, "<-", 1);
+        AddDecisionQueue("REMOVEARSENAL", $otherPlayer, "-", 1);
+        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+        AddDecisionQueue("DRAW", $otherPlayer, "$cardID-THEIRS", 1);
+      }
+      //seismic surges are being handled by the draw function since it can tell if the draw wasn't replaced
+      return "";
     default:
       return "";
   }
