@@ -69,6 +69,7 @@
     if(count($discard) < 3) return;
     $BanishedIncludes6 = 0;
     $diabolicOfferingCount = 0;
+    $toBanish = [];
     for($i = 0; $i < 3; $i++) {
       $banishMod = $modifier;
       $index = GetRandom(0, count($discard)/DiscardPieces()-1) * DiscardPieces();
@@ -78,13 +79,15 @@
         if(ModifiedPowerValue($discard[$index], $currentPlayer, "GY", source:$cardID) >= 6) ++$BanishedIncludes6;
         elseif($discard[$index] == "diabolic_offering_blue") ++$diabolicOfferingCount;
         $cardID = RemoveGraveyard($currentPlayer, $index);
-        BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
+        array_push($toBanish, $cardID);
         $discard = array_values($discard);
       }
       else {
         $i--;
       }
     }
+    $banishMod = ($modifier != "shadowrealm_horror_red" || $BanishedIncludes6 >= 3) ? $modifier : "-";
+    foreach ($toBanish as $cardID) BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
     if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
     return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;
   }
