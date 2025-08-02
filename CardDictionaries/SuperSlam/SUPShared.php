@@ -99,9 +99,11 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "tuffnut_bumbling_hulkster":
       $deck = new Deck($currentPlayer);
       $top = $deck->Top(true);
-      Pitch($top, $currentPlayer);
-      if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
-        Cheer($currentPlayer);
+      if ($top != "") {
+        Pitch($top, $currentPlayer);
+        if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
+          Cheer($currentPlayer);
+        }
       }
       break;
     case "pleiades":
