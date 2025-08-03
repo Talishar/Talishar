@@ -1848,14 +1848,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       // there's a bug here where the $index is getting reset if you need to pitch, and I can't figure out why
       if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
       if($from == "BANISH") $mod = GetBanishModifier($index);
-        if ($actionPoints > 0) {
+      if ($actionPoints > 0) {
         if(!$canPlayAsInstant) --$actionPoints;
         elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
         elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
-        && (GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST")) {
+        && (GetResolvedAbilityType($cardID, $from) == "A" && !InstantMod($mod))) {
           --$actionPoints;
         }
-        elseif(GetResolvedAbilityType($cardID, $from) == "A" && $mod != "INST" && GetAbilityNames($cardID, from: $from) != "") {
+        elseif(GetResolvedAbilityType($cardID, $from) == "A" && !InstantMod($mod) && GetAbilityNames($cardID, from: $from) != "") {
           --$actionPoints;
         }
       }
@@ -1926,6 +1926,15 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID) . "|" . $zone);
   ProcessDecisionQueue();
+}
+
+function InstantMod($mod)
+{
+  return match ($mod) {
+    "INST" => true,
+    "sonic_boom_yellow" => true,
+    default => false
+  };
 }
 
 function PlayCardSkipCosts($cardID, $from)
