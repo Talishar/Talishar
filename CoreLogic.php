@@ -3260,7 +3260,7 @@ function UnityEffect($cardID)
   }
 }
 
-function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-")
+function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-", $num=1)
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn, $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -3270,9 +3270,10 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
       WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw and was destroyed");
-      return "";
+      --$num;
     }
   }
+  if ($num == 0) return "";
   if ($fromCardEffect && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
     WriteLog("Draw prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
@@ -3284,43 +3285,20 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   $hand = &GetHand($player);
   if ($deck->Empty()) return -1;
   if (CurrentEffectPreventsDraw($player, $mainPhase)) return -1;
-  $cardID = $deck->Top(remove: true);
-  $myAuras = GetAuras($player);
-  for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    switch ($myAuras[$i]) {
-      case "escalate_bloodshed_red":
-        if ($mainPhase) {
-          //TODO rework this to be a respondable trigger
-          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
-          LoseHealth(1, $player);
-        }
-        break;
-      default:
-        break;
+
+  for ($j = 0; $j < $num; ++$j) {
+    $cardID = $deck->Top(remove: true);
+    if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
+      WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
+      BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
+    } 
+    else {
+      array_push($hand, $cardID);
+      IncrementClassState($player, $CS_NumCardsDrawn, $num);
     }
+    $hand = array_values($hand);
   }
-  $theirAuras = GetAuras($otherPlayer);
-  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-    switch ($theirAuras[$i]) {
-      case "escalate_bloodshed_red":
-        if ($mainPhase) {
-          //TODO rework this to be a respondable trigger
-          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
-          LoseHealth(1, $player);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-  if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
-    WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
-    BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
-  } 
-  else {
-    array_push($hand, $cardID);
-    IncrementClassState($player, $CS_NumCardsDrawn, 1);
-  }
+
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] != $player) continue;
     switch ($currentTurnEffects[$i]) {
@@ -3335,25 +3313,54 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
         break;
     }
   }
-  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
-  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer);
+  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer, $num);
+  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer, $num);
   if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn_treasure_hunter"))) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
   if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn"))) AddLayer("TRIGGER", $player, "marlynn");
   if (SearchCharacterActive($player, "earthlore_bounty")) {
     $context = $effectSource != "-" ? $effectSource : $EffectContext;
     if ($context != "-") {
       $cardType = CardType($context);
-      if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("seismic_surge", $player);
+      if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("seismic_surge", $player, $num);
     }
   }
   if ($mainPhase) {
     $numBrainstorm = CountCurrentTurnEffects("brainstorm_blue", $player);
     if ($numBrainstorm > 0) {
       $character = &GetPlayerCharacter($player);
-      for ($i = 0; $i < $numBrainstorm; ++$i) DealArcane(1, 2, "TRIGGER", $character[0]);
+      for ($i = 0; $i < $numBrainstorm; ++$i) {
+        for ($j = 0; $j < $num; ++$j) DealArcane(1, 2, "TRIGGER", $character[0]);
+      }
     }
   }
-  $hand = array_values($hand);
+  $myAuras = GetAuras($player);
+  for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($myAuras[$i]) {
+      case "escalate_bloodshed_red":
+        if ($mainPhase) {
+          //TODO rework this to be a respondable trigger
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          LoseHealth($num, $player);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  $theirAuras = GetAuras($otherPlayer);
+  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    switch ($theirAuras[$i]) {
+      case "escalate_bloodshed_red":
+        if ($mainPhase) {
+          //TODO rework this to be a respondable trigger
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          LoseHealth($num, $player);
+        }
+        break;
+      default:
+        break;
+    }
+  }
   $index = count($hand) - 1 ;
   if ($effectSource == "tectonic_instability_blue") {
     PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:"tectonic_instability_blue");

@@ -55,9 +55,7 @@
         }
         return "";
       case "tome_of_harvests_blue":
-        Draw($currentPlayer);
-        Draw($currentPlayer);
-        Draw($currentPlayer);
+        Draw($currentPlayer, num:3);
         return "";
       case "evergreen_red": case "evergreen_yellow": case "evergreen_blue":
         return "";

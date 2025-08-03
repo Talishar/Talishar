@@ -23,9 +23,8 @@
         $hand = [];
         return "";
       case "tome_of_divinity_yellow":
-        Draw($currentPlayer);
-        Draw($currentPlayer);
-        if(GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0) Draw($currentPlayer);
+        if(GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0) Draw($currentPlayer, num:3);
+        else Draw($currentPlayer, num: 2);
         return "";
       case "invigorating_light_red": case "invigorating_light_yellow": case "invigorating_light_blue":
         if(count(GetSoul($currentPlayer)) == 0) AddCurrentTurnEffect($cardID, $currentPlayer);

@@ -468,16 +468,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "SIFT":
       $numCards = SearchCount($lastResult);
       WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
-      for ($i = 0; $i < $numCards; ++$i) {
-        Draw($player, effectSource:"sift_red");
-      }
+      Draw($player, effectSource:"sift_red", num:$numCards);
       return "1";
     case "SURFACESHAKING":
       $numCards = SearchCount($lastResult);
       WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
-      for ($i = 0; $i < $numCards; ++$i) {
-        Draw($player, effectSource:"surface_shaking_blue");
-      }
+      Draw($player, effectSource:"surface_shaking_blue", num: $numCards);
       return "1";
     case "ENCASEDAMAGE":
       $character = &GetPlayerCharacter($player);
@@ -503,9 +499,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KRAKENAETHERVEIN":
-      if(intval($lastResult) > 0) {
-        for ($i = 0; $i < $lastResult; ++$i) Draw($player);
-      }
+      Draw($player, num:$lastResult);
       return $lastResult;
     case "SCEPTEROFPAIN":
       global $dqVars;
@@ -539,7 +533,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return 1;
     case "HOPEMERCHANTHOOD":
       $count = SearchCount($lastResult);
-      for($i = 0; $i < $count; ++$i) Draw($player);
+      Draw($player, num:$count);
       WriteLog(CardLink("hope_merchants_hood", "hope_merchants_hood") . " shuffled and drew " . $count . " cards");
       return "1";
     case "CASHOUTCONTINUE":

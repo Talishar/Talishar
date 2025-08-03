@@ -20,8 +20,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "tome_of_firebrand_red":
-        Draw($currentPlayer);
-        Draw($currentPlayer);
+        Draw($currentPlayer, num:2);
         return "";
       case "red_hot_red":
         if(RuptureActive()) {

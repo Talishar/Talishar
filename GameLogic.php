@@ -381,7 +381,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PlayAbility($lastResult, "-", 0);
       return $lastResult;
     case "DRAW":
-      return Draw($player, effectSource:$parameter);
+      $params = explode(",", $paramter);
+      $effectSource = $params[0] ?? "-";
+      $num = $params[1] ?? 1;
+      return Draw($player, effectSource:$effectSource, num:$num);
     case "MULTIBANISH":
       if ($lastResult == "") return $lastResult;
       $cards = explode(",", $lastResult);

@@ -1124,7 +1124,7 @@ function ProcessSurge($cardID, $player, $target)
       if ($numToDraw < 0) $numToDraw = 0;
       $deck = &GetDeck($targetPlayer);
       while (count($hand) > 0) array_push($deck, array_shift($hand));
-      for ($i = 0; $i < $numToDraw; ++$i) Draw($targetPlayer, effectSource: $cardID);
+      Draw($targetPlayer, effectSource: $cardID, num:$numToDraw);
       AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
       break;
     case "swell_tidings_red":
@@ -1184,8 +1184,7 @@ function ProcessSurge($cardID, $player, $target)
     case "open_the_flood_gates_yellow": 
     case "open_the_flood_gates_blue":
       WriteLog("Surge active, drawing 2 cards");
-      Draw($player);
-      Draw($player);
+      Draw($player, num:2);
       break;
     case "overflow_the_aetherwell_red":
     case "overflow_the_aetherwell_yellow":

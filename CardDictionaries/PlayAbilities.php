@@ -872,8 +872,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "tome_of_imperial_flame_red":
-      Draw($currentPlayer);
-      if (IsRoyal($currentPlayer)) Draw($currentPlayer);
+      if (IsRoyal($currentPlayer)) Draw($currentPlayer, num:2);
+      else Draw($currentPlayer);
       PrependDecisionQueue("OP", $currentPlayer, "BANISHHAND", 1);
       if (SearchCount(SearchHand($currentPlayer, pitch: 1)) >= 2) {
         PrependDecisionQueue("ELSE", $currentPlayer, "-");

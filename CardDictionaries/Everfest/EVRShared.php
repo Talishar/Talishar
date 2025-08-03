@@ -562,7 +562,7 @@
           while(($card = RemoveHand($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "HAND"); ++$numToDraw; }
           while(($card = RemoveArsenal($currentPlayer, 0)) != "") { AddBottomDeck($card, $currentPlayer, "ARS"); ++$numToDraw; }
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-          for($i = 0; $i < $numToDraw; $i++) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+          AddDecisionQueue("DRAW", $currentPlayer, "$cardID,$numToDraw", 1);
         }
         return "";
       case "talisman_of_featherfoot_yellow":
@@ -596,7 +596,7 @@
         }
         break;
       case "spring_tidings_yellow":
-        for($i=0; $i<SearchCount(SearchChainLinks(-1, 2, "AA")); ++$i) Draw($mainPlayer);
+        Draw($mainPlayer, num:SearchCount(SearchChainLinks(-1, 2, "AA")));
         break;
       case "winds_of_eternity_blue":
         if(ComboActive())

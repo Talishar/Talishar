@@ -32,9 +32,7 @@
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",HAND", 1);
         return "";
       case "three_of_a_kind_red":
-        Draw($currentPlayer);
-        Draw($currentPlayer);
-        Draw($currentPlayer);
+        Draw($currentPlayer, num:3);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "nock_the_deathwhistle_blue":

@@ -173,8 +173,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           AddCurrentTurnEffect($cardID."-GOAGAIN", $currentPlayer);
-          Draw($currentPlayer);
-          Draw($currentPlayer);
+          Draw($currentPlayer, num:2);
           ResolveGoAgain($cardID, $currentPlayer, $from);
           $rv = "Draws 2 cards and gains go again";
         }
@@ -337,8 +336,7 @@
         PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         return "";
       case "tome_of_fyendal_yellow":
-        Draw($currentPlayer);
-        Draw($currentPlayer);
+        Draw($currentPlayer, num:2);
         if($from == "ARS") { $hand = &GetHand($currentPlayer); GainHealth(count($hand), $currentPlayer); }
         return "";
       case "last_ditch_effort_blue":
@@ -639,7 +637,7 @@
         $hand = &GetHand($defPlayer);
         $numDraw = count($hand);
         DiscardHand($defPlayer);
-        for ($i = 0; $i < $numDraw; ++$i) Draw($defPlayer);
+        Draw($defPlayer, num:$numDraw);
         if ($numDraw > 0) WriteLog("Player $defPlayer discarded their hand and drew $numDraw cards");
         break;
       case "batter_to_a_pulp_red":

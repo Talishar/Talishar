@@ -305,8 +305,7 @@ function SpecificAllyAttackAbilities($attackID)
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
-        AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
+        AddDecisionQueue("DRAW", $mainPlayer, "suraya_archangel_of_erudition,2", 1);
         break;
       case "themis_archangel_of_judgment":
         $soul = &GetSoul($mainPlayer);

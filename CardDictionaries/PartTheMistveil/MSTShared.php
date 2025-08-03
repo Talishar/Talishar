@@ -378,9 +378,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") AddCurrentTurnEffect($cardID . "-HITPREVENTION", $currentPlayer);
       return "";
     case "orihon_of_mystic_tenets_blue":
-      Draw($currentPlayer);
-      Draw($currentPlayer);
-      if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") Draw($currentPlayer);
+      if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") Draw($currentPlayer, num:3);
+      else Draw($currentPlayer, num:2);
       return "";
     case "a_drop_in_the_ocean_blue":
       if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) AddCurrentTurnEffect($cardID, $mainPlayer);

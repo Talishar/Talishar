@@ -430,7 +430,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "gorganian_tome":
       $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "gorganian_tome"), SearchDiscardForCard(2, "gorganian_tome")));
-      for($i = 0; $i < $count; ++$i) Draw($currentPlayer);
+      $count = $count == 0 ? 1 : $count;
+      Draw($currentPlayer, num: $count);
       return "Drew " . $count . " card" . ($count > 1 ? "s" : "");
     case "snag_blue":
       AddCurrentTurnEffect("snag_blue", ($currentPlayer == 1 ? 2 : 1));
@@ -445,8 +446,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "cash_in_yellow":
-      Draw($currentPlayer);
-      Draw($currentPlayer);
+      Draw($currentPlayer, num: 2);
       return "";
     case "reinforce_the_line_red": case "reinforce_the_line_yellow": case "reinforce_the_line_blue":
       $options = GetChainLinkCards($defPlayer, "AA");
@@ -492,8 +492,7 @@ function CRUHitEffect($cardID)
       break;
     case "whirling_mist_blossom_yellow":
       if(HitsInRow() > 0) {
-        Draw($mainPlayer);
-        Draw($mainPlayer);
+        Draw($mainPlayer, num:2);
       }
       break;
     case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue":
