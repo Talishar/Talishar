@@ -161,7 +161,8 @@
     {
       case "millers_grindstone":
         $otherPlayer = $playerID == 1 ? 2 : 1;
-        if($deck->Empty()) {
+        $otherDeck = new Deck($otherPlayer);
+        if($otherDeck->Empty()) {
           break;
         }
         if ($playerID == $mainPlayer) DestroyTopCard($otherPlayer);
