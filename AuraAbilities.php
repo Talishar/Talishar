@@ -21,8 +21,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if ($isToken) {
     $ind = SearchCurrentTurnEffectsForIndex("break_stature_yellow", $effectController);
-    if ($ind != -1) {
-      if (NameOverride($cardID, $player) == $currentTurnEffects[$ind + 2]) {
+    if ($ind != -1 && $currentTurnEffects[$ind + 2] != "") {
+      if (NameOverride($cardID, $player) == NameOverride($currentTurnEffects[$ind + 2], $player)) {
         WriteLog("Your stature has been broken, you cannot create " . $currentTurnEffects[$ind + 2] . " this turn!");
         return;
       }

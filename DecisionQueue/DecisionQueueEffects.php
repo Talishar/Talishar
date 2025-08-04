@@ -1052,7 +1052,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       ReEvalCombatChain();
       return "";
     case "BREAKSTATURE":
-      AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID:NameOverride($lastResult, $otherPlayer));
+      $id = NameOverride($lastResult, $otherPlayer) == "" ? "" : $lastResult;
+      AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID:$id);
       return "";
     case "MOUNTAINBASE":
       $banish = GetBanish($player);
