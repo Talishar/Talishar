@@ -3055,7 +3055,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "marlynn":
     case "scurv_stowaway":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
-      return CountItem("gold", $currentPlayer) == 0;
+      return CountItemByName("Gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
     case "gold_baited_hook":
     case "redspine_manta":
