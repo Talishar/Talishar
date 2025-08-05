@@ -3494,7 +3494,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " <b>amp 1</b>");
       AddCurrentTurnEffect("aether_bindings_of_the_third_age-AMP", $player);
     case "sigil_of_aether_blue":
-      if($additionalCosts == "Arcane") DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $player);
+      if($target != "-") DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $player, resolvedTarget:$target);
       else DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
       break;
     case "truce_blue":

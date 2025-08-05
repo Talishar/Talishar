@@ -2818,6 +2818,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "verdance":
         case "verdance_thorn_of_the_rose":
         case "nettling_shot_red":
+        case "sigil_of_aether_blue":
           $targetLoc = explode("-", $target)[0];
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
           break;

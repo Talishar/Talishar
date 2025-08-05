@@ -277,7 +277,10 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
       PlayAura("runechant", $player);
       break;
     case "sigil_of_aether_blue":
-      AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
+      SetArcaneTarget($mainPlayer, $cardID, 2);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
+      AddDecisionQueue("ADDTRIGGER", $mainPlayer, $cardID, 1);
+      // AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
       break;
     case "sigil_of_temporal_manipulation_blue":
       $deck = new Deck($player);
