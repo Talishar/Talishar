@@ -3297,6 +3297,18 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       IncrementClassState($player, $CS_NumCardsDrawn, $num);
     }
     $hand = array_values($hand);
+    // triggers for whenever you "draw a card"
+    if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn_treasure_hunter"))) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
+    if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn"))) AddLayer("TRIGGER", $player, "marlynn");
+    if ($mainPhase) {
+      $numBrainstorm = CountCurrentTurnEffects("brainstorm_blue", $player);
+      if ($numBrainstorm > 0) {
+        $character = &GetPlayerCharacter($player);
+        for ($i = 0; $i < $numBrainstorm; ++$i) {
+          for ($j = 0; $j < $num; ++$j) DealArcane(1, 2, "TRIGGER", $character[0]);
+        }
+      }
+    }
   }
 
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
@@ -3313,24 +3325,14 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
         break;
     }
   }
+  //triggers for whenever you draw "one or more cards"
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer, $num);
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) PlayAura("seismic_surge", $otherPlayer, $num);
-  if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn_treasure_hunter"))) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");
-  if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn"))) AddLayer("TRIGGER", $player, "marlynn");
   if (SearchCharacterActive($player, "earthlore_bounty")) {
     $context = $effectSource != "-" ? $effectSource : $EffectContext;
     if ($context != "-") {
       $cardType = CardType($context);
       if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("seismic_surge", $player, $num);
-    }
-  }
-  if ($mainPhase) {
-    $numBrainstorm = CountCurrentTurnEffects("brainstorm_blue", $player);
-    if ($numBrainstorm > 0) {
-      $character = &GetPlayerCharacter($player);
-      for ($i = 0; $i < $numBrainstorm; ++$i) {
-        for ($j = 0; $j < $num; ++$j) DealArcane(1, 2, "TRIGGER", $character[0]);
-      }
     }
   }
   $myAuras = GetAuras($player);
