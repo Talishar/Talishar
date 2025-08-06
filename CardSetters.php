@@ -68,7 +68,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if(TalentContains($cardID, "EARTH", $player)) {
     ++$classState[$CS_NumEarthBanished];
   }
-  if (TypeContains($cardID, "E", $player)) {
+  if (TypeContains($cardID, "E", $player) && ($from == "EQUIP" || $from == "CC")) {
     $charIndex = FindCharacterIndex($player, $cardID);
     if ($charIndex == -1) {
       DestroyCharacter($player, $charIndex, skipDestroy: true);
