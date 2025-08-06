@@ -60,7 +60,7 @@ function MPGAbilityCost($cardID): int
 function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 0 : 1;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     case "seismic_eruption_yellow":
       PlayAura("seismic_surge", $currentPlayer, 3, true);
