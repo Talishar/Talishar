@@ -700,8 +700,15 @@
     if(ArsenalFull($mainPlayer)) return "";
     $hand = &GetHand($mainPlayer);
     $heaveIndices = "";
+    $totalResources = GetResources($mainPlayer)[0];
     for($i=0; $i<count($hand); $i+=HandPieces()) {
-      if(HeaveValue($hand[$i]) > 0) {
+      if (is_numeric(PitchValue($hand[$i]))) $totalResources += PitchValue($hand[$i]);
+    }
+    for($i=0; $i<count($hand); $i+=HandPieces()) {
+      if (is_numeric(PitchValue($hand[$i]))) $availableResources = $totalResources - PitchValue($hand[$i]);
+      else $availableResources = $totalResources;
+      $heaveVal = HeaveValue($hand[$i]);
+      if($heaveVal > 0 && $availableResources >= $heaveVal) {
         if($heaveIndices != "") $heaveIndices .= ",";
         $heaveIndices .= $i;
       }
