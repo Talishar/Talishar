@@ -2204,11 +2204,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "tripwire_trap_red":
       TrapTriggered($parameter);
-      AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-      AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
-      AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
-      AddDecisionQueue("ELSE", $mainPlayer, "-");
-      AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
+      if (!IsAllyAttacking()) {
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
+      }
+      else { //if there is no attacking hero, the trap just goes off
+        AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
+      }
       break;
     case "pitfall_trap_yellow":
       TrapTriggered($parameter);
