@@ -1554,9 +1554,7 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
 function CanBlock($cardID, $from)
 {
   global $mainPlayer, $defPlayer;
-  WriteLog("HERE0: $cardID");
   if (IsBlockRestricted($cardID, player:$defPlayer, from: $from)) return false;
-  WriteLog("HERE: $cardID");
   $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
   $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
   $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2;
