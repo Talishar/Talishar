@@ -552,15 +552,18 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $cards = "";
       $deck = new Deck($player);
       $discard = new Discard($player);
-      sort($lastResult);
-      for($i = count($lastResult)-1; $i >= 0; --$i) {
-        $cardID = $discard->Remove($lastResult[$i]);
-        $deck->AddBottom($cardID, "GY");
-        if($cards != "") $cards .= ", ";
-        if($i == 0) $cards .= "and ";
-        $cards .= CardLink($cardID, $cardID);
+      if (is_array($lastResult)) {
+        sort($lastResult);
+        for($i = count($lastResult)-1; $i >= 0; --$i) {
+          $cardID = $discard->Remove($lastResult[$i]);
+          $deck->AddBottom($cardID, "GY");
+          if($cards != "") $cards .= ", ";
+          if($i == 0) $cards .= "and ";
+          $cards .= CardLink($cardID, $cardID);
+        }
+        WriteLog("The following cards where shuffled: " . $cards);
       }
-      WriteLog("The following cards where shuffled: " . $cards);
+      else WriteLog("Something unexpected happened with Remembrance, please submit a bug report");
       return "1";
     case "QUIVEROFABYSSALDEPTH":
       $cards = "";
