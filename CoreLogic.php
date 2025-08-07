@@ -3306,7 +3306,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       if ($numBrainstorm > 0) {
         $character = &GetPlayerCharacter($player);
         for ($i = 0; $i < $numBrainstorm; ++$i) {
-          for ($j = 0; $j < $num; ++$j) DealArcane(1, 2, "TRIGGER", $character[0]);
+          DealArcane(1, 2, "TRIGGER", $character[0]);
         }
       }
     }
