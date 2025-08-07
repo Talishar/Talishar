@@ -41,7 +41,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
         $power = EffectPowerModifier($currentTurnEffects[$i]);
-        if (($canGainAttack || $power < 0) && !($snagActive && ($currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
+        $fromCurrentAttack = $currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || IsGrantedBuff($currentTurnEffects[$i]);
+        if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
           array_push($powerModifiers, $currentTurnEffects[$i]);
           array_push($powerModifiers, $power);
           AddPower($totalPower, $power);

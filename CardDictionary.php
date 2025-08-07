@@ -5407,3 +5407,11 @@ function BlindCard($cardID, $unblind=false) {
     return "$cardID-$blindMarker";
   }
 }
+
+//For effects that grant an ability to an AA card that then grants the attack power
+function IsGrantedBuff($cardID) {
+  return match($cardID) {
+    "barraging_beatdown_red", "barraging_beatdown_yellow", "barraging_beatdown_blue" => true,
+    default => false,
+  };
+}
