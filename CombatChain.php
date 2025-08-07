@@ -1860,6 +1860,7 @@ function IsLayerStep()
   if ($CombatChain->HasCurrentLink()) return false;
   $layerInd = count($layers) - LayerPieces();
   $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY"];
+  if (!isset($layers[$layerInd])) return false;
   if (in_array($layers[$layerInd], $nonCardLayers)) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2])[0];

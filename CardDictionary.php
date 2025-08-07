@@ -1553,8 +1553,10 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
 
 function CanBlock($cardID, $from)
 {
-  global $mainPlayer;
-  if (IsBlockRestricted($cardID)) return false;
+  global $mainPlayer, $defPlayer;
+  WriteLog("HERE0: $cardID");
+  if (IsBlockRestricted($cardID, player:$defPlayer, from: $from)) return false;
+  WriteLog("HERE: $cardID");
   $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
   $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
   $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2;
@@ -1820,7 +1822,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
 }
 
-function IsBlockRestricted($cardID, &$restriction = null, $player = "")
+function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = "HAND")
 {
   global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   global $defPlayer;
@@ -1851,7 +1853,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "")
     }
   };
   //modal cards dominate and overpower restriction
-  if (IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") return true;
+  if ($from == "HAND" && IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") return true;
   if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
   }
