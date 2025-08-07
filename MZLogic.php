@@ -514,29 +514,29 @@ function GetMZUID($player, $MZIndex)
     case "ALLY":
     case "MYALLY":
     case "THEIRALLY":
-      return $zone[$mzArr[1] + 5];
+      return $zone[$mzArr[1] + 5] ?? "-";
     case "BANISH":
     case "MYBANISH":
     case "THEIRBANISH":
-      return $zone[$mzArr[1] + 2];
+      return $zone[$mzArr[1] + 2] ?? "-";
     case "AURAS":
     case "MYAURAS":
     case "THEIRAURAS":
-      return $zone[$mzArr[1] + 6];
+      return $zone[$mzArr[1] + 6] ?? "-";
     case "LAYER":
-      return $zone[$mzArr[1] + 5];
+      return $zone[$mzArr[1] + 5] ?? "-";
     case "COMBATCHAINATTACKS":
-      return $zone[$mzArr[1] + 8]; // CHECK THIS
+      return $zone[$mzArr[1] + 8] ?? "-"; // CHECK THIS
     case "COMBATCHAINLINK":
-      return $zone[$mzArr[1] + 8]; // CHECK THIS
+      return $zone[$mzArr[1] + 8] ?? "-"; // CHECK THIS
     case "CHAR":
     case "MYCHAR":
     case "THEIRCHAR":
-      return $zone[$mzArr[1] + 11];
+      return $zone[$mzArr[1] + 11] ?? "-";
     case "ITEMS":
     case "MYITEMS":
     case "THEIRITEMS":
-      return $zone[$mzArr[1] + 4];
+      return $zone[$mzArr[1] + 4] ?? "-";
     default:
       return "-1";
   }
