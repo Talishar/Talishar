@@ -111,7 +111,6 @@ function HasPlayableCard($player, $phase)
   $items = &GetItems($player);
   for($i=0; $i<count($items); $i+=ItemPieces()) {
     if (!ItemActiveStateTracked($items[$i]) || GetItemGemState($player, $items[$i], $i) != 0) {
-      if ($player == 2) WriteLog("HERE??? $items[$i]");
       if(IsPlayable($items[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
     }
   }
