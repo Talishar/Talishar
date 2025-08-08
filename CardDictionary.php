@@ -1203,6 +1203,7 @@ function TriggerTargets($cardID)
     "blast_to_oblivion_blue" => "aura_permanent",
     "figment_of_ravages_yellow" => "any_arcane",
     "azvolai" => "any_arcane",
+    "verdance", "verdance_thorn_of_the_rose", "sigil_of_aether_blue" => "any_arcane",
     default => ""
   };
 }
