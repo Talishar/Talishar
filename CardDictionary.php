@@ -4085,10 +4085,20 @@ function ItemDefaultHoldTriggerState($cardID, $player)
     case "dissolution_sphere_yellow":
     case "signal_jammer_blue":
       return 1;
+    case "goldkiss_rum":
+      return 0;
     default:
       break;
   }
   return ETASteamCounters($cardID) > 0 ? 0 : 2;
+}
+
+//cards where the Hold Trigger State is interpretted as an active state
+function ItemActiveStateTracked($cardID) {
+  return match($cardID) {
+    "goldkiss_rum" => true,
+    default => false,
+  };
 }
 
 function IsCharacterActive($player, $index) 

@@ -110,7 +110,10 @@ function HasPlayableCard($player, $phase)
   }
   $items = &GetItems($player);
   for($i=0; $i<count($items); $i+=ItemPieces()) {
-    if(IsPlayable($items[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+    if (!ItemActiveStateTracked($items[$i]) || GetItemGemState($player, $items[$i], $i) != 0) {
+      if ($player == 2) WriteLog("HERE??? $items[$i]");
+      if(IsPlayable($items[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+    }
   }
   $banish = &GetBanish($player);
   for($i=0; $i<count($banish); $i+=BanishPieces()) {
@@ -120,7 +123,7 @@ function HasPlayableCard($player, $phase)
   for($i=0; $i<count($theirBanish); $i+=BanishPieces()) {
     if(IsPlayable($theirBanish[$i], $phase, "THEIRBANISH", $i, $restriction, $player)) return true;
   }
-  $auras = &GetItems($player);
+  $auras = &GetAuras($player);
   for($i=0; $i<count($auras); $i+=AuraPieces()) {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
