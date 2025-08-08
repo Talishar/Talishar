@@ -600,6 +600,7 @@ function CardCost($cardID, $from="-")
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
+  WriteLog("HERE: $cardID");
   $set = CardSet($cardID);
   switch ($cardID) {
     case "imposing_visage_blue":
@@ -619,6 +620,7 @@ function CardCost($cardID, $from="-")
     case "bam_bam_yellow":
     case "outside_interference_blue":
     case "fearless_confrontation_blue":
+    case "burn_bare":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
     case "ripple_away_blue":
@@ -662,9 +664,6 @@ function CardCost($cardID, $from="-")
     case "two_sides_to_the_blade_red":
     case "roiling_fissure_blue":
       return 1;
-    case "burn_bare":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I") return 0;
-      return 3;
     default:
       break;
   }
