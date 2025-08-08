@@ -608,9 +608,9 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["APR", "AVS", "MPG", "BDD", "SMP", "SUP"];
+  $unreleasedSets = ["APR", "AVS", "SMP", "SUP"];
   // promos that are made legal ahead of thier set
-  $specialReleases = ["valda_seismic_impact", "promising_terrain_blue", "draw_a_crowd_blue", "batter_to_a_pulp_red"];
+  $specialReleases = ["batter_to_a_pulp_red"];
   if (in_array($cardID, $specialReleases)) return false;
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
@@ -620,41 +620,10 @@ function isUnimplemented($cardID) {
   switch (CardSet($cardID)) {
     case "MPG":
       return false;
-    case "APR": case "AVS": case "BDD": case "SMP":
+    case "APR": case "AVS": case "SMP":
       return match($cardID) {
-        "valda_seismic_impact" => false,
-        "testament_of_valahai" => false,
-        "put_em_in_their_place_red" => false,
-        "seismic_eruption_yellow" => false,
-        "solid_ground_blue" => false,
-        "blinding_of_the_old_ones_red" => false,
-        "smelting_of_the_old_ones_red" => false,
-        "disenchantment_of_the_old_ones_red" => false,
-        "grind_them_down_red", "grind_them_down_yellow", "grind_them_down_blue" => false,
-        "crash_and_bash_red", "crash_and_bash_yellow", "crash_and_bash_blue" => false,
-        "flatten_the_field_red", "flatten_the_field_yellow", "flatten_the_field_blue" => false,
-        "bravo_flattering_showman" => false,
-        "knock_em_off_their_feet_red" => false,
         "halo_of_lumina_light" => false,
         "helm_of_the_arknight" => false,
-        "draw_a_crowd_blue", "batter_to_a_pulp_red", "promising_terrain_blue" => false,
-        "clash_of_mountains_red", "clash_of_mountains_yellow", "clash_of_mountains_blue" => false,
-        "clash_of_bravado_yellow", "break_stature_yellow", "test_of_iron_grip_red", "visit_anvilheim_blue" => false,
-        "fault_line_red", "renounce_grandeur_red", "hostile_encroachment_red" => false,
-        "daily_grind_blue", "fearless_confrontation_blue", "headbutt_blue", "leave_a_dent_blue", "pec_perfect_red" => false,
-        "ley_line_of_the_old_ones_blue", "base_of_the_mountain" => false,
-        "richter_scale", "gauntlet_of_boulderhold", "craterhoof", "hoarding_of_denial" => false,
-        "tremor_of_resistance", "seismic_shelter_blue" => false,
-        "aftershock_red", "aftershock_yellow", "aftershock_blue" => false,
-        "little_big_foot_red", "little_big_foot_yellow", "little_big_foot_blue" => false,
-        "tectonic_instability_blue" => false,
-        "clash_of_heads_yellow", "clash_of_chests_yellow", "clash_of_arms_yellow", "clash_of_legs_yellow", "clash_of_shields_yellow" => false,
-        "rubble_raise_red", "rubble_raiser_yellow", "rubble_raiser_blue" => false,
-        "overswing_red", "overswing_yellow", "overswing_blue" => false,
-        "geyser_of_seismic_stirrings_red", "geyser_of_seismic_stirrings_yellow", "geyser_of_seismic_stirrings_blue" => false,
-        "sunkwater_lookout", "sunkwater_exoshell", "sunkwater_pincers", "sunkwater_scalers" => false,
-        "captain_of_the_guard_blue", "call_for_backup_red" => false,
-        "annexation_of_grandeur_yellow", "annexation_of_all_things_known_yellow", "annexation_of_the_forge_yellow" => false,
         default => true
       };
     case "SUP":
