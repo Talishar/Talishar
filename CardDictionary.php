@@ -600,7 +600,6 @@ function CardCost($cardID, $from="-")
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
-  WriteLog("HERE: $cardID");
   $set = CardSet($cardID);
   switch ($cardID) {
     case "imposing_visage_blue":
