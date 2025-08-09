@@ -1309,6 +1309,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "bam_bam_yellow" => "I,AA",
     "deny_redemption_red" => "I,AA",
     "cogwerx_blunderbuss" => "I,AA",
+
+    "bait" => "AA,AR",
     default => "",
   };
 }
@@ -1517,6 +1519,16 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       $names = $names[1] == "-" ? $names[0] : implode(",", $names);
       return $names;
+    case "bait":
+      $canAttack = CanAttack($cardID, "PLAY", $index, "MYAURA");
+      $names = ["-", "-"];
+      if (IsReactionPhase()) $names[0] = "Attack Reaction";
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        return implode(",", $names);
+      } else if ($canAttack) {
+        $names[1] = "Attack";
+      }
+      return implode(",", $names);
     default:
       return "";
   }
@@ -2175,6 +2187,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
+  if (SearchAurasForCard("bait", $player) && $cardID != "bait") return true;
   if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
   if (SearchCurrentTurnEffects("herald_of_judgment_yellow", $player) && $from == "BANISH") {
     $restriction = "herald_of_judgment_yellow";
