@@ -3108,6 +3108,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   else if ($set == "AGB") return AGBPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "SUP") return SUPPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "APS") return APSPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "ARR") return ARRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+  else if ($set == "AAC") return AACPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else {
     switch ($cardID) {
       case "jack_o_lantern_red":

@@ -1294,6 +1294,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
+    case "meet_madness_red":
+      if(IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
     default:
       break;
   }
@@ -4072,6 +4078,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("BACKUP", $player, "{0}", 1);
       }
       break;
+    case "alpha_instinct_blue":
+      PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
+      break;
     default:
       break;
   }
@@ -4326,10 +4335,20 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     }
     IncrementClassState($player, $CS_Num6PowDisc);
   }
-  if ($discarded == "massacre_red" && $source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
-    WriteLog(CardLink("massacre_red", "massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
-    AddLayer("TRIGGER", $mainPlayer, $discarded);
+  switch ($discarded) {
+    case "massacre_red":
+      if ($source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
+        WriteLog(CardLink("massacre_red", "massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
+        AddLayer("TRIGGER", $mainPlayer, $discarded);
+      }
+      break;
+    case "alpha_instinct_blue":
+      if (HasBeatChest($source)) AddLayer("TRIGGER", $player, $discarded);
+      break;
+    default:
+      break;
   }
+  
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 

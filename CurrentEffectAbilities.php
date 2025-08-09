@@ -595,6 +595,8 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "ASR") return ASREffectPowerModifier($cardID);
   else if ($set == "SUP") return SUPEffectPowerModifier($cardID);
   else if ($set == "APS") return APSEffectPowerModifier($cardID);
+  else if ($set == "AAC") return AACEffectPowerModifier($cardID);
+  else if ($set == "ARR") return ARREffectPowerModifier($cardID);
   switch ($cardID) {
     case "ira_scarlet_revenger":
       return 1;
@@ -2002,6 +2004,8 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "ASR") return ASRCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "SUP") return SUPCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "APS") return APSCombatEffectActive($cardID, $cardToCheck); //temporary
+  else if ($set == "ARR") return ARRCombatEffectActive($cardID, $cardToCheck);
+  else if ($set == "AAC") return AACCombatEffectActive($cardID, $cardToCheck);
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);

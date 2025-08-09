@@ -51,6 +51,8 @@ include "CardDictionaries/ArmoryDecks/ASRShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "CardDictionaries/SuperSlam/SUPShared.php";
 include "CardDictionaries/ArmoryDecks/APSShared.php";
+include "CardDictionaries/ArmoryDecks/AACShared.php";
+include "CardDictionaries/ArmoryDecks/ARRShared.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";
@@ -234,7 +236,8 @@ function SetID($cardID)
     "the_hand_that_pulls_the_strings" => "HNT407",
     "valda_seismic_impact" => "HER135",
     "tusk" => "DUM", // AI custom weapon
-    "wrenchtastic" => "DUM" // AI custom weapon
+    "wrenchtastic" => "DUM", // AI custom weapon
+    "meet_madness_red" => "AAC014" //temporary
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -719,6 +722,8 @@ function AbilityCost($cardID)
   else if ($set == "MPG") return MPGAbilityCost($cardID);
   else if ($set == "SUP") return SUPAbilityCost($cardID);
   else if ($set == "APS") return APSAbilityCost($cardID);
+  else if ($set == "ARR") return ARRAbilityCost($cardID);
+  else if ($set == "AAC") return AACAbilityCost($cardID);
   else switch ($cardID) {
     case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
@@ -1251,6 +1256,8 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "MPG") return MPGAbilityType($cardID, $from);
   else if ($set == "SUP") return SUPAbilityType($cardID);
   else if ($set == "APS") return APSAbilityType($cardID);
+  else if ($set == "ARR") return ARRAbilityType($cardID);
+  else if ($set == "AAC") return AACAbilityType($cardID);
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
@@ -3823,6 +3830,8 @@ function AbilityHasGoAgain($cardID, $from)
   else if ($set == "MPG") return MPGAbilityHasGoAgain($cardID);
   else if ($set == "SUP") return SUPAbilityHasGoAgain($cardID);
   else if ($set == "APS") return APSAbilityHasGoAgain($cardID);
+  else if ($set == "AAC") return AACAbilityHasGoAgain($cardID);
+  else if ($set == "ARR") return ARRAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "bravo_flattering_showman":

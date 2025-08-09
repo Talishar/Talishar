@@ -2787,7 +2787,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDMINPOWER,6");
     AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
     AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $cardID, 1);
+    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
     if (!SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) { //Don't duplicate the effect icon
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "BEATCHEST", 1);
     }
