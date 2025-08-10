@@ -3205,6 +3205,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       //check that there's an aura with a suspense counter
       if (count(GetSuspenseAuras($currentPlayer)) == 0) return true;
       return false;
+    case "blood_follows_blade_yellow":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (SearchCombatChainAttacks($mainPlayer, subtype:"Sword") != "") return false;
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword", $mainPlayer)) return false;
+      return true;
     default:
       return false;
   }

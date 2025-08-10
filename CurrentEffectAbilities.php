@@ -557,6 +557,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
         }
       }
       break;
+    case "blood_follows_blade_yellow":
+      PlayAlly("cintari_sellsword", $mainPlayer, isToken:true);
+      break;
     default:
       break;
   }

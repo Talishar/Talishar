@@ -1543,6 +1543,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "kassai_of_the_golden_sand":
     case "kassai":
     case "hood_of_red_sand":
+    case "blood_follows_blade_yellow":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "talk_a_big_game_blue":

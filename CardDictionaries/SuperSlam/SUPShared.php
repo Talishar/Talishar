@@ -58,6 +58,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
     "confidence" => TypeContains($attackID, "AA", $mainPlayer),
     "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
     "bait" => true,
+    "blood_follows_blade_yellow" => true,
     default => false,
   };
 }
@@ -65,6 +66,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower, $combatChain, $chainLinkSummary, $chainLinks;
+  global $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     case "helm_of_hindsight":
@@ -274,6 +276,12 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       GiveAttackGoAgain();
       AddCurrentTurnEffect("bait", $currentPlayer);
       break;
+    case "blood_follows_blade_yellow":
+      if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
+        GiveAttackGoAgain();
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      else WriteLog("A previous chain link was targetted for no effect");
     default:
       break;
   }
