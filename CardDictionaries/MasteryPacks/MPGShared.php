@@ -97,21 +97,27 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       return "";
     case "tectonic_instability_blue":
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       if (count(GetArsenal($currentPlayer)) > 0) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARSENAL", 1);
         AddDecisionQueue("CHOOSEARSENAL", $currentPlayer, "<-", 1);
         AddDecisionQueue("REMOVEARSENAL", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("DRAW", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("NOTEQUALPASS", $currentPlayer, 1, 1);
+        AddDecisionQueue("INCDQVARIFNOTPASS", $currentPlayer, "0", 1);
       }
       if (count(GetArsenal($otherPlayer)) > 0) {
         AddDecisionQueue("FINDINDICES", $otherPlayer, "ARSENAL", 1);
         AddDecisionQueue("CHOOSEARSENAL", $otherPlayer, "<-", 1);
         AddDecisionQueue("REMOVEARSENAL", $otherPlayer, "-", 1);
         AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-        AddDecisionQueue("DRAW", $otherPlayer, "$cardID-THEIRS", 1);
+        AddDecisionQueue("DRAW", $otherPlayer, $cardID, 1);
+        AddDecisionQueue("NOTEQUALPASS", $currentPlayer, 1, 1);
+        AddDecisionQueue("INCDQVARIFNOTPASS", $currentPlayer, "0", 1);
       }
-      //seismic surges are being handled by the draw function since it can tell if the draw wasn't replaced
+      AddDecisionQueue("PLAYAURA", $currentPlayer, "seismic_surge-{0}-$cardID", 1);
       return "";
     case "overswing_red":
     case "overswing_yellow":

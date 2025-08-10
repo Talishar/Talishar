@@ -3368,10 +3368,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   }
   $index = count($hand) - 1 ;
   if ($effectSource == "tectonic_instability_blue") {
-    PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:"tectonic_instability_blue");
-  }
-  else if ($effectSource == "tectonic_instability_blue-THEIRS") {
-    PlayAura("seismic_surge", $otherPlayer, isToken:true, effectController:$otherPlayer, effectSource:"tectonic_instability_blue");
+    //indicates that the draw resolved without getting replaced or prevented
+    return 1;
   }
   return $index >= 0 ? $hand[$index] : -1;
 }
