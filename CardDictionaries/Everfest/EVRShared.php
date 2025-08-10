@@ -704,6 +704,10 @@
     for($i=0; $i<count($hand); $i+=HandPieces()) {
       if (is_numeric(PitchValue($hand[$i]))) $totalResources += PitchValue($hand[$i]);
     }
+    $auras = GetAuras($mainPlayer);
+    for($i = 0; $i < count($auras); $i += AuraPieces()) {
+      if ($auras[$i] == "ponder") $totalResources += 3;
+    }
     for($i=0; $i<count($hand); $i+=HandPieces()) {
       if (is_numeric(PitchValue($hand[$i]))) $availableResources = $totalResources - PitchValue($hand[$i]);
       else $availableResources = $totalResources;
