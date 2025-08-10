@@ -559,7 +559,7 @@ function MZStartTurnAbility($player, $MZIndex)
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       AddDecisionQueue("MULTIBANISH", $player, "GY,-", 1);
       MZMoveCard($player, "MYDISCARD:isSameName=loyalty_beyond_the_grave_red", "MYBANISH", DQContext:"Choose a card named Loyalty Beyond the Grave to banish", isSubsequent:true);
-      AddDecisionQueue("DRAW", $player, "-", 0);
+      AddDecisionQueue("DRAW", $player, "$cardID,1,0", 0);
       break;
     default:
       break;
