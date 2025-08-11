@@ -1842,7 +1842,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "VALIDATEALLDIFFERENTNAME":
-      if ($parameter == "DISCARD") {
+      $params = explode(",", $parameter);
+      $from = $params[0] ?? "-";
+      $num = $params[1] ?? "-";
+      if ($from == "DISCARD") {
         $zone = &GetDiscard($player);
       }
       if (count($lastResult) == 0) return "PASS";
@@ -1853,6 +1856,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if (count($cardList) !== count(array_unique($cardList))) {
         WriteLog("You selected cards that have the same name. Reverting gamestate prior to that effect.", highlight: true);
+        RevertGamestate();
+        return "PASS";
+      }
+      if ($num != "-" && count($cardList) != $num) {
+        WriteLog("You selected insufficient cards. Reverting gamestate prior to that effect.", highlight: true);
         RevertGamestate();
         return "PASS";
       }
@@ -3335,20 +3343,27 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $parameter;
     case "BACKUP":
-      $choices = explode(",", $parameter);
       $discard = GetDiscard($player);
-      if ($choices[0] == $lastResult) {
-        $topInd = explode("-", $choices[1])[1];
-        $banishInd = explode("-", $choices[0])[1];
+      $choices = explode(",", $parameter);
+      if (count($choices) == 2) {
+        if ($choices[0] == $lastResult) {
+          $topInd = explode("-", $choices[1])[1];
+          $banishInd = explode("-", $choices[0])[1];
+        }
+        else {
+          $topInd = explode("-", $choices[0])[1];
+          $banishInd = explode("-", $choices[1])[1];
+        }
+        AddTopDeck($discard[$topInd], $player, "DISCARD");
+        BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
+        RemoveDiscard($player, explode("-", $choices[1])[1]);
+        RemoveDiscard($player, explode("-", $choices[0])[1]);
       }
       else {
-        $topInd = explode("-", $choices[0])[1];
-        $banishInd = explode("-", $choices[1])[1];
+        $banishInd = explode("-", $choices[0])[1];
+        BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
+        RemoveDiscard($player, explode("-", $choices[0])[1]);
       }
-      AddTopDeck($discard[$topInd], $player, "DISCARD");
-      BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
-      RemoveDiscard($player, explode("-", $choices[1])[1]);
-      RemoveDiscard($player, explode("-", $choices[0])[1]);
       return $lastResult;
     default:
       return "NOTSTATIC";

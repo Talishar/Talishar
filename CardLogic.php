@@ -4077,21 +4077,23 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
         $cardName = NameOverride($discard[$i], $player);
         if (TypeContains($discard[$i], "AA") && $cardName != "") {
-          if (!in_array($cardName, $names)) array_push($names, $cardName);
+          if (!in_array($cardName, $names)) {
+            array_push($names, $cardName);
+          }
         }
       }
-      if (count($names) >= 2) {
-        AddDecisionQueue("FINDINDICES", $player, "MYDISCARDATTACKS");
-        AddDecisionQueue("PREPENDLASTRESULT", $player, "2-", 1);
-        AddDecisionQueue("MULTICHOOSEDISCARD", $player, "<-", 1);
-        AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $player, "DISCARD", 1);
-        AddDecisionQueue("IMPLODELASTRESULT", $player, ",THEIRDISCARD-", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRDISCARD-", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish (other card will be put on top of deck)", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
-        AddDecisionQueue("BACKUP", $player, "{0}", 1);
-      }
+      $numToChoose = count($names) >= 2 ? 2 : 1;
+      AddDecisionQueue("FINDINDICES", $player, "MYDISCARDATTACKS");
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "$numToChoose-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $player, "-$numToChoose", 1);
+      AddDecisionQueue("MULTICHOOSEDISCARD", $player, "<-", 1);
+      AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $player, "DISCARD,$numToChoose", 1);
+      AddDecisionQueue("IMPLODELASTRESULT", $player, ",THEIRDISCARD-", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRDISCARD-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish (other card will be put on top of deck)", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+      AddDecisionQueue("BACKUP", $player, "{0}", 1);
       break;
     case "alpha_instinct_blue":
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
