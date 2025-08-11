@@ -2451,6 +2451,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     case "outside_interference_blue":
     case "fearless_confrontation_blue":
       $names = GetAbilityNames($cardID, $index, $from);
+      $names = str_replace("-,", "", $names);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
       } elseif ($names != "" && $from == "HAND") {
