@@ -309,7 +309,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
     default:
       break;
   }
-  if (SearchCurrentTurnEffects("aether_bindings_of_the_third_age", $player) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
+  if (SearchCurrentTurnEffects("aether_bindings_of_the_third_age", $player, stripParams:true) && DelimStringContains(CardName($cardID), "Sigil", partial: true)){
     AddLayer("TRIGGER", $player, "aether_bindings_of_the_third_age");
   }
 }

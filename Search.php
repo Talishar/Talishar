@@ -555,14 +555,15 @@ function SearchMultizoneFormat($search, $zone)
   return implode(",", $searchArr);
 }
 
-function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false)
+function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false, $stripParams = false)
 {
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
+    $effectName = $stripParams ? explode(",", $currentTurnEffects[$i])[0] : $currentTurnEffects[$i];
+    if ($effectName == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
       if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
       return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;

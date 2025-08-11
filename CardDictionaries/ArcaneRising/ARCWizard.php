@@ -554,8 +554,8 @@ function ArcaneModifierAmount($source, $player, $index)
         return $effectArr[1];
       case "channel_the_millennium_tree_red":
         return 3;
-      case "aether_bindings_of_the_third_age-AMP":
-        return 1;
+      case "aether_bindings_of_the_third_age":
+        return $effectArr[1];
       case "chorus_of_the_amphitheater_red":
       case "chorus_of_the_amphitheater_yellow":
       case "chorus_of_the_amphitheater_blue":
@@ -626,10 +626,10 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
         $modifier += 3;
         $remove = true;
         break;
-      case "aether_bindings_of_the_third_age-AMP":
+      case "aether_bindings_of_the_third_age":
         if ($currentTurnEffects[$i + 1] != $player) break;
-        $modifier += 1;
-        $remove = true;
+        $modifier += $effectArr[1];
+        $currentTurnEffects[$i] = "$effectArr[0],0";
         break;
       case "chorus_of_the_amphitheater_red":
       case "chorus_of_the_amphitheater_yellow":

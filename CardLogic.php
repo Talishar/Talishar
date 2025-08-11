@@ -1954,7 +1954,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
-  global $CS_DamagePrevention, $chainLinks;
+  global $CS_DamagePrevention, $chainLinks, $currentTurnEffects;
   global $landmarks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -3504,7 +3504,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "aether_bindings_of_the_third_age":
       WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " <b>amp 1</b>");
-      AddCurrentTurnEffect("aether_bindings_of_the_third_age-AMP", $player);
+      $index = -1;
+      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+        if (explode(",", $currentTurnEffects[$i])[0] == "aether_bindings_of_the_third_age" && $currentTurnEffects[$i + 1] == $player) $index = $i;
+      }
+      if ($index == -1) AddCurrentTurnEffect("aether_bindings_of_the_third_age,1", $player);
+      else {
+        $num = explode(",", $currentTurnEffects[$index])[1];
+        $num = is_numeric($num) ? intval($num) + 1 : 1;
+        $currentTurnEffects[$index] = "aether_bindings_of_the_third_age,$num";
+      }
+      break;
     case "sigil_of_aether_blue":
       if($target != "-") DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $player, resolvedTarget:$target);
       else DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
