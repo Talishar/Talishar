@@ -1764,7 +1764,7 @@ function CurrentEffectGrantsGoAgain()
   return false;
 }
 
-function CurrentEffectPreventsGoAgain($cardID, $from="-")
+function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
 {
   global $currentTurnEffects, $mainPlayer, $CS_AdditionalCosts;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
@@ -1772,7 +1772,8 @@ function CurrentEffectPreventsGoAgain($cardID, $from="-")
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "spinal_crush_red":
-          if(HasMeld($cardID) && !IsMeldInstantName(GetClassState($mainPlayer, $CS_AdditionalCosts))
+          $additionalCosts = $additionalCosts == "-" ? GetClassState($mainPlayer, $CS_AdditionalCosts) : $additionalCosts;
+          if(HasMeld($cardID) && !IsMeldInstantName($additionalCosts)
           || DelimStringContains(CardType($cardID), "AA") 
           || DelimStringContains(CardType($cardID), "A") 
           || GetResolvedAbilityType($cardID, $from) == "AA"
