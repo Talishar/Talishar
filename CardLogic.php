@@ -3973,6 +3973,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
       }
       break;
+    case "valda_brightaxe":
+    case "valda_seismic_impact":
+      PlayAura("seismic_surge", $otherPlayer, $additionalCosts, effectSource:$parameter);
+      break;
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
