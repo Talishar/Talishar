@@ -99,7 +99,7 @@
     }
   }
 
-  function HasPhantasm($cardID)
+  function HasPhantasm($cardID, $from="CC")
   {
     switch($cardID)
     {
@@ -108,7 +108,7 @@
       case "herald_of_rebirth_yellow": case "herald_of_rebirth_blue": case "herald_of_tenacity_red": case "herald_of_tenacity_yellow": case "herald_of_tenacity_blue": case "wartune_herald_red":
       case "wartune_herald_yellow": case "wartune_herald_blue": case "phantasmaclasm_red": case "enigma_chimera_red": case "enigma_chimera_yellow": case "enigma_chimera_blue":
       case "spears_of_surreality_red": case "spears_of_surreality_yellow": case "spears_of_surreality_blue": return true;
-      case "fractal_replication_red": return FractalReplicationStats("HasPhantasm");
+      case "fractal_replication_red": return FractalReplicationStats("HasPhantasm", $from);
       case "miraging_metamorph_red": case "coalescence_mirage_red": case "coalescence_mirage_yellow": case "coalescence_mirage_blue": case "phantasmal_haze_red": case "phantasmal_haze_yellow": case "phantasmal_haze_blue": return true;
       case "dunebreaker_cenipai_red": case "dunebreaker_cenipai_yellow": case "dunebreaker_cenipai_blue": case "embermaw_cenipai_red": case "embermaw_cenipai_yellow": case "embermaw_cenipai_blue": case "frightmare_red": case "UPR551": return true;
       case "phantasmal_symbiosis_yellow": case "spectral_procession_red": case "spectral_prowler_red": case "spectral_prowler_yellow": case "spectral_prowler_blue": case "spectral_rider_red": case "spectral_rider_yellow": case "spectral_rider_blue":

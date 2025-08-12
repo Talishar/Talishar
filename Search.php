@@ -178,7 +178,7 @@ function SearchInner(
         && ($arcaneDamage == -1 || ArcaneDamage($cardID) == $arcaneDamage)
       ) {
         if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
-        if ($phantasmOnly && !HasPhantasm($cardID)) continue;
+        if ($phantasmOnly && !HasPhantasm($cardID, $zone)) continue;
         if ($specOnly && !IsSpecialization($cardID)) continue;
         if ($frozenOnly && !IsFrozenMZ($array, $zone, $i)) continue;
         if ($hasNegCounters && $array[$i + 4] == 0) continue;

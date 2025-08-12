@@ -788,7 +788,7 @@
     AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
   }
 
-  function FractalReplicationStats($stat)
+  function FractalReplicationStats($stat, $from="CC")
   {
     global $chainLinks, $CombatChain, $currentPlayer, $chainLinkSummary;
     $highestAttack = 0;
@@ -842,8 +842,8 @@
     switch($stat) {
       case "Power": return $highestAttack;
       case "Block": return $highestBlock;
-      case "HasPhantasm": return $hasPhantasm;
-      case "GoAgain": return $hasGoAgain;
+      case "HasPhantasm": return $from == "CC" ? $hasPhantasm : 0;
+      case "GoAgain": return $from == "CC" ? $hasGoAgain : 0;
       default: return 0;
     }
   }
