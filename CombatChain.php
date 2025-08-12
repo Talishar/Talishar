@@ -959,7 +959,7 @@ function OnBlockResolveEffects($cardID = "")
   $blockedWithAura = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
-    if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
+    if ($combatChain[$i + 2] == "HAND" && $combatChain[$i + 1] == $defPlayer) ++$blockedFromHand;
     if (TalentContains($combatChain[$i], "ICE", $defPlayer)) ++$blockedWithIce;
     if (TalentContains($combatChain[$i], "EARTH", $defPlayer)) ++$blockedWithEarth;
     if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
