@@ -4191,7 +4191,7 @@ function FinalizeAction()
         $turn[2] = "";
       } else {
         $currentPlayer = $mainPlayer;
-        //may be needed if the player is on always pass priority
+        //may be needed if the player is on always pass priority. This is causing the resolution step to sometimes get skipped if the attacking player is on always hold priority
         ResetCombatChainState();
         BeginTurnPass();
       }
