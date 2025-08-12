@@ -858,6 +858,8 @@ function BlockValue($cardID)
     case "okana_scar_wraps":
     case "iris_of_the_blossom":
       return 2;
+    case "the_librarian":
+      return 2;
     default:
       break;
   }
