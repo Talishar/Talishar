@@ -5181,7 +5181,10 @@ function Rarity($cardID)
   switch ($cardID) {
     case "qi_unleashed_red":
     case "qi_unleashed_yellow":
-    case "qi_unleashed_blue": // Commoner workaround. Can be deleted later when the database is updated.
+    case "qi_unleashed_blue": 
+    case "thunder_quake_red":
+    case "thunder_quake_yellow":
+    case "thunder_quake_blue": // Commoner workaround. Can be deleted later when the database is updated.
       return "C";
   }
   if ($set != "DUM") {
