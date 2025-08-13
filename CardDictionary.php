@@ -2434,7 +2434,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedEarth) == 0;
     case "blizzard_blue":
       if ($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
-      return !HasAttackLayer();
+      return !IsLayerStep();
     case "amulet_of_ice_blue":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedIce) == 0;
     case "lightning_press_red":
