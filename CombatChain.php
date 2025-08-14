@@ -1691,16 +1691,23 @@ function CombatChainClosedTriggers()
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     $effectID = explode("-", $currentTurnEffects[$i])[0];
-    if (($effectID == "kunai_of_retribution" || $effectID == "kunai_of_retribution_r") && $currentTurnEffects[$i + 1] == $mainPlayer) {
-      $uniqueID = explode("-", $currentTurnEffects[$i])[1];
-      $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
-      if ($index != -1) DestroyCharacter($mainPlayer, $index);
-    }
-    if (($effectID == "breakwater_undertow") && $currentTurnEffects[$i + 1] == $mainPlayer) {
-      $uniqueID = explode("-", $currentTurnEffects[$i+2])[1];
-      $index = SearchAlliesForUniqueID($uniqueID, $mainPlayer);
-      if ($index != -1) DestroyAlly($mainPlayer, $index);
-      RemoveCurrentTurnEffect($i);
+    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      switch ($effectID) {
+        case "kunai_of_retribution":
+        case "kunai_of_retribution_r":
+          $uniqueID = explode("-", $currentTurnEffects[$i])[1];
+          $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
+          if ($index != -1) DestroyCharacter($mainPlayer, $index);
+          break;
+        case "breakwater_undertow":
+          $uniqueID = explode("-", $currentTurnEffects[$i+2])[1];
+          $index = SearchAlliesForUniqueID($uniqueID, $mainPlayer);
+          if ($index != -1) DestroyAlly($mainPlayer, $index);
+          RemoveCurrentTurnEffect($i);
+          break;
+        default:
+          break;
+      }
     }
   }
 }
@@ -1867,4 +1874,13 @@ function IsLayerStep()
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2])[0];
   return GoesOnCombatChain("M", $layers[$layerInd], $layerFrom, $mainPlayer);
+}
+
+// check if we've already passed damage
+// combat chain doesn't close of the attack goes away now
+function AfterDamage()
+{
+  if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return true;
+  if (SearchLayersForPhase("FINALIZECHAINLINK") != -1) return true;
+  return false;
 }

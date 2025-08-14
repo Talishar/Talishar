@@ -138,6 +138,7 @@ function AuraNumUses($cardID)
     case "malefic_incantation_yellow":
     case "malefic_incantation_blue":
     case "ring_of_roses_yellow":
+    case "bait":
       return 1;
     default:
       return 0;
@@ -393,7 +394,7 @@ function &GetAurasLocation($player, $location)
   return $auras;
 }
 
-function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false)
+function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false)
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
   $auras = &GetAurasLocation($player, $location);
@@ -403,7 +404,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
-  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger);
+  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose);
   AuraDestroyed($player, $cardID, $isToken, $from);
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
@@ -433,9 +434,9 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
   }
 }
 
-function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false)
+function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false)
 {
-  global $CS_SuspensePoppedThisTurn;
+  global $CS_SuspensePoppedThisTurn, $layers;
   if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
@@ -452,8 +453,10 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     RemoveCharacter($player, $index);
     $character = array_values($character);
   }
-  if (IsSpecificAuraAttacking($player, $index) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
-    CloseCombatChain();
+  if (!AfterDamage() && !$skipClose) {
+    if (IsSpecificAuraAttacking($player, $index) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
+      CloseCombatChain();
+    }
   }
   return $cardID;
 }

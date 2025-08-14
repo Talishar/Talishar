@@ -2729,6 +2729,16 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       }
       break;
+    case "bait":
+      $auras = &GetAuras($currentPlayer);
+      if (!IsReactionPhase()) {
+        $uniqueID = $auras[$zoneIndex + 6];
+        AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
+      }
+      else {
+        --$auras[$zoneIndex + 5];
+      }
+      break;
     default:
       break;
   }

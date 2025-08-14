@@ -1,6 +1,6 @@
 <?php
 
-function SUPAbilityType($cardID): string
+function SUPAbilityType($cardID, $index=-1, $from="-"): string
 {
   return match ($cardID) {
     "lyath_goldmane" => "I",
@@ -14,7 +14,7 @@ function SUPAbilityType($cardID): string
     "helm_of_hindsight" => "I",
     "garland_of_spring" => "A",
     "punching_gloves" => "A",
-    "bait" => "AA",
+    "bait" => ($from == "CC" && $index != 0) ? "AR" : "AA",
     default => ""
   };
 }
@@ -273,8 +273,10 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PlayAura("bait", $otherPlayer, isToken:true, effectController:$currentPlayer, effectSource:$cardID);
       break;
     case "bait":
-      GiveAttackGoAgain();
-      AddCurrentTurnEffect("bait", $currentPlayer);
+      if (IsReactionPhase()) {
+        GiveAttackGoAgain();
+        CombatChainPowerModifier(0, 1);
+      }
       break;
     case "blood_follows_blade_yellow":
       if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword")) {

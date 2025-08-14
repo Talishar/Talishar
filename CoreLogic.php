@@ -1150,7 +1150,7 @@ function ChainLinkResolvedEffects()
 
 function ResolutionStepEffectTriggers()
 {
-  global $currentTurnEffects, $chainLinks, $combatChain, $turn;
+  global $currentTurnEffects, $chainLinks, $combatChain, $turn, $mainPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     switch ($currentEffect[0]) {
@@ -1161,6 +1161,11 @@ function ResolutionStepEffectTriggers()
         AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
         RemoveCurrentTurnEffect($i);
         break;
+      case "bait":
+        $uniqueID = explode("-", $currentTurnEffects[$i])[1];
+        $index = SearchAurasForUniqueID($uniqueID, $mainPlayer);
+        if ($index != -1) DestroyAura($mainPlayer, $index, skipClose:true);
+        RemoveCurrentTurnEffect($i);
       default:
         break;
     }

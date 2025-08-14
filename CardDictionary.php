@@ -1256,7 +1256,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   else if ($set == "ASR") return ASRAbilityType($cardID);
   else if ($set == "AGB") return AGBAbilityType($cardID, $from);
   else if ($set == "MPG") return MPGAbilityType($cardID, $from);
-  else if ($set == "SUP") return SUPAbilityType($cardID);
+  else if ($set == "SUP") return SUPAbilityType($cardID, $index, $from);
   else if ($set == "APS") return APSAbilityType($cardID);
   else if ($set == "ARR") return ARRAbilityType($cardID);
   else if ($set == "AAC") return AACAbilityType($cardID);
@@ -1312,7 +1312,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "deny_redemption_red" => "I,AA",
     "cogwerx_blunderbuss" => "I,AA",
 
-    "bait" => "AA,AR",
+    "bait" => "AR,AA",
     default => "",
   };
 }
@@ -1530,6 +1530,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       } else if ($canAttack) {
         $names[1] = "Attack";
       }
+      if ($names[1] == "-") return $names[0];
+      // elseif ($names[0] == "-") return $names[1];
       return implode(",", $names);
     default:
       return "";
@@ -1805,7 +1807,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID) && CanPlayInstant($phase)) return true;
+  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) return true;
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
@@ -2189,7 +2191,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
-  if (SearchAurasForCard("bait", $player) && $cardID != "bait") return true;
+  if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) return true;
   if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
   if (SearchCurrentTurnEffects("herald_of_judgment_yellow", $player) && $from == "BANISH") {
     $restriction = "herald_of_judgment_yellow";
@@ -4783,10 +4785,11 @@ function Is1H($cardID): bool|int
   return GeneratedIs1H($cardID);
 }
 
-function AbilityPlayableFromCombatChain($cardID): bool
+function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
 {
   global $currentPlayer, $mainPlayer;
   $isAttacking = $currentPlayer == $mainPlayer;
+  $auras = GetAuras($currentPlayer);
   return match ($cardID) {
     "exude_confidence_red" => $isAttacking,
     "shock_striker_red", "shock_striker_yellow", "shock_striker_blue", "firebreathing_red" => $isAttacking,
@@ -4797,6 +4800,7 @@ function AbilityPlayableFromCombatChain($cardID): bool
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $isAttacking,
     "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking,
     "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
+    "bait" => $index != "-" && IsReactionPhase() && $auras[$index + 5] > 0, //makes it so you can't activate the AR layers it puts onto the combat chain
     default => false
   };
 }

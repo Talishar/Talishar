@@ -842,7 +842,7 @@ function OUTAbilityCost($cardID)
     $numReactions = 0;
     for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
     {
-      if($combatChain[$i+1] == $mainPlayer && (CardType($combatChain[$i]) == "AR" || GetAbilityType($combatChain[$i]) == "AR")) ++$numReactions;
+      if($combatChain[$i+1] == $mainPlayer && (CardType($combatChain[$i]) == "AR" || GetAbilityType($combatChain[$i], $i, "CC") == "AR")) ++$numReactions;
     }
     for($i=0; $i<count($layers); $i+=LayerPieces())
     {
