@@ -88,7 +88,9 @@ function AJVEffectPowerModifier($cardID): int
 }
 
 function FrostbiteExposed($otherPlayer, $player, $may=false) {
-  if(CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer) <= 0) {
+  $renouceInd = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $player);
+  $rippleAways = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
+  if($rippleAways <= 0 && $renouceInd == -1) {
     AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("frostbite", "frostbite"), 1);
     AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
