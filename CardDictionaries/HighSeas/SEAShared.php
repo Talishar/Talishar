@@ -659,12 +659,14 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cog_in_the_machine_red":
       PutItemIntoPlayForPlayer("golden_cog", $currentPlayer, number:2, isToken: true);
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog you control (or pass)");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
-      AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
-      AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK", 1);
-      AdddecisionQueue("ELSE", $currentPlayer, "-");
-      AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD", 1);
+      if ($inds != "") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog you control (or pass)");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+        AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK", 1);
+        AdddecisionQueue("ELSE", $currentPlayer, "-");
+        AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD", 1);
+      }
       break;
     case "draw_back_the_hammer_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
