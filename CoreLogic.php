@@ -19,7 +19,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     }
     if ($chainCard->PlayerID() == $mainPlayer) {
       if ($i == 0 && $attackType != "W") $power = $combatChainState[$CCS_LinkBasePower];
-      else $power = PowerValue($chainCard->ID(), $mainPlayer, "CC");
+      else $power = $canGainAttack ? PowerValue($chainCard->ID(), $mainPlayer, "CC") : PowerValue($chainCard->ID(), $mainPlayer, "CC", base: true);
       if ($canGainAttack || $i == 0 || $power < 0) {
         array_push($powerModifiers, $chainCard->ID());
         array_push($powerModifiers, $power);
