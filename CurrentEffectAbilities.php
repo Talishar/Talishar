@@ -1424,7 +1424,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
   return $damage;
 }
 
-function CurrentEffectAttackAbility()
+function CurrentEffectAttackAbility($attackIndex=-1)
 {
   global $currentTurnEffects, $CombatChain, $mainPlayer;
   global $CS_PlayIndex, $defPlayer;
@@ -1436,7 +1436,7 @@ function CurrentEffectAttackAbility()
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "oath_of_steel_red":
-          if ($attackType == "W") {
+          if ($attackType == "W" && $attackIndex == 0) { //don't trigger when cards are blocking
             $character = &GetPlayerCharacter($mainPlayer);
             ++$character[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
           }
