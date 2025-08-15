@@ -1634,7 +1634,8 @@ function CombatChainClosedTriggers()
   global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost, $currentTurnEffects;
   for ($i = 0; $i < count($chainLinks); ++$i) {
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-      if ($chainLinks[$i][$j + 1] != $mainPlayer || $chainLinks[$i][$j + 2] == 0) continue;
+      $cardType = CardType($chainLinks[$i][$j]);
+      if ($chainLinks[$i][$j + 1] != $mainPlayer || ($chainLinks[$i][$j + 2] == 0 && !IsStaticType($cardType))) continue;
       switch ($chainLinks[$i][$j]) {
         case "hell_hammer":
           $index = FindCharacterIndex($mainPlayer, "hell_hammer");
