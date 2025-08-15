@@ -3723,7 +3723,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($isSpectraTarget && $target == "") { //if only spectra was targeted
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       if(CardType($cardID) != "T" && CardType($cardID) != "Macro" && $from != "PLAY") { //Don't need to add to anywhere if it's a token
-        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
+        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, "LAYER");
       }
     }
     if (!$skipDRResolution && $target != "") {
