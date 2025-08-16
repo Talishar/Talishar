@@ -5443,6 +5443,7 @@ function HasEffectActive($cardID) {
 function BlindCard($cardID, $unblind=false) {
   $blindMarker = "BLIND";
   $c = strlen($blindMarker) + 1;
+  if ($cardID === null) return "";
   if ($unblind) {
     if (str_contains($cardID, $blindMarker)) return substr($cardID, 0, -$c);
     else return $cardID;

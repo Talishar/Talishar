@@ -1983,6 +1983,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SETDQVAR":
       if (!isset($dqVars[0])) $dqVars[0] = "-";
+      if (is_array($lastResult)) {
+        WriteLog("Something went wrong (with SETDQVAR), please submit a bug report", highlight:true);
+      }
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
     case "MZSETDQVAR":
@@ -2648,8 +2651,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         --$auras[$index + 2];
         WriteLog("Player " . $playerID . " removed a counter from " . CardLink($auras[$index], $auras[$index]) . ".");
       } else {
-        DestroyAuraUniqueID($player, $auras[$index + 6]);
         WriteLog("Player " . $playerID . " did not remove a counter and " . CardLink($auras[$index], $auras[$index]) . " was destroyed");
+        DestroyAuraUniqueID($player, $auras[$index + 6]); 
       }
       return "";
     case "REMOVECOUNTERITEMORDESTROY":

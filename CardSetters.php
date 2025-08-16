@@ -452,11 +452,17 @@ function BanishFromSpecificSoul(&$soul, $player, $index = 0)
 
 function RemoveSoul($player, $index)
 {
-  $soul = &GetSoul($player);
-  $cardID = $soul[$index];
-  unset($soul[$index]);
-  $soul = array_values($soul);
-  return $cardID;
+  if ($index != -1) {
+    $soul = &GetSoul($player);
+    $cardID = $soul[$index];
+    unset($soul[$index]);
+    $soul = array_values($soul);
+    return $cardID;
+  }
+  else {
+    WriteLog("Something went wrong when trying to remove a card from soul, please submit a bug report.", highlight: true);
+    return "";
+  }
 }
 
 function EffectArcaneBonus($source)
