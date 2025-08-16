@@ -543,8 +543,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for ($i = 0; $i < count($lastResult); ++$i) {
         if ($cards != "") $cards .= ",";
-        $cards .= $hand[$lastResult[$i]];
-        unset($hand[$lastResult[$i]]);
+        if (is_numeric($lastResult[$i])) {
+          $cards .= $hand[$lastResult[$i]];
+          unset($hand[$lastResult[$i]]);
+        }
       }
       $hand = array_values($hand);
       return $cards;
