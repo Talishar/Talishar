@@ -767,7 +767,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "RAISEANARMY":
       if($dqVars[0] > 0) {
         --$dqVars[0];
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+        $goldIndices = GetGoldIndices($player);
+        AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "RAISEANARMY", 1);
@@ -776,7 +777,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "GOLDENANVIL":
       if($dqVars[0] > 0) {
         --$dqVars[0];
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+        $goldIndices = GetGoldIndices($player);
+        AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "GOLDENANVIL", 1);

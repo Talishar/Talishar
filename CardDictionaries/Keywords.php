@@ -259,6 +259,7 @@
     $otherPlayer = $playerID == 1 ? 2 : 1;
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
+    $goldIndices = GetGoldIndices($playerID);
     if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
@@ -272,10 +273,10 @@
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
       PrependDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
-      if(SearchCharacterAlive($playerID, "aurum_aegis")) {
+      if(str_contains($goldIndices, "MYCHAR")) {
         PrependDecisionQueue("MZDESTROY", $playerID, "-", 1);
         PrependDecisionQueue("MAYCHOOSEMULTIZONE", $playerID, "<-", 1);
-        PrependDecisionQueue("MULTIZONEINDICES", $playerID, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+        PrependDecisionQueue("PASSPARAMETER", $playerID, $goldIndices, 1);
       } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "gold-1", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
       PrependDecisionQueue("NOPASS", $playerID, "-", 1);

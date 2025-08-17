@@ -5461,3 +5461,15 @@ function IsGrantedBuff($cardID) {
     default => false,
   };
 }
+
+// equipment that count as gold
+function IsGold($cardID) {
+  return match ($cardID) {
+    "aurum_aegis" => true,
+    "golden_galea" => true,
+    "golden_heart_plate" => true,
+    "golden_gauntlets" => true,
+    "golden_gait" => true,
+    default => false
+  };
+}

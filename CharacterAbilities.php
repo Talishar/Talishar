@@ -885,7 +885,7 @@ function StealEquipment($srcPlayer, $index, $destPlayer, $trueSteal = false)
   }
   $destChar = array_values($destChar);
   AddEquipTrigger($cardID, $destPlayer);
-  if ($cardID == "aurum_aegis" && $trueSteal) {
+  if (IsGold($cardID) && $trueSteal) {
     IncrementClassState($destPlayer, piece: $CS_NumGoldCreated);
   }
   RemoveCharacter($srcPlayer, $index);
@@ -1248,12 +1248,13 @@ function EquipPayAdditionalCosts($cardIndex)
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;
     case "good_time_chapeau":
-      $index = GetItemIndex("gold", $currentPlayer);
-      if ($index != -1) DestroyItemForPlayer($currentPlayer, $index);
-      else {
-        $charIndex = FindCharacterIndex($currentPlayer, "aurum_aegis");
-        if ($charIndex != -1) DestroyCharacter($currentPlayer, $charIndex);
-      }
+      $goldIndices = GetGoldIndices($currentPlayer);
+      if (str_contains($goldIndices, "MYCHAR")) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a gold to destroy", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
+      } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
       break;
     case "hood_of_red_sand":
       DestroyCharacter($currentPlayer, $cardIndex);
@@ -1286,9 +1287,13 @@ function EquipPayAdditionalCosts($cardIndex)
     case "marlynn_treasure_hunter":
     case "marlynn":
     case "scurv_stowaway":
-      //!Bugged - Currently doesn't take in consideration non-token gold. e.g. Aurum Aegis
-      $goldIndex = GetItemIndex("gold", $currentPlayer);
-      DestroyItemForPlayer($currentPlayer, $goldIndex);
+      $goldIndices = GetGoldIndices($currentPlayer);
+      if (str_contains($goldIndices, "MYCHAR")) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a gold to destroy", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
+      } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "compass_of_sunken_depths":

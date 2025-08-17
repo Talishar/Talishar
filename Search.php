@@ -1173,7 +1173,12 @@ function CountItem($cardID, $player, $NotTokens = true)
   for ($i = 0; $i < $count; $i += $pieces) {
     if ($items[$i] == $cardID) ++$total;
   }
-  if ($cardID == "gold" && SearchCharacterForCard($player, "aurum_aegis") && SearchCharacterActive($player, "aurum_aegis") && $NotTokens) ++$total;
+  if ($cardID == "gold" && $NotTokens) {
+    $char = GetPlayerCharacter($player);
+    for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+      if (IsGold($char[$i]) && $char[$i+1] > 1) ++$total;
+    }
+  }
   return $total;
 }
 
@@ -1186,7 +1191,12 @@ function CountItemByName($cardName, $player)
   for ($i = 0; $i < $count; $i += $pieces) {
     if (CardNameContains($items[$i], $cardName, $player)) ++$total;
   }
-  if ($cardName == "Gold" && SearchCharacterForCard($player, "aurum_aegis") && SearchCharacterActive($player, "aurum_aegis")) ++$total;
+  if ($cardName == "Gold") {
+    $char = GetPlayerCharacter($player);
+    for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+      if (IsGold($char[$i]) && $char[$i + 1] > 1) ++$total;
+    }
+  }
   return $total;
 }
 
@@ -1862,4 +1872,17 @@ function SearchLayersForNAA() {
     }
     $rv = (count($found) == 0) ? "" : implode(",", $found);
     return $rv;
+}
+
+function GetGoldIndices($player) {
+  $indices = [];
+  $items = GetItems($player);
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    if ($items[$i] == "gold") array_push($indices, "MYITEMS-$i");
+  }
+  $char = GetPlayerCharacter($player);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if (IsGold($char[$i]) && $char[$i+1] > 1) array_push($indices, "MYCHAR-$i");
+  }
+  return implode(",", $indices);
 }

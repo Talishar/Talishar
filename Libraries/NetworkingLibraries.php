@@ -2383,8 +2383,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         AddDecisionQueue("SEARCHCURRENTEFFECTPASS", $currentPlayer, "cash_in_yellow");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        if (SearchCharacterAlive($currentPlayer, "aurum_aegis")) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+        $goldIndices = GetGoldIndices($currentPlayer);
+        if (str_contains($goldIndices, "MYCHAR")) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices, 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else
@@ -2472,8 +2473,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      if (SearchCharacterAlive($currentPlayer, "aurum_aegis")) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+      $goldIndices = GetGoldIndices($currentPlayer);
+      if (str_contains($goldIndices, "MYCHAR")) {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices, 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
@@ -3159,12 +3161,19 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       }
       $numGold = CountItem("gold", $currentPlayer);
       if ($numGold > 0) {
+        $goldIndices = GetGoldIndices($currentPlayer);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "gold-");
-        AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
-        AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
-        AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
+        if (!str_contains($goldIndices, "MYCHAR")) {
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "gold-");
+          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-");
+          AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
+          AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
+        }
+        else {
+          AddDecisionQueue("FINDANDDESTROYGOLD", $currentPlayer, "-", 1);
+          AddDecisionQueue("INCDQVAR", $currentPlayer, "0");
+        }
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
@@ -3305,8 +3314,9 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if (CountItem("gold", $currentPlayer) > 0) {
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("gold", "gold"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        if (SearchCharacterAlive($currentPlayer, "aurum_aegis")) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=gold&MYCHAR:cardID=aurum_aegis", 1);
+        $goldIndices = GetGoldIndices($currentPlayer);
+        if (str_contains($goldIndices, "MYCHAR")) {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices, 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);

@@ -2254,10 +2254,12 @@ function RemoveCharacter($player, $index)
 {
   if ($index == -1) return "";
   $char = &GetPlayerCharacter($player);
+  $ret = $char[$index];
   for ($i = 0; $i < CharacterPieces(); ++$i) {
     unset($char[$index + $i]);
   }
   $char = array_values($char);
+  return $ret;
 }
 
 function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharactersSubcardIndex)

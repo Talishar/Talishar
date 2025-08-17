@@ -1817,9 +1817,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           --$itemsLeftToDestroy;
         }
       }
-      if ($itemsLeftToDestroy > 0) {
-        $charIndex = FindCharacterIndex($player, "aurum_aegis");
-        if ($charIndex != -1) DestroyCharacter($player, $charIndex);
+      return $lastResult;
+    case "GOLDINDICES":
+      return GetGoldIndices($player);
+    case "FINDANDDESTROYGOLD":
+      for ($i = 0; $i < $lastResult; ++$i) {
+        AddDecisionQueue("GOLDINDICES", $player, "-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "<-", 1);
       }
       return $lastResult;
     case "PLAYITEM":
