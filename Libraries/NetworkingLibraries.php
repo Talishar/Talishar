@@ -152,6 +152,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $deck = new Deck($playerID);
         $deck->AddBottom($buttonInput);
         $index = SearchHandForCard($playerID, $buttonInput);
+        if (str_contains($index, ",")) $index = intval(explode(",", $index)[0]);
         unset($hand[$index]);
         $hand = array_values($hand);
         ContinueDecisionQueue($buttonInput);
