@@ -88,7 +88,7 @@ function ItemModalities($cardID)
 
 function PayItemAbilityAdditionalCosts($cardID, $from)
 {
-  global $currentPlayer, $CS_PlayIndex, $combatChain;
+  global $currentPlayer, $CS_PlayIndex, $combatChain, $CS_AdditionalCosts;
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $items = &GetItems($currentPlayer);
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -183,6 +183,15 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "goldkiss_rum":
       Tap("MYCHAR-0", $currentPlayer);
       DestroyItemForPlayer($currentPlayer, $index);
+      break;
+    case "micro_processor_blue":
+      $items = GetItems($currentPlayer);
+      $modalities = $items[GetClassState($currentPlayer, $CS_PlayIndex)+8];
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }

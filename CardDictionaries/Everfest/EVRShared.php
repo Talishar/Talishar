@@ -291,8 +291,7 @@
         {
           $items = &GetItems($currentPlayer);
           if($items[GetClassState($currentPlayer, $CS_PlayIndex)+3] == 2) { $rv = "Gained an action point from Micro-Processor"; GainActionPoints(1); }
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
-          AddDecisionQueue("BUTTONINPUT", $currentPlayer, $items[GetClassState($currentPlayer, $CS_PlayIndex)+8]);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);
           AddDecisionQueue("MODAL", $currentPlayer, "MICROPROCESSOR,".GetClassState($currentPlayer, $CS_PlayIndex), 1);
         }
         return $rv;
