@@ -623,6 +623,7 @@ function CardCost($cardID, $from="-")
     case "outside_interference_blue":
     case "fearless_confrontation_blue":
     case "burn_bare":
+    case "light_up_the_leaves_red":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
     case "ripple_away_blue":
@@ -1294,7 +1295,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue", 
     "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue", 
     "photon_splicing_red", "photon_splicing_yellow", "photon_splicing_blue", 
-    "war_cry_of_themis_yellow", "burn_bare" => "I,A",
+    "war_cry_of_themis_yellow", "burn_bare", "light_up_the_leaves_red" => "I,A",
 
     "haunting_rendition_red", "mental_block_blue" => "B,I",
     "shelter_from_the_storm_red" => "I,DR",
@@ -1533,6 +1534,14 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if ($names[1] == "-") return $names[0];
       // elseif ($names[0] == "-") return $names[1];
       return implode(",", $names);
+    case "light_up_the_leaves_red":
+      $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
+      if(GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) $names .= ",Action";
+      elseif($combatChainState[$CCS_EclecticMag]) $names .= ",Action";
+      elseif($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) $names .= ",Action";
+      if($from != "HAND") $names = "-,Action";
+      return $names;
     default:
       return "";
   }
@@ -4800,7 +4809,7 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $isAttacking,
     "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking,
     "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
-    "bait" => $index != "-" && IsReactionPhase() && $auras[$index + 5] > 0, //makes it so you can't activate the AR layers it puts onto the combat chain
+    "bait" => $index != "-" && IsReactionPhase() && $currentPlayer == $mainPlayer && $auras[$index + 5] > 0, //makes it so you can't activate the AR layers it puts onto the combat chain
     default => false
   };
 }
