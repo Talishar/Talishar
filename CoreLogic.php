@@ -3302,7 +3302,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
       WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
       BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
-      return "";
+      // this replacement effect does NOT stop the draw event, there will still be triggers. 8.5.6c
     } 
     else {
       array_push($hand, $cardID);
