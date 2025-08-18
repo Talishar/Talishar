@@ -15,7 +15,7 @@ function IsWeaponAttack()
 {
   global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
-  if (TypeContains($combatChain[0], "W", $mainPlayer) || DelimStringContains(CardSubType($combatChain[0]), "Aura")) return true;
+  if (TypeContains($combatChain[0], "W", $mainPlayer) || (SubtypeContains($combatChain[0], "Aura") && IsWeapon($combatChain[0], "PLAY"))) return true;
   return false;
 }
 
