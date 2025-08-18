@@ -1607,6 +1607,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     case "deny_redemption_red":
     case "bam_bam_yellow":
     case "outside_interference_blue":
+    case "light_up_the_leaves_red":
       return $from == "HAND";
     case "under_the_trap_door_blue":
       return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
@@ -3301,6 +3302,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
       WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
       BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
+      return "";
     } 
     else {
       array_push($hand, $cardID);
