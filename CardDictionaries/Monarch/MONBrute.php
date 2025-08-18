@@ -86,9 +86,9 @@
         $i--;
       }
     }
+    if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
     $banishMod = ($modifier != "shadowrealm_horror_red" || $BanishedIncludes6 >= 3) ? $modifier : "-";
     foreach ($toBanish as $cardID) BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
-    if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
     return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;
   }
 
