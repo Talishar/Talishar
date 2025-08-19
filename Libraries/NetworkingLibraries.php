@@ -2312,7 +2312,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
         }
       }
     }
-    if (!SearchCurrentTurnEffects("amnesia_red", $currentPlayer)) {
+    if (!SearchCurrentTurnEffects("amnesia_red", $currentPlayer) && $from == "HAND") {
       if (FindNullTime(GamestateSanitize($names[0]))) $names[0] = "-";
       if (FindNullTime(GamestateSanitize($names[1]))) $names[1] = "-";
     }
