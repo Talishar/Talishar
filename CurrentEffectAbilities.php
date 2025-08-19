@@ -1407,6 +1407,46 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
           }
           $remove = true;
           break;
+        case "light_up_the_leaves_red":
+          if ($source == $currentTurnEffects[$i + 2]) {
+            if ($preventable && $type == "ARCANE") {
+              $sourceDamage = $damage;
+              $preventedDamage += $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $sourceDamage;
+              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
+              if (!IsStaticType(CardType($source))) $remove = true;
+            }
+          }
+          break;
+        default:
+          break;
+      }
+      if ($remove) RemoveCurrentTurnEffect($i);
+      //apply vambrace only once and only after the first instance of prevention
+      if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
+        $preventedDamage -= 1;
+        $vambraceAvailable = false;
+        $vambraceRemove = true;
+      }
+      $damage -= $preventedDamage;
+    }
+    else {
+      $preventedDamage = 0;
+      $effects = explode("-", $currentTurnEffects[$i]);
+      switch ($effects[0]) {
+        case "light_up_the_leaves_red": //applies to both players
+          if ($source == $currentTurnEffects[$i + 2]) {
+            if ($preventable && $type == "ARCANE") {
+              $sourceDamage = $damage;
+              $preventedDamage += $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $sourceDamage;
+              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
+              if (!IsStaticType(CardType($source))) $remove = true;
+            }
+          }
+          break;
         default:
           break;
       }

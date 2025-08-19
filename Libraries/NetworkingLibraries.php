@@ -2625,9 +2625,25 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+
       AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      // discarding an extra earth card
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Earth Card to discard", 1);
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDTALENT,EARTH,NOPASS");
+      AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any earth cards in hand to discard!", 1);
+      AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
+      // targetting a source
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      
       AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
       break;
     default:

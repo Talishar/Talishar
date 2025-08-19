@@ -99,6 +99,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDPITCH":
           $rv = SearchHand($player, "", "", -1, -1, "", "", false, false, $subparam);
           break;
+        case "HANDTALENT":
+          $rv = SearchHand($player, talent:$subparam);
+          break;
         case "HANDCLASS":
           $rv = SearchHand($player, class:$subparam);
           break;

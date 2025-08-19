@@ -2,6 +2,7 @@
 function GeneratedCardType($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "A",
 "10000_year_reunion_red" => "A",
 "a_drop_in_the_ocean_blue" => "I",
 "absorb_in_aether_red" => "DR",
@@ -2401,6 +2402,7 @@ return match($cardID) {
 "agile_windup_yellow" => 6,
 "agile_windup_blue" => 5,
 "alluring_inducement_yellow" => 2,
+"alpha_instinct_blue" => 6,
 "alpha_rampage_red" => 9,
 "already_dead_red" => 6,
 "amnesia_red" => 6,
@@ -3312,6 +3314,7 @@ return match($cardID) {
 "mechanical_strength_red" => 5,
 "mechanical_strength_yellow" => 4,
 "mechanical_strength_blue" => 3,
+"meet_madness_red" => 3,
 "meganetic_protocol_blue" => 5,
 "meganetic_shockwave_blue" => 4,
 "merciless_battleaxe" => 3,
@@ -4181,6 +4184,7 @@ return match($cardID) {
 "air_of_a_comeback" => -1,
 "alluring_inducement_yellow" => 2,
 "alluvion_constellas" => 0,
+"alpha_instinct_blue" => 0,
 "amethyst_amulet_blue" => -1,
 "amethyst_tiara" => 1,
 "amulet_of_assertiveness_yellow" => -1,
@@ -6405,6 +6409,7 @@ default => 3
 function GeneratedCardName($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "Light Up the Leaves",
 "10000_year_reunion_red" => "10,000 Year Reunion",
 "a_drop_in_the_ocean_blue" => "A Drop in the Ocean",
 "absorb_in_aether_red" => "Absorb in Aether",
@@ -6463,6 +6468,7 @@ return match($cardID) {
 "air_of_a_comeback" => "Air of a Comeback",
 "alluring_inducement_yellow" => "Alluring Inducement",
 "alluvion_constellas" => "Alluvion Constellas",
+"alpha_instinct_blue" => "Alpha Instinct",
 "alpha_rampage_red" => "Alpha Rampage",
 "already_dead_red" => "Already Dead",
 "amethyst_amulet_blue" => "Amethyst Amulet",
@@ -8547,6 +8553,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "Mechanical Strength",
 "mechanical_strength_blue" => "Mechanical Strength",
 "medkit_blue" => "Medkit",
+"meet_madness_red" => "Meet Madness",
 "meganetic_lockwave_blue" => "Meganetic Lockwave",
 "meganetic_protocol_blue" => "Meganetic Protocol",
 "meganetic_shockwave_blue" => "Meganetic Shockwave",
@@ -10503,6 +10510,7 @@ return match($cardID) {
 "air_of_a_comeback" => 0,
 "alluring_inducement_yellow" => 2,
 "alluvion_constellas" => 0,
+"alpha_instinct_blue" => 3,
 "amethyst_amulet_blue" => 3,
 "amethyst_tiara" => 0,
 "amplify_the_arknight_yellow" => 2,
@@ -13360,6 +13368,7 @@ default => 1
 function GeneratedCardCost($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"light_up_the_leaves_red" => 3,
 "10000_year_reunion_red" => 8,
 "absorb_in_aether_red" => 1,
 "absorb_in_aether_yellow" => 1,
@@ -13410,6 +13419,7 @@ return match($cardID) {
 "air_of_a_comeback" => -1,
 "alluring_inducement_yellow" => 2,
 "alluvion_constellas" => -1,
+"alpha_instinct_blue" => 3,
 "alpha_rampage_red" => 3,
 "already_dead_red" => 2,
 "amethyst_tiara" => -1,
@@ -16901,6 +16911,7 @@ return match($cardID) {
 "master_cog_yellow" => "Gem",
 "maxx_nitro" => "Young",
 "medkit_blue" => "Item",
+"meet_madness_red" => "Chaos",
 "melody_sing_along" => "Young",
 "mental_block_blue" => "Block",
 "merciful_retribution_yellow" => "Aura",
@@ -17578,6 +17589,7 @@ default => 20
 function GeneratedRarity($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "M",
 "10000_year_reunion_red" => "M",
 "absorb_in_aether_red" => "R",
 "absorb_in_aether_yellow" => "R",
@@ -17605,6 +17617,7 @@ return match($cardID) {
 "air_of_a_comeback" => "M",
 "alluring_inducement_yellow" => "M",
 "alluvion_constellas" => "L",
+"alpha_instinct_blue" => "M",
 "alpha_rampage_red" => "M",
 "already_dead_red" => "M",
 "amethyst_amulet_blue" => "M",
@@ -18723,6 +18736,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "R",
 "mechanical_strength_blue" => "R",
 "medkit_blue" => "R",
+"meet_madness_red" => "M",
 "meganetic_lockwave_blue" => "M",
 "meganetic_protocol_blue" => "M",
 "meganetic_shockwave_blue" => "M",
@@ -19716,6 +19730,7 @@ default => false
 function GeneratedCardClass($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "WIZARD",
 "10000_year_reunion_red" => "ILLUSIONIST",
 "absorb_in_aether_red" => "WIZARD",
 "absorb_in_aether_yellow" => "WIZARD",
@@ -19771,6 +19786,7 @@ return match($cardID) {
 "agility_stance_yellow" => "WARRIOR",
 "alluring_inducement_yellow" => "SHAPESHIFTER",
 "alluvion_constellas" => "WIZARD",
+"alpha_instinct_blue" => "BRUTE",
 "alpha_rampage_red" => "BRUTE",
 "already_dead_red" => "ASSASSIN",
 "amethyst_amulet_blue" => "GENERIC",
@@ -21538,6 +21554,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "MECHANOLOGIST",
 "mechanical_strength_blue" => "MECHANOLOGIST",
 "medkit_blue" => "MECHANOLOGIST",
+"meet_madness_red" => "ASSASSIN",
 "meganetic_lockwave_blue" => "MECHANOLOGIST",
 "meganetic_protocol_blue" => "MECHANOLOGIST",
 "meganetic_shockwave_blue" => "MECHANOLOGIST",
@@ -23261,6 +23278,7 @@ default => "NONE"
 function GeneratedCardTalent($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "EARTH",
 "a_drop_in_the_ocean_blue" => "MYSTIC",
 "aegis_archangel_of_protection" => "LIGHT",
 "aether_ashwing" => "DRACONIC",
@@ -24472,6 +24490,7 @@ default => "NONE"
 function GeneratedIsSpecialization($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -24530,6 +24549,7 @@ return match($cardID) {
 "air_of_a_comeback" => "false",
 "alluring_inducement_yellow" => "true",
 "alluvion_constellas" => "false",
+"alpha_instinct_blue" => "false",
 "alpha_rampage_red" => "true",
 "already_dead_red" => "false",
 "amethyst_amulet_blue" => "false",
@@ -26614,6 +26634,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "false",
 "mechanical_strength_blue" => "false",
 "medkit_blue" => "false",
+"meet_madness_red" => "false",
 "meganetic_lockwave_blue" => "false",
 "meganetic_protocol_blue" => "false",
 "meganetic_shockwave_blue" => "false",
@@ -28527,6 +28548,7 @@ default => ""
 function GeneratedIsLegendary($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "true",
 "absorb_in_aether_red" => "false",
@@ -28585,6 +28607,7 @@ return match($cardID) {
 "air_of_a_comeback" => "false",
 "alluring_inducement_yellow" => "false",
 "alluvion_constellas" => "false",
+"alpha_instinct_blue" => "false",
 "alpha_rampage_red" => "false",
 "already_dead_red" => "false",
 "amethyst_amulet_blue" => "true",
@@ -30669,6 +30692,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "false",
 "mechanical_strength_blue" => "false",
 "medkit_blue" => "false",
+"meet_madness_red" => "false",
 "meganetic_lockwave_blue" => "false",
 "meganetic_protocol_blue" => "false",
 "meganetic_shockwave_blue" => "false",
@@ -32582,6 +32606,7 @@ default => ""
 function GeneratedHasBladeBreak($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -32640,6 +32665,7 @@ return match($cardID) {
 "air_of_a_comeback" => "false",
 "alluring_inducement_yellow" => "false",
 "alluvion_constellas" => "false",
+"alpha_instinct_blue" => "false",
 "alpha_rampage_red" => "false",
 "already_dead_red" => "false",
 "amethyst_amulet_blue" => "false",
@@ -34724,6 +34750,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "false",
 "mechanical_strength_blue" => "false",
 "medkit_blue" => "false",
+"meet_madness_red" => "false",
 "meganetic_lockwave_blue" => "false",
 "meganetic_protocol_blue" => "false",
 "meganetic_shockwave_blue" => "false",
@@ -36637,6 +36664,7 @@ default => ""
 function GeneratedHasBattleworn($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -36695,6 +36723,7 @@ return match($cardID) {
 "air_of_a_comeback" => "false",
 "alluring_inducement_yellow" => "false",
 "alluvion_constellas" => "false",
+"alpha_instinct_blue" => "false",
 "alpha_rampage_red" => "false",
 "already_dead_red" => "false",
 "amethyst_amulet_blue" => "false",
@@ -38779,6 +38808,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "false",
 "mechanical_strength_blue" => "false",
 "medkit_blue" => "false",
+"meet_madness_red" => "false",
 "meganetic_lockwave_blue" => "false",
 "meganetic_protocol_blue" => "false",
 "meganetic_shockwave_blue" => "false",
@@ -40692,6 +40722,7 @@ default => ""
 function GeneratedHasGuardwell($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -40750,6 +40781,7 @@ return match($cardID) {
 "air_of_a_comeback" => "false",
 "alluring_inducement_yellow" => "false",
 "alluvion_constellas" => "false",
+"alpha_instinct_blue" => "false",
 "alpha_rampage_red" => "false",
 "already_dead_red" => "false",
 "amethyst_amulet_blue" => "false",
@@ -42834,6 +42866,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "false",
 "mechanical_strength_blue" => "false",
 "medkit_blue" => "false",
+"meet_madness_red" => "false",
 "meganetic_lockwave_blue" => "false",
 "meganetic_protocol_blue" => "false",
 "meganetic_shockwave_blue" => "false",
@@ -44747,6 +44780,7 @@ default => ""
 function GeneratedHasTemper($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -44805,6 +44839,7 @@ return match($cardID) {
 "air_of_a_comeback" => "false",
 "alluring_inducement_yellow" => "false",
 "alluvion_constellas" => "false",
+"alpha_instinct_blue" => "false",
 "alpha_rampage_red" => "false",
 "already_dead_red" => "false",
 "amethyst_amulet_blue" => "false",
@@ -46889,6 +46924,7 @@ return match($cardID) {
 "mechanical_strength_yellow" => "false",
 "mechanical_strength_blue" => "false",
 "medkit_blue" => "false",
+"meet_madness_red" => "false",
 "meganetic_lockwave_blue" => "false",
 "meganetic_protocol_blue" => "false",
 "meganetic_shockwave_blue" => "false",
@@ -48802,6 +48838,7 @@ default => ""
 function GeneratedSetID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"light_up_the_leaves_red" => "SUP264",
 "10000_year_reunion_red" => "MST131",
 "a_drop_in_the_ocean_blue" => "MST095",
 "absorb_in_aether_red" => "ARC123",
@@ -52833,6 +52870,7 @@ default => ""
 function GeneratedSetIDtoCardID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"SUP264" => "light_up_the_leaves_red",
 "MST131" => "10000_year_reunion_red",
 "MST095" => "a_drop_in_the_ocean_blue",
 "ARC123" => "absorb_in_aether_red",
@@ -52891,6 +52929,7 @@ return match($cardID) {
 "SMP007" => "air_of_a_comeback",
 "DTD215" => "alluring_inducement_yellow",
 "UPR166" => "alluvion_constellas",
+"" => "yorick_weaver_of_tales",
 "WTR006" => "alpha_rampage_red",
 "EVO236" => "already_dead_red",
 "SEA189" => "amethyst_amulet_blue",
@@ -53074,7 +53113,6 @@ return match($cardID) {
 "SEA152" => "battalion_barque_red",
 "SEA153" => "battalion_barque_yellow",
 "SEA154" => "battalion_barque_blue",
-"" => "yorick_weaver_of_tales",
 "HVY140" => "battered_not_broken_red",
 "EVR088" => "battering_bolt_red",
 "MON036" => "battlefield_blitz_red",

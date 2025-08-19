@@ -209,6 +209,34 @@ function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-
             RemoveCurrentTurnEffect($i);
           }
           break;
+        case "light_up_the_leaves_red":
+          if ($source == $currentTurnEffects[$i + 2]) {
+            if ($canBePrevented && $type == "ARCANE") {
+              $sourceDamage = $damage;
+              $preventedDamage += $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $sourceDamage;
+              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
+              if (!IsStaticType(CardType($source))) $remove = true;
+            }
+          }
+        default:
+          break;
+      }
+    }
+    elseif ($preventedDamage < $damage) {
+      switch ($currentTurnEffects[$i]) {
+        case "light_up_the_leaves_red":
+          if ($source == $currentTurnEffects[$i + 2]) {
+            if ($canBePrevented && $type == "ARCANE") {
+              $sourceDamage = $damage;
+              $preventedDamage += $currentTurnEffects[$i + 3];
+              $currentTurnEffects[$i + 3] -= $sourceDamage;
+              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
+              if (!IsStaticType(CardType($source))) $remove = true;
+            }
+          }
         default:
           break;
       }

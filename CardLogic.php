@@ -175,6 +175,8 @@ function CurrentTurnEffectUses($cardID)
       return 3;
     case "give_no_quarter_blue":
       return 2;
+    case "light_up_the_leaves_red":
+      return 6;
     default:
       return 1;
   }
@@ -1945,7 +1947,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $mainPlayer);
       break;
     case "light_up_the_leaves_red":
-      WriteLog("HERE: $target");
+      AddCurrentTurnEffect($parameter, $player, uniqueID:$target);
       break;
     default:
       break;

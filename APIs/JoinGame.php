@@ -659,6 +659,7 @@ function isUnimplemented($cardID) {
         "dig_in_red", "dig_in_yellow", "dig_in_blue" => false,
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
+        "light_up_the_leaves_red" => false,
         default => true
       };
     case "APS":
