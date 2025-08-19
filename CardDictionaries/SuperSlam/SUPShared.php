@@ -284,6 +284,10 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       else WriteLog("A previous chain link was targetted for no effect");
+      break;
+    case "light_up_the_leaves_red":
+      DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
+      break;
     default:
       break;
   }

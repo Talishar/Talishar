@@ -1986,12 +1986,12 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     }
   }
 
+  if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
   if ($goesWhereEffect != -1) return $goesWhereEffect;
   if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   $type = CardType($cardID);
-  if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   if (DelimStringContains($type, "W")) return "-";
   if (DelimStringContains($subtype, "Invocation") || DelimStringContains($subtype, "Ash") || $cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441" || $cardID == "teklovossen_the_mechropotent") return "-";
   if (DelimStringContains($subtype, "Construct")) {
@@ -2103,7 +2103,7 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($effectID) {
         case "blossoming_spellblade_red":
-          if ($from == "BANISH" && SearchCurrentTurnEffectsForUniqueID($cardID) != -1) {
+          if (($from == "BANISH" || $from == "MELD") && SearchCurrentTurnEffectsForUniqueID($cardID) != -1) {
             RemoveCurrentTurnEffect($i);
             return "BANISH";
           }

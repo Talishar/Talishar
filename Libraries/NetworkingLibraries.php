@@ -2604,6 +2604,32 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
+    case "light_up_the_leaves_red":
+      $names = GetAbilityNames($cardID, $index, $from);
+      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+      } elseif ($names != "" && $from == "HAND" && $names != "-,Action"){
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
+        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+      } else{
+        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
+      }
+      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Action", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+      $targetType = 2;
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("ELSE", $currentPlayer, "-");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
+      break;
     default:
       break;
   }

@@ -1944,6 +1944,9 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "fearless_confrontation_blue":
       AddCurrentTurnEffect($parameter, $mainPlayer);
       break;
+    case "light_up_the_leaves_red":
+      WriteLog("HERE: $target");
+      break;
     default:
       break;
   }
@@ -4712,5 +4715,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       break;
   }
   ResolveGoAgain($parameter, $player, "MELD", additionalCosts: $additionalCosts);
-  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere("GY", $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
+  $goesWhere = GoesWhereEffectsModifier($parameter, "MELD", $player);
+  $goesWhere = $goesWhere == -1 ? "GY" : $goesWhere;
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere($goesWhere, $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }

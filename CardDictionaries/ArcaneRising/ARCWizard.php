@@ -432,6 +432,7 @@ function PlayRequiresTarget($cardID, $from)
     case "aether_arc_blue":
       return 1;
     case "burn_bare":
+    case "light_up_the_leaves_red":
       return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1;
     default:
       return -1;
@@ -660,7 +661,7 @@ function ArcaneDamage($cardID): int
 {
   //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
   return match ($cardID) {
-    "burn_bare" => 6,
+    "burn_bare", "light_up_the_leaves_red" => 6,
     "voltic_bolt_red", "timekeepers_whim_red", "freezing_point_red", "ice_bolt_red", "succumb_to_winter_red", "aether_icevein_red", "swell_tidings_red" => 5,
     "aether_spindle_red", "scalding_rain_red", "voltic_bolt_yellow", "rousing_aether_red", "emeritus_scolding_red", "aether_wildfire_red", "timekeepers_whim_yellow", "dampen_red", "ice_bolt_yellow", "aether_hail_red", "polar_cap_red",
     "succumb_to_winter_yellow", "aether_icevein_yellow", "aether_quickening_red", "eternal_inferno_red", "chorus_of_the_amphitheater_red", "photon_splicing_red" => 4,
@@ -817,6 +818,7 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "regrowth__shock_blue":
     case "burn_bare":
     case "comet_storm__shock_red":
+    case "light_up_the_leaves_red":
       return true;
     case "vaporize__shock_yellow":
     case "burn_up__shock_red":
