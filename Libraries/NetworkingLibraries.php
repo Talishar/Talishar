@@ -1269,6 +1269,7 @@ function FinalizeChainLink($chainClosed = false)
       ++$mainClassState[$CS_AttacksWithWeapon];
       if (CardSubtype($combatChain[0]) == "Sword") ++$mainClassState[$CS_NumSwordAttacks];
     }
+    elseif (IsWeaponAttack()) ++$mainClassState[$CS_AttacksWithWeapon];
     if (CardName($combatChain[0]) == "Spectral Shield") ++$mainClassState[$CS_NumSpectralShieldAttacks];
     SetClassState($mainPlayer, $CS_LastAttack, $combatChain[0]);
   }

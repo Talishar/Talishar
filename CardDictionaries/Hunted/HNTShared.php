@@ -187,7 +187,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "arakni_funnel_web" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "fealty" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
-  if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return DelimStringContains(CardType($attackID), "W");
+  if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return IsWeaponAttack();
   if (($cardID == "knife_through_butter_red" || $cardID == "knife_through_butter_yellow" || $cardID == "knife_through_butter_blue") && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
   if (($cardID == "point_of_engagement_red" || $cardID == "point_of_engagement_yellow" || $cardID == "point_of_engagement_blue") && count($dashArr) > 1) {
     switch ($dashArr[1]) {
