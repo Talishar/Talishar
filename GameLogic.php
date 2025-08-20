@@ -1994,8 +1994,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETDQVAR":
       if (!isset($dqVars[0])) $dqVars[0] = "-";
       if (is_array($lastResult)) {
-        if (count($lastResult) == 1) $lastResult = $lastResult[0];
-        else WriteLog("Something went wrong (with SETDQVAR), please submit a bug report", highlight:true);
+        $lastResult = implode(",", $lastResult);
       }
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
