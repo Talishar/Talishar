@@ -100,7 +100,7 @@ class Deck {
     $valCounts = array_count_values($validation);
     $valid = true;
     foreach($valCounts as $key => $value) {
-      if ($value >= 4) {
+      if ($value >= 4 && $key != "copper_cog_blue") {
         WriteLog("A card may have been duplicated! Please report a bug, then post the id on the Talishar discord so I can know if opting was the cause", highlight: true);
         $valid = false;
       }
