@@ -237,7 +237,8 @@ function SetID($cardID)
     "valda_seismic_impact" => "HER135",
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
-    "meet_madness_red" => "AAC014" //temporary
+    "meet_madness_red" => "AAC014", //temporary
+    "UPR551" => "UPR551", //ghostly touch
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -273,6 +274,8 @@ function CardSubType($cardID, $uniqueID = -1)
     case "UPR440":
     case "UPR441": //resolved sand cover
       return "Ash";
+    case "UPR551":
+      return "Ally";
     case "kiss_of_death_red":
       return "Dagger,Attack";
     case "polly_cranka":
