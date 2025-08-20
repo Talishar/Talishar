@@ -2638,10 +2638,10 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
       // targetting a source
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Light up the Leaves");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Light up the Leaves", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
+      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
 
       AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
