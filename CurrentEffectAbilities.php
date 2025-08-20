@@ -2438,10 +2438,10 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
       $effectID = $effectArr[0];
       switch ($effectID) {
         case "chains_of_eminence_red":
-          if (GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "chains_of_eminence_red";
+          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "chains_of_eminence_red";
           break;
         case "censor_red":
-          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(CardName($cardID)) == $effectArr[1]) $restrictedBy = "censor_red";
+          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "censor_red";
           break;
         case "WarmongersWar":
           // warmongers processing for meld cards handled in AddPrePitchDecisionQueue
