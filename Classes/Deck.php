@@ -96,6 +96,15 @@ class Deck {
 
   function Opt($topCardID, $bottomCardID, $from="GY")
   {
+    $validation = array_merge($topCardID, array_merge($this->deck, $bottomCardID));
+    $valCounts = array_count_values($validation);
+    $valid = true;
+    foreach($valCounts as $key => $value) {
+      if ($value >= 4) {
+        WriteLog("A card may have been duplicated! Please report a bug, then post the id on the Talishar discord so I can know if opting was the cause", highlight: true);
+        $valid = false;
+      }
+    }
     $this->deck = array_merge($topCardID, $this->deck);
     $this->deck = array_merge($this->deck, $bottomCardID);
     return true;
