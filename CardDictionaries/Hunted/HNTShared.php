@@ -721,6 +721,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "take_a_stab_blue":
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) AddEffectToCurrentAttack($cardID);
       break;
+    case "to_the_point_red":
+    case "to_the_point_yellow":
+    case "to_the_point_blue":
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
+        $amount = match($cardID) {
+          "to_the_point_red" => 3,
+          "to_the_point_yellow" => 2,
+          "to_the_point_blue" => 1,
+        };
+        if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) ++$amount;
+        $combatChain[5] += $amount;
+      }
+      break;
     case "quickdodge_flexors":
       if (CanBlockWithEquipment()) {
         $char = &GetPlayerCharacter($currentPlayer);

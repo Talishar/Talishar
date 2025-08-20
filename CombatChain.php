@@ -456,9 +456,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
       return $numDaggerHits > 0 ? 1 : 0;
-    case "to_the_point_red":
-      if (!SubtypeContains($attackID, "Dagger")) return 0;
-      return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 4 : 3;
     case "to_the_point_yellow":
       if (!SubtypeContains($attackID, "Dagger")) return 0;
       return CheckMarked($defPlayer) && IsHeroAttackTarget() ? 3 : 2;
