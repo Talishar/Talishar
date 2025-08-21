@@ -1223,6 +1223,11 @@ function EquipPayAdditionalCosts($cardIndex)
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;
+    case "scepter_of_pain":
+      SetArcaneTarget($currentPlayer, $cardID, 3);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "grimoire_of_the_haunt":
       BanishCardForPlayer("grimoire_of_the_haunt", $currentPlayer, "EQUIP", "NA");
       DestroyCharacter($currentPlayer, $cardIndex, true);

@@ -469,7 +469,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "scepter_of_pain":
-      DealArcane(1, 3, "ABILITY", $cardID);
+      DealArcane(1, 3, "ABILITY", $cardID, resolvedTarget:$target);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCEPTEROFPAIN");
       return "";
     case "bequest_the_vast_beyond_red":
