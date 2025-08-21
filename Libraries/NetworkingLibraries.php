@@ -3149,7 +3149,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "blood_on_her_hands_yellow":
-      $numCopper = CountItem("copper", $currentPlayer);
+      $numCopper = CountItemByName("Copper", $currentPlayer);
       if ($numCopper == 0) return "No copper.";
       if ($numCopper > 6) $numCopper = 6;
       $buttons = "";
