@@ -3551,7 +3551,9 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_zip_line_yellow":
     case "evo_zip_line_yellow_equip":
-      GiveAttackGoAgain();
+      AddDecisionQueue("YESNO", $player, "if you want to give the current attack go again");
+      AddDecisionQueue("NOPASS", $player, "-");
+      AddDecisionQueue("GIVEACTIONGOAGAIN", $player, "AA", 1);
       break;
     case "evo_recall_blue":
     case "evo_recall_blue_equip":
