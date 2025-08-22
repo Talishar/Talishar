@@ -146,13 +146,19 @@ switch ($mode) {
       $deck = new Deck($playerID);
       $cardListTop = $submission->cardListTop;
       $cardListBottom = $submission->cardListBottom;
-      $deck->Opt($cardListTop, $cardListBottom);
-
-      $topCount = count($cardListTop);
-      $bottomCount = count($cardListBottom);
-      $topMessage = $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
-      $bottomMessage = $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
-      WriteLog("Player " . $playerID . " has put " . $topMessage . " and " . $bottomMessage . " of their deck.");
+      $origDeckSize = GetClassState($playerID, $CS_CardsInDeckBeforeOpt);
+      $proposedDeckSize = $deck->RemainingCards() + count($cardListTop) + count($cardListBottom);
+      if ($origDeckSize == "-" || $origDeckSize == $proposedDeckSize) {
+        $deck->Opt($cardListTop, $cardListBottom);
+        $topCount = count($cardListTop);
+        $bottomCount = count($cardListBottom);
+        $topMessage = $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+        $bottomMessage = $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+        WriteLog("Player " . $playerID . " has put " . $topMessage . " and " . $bottomMessage . " of their deck.");
+      }
+      else {
+        WriteLog("Something funny happened while opting. I attempted to catch the behavior, but it may have caused issues. If you believe the opt resolved incorrectly, please submit a bug report.", highlight:true);
+      }
       ContinueDecisionQueue();
       break;
   case 100011: //Resume adventure (roguelike)
