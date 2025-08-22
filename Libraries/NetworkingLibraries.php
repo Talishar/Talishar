@@ -572,7 +572,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10000: //Undo
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
-      if (($format != 1 && $format != 3) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
+      if (($format != 1 && $format != 3 && $format != 13) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
         RevertGamestate();
         $skipWriteGamestate = true;
         WriteLog("Player " . $playerID . " undid their last action");

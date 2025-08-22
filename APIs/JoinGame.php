@@ -263,7 +263,7 @@ if ($decklink != "") {
         }
       }
       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
-      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
+      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc" || $format == "compllcc") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
         if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -590,7 +590,7 @@ function IsCardBanned($cardID, $format, $character)
 function isCardRestricted($cardID, $format, $count) {
 
   $restrictedCards = [
-    "llcc" => [
+    "llcc", "compllcc" => [
       "crippling_crush_red", "oaken_old_red", "awakening_blue", "warmongers_diplomacy_blue", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", 
       "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue",
       "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
@@ -689,6 +689,7 @@ function isUnimplemented($cardID) {
 function isBannedInFormat($cardID, $format) {
   if ($format == "compblitz") $format = "blitz";
   if ($format == "compcc") $format = "cc";
+  if ($format == "compllcc") $format = "llcc";
 
   $bannedCards = [
       "blitz" => [
