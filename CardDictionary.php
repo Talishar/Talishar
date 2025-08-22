@@ -2203,50 +2203,52 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
-  if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) return true;
-  if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
-  if (SearchCurrentTurnEffects("herald_of_judgment_yellow", $player) && $from == "BANISH") {
-    $restriction = "herald_of_judgment_yellow";
-    return true;
-  }
-  if (SearchCurrentTurnEffects("light_it_up_yellow", $player) && TypeContains($cardID, "E", $player)) {
-    $restriction = "light_it_up_yellow";
-    return true;
-  }
-  if (SearchCurrentTurnEffects("frost_lock_blue-3", $player) && CardCost($cardID, $from) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
-    $restriction = "frost_lock_blue";
-    return true;
-  }
-  if (SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $player)) {
-    if ($from != "PLAY" && $from != "EQUIP" && !DelimStringContains(GetAbilityNames($cardID, $from), "Ability", true)) {
-      $restriction = "imperial_edict_red";
+  if (!$resolutionCheck) { //when running a resoulution check, only check for targets
+    if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) return true;
+    if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
+    if (SearchCurrentTurnEffects("herald_of_judgment_yellow", $player) && $from == "BANISH") {
+      $restriction = "herald_of_judgment_yellow";
       return true;
     }
-  } //Can't be played
-  if (SearchCurrentTurnEffects("stasis_cell_blue-" . $cardID, $player)) {
-    $restriction = "stasis_cell_blue";
-    return true;
-  } //Can't be activated
-  if (CardType($cardID) == "A" 
-    && $from != "PLAY" 
-    && GetClassState($player, $CS_NumNonAttackCards) >= 1 
-    && (SearchItemsForCard("signal_jammer_blue", 1) != "" || SearchItemsForCard("signal_jammer_blue", 2) != "") 
-    && (GetAbilityTypes($cardID, from:$from) == "" || !DelimStringContains(GetAbilityTypes($cardID, from:$from), "I"))
-    ){
-    $restriction = "signal_jammer_blue";
-    return true;
-  }
-  if ($player != $mainPlayer && SearchAlliesActive($mainPlayer, "themai")) {
-    $restriction = "themai";
-    return true;
-  }
-  if (EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck) != "") {
-    $restriction = true;
-    return true;
-  }
-  if (EffectAttackRestricted($cardID, $type, $from, index:$index) != "" && $currentPlayer == $mainPlayer) {
-    $restriction = true;
-    return true;
+    if (SearchCurrentTurnEffects("light_it_up_yellow", $player) && TypeContains($cardID, "E", $player)) {
+      $restriction = "light_it_up_yellow";
+      return true;
+    }
+    if (SearchCurrentTurnEffects("frost_lock_blue-3", $player) && CardCost($cardID, $from) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
+      $restriction = "frost_lock_blue";
+      return true;
+    }
+    if (SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $player)) {
+      if ($from != "PLAY" && $from != "EQUIP" && !DelimStringContains(GetAbilityNames($cardID, $from), "Ability", true)) {
+        $restriction = "imperial_edict_red";
+        return true;
+      }
+    } //Can't be played
+    if (SearchCurrentTurnEffects("stasis_cell_blue-" . $cardID, $player)) {
+      $restriction = "stasis_cell_blue";
+      return true;
+    } //Can't be activated
+    if (CardType($cardID) == "A" 
+      && $from != "PLAY" 
+      && GetClassState($player, $CS_NumNonAttackCards) >= 1 
+      && (SearchItemsForCard("signal_jammer_blue", 1) != "" || SearchItemsForCard("signal_jammer_blue", 2) != "") 
+      && (GetAbilityTypes($cardID, from:$from) == "" || !DelimStringContains(GetAbilityTypes($cardID, from:$from), "I"))
+      ){
+      $restriction = "signal_jammer_blue";
+      return true;
+    }
+    if ($player != $mainPlayer && SearchAlliesActive($mainPlayer, "themai")) {
+      $restriction = "themai";
+      return true;
+    }
+    if (EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck) != "") {
+      $restriction = true;
+      return true;
+    }
+    if (EffectAttackRestricted($cardID, $type, $from, index:$index) != "" && $currentPlayer == $mainPlayer) {
+      $restriction = true;
+      return true;
+    }
   }
   switch ($cardID) {
     case "breaking_scales":
