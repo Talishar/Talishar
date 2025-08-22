@@ -219,7 +219,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddCurrentTurnEffect($cardID, $currentPlayer, "PLAY");
       }
       else {
-        WriteLog("A previous chain link was targeted, for now no effect");
+        WriteLog("A previous (or defending) chain link was targeted, for now no effect");
       }
       break;
     case "celestial_reprimand_red": case "celestial_reprimand_yellow": case "celestial_reprimand_blue":
