@@ -2,7 +2,6 @@
 function GeneratedCardType($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "A",
 "10000_year_reunion_red" => "A",
 "a_drop_in_the_ocean_blue" => "I",
 "absorb_in_aether_red" => "DR",
@@ -890,7 +889,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "A",
 "gold_baited_hook" => "E",
 "golden_cog" => "T",
+"golden_gait" => "E",
+"golden_galea" => "E",
+"golden_gauntlets" => "E",
 "golden_glare" => "E",
+"golden_heart_plate" => "E",
 "goldkiss_rum" => "T",
 "goldwing_turbine_red" => "A",
 "goldwing_turbine_yellow" => "A",
@@ -1193,6 +1196,7 @@ return match($cardID) {
 "ley_line_of_the_old_ones_blue" => "I",
 "liars_charm_yellow" => "I",
 "light_fingers" => "E",
+"light_up_the_leaves_red" => "A",
 "light_of_sol_yellow" => "R",
 "lightning_greaves" => "E",
 "lightning_press_red" => "I",
@@ -4989,7 +4993,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => 2,
 "gold_baited_hook" => 1,
 "golden_cog" => -1,
+"golden_gait" => 2,
+"golden_galea" => 2,
+"golden_gauntlets" => 2,
 "golden_glare" => 2,
+"golden_heart_plate" => 2,
 "golden_skywarden_yellow" => 2,
 "golden_tipple_red" => 2,
 "golden_tipple_yellow" => 2,
@@ -6409,7 +6417,6 @@ default => 3
 function GeneratedCardName($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "Light Up the Leaves",
 "10000_year_reunion_red" => "10,000 Year Reunion",
 "a_drop_in_the_ocean_blue" => "A Drop in the Ocean",
 "absorb_in_aether_red" => "Absorb in Aether",
@@ -7935,7 +7942,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "Gold the Tip",
 "gold_baited_hook" => "Gold-Baited Hook",
 "golden_cog" => "Golden Cog",
+"golden_gait" => "Golden Gait",
+"golden_galea" => "Golden Galea",
+"golden_gauntlets" => "Golden Gauntlets",
 "golden_glare" => "Golden Glare",
+"golden_heart_plate" => "Golden Heart Plate",
 "golden_skywarden_yellow" => "Golden Skywarden",
 "golden_tipple_red" => "Golden Tipple",
 "golden_tipple_yellow" => "Golden Tipple",
@@ -8426,6 +8437,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "Life of the Party",
 "life_of_the_party_blue" => "Life of the Party",
 "light_fingers" => "Light Fingers",
+"light_up_the_leaves_red" => "Light Up the Leaves",
 "light_it_up_yellow" => "Light it Up",
 "light_of_sol_yellow" => "Light of Sol",
 "light_the_way_red" => "Light the Way",
@@ -11548,7 +11560,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => 2,
 "gold_baited_hook" => 0,
 "golden_cog" => 0,
+"golden_gait" => 0,
+"golden_galea" => 0,
+"golden_gauntlets" => 0,
 "golden_glare" => 0,
+"golden_heart_plate" => 0,
 "golden_skywarden_yellow" => 2,
 "golden_tipple_yellow" => 2,
 "golden_tipple_blue" => 3,
@@ -13368,7 +13384,6 @@ default => 1
 function GeneratedCardCost($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
-"light_up_the_leaves_red" => 3,
 "10000_year_reunion_red" => 8,
 "absorb_in_aether_red" => 1,
 "absorb_in_aether_yellow" => 1,
@@ -14436,7 +14451,11 @@ return match($cardID) {
 "gold_hunter_marauder_yellow" => 3,
 "gold_baited_hook" => -1,
 "golden_cog" => -1,
+"golden_gait" => -1,
+"golden_galea" => -1,
+"golden_gauntlets" => -1,
 "golden_glare" => -1,
+"golden_heart_plate" => -1,
 "golden_skywarden_yellow" => 4,
 "golden_tipple_red" => 1,
 "golden_tipple_yellow" => 1,
@@ -14788,6 +14807,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => 2,
 "life_of_the_party_blue" => 2,
 "light_fingers" => -1,
+"light_up_the_leaves_red" => 3,
 "light_it_up_yellow" => 1,
 "light_of_sol_yellow" => -1,
 "lightning_form_red" => 1,
@@ -16673,7 +16693,11 @@ return match($cardID) {
 "gold" => "Item",
 "gold_baited_hook" => "Arms",
 "golden_cog" => "Cog,Item",
+"golden_gait" => "Legs",
+"golden_galea" => "Head",
+"golden_gauntlets" => "Arms",
 "golden_glare" => "Head",
+"golden_heart_plate" => "Chest",
 "goldfin_harpoon_yellow" => "Arrow",
 "goldkiss_rum" => "Item",
 "goliath_gauntlet" => "Arms",
@@ -17589,7 +17613,6 @@ default => 20
 function GeneratedRarity($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "M",
 "10000_year_reunion_red" => "M",
 "absorb_in_aether_red" => "R",
 "absorb_in_aether_yellow" => "R",
@@ -18408,7 +18431,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "M",
 "gold_baited_hook" => "L",
 "golden_cog" => "B",
+"golden_gait" => "M",
+"golden_galea" => "M",
+"golden_gauntlets" => "M",
 "golden_glare" => "R",
+"golden_heart_plate" => "M",
 "golden_skywarden_yellow" => "M",
 "goldfin_harpoon_yellow" => "B",
 "goldkiss_rum" => "B",
@@ -18660,6 +18687,7 @@ return match($cardID) {
 "life_of_the_party_red" => "R",
 "life_of_the_party_yellow" => "R",
 "life_of_the_party_blue" => "R",
+"light_up_the_leaves_red" => "M",
 "light_it_up_yellow" => "M",
 "light_of_sol_yellow" => "F",
 "lightning_form_red" => "R",
@@ -19730,7 +19758,6 @@ default => false
 function GeneratedCardClass($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "WIZARD",
 "10000_year_reunion_red" => "ILLUSIONIST",
 "absorb_in_aether_red" => "WIZARD",
 "absorb_in_aether_yellow" => "WIZARD",
@@ -21033,7 +21060,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "PIRATE,RANGER",
 "gold_baited_hook" => "PIRATE",
 "golden_cog" => "MECHANOLOGIST",
+"golden_gait" => "WARRIOR",
+"golden_galea" => "WARRIOR",
+"golden_gauntlets" => "WARRIOR",
 "golden_glare" => "GUARDIAN",
+"golden_heart_plate" => "WARRIOR",
 "golden_skywarden_yellow" => "PIRATE,MECHANOLOGIST",
 "golden_tipple_red" => "PIRATE",
 "golden_tipple_yellow" => "PIRATE",
@@ -21448,6 +21479,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "GENERIC",
 "life_of_the_party_blue" => "GENERIC",
 "light_fingers" => "GENERIC",
+"light_up_the_leaves_red" => "WIZARD",
 "light_it_up_yellow" => "RANGER",
 "light_the_way_red" => "WARRIOR",
 "light_the_way_yellow" => "WARRIOR",
@@ -23278,7 +23310,6 @@ default => "NONE"
 function GeneratedCardTalent($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "EARTH",
 "a_drop_in_the_ocean_blue" => "MYSTIC",
 "aegis_archangel_of_protection" => "LIGHT",
 "aether_ashwing" => "DRACONIC",
@@ -23956,6 +23987,7 @@ return match($cardID) {
 "levia_shadowborn_abomination" => "SHADOW",
 "lexi" => "ELEMENTAL",
 "lexi_livewire" => "ELEMENTAL",
+"light_up_the_leaves_red" => "EARTH",
 "light_it_up_yellow" => "ELEMENTAL",
 "light_of_sol_yellow" => "LIGHT",
 "light_the_way_red" => "LIGHT",
@@ -24490,7 +24522,6 @@ default => "NONE"
 function GeneratedIsSpecialization($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -26016,7 +26047,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "false",
 "gold_baited_hook" => "false",
 "golden_cog" => "false",
+"golden_gait" => "true",
+"golden_galea" => "true",
+"golden_gauntlets" => "true",
 "golden_glare" => "true",
+"golden_heart_plate" => "true",
 "golden_skywarden_yellow" => "false",
 "golden_tipple_red" => "false",
 "golden_tipple_yellow" => "false",
@@ -26507,6 +26542,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "false",
 "life_of_the_party_blue" => "false",
 "light_fingers" => "false",
+"light_up_the_leaves_red" => "false",
 "light_it_up_yellow" => "true",
 "light_of_sol_yellow" => "false",
 "light_the_way_red" => "false",
@@ -28548,7 +28584,6 @@ default => ""
 function GeneratedIsLegendary($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "true",
 "absorb_in_aether_red" => "false",
@@ -30074,7 +30109,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "false",
 "gold_baited_hook" => "false",
 "golden_cog" => "false",
+"golden_gait" => "true",
+"golden_galea" => "true",
+"golden_gauntlets" => "true",
 "golden_glare" => "false",
+"golden_heart_plate" => "true",
 "golden_skywarden_yellow" => "false",
 "golden_tipple_red" => "false",
 "golden_tipple_yellow" => "false",
@@ -30565,6 +30604,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "false",
 "life_of_the_party_blue" => "false",
 "light_fingers" => "false",
+"light_up_the_leaves_red" => "false",
 "light_it_up_yellow" => "false",
 "light_of_sol_yellow" => "true",
 "light_the_way_red" => "false",
@@ -32606,7 +32646,6 @@ default => ""
 function GeneratedHasBladeBreak($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -34132,7 +34171,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "false",
 "gold_baited_hook" => "false",
 "golden_cog" => "false",
+"golden_gait" => "false",
+"golden_galea" => "false",
+"golden_gauntlets" => "false",
 "golden_glare" => "true",
+"golden_heart_plate" => "false",
 "golden_skywarden_yellow" => "false",
 "golden_tipple_red" => "false",
 "golden_tipple_yellow" => "false",
@@ -34623,6 +34666,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "false",
 "life_of_the_party_blue" => "false",
 "light_fingers" => "true",
+"light_up_the_leaves_red" => "false",
 "light_it_up_yellow" => "false",
 "light_of_sol_yellow" => "false",
 "light_the_way_red" => "false",
@@ -36664,7 +36708,6 @@ default => ""
 function GeneratedHasBattleworn($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -38190,7 +38233,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "false",
 "gold_baited_hook" => "true",
 "golden_cog" => "false",
+"golden_gait" => "false",
+"golden_galea" => "false",
+"golden_gauntlets" => "false",
 "golden_glare" => "false",
+"golden_heart_plate" => "false",
 "golden_skywarden_yellow" => "false",
 "golden_tipple_red" => "false",
 "golden_tipple_yellow" => "false",
@@ -38681,6 +38728,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "false",
 "life_of_the_party_blue" => "false",
 "light_fingers" => "false",
+"light_up_the_leaves_red" => "false",
 "light_it_up_yellow" => "false",
 "light_of_sol_yellow" => "false",
 "light_the_way_red" => "false",
@@ -40722,7 +40770,6 @@ default => ""
 function GeneratedHasGuardwell($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -42248,7 +42295,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "false",
 "gold_baited_hook" => "false",
 "golden_cog" => "false",
+"golden_gait" => "false",
+"golden_galea" => "false",
+"golden_gauntlets" => "false",
 "golden_glare" => "false",
+"golden_heart_plate" => "false",
 "golden_skywarden_yellow" => "false",
 "golden_tipple_red" => "false",
 "golden_tipple_yellow" => "false",
@@ -42739,6 +42790,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "false",
 "life_of_the_party_blue" => "false",
 "light_fingers" => "false",
+"light_up_the_leaves_red" => "false",
 "light_it_up_yellow" => "false",
 "light_of_sol_yellow" => "false",
 "light_the_way_red" => "false",
@@ -44780,7 +44832,6 @@ default => ""
 function GeneratedHasTemper($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "false",
 "10000_year_reunion_red" => "false",
 "a_drop_in_the_ocean_blue" => "false",
 "absorb_in_aether_red" => "false",
@@ -46306,7 +46357,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "false",
 "gold_baited_hook" => "false",
 "golden_cog" => "false",
+"golden_gait" => "true",
+"golden_galea" => "true",
+"golden_gauntlets" => "true",
 "golden_glare" => "false",
+"golden_heart_plate" => "true",
 "golden_skywarden_yellow" => "false",
 "golden_tipple_red" => "false",
 "golden_tipple_yellow" => "false",
@@ -46797,6 +46852,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "false",
 "life_of_the_party_blue" => "false",
 "light_fingers" => "false",
+"light_up_the_leaves_red" => "false",
 "light_it_up_yellow" => "false",
 "light_of_sol_yellow" => "false",
 "light_the_way_red" => "false",
@@ -48838,7 +48894,6 @@ default => ""
 function GeneratedSetID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"light_up_the_leaves_red" => "SUP264",
 "10000_year_reunion_red" => "MST131",
 "a_drop_in_the_ocean_blue" => "MST095",
 "absorb_in_aether_red" => "ARC123",
@@ -50352,7 +50407,11 @@ return match($cardID) {
 "gold_the_tip_yellow" => "SEA088",
 "gold_baited_hook" => "SEA125",
 "golden_cog" => "SEA042",
+"golden_gait" => "SUP250",
+"golden_galea" => "SUP247",
+"golden_gauntlets" => "SUP249",
 "golden_glare" => "HVY054",
+"golden_heart_plate" => "SUP248",
 "golden_skywarden_yellow" => "SEA004",
 "golden_tipple_red" => "SEA159",
 "golden_tipple_yellow" => "SEA160",
@@ -50841,6 +50900,7 @@ return match($cardID) {
 "life_of_the_party_yellow" => "EVR162",
 "life_of_the_party_blue" => "EVR163",
 "light_fingers" => "SEA184",
+"light_up_the_leaves_red" => "SUP264",
 "light_it_up_yellow" => "ELE036",
 "light_of_sol_yellow" => "DTD000",
 "light_the_way_red" => "DTD066",
@@ -52870,7 +52930,6 @@ default => ""
 function GeneratedSetIDtoCardID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
-"SUP264" => "light_up_the_leaves_red",
 "MST131" => "10000_year_reunion_red",
 "MST095" => "a_drop_in_the_ocean_blue",
 "ARC123" => "absorb_in_aether_red",
@@ -54385,7 +54444,11 @@ return match($cardID) {
 "SEA088" => "gold_the_tip_yellow",
 "SEA125" => "gold_baited_hook",
 "SEA042" => "golden_cog",
+"SUP250" => "golden_gait",
+"SUP247" => "golden_galea",
+"SUP249" => "golden_gauntlets",
 "HVY054" => "golden_glare",
+"SUP248" => "golden_heart_plate",
 "SEA004" => "golden_skywarden_yellow",
 "SEA159" => "golden_tipple_red",
 "SEA160" => "golden_tipple_yellow",
@@ -54874,6 +54937,7 @@ return match($cardID) {
 "EVR162" => "life_of_the_party_yellow",
 "EVR163" => "life_of_the_party_blue",
 "SEA184" => "light_fingers",
+"SUP264" => "light_up_the_leaves_red",
 "ELE036" => "light_it_up_yellow",
 "DTD000" => "light_of_sol_yellow",
 "DTD066" => "light_the_way_red",
