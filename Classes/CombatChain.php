@@ -106,4 +106,8 @@ class ChainCard {
     function UniqueID() {
       return $this->chain[$this->index+7];
     }
+
+    function StaticBuffs() {
+      return $this->chain[$this->index+10];
+    }
 }

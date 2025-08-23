@@ -4103,6 +4103,41 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     case "alpha_instinct_blue":
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
       break;
+    case "hunter_or_hunted_blue":
+      if (!IsAllyAttacking()) {
+        //name the card
+        AddDecisionQueue("INPUTCARDNAME", $player, "-");
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("WRITELOG", $player, "<b>📣{0}</b> is being hunted!", 1);
+        //Adding the name to the card to track
+        AddDecisionQueue("PREPENDLASTRESULT", $player, "NAMEDCARD|", 1);
+        AddDecisionQueue("ADDSTATICBUFF", $player, $target, 1);
+        //revealing the top card
+        AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
+        AddDecisionQueue("MZREVEAL", $player, "-", 1);
+        AddDecisionQueue("MZOP", $player, "GETCARDNAME", 1);
+        AddDecisionQueue("NOTEQUALPASS", $player, "{0}", 1);
+        // Getting the card id into {0} makes it more compatible with bonds of agony logic
+        AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
+        AddDecisionQueue("MZBANISH", $player, "-,Source-$parameter,$parameter,$player", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        // banishing up to 3 more cards
+        for ($i = 0; $i < 3; $i++) {
+          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRDISCARD:isSameName={0}&THEIRARSENAL:isSameName={0}", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose which cards you want your opponent to banish", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZBANISH", $player, "-,Source-$parameter,$parameter,$player", 1);
+          AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        }
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count);
+        AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
+        AddDecisionQueue("LOOKTOPDECK", $mainPlayer, "-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
+        AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+        }
+      break;
     default:
       break;
   }

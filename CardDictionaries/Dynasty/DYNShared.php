@@ -639,7 +639,7 @@ function HasSurge($cardID)
   }
 }
 
-function ContractType($cardID)
+function ContractType($cardID, $chosenName="-")
 {
   switch($cardID)
   {
@@ -656,6 +656,7 @@ function ContractType($cardID)
     case "already_dead_red": return "NONACTION";
     case "defang_the_dragon_red": return "HITMARKEDFANG";
     case "extinguish_the_flames_red": return "HITMARKEDCINDRA";
+    case "hunter_or_hunted_blue": return "NAMEDCARD-$chosenName";
     default: return "";
   }
 }
@@ -676,7 +677,7 @@ function ContractCompleted($player, $cardID)
     case "nix_the_nimble_red": case "nix_the_nimble_yellow": case "nix_the_nimble_blue":
     case "sack_the_shifty_red": case "sack_the_shifty_yellow": case "sack_the_shifty_blue":
     case "slay_the_scholars_red": case "slay_the_scholars_yellow": case "slay_the_scholars_blue":
-    case "already_dead_red":
+    case "already_dead_red": case "hunter_or_hunted_blue":
       PutItemIntoPlayForPlayer("silver", $player);
       break;
     case "defang_the_dragon_red": case "extinguish_the_flames_red":
@@ -719,15 +720,18 @@ function CheckContracts($banishedBy, $cardBanished)
   for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
-    $contractType = ContractType($chainCard->ID());
-    if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainCard->ID());
+    $chosenName = explode("|", $chainCard->StaticBuffs())[1] ?? "-";
+    $contractType = ContractType($chainCard->ID(), $chosenName);
+    if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
       if($chainLinks[$i][$j+2] == 0) continue;
-      $contractType = ContractType($chainLinks[$i][$j]);
-      if($contractType != "" && CheckContract($contractType, $cardBanished)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
+      //this may not work, check later
+      $chosenName = explode("|", $chainLinks[$i][$j+6])[1] ?? "-";
+      $contractType = ContractType($chainLinks[$i][$j], $chosenName);
+      if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
     }
   }
 }
@@ -740,8 +744,11 @@ function ImperialWarHorn($player, $term)
   AddDecisionQueue("MZDESTROY", $player, "-", 1);
 }
 
-function CheckContract($contractType, $cardBanished)
+function CheckContract($contractType, $cardBanished, $player)
 {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $chosenName = explode("-", $contractType)[1] ?? "-";
+  $contractType = explode("-", $contractType)[0];
   switch($contractType) {
     case "REDPITCH": return PitchValue($cardBanished) == 1;
     case "YELLOWPITCH": return PitchValue($cardBanished) == 2;
@@ -754,6 +761,8 @@ function CheckContract($contractType, $cardBanished)
     case "BLOCK2ORLESS": return BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0;
     case "REACTIONS": return CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR";
     case "NONACTION": return !IsActionCard($cardBanished);
+    case "NAMEDCARD":
+      return NameOverride($cardBanished, $otherPlayer) == GamestateUnsanitize($chosenName);
     default: return false;
     }
 }

@@ -139,8 +139,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "treasure_island" => "Macro",
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W", // AI custom weapon
-    "okana_scar_wraps" => "E",
-    "iris_of_the_blossom" => "E" //temporary while waiting for fabcube
+    "hunter_or_hunted_blue" => "DR" //temporary while waiting for fabcube
   ];
 
   if (isset($specialCases[$cardID])) {

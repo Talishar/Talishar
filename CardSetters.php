@@ -1,21 +1,21 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "")
+function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "", $banisher = "-")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn;
   if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy);
-    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy);
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
+    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
   } else {
-    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy);
-    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy);
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
+    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "")
+function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
   $rv = -1;
@@ -75,7 +75,8 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       CharacterBanishEffect($cardID, $player);
     } else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
-  if ($banishedBy != "" && $player != $mainPlayer) CheckContracts($mainPlayer, $cardID);
+  $banisher = $banisher == "-" ? $mainPlayer : $banisher;
+  if ($banishedBy != "") CheckContracts($banisher, $cardID);
   if ($banishedBy == "nasreth_the_soul_harrower" && TalentContains($cardID, "LIGHT", $player)) {
     GainHealth(1, $otherPlayer);
     return $rv;

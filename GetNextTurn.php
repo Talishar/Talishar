@@ -1378,6 +1378,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
             elseif ($option[0] == "THEIRDECK") $label = "Deck";
             elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
           }
+          if($combatChain[count($combatChain) - CombatChainPieces()] == "hunter_or_hunted_blue" && $turn[0] == "MAYCHOOSEMULTIZONE") {
+            if($option[0] == "THEIRHAND") $label = "Hand"; 
+            elseif ($option[0] == "THEIRDECK") $label = "Deck";
+            elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
+            elseif ($option[0] == "THEIRARSENAL") $label = "Arsenal";  
+          }
         }
 
         //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.

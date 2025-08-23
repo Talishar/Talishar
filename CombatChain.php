@@ -842,6 +842,10 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     case "chain_reaction_yellow":
       if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
+    case "hunter_or_hunted_blue":
+      $index = count($combatChain) - CombatChainPieces();
+      AddLayer("TRIGGER", $defPlayer, $cardID, target:$index);
+      break;
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "mark_of_lightning", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "mark_of_lightning");

@@ -28,6 +28,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_LinkBasePower;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves;
   $rv = "";
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
     case "FINDINDICES":
       BuildMainPlayerGamestate();
@@ -618,6 +619,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $ret = GetMZCard($player, $lastResult);
           if ($ret == "runechant_batch") return "runechant";
           else return $ret;
+        case "GETCARDNAME":
+          $cardID = GetMZCard($player, $lastResult);
+          if ($cardID == "runechant_batch") $ret = "runechant";
+          $targetPlayer = str_contains($lastResult, "MY") ? $player : $otherPlayer;
+          return GamestateSanitize(NameOverride($cardID, $targetPlayer));
         case "GETCARDINDEX":
           $mzArr = explode("-", $lastResult);
           return $mzArr[1];
@@ -3377,6 +3383,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
         RemoveDiscard($player, explode("-", $choices[0])[1]);
       }
+      return $lastResult;
+    case "ADDSTATICBUFF":
+      $combatChain[$parameter + 10] = $lastResult;
       return $lastResult;
     default:
       return "NOTSTATIC";

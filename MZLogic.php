@@ -285,6 +285,7 @@ function MZBanish($player, $parameter, $lastResult)
     }
     $modifier = count($params) > 1 ? $params[1] : "-";
     $banishedBy = count($params) > 2 ? $params[2] : "";
+    $banisher = $params[3] ?? "-";
     if($params[0] == "-") {
       if (strpos($mzIndex[0], "MY") === 0) {
         $params[0] = substr($mzIndex[0], 2);
@@ -295,7 +296,7 @@ function MZBanish($player, $parameter, $lastResult)
       }
     }
     if (!isset($mzIndex[1])) WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
-    BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy);
+    BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
   }
   if (count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
   return $lastResult;
