@@ -4092,7 +4092,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("PREPENDLASTRESULT", $player, "$numToChoose-", 1);
       AddDecisionQueue("APPENDLASTRESULT", $player, "-$numToChoose", 1);
       AddDecisionQueue("MULTICHOOSEDISCARD", $player, "<-", 1);
-      AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $player, "DISCARD,$numToChoose", 1);
+      if ($numToChoose == 2) AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $player, "DISCARD,$numToChoose", 1);
       AddDecisionQueue("IMPLODELASTRESULT", $player, ",THEIRDISCARD-", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRDISCARD-", 1);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
