@@ -729,6 +729,7 @@ function CheckContracts($banishedBy, $cardBanished)
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
       if($chainLinks[$i][$j+2] == 0) continue;
+      if(CardType($chainLinks[$i][$j]) == "AA" && $j > 0) continue; //blocking AA don't generate contracts
       //this may not work, check later
       $chosenName = explode("|", $chainLinks[$i][$j+6])[1] ?? "-";
       $contractType = ContractType($chainLinks[$i][$j], $chosenName);
