@@ -2664,7 +2664,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "angelic_wrath_red":
     case "angelic_wrath_yellow":
     case "angelic_wrath_blue":
-      $found = SearchCombatChainLink($player, "AA", class:"ILLUSIONIST", talent:"LIGHT");
+      $found = GetChainLinkCards($defPlayer, nameContains: "Herald");
       if ($found != "" && $found != "0") {
       return false;  
 }
