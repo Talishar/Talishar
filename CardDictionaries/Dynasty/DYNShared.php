@@ -720,6 +720,7 @@ function CheckContracts($banishedBy, $cardBanished)
   for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
+    if(CardType($chainCard->ID()) == "AA" && $i > 0) continue; //blocking AA don't generate contracts
     $chosenName = explode("|", $chainCard->StaticBuffs())[1] ?? "-";
     $contractType = ContractType($chainCard->ID(), $chosenName);
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());

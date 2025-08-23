@@ -618,8 +618,6 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "MPG":
-      return false;
     case "APR": case "AVS": case "SMP":
       return match($cardID) {
         "halo_of_lumina_light" => false,
@@ -670,10 +668,12 @@ function isUnimplemented($cardID) {
       };
     case "ARR":
       return match($cardID) {
+        "alpha_instinct_blue" => false,
         default => true
       };
     case "AAC":
       return match($cardID) {
+        "meet_madness_red" => false,
         default => true
       };
     default:
