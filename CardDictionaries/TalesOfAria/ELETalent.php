@@ -3,6 +3,7 @@
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $CS_DamagePrevention, $combatChain, $layers, $CombatChain;
+    global $CS_CardsInDeckBeforeOpt;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -198,6 +199,8 @@
         }
         return "";
       case "ragamuffins_hat":
+        $deck = new Deck($currentPlayer);
+        SetClassState($currentPlayer, $CS_CardsInDeckBeforeOpt, $deck->RemainingCards());
         Draw($currentPlayer);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);

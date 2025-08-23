@@ -2,7 +2,7 @@
 
 function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken;
+  global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken, $CS_CardsInDeckBeforeOpt;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "kano_dracai_of_aether":
@@ -88,6 +88,8 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
     case "aether_spindle_red":
     case "aether_spindle_yellow":
     case "aether_spindle_blue":
+      $deck = new Deck($currentPlayer);
+      SetClassState($currentPlayer, $CS_CardsInDeckBeforeOpt, $deck->RemainingCards());
       DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
       AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
       return "";
