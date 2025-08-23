@@ -2665,6 +2665,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "angelic_wrath_red":
     case "angelic_wrath_yellow":
     case "angelic_wrath_blue":
+      $found = GetChainLinkCards($defPlayer, nameContains: "Herald");
+      if ($found != "" && $found != "0") {
+      return false;  
+}
       $pastHeralds = SearchCombatChainAttacks($player, nameIncludes:"Herald");
       if ($pastHeralds != "") return false;
       return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
