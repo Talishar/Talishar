@@ -1219,7 +1219,12 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
               $currentTurnEffects[$i + 3] -= $sourceDamage;
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-            if (TypeContains($source, "AA") && !SubtypeContains($source, "Dagger")) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+            $multiAttack = match($source) {
+              "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue" => true,
+              default => false,
+            };
+            if (SubtypeContains($source, "Dagger")) $multiAttack = true;
+            if (TypeContains($source, "AA") && !$multiAttack) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
             if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
           }
           break;
