@@ -15,6 +15,7 @@ function SUPAbilityType($cardID, $index=-1, $from="-"): string
     "garland_of_spring" => "A",
     "punching_gloves" => "A",
     "bait" => ($from == "CC" && $index != 0) ? "AR" : "AA",
+    "backspin_thrust_red" => $from == "PLAY" ? "I": "AA",
     default => ""
   };
 }
@@ -47,6 +48,7 @@ function SUPEffectPowerModifier($cardID): int
   return match ($cardID) {
     "punching_gloves" => 2,
     "bait" => 1,
+    "backspin_thrust_red" => 1,
     default => 0,
   };
 }
@@ -59,6 +61,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
     "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
     "bait" => true,
     "blood_follows_blade_yellow" => true,
+    "backspin_thrust_red", "backspin_thrust_red-GOAGAIN" => true,
     default => false,
   };
 }
@@ -287,6 +290,12 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "light_up_the_leaves_red":
       DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
+      break;
+    case "backspin_thrust_red":
+      if ($from == "PLAY") {
+        AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
+      }
       break;
     default:
       break;

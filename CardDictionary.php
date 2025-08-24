@@ -237,6 +237,7 @@ function SetID($cardID)
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
     "meet_madness_red" => "AAC014", //temporary
+    "backspin_thrust_red" => "SUP254", //temporary
     "UPR551" => "UPR551", //ghostly touch
   ];
 
@@ -3160,6 +3161,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if (CountBoatActivations($cardID, $player) >= 3) return true;
       return false;
+    case "backspin_thrust_red":
+      if ($player != $mainPlayer) return true;
+      if ($from != "PLAY") return false;
+      if (GetTapped($player, "MYITEMS", "subtype=Cog") == "") return true;
+      if (CountBoatActivations($cardID, $player) >= 1) return true;
+      return false;
     case "old_knocker":
       return CheckTapped("MYCHAR-0", $currentPlayer);
     case "swiftstrike_bracers":
@@ -4818,6 +4825,7 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
     "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking,
     "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
     "bait" => $index != "-" && IsReactionPhase() && $currentPlayer == $mainPlayer && $auras[$index + 5] > 0, //makes it so you can't activate the AR layers it puts onto the combat chain
+    "backspin_thrust_red" => $isAttacking,
     default => false
   };
 }
