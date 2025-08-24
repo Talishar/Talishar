@@ -659,6 +659,7 @@ function isUnimplemented($cardID) {
         "take_the_bait_red" => false,
         "light_up_the_leaves_red" => false,
         "golden_gait", "golden_galea", "golden_gauntlets", "golden_heart_plate" => false,
+        "hunter_or_hunted_blue" => false,
         default => true
       };
     case "APS":

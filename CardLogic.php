@@ -4124,7 +4124,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
         // banishing up to 3 more cards
         for ($i = 0; $i < 3; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRDISCARD:isSameName={0}&THEIRARSENAL:isSameName={0}", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRARSENAL:isSameName={0}", 1);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose which cards you want your opponent to banish", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "-,Source-$parameter,$parameter,$player", 1);
