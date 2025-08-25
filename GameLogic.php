@@ -295,7 +295,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($subparam2 == "NOPASS") return $rv;
       return $rv == "" ? "PASS" : $rv;
     case "MULTIZONEINDICES":
-      WriteLog("HERE: $parameter");
       if (strpos($parameter, "MYALLY") !== false) {
         $parameter = "MYCHAR:subtype=Ally&$parameter";
       } 
