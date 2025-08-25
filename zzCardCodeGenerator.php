@@ -431,7 +431,7 @@
     {
       case "Elemental": case "Light": case "Shadow": case "Draconic": return true;
       case "Ice": case "Lightning": case "Earth": case "Mystic": return true;
-      case "Pirate": return true;
+      case "Revered": case "Reviled": return true;
       default: return false;
     }
   }
