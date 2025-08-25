@@ -838,18 +838,8 @@ function OUTAbilityCost($cardID)
 
   function NumAttackReactionsPlayed()
   {
-    global $combatChain, $mainPlayer, $layers;
-    $numReactions = 0;
-    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
-    {
-      if($combatChain[$i+1] == $mainPlayer && (CardType($combatChain[$i]) == "AR" || GetAbilityType($combatChain[$i], $i, "CC") == "AR")) ++$numReactions;
-    }
-    for($i=0; $i<count($layers); $i+=LayerPieces())
-    {
-      if($layers[$i+1] != $mainPlayer) continue;
-      if(CardType($layers[$i]) == "AR" || GetAbilityType($layers[$i]) == "AR") ++$numReactions;
-    }
-    return $numReactions;
+    global $CCS_NumReactionPlayedActivated, $combatChainState;
+    return $combatChainState[$CCS_NumReactionPlayedActivated];
   }
 
   function TrapTriggered($cardID)
