@@ -45,10 +45,12 @@ function CardName($cardID)
 //checks if meld cards share a name
 function ShareName($name1, $name2) {
   if ($name1 == $name2) return true;
-  // foreach (explode(" // ", $name1) as $n1) {
-  //   foreach (explode(" // ", $name2) as $n2) {
-  //     if ($n1 == $n2) return true;
-  //   }
-  // }
+  if (str_contains($name1, " // ") && !str_contains($name2, " // ")) {
+    foreach (explode(" // ", $name1) as $n1) {
+      if ($n1 == $name2) {
+        return true;
+      }
+    }
+  }
   return false;
 }

@@ -4116,7 +4116,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
         AddDecisionQueue("MZREVEAL", $player, "-", 1);
         AddDecisionQueue("MZOP", $player, "GETCARDNAME", 1);
-        AddDecisionQueue("NOTEQUALPASS", $player, "{0}", 1);
+        AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
         // Getting the card id into {0} makes it more compatible with bonds of agony logic
         AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
         AddDecisionQueue("MZBANISH", $player, "-,Source-$parameter,$parameter,$player", 1);

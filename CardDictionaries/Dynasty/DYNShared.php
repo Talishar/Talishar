@@ -764,7 +764,7 @@ function CheckContract($contractType, $cardBanished, $player)
     case "REACTIONS": return CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR";
     case "NONACTION": return !IsActionCard($cardBanished);
     case "NAMEDCARD":
-      return NameOverride($cardBanished, $otherPlayer) == GamestateUnsanitize($chosenName);
+      return ShareName(NameOverride($cardBanished, $otherPlayer), GamestateUnsanitize($chosenName));
     default: return false;
     }
 }

@@ -295,6 +295,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($subparam2 == "NOPASS") return $rv;
       return $rv == "" ? "PASS" : $rv;
     case "MULTIZONEINDICES":
+      WriteLog("HERE: $parameter");
       if (strpos($parameter, "MYALLY") !== false) {
         $parameter = "MYCHAR:subtype=Ally&$parameter";
       } 
@@ -1035,6 +1036,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return 1;
     case "NOTEQUALPASS":
       if ($lastResult != $parameter) return "PASS";
+      return 1;
+    case "NOTEQUALNAMEPASS":
+      if (!ShareName(GamestateUnsanitize($lastResult), GamestateUnsanitize($parameter))) return "PASS";
       return 1;
     case "MODENOTCHOSENPASS":
       foreach($lastResult as $mode) {
