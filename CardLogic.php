@@ -4020,7 +4020,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       Draw($player, effectSource:$parameter);
       break;
     case "up_on_a_pedestal_blue":
-      $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=Revered";
+      $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
       AddDecisionQueue("MULTIZONEINDICES", $player, $search);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose an attack to put on top of your deck (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);

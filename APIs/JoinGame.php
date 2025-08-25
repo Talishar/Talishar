@@ -655,6 +655,7 @@ function isUnimplemented($cardID) {
         "punching_gloves" => false,
         "garland_of_spring" => false,
         "dig_in_red", "dig_in_yellow", "dig_in_blue" => false,
+
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
         "light_up_the_leaves_red" => false,
@@ -665,6 +666,7 @@ function isUnimplemented($cardID) {
     case "APS":
       return match($cardID) {
         "standing_ovation_blue" => false,
+        "up_on_a_pedestal_blue" => false,
         default => true
       };
     case "ARR":
