@@ -4,8 +4,8 @@ function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = 
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
-  global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn;
-  if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
+  global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn, $CS_CardsBanished;
+  if (CardNameContains($cardID, "Crouching Tiger", $player) && $from == "-") IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
     else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
@@ -40,7 +40,8 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     array_push($banish, $mod);
     array_push($banish, GetUniqueId($cardID, $player));
   }
-  ++$classState[$CS_CardsBanished];
+  // created cards don't count as cards put into banish
+  if ($from != "-") ++$classState[$CS_CardsBanished];
   if (isFaceDownMod($mod)) return $rv;
   //Do additional effects
   if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
