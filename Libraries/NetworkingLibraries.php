@@ -3801,7 +3801,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $powerValue = $baseAttackSet;
       }
       else {
-        $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC");
+        $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
       }
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
       $combatChainState[$CCS_LinkBasePower] = BasePowerModifiers($cardID, $powerValue);
