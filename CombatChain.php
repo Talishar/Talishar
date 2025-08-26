@@ -506,6 +506,10 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       for ($i = 0; $i < count($auras); $i += AuraPieces()) {
         if (TypeContains($auras[$i], "T", $defPlayer)) return 1;
       }
+      $char = GetPlayerCharacter($defPlayer);
+      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        if (TypeContains($char[$i], "T", $defPlayer) && SubtypeContains($char[$i], "Aura")) return 1;
+      }
       return 0;
     case "little_big_foot_red":
       return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? 6 : 0;
