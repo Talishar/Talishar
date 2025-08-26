@@ -245,12 +245,16 @@ if ($decklink != "") {
       }
 
       // Track the count of each card ID
+      $cardName = CardName($id);
       if (!isset($cardCounts[$id])) {
         $cardCounts[$id] = 0;
       }
+      if (!isset($cardNameCounts[$cardName])) {
+        $cardNameCounts[$cardName] = 0;
+      }
       $cardCounts[$id] += $count;
-
-      if(isCardRestricted($id, $format, $cardCounts[$id])) {
+      $cardNameCounts[$cardName] += $count;
+      if(isCardRestricted($cardName, $format, $cardNameCounts[CardName($id)])) {
         if ($restrictedCard != "") $restrictedCard .= ", ";
         $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -587,18 +591,14 @@ function IsCardBanned($cardID, $format, $character)
   return false;
 }
 
-function isCardRestricted($cardID, $format, $count) {
-
+function isCardRestricted($cardName, $format, $count) {
+  //restrictions go by card name, not card id
   $restrictedCards = [
-    "llcc", "compllcc" => [
-      "crippling_crush_red", "oaken_old_red", "awakening_blue", "warmongers_diplomacy_blue", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", 
-      "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue",
-      "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
-      "cull_red", "deadwood_dirge_red", "deadwood_dirge_yellow", "deadwood_dirge_blue", "succumb_to_temptation_yellow",
+    "llcc", "compllcc" => ["Awakening", "Bonds of Ancestry", "Electromagnetic Somersault", "Crippling Crush", "Cull", "Deadwood Dirge", "Oaken Old",
+      "Open the Flood Gates", "Succumb to Temptation", "Warmonger's Diplomacy",
     ]
   ];
-
-  return isset($restrictedCards[$format]) && in_array($cardID, $restrictedCards[$format]) && $count > 1;
+  return isset($restrictedCards[$format]) && in_array($cardName, $restrictedCards[$format]) && $count > 1;
 }
 
 function isSpecialUsePromo($cardID) {
