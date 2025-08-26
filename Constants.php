@@ -67,9 +67,10 @@ function BanishPieces()
 //8 - Origin Unique ID
 //9 - Original Card ID (for if the card becomes a copy of another card)
 //10 - Added static buff effects
+//11 - Number of times used
 function CombatChainPieces()
 {
-  return 11;
+  return 12;
 }
 
 //0 - Card ID
@@ -219,9 +220,10 @@ function InventoryPieces()
 //6 - Added On-hits (comma separated)
 //7 - Original Card ID (in case of copies)
 //8 - Origin Unique ID
+//9 - Number of times used
 function ChainLinksPieces()
 {
-  return 9;
+  return 10;
 }
 
 //0 - Damage Dealt

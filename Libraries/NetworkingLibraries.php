@@ -1256,6 +1256,7 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], "-"); //Added On-hits (comma separated)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 8]); //Original card ID, differs from CardID in case of copies
     array_push($chainLinks[$CLIndex], $combatChain[$i + 7]); //Origin unique ID
+    array_push($chainLinks[$CLIndex], $combatChain[$i + 10]); //number of times used
   }
 
   //Clean up combat effects that were used and are one-time

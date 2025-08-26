@@ -1735,10 +1735,12 @@ function CombatChainPayAdditionalCosts($index, $from)
       //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      ++$combatChain[$i + 11];
       break;
     case "backspin_thrust_red":
       $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer, 0);
+      ++$combatChain[$i + 11];
       break;
     default:
       break;

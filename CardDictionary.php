@@ -3140,7 +3140,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      if (CountBoatActivations($cardID, $player) >= 1) return true;
+      if ($from == "PLAY" && $combatChain[11] >= 1) return true;
       return false;
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
@@ -3151,7 +3151,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      if (CountBoatActivations($cardID, $player) >= 2) return true;
+      if ($from == "PLAY" && $combatChain[11] >= 2) return true;
       return false;
     case "palantir_aeronought_red":
     case "jolly_bludger_yellow":
@@ -3159,13 +3159,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      if (CountBoatActivations($cardID, $player) >= 3) return true;
+      if ($from == "PLAY" && $combatChain[11] >= 3) return true;
       return false;
     case "backspin_thrust_red":
       if ($player != $mainPlayer) return true;
       if ($from != "PLAY") return false;
       if (GetTapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      if (CountBoatActivations($cardID, $player) >= 1) return true;
+      if ($from == "PLAY" && $combatChain[11] >= 1) return true;
       return false;
     case "old_knocker":
       return CheckTapped("MYCHAR-0", $currentPlayer);
@@ -3244,6 +3244,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
 }
 
 //counts how many times puffin's attacks have been used
+//deprecated
 function CountBoatActivations($cardID, $player)
 {
   global $layers;

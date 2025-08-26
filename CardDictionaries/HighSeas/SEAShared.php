@@ -728,14 +728,17 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($from != "PLAY" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
       elseif($from == "PLAY") {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        $numResolved = CountCurrentTurnEffects($cardID, $currentPlayer);
-        //technically inaccurate, but should be functionally mostly the same
-        if ($numResolved == 3) {
+        $numUsed = $combatChain[11];
+        if ($numUsed == 3) {
           AddDecisionQueue("SEARCHCOMBATCHAIN", $currentPlayer, "-");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card to destroy");
           AddDecisionQueue("CHOOSECARDID", $currentPlayer, "<-", 1);
           AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
+          ++$combatChain[11];
         }
+      }
+      elseif ($from == "CHAINLINKS") {
+        
       }
       return "";
     case "jolly_bludger_yellow":
