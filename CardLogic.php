@@ -4104,6 +4104,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
       break;
     case "hunter_or_hunted_blue":
+      $count = count(GetDeck($defPlayer));
       if (!IsAllyAttacking()) {
         //name the card
         AddDecisionQueue("INPUTCARDNAME", $player, "-");
@@ -4116,12 +4117,27 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
         AddDecisionQueue("MZREVEAL", $player, "-", 1);
         AddDecisionQueue("MZOP", $player, "GETCARDNAME", 1);
+        AddDecisionQueue("SETDQVAR", $player, 1, 1);
+        AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
+        // show their hand, arsenal, and deck
+        AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
+        AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
+
+        AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
+        AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
+        AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
+        //MULTISHOWCARDSTHEIRDECK seems to return PASS, so we need this else and need to repeat the check
+        AddDecisionQueue("ELSE", $player, "-");
+        AddDecisionQueue("PASSPARAMETER", $player, "{1}", 1);
         AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
         // Getting the card id into {0} makes it more compatible with bonds of agony logic
         AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
         AddDecisionQueue("MZBANISH", $player, "-,Source-$parameter,$parameter,$player", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        }
         // banishing up to 3 more cards
         for ($i = 0; $i < 3; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRARSENAL:isSameName={0}", 1);
@@ -4129,13 +4145,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "-,Source-$parameter,$parameter,$player", 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        }
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count);
-        AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
-        AddDecisionQueue("LOOKTOPDECK", $mainPlayer, "-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
-        AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-");
+          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
         }
       break;
     default:

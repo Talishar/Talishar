@@ -950,6 +950,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if($cards != "") WriteLog("Hand content: $cards.");
       return $lastResult;
+    case "SHOWARSENALWRITELOG":
+      $arsenal = &GetArsenal($player);
+      $cards = "";
+      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+        if ($cards != "") $cards .= ", ";
+        $cards .= CardLink($arsenal[$i], $arsenal[$i]);
+      }
+      if($cards != "") WriteLog("Arsenal contents: $cards.");
+      return $lastResult;
     case "WRITELASTRESULT":
       WriteLog(GamestateUnsanitize($parameter . "<b>".$lastResult."</b>"));
       return $lastResult;
