@@ -4147,6 +4147,10 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
   global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed;
   switch($cardID) {
+    case "unsheathed_red":
+      CacheCombatResult();
+      if (IsWeaponGreaterThanTwiceBasePower()) GiveAttackGoAgain(); // borrowing ideas from merciless battleaxe (merciless_battleaxe) and shift the tide of battle (shift_the_tide_of_battle_yellow)
+      break;
     case "comeback_kid_red":
     case "comeback_kid_yellow":
     case "comeback_kid_blue":

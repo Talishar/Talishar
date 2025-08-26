@@ -853,8 +853,7 @@ function OnAttackEffects($power)
           }
         case "unsheathed_red":
           if (IsCombatEffectActive($currentTurnEffects[$i])){
-            CacheCombatResult();
-            if (IsWeaponGreaterThanTwiceBasePower()) GiveAttackGoAgain(); // borrowing ideas from merciless battleaxe (merciless_battleaxe) and shift the tide of battle (shift_the_tide_of_battle_yellow)
+            AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], additionalCosts:"ATTACKTRIGGER");
           }
           break;
         default:
