@@ -1037,6 +1037,8 @@ function EquipPayAdditionalCosts($cardIndex)
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
       break;
     case "voltaire_strike_twice":
+      --$character[$cardIndex + 5];
+      if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
