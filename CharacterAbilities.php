@@ -1001,7 +1001,7 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex)
 {
-  global $currentPlayer, $CS_TunicTicks, $mainPlayer, $chainLinkSummary;
+  global $currentPlayer, $CS_TunicTicks, $mainPlayer, $chainLinkSummary, $CS_AdditionalCosts;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
@@ -1035,6 +1035,12 @@ function EquipPayAdditionalCosts($cardIndex)
       ++$character[$cardIndex + 2];//Add a counter
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1;
+      break;
+    case "voltaire_strike_twice":
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
+      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "ghostly_touch":
       $character[$cardIndex + 2] -= 1;//Remove a counter

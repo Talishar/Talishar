@@ -20,9 +20,7 @@
         return "";
       case "voltaire_strike_twice":
         LoadArrow($currentPlayer);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "1_Attack,Go_again", 1);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, "VOLTAIRE", 1);
         return "";
       case "frost_lock_blue":
