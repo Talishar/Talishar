@@ -6,7 +6,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers, $EffectContext;
-  global $chainLinks, $chainLinkSummary;
+  global $chainLinks, $chainLinkSummary, $CCS_AttackTargetUID;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($source == "-") {
     if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
@@ -241,10 +241,22 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       if(IsHeroAttackTarget()) Mangle();
       break;
     case "cleave_red":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRALLY", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal " . $combatChainState[$CCS_DamageDealt] . " damage.");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
+      $indices = SearchMultizone($mainPlayer, "THEIRALLY");
+      if (strlen($indices) > 0) {
+        //remove the current target from the list of choices
+        $filtIndices = [];
+        $targetUID = $combatChainState[$CCS_AttackTargetUID];
+        $allies = GetAllies($defPlayer);
+        foreach(explode(",", $indices) as $index) {
+          $ind = explode("-", $index)[1];
+          if ($allies[$ind + 5] != $targetUID) array_push($filtIndices, $index);
+        }
+        $indices = implode(",", $filtIndices);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $indices);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal " . $combatChainState[$CCS_DamageDealt] . " damage.");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
+      }
       break;
     case "dead_eye_yellow":
       if (IsHeroAttackTarget() && HasAimCounter()) {
