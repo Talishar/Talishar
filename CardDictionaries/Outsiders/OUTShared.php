@@ -232,6 +232,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Surging Strike from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Top,Bottom", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
@@ -240,6 +241,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Combo card from your graveyard");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Top,Bottom", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
