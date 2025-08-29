@@ -2249,6 +2249,7 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
     if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
   }
+  RemoveCharacter($player, $index);
   return $cardID;
 }
 
