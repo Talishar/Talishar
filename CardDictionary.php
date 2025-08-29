@@ -2363,7 +2363,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && SearchCount(SearchHand($player, "", "", -1, -1, "", "", false, false, 2)) < 2;
     case "prism_sculptor_of_arc_light":
     case "prism":
-      return count($mySoul) == 0;
+      return count($mySoul) == 0 || $character[$index + 5] == 0;
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
       return count($mySoul) == 0 || !HasIncreasedAttack();
