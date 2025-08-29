@@ -3403,8 +3403,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if ($from == "GY") {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "silver-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
-        $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=graven_call"));
-        RemoveGraveyard($currentPlayer, $index);
       }
       break;
     case "sacred_art_undercurrent_desires_blue":

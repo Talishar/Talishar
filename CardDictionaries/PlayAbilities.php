@@ -352,8 +352,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           if ($character[$i + 11] == $uniqueID) {
             if ($character[$i + 3] == 0) {
               ++$character[$i + 3];
-            } else {
-              ++$character[$i + 15];
             }
           }
         }

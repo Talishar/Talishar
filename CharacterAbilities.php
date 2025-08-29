@@ -979,7 +979,7 @@ function EquipWeapon($player, $cardID, $source = "-")
     array_splice($char, $insertIndex + 8, 0, 0);
     array_splice($char, $insertIndex + 9, 0, 2);
     array_splice($char, $insertIndex + 10, 0, "-");
-    array_splice($char, $insertIndex + 11, 0, GetUniqueId($cardID, $player));
+    array_splice($char, $insertIndex + 11, 0, $uniqueID);
     array_splice($char, $insertIndex + 12, 0, HasCloaked($cardID, $player));
     array_splice($char, $insertIndex + 13, 0, 0);
     array_splice($char, $insertIndex + 14, 0, 0);
