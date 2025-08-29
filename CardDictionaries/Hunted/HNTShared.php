@@ -416,8 +416,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "cindra_dracai_of_retribution":
     case "cindra":
-      RecurDagger($currentPlayer, 0);
-      RecurDagger($currentPlayer, 1);
+      RecurDagger($currentPlayer);
+      RecurDagger($currentPlayer);
       break;
     case "blood_runs_deep_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, "blood_runs_deep_red");
@@ -1032,10 +1032,10 @@ function RemoveMark($player)
   $character[13] = 0;
 }
 
-function RecurDagger($player, $mode) //$mode == 0 for left, and 1 for right
+function RecurDagger($player) //$mode == 0 for left, and 1 for right
 {
   $char = &GetPlayerCharacter($player);
-  if ($char[CharacterPieces() * ($mode + 1) + 1] == 0) { //Only Equip if there is a broken weapon/off-hand
+  if (NumOccupiedHands($player) < 2) { //Only Equip if there is a broken weapon/off-hand
     AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
     AddDecisionQueue("NULLPASS", $player, "-", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
