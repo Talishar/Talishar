@@ -2947,10 +2947,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         $character[$index + 2] = 0;
       }
       break;
-    case "prism_sculptor_of_arc_light":
-    case "prism":
-      BanishFromSoul($currentPlayer);
-      break;
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
       BanishFromSoul($currentPlayer);

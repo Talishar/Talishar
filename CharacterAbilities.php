@@ -1207,7 +1207,9 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
-      BanishFromSoul($currentPlayer);
+    case "prism_sculptor_of_arc_light":
+    case "prism":
+      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-");
       --$character[$cardIndex + 5];
       break;
     case "radiant_view":
