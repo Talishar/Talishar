@@ -4112,6 +4112,7 @@ function CharacterDefaultActiveState($cardID)
     case "compass_of_sunken_depths":
     case "pouncing_paws":
     case "fyendals_spring_tunic":
+    case "halo_of_lumina_light":
       return 1;
     default:
       return 2;
