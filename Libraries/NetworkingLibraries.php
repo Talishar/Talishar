@@ -1474,7 +1474,6 @@ function FinalizeTurn()
     if ($mainCharacter[$i - 1] == "talishar_the_lost_prince" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
     if ($mainCharacter[$i + 6] == 1) {
       DestroyCharacter($mainPlayer, $i-1); //Destroy if it was flagged for destruction
-      $mainCharacter[$i + 6] = 0;
     }
     if ($mainCharacter[$i] != 0) {
       if ($mainCharacter[$i] != 4) $mainCharacter[$i] = 2;
@@ -1484,7 +1483,6 @@ function FinalizeTurn()
   for ($i = 1; $i < count($defCharacter); $i += CharacterPieces()) {
     if ($defCharacter[$i + 6] == 1) {
       DestroyCharacter($defPlayer, $i-1); //Destroy if it was flagged for destruction
-      $defCharacter[$i + 6] = 0;
     }
     if ($defCharacter[$i] == 1 || $defCharacter[$i] == 2) {
       if ($defCharacter[$i] != 4) $defCharacter[$i] = 2;
