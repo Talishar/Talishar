@@ -2469,11 +2469,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $location = $parameters[1];
       $targetPlayer = (DelimStringContains($parameters[2], "THEIR", true) || $parameters[2] == "") ? $player : (($player == 1) ? 2 : 1);     
       $mainChar = &GetPlayerCharacter($mainPlayer);
-      if(DelimStringContains($location, "MYCHAR", true)) {
+      $sourceUID = $parameters[3] ?? -1;
+      if(DelimStringContains($location, "MYCHAR", true) && $sourceUID == -1) {
         $ind = intval(explode("-", $location)[1]);
-        $sourceUID = $mainChar[$ind + 11];
+        $sourceUID = $mainChar[$ind] == $cardID ? $mainChar[$ind + 11] : -1;
       }
-      else $sourceUID = -1;
       if (!SearchCurrentTurnEffects("tripwire_trap_red", $mainPlayer)) { //tripwire got an unannounced eratta to block flick hits
         AddOnHitTrigger($cardID, $sourceUID, targetPlayer: $targetPlayer);
         if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects

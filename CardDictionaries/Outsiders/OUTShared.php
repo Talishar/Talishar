@@ -795,6 +795,7 @@ function OUTAbilityCost($cardID)
           return;
         }
         $weaponTargetInd = "MYCHAR-$index";
+        $weaponUID = $char[$index + 11];
       }
       //Target Hero
       if(substr($targetHero, 0, 5) == "THEIR") {
@@ -820,7 +821,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source,$weaponTargetInd,{2}", 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source,$weaponTargetInd,{2},$weaponUID", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
     if ($onHitDraw) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
