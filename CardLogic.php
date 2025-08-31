@@ -4516,8 +4516,8 @@ function IsWeaponGreaterThanTwiceBasePower()
   if (count($combatChain) == 0) return false;
   if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalPower() > (PowerValue($combatChain[0], $mainPlayer, "CC") * 2)) return true;
   $char = &GetPlayerCharacter($mainPlayer);
-  if ($char[CharacterPieces()] == "raydn_duskbane" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
-  if ($char[CharacterPieces()] == "beaming_blade" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;
+  if (isset($char[CharacterPieces()]) && $char[CharacterPieces()] == "raydn_duskbane" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
+  if (isset($char[CharacterPieces()]) && $char[CharacterPieces()] == "beaming_blade" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;
   return false;
 }
 
