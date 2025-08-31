@@ -1929,8 +1929,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       $inventory = &GetInventory($player);
       $choices = [];
       foreach ($inventory as $cardID) {
-        WriteLog("HERE: $cardID");
-        if (TalentContains($cardID, "Reviled", $player) && TypeContains($cardID, "AA")) {
+        if (TalentContains($cardID, "REVILED", $player) && TypeContains($cardID, "AA")) {
           array_push($choices, $cardID);
         };
       }
