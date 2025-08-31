@@ -1307,6 +1307,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($option[0] == "LAYER") $source = $layers;
         else if ($option[0] == "MYHAND") $source = $myHand;
         else if ($option[0] == "THEIRHAND") $source = $theirHand;
+        else if ($option[0] == "MYARSENAL") $source = $myArsenal;
+        else if ($option[0] == "THEIRARSENAL") $source = $theirArsenal;
         else if ($option[0] == "MYDISCARD" || $option[0] == "MYDISCARDUID") $source = $myDiscard;
         else if ($option[0] == "THEIRDISCARD" || $option[0] == "THEIRDISCARDUID") $source = $theirDiscard;
         else if ($option[0] == "MYBANISH") $source = $myBanish;

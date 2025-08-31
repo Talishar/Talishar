@@ -83,9 +83,11 @@ function MZRemove($player, $lastResult, $parameter="-")
         $lastResult = RemoveBanish($otherPlayer, $mzIndex[1]);
         break;
       case "MYARS":
+      case "MYARSENAL":
         $lastResult = RemoveArsenal($player, $mzIndex[1]);
         break;
       case "THEIRARS":
+      case "THEIRARSENAL":
         $lastResult = RemoveArsenal($otherPlayer, $mzIndex[1]);
         break;
       case "MYPITCH":

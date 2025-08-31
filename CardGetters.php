@@ -9,6 +9,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
   else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
+  else if ($zone == "MYARSENAL" || $zone == "THEIRARSENAL") $rv = &GetArsenal($player);
   else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
   else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);

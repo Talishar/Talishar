@@ -272,6 +272,20 @@ function SearchHandForCardName($player, $name)
   return $indices;
 }
 
+function SearchArsenalForCardName($player, $name)
+{
+  $arsenal = &GetArsenal($player);
+  $indices = "";
+  if (SearchCurrentTurnEffects("amnesia_red", $player)) return $indices;
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if (ShareName(CardName($arsenal[$i]), $name)) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  return $indices;
+}
+
 function SearchArsenalForCard($player, $card, $facing = "-")
 {
   $arsenal = &GetArsenal($player);
@@ -1527,6 +1541,8 @@ function SearchMultizone($player, $searches)
               case "THEIRBANISH":
                 $searchResult = SearchBanishByName($otherPlayer, $name);
                 break;
+              case "THEIRARSENAL":
+                $searchResult = SearchArsenalForCardName($otherPlayer, $name);
               default:
                 break;
             }
