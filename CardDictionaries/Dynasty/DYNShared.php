@@ -749,7 +749,7 @@ function ImperialWarHorn($player, $term)
 function CheckContract($contractType, $cardBanished, $player)
 {
   $otherPlayer = $player == 1 ? 2 : 1;
-  $chosenName = explode("-", $contractType)[1] ?? "-";
+  $chosenName = strlen($contractType) > strlen("NAMEDCARD-") ? substr($contractType, strlen("NAMEDCARD-")) : "-";
   $contractType = explode("-", $contractType)[0];
   switch($contractType) {
     case "REDPITCH": return PitchValue($cardBanished) == 1;

@@ -1080,6 +1080,23 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         RemoveBanish($player, $toRemove[$i]);
       }
       return "";
+    case "HUNTERORHUNTED":
+      $cardID = "hunter_or_hunted_blue";
+      // Getting the card id into {0} makes it more compatible with bonds of agony logic
+      AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0");
+      AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      // banishing up to 3 more cards
+      for ($i = 0; $i < 3; $i++) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRARSENAL:isSameName={0}", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose which cards you want your opponent to banish", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+      }
+      return $lastResult;
     default: return "";
   }
 
