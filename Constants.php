@@ -418,6 +418,7 @@ $CCS_EclecticMag = 40;
 $CCS_FlickedDamage = 41;
 $CCS_NumUsedInReactions = 42;
 $CCS_NumReactionPlayedActivated = 43; //Number of reactions played or activated
+$CCS_NumCardsBlocking = 44; //used to track when cards "defend together"
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -541,7 +542,7 @@ function ResetChainLinkState()
   global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
-  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
+  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
 
   WriteLog("The chain link was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -581,6 +582,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_EclecticMag] = 0;
   $combatChainState[$CCS_NumUsedInReactions] = 0;
   $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
+  $combatChainState[$CCS_NumCardsBlocking] = 0;
 }
 
 function ResetMainClassState()

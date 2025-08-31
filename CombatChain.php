@@ -883,6 +883,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
 function OnBlockResolveEffects($cardID = "")
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
+  global $CCS_NumCardsBlocking;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     $effectPowerModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
@@ -956,228 +957,238 @@ function OnBlockResolveEffects($cardID = "")
   $blockedWithIce = 0;
   $blockedWithEarth = 0;
   $blockedWithAura = 0;
+  $numDefending = 0; //number of total cards defending
+  $start = -1; //contains the index where cards "defending together" starts
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
-    if ($combatChain[$i + 2] == "HAND" && $combatChain[$i + 1] == $defPlayer) ++$blockedFromHand;
-    if (TalentContains($combatChain[$i], "ICE", $defPlayer)) ++$blockedWithIce;
-    if (TalentContains($combatChain[$i], "EARTH", $defPlayer)) ++$blockedWithEarth;
-    if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
+    if ($combatChain[$i + 1] == $defPlayer) ++$numDefending;
+    if ($numDefending > $combatChainState[$CCS_NumCardsBlocking]) {
+      $start = $start == -1 ? $i : $start;
+      if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
+      if ($combatChain[$i + 2] == "HAND" && $combatChain[$i + 1] == $defPlayer) ++$blockedFromHand;
+      if (TalentContains($combatChain[$i], "ICE", $defPlayer)) ++$blockedWithIce;
+      if (TalentContains($combatChain[$i], "EARTH", $defPlayer)) ++$blockedWithEarth;
+      if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
+    }
   }
-  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain
+  if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain, may not be necessary anymore
       $defendingCard = $cardID;
-      $i = count($combatChain) - CombatChainPieces();
-    }
-    if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
-    if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
-    elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
-    if (SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("commanding_performance_red") == -1) AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
-    $defendingCard = $combatChain[$i];
-    switch ($defendingCard) {//code for Jarl's armor
-      case "ollin_ice_cap":
-        $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
-        if ($blockedWithIce - $sub > 0 && !IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard, $i);
-        break;
-      case "tectonic_crust":
-        $sub = TalentContains($defendingCard, "EARTH", $defPlayer) == true ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
-        if ($blockedWithEarth - $sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        break;
-      case "root_bound_trunks":
-        if ($blockedWithAura > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        break;
-      default:
-        break;
-    }
-    switch ($defendingCard) {
-      case "stalagmite_bastion_of_isenloft":
-        if (!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard);
-        else WriteLog("<span style='color:red;'>No ".CardLink("frostbite", "frostbite")." is created because there is no attacking hero when allies attack.</span>");
-        break;
-      case "ironhide_helm":
-      case "ironhide_plate":
-      case "ironhide_gauntlet":
-      case "ironhide_legs":
-      case "rampart_of_the_rams_head":
-      case "phantasmal_footsteps":
-      case "flameborn_retribution_red":
-      case "crown_of_providence":
-      case "flex_red":
-      case "flex_yellow":
-      case "flex_blue":
-      case "fyendals_fighting_spirit_red":
-      case "fyendals_fighting_spirit_yellow":
-      case "fyendals_fighting_spirit_blue":
-      case "brothers_in_arms_red":
-      case "brothers_in_arms_yellow":
-      case "brothers_in_arms_blue":
-      case "hornets_sting":
-      case "wayfinders_crest":
-      case "vambrace_of_determination":
-      case "soulbond_resolve":
-      case "scowling_flesh_bag":
-      case "firewall_red":
-      case "firewall_yellow":
-      case "firewall_blue":
-      case "civic_peak":
-      case "civic_duty":
-      case "civic_guide":
-      case "civic_steps":
-      case "tiger_eye_reflex_yellow":
-      case "tiger_eye_reflex_blue":
-      case "crowd_control_red":
-      case "crowd_control_yellow":
-      case "song_of_the_shining_knight_blue":
-      case "pack_call_red":
-      case "pack_call_yellow":
-      case "pack_call_blue":
-      case "stonewall_impasse":
-      case "gauntlets_of_iron_will":
-      case "golden_glare":
-      case "trounce_red":
-      case "test_of_agility_red":
-      case "clash_of_might_red":
-      case "clash_of_might_yellow":
-      case "clash_of_might_blue":
-      case "test_of_might_red":
-      case "wall_of_meat_and_muscle_red":
-      case "clash_of_agility_red":
-      case "clash_of_agility_yellow":
-      case "clash_of_agility_blue":
-      case "run_into_trouble_red":
-      case "clash_of_vigor_red":
-      case "clash_of_vigor_yellow":
-      case "clash_of_vigor_blue":
-      case "hearty_block_red":
-      case "test_of_vigor_red":
-      case "standing_order_red":
-      case "test_of_strength_red":
-      case "evo_magneto_blue_equip":
-      case "stride_of_reprisal":
-      case "traverse_the_universe":
-      case "mask_of_wizened_whiskers":
-      case "stonewall_gauntlet":
-      case "helm_of_halos_grace":
-      case "bracers_of_bellonas_grace":
-      case "warpath_of_winged_grace":
-      case "canopy_shelter_blue":
-      case "heavy_industry_surveillance":
-      case "heavy_industry_ram_stop":
-      case "barkskin_of_the_millennium_tree":
-      case "flash_of_brilliance":
-      case "unforgetting_unforgiving_red":
-      case "mask_of_deceit":
-      case "kabuto_of_imperial_authority":
-      case "thick_hide_hunter_yellow":
-      case "zap_clappers":
-      case "starlight_striders":
-      case "hoist_em_up_red":
-      case "breaker_helm_protos":
-      case "sunken_treasure_blue":
-      case "crash_and_bash_red":
-      case "crash_and_bash_yellow":
-      case "crash_and_bash_blue":
-      case "return_fire_red":
-      case "cogwerx_tinker_rings":
-      case "pinion_sentry_blue":
-      case "washed_up_wave":
-      case "on_the_horizon_red":
-      case "on_the_horizon_yellow":
-      case "on_the_horizon_blue":
-      case "helmsmans_peak":
-      case "lost_in_transit_yellow":
-      case "tricorn_of_saltwater_death":
-      case "dig_in_red":
-      case "dig_in_yellow":
-      case "dig_in_blue":
-      case "clash_of_bravado_yellow":
-      case "base_of_the_mountain":
-      case "test_of_iron_grip_red":
-      case "sunkwater_lookout":
-      case "sunkwater_exoshell":
-      case "sunkwater_pincers":
-      case "sunkwater_scalers":
-      case "call_for_backup_red":
-        AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        break;
-      case "apex_bonebreaker":
-        $num6Block = 0;
-        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
-          if (ModifiedPowerValue($combatChain[$j], $defPlayer, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
-        }
-        if ($num6Block) {
+      $start = count($combatChain) - CombatChainPieces();
+  }
+  else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
+  for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) {
+      if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
+      if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
+      elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
+      if (SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("commanding_performance_red") == -1) AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
+      $defendingCard = $combatChain[$i];
+      switch ($defendingCard) {//code for Jarl's armor
+        case "ollin_ice_cap":
+          $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
+          if ($blockedWithIce - $sub > 0 && !IsAllyAttacking()) AddLayer("TRIGGER", $mainPlayer, $defendingCard, $i);
+          break;
+        case "tectonic_crust":
+          $sub = TalentContains($defendingCard, "EARTH", $defPlayer) == true ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
+          if ($blockedWithEarth - $sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          break;
+        case "root_bound_trunks":
+          if ($blockedWithAura > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          break;
+        default:
+          break;
+      }
+      switch ($defendingCard) {
+        case "stalagmite_bastion_of_isenloft":
+          if (!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard);
+          else WriteLog("<span style='color:red;'>No ".CardLink("frostbite", "frostbite")." is created because there is no attacking hero when allies attack.</span>");
+          break;
+        case "ironhide_helm":
+        case "ironhide_plate":
+        case "ironhide_gauntlet":
+        case "ironhide_legs":
+        case "rampart_of_the_rams_head":
+        case "phantasmal_footsteps":
+        case "flameborn_retribution_red":
+        case "crown_of_providence":
+        case "flex_red":
+        case "flex_yellow":
+        case "flex_blue":
+        case "fyendals_fighting_spirit_red":
+        case "fyendals_fighting_spirit_yellow":
+        case "fyendals_fighting_spirit_blue":
+        case "brothers_in_arms_red":
+        case "brothers_in_arms_yellow":
+        case "brothers_in_arms_blue":
+        case "hornets_sting":
+        case "wayfinders_crest":
+        case "vambrace_of_determination":
+        case "soulbond_resolve":
+        case "scowling_flesh_bag":
+        case "firewall_red":
+        case "firewall_yellow":
+        case "firewall_blue":
+        case "civic_peak":
+        case "civic_duty":
+        case "civic_guide":
+        case "civic_steps":
+        case "tiger_eye_reflex_yellow":
+        case "tiger_eye_reflex_blue":
+        case "crowd_control_red":
+        case "crowd_control_yellow":
+        case "song_of_the_shining_knight_blue":
+        case "pack_call_red":
+        case "pack_call_yellow":
+        case "pack_call_blue":
+        case "stonewall_impasse":
+        case "gauntlets_of_iron_will":
+        case "golden_glare":
+        case "trounce_red":
+        case "test_of_agility_red":
+        case "clash_of_might_red":
+        case "clash_of_might_yellow":
+        case "clash_of_might_blue":
+        case "test_of_might_red":
+        case "wall_of_meat_and_muscle_red":
+        case "clash_of_agility_red":
+        case "clash_of_agility_yellow":
+        case "clash_of_agility_blue":
+        case "run_into_trouble_red":
+        case "clash_of_vigor_red":
+        case "clash_of_vigor_yellow":
+        case "clash_of_vigor_blue":
+        case "hearty_block_red":
+        case "test_of_vigor_red":
+        case "standing_order_red":
+        case "test_of_strength_red":
+        case "evo_magneto_blue_equip":
+        case "stride_of_reprisal":
+        case "traverse_the_universe":
+        case "mask_of_wizened_whiskers":
+        case "stonewall_gauntlet":
+        case "helm_of_halos_grace":
+        case "bracers_of_bellonas_grace":
+        case "warpath_of_winged_grace":
+        case "canopy_shelter_blue":
+        case "heavy_industry_surveillance":
+        case "heavy_industry_ram_stop":
+        case "barkskin_of_the_millennium_tree":
+        case "flash_of_brilliance":
+        case "unforgetting_unforgiving_red":
+        case "mask_of_deceit":
+        case "kabuto_of_imperial_authority":
+        case "thick_hide_hunter_yellow":
+        case "zap_clappers":
+        case "starlight_striders":
+        case "hoist_em_up_red":
+        case "breaker_helm_protos":
+        case "sunken_treasure_blue":
+        case "crash_and_bash_red":
+        case "crash_and_bash_yellow":
+        case "crash_and_bash_blue":
+        case "return_fire_red":
+        case "cogwerx_tinker_rings":
+        case "pinion_sentry_blue":
+        case "washed_up_wave":
+        case "on_the_horizon_red":
+        case "on_the_horizon_yellow":
+        case "on_the_horizon_blue":
+        case "helmsmans_peak":
+        case "lost_in_transit_yellow":
+        case "tricorn_of_saltwater_death":
+        case "dig_in_red":
+        case "dig_in_yellow":
+        case "dig_in_blue":
+        case "clash_of_bravado_yellow":
+        case "base_of_the_mountain":
+        case "test_of_iron_grip_red":
+        case "sunkwater_lookout":
+        case "sunkwater_exoshell":
+        case "sunkwater_pincers":
+        case "sunkwater_scalers":
+        case "call_for_backup_red":
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        }
-        break;
-      case "defender_of_daybreak_red":
-      case "defender_of_daybreak_yellow":
-      case "defender_of_daybreak_blue":
-        if (TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($defendingCard, $defPlayer);
-        break;
-      case "attune_with_cosmic_vibrations_blue":
-        if (!IsAllyAttacking()) {
-          $deck = new Deck($mainPlayer);
-          if ($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
+          break;
+        case "apex_bonebreaker":
+          $num6Block = 0;
+          for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+            if (ModifiedPowerValue($combatChain[$j], $defPlayer, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
+          }
+          if ($num6Block) {
             AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
           }
-        }
-        break;
-      case "battlefront_bastion_red":
-      case "battlefront_bastion_yellow":
-      case "battlefront_bastion_blue":
-        if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        break;
-      case "face_purgatory":
-        $conditionsMet = 0;
-        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
-          if (CardType($combatChain[$j]) == "AA") {
-            ++$conditionsMet; 
-            break;
+          break;
+        case "defender_of_daybreak_red":
+        case "defender_of_daybreak_yellow":
+        case "defender_of_daybreak_blue":
+          if (TalentContains($combatChain[0], "SHADOW", $mainPlayer)) AddCurrentTurnEffect($defendingCard, $defPlayer);
+          break;
+        case "attune_with_cosmic_vibrations_blue":
+          if (!IsAllyAttacking()) {
+            $deck = new Deck($mainPlayer);
+            if ($deck->Reveal(1) && PitchValue($deck->Top()) == 3) {
+              AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+            }
           }
-        }
-        for ($k = CombatChainPieces(); $k < count($combatChain); $k += CombatChainPieces()) {
-          if (DelimStringContains(CardType($combatChain[$k]), "A")) {
-            ++$conditionsMet; 
-            break;
+          break;
+        case "battlefront_bastion_red":
+        case "battlefront_bastion_yellow":
+        case "battlefront_bastion_blue":
+          if (NumCardsBlocking() <= 1) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          break;
+        case "face_purgatory":
+          $conditionsMet = 0;
+          for ($j = $start; $j < count($combatChain); $j += CombatChainPieces()) {
+            if (CardType($combatChain[$j]) == "AA") {
+              ++$conditionsMet; 
+              break;
+            }
           }
-        }
-        if ($conditionsMet == 2) {
-          AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        }
-        break;
-      case "ten_foot_tall_and_bulletproof_red":
-        AddNextTurnEffect($defendingCard, $defPlayer);
-        break;
-      case "quickdodge_flexors":
-        $char = &GetPlayerCharacter($defPlayer);
-        for ($j = 0; $j < count($char); $j += CharacterPieces()) {
-          if ($char[$j] == $defendingCard) $char[$j+7] = "1";
-        }
-        break;
-      case "light_fingers":
-        $defChar = GetPlayerCharacter($defPlayer);
-        if (ClassContains($defChar[0], "THIEF", $defPlayer)) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
-        break;
-      case "clash_of_mountains_red":
-      case "clash_of_mountains_yellow":
-      case "clash_of_mountains_blue":
-      case "clash_of_heads_yellow":
-      case "clash_of_chests_yellow":
-      case "clash_of_arms_yellow":
-      case "clash_of_legs_yellow":
-      case "clash_of_shields_yellow":
-        if (ClassContains($combatChain[0], "GUARDIAN", $mainPlayer)) {
-          AddLayer("TRIGGER", $defPlayer, $defendingCard, $defendingCard);
-        }
-        break;
-      case "overcrowded_blue":
-        //calling it an attack trigger for organization
-        AddLayer("TRIGGER", $defPlayer, $defendingCard, "COMBATCHAIN-$i", "ATTACKTRIGGER");
-        break;
-      default:
-        break;
-    }
-    if (SearchAuras("daily_grind_blue", $defPlayer) && TypeContains($defendingCard, "AA")) {
-      AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
+          for ($k = $start; $k < count($combatChain); $k += CombatChainPieces()) {
+            if (DelimStringContains(CardType($combatChain[$k]), "A")) {
+              ++$conditionsMet; 
+              break;
+            }
+          }
+          if ($conditionsMet == 2) {
+            AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          }
+          break;
+        case "ten_foot_tall_and_bulletproof_red":
+          AddNextTurnEffect($defendingCard, $defPlayer);
+          break;
+        case "quickdodge_flexors":
+          $char = &GetPlayerCharacter($defPlayer);
+          for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+            if ($char[$j] == $defendingCard) $char[$j+7] = "1";
+          }
+          break;
+        case "light_fingers":
+          $defChar = GetPlayerCharacter($defPlayer);
+          if (ClassContains($defChar[0], "THIEF", $defPlayer)) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          break;
+        case "clash_of_mountains_red":
+        case "clash_of_mountains_yellow":
+        case "clash_of_mountains_blue":
+        case "clash_of_heads_yellow":
+        case "clash_of_chests_yellow":
+        case "clash_of_arms_yellow":
+        case "clash_of_legs_yellow":
+        case "clash_of_shields_yellow":
+          if (ClassContains($combatChain[0], "GUARDIAN", $mainPlayer)) {
+            AddLayer("TRIGGER", $defPlayer, $defendingCard, $defendingCard);
+          }
+          break;
+        case "overcrowded_blue":
+          //calling it an attack trigger for organization
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, "COMBATCHAIN-$i", "ATTACKTRIGGER");
+          break;
+        default:
+          break;
+      }
+      if (SearchAuras("daily_grind_blue", $defPlayer) && TypeContains($defendingCard, "AA")) {
+        AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
+      }
+      ++$combatChainState[$CCS_NumCardsBlocking];
     }
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "mark_of_lightning", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
