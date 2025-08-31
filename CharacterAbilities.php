@@ -1240,7 +1240,6 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "grimoire_of_the_haunt":
       BanishCardForPlayer("grimoire_of_the_haunt", $currentPlayer, "EQUIP", "NA");
-      DestroyCharacter($currentPlayer, $cardIndex, true);
       break;
     case "symbiosis_shot":
       $character[$cardIndex + 2] -= 1;
