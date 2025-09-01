@@ -1574,9 +1574,11 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
         case "chane_bound_by_shadow":
         case "chane":
           $cardType = CardType($cardID);
-          if (($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
-            GiveAttackGoAgain();
-            $remove = true;
+          if (GetResolvedAbilityType($cardID, $from) == "AA") {
+            if (($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
+              GiveAttackGoAgain();
+              $remove = true;
+            }
           }
           break;
         default:
