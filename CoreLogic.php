@@ -2135,7 +2135,7 @@ function DoesAttackHaveGoAgain()
 function DestroyCurrentWeapon()
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  $index = $combatChainState[$CCS_WeaponIndex];
+  $index =  $combatChainState[$CCS_WeaponIndex];
   $char = &GetPlayerCharacter($mainPlayer);
   $char[$index + 7] = "1";
 }
@@ -2255,7 +2255,11 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
 
 function RemoveCharacter($player, $index)
 {
+  global $combatChainState, $CCS_WeaponIndex;
   if ($index == -1) return "";
+  if ($combatChainState[$CCS_WeaponIndex] > $index) { //account for shifting down
+    $combatChainState[$CCS_WeaponIndex] -= CharacterPieces();
+  }
   $char = &GetPlayerCharacter($player);
   $ret = $char[$index];
   for ($i = 0; $i < CharacterPieces(); ++$i) {

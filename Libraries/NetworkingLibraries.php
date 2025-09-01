@@ -1470,7 +1470,7 @@ function FinalizeTurn()
   ArsenalEndTurn($defPlayer);
   //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information
   //Reset characters/equipment
-  for ($i = 1; $i < count($mainCharacter); $i += CharacterPieces()) {
+  for ($i = count($mainCharacter) - CharacterPieces() + 1; $i >= 1; $i -= CharacterPieces()) {
     if ($mainCharacter[$i - 1] == "talishar_the_lost_prince" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
     if ($mainCharacter[$i + 6] == 1) {
       DestroyCharacter($mainPlayer, $i-1); //Destroy if it was flagged for destruction
@@ -1480,7 +1480,7 @@ function FinalizeTurn()
       $mainCharacter[$i + 4] = CharacterNumUsesPerTurn($mainCharacter[$i - 1]);
     }
   }
-  for ($i = 1; $i < count($defCharacter); $i += CharacterPieces()) {
+  for ($i = count($defCharacter) - CharacterPieces() + 1; $i >= 1; $i -= CharacterPieces()) {
     if ($defCharacter[$i + 6] == 1) {
       DestroyCharacter($defPlayer, $i-1); //Destroy if it was flagged for destruction
     }
