@@ -287,7 +287,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
       case "ridge_rider_shot_red":
       case "ridge_rider_shot_yellow":
       case "ridge_rider_shot_blue":
-        Opt($cardID, 1);
+        AddLayer("TRIGGER", $player, $cardID);
         break;
       case "remorseless_red":
         AddCurrentTurnEffect($cardID, $otherPlayer, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);

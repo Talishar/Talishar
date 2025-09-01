@@ -2083,6 +2083,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddCurrentTurnEffect($parameter, $player);
       }
       break;
+    case "ridge_rider_shot_red":
+    case "ridge_rider_shot_yellow":
+    case "ridge_rider_shot_blue":
+      Opt($parameter, 1);
+      break;
     case "eye_of_ophidia_blue":
       Opt($parameter, 2);
       break;
