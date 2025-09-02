@@ -594,7 +594,7 @@ function IsCardBanned($cardID, $format, $character)
 function isCardRestricted($cardName, $format, $count) {
   //restrictions go by card name, not card id
   $restrictedCards = [
-    "llcc", "compllcc" => ["Awakening", "Bonds of Ancestry", "Electromagnetic Somersault", "Crippling Crush", "Cull", "Deadwood Dirge", "Oaken Old",
+    "llcc", "compllcc" => ["Awakening", "Bonds of Ancestry", "Electromagnetic Somersault", "Crippling Crush", "Cull", "Oaken Old",
       "Open the Flood Gates", "Succumb to Temptation", "Warmonger's Diplomacy",
     ]
   ];
@@ -706,7 +706,7 @@ function isBannedInFormat($cardID, $format) {
           "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_wildfire",
           "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue",
           "traverse_the_universe", "zephyr_needle", "channel_lightning_valley_yellow", "flicker_wisp_yellow", "storm_striders",
-          "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue",
+          "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue", "talk_a_big_game_blue"
       ],
       "cc" => [
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
@@ -715,8 +715,9 @@ function isBannedInFormat($cardID, $format) {
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
-          "count_your_blessings_red", "count_your_blessings_yellow", "germinate_blue", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
-          "azalea_ace_in_the_hole", "death_dealer",
+          "count_your_blessings_red", "count_your_blessings_yellow", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
+          "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
+          "plume_of_evergrowth", "talk_a_big_game_blue"
       ],
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
