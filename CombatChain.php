@@ -1144,7 +1144,7 @@ function OnBlockResolveEffects($cardID = "")
             }
           }
           for ($k = $start; $k < count($combatChain); $k += CombatChainPieces()) {
-            if (DelimStringContains(CardType($combatChain[$k]), "A")) {
+            if (DelimStringContains(CardType($combatChain[$k], "CC"), "A")) {
               ++$conditionsMet; 
               break;
             }
