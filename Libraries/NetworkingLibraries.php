@@ -1899,6 +1899,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     }
     AddCharacterPlayCardTrigger($cardID, $playType, $from);
+    if (class_exists($cardID)) {
+      $card = new $cardID($currentPlayer);
+      $card->PayAdditionalCosts($from, $index);
+    }
     PayAdditionalCosts($cardID, $from, index: $index);
     ResetCardPlayed($cardID, $from);
   }

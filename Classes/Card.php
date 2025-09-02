@@ -25,12 +25,24 @@ class Card {
     return "NOT IMPLEMENTED";
   }
 
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    return "NOT IMPLEMENTED";
+  } 
+
   function CardType($from="", $additionalCosts="-") {
     return CardType($this->cardID, $from, $this->controller, $additionalCosts);
   }
 
   function PowerValue($from="CC", $index=-1, $base=false) {
     return PowerValue($this->cardID, $this->controller, $from, $index, $base);
+  }
+
+  function PayAdditionalCosts($from, $index="-") {
+    return "";
+  }
+
+  function IsPlayable($phase, $from, $index = -1, &$restriction = null, $pitchRestriction = "") {
+    return IsPlayable($this->cardID, $phase, $from, $index, $restriction, $this->controller, $pitchRestriction);
   }
 }
 
