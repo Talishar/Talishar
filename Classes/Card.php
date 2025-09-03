@@ -45,6 +45,10 @@ class Card {
     return;
   }
 
+  function EquipPayAdditionalCosts($cardIndex="-") {
+    return;
+  }
+
   function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
     return false;
   }
@@ -79,6 +83,34 @@ class Card {
 
   function ResolutionStepEffectTriggers($parameter) {
     return false; //return whether to remove the effect
+  }
+
+  function AddEffectHitTrigger($source="-", $fromCombat=true, $target="-", $parameter="-") {
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-") {
+    return;
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    return;
+  }
+
+  function PowerModifier($from = "", $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
+    return 0;
+  }
+
+  function SelfCostModifier($from) {
+    return 0;
+  }
+
+  function AbilityHasGoAgain($from) {
+    return false;
+  }
+
+  function IsGold() {
+    return false;
   }
 }
 

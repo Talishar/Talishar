@@ -2741,6 +2741,10 @@ function SelfCostModifier($cardID, $from)
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
   global $CS_CheeredThisTurn;
   $otherPlayer = ($currentPlayer == 1) ? 2 : 1;
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    return $card->SelfCostModifier($from);
+  }
   switch ($cardID) {
     case "arknight_ascendancy_red":
     case "ninth_blade_of_the_blood_oath_yellow":
@@ -2839,8 +2843,6 @@ function SelfCostModifier($cardID, $from)
       $myNumGold = CountItem("gold", $currentPlayer);
       $theirNumGold = CountItem("gold", $otherPlayer);
       return $myNumGold < $theirNumGold ? -2 : 0;
-    case "crowd_goes_wild_yellow":
-      return GetClassState($currentPlayer, $CS_CheeredThisTurn) > 0 ? -3 : 0;
     default:
       return 0;
   }

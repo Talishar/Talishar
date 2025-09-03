@@ -1470,6 +1470,10 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
+  if (class_exists($effects[0])) {
+    $card = new $effects[0]($mainPlayer);
+    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $parameter);
+  }
   switch ($effects[0]) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
@@ -1549,7 +1553,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "kassai_of_the_golden_sand":
     case "kassai":
     case "hood_of_red_sand":
-    case "blood_follows_blade_yellow":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "talk_a_big_game_blue":
@@ -2000,6 +2003,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   }
   if ($additionalCosts == "ATTACKTRIGGER") {
     ProcessAttackTrigger($parameter, $player, $target, $uniqueID);
+  }
+  if (class_exists($parameter)) {
+    $card = new $parameter($player);
+    return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
   }
   switch ($parameter) {
     case "HEAVE":
@@ -4153,17 +4160,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
   global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed;
+  if (class_exists($cardID)) {
+    $card = new $cardID($player);
+    return $card->ProcessAttackTrigger($target, $uniqueID);
+  }
   switch($cardID) {
     case "unsheathed_red":
       CacheCombatResult();
       if (IsWeaponGreaterThanTwiceBasePower()) GiveAttackGoAgain(); // borrowing ideas from merciless battleaxe (merciless_battleaxe) and shift the tide of battle (shift_the_tide_of_battle_yellow)
-      break;
-    case "comeback_kid_red":
-    case "comeback_kid_yellow":
-    case "comeback_kid_blue":
-      if(PlayerHasLessHealth($mainPlayer)) {
-        Cheer($mainPlayer);
-      }
       break;
     case "mocking_blow_red":
     case "mocking_blow_yellow":
@@ -4171,12 +4175,6 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       if(PlayerHasLessHealth($defPlayer)) {
         BOO($mainPlayer);
       }
-      break;
-    case "bully_tactics_red":
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-      AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("SPECIFICCARD", $player, "BULLY", 1);
       break;
     case "bask_in_your_own_greatness_red":
     case "bask_in_your_own_greatness_yellow":

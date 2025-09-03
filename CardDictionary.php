@@ -3238,11 +3238,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       //check that there's an aura with a suspense counter
       if (count(GetSuspenseAuras($currentPlayer)) == 0) return true;
       return false;
-    case "blood_follows_blade_yellow":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      if (SearchCombatChainAttacks($mainPlayer, subtype:"Sword") != "") return false;
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword", $mainPlayer)) return false;
-      return true;
     default:
       return false;
   }
@@ -3857,6 +3852,10 @@ function AbilityHasGoAgain($cardID, $from)
   $subtype = CardSubtype($cardID);
   $abilityType = GetResolvedAbilityType($cardID);
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "iris_of_reality") && $abilityType == "AA") return true;
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    return $card->AbilityHasGoAgain($from);
+  }
   if ($set == "WTR") return WTRAbilityHasGoAgain($cardID);
   else if ($set == "ARC") return ARCAbilityHasGoAgain($cardID);
   else if ($set == "CRU") return CRUAbilityHasGoAgain($cardID);
@@ -5500,6 +5499,10 @@ function IsGrantedBuff($cardID) {
 
 // equipment that count as gold
 function IsGold($cardID) {
+  if (class_exists($cardID)) {
+    $card = new $cardID(1);
+    return $card->IsGold();
+  }
   return match ($cardID) {
     "aurum_aegis" => true,
     "golden_galea" => true,

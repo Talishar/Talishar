@@ -111,6 +111,10 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         return 0;
     }
   }
+  if (class_exists($cardID)) {
+    $card = new $cardID($mainPlayer);
+    return $card->PowerModifier($from, $resourcesPaid, $repriseActive, $attackID);
+  }
   switch ($cardID) {
     case "romping_club":
       return (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
@@ -468,10 +472,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       $myNumGold = CountItem("gold", $mainPlayer);
       $theirNumGold = CountItem("gold", $defPlayer);
       return $myNumGold < $theirNumGold ? 2 : 0;
-    case "comeback_kid_red":
-    case "comeback_kid_yellow":
-    case "comeback_kid_blue":
-      return GetClassState($mainPlayer, $CS_CheeredThisTurn) ? 1 : 0;
     case "mocking_blow_red":
       return GetClassState($mainPlayer, $CS_BooedThisTurn) ? 4 : 0;
     case "mocking_blow_yellow":

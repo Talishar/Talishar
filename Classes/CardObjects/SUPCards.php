@@ -127,147 +127,234 @@ class bait extends Card {
 }
 
 
-// class blood_follows_blade_yellow extends Card {
+class blood_follows_blade_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "blood_follows_blade_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "blood_follows_blade_yellow";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
+      GiveAttackGoAgain();
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    else WriteLog("A previous chain link was targetted for no effect");
+    return "";
+  }
 
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain, $mainPlayer;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if (SearchCombatChainAttacks($mainPlayer, subtype:"Sword") != "") return false;
+    if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword", $mainPlayer)) return false;
+    return true;
+  }
 
-// class bully_tactics_red extends Card {
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = "-") {
+    global $mainPlayer;
+    AddLayer("TRIGGER", $mainPlayer, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+    return false;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "bully_tactics_red";
-//     $this->controller = $controller;
-//     }
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-') {
+    PlayAlly("cintari_sellsword", $this->controller, isToken:true);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class comeback_kid_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "comeback_kid_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class comeback_kid_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "comeback_kid_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
 
-// class comeback_kid_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "comeback_kid_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+}
 
 
-// class crowd_goes_wild_yellow extends Card {
+class bully_tactics_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "crowd_goes_wild_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "bully_tactics_red";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
 
-
-// class garland_of_spring extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "garland_of_spring";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
+    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "BULLY", 1);
+    return;
+  }
+}
 
 
-// class golden_gait extends Card {
+class comeback_kid_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "golden_gait";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "comeback_kid_red";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
 
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if(PlayerHasLessHealth($this->controller)) {
+      Cheer($this->controller);
+    }
+  }
 
-// class golden_galea extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "golden_galea";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class golden_gauntlets extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "golden_gauntlets";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
+  }
+}
 
 
-// class golden_heart_plate extends Card {
+class comeback_kid_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "golden_heart_plate";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "comeback_kid_yellow";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if(PlayerHasLessHealth($this->controller)) {
+      Cheer($this->controller);
+    }
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
+  }
+}
+
+class comeback_kid_blue extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "comeback_kid_blue";
+    $this->controller = $controller;
+    }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if(PlayerHasLessHealth($this->controller)) {
+      Cheer($this->controller);
+    }
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
+  }
+}
+
+class crowd_goes_wild_yellow extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "crowd_goes_wild_yellow";
+    $this->controller = $controller;
+    }
+
+  function SelfCostModifier($from) {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) > 0 ? -3 : 0;
+  }
+}
+
+
+class garland_of_spring extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "garland_of_spring";
+    $this->controller = $controller;
+    }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    GainResources($this->controller, 1);
+    return "";
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+}
+
+
+class golden_gait extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "golden_gait";
+    $this->controller = $controller;
+    }
+
+  function IsGold() {
+    return true;
+  }
+}
+
+
+class golden_galea extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "golden_galea";
+    $this->controller = $controller;
+    }
+
+  function IsGold() {
+    return true;
+  }
+}
+
+
+class golden_gauntlets extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "golden_gauntlets";
+    $this->controller = $controller;
+    }
+
+  function IsGold() {
+    return true;
+  }
+}
+
+
+class golden_heart_plate extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "golden_heart_plate";
+    $this->controller = $controller;
+    }
+
+  function IsGold() {
+    return true;
+  }
+}
 
 
 // class helm_of_hindsight extends Card {

@@ -20,6 +20,10 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
   }
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
+  if (class_exists($cardID)) {
+    $card = new $cardID($mainPlayer);
+    return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1]);
+  }
   switch ($cardID) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
@@ -568,9 +572,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
           }
         }
       }
-      break;
-    case "blood_follows_blade_yellow":
-      PlayAlly("cintari_sellsword", $mainPlayer, isToken:true);
       break;
     default:
       break;

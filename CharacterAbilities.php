@@ -1004,6 +1004,10 @@ function EquipPayAdditionalCosts($cardIndex)
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    return $card->EquipPayAdditionalCosts($cardIndex);
+  }
   switch ($cardID) {
     case "fyendals_spring_tunic": //Tunic energy counters
       if (!ManualTunicSetting($currentPlayer) || $character[$cardIndex + 2] == 3) {
@@ -1197,7 +1201,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "quartermasters_boots":
     case "graven_justaucorpse":
     case "breakwater_undertow":
-    case "garland_of_spring":
     case "punching_gloves":
     case "richter_scale":
     case "gauntlet_of_boulderhold":

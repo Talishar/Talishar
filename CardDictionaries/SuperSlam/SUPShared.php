@@ -12,7 +12,6 @@ function SUPAbilityType($cardID, $index=-1, $from="-"): string
     "pleiades_superstar" => "I",
     "pleiades" => "I",
     "helm_of_hindsight" => "I",
-    "garland_of_spring" => "A",
     "punching_gloves" => "A",
     default => ""
   };
@@ -35,7 +34,6 @@ function SUPAbilityCost($cardID): int
 function SUPAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
-    "garland_of_spring" => true,
     "punching_gloves" => true,
     default => false,
   };
@@ -55,7 +53,6 @@ function SUPCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "confidence" => TypeContains($attackID, "AA", $mainPlayer),
     "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
-    "blood_follows_blade_yellow" => true,
     default => false,
   };
 }
@@ -74,9 +71,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddTopDeck($graveyard[$index], $currentPlayer, "DISCARD");
         RemoveGraveyard($currentPlayer, $index);
       }
-      break;
-    case "garland_of_spring":
-      GainResources($currentPlayer, 1);
       break;
     case "punching_gloves":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -123,13 +117,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "up_on_a_pedestal_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
-    case "comeback_kid_red": //I'm going to try be default to be consistent in coding attack triggers as triggers
-    case "comeback_kid_yellow":
-    case "comeback_kid_blue":
     case "mocking_blow_red":
     case "mocking_blow_yellow":
     case "mocking_blow_blue":
-    case "bully_tactics_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, $cardID, additionalCosts:"ATTACKTRIGGER");
       break;
     case "bask_in_your_own_greatness_red":
@@ -261,13 +251,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     //expansion slot cards
-    case "blood_follows_blade_yellow":
-      if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
-        GiveAttackGoAgain();
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      else WriteLog("A previous chain link was targetted for no effect");
-      break;
     case "light_up_the_leaves_red":
       DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       break;
