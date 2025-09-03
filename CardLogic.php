@@ -4084,10 +4084,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $names = [];
       $discard = GetDiscard($player);
       for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
-        $cardName = NameOverride($discard[$i], $player);
-        if (TypeContains($discard[$i], "AA") && $cardName != "") {
-          if (!in_array($cardName, $names)) {
-            array_push($names, $cardName);
+        if (!isFaceDownMod($discard[$i + 2])) {
+          $cardName = NameOverride($discard[$i], $player);
+          if (TypeContains($discard[$i], "AA") && $cardName != "") {
+            if (!in_array($cardName, $names)) {
+              array_push($names, $cardName);
+            }
           }
         }
       }
