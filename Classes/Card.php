@@ -8,7 +8,7 @@ class Card {
   public $controller;
 
   // Constructor
-  function __construct($cardID, $controller) {
+  function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
   }
@@ -41,8 +41,48 @@ class Card {
     return "";
   }
 
+  function PayAbilityAdditionalCosts($index, $from="-", $zoneIndex=-1) {
+    return;
+  }
+
   function IsPlayable($phase, $from, $index = -1, &$restriction = null, $pitchRestriction = "") {
     return IsPlayable($this->cardID, $phase, $from, $index, $restriction, $this->controller, $pitchRestriction);
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    return IsPlayRestricted($this->cardID, $restriction, $from, $index, $this->controller, $resolutionCheck);
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    return false;
+  }
+
+  function AbilityType($index = -1, $from = "-") {
+    return "";
+  }
+
+  function EffectPowerModifier($attached=false) {
+    return 0;
+  }
+
+  function CombatEffectActive($parameter = "-", $defendingCard = "", $flicked = false) {
+    return false;
+  }
+
+  function NumUses() {
+    return 0;
+  }
+
+  function GetAbilityTypes($index=-1, $from="-") {
+    return "";
+  }
+
+  function GetAbilityNames($index=-1, $from="-", $foundNullTime=false, $layerCount=0) {
+    return "";
+  }
+
+  function ResolutionStepEffectTriggers($parameter) {
+    return false; //return whether to remove the effect
   }
 }
 

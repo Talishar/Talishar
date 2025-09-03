@@ -317,7 +317,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
-        CombatChainPayAdditionalCosts($index, "PLAY");
+        if (class_exists($cardID)) {
+          $card = new $cardID($currentPlayer);
+          $card->PayAdditionalCosts("CC", $index);
+        }
+        else CombatChainPayAdditionalCosts($index, "PLAY");
         PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7], zone: "CC");
       }
       break;
@@ -2719,6 +2723,10 @@ function GetTargetOfAttack($cardID = "")
 function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 {
   global $currentPlayer;
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    return $card->PayAbilityAdditionalCosts($index, $from, $zoneIndex);
+  }
   switch ($cardID) {
     case "great_library_of_solana":
       for ($i = 0; $i < 2; ++$i) {
@@ -2776,16 +2784,6 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      }
-      break;
-    case "bait":
-      $auras = &GetAuras($currentPlayer);
-      if (!IsReactionPhase()) {
-        $uniqueID = $auras[$zoneIndex + 6];
-        AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
-      }
-      else {
-        --$auras[$zoneIndex + 5];
       }
       break;
     default:

@@ -1154,6 +1154,11 @@ function ResolutionStepEffectTriggers()
   global $currentTurnEffects, $chainLinks, $combatChain, $turn, $mainPlayer;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
+    $parameter = $currentEffect[1] ?? "-";
+    if (class_exists($currentEffect[0])) {
+      $card = new $currentEffect[0]($mainPlayer);
+      if ($card->ResolutionStepAttackTriggers($parameter)) RemoveCurrentTurnEffect($i);
+    }
     switch ($currentEffect[0]) {
       case "electromagnetic_somersault_red":
       case "electromagnetic_somersault_yellow":
@@ -1162,11 +1167,6 @@ function ResolutionStepEffectTriggers()
         AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
         RemoveCurrentTurnEffect($i);
         break;
-      case "bait":
-        $uniqueID = explode("-", $currentTurnEffects[$i])[1];
-        $index = SearchAurasForUniqueID($uniqueID, $mainPlayer);
-        if ($index != -1) DestroyAura($mainPlayer, $index, skipClose:true);
-        RemoveCurrentTurnEffect($i);
       default:
         break;
     }

@@ -580,6 +580,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
 
 function EffectPowerModifier($cardID, $attached=false)
 {
+  global $mainPlayer;
+  if (class_exists($cardID)) {
+    $card = new $cardID($mainPlayer);
+    return $card->EffectPowerModifier($attached);
+  }
   $set = CardSet($cardID);
   if ($set == "WTR") return WTREffectPowerModifier($cardID);
   else if ($set == "ARC") return ARCEffectPowerModifier($cardID);
@@ -2030,12 +2035,18 @@ function CurrentEffectEndTurnAbilities()
 
 function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false, $flicked = false)
 {
-  global $CombatChain;
+  global $CombatChain, $mainPlayer;
   if ($SpectraTarget) return;
   if ($cardID == "AIM") return true;
   $cardID = ShiyanaCharacter($cardID);
   if ($defendingCard == "") $cardToCheck = $CombatChain->AttackCard()->ID();
   else $cardToCheck = $defendingCard;
+  $trimID = ExtractCardID($cardID);
+  if (class_exists($trimID)) {
+    $card = new $trimID($mainPlayer);
+    $parameter = explode("-", $cardID)[1] ?? "-";
+    return $card->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
   $set = CardSet($cardID);
   if ($set == "WTR") return WTRCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "ARC") return ARCCombatEffectActive($cardID, $cardToCheck);
