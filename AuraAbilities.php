@@ -126,6 +126,12 @@ function CreatesAuraForOpponent($cardID)
 
 function AuraNumUses($cardID)
 {
+  if (class_exists($cardID)) {
+    $card = new $cardID("-");
+    $ret = $card->NumUses();
+    unset($card);
+    return $ret;
+  }
   switch ($cardID) {
     case "shimmers_of_silver_blue":
     case "haze_bending_blue":
@@ -138,7 +144,6 @@ function AuraNumUses($cardID)
     case "malefic_incantation_yellow":
     case "malefic_incantation_blue":
     case "ring_of_roses_yellow":
-    case "bait":
       return 1;
     default:
       return 0;

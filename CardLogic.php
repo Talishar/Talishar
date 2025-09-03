@@ -505,6 +505,10 @@ function ContinueDecisionQueue($lastResult = "")
           BeginningReactionStepEffects();
           ProcessDecisionQueue();
         } else if ($cardID == "TRIGGER") {
+          if (class_exists($parameter)) {
+            $card = new $parameter($player);
+            $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $params[0]);
+          }
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         }

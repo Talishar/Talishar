@@ -317,7 +317,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
-        CombatChainPayAdditionalCosts($index, "PLAY");
+        if (class_exists($cardID)) {
+          $card = new $cardID($currentPlayer);
+          $card->PayAdditionalCosts("CC", $index);
+          unset($card);
+        }
+        else CombatChainPayAdditionalCosts($index, "PLAY");
         PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7], zone: "CC");
       }
       break;
@@ -1899,6 +1904,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     }
     AddCharacterPlayCardTrigger($cardID, $playType, $from);
+    if (class_exists($cardID)) {
+      $card = new $cardID($currentPlayer);
+      $card->PayAdditionalCosts($from, $index);
+      unset($card);
+    }
     PayAdditionalCosts($cardID, $from, index: $index);
     ResetCardPlayed($cardID, $from);
   }
@@ -2715,6 +2725,12 @@ function GetTargetOfAttack($cardID = "")
 function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 {
   global $currentPlayer;
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    $ret = $card->PayAbilityAdditionalCosts($index, $from, $zoneIndex);
+    unset($card);
+    return $ret;
+  }
   switch ($cardID) {
     case "great_library_of_solana":
       for ($i = 0; $i < 2; ++$i) {
@@ -2772,16 +2788,6 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      }
-      break;
-    case "bait":
-      $auras = &GetAuras($currentPlayer);
-      if (!IsReactionPhase()) {
-        $uniqueID = $auras[$zoneIndex + 6];
-        AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
-      }
-      else {
-        --$auras[$zoneIndex + 5];
       }
       break;
     default:
@@ -3872,7 +3878,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $playText = "";
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
-      $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      if (class_exists($cardID)) {
+        $card = new $cardID($currentPlayer);
+        $playText = $card->PlayAbility($from, $resourcesPaid, $target, $additionalCosts);
+        unset($card);
+      }
+      else $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();

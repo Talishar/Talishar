@@ -1752,11 +1752,6 @@ function CombatChainPayAdditionalCosts($index, $from)
       if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
       ++$combatChain[$i + 11];
       break;
-    case "backspin_thrust_red":
-      $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer, 0);
-      ++$combatChain[$i + 11];
-      break;
     default:
       break;
   }

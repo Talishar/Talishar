@@ -3,24 +3,83 @@
 
 
 class Card {
-    // Properties
-    private $cardID;
-    private $controller;
+  // Properties
+  public $cardID;
+  public $controller;
 
-    // Constructor
-    function __construct($cardID, $controller) {
-      $this->cardID = $cardID;
-      $this->controller = $controller;
+  // Constructor
+  function __construct($cardID, $controller="-") {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+  function IsType($types) {
+    $typesArr = explode(",", $types);
+    for($i=0; $i<count($typesArr); ++$i) {
+      if(TypeContains($this->cardID, $typesArr[$i], $this->controller)) return true;
     }
+    return false;
+  }
 
-    function IsType($types) {
-      $typesArr = explode(",", $types);
-      for($i=0; $i<count($typesArr); ++$i) {
-        if(TypeContains($this->cardID, $typesArr[$i], $this->controller)) return true;
-      }
-      return false;
-    }
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    return "NOT IMPLEMENTED";
+  }
 
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    return "NOT IMPLEMENTED";
+  } 
+
+  function CardType($from="", $additionalCosts="-") {
+    return CardType($this->cardID, $from, $this->controller, $additionalCosts);
+  }
+
+  function PowerValue($from="CC", $index=-1, $base=false) {
+    return PowerValue($this->cardID, $this->controller, $from, $index, $base);
+  }
+
+  function PayAdditionalCosts($from, $index="-") {
+    return "";
+  }
+
+  function PayAbilityAdditionalCosts($index, $from="-", $zoneIndex=-1) {
+    return;
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    return false;
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    return false;
+  }
+
+  function AbilityType($index = -1, $from = "-") {
+    return "";
+  }
+
+  function EffectPowerModifier($attached=false) {
+    return 0;
+  }
+
+  function CombatEffectActive($parameter = "-", $defendingCard = "", $flicked = false) {
+    return false;
+  }
+
+  function NumUses() {
+    return 0;
+  }
+
+  function GetAbilityTypes($index=-1, $from="-") {
+    return "";
+  }
+
+  function GetAbilityNames($index=-1, $from="-", $foundNullTime=false, $layerCount=0) {
+    return "";
+  }
+
+  function ResolutionStepEffectTriggers($parameter) {
+    return false; //return whether to remove the effect
+  }
 }
 
 ?>

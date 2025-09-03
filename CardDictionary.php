@@ -237,7 +237,6 @@ function SetID($cardID)
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
     "meet_madness_red" => "AAC014", //temporary
-    "backspin_thrust_red" => "SUP254", //temporary
     "UPR551" => "UPR551", //ghostly touch
   ];
 
@@ -1230,6 +1229,12 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   }
   if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && $currentPlayer == $mainPlayer) return "AA";
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return "AA";
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    $ret = $card->AbilityType($index, $from);
+    unset($card);
+    return $ret;
+  }
   if ($set == "WTR") return WTRAbilityType($cardID, $index, $from);
   else if ($set == "ARC") return ARCAbilityType($cardID, $index);
   else if ($set == "CRU") return CRUAbilityType($cardID, $index);
@@ -1278,6 +1283,12 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
+  if (class_exists($cardID)) {
+    $card = new $cardID("-");
+    $ret = $card->GetAbilityTypes($index, $from);
+    unset($card);
+    return $ret;
+  }
   return match ($cardID) {
     "guardian_of_the_shadowrealm_red" => $from == "BANISH" ? "A" : "",
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
@@ -1315,8 +1326,6 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "bam_bam_yellow" => "I,AA",
     "deny_redemption_red" => "I,AA",
     "cogwerx_blunderbuss" => "I,AA",
-
-    "bait" => "AR,AA",
     default => "",
   };
 }
@@ -1334,6 +1343,12 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
   //don't count resolution step as a layer blocking actions
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    $ret = $card->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+    unset($card);
+    return $ret;
+  }
   switch ($cardID) {
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
@@ -1525,18 +1540,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       }
       $names = $names[1] == "-" ? $names[0] : implode(",", $names);
       return $names;
-    case "bait":
-      $canAttack = CanAttack($cardID, "PLAY", $index, "MYAURA");
-      $names = ["-", "-"];
-      if (IsReactionPhase()) $names[0] = "Attack Reaction";
-      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-        return implode(",", $names);
-      } else if ($canAttack) {
-        $names[1] = "Attack";
-      }
-      if ($names[1] == "-") return $names[0];
-      // elseif ($names[0] == "-") return $names[1];
-      return implode(",", $names);
     case "light_up_the_leaves_red":
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
@@ -1819,7 +1822,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) return true;
+  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
+    return true;
+  }
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
@@ -2249,6 +2254,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $restriction = true;
       return true;
     }
+  }
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    $ret = $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
+    unset($card);
+    return $ret;
   }
   switch ($cardID) {
     case "breaking_scales":
@@ -3161,12 +3172,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if ($from == "PLAY" && $combatChain[11] >= 3) return true;
       return false;
-    case "backspin_thrust_red":
-      if ($player != $mainPlayer) return true;
-      if ($from != "PLAY") return false;
-      if (GetTapped($player, "MYITEMS", "subtype=Cog") == "") return true;
-      if ($from == "PLAY" && $combatChain[11] >= 1) return true;
-      return false;
     case "old_knocker":
       return CheckTapped("MYCHAR-0", $currentPlayer);
     case "swiftstrike_bracers":
@@ -3699,7 +3704,6 @@ function HasTower($cardID)
 function RequiresDiscard($cardID)
 {
   switch ($cardID) {
-    case "alpha_rampage_red":
     case "bloodrush_bellow_yellow":
     case "reckless_swing_blue":
     case "breakneck_battery_red":
@@ -4815,6 +4819,12 @@ function Is1H($cardID): bool|int
 function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
 {
   global $currentPlayer, $mainPlayer;
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    $ret = $card->AbilityPlayableFromCombatChain($index);
+    unset($card);
+    return $ret;
+  }
   $isAttacking = $currentPlayer == $mainPlayer;
   $auras = GetAuras($currentPlayer);
   return match ($cardID) {
@@ -4827,8 +4837,6 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $isAttacking,
     "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking,
     "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
-    "bait" => $index != "-" && IsReactionPhase() && $currentPlayer == $mainPlayer && $auras[$index + 5] > 0, //makes it so you can't activate the AR layers it puts onto the combat chain
-    "backspin_thrust_red" => $isAttacking,
     default => false
   };
 }
