@@ -656,6 +656,7 @@ function isUnimplemented($cardID) {
         "garland_of_spring" => false,
         "dig_in_red", "dig_in_yellow", "dig_in_blue" => false,
         "up_on_a_pedestal_blue" => false,
+        "outside_interference_blue" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
