@@ -11,7 +11,6 @@ function SUPAbilityType($cardID, $index=-1, $from="-"): string
     "tuffnut_bumbling_hulkster" => "I",
     "pleiades_superstar" => "I",
     "pleiades" => "I",
-    "helm_of_hindsight" => "I",
     "punching_gloves" => "A",
     default => ""
   };
@@ -25,7 +24,6 @@ function SUPAbilityCost($cardID): int
     "lyath_goldmane_vile_savant" => 2,
     "kayo_underhanded_cheat" => 4,
     "kayo_strong_arm" => 4,
-    "helm_of_hindsight" => 3,
     "punching_gloves" => 2,
     default => 0
   };
@@ -63,15 +61,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
-    case "helm_of_hindsight":
-      $uid = explode("-", $target)[1];
-      $index = SearchDiscardForUniqueID($uid, $currentPlayer);
-      if ($index != -1) {
-        $graveyard = GetDiscard($currentPlayer);
-        AddTopDeck($graveyard[$index], $currentPlayer, "DISCARD");
-        RemoveGraveyard($currentPlayer, $index);
-      }
-      break;
     case "punching_gloves":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

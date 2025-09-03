@@ -1438,15 +1438,6 @@ function EquipPayAdditionalCosts($cardIndex)
       }
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
-    case "helm_of_hindsight":
-      $search = "MYDISCARD:type=AA";
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack to put on top of your deck (or pass)", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      DestroyCharacter($currentPlayer, $cardIndex);
-      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

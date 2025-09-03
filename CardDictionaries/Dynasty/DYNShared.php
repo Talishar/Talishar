@@ -641,6 +641,10 @@ function HasSurge($cardID)
 
 function ContractType($cardID, $chosenName="-")
 {
+  if (class_exists($cardID)) {
+    $card = new $cardID(1);
+    return $card->ContractType($chosenName);
+  }
   switch($cardID)
   {
     case "eradicate_yellow": return "YELLOWPITCH";
@@ -656,7 +660,6 @@ function ContractType($cardID, $chosenName="-")
     case "already_dead_red": return "NONACTION";
     case "defang_the_dragon_red": return "HITMARKEDFANG";
     case "extinguish_the_flames_red": return "HITMARKEDCINDRA";
-    case "hunter_or_hunted_blue": return "NAMEDCARD-$chosenName";
     default: return "";
   }
 }
@@ -667,6 +670,10 @@ function ContractCompleted($player, $cardID)
   WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
   if($EffectContext == "coercive_tendency_blue") AddCurrentTurnEffect("coercive_tendency_blue", $player);
+  if (class_exists($cardID)) {
+    $card = new $cardID($player);
+    return $card->ContractCompleted();
+  }
   switch($cardID)
   {
     case "eradicate_yellow": case "leave_no_witnesses_red": case "surgical_extraction_blue":
@@ -677,7 +684,7 @@ function ContractCompleted($player, $cardID)
     case "nix_the_nimble_red": case "nix_the_nimble_yellow": case "nix_the_nimble_blue":
     case "sack_the_shifty_red": case "sack_the_shifty_yellow": case "sack_the_shifty_blue":
     case "slay_the_scholars_red": case "slay_the_scholars_yellow": case "slay_the_scholars_blue":
-    case "already_dead_red": case "hunter_or_hunted_blue":
+    case "already_dead_red":
       PutItemIntoPlayForPlayer("silver", $player);
       break;
     case "defang_the_dragon_red": case "extinguish_the_flames_red":

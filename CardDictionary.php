@@ -139,7 +139,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "treasure_island" => "Macro",
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W", // AI custom weapon
-    "hunter_or_hunted_blue" => "DR" //temporary while waiting for fabcube
   ];
 
   if (isset($specialCases[$cardID])) {
@@ -696,6 +695,10 @@ function AbilityCost($cardID)
   if (SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return 1;
 
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return 0;
+  if (class_exists($cardID)) {
+    $card = new $cardID($currentPlayer);
+    return $card->AbilityCost();
+  }
   if ($set == "WTR") return WTRAbilityCost($cardID);
   else if ($set == "ARC") return ARCAbilityCost($cardID);
   else if ($set == "CRU") return CRUAbilityCost($cardID);

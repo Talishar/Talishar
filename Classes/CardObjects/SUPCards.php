@@ -357,30 +357,105 @@ class golden_heart_plate extends Card {
 }
 
 
-// class helm_of_hindsight extends Card {
+class helm_of_hindsight extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "helm_of_hindsight";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "helm_of_hindsight";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uid = explode("-", $target)[1];
+    $index = SearchDiscardForUniqueID($uid, $this->controller);
+    if ($index != -1) {
+      $graveyard = GetDiscard($this->controller);
+      AddTopDeck($graveyard[$index], $this->controller, "DISCARD");
+      RemoveGraveyard($this->controller, $index);
+    }
+    return "";
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    $search = "MYDISCARD:type=AA";
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack to put on top of your deck (or pass)", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+}
 
 
-// class hunter_or_hunted_blue extends Card {
+class hunter_or_hunted_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "hunter_or_hunted_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "hunter_or_hunted_blue";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    $count = count(GetDeck($mainPlayer));
+    $player = $this->controller;
+    $parameter = $this->cardID;
+    if (!IsAllyAttacking()) {
+      //name the card
+      AddDecisionQueue("INPUTCARDNAME", $player, "-");
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "<b>📣{0}</b> is being hunted!", 1);
+      //Adding the name to the card to track
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "NAMEDCARD|", 1);
+      AddDecisionQueue("ADDSTATICBUFF", $player, $target, 1);
+      //revealing the top card
+      AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
+      AddDecisionQueue("MZREVEAL", $player, "-", 1);
+      AddDecisionQueue("MZOP", $player, "GETCARDNAME", 1);
+      AddDecisionQueue("SETDQVAR", $player, 1, 1);
+      AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
+      // show their hand, arsenal, and deck
+      AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
+      AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
+      AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
+
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
+      AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
+      AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
+      //MULTISHOWCARDSTHEIRDECK seems to return PASS, so we need this else and need to repeat the check
+      AddDecisionQueue("ELSE", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, "{1}", 1);
+      AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
+      AddDecisionQueue("SPECIFICCARD", $player, "HUNTERORHUNTED", 1);
+    }
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    global $combatChain;
+    $index = count($combatChain) - CombatChainPieces();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, target:$index);
+  }
+
+  function ContractType($chosenName = '') {
+    return "NAMEDCARD-$chosenName";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+}
 
 
 // class in_the_palm_of_your_hand_red extends Card {

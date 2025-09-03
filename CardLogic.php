@@ -505,10 +505,6 @@ function ContinueDecisionQueue($lastResult = "")
           BeginningReactionStepEffects();
           ProcessDecisionQueue();
         } else if ($cardID == "TRIGGER") {
-          if (class_exists($parameter)) {
-            $card = new $parameter($player);
-            $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $params[0]);
-          }
           ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
         }
@@ -4119,38 +4115,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "alpha_instinct_blue":
       PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
-      break;
-    case "hunter_or_hunted_blue":
-      $count = count(GetDeck($defPlayer));
-      if (!IsAllyAttacking()) {
-        //name the card
-        AddDecisionQueue("INPUTCARDNAME", $player, "-");
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("WRITELOG", $player, "<b>📣{0}</b> is being hunted!", 1);
-        //Adding the name to the card to track
-        AddDecisionQueue("PREPENDLASTRESULT", $player, "NAMEDCARD|", 1);
-        AddDecisionQueue("ADDSTATICBUFF", $player, $target, 1);
-        //revealing the top card
-        AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0", 1);
-        AddDecisionQueue("MZREVEAL", $player, "-", 1);
-        AddDecisionQueue("MZOP", $player, "GETCARDNAME", 1);
-        AddDecisionQueue("SETDQVAR", $player, 1, 1);
-        AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
-        // show their hand, arsenal, and deck
-        AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
-        AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
-        AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
-
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
-        AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
-        AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
-        //MULTISHOWCARDSTHEIRDECK seems to return PASS, so we need this else and need to repeat the check
-        AddDecisionQueue("ELSE", $player, "-");
-        AddDecisionQueue("PASSPARAMETER", $player, "{1}", 1);
-        AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
-        AddDecisionQueue("SPECIFICCARD", $player, "HUNTERORHUNTED", 1);
-      }
       break;
     default:
       break;

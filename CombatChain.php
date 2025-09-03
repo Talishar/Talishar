@@ -762,6 +762,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
     }
   }
+  
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
@@ -792,6 +793,10 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       break;
     default:
       break;
+  }
+  if (class_exists($cardID)) {
+    $card = new $cardID($defPlayer);
+    $card->OnDefenseReactionResolveEffects($from, $blockedFromHand);
   }
   switch ($cardID) {
     case "tripwire_trap_red":
@@ -845,10 +850,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       break;
     case "chain_reaction_yellow":
       if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "hunter_or_hunted_blue":
-      $index = count($combatChain) - CombatChainPieces();
-      AddLayer("TRIGGER", $defPlayer, $cardID, target:$index);
       break;
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "mark_of_lightning", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {

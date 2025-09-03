@@ -61,6 +61,10 @@ class Card {
     return "";
   }
 
+  function AbilityCost() {
+    return 0;
+  }
+
   function EffectPowerModifier($attached=false) {
     return 0;
   }
@@ -111,6 +115,18 @@ class Card {
 
   function IsGold() {
     return false;
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    return;
+  }
+
+  function ContractType($chosenName = "") {
+    return "";
+  }
+
+  function ContractCompleted() {
+    return;
   }
 }
 
