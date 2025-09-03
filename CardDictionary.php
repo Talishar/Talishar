@@ -3704,7 +3704,6 @@ function HasTower($cardID)
 function RequiresDiscard($cardID)
 {
   switch ($cardID) {
-    case "alpha_rampage_red":
     case "bloodrush_bellow_yellow":
     case "reckless_swing_blue":
     case "breakneck_battery_red":

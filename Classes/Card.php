@@ -45,10 +45,6 @@ class Card {
     return;
   }
 
-  function IsPlayable($phase, $from, $index = -1, &$restriction = null, $pitchRestriction = "") {
-    return false;
-  }
-
   function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
     return false;
   }

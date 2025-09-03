@@ -17,11 +17,11 @@ class alpha_rampage_red extends Card {
     return "";
   }
 
-  function IsPlayable($phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = "") {
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
     $myHand = GetHand($this->controller);
-    if ($from == "HAND" && count($myHand) < 2) return false;
-    else if (count($myHand) < 1) return false;
-    return IsPlayable($this->cardID, $phase, $from, $index, $restriction, $this->controller, $pitchRestriction);
+    if ($from == "HAND" && count($myHand) < 2) return true;
+    else if (count($myHand) < 1) return true;
+    return false;
   }
 
   function PayAdditionalCosts($from, $index="-") {
