@@ -1157,7 +1157,7 @@ function ResolutionStepEffectTriggers()
     $parameter = $currentEffect[1] ?? "-";
     if (class_exists($currentEffect[0])) {
       $card = new $currentEffect[0]($mainPlayer);
-      if ($card->ResolutionStepAttackTriggers($parameter)) RemoveCurrentTurnEffect($i);
+      if ($card->ResolutionStepEffectTriggers($parameter)) RemoveCurrentTurnEffect($i);
     }
     switch ($currentEffect[0]) {
       case "electromagnetic_somersault_red":

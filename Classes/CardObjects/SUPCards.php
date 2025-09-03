@@ -447,12 +447,13 @@ class take_the_bait_red extends Card {
     }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK");
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
     AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
     AddDecisionQueue("MULTIADDTOPDECK", $this->controller, "-", 1);
-    PlayAura("bait", $this->controller, isToken:true, effectController:$this->controller, effectSource:$this->cardID);
+    PlayAura("bait", $otherPlayer, isToken:true, effectController:$this->controller, effectSource:$this->cardID);
     return "";
   }
 }

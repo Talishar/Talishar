@@ -46,11 +46,11 @@ class Card {
   }
 
   function IsPlayable($phase, $from, $index = -1, &$restriction = null, $pitchRestriction = "") {
-    return IsPlayable($this->cardID, $phase, $from, $index, $restriction, $this->controller, $pitchRestriction);
+    return false;
   }
 
   function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
-    return IsPlayRestricted($this->cardID, $restriction, $from, $index, $this->controller, $resolutionCheck);
+    return false;
   }
 
   function AbilityPlayableFromCombatChain($index="-") {
