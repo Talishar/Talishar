@@ -164,7 +164,6 @@ function CharacterStartTurnAbility($index)
         $char->status = 0;
         BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
         WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less life");
-        $char->Finished();
       }
       break;
     case "bravo_star_of_the_show":
