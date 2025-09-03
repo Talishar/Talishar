@@ -583,7 +583,9 @@ function EffectPowerModifier($cardID, $attached=false)
   global $mainPlayer;
   if (class_exists($cardID)) {
     $card = new $cardID($mainPlayer);
-    return $card->EffectPowerModifier($attached);
+    $ret = $card->EffectPowerModifier($attached);
+    unset($card);
+    return $ret;
   }
   $set = CardSet($cardID);
   if ($set == "WTR") return WTREffectPowerModifier($cardID);

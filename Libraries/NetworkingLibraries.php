@@ -320,6 +320,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (class_exists($cardID)) {
           $card = new $cardID($currentPlayer);
           $card->PayAdditionalCosts("CC", $index);
+          unset($card);
         }
         else CombatChainPayAdditionalCosts($index, "PLAY");
         PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7], zone: "CC");
@@ -1906,6 +1907,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (class_exists($cardID)) {
       $card = new $cardID($currentPlayer);
       $card->PayAdditionalCosts($from, $index);
+      unset($card);
     }
     PayAdditionalCosts($cardID, $from, index: $index);
     ResetCardPlayed($cardID, $from);
@@ -2725,7 +2727,9 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
   global $currentPlayer;
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
-    return $card->PayAbilityAdditionalCosts($index, $from, $zoneIndex);
+    $ret = $card->PayAbilityAdditionalCosts($index, $from, $zoneIndex);
+    unset($card);
+    return $ret;
   }
   switch ($cardID) {
     case "great_library_of_solana":
@@ -3877,7 +3881,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (class_exists($cardID)) {
         $card = new $cardID($currentPlayer);
         $playText = $card->PlayAbility($from, $resourcesPaid, $target, $additionalCosts);
-        WriteLog("IT'S WORKING!");
+        unset($card);
       }
       else $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked

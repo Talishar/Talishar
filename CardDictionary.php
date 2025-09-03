@@ -1231,7 +1231,9 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return "AA";
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
-    return $card->AbilityType($index, $from);
+    $ret = $card->AbilityType($index, $from);
+    unset($card);
+    return $ret;
   }
   if ($set == "WTR") return WTRAbilityType($cardID, $index, $from);
   else if ($set == "ARC") return ARCAbilityType($cardID, $index);
@@ -1283,7 +1285,9 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
   if (class_exists($cardID)) {
     $card = new $cardID("-");
-    return GetAbilityTypes($index, $from);
+    $ret = $card->GetAbilityTypes($index, $from);
+    unset($card);
+    return $ret;
   }
   return match ($cardID) {
     "guardian_of_the_shadowrealm_red" => $from == "BANISH" ? "A" : "",
@@ -1341,7 +1345,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
-    return $card->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+    $ret = $card->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+    unset($card);
+    return $ret;
   }
   switch ($cardID) {
     case "teklo_plasma_pistol":
@@ -2251,7 +2257,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   }
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
-    return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
+    $ret = $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
+    unset($card);
+    return $ret;
   }
   switch ($cardID) {
     case "breaking_scales":
@@ -4814,7 +4822,9 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
   global $currentPlayer, $mainPlayer;
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
-    return $card->AbilityPlayableFromCombatChain($index);
+    $ret = $card->AbilityPlayableFromCombatChain($index);
+    unset($card);
+    return $ret;
   }
   $isAttacking = $currentPlayer == $mainPlayer;
   $auras = GetAuras($currentPlayer);

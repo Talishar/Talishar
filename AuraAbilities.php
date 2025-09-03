@@ -128,7 +128,9 @@ function AuraNumUses($cardID)
 {
   if (class_exists($cardID)) {
     $card = new $cardID("-");
-    return $card->NumUses();
+    $ret = $card->NumUses();
+    unset($card);
+    return $ret;
   }
   switch ($cardID) {
     case "shimmers_of_silver_blue":
