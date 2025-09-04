@@ -16,6 +16,7 @@ include "Classes/CombatChain.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
 include "Classes/CardObjects/WTRCards.php";
+include "Classes/CardObjects/ROSCards.php";
 include "Classes/CardObjects/SUPCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "CurrentEffectAbilities.php";

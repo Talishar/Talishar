@@ -247,17 +247,31 @@
 // }
 
 
-// class barkskin_of_the_millennium_tree extends Card {
+class barkskin_of_the_millennium_tree extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "barkskin_of_the_millennium_tree";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "barkskin_of_the_millennium_tree";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasTemper() {
+    return true;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if(SearchCount(SearchBanish($this->controller, talent: "EARTH")) >= 4){
+    PlayAura("embodiment_of_earth", $this->controller);
+    }
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $blockedWithAura, $blockedWithEarth, $blockedWithIce, $i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+  }
+}
 
 
 // class blast_to_oblivion_red extends Card {

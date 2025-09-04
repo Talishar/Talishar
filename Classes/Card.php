@@ -128,6 +128,14 @@ class Card {
   function ContractCompleted() {
     return;
   }
+
+  function HasTemper() {
+    return false;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $blockedWithAura, $blockedWithEarth, $blockedWithIce, $i) {
+    return;
+  }
 }
 
 ?>

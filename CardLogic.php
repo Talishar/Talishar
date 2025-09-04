@@ -3349,11 +3349,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       }
       AddDecisionQueue("VERDANCE", $player, "$parameter,$target", 1);
       break;
-    case "barkskin_of_the_millennium_tree":
-      if(SearchCount(SearchBanish($player, talent: "EARTH")) >= 4){
-        PlayAura("embodiment_of_earth", $player);
-      }
-      break;
     case "felling_of_the_crown_red":
       Decompose($player, "FELLINGOFTHECROWN");
       break;

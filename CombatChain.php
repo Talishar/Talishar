@@ -954,6 +954,7 @@ function OnBlockResolveEffects($cardID = "")
         break;
     }
   }
+  WriteLog("HERE: $combatChainState[$CCS_NumCardsBlocking]");
   $blockedFromHand = 0;
   $blockedWithIce = 0;
   $blockedWithEarth = 0;
@@ -976,13 +977,18 @@ function OnBlockResolveEffects($cardID = "")
       $start = count($combatChain) - CombatChainPieces();
   }
   else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
+  WriteLog("HERE: $combatChainState[$CCS_NumCardsBlocking]");
   for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
+      $defendingCard = $combatChain[$i];
+      $card = GetClass($defendingCard, $defPlayer);
+      if ($card != "-") {
+        $card -> OnBlockResolveEffects($blockedFromHand, $blockedWithAura, $blockedWithEarth, $blockedWithIce, $i);
+      }
       if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
       if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
       elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
       if (SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("commanding_performance_red") == -1) AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
-      $defendingCard = $combatChain[$i];
       switch ($defendingCard) {//code for Jarl's armor
         case "ollin_ice_cap":
           $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
@@ -1072,7 +1078,6 @@ function OnBlockResolveEffects($cardID = "")
         case "canopy_shelter_blue":
         case "heavy_industry_surveillance":
         case "heavy_industry_ram_stop":
-        case "barkskin_of_the_millennium_tree":
         case "flash_of_brilliance":
         case "unforgetting_unforgiving_red":
         case "mask_of_deceit":

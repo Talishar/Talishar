@@ -432,7 +432,7 @@ function ResetCombatChainState()
   global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
-  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated;
+  global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -475,6 +475,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_FlickedDamage] = 0;
   $combatChainState[$CCS_NumUsedInReactions] = 0;
   $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
+  $combatChainState[$CCS_NumCardsBlocking] = 0;
   
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {

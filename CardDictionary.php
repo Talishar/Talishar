@@ -3585,6 +3585,8 @@ function HasBattleworn($cardID)
 
 function HasTemper($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasTemper();
   switch ($cardID) {
     case "crater_fist":
     case "courage_of_bladehold":
@@ -3625,7 +3627,6 @@ function HasTemper($cardID)
     case "heavy_industry_power_plant":
     case "heavy_industry_ram_stop":
     case "gauntlets_of_the_boreal_domain":
-    case "barkskin_of_the_millennium_tree":
     case "tectonic_crust":
     case "helm_of_the_arknight":
     case "breaker_helm_protos":
@@ -5508,10 +5509,15 @@ function IsGold($cardID) {
   }
   return match ($cardID) {
     "aurum_aegis" => true,
-    "golden_galea" => true,
-    "golden_heart_plate" => true,
-    "golden_gauntlets" => true,
-    "golden_gait" => true,
     default => false
   };
+}
+
+function GetClass($cardID, $player) {
+  $className = match($cardID) {
+    "1000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
+    default => $cardID
+  };
+  if (class_exists($className)) return new $className($player);
+  else return "-";
 }
