@@ -338,11 +338,11 @@ function CharacterDestroyEffect($cardID, $player)
       SearchCurrentTurnEffects("MERIDIANWARD", $player, true);
       break;
     case "halo_of_lumina_light":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYBANISH:pitch=2;subtype=aura");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a yellow aura to put into play");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("PUTPLAY", $mainPlayer, "0", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYBANISH:pitch=2;subtype=Aura");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a yellow aura to put into play");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("PUTPLAY", $player, "0", 1);
       break;
     default:
       break;
