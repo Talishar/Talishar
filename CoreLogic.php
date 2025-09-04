@@ -3310,8 +3310,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
       WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
       BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
-      return "";
-      //It's unclear whether chains of mephetis should stip draw triggerrs. 8.5.6c suggests it should not, but the rules team
+      continue;
+      //It's unclear whether chains of mephetis should skip draw triggerrs. 8.5.6c suggests it should not, but the rules team
       //thinks it does due do specific wording of the effect
     } 
     else {
