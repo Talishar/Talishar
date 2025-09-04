@@ -569,7 +569,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "CHARFLAGDESTROY":
       $character = &GetPlayerCharacter($player);
-      $character[$parameter + 7] = 1;
+      if ($parameter + 7 < count($character)) $character[$parameter + 7] = 1;
+      else WriteLog("Something went wrong wtih CHARFLAGDESTROY, please submit a bug report");
       return $lastResult;
     case "ADDCHARACTEREFFECT":
       $characterEffects = &GetCharacterEffects($player);
