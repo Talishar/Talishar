@@ -3835,8 +3835,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     switch ($cardID) { //cards that add themselves as blocking
       case "quickdodge_flexors":
-        OnBlockEffects($index, "EQUIP");
-        OnBlockResolveEffects($cardID);
+        if ($turn[0] != "B") {
+          OnBlockEffects($index, "EQUIP");
+          OnBlockResolveEffects($cardID);
+        }
         break;
       default:
         break;
