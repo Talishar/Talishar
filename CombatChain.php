@@ -954,7 +954,6 @@ function OnBlockResolveEffects($cardID = "")
         break;
     }
   }
-  WriteLog("HERE: $combatChainState[$CCS_NumCardsBlocking]");
   $blockedFromHand = 0;
   $blockedWithIce = 0;
   $blockedWithEarth = 0;
@@ -977,7 +976,6 @@ function OnBlockResolveEffects($cardID = "")
       $start = count($combatChain) - CombatChainPieces();
   }
   else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
-  WriteLog("HERE: $combatChainState[$CCS_NumCardsBlocking]");
   for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
       $defendingCard = $combatChain[$i];
