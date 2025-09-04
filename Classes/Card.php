@@ -130,7 +130,7 @@ class Card {
   }
 
   function HasTemper() {
-    return HasTemper($this->cardID);
+    return GeneratedHasTemper($this->cardID) == "true";
   }
 
   function OnBlockResolveEffects($blockedFromHand, $blockedWithAura, $blockedWithEarth, $blockedWithIce, $i) {
