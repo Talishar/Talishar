@@ -30,11 +30,11 @@ class Card {
   } 
 
   function CardType($from="", $additionalCosts="-") {
-    return CardType($this->cardID, $from, $this->controller, $additionalCosts);
+    return GeneratedCardType($this->cardID);
   }
 
   function PowerValue($from="CC", $index=-1, $base=false) {
-    return PowerValue($this->cardID, $this->controller, $from, $index, $base);
+    return GeneratedPowerValue($this->cardID);
   }
 
   function PayAdditionalCosts($from, $index="-") {
