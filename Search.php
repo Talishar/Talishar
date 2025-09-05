@@ -1893,8 +1893,10 @@ function SearchLayersForNAA() {
 function GetGoldIndices($player) {
   $indices = [];
   $items = GetItems($player);
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
-    if ($items[$i] == "gold") array_push($indices, "MYITEMS-$i");
+  if (!SearchCurrentTurnEffects("amnesia_red", $player)) {
+    for ($i = 0; $i < count($items); $i += ItemPieces()) {
+      if ($items[$i] == "gold") array_push($indices, "MYITEMS-$i");
+    }
   }
   $char = GetPlayerCharacter($player);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {

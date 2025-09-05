@@ -3355,7 +3355,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "NOFEAR", 1);
       break;
     case "the_golden_son_yellow":
-      if (CountItem("gold", $currentPlayer) > 0) {
+      if (CountItemByName("Gold", $currentPlayer) > 0) {
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("gold", "gold"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         $goldIndices = GetGoldIndices($currentPlayer);
