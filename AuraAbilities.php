@@ -1273,16 +1273,18 @@ function AuraDamageTakenAbilities($player, $damage, $source)
   for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     switch ($otherAuras[$i]) {
       case "channel_lightning_valley_yellow":
-        if(GetClassState($otherPlayer, $CS_DamageDealt) == 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
-          $otherAuras[$i + 5] -= 1;
-          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
-            AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+        if (!$selfInflicted) {
+          if(GetClassState($otherPlayer, $CS_DamageDealt) == 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
+            $otherAuras[$i + 5] -= 1;
+            if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
+              AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+            }
           }
-        }
-        elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
-          $otherAuras[$i + 5] -= 1;
-          if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
-            AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+          elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
+            $otherAuras[$i + 5] -= 1;
+            if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
+              AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+            }
           }
         }
         break;
