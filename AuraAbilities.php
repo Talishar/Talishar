@@ -1363,7 +1363,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "pierce_reality_blue":
-        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) <= 1) {
+        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) < 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2");
           --$auras[$i + 5];
           AddCurrentTurnEffect("pierce_reality_blue", $currentPlayer, true);
