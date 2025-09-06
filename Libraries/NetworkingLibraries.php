@@ -1167,7 +1167,8 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
         }
       }
       $currentTurnEffects = array_values($currentTurnEffects);
-      MainCharacterHitTrigger($cardID);
+      $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
+      MainCharacterHitTrigger($cardID, $targetPlayer);
       MainCharacterHitEffects();
       ArsenalHitEffects();
       AuraHitEffects($cardID);

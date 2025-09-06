@@ -566,7 +566,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
         break;
       case "arakni_tarantula":
         if ($mainCharacter[$i+1] < 3) {
-          if (IsHeroAttackTarget() && ($cardID == "-" && SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer))) {
+          if ($targetPlayer == $defPlayer && ($cardID == "-" && SubtypeContains($attackID, "Dagger", $mainPlayer) || SubtypeContains($cardID, "Dagger", $mainPlayer))) {
             AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
           }
         }
