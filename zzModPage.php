@@ -4,6 +4,7 @@ include_once 'MenuBar.php';
 
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
+include_once './Libraries/CSRFLibraries.php';
 
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
@@ -20,7 +21,8 @@ echo ("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%
 
 ?>
   <br>
-  <form action='./BanPlayer.php'>
+  <form action='./BanPlayer.php' method="POST">
+    <?php echo getCSRFTokenField(); ?>
     <label for="ipToBan" style='font-weight:bolder; margin-left:10px;'>Game to IP ban from:</label>
     <input type="text" id="ipToBan" name="ipToBan" value="">
     <br>
@@ -31,7 +33,8 @@ echo ("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%
   
   <br>
   
-  <form action='./CloseGame.php'>
+  <form action='./CloseGame.php' method="POST">
+    <?php echo getCSRFTokenField(); ?>
     <label for="gameToClose" style='font-weight:bolder; margin-left:10px;'>Game to close:</label>
     <input type="text" id="gameToClose" name="gameToClose" value="">
     <input type="submit" value="Close Game">
@@ -39,7 +42,8 @@ echo ("<div style='position:absolute; padding:10px; z-index:1; top:15%; left:35%
 
   <br>
 
-  <form action='./BanPlayer.php'>
+  <form action='./BanPlayer.php' method="POST">
+  <?php echo getCSRFTokenField(); ?>
   <label for="playerToBan" style='font-weight:bolder; margin-left:10px;'>Player to ban:</label>
   <input type="text" id="playerToBan" name="playerToBan" value="">
   <input type="submit" value="Ban">

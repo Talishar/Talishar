@@ -31,19 +31,29 @@
 
 	function CreateEditCard($id, $hasGoAgain)
 	{
+		// Validate and sanitize input
+		if (empty($id) || !is_string($id)) {
+			return false;
+		}
+		
+		// Ensure hasGoAgain is a valid boolean/integer
+		$hasGoAgain = intval($hasGoAgain);
+		
 		$conn = GetDBConnection();
 		$sql = "INSERT INTO carddefinition (cardID, hasGoAgain)
-		        VALUES ('" . $id . "', " . $hasGoAgain . ")
+		        VALUES (?, ?)
 		        ON DUPLICATE KEY UPDATE
-		        hasGoAgain = " . $hasGoAgain . ";";
+		        hasGoAgain = ?";
 
 		$stmt = mysqli_stmt_init($conn);
 		if (!mysqli_stmt_prepare($stmt, $sql)) {
 			return false;
 		}
+		mysqli_stmt_bind_param($stmt, "sii", $id, $hasGoAgain, $hasGoAgain);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 		mysqli_close($conn);
+		return true;
 	}
 
 ?>

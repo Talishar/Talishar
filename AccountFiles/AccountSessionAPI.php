@@ -58,7 +58,35 @@
   function CheckSession()
   {
     if (session_status() === PHP_SESSION_NONE) {
+      // Set secure session parameters
+      ini_set('session.cookie_httponly', 1);
+      ini_set('session.cookie_secure', 1);
+      ini_set('session.use_strict_mode', 1);
+      ini_set('session.cookie_samesite', 'Strict');
+      
       session_start();
+      
+      // Regenerate session ID periodically for security
+      if (!isset($_SESSION['last_regeneration'])) {
+        $_SESSION['last_regeneration'] = time();
+      } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
+        session_regenerate_id(true);
+        $_SESSION['last_regeneration'] = time();
+      }
+    }
+  }
+  
+  function SecureSessionStart()
+  {
+    if (session_status() === PHP_SESSION_NONE) {
+      // Set secure session parameters
+      ini_set('session.cookie_httponly', 1);
+      ini_set('session.cookie_secure', 1);
+      ini_set('session.use_strict_mode', 1);
+      ini_set('session.cookie_samesite', 'Strict');
+      
+      session_start();
+      session_regenerate_id(true);
     }
   }
 ?>

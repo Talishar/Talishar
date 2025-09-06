@@ -3,6 +3,7 @@
 include "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
+include_once './Libraries/CSRFLibraries.php';
 
 session_start();
 
@@ -16,9 +17,14 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpay
   exit;
 }
 
-$playerToBan = TryGET("playerToBan", "");
-$ipToBan = TryGET("ipToBan", "");
-$playerNumberToBan = TryGET("playerNumberToBan", "");
+// Validate CSRF token for POST requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
+}
+
+$playerToBan = TryPOST("playerToBan", "");
+$ipToBan = TryPOST("ipToBan", "");
+$playerNumberToBan = TryPOST("playerNumberToBan", "");
 
 if ($playerToBan != "") {
   file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
