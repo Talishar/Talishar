@@ -209,6 +209,10 @@ class Card {
   function WonClashAbility($winnerID) {
     return;
   }
+
+  function AddGraveyardEffect($from, $effectController) {
+    return;
+  }
 }
 
 ?>
