@@ -1014,4 +1014,30 @@ class two_steps_ahead_blue extends card {
     PlayAura("confidence", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
   }
 }
+
+class gang_robbery_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "gang_robbery_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $search = "THEIRAURAS:cardType=T";
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to steal", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+    return;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    $auras = GetAuras($this->controller);
+    if (count($auras) / AuraPieces() >= 3) return 3;
+    else return 0;
+  }
+}
 ?>
