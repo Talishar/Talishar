@@ -415,6 +415,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
     $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
   }
+  if ($cardID == "passing_mirage_blue") ReEvalCombatChain(); //check if phantasm should trigger
   return $cardID;
 }
 
@@ -1450,7 +1451,7 @@ function AuraAttackAbilities($attackID)
         if ($auras[$i + 5] > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn loses phantasm");
           --$auras[$i + 5];
-          AddCurrentTurnEffect("passing_mirage_blue", $mainPlayer, true);
+          // AddCurrentTurnEffect("passing_mirage_blue", $mainPlayer, true);
         }
         break;
       case "burn_them_all_red":
