@@ -1211,7 +1211,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "prism_advent_of_thrones":
     case "prism_sculptor_of_arc_light":
     case "prism":
-      MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-");
+      MZMoveCard($currentPlayer, "MYSOUL", "MYBANISH,SOUL,-");
       --$character[$cardIndex + 5];
       break;
     case "radiant_view":
