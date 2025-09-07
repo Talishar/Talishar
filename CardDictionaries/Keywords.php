@@ -148,19 +148,7 @@
     $otherPlayer = $playerID == 1 ? 2 : 1;
     
     $deck = new Deck($playerID);
-    $otherDeck = new Deck($otherPlayer);
     if (!$switched) {
-      switch ($otherDeck->Top()) { //I think these effects don't work when there's been a switcheroo
-        case "overturn_the_results_blue":
-          $tmp = $playerID;
-          $playerID = $otherPlayer;
-          $otherPlayer = $tmp;
-          WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
-          $deck = new Deck($playerID);
-          break;
-        default:
-          break;
-      }
       switch ($deck->Top()) {
         case "the_golden_son_yellow":
         case "thunk_red": case "thunk_yellow": case "thunk_blue":
