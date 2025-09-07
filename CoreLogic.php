@@ -1568,6 +1568,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if (($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if (($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) return true;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->CanPlayAsInstant($index, $from);
   switch ($cardID) {
     case "mighty_windup_red":
     case "mighty_windup_yellow":

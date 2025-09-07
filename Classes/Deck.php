@@ -38,12 +38,14 @@ class Deck {
     return $cardIDs;
   }
 
-  function Reveal($revealCount=1) {
+  function Reveal($revealCount=1, $switched=false) {
     // Code the reveal x number of cards from the top of the deck
     if(CanRevealCards($this->playerID)) {
       if($this->RemainingCards() > 0) {
+        $otherPlayer = $this->playerID == 1 ? 2 : 1;
         for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
-          WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
+          if (!$switched) WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
+          else WriteLog("👁️‍🗨️Player " . $otherPlayer . " reveals " . CardLink($this->deck[$revealedCards] , $this->deck[$revealedCards]) . " from their opponent's deck!");
           AddEvent("REVEAL", $this->deck[$revealedCards]);
         }
         if(SearchLandmark("korshem_crossroad_of_elements")) KorshemRevealAbility($this->playerID);

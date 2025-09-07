@@ -2301,6 +2301,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
     }
   }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->AddPrePitchDecisionQueue($from, $index);
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {

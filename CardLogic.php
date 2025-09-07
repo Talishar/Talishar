@@ -1845,6 +1845,8 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
 {
   global $CS_DamagePrevention, $combatChain, $CS_AdditionalCosts, $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
+  $card = GetClass($parameter, $player);
+  if ($card != "-") return $card->ProcessAbility($uniqueID, $target, $additionalCosts, $from);
   switch ($parameter) {
     case "mighty_windup_red":
     case "mighty_windup_yellow":

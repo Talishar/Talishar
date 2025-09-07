@@ -605,6 +605,8 @@ function CardCost($cardID, $from="-")
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->CardCost($from);
   switch ($cardID) {
     case "imposing_visage_blue":
       return 3;
@@ -1286,12 +1288,8 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
-  if (class_exists($cardID)) {
-    $card = new $cardID("-");
-    $ret = $card->GetAbilityTypes($index, $from);
-    unset($card);
-    return $ret;
-  }
+  $card = GetClass($cardID, 1);
+  if ($card != "-") return $card->GetAbilityTypes($index, $from);
   return match ($cardID) {
     "guardian_of_the_shadowrealm_red" => $from == "BANISH" ? "A" : "",
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
@@ -1331,6 +1329,29 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "cogwerx_blunderbuss" => "I,AA",
     default => "",
   };
+}
+
+function GetEasyAbilityNames($cardID, $index, $from) {
+  global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
+  $layerCount = count($layers);
+  $abilityTypes = GetAbilityTypes($cardID, $index, $from);
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  switch ($abilityTypes) {
+    case "I,AA":
+      $names = "Ability";
+      if($foundNullTime && $from == "HAND") return $names;
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+        $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
+        $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
+        if (!$warmongersPeace && !$underEdict && CanAttack($cardID, $from, $index, type:"AA")) {
+          if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names .= ",Attack";
+        }
+      }
+      return $names;
+    default:
+    return "";
+  }
 }
 
 function GetAbilityNames($cardID, $index = -1, $from = "-"): string
@@ -3296,6 +3317,8 @@ function IsActionCard($cardID)
 function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 {
   global $layers, $combatChain;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->GoesOnCombatChain();
   switch ($cardID) {
     case "mighty_windup_red":
     case "mighty_windup_yellow":

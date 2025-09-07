@@ -116,9 +116,11 @@
   {
     global $mainPlayer, $defPlayer, $dqVars;
     $p1Power = ""; $p2Power = "";
+    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
     for($i=1; $i<=2; ++$i) {
-      $deck = new Deck($i);
-      if($deck->Reveal()) {
+      $playerID = $switched ? 3 - $i : $i;
+      $deck = new Deck($playerID);
+      if($deck->Reveal(1, $switched)) {
         $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $i, "DECK", source:$cardID);
         if(!TypeContains($deck->Top(), "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
         if($i == 1) $p1Power = $power;
@@ -141,21 +143,23 @@
     }
   }
 
-  function WonClashAbility($playerID, $cardID, $effectController="") {
+  function WonClashAbility($playerID, $cardID, $effectController="", $switched=false) {
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $deck = new Deck($playerID);
-    switch ($deck->Top()) {
-      case "the_golden_son_yellow":
-      case "thunk_red": case "thunk_yellow": case "thunk_blue":
-      case "wallop_red": case "wallop_yellow": case "wallop_blue":
-        AddLayer("TRIGGER", $playerID, $deck->Top());
-        break;
-      default:
-        break;
+    if (!$switched) { //do these effects just never work during a switch?? waiting on release notes
+      switch ($deck->Top()) {
+        case "the_golden_son_yellow":
+        case "thunk_red": case "thunk_yellow": case "thunk_blue":
+        case "wallop_red": case "wallop_yellow": case "wallop_blue":
+          AddLayer("TRIGGER", $playerID, $deck->Top());
+          break;
+        default:
+          break;
+      }
     }
     switch($cardID)
     {
@@ -253,6 +257,7 @@
         break;
       default: break;
     }
+    if ($switched) PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
     }
 
   function VictorAbility($playerID, $cardID, $effectController="") {

@@ -16,6 +16,7 @@ include "Classes/CombatChain.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
 include "Classes/CardObjects/WTRCards.php";
+include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
 include "Classes/CardObjects/SUPCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
@@ -2722,8 +2723,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WONCLASH":
       $winner = $dqVars[0];
       $params = explode(",", $parameter);
+      $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true);
       if ($winner > 0) {
-        WonClashAbility($winner, $params[0], $params[1]);
+        WonClashAbility($winner, $params[0], $params[1], $switched);
       }
       else {
         $char = GetPlayerCharacter($mainPlayer);

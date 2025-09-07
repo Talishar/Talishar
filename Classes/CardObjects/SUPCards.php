@@ -191,13 +191,11 @@ class bully_tactics_red extends Card {
   }
 }
 
-
-class comeback_kid_red extends Card {
-
+class comeback_kid extends Card {
   function __construct($controller) {
-    $this->cardID = "comeback_kid_red";
+    $this->cardID = "comeback_kid";
     $this->controller = $controller;
-    }
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
@@ -216,53 +214,28 @@ class comeback_kid_red extends Card {
   }
 }
 
+class comeback_kid_red extends comeback_kid {
+  function __construct($controller) {
+    $this->cardID = "comeback_kid_red";
+    $this->controller = $controller;
+  }
+}
 
-class comeback_kid_yellow extends Card {
+
+class comeback_kid_yellow extends comeback_kid {
 
   function __construct($controller) {
     $this->cardID = "comeback_kid_yellow";
     $this->controller = $controller;
     }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    if(PlayerHasLessHealth($this->controller)) {
-      Cheer($this->controller);
-    }
-  }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
-    global $CS_CheeredThisTurn;
-    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
-  }
 }
 
-class comeback_kid_blue extends Card {
+class comeback_kid_blue extends comeback_kid {
 
   function __construct($controller) {
     $this->cardID = "comeback_kid_blue";
     $this->controller = $controller;
     }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    if(PlayerHasLessHealth($this->controller)) {
-      Cheer($this->controller);
-    }
-  }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
-    global $CS_CheeredThisTurn;
-    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
-  }
 }
 
 class crowd_goes_wild_yellow extends Card {
@@ -658,6 +631,22 @@ class take_the_bait_red extends Card {
 //     return "";
 //   }
 // }
+
+class the_old_switcheroo_blue extends windup {
+
+  function __construct($controller) {
+    $this->cardID = "the_old_switcheroo_blue";
+    $this->controller = $controller;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CardCost($from = '-') {
+    return 0;
+  }
+}
 
 
 ?>
