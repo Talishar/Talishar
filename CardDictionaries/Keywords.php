@@ -146,11 +146,21 @@
   function WonClashAbility($playerID, $cardID, $effectController="", $switched=false) {
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
-    WriteLog("Player " . $playerID . " won the Clash");
-    $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
-    SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
+    
     $deck = new Deck($playerID);
-    if (!$switched) { //do these effects just never work during a switch?? waiting on release notes
+    $otherDeck = new Deck($otherPlayer);
+    if (!$switched) {
+      switch ($otherDeck->Top()) { //I think these effects don't work when there's been a switcheroo
+        case "overturn_the_results_blue":
+          $tmp = $playerID;
+          $playerID = $otherPlayer;
+          $otherPlayer = $tmp;
+          WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
+          $deck = new Deck($playerID);
+          break;
+        default:
+          break;
+      }
       switch ($deck->Top()) {
         case "the_golden_son_yellow":
         case "thunk_red": case "thunk_yellow": case "thunk_blue":
@@ -161,6 +171,9 @@
           break;
       }
     }
+    WriteLog("Player " . $playerID . " won the Clash");
+    $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
+    SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $card = GetClass($cardID, $effectController);
     if ($card != "-") $card->WonClashAbility($playerID);
     switch($cardID)
