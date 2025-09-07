@@ -963,4 +963,23 @@ class fix_the_match_yellow extends card {
     PlayAura("might", $winnerID);
   }
 }
+
+class kick_the_hornets_nest_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "kick_the_hornets_nest_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("confidence", $this->controller);
+    PlayAura("might", $this->controller);
+    PlayAura("toughness", $this->controller);
+    PlayAura("vigor", $this->controller);
+    WriteLog(CardLink($this->controller, $this->cardID) . " created an " . CardLink("confidence", "confidence") . ", " . CardLink("might", "might") . ", " . CardLink("toughness", "toughness") . " and " . CardLink("vigor", "vigor") . " tokens.");
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    if ($effectController != $this->controller && $from != "CC") AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+}
 ?>
