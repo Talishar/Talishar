@@ -319,6 +319,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
+    case "CUTTINGINDICES":
+      $currentNames = [];
+      foreach (explode(",", $lastResult) as $cardID) {
+        if ($cardID != "") array_push($currentNames, CardName($cardID));
+      }
+      $auras = GetAuras($defPlayer);
+      $rv = [];
+      //remove any choices that have already been targeted
+      for($i = 0; $i < count($auras); $i += AuraPieces()) {
+        if (TypeContains($auras[$i], "T", $defPlayer) && !in_array(CardName($auras[$i]), $currentNames)) {
+          array_push($rv, "THEIRAURAS-$i");
+        }
+      }
+      $rv = implode(",", $rv);
+      return $rv == "" ? "PASS" : $rv;
     case "COGWERXINDICES":
       $currentTargets = explode(",", $lastResult);
       $search = "MYITEMS:subtype=Cog";

@@ -4123,10 +4123,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
   global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed;
-  if (class_exists($cardID)) {
-    $card = new $cardID($player);
-    return $card->ProcessAttackTrigger($target, $uniqueID);
-  }
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
     case "unsheathed_red":
       CacheCombatResult();

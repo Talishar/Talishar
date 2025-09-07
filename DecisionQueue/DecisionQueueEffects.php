@@ -1097,6 +1097,19 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
       }
       return $lastResult;
+    case "CUTTING":
+      if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) $lastResult = 1;
+      AddDecisionQueue("PASSPARAMETER", $player, 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      for ($i = 0; $i < $lastResult; ++$i) {
+        AddDecisionQueue("CUTTINGINDICES", $player, "-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "<-", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      }
+      return $lastResult;
     default: return "";
   }
 

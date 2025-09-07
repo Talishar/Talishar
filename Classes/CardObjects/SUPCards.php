@@ -937,7 +937,7 @@ class fix_the_match_yellow extends card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddLayer("ATTACKTRIGGER", $this->controller, $this->cardID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
@@ -980,6 +980,25 @@ class kick_the_hornets_nest_yellow extends card {
 
   function AddGraveyardEffect($from, $effectController) {
     if ($effectController != $this->controller && $from != "CC") AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+}
+
+class cutting_retort_red extends card {
+  function __construct($controller) {
+    $this->cardID = "cutting_retort_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
+    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "CUTTING", 1);
+    return;
   }
 }
 ?>
