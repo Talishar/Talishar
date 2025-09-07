@@ -167,6 +167,48 @@ class Card {
   function AddPrePitchDecisionQueue($from, $index=-1) {
     return;
   }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return false;
+  }
+
+  function HitEffect($cardID, $from = "-", $uniqueID = -1, $target="-") {
+    return;
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "GY";
+  }
+
+  function StartTurnAbility($index) {
+    return;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location) {
+    return;
+  }
+
+  function GetLayerTarget($from) {
+    $targetType = PlayRequiresTarget($this->cardID, $from);
+    if ($targetType != -1) {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for <0>");
+      AddDecisionQueue("FINDINDICES", $this->controller, "ARCANETARGET," . $targetType);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for <0>");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+  }
+
+  function AttackGetsBlockedEffect($cardID) {
+    return;
+  }
+
+  function WonClashAbility($winnerID) {
+    return;
+  }
 }
 
 ?>

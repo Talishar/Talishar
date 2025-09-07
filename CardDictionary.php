@@ -1219,6 +1219,7 @@ function TriggerTargets($cardID)
     "figment_of_ravages_yellow" => "any_arcane",
     "azvolai" => "any_arcane",
     "verdance", "verdance_thorn_of_the_rose", "sigil_of_aether_blue" => "any_arcane",
+    "leave_them_hanging_red" => "any_hero",
     default => ""
   };
 }
@@ -2039,6 +2040,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     }
 
   }
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts);
   switch ($cardID) {
     case "remembrance_yellow":
       return "BANISH";

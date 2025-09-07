@@ -16,7 +16,8 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
     return true;
   }
   $cardID = ShiyanaCharacter($cardID);
-
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->HitEffect($cardID, $from, $uniqueID, $target);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   if ($set == "WTR") return WTRHitEffect($cardID);
@@ -762,7 +763,8 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
     }
   }
-  
+  $card = GetClass($combatChain[0], $mainPlayer);
+  if ($card != "-") $card->AttackGetsBlockedEffect($cardID);
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
@@ -895,6 +897,8 @@ function OnBlockResolveEffects($cardID = "")
     ProcessMirageOnBlock($i);
   }
   if ($CombatChain->HasCurrentLink()) {
+    $card = GetClass($combatChain[0], $mainPlayer);
+    if ($card != "-") $card->AttackGetsBlockedEffect($cardID);
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":

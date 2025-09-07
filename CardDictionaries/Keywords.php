@@ -161,6 +161,8 @@
           break;
       }
     }
+    $card = GetClass($cardID, $effectController);
+    if ($card != "-") $card->WonClashAbility($playerID);
     switch($cardID)
     {
       case "millers_grindstone":

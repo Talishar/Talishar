@@ -207,6 +207,8 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
   $cardID = $auras[$index];
   $uniqueID = $auras[$index + $uniqueIDIndex];
   $otherPlayer = $player == 1 ? 2 : 1;
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->LeavesPlayAbility();
   switch ($cardID) {
     case "ironsong_pride_red":
       $char = &GetPlayerCharacter($player);
@@ -504,7 +506,9 @@ function AuraStartTurnAbilities()
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
-  $EffectContext = $auras[$i];
+    $EffectContext = $auras[$i];
+    $card = GetClass($auras[$i], $mainPlayer);
+    if ($card != "-") return $card->StartTurnAbilities($i);
     switch ($auras[$i]) {
     //These are all start of turn events without priority
     case "genesis_yellow":

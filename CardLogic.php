@@ -663,6 +663,8 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
   switch ($cardID) {
     case "dawnblade":
     case "snatch_red":

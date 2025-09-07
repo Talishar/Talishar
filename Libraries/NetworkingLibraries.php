@@ -1965,6 +1965,8 @@ function PlayCardSkipCosts($cardID, $from)
 function GetLayerTarget($cardID, $from)
 {
   global $currentPlayer, $defPlayer, $layers;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->GetLayerTarget($from);
   switch ($cardID) {
     case "rout_red":
     case "singing_steelblade_yellow":

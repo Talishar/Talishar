@@ -84,6 +84,16 @@ class Deck {
     return $cardID;
   }
 
+  function DestroyTop($amount=1) {
+    if($this->Empty()) return "";
+    for($i=0; $i<$amount; ++$i)
+    {
+      $cardID = $this->Remove(0);
+      DestroyTopCard($this->playerID);
+    }
+    return $cardID;
+  }
+
   function AddTop($cardID, $from="GY")
   {
     array_unshift($this->deck, $cardID);
