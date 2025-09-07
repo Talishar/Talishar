@@ -3318,7 +3318,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 {
   global $layers, $combatChain;
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->GoesOnCombatChain();
+  if ($card != "-") return $card->GoesOnCombatChain($phase, $from);
   switch ($cardID) {
     case "mighty_windup_red":
     case "mighty_windup_yellow":
