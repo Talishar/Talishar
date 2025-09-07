@@ -632,11 +632,13 @@ class take_the_bait_red extends Card {
 //   }
 // }
 
-class the_old_switcheroo_blue extends windup {
+class the_old_switcheroo_blue extends card {
+  public $windup;
 
   function __construct($controller) {
     $this->cardID = "the_old_switcheroo_blue";
     $this->controller = $controller;
+    $this->windup = new windup($this->cardID, $this->controller);
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -645,6 +647,26 @@ class the_old_switcheroo_blue extends windup {
 
   function CardCost($from = '-') {
     return 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->windup->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+    return $this->windup->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->windup->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    return $this->windup->CanPlayAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1) {
+    return $this->windup->AddPrePitchDecisionQueue($from, $index);
   }
 }
 

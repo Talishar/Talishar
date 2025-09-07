@@ -1,9 +1,11 @@
 <?php
 
-class windup extends Card {
+class windup {
+  public $cardID;
+  public $controller;
 
-  function __construct($controller) {
-    $this->cardID = "windup";
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
     $this->controller = $controller;
   }
 
