@@ -670,5 +670,22 @@ class the_old_switcheroo_blue extends card {
   }
 }
 
+class cheap_shot_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "the_old_switcheroo_blue";
+    $this->controller = $controller;
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    global $CS_BooedThisTurn;
+    return GetClassState($this->controller, $CS_BooedThisTurn) > 0;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;
+    Deal2OrDiscard($targetPlayer);
+  }
+}
 
 ?>

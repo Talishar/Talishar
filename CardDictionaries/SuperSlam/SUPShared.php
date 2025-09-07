@@ -222,16 +222,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
                 if (ModifiedPowerValue($link[0], $currentPlayer, "CC") + $link[4] > 6) $condition = true;
               }
               if ($condition) {
-                AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
-                AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
-                AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
-                AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-                AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
-                AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
-                AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-                AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
-                AddDecisionQueue("ELSE", $targetPlayer, "-");
-                AddDecisionQueue("TAKEDAMAGE", $targetPlayer, 2, 1);
+                Deal2OrDiscard($targetPlayer);
               }
             }
             break;
@@ -272,6 +263,20 @@ function SUPHitEffect($cardID): void
     default:
       break;
   }
+}
+
+function Deal2OrDiscard($targetPlayer)
+{
+  AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
+  AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
+  AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
+  AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
+  AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
+  AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+  AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
+  AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+  AddDecisionQueue("ELSE", $targetPlayer, "-");
+  AddDecisionQueue("TAKEDAMAGE", $targetPlayer, 2, 1);
 }
 
 function BOO($player)
