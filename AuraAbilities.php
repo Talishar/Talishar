@@ -508,7 +508,7 @@ function AuraStartTurnAbilities()
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
-    if ($card != "-") return $card->StartTurnAbility($i);
+    if ($card != "-") $card->StartTurnAbility($i);
     switch ($auras[$i]) {
     //These are all start of turn events without priority
     case "genesis_yellow":
