@@ -42,17 +42,6 @@ class Card {
   }
 
   function GoesOnCombatChain($phase, $from) {
-    global $layers;
-    if (canBeAddedToChainDuringDR($this->cardID) && $phase == "D") return true;
-    if ($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($this->cardID, $from);
-    else if ($phase == "M" && $this->cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") $cardType = GetResolvedAbilityType($this->cardID, $from);
-    else $cardType = CardType($this->cardID);
-    if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
-    if (DelimStringContains($cardType, "I")) return false; //Instants as yet never go on the combat chain
-    if (($phase == "A" || $phase == "D") && DelimStringContains($cardType, "A")) return false; //Non-attacks played as instants never go on combat chain
-    if ($cardType == "AR") return true; // Technically wrong, AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
-    if ($cardType == "DR") return true;
-    if (($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
     return false;
   }
 
@@ -213,7 +202,7 @@ class Card {
   function AddGraveyardEffect($from, $effectController) {
     return;
   }
-  
+
   function HasSuspense() {
     return false;
   }
