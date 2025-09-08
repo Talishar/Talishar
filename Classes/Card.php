@@ -213,6 +213,10 @@ class Card {
   function AddGraveyardEffect($from, $effectController) {
     return;
   }
+  
+  function HasSuspense() {
+    return false;
+  }
 }
 
 ?>

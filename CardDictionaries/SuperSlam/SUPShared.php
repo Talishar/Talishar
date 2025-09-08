@@ -317,6 +317,8 @@ function Cheer($player)
 
 function HasSuspense($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasSuspense();
   return match($cardID) {
     "in_the_palm_of_your_hand_red" => true,
     "up_on_a_pedestal_blue" => true,
