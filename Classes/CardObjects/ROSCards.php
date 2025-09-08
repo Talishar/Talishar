@@ -268,7 +268,7 @@ class barkskin_of_the_millennium_tree extends Card {
     }
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $blockedWithAura, $blockedWithEarth, $blockedWithIce, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
   }
 }

@@ -1040,4 +1040,29 @@ class gang_robbery_yellow extends card {
     else return 0;
   }
 }
+
+class truth_or_trickery_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "truth_or_trickery_yellow";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    LookAtTopCard($this->controller, $this->cardID, setPlayer:$this->controller);
+    if (!IsAllyAttacking()) {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "Red,Yellow,Blue");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a color", 1);
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you think the top card is {0}?", 1);
+      AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "TRUTHORTRICKERY-{0}", 1);
+    }
+  }
+}
 ?>

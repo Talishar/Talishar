@@ -1111,6 +1111,23 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, 1, 1);
       }
       return $lastResult;
+    case "TRUTHORTRICKERY":
+      $deck = new Deck($defPlayer);
+      $topCard = $deck->Top();
+      WriteLog("The top card of their deck was " . CardLink($topCard, $topCard));
+      $topColor = ColorOverride($topCard, $defPlayer);
+      $chosenColor = match($params[1]) {
+        "Red" => 1,
+        "Yellow" => 2,
+        "Blue" => 3,
+      };
+      if ($topColor == $chosenColor && $lastResult == "NO") {
+        PummelHit($player, context: "You should have believed them... Discard card.");
+      }
+      elseif ($topColor != $chosenColor && $lastResult == "YES") {
+        PummelHit($player, context: "Why would you ever trust them? Discard a card");
+      }
+      return $lastResult;
     default: return "";
   }
 
