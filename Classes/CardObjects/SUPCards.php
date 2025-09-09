@@ -641,6 +641,10 @@ class the_old_switcheroo_blue extends card {
     $this->archetype = new windup($this->cardID, $this->controller);
   }
 
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
@@ -1381,6 +1385,11 @@ class wind_up_the_crowd_blue extends card {
     $this->controller = $controller;
     $this->archetype = new windup($this->cardID, $this->controller);
   }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura("toughness", $this->controller, 1, true, effectController: $this->controller, effectSource: $this->cardID);
     PlayAura("vigor", $this->controller, 1, true, effectController: $this->controller, effectSource: $this->cardID);
@@ -1424,6 +1433,32 @@ class show_of_strength_red extends card {
       if ($combatChain[$i + 1] == $defPlayer && PowerValue($combatChain[$i], $defPlayer, index:$i) >= 6) $modifier -= 1;
     }
     return $modifier;
+  }
+}
+
+class good_natured_brutality_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "good_natured_brutality_yellow";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    global $combatChain;
+    $uniqueID = $combatChain[$i + 7];
+    AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$uniqueID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $combatChain, $CombatChain;
+    $hand = GetHand($this->controller);
+    if (count($hand) == 0) {
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i + 7] == $uniqueID) {
+          $CombatChain->Card($i)->ModifyDefense(6);
+          Cheer($this->controller);
+        }
+      }
+    }
   }
 }
 ?>

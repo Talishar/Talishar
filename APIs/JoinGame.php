@@ -684,6 +684,7 @@ function isUnimplemented($cardID) {
         "will_of_the_crowd_blue" => false,
         "wind_up_the_crowd_blue" => false,
         "show_of_strength_red" => false,
+        "good_natured_brutality_yellow" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
