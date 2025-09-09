@@ -1278,9 +1278,9 @@ class two_steps_ahead_blue extends card {
   }
 
   function StartTurnAbility($index) {
-    DestroyAura($this->controller, $index);
     PlayAura("might", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
     PlayAura("confidence", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    return true; // return true to remove
   }
 }
 

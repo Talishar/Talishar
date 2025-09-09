@@ -60,7 +60,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
   $theirHoldState = AuraDefaultHoldTriggerState($cardID);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
-
   for ($i = 0; $i < $number; ++$i) {
     array_push($auras, $cardID);
     array_push($auras, 2); //Status
@@ -505,10 +504,13 @@ function AuraStartTurnAbilities()
 {
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   $auras = &GetAuras($mainPlayer);
+  $toRemove = [];
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
-    if ($card != "-") $card->StartTurnAbility($i);
+    if ($card != "-") {
+      if ($card->StartTurnAbility($i)) array_push($toRemove, $auras[$i + 6]);
+    }
     switch ($auras[$i]) {
     //These are all start of turn events without priority
     case "genesis_yellow":
@@ -772,6 +774,9 @@ function AuraStartTurnAbilities()
     default:
       break;
     }
+  }
+  foreach ($toRemove as $uniqueId) {
+    DestroyAuraUniqueID($mainPlayer, $uniqueId);
   }
   $defPlayerAuras = &GetAuras($defPlayer);
   for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
