@@ -100,6 +100,8 @@ class ChainCard {
     }
 
     function ModifyDefense($amount) {
+      global $CombatChain;
+      if ($CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow" && $amount > 0) $amount = 0;
       $this->chain[$this->index+6] += $amount;
     }
 

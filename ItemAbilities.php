@@ -549,9 +549,11 @@ function ItemDamagePeventionAmount($player, $index, $damage=0, $preventable=true
 function ItemBlockModifier($cardID)
 {
   global $mainPlayer, $defPlayer, $CombatChain;
+  $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
   $items = &GetItems($mainPlayer);
-  $blockModifier = 0;
+  $totalBlockModifier = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    $blockModifier = 0;
     switch ($items[$i]) {
       case "polarity_reversal_script_red":
         $type = CardType($cardID);
@@ -565,9 +567,11 @@ function ItemBlockModifier($cardID)
       default:
         break;
     }
+    if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
   }
   $items = &GetItems($defPlayer);
   for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    $blockModifier = 0;
     switch ($items[$i]) {
       case "security_script_blue":
         if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $defPlayer)) ++$blockModifier;
@@ -575,8 +579,9 @@ function ItemBlockModifier($cardID)
       default:
         break;
     }
+    if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
   }
-  return $blockModifier;
+  return $totalBlockModifier;
 }
 
 function ItemPowerModifiers(&$powerModifiers)

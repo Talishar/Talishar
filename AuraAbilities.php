@@ -1692,11 +1692,13 @@ function isSpectraAttackTarget() {
 
 function AuraBlockModifier($cardID, $from)
 {
-  global $defPlayer;
+  global $defPlayer, $CombatChain;
+  $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
   $defAuras = &GetAuras($defPlayer);
-  $blockModifier = 0;
+  $totalBlockModifier = 0;
   $cardType = CardType($cardID);
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
+    $blockModifier = 0;
     switch ($defAuras[$i]) {
       case "stonewall_confidence_red":
         if (CardCost($cardID, $from) >= 3) $blockModifier += 4;
@@ -1726,6 +1728,7 @@ function AuraBlockModifier($cardID, $from)
         if ($cardType == "AA") $blockModifier += CountAura("seismic_surge", $defPlayer);
         break;
     }
+    if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
   }
-  return $blockModifier;
+  return $totalBlockModifier;
 }

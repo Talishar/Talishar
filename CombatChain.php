@@ -528,12 +528,15 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumBluePlayed, $currentTurnEffects, $combatChain;
   $blockModifier = 0;
+  $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
   $cardType = CardType($cardID);
-  if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
-  if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
-  if ($cardType == "AA" || $cardType == "A") {
-    $blockModifier += CountCurrentTurnEffects("lyath_goldmade", $defPlayer);
-    $blockModifier += CountCurrentTurnEffects("lyath_goldmane_vile_savant", $defPlayer);
+  if (!$noGain) {
+    if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
+    if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
+    if ($cardType == "AA" || $cardType == "A") {
+      $blockModifier += CountCurrentTurnEffects("lyath_goldmane", $defPlayer);
+      $blockModifier += CountCurrentTurnEffects("lyath_goldmane_vile_savant", $defPlayer);
+    }
   }
   if ($cardType == "E") {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
@@ -571,7 +574,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
         switch ($link[$i]) {
           case "captain_of_the_guard_blue":
             if ($index != -1 && PowerValue($cardID, $defPlayer, "CC", $index) > PowerValue($attackID, $mainPlayer, "CC", 0)) {
-              ++$blockModifier;
+              if (!$noGain) ++$blockModifier;
             }
             break;
           default:
@@ -585,7 +588,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       switch ($combatChain[$i]) {
           case "captain_of_the_guard_blue":
             if ($index != -1 && PowerValue($cardID, $defPlayer, "CC", $index) > PowerValue($attackID, $mainPlayer, "CC", 0)) {
-              ++$blockModifier;
+              if (!$noGain) ++$blockModifier;
             }
             break;
           default:
@@ -593,6 +596,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
         }
     }
   }
+  $currentBlockModifier = $blockModifier;
   switch ($cardID) {
     case "unmovable_red":
     case "unmovable_yellow":
@@ -724,7 +728,8 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     default:
       break;
   }
-  return $blockModifier;
+  if ($currentBlockModifier < $blockModifier && $noGain) return $currentBlockModifier;
+  else return $blockModifier;
 }
 
 function PlayBlockModifier($cardID)
