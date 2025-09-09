@@ -582,12 +582,10 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
 function EffectPowerModifier($cardID, $attached=false)
 {
   global $mainPlayer;
-  if (class_exists($cardID)) {
-    $card = new $cardID($mainPlayer);
-    $ret = $card->EffectPowerModifier($attached);
-    unset($card);
-    return $ret;
-  }
+  $cid = explode("-", $cardID)[0];
+  $param = explode("-", $cardID)[1] ?? "-";
+  $card = GetClass($cid, $mainPlayer);
+  if ($card != "-") return $card->EffectPowerModifier($param, $attached);
   $set = CardSet($cardID);
   if ($set == "WTR") return WTREffectPowerModifier($cardID);
   else if ($set == "ARC") return ARCEffectPowerModifier($cardID);

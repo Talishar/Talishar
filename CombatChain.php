@@ -602,6 +602,8 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     }
   }
   $currentBlockModifier = $blockModifier;
+  $card = GetClass($cardID, $defPlayer);
+  if ($card != "-") $blockModifier += $card->CardBlockModifier($from, $resourcesPaid, $index);
   switch ($cardID) {
     case "unmovable_red":
     case "unmovable_yellow":

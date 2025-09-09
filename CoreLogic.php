@@ -218,6 +218,7 @@ function DefendingTerm($term)
 function CombatChainPowerModifier($index, $amount)
 {
   global $combatChain, $mainPlayer;
+  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
   $combatChain[$index + 5] += $amount;
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
@@ -226,6 +227,7 @@ function CombatChainPowerModifier($index, $amount)
 function CombatChainDefenseModifier($index, $amount)
 {
   global $combatChain, $CombatChain;
+  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
   if (isset($combatChain[$index])) {
     if ($amount < 0) {
       $defense = BlockingCardDefense($index);

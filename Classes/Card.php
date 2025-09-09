@@ -73,7 +73,7 @@ class Card {
     return 0;
   }
 
-  function EffectPowerModifier($attached=false) {
+  function EffectPowerModifier($param, $attached=false) {
     return 0;
   }
 
@@ -205,6 +205,14 @@ class Card {
 
   function HasSuspense() {
     return false;
+  }
+
+  function HasAmbush() {
+    return false;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return 0;
   }
 }
 

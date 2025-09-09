@@ -42,7 +42,7 @@ class backspin_thrust_red extends Card {
     return $from == "PLAY" ? "I": "AA";
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 1;
   }
   
@@ -106,7 +106,7 @@ class bait extends Card {
     return true;
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 1;
   }
 
@@ -770,7 +770,6 @@ class turn_the_crowd_hateful {
   function PlayAbility() {
     global $defPlayer;
     $defChar = GetPlayerCharacter($defPlayer);
-    WriteLog("HERE: " . TalentContains($defChar[0], "REVERED", $defPlayer));
     if (TalentContains($defChar[0], "REVERED", $defPlayer) && IsHeroAttackTarget()) {
       AddCurrentTurnEffect($this->cardID, $this->controller);
     }
@@ -808,7 +807,7 @@ class turn_the_crowd_hateful_red extends card {
     $this->baseCard = new turn_the_crowd_hateful($this->cardID,  $this->controller);
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
   }
 
@@ -838,7 +837,7 @@ class turn_the_crowd_hateful_yellow extends card {
     $this->baseCard = new turn_the_crowd_hateful($this->cardID,  $this->controller);
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
   }
 
@@ -868,7 +867,7 @@ class turn_the_crowd_hateful_blue extends card {
     $this->baseCard = new turn_the_crowd_hateful($this->cardID,  $this->controller);
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
   }
 
@@ -937,7 +936,7 @@ class turn_the_crowd_grateful_red extends card {
     $this->baseCard = new turn_the_crowd_grateful($this->cardID,  $this->controller);
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
   }
 
@@ -967,7 +966,7 @@ class turn_the_crowd_grateful_yellow extends card {
     $this->baseCard = new turn_the_crowd_grateful($this->cardID,  $this->controller);
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
   }
 
@@ -997,7 +996,7 @@ class turn_the_crowd_grateful_blue extends card {
     $this->baseCard = new turn_the_crowd_grateful($this->cardID,  $this->controller);
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
   }
 
@@ -1033,7 +1032,7 @@ class heroic_pose_red extends card {
     return true;
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 3;
   }
 }
@@ -1071,7 +1070,7 @@ class villainous_pose_red extends card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 4;
   } 
 }
@@ -1092,7 +1091,7 @@ class villainous_pose_yellow extends card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 3;
   } 
 }
@@ -1113,7 +1112,7 @@ class villainous_pose_blue extends card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 2;
   } 
 }
@@ -1141,7 +1140,7 @@ class leave_them_hanging_red extends card {
     }
   }
 
-  function EffectPowerModifier($attached = false): int {
+  function EffectPowerModifier($param, $attached = false): int {
     return 4;
   }
 
@@ -1184,7 +1183,7 @@ class sadistic_scowl_red extends card {
     return true;
   }
 
-  function EffectPowerModifier($attached = false) {
+  function EffectPowerModifier($param, $attached = false) {
     return 5;
   }
 
@@ -1459,6 +1458,98 @@ class good_natured_brutality_yellow extends card {
         }
       }
     }
+  }
+}
+
+class no_hero_stands_alone_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "no_hero_stands_alone_yellow";
+    $this->controller = $controller;
+  }
+
+  function HasAmbush() {
+    global $CS_NumToughnessDestroyed;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_NumToughnessDestroyed;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0 ? 3 : 0;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Clash($this->cardID, $this->controller);
+  }
+
+  function WonClashAbility($winnerID) {
+    // will need to make this able to choose past chain links and make it clear which card is a past chain link
+    AddDecisionQueue("MULTIZONEINDICES", $winnerID, "COMBATCHAINLINK");
+    AddDecisionQueue("SETDQCONTEXT", $winnerID, "Choose a card to give -3 power and block (or pass)", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $winnerID, "<-", 1);
+    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $winnerID, -3, 1);
+    AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $winnerID, -3, 1);
+  }
+}
+
+class escalate_order_red extends card {
+  function __construct($controller) {
+    $this->cardID = "escalate_order_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if (SearchAurasForCardName("Toughness", $this->controller, false) != "") {
+      PlayAura("toughness", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+  }
+
+  function CardCost($from = '-') {
+    return 2; //fabcube error
+  }
+}
+
+class song_of_sinew_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "song_of_sinew_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $deck = new Deck($this->controller);
+    if ($deck->Reveal(4)) {
+      $cards = explode(",", $deck->Top(true, amount: 4));
+      $numSixes = 0;
+      for ($i = 0; $i < count($cards); ++$i) {
+        if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 2) ++$numSixes;
+      }
+      AddCurrentTurnEffect("$this->cardID-$numSixes", $this->controller);
+      $cardList = implode(",", $cards);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      for ($i = 0; $i < count($cards); ++$i) {
+        AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put a card on top of your deck, the last card chosen will be the top card at the end", 1);
+        AddDecisionQueue("ADDTOPDECK", $this->controller, "<-", 1);
+        AddDecisionQueue("REMOVEFROMCHOICES", $this->controller, "{0}", 1);
+        AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      }
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
   }
 }
 ?>

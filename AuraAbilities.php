@@ -503,6 +503,7 @@ function AuraCostModifier($cardID = "")
 function AuraStartTurnAbilities()
 {
   global $mainPlayer, $EffectContext, $defPlayer, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
+  global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed;
   $auras = &GetAuras($mainPlayer);
   $toRemove = [];
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -752,6 +753,7 @@ function AuraStartTurnAbilities()
     case "confidence":
       AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+      IncrementClassState($mainPlayer, $CS_NumConfidenceDestroyed, 1);
       break;
     case "in_the_palm_of_your_hand_red":
       --$auras[$i + 2];
@@ -808,6 +810,7 @@ function AuraStartTurnAbilities()
       case "toughness":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY");
         DestroyAuraUniqueID($defPlayer, $defPlayerAuras[$i + 6]);
+        IncrementClassState($mainPlayer, $CS_NumToughnessDestroyed, 1);
         break;
       default:
         break;

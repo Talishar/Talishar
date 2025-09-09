@@ -425,12 +425,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVECOMBATCHAIN":
       return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
-      CombatChainPowerModifier($lastResult, $parameter);
-      if ($parameter > 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $parameter . " power");
-      else if ($parameter < 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets " . $parameter . " power");
+      $val = intval($parameter);
+      CombatChainPowerModifier($lastResult, $val);
+      if ($val > 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $val . " power");
+      else if ($val < 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " loses " . -$val . " power");
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
-      return CombatChainDefenseModifier($lastResult, $parameter);
+      return CombatChainDefenseModifier($lastResult, intval($parameter));
     case "HALVEBASEDEFENSE":
       $combatChain[$lastResult + 6] -= floor(ModifiedBlockValue($combatChain[$lastResult], $defPlayer, "CC") / 2);
       return $lastResult;
@@ -3432,6 +3433,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDSTATICBUFF":
       $combatChain[$parameter + 10] = $lastResult;
       return $lastResult;
+    case "REMOVEFROMCHOICES":
+      $ret = [];
+      $choices = explode(",", $parameter);
+      foreach($choices as $choice) {
+        if ($choice != $lastResult) array_push($ret, $choice);
+      }
+      return implode(",", $ret);
     default:
       return "NOTSTATIC";
   }

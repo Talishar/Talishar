@@ -997,6 +997,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
+    "escalate_order_red" => 6, // fabcube error
     default => $basePower,
   };
   // call BasePowerModifiers here?
@@ -1751,7 +1752,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       if (NumNonBlocksDefending() >= 2) return false;
     }
   }
-  if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player)) || $cardID == "down_and_dirty_red" || HasAmbush($cardID))) return false;
+  if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player)) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
   if ($phase == "B" || $phase == "D") {
     if ($cardType == "AA") {
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
@@ -5138,8 +5139,10 @@ function HasDominate($cardID)
   return false;
 }
 
-function HasAmbush($cardID)
+function HasAmbush($cardID, $player)
 {
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->HasAmbush();
   switch ($cardID) {
     case "tiger_eye_reflex_yellow":
     case "tiger_eye_reflex_blue":
