@@ -683,6 +683,7 @@ function isUnimplemented($cardID) {
         "visit_the_boneyard_blue" => false,
         "will_of_the_crowd_blue" => false,
         "wind_up_the_crowd_blue" => false,
+        "show_of_strength_red" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
