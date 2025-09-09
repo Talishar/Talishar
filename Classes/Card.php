@@ -214,6 +214,10 @@ class Card {
   function CardBlockModifier($from, $resourcesPaid, $index) {
     return 0;
   }
+
+  function DoesAttackHaveGoAgain() {
+    return false;
+  }
 }
 
 ?>

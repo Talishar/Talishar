@@ -688,6 +688,7 @@ function isUnimplemented($cardID) {
         "no_hero_stands_alone_yellow" => false,
         "escalate_order_red" => false,
         "song_of_sinew_yellow" => false,
+        "jaws_of_victory_red" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,

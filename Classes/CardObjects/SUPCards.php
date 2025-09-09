@@ -1552,4 +1552,24 @@ class song_of_sinew_yellow extends card {
     return true;
   }
 }
+
+class jaws_of_victory_red extends card {
+  function __construct($controller) {
+    $this->cardID = "jaws_of_victory_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if (PlayerHasLessHealth($this->controller)) Cheer($this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) > 0;
+  }
+}
 ?>

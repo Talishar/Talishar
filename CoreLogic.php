@@ -1951,6 +1951,8 @@ function DoesAttackHaveGoAgain()
         return false;
     }
   }
+  $card = GetClass($attackID, $mainPlayer);
+  if ($card != "-") return $card->DoesAttackHaveGoAgain();
   switch ($attackID) {
     case "harmonized_kodachi":
     case "harmonized_kodachi_r":
