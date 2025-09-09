@@ -1350,4 +1350,26 @@ class visit_the_boneyard_blue extends card {
     PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
   }
 }
+
+class will_of_the_crowd_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "will_of_the_crowd_blue";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_CheeredThisTurn;
+    if (GetClassState($this->controller, $CS_CheeredThisTurn)) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 ?>

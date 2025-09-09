@@ -530,12 +530,16 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $blockModifier = 0;
   $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
   $cardType = CardType($cardID);
+  // should probably refactor this as an EffectBlockModifier function
   if (!$noGain) {
-    if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
-    if ($cardType == "AA") $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
+    if ($cardType == "AA") {
+      $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
+      $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
+    }
     if ($cardType == "AA" || $cardType == "A") {
       $blockModifier += CountCurrentTurnEffects("lyath_goldmane", $defPlayer);
       $blockModifier += CountCurrentTurnEffects("lyath_goldmane_vile_savant", $defPlayer);
+      $blockModifier += CountCurrentTurnEffects("will_of_the_crowd_blue", $defPlayer) * 3;
     }
   }
   if ($cardType == "E") {
@@ -564,6 +568,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   }
   if (SearchCurrentTurnEffects("pulse_of_isenloft_blue", $defPlayer) && ($cardType == "AA" || DelimStringContains($cardType, "A")) && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
   if (SearchCurrentTurnEffects("fabricate_red", $defPlayer) && SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC")) $blockModifier += CountCurrentTurnEffects("fabricate_red", $defPlayer);
+  // Effect Block Modifier ends here
   $blockModifier += AuraBlockModifier($cardID, $from);
   $blockModifier += ItemBlockModifier($cardID);
   $defAuras = &GetAuras($defPlayer);
