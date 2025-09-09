@@ -831,7 +831,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "ROOTBOUNDCARAPACE":
       $index = GetClassState($player, $CS_PlayCCIndex);
-      $CombatChain->Card($index)->ModifyDefense(1);
+      if ($CombatChain->NumCardsActiveLink() > 0) {
+        $CombatChain->Card($index)->ModifyDefense(1);
+      }
       return $lastResult;
     case "CADAVEROUSTILLING":
       $index = GetClassState($player, $CS_PlayCCIndex);
