@@ -680,6 +680,7 @@ function isUnimplemented($cardID) {
         "villainous_pose_blue" => false,
         "truth_or_trickery_yellow" => false,
         "smash_with_big_rock_yellow" => false,
+        "visit_the_boneyard_blue" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,

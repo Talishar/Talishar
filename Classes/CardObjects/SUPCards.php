@@ -1334,4 +1334,20 @@ class truth_or_trickery_yellow extends card {
     }
   }
 }
+
+class visit_the_boneyard_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "visit_the_boneyard_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $search = "MYDISCARD:minAttack=6;type=AA";
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZADDZONE", $this->controller, "MYTOPDECK", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
 ?>
