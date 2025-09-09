@@ -633,12 +633,12 @@ class take_the_bait_red extends Card {
 // }
 
 class the_old_switcheroo_blue extends card {
-  public $windup;
+  public $archetype;
 
   function __construct($controller) {
     $this->cardID = "the_old_switcheroo_blue";
     $this->controller = $controller;
-    $this->windup = new windup($this->cardID, $this->controller);
+    $this->archetype = new windup($this->cardID, $this->controller);
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -650,23 +650,23 @@ class the_old_switcheroo_blue extends card {
   }
 
   function GetAbilityTypes($index = -1, $from = '-') {
-    return $this->windup->GetAbilityTypes($index, $from);
+    return $this->archetype->GetAbilityTypes($index, $from);
   }
 
   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
-    return $this->windup->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
   function GoesOnCombatChain($phase, $from) {
-    return $this->windup->GoesOnCombatChain($phase, $from);
+    return $this->archetype->GoesOnCombatChain($phase, $from);
   }
 
   function CanPlayAsInstant($index = -1, $from = '') {
-    return $this->windup->CanPlayAsInstant($index, $from);
+    return $this->archetype->CanPlayAsInstant($index, $from);
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1) {
-    return $this->windup->AddPrePitchDecisionQueue($from, $index);
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 }
 
@@ -1370,6 +1370,44 @@ class will_of_the_crowd_blue extends card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+}
+
+class wind_up_the_crowd_blue extends card {
+  public $archetype;
+
+  function __construct($controller) {
+    $this->cardID = "wind_up_the_crowd_blue";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("toughness", $this->controller, 1, true, effectController: $this->controller, effectSource: $this->cardID);
+    PlayAura("vigor", $this->controller, 1, true, effectController: $this->controller, effectSource: $this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    return $this->archetype->CardCost($from);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanPlayAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1) {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 }
 ?>
