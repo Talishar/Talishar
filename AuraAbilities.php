@@ -1410,7 +1410,7 @@ function AuraPlayAbilities($cardID, $from = "")
         break;
       case "runechant":
         $abilityType = GetResolvedAbilityType($cardID, $from);
-        if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && $abilityType != "I") || (TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA") && $abilityType != "I") {
+        if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from)) || (TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA") && $abilityType != "I") {
           array_push($runechantUIDS, $auras[$i+6]);
         }
         break;
