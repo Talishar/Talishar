@@ -1573,9 +1573,9 @@ class jaws_of_victory_red extends card {
   }
 }
 
-class gauntlets_of_the_tyrannical_rex extends card {
+class gauntlets_of_tyrannical_rex extends card {
   function __construct($controller) {
-    $this->cardID = "gauntlets_of_the_tyrannical_rex";
+    $this->cardID = "gauntlets_of_tyrannical_rex";
     $this->controller = $controller;
   }
 
@@ -1593,6 +1593,14 @@ class gauntlets_of_the_tyrannical_rex extends card {
 
   function PayAdditionalCosts($from, $index = '-') {
     Tap("MYCHAR-$index", $this->controller);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {

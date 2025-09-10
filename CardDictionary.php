@@ -1236,12 +1236,8 @@ function GetAbilityType($cardID, $index = -1, $from = "-")
   }
   if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && $currentPlayer == $mainPlayer) return "AA";
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return "AA";
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    $ret = $card->AbilityType($index, $from);
-    unset($card);
-    return $ret;
-  }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->AbilityType($index, $from);
   if ($set == "WTR") return WTRAbilityType($cardID, $index, $from);
   else if ($set == "ARC") return ARCAbilityType($cardID, $index);
   else if ($set == "CRU") return CRUAbilityType($cardID, $index);
