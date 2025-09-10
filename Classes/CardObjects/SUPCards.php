@@ -1528,7 +1528,7 @@ class song_of_sinew_yellow extends card {
       $cards = explode(",", $deck->Top(true, amount: 4));
       $numSixes = 0;
       for ($i = 0; $i < count($cards); ++$i) {
-        if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 2) ++$numSixes;
+        if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 6) ++$numSixes;
       }
       AddCurrentTurnEffect("$this->cardID-$numSixes", $this->controller);
       $cardList = implode(",", $cards);
