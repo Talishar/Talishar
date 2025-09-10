@@ -810,7 +810,7 @@ function AuraStartTurnAbilities()
       case "toughness":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY");
         DestroyAuraUniqueID($defPlayer, $defPlayerAuras[$i + 6]);
-        IncrementClassState($mainPlayer, $CS_NumToughnessDestroyed, 1);
+        IncrementClassState($defPlayer, $CS_NumToughnessDestroyed, 1);
         break;
       default:
         break;
