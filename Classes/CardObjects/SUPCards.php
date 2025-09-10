@@ -1298,7 +1298,7 @@ class gang_robbery_yellow extends card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $search = "THEIRAURAS:cardType=T";
+    $search = "THEIRAURAS:type=T";
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to steal", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
