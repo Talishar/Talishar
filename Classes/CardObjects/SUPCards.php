@@ -1530,6 +1530,7 @@ class song_of_sinew_yellow extends card {
       for ($i = 0; $i < count($cards); ++$i) {
         if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 6) ++$numSixes;
       }
+      WriteLog("$this->cardID is buffing the next attack by $numSixes!");
       AddCurrentTurnEffect("$this->cardID-$numSixes", $this->controller);
       $cardList = implode(",", $cards);
       AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
@@ -1580,6 +1581,7 @@ class gauntlets_of_tyrannical_rex extends card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
     $pitch = GetPitch($this->controller);
     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;

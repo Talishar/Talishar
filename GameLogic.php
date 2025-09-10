@@ -3438,6 +3438,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $choices = explode(",", $parameter);
       foreach($choices as $choice) {
         if ($choice != $lastResult) array_push($ret, $choice);
+        else $lastResult = "USEDUP";
       }
       return implode(",", $ret);
     default:
