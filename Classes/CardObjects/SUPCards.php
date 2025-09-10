@@ -1615,4 +1615,24 @@ class gauntlets_of_tyrannical_rex extends card {
     return 1;
   }
 }
+
+class big_bully_red extends card {
+  function __construct($controller) {
+    $this->cardID = "big_bully_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if (PlayerHasLessHealth($otherPlayer)) BOO($this->controller);
+  }
+
+  // I think we need to rework how base power is handled
+  // Big Bully's power modification should *always* apply after Rkayo's ability
+  // Rkayo applies in substage 2 while big bully applies in substage 3
+}
 ?>
