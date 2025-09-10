@@ -689,6 +689,7 @@ function isUnimplemented($cardID) {
         "escalate_order_red" => false,
         "song_of_sinew_yellow" => false,
         "jaws_of_victory_red" => false,
+        "gauntlets_of_tyrannical_rex" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
