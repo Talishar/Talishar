@@ -786,6 +786,7 @@ function OUTAbilityCost($cardID)
           return;
         }
         $weaponTargetInd = "COMBATCHAINATTACKS-" . $targetWeapon;
+        $weaponUID = $ccAttacks[$targetWeapon + 8];
       }
       else {
         $index = SearchCharacterForUniqueID($targetWeapon, $currentPlayer);

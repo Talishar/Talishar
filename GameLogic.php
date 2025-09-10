@@ -427,8 +427,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "COMBATCHAINPOWERMODIFIER":
       $val = intval($parameter);
       CombatChainPowerModifier($lastResult, $val);
-      if ($val > 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " gets +" . $val . " power");
-      else if ($val < 0) WriteLog(CardLink($combatChain[$lastResult], $combatChain[$lastResult]) . " loses " . -$val . " power");
+      $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult)[1]] : $combatChain[$lastResult];
+      if ($val > 0) WriteLog(CardLink($cardID, $cardID) . " gets +" . $val . " power");
+      else if ($val < 0) WriteLog(CardLink($cardID, $cardID) . " loses " . -$val . " power");
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
       return CombatChainDefenseModifier($lastResult, intval($parameter));
