@@ -954,8 +954,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       switch ($lastResult) {
         case "Go_Again": 
           GiveAttackGoAgain();
-          //this is just for tracking # of time activated
-          AddCurrentTurnEffect("$params[1]-GOAGAIN", $player);
           break;
         case "+1_Power":
           AddCurrentTurnEffect($params[1], $player);
