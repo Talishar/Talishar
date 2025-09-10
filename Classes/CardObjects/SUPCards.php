@@ -1572,4 +1572,39 @@ class jaws_of_victory_red extends card {
     return GetClassState($this->controller, $CS_CheeredThisTurn) > 0;
   }
 }
+
+class gauntlets_of_the_tyrannical_rex extends card {
+  function __construct($controller) {
+    $this->cardID = "gauntlets_of_the_tyrannical_rex";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
+    }
+    return true;
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Tap("MYCHAR-$index", $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
 ?>
