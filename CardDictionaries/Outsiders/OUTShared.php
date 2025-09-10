@@ -763,6 +763,7 @@ function OUTAbilityCost($cardID)
     $weaponTargetInd = "";
     $heroTargetInd = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $weaponUID = "-";
     if ($target == "-") {
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
       AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
