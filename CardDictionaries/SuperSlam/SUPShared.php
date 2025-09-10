@@ -270,8 +270,8 @@ function Deal2OrDiscard($targetPlayer)
   $hand = GetHand($targetPlayer);
   if (count($hand) > 0) {
     AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
-    AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
-    AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
+    AddDecisionQueue("BUTTONINPUT", $targetPlayer, "Take_2_Damage,Discard", 1);
+    AddDecisionQueue("EQUALPASS", $targetPlayer, "Take_2_Damage", 1);
     AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
     AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
     AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
