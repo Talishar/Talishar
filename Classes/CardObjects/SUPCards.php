@@ -1781,4 +1781,37 @@ class smashing_ground_blue extends card {
     AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
   } 
 }
+
+class battered_beaten_and_broken_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "battered_beaten_and_broken_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");;
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $defPlayer;
+    Intimidate($defPlayer);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    $auraCount = intdiv(count(GetAuras($this->controller)), AuraPieces());
+    if (IsHeroAttackTarget() && $auraCount >= 3) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRBANISH:isIntimidated=true");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an intimidated card to put into the graveyard (The cards were intimated in left to right order)", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZADDZONE", $this->controller, "THEIRDISCARD", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "THEIRBANISH", 1);
+  }
+}
 ?>
