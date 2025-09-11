@@ -1129,6 +1129,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PummelHit($player, context: "Why would you ever trust them? Discard a card");
       }
       return $lastResult;
+    case "ALPHA":
+      if (ModifiedPowerValue($lastResult, $player, "HAND") >= 6) {
+        AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 2);
+      }
+      return $lastResult;
     default: return "";
   }
 

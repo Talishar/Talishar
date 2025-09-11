@@ -691,6 +691,7 @@ function isUnimplemented($cardID) {
         "jaws_of_victory_red" => false,
         "gauntlets_of_tyrannical_rex" => false,
         "big_bully_red" => false,
+        "challenge_the_alpha_yellow" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,

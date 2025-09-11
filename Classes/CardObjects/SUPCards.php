@@ -1639,4 +1639,48 @@ class big_bully_red extends card {
     else return 1;
   }
 }
+
+class challenge_the_alpha_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "challenge_the_alpha_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "BRUTE", $defPlayer)) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    }
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "BRUTE", $defPlayer)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    PummelHit($defPlayer, context: "Choose a card to discard, choose a 6 power card to to assert dominance and deal 2 the opponent");
+    AddDecisionQueue("SPECIFICCARD", $defPlayer, "ALPHA", 1);
+  }
+}
 ?>
