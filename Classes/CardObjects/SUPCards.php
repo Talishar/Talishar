@@ -1683,4 +1683,25 @@ class challenge_the_alpha_yellow extends card {
     AddDecisionQueue("SPECIFICCARD", $defPlayer, "ALPHA", 1);
   }
 }
+
+class steal_victory_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "steal_victory_blue";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if (!IsAllyAttacking()) {
+      $search = "THEIRAURAS:type=T";
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to steal", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+    }
+  }
+}
 ?>
