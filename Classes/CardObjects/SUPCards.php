@@ -1704,4 +1704,30 @@ class steal_victory_blue extends card {
     }
   }
 }
+
+class beat_the_same_drum_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "beat_the_same_drum_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumAgilityDestroyed, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumConfidenceDestroyed, $CS_NumToughnessDestroyed;
+    if (GetClassState($this->controller, $CS_NumAgilityDestroyed) > 0 || SearchAurasForCard("agility", $this->controller) != "") {
+      PlayAura("agility", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+    if (GetClassState($this->controller, $CS_NumConfidenceDestroyed) > 0 || SearchAurasForCard("confidence", $this->controller) != "") {
+      PlayAura("confidence", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+    if (GetClassState($this->controller, $CS_NumMightDestroyed) > 0 || SearchAurasForCard("might", $this->controller) != "") {
+      PlayAura("might", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+    if (GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || SearchAurasForCard("toughness", $this->controller) != "") {
+      PlayAura("toughness", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+    if (GetClassState($this->controller, $CS_NumVigorDestroyed) > 0 || SearchAurasForCard("vigor", $this->controller) != "") {
+      PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+  }
+}
 ?>
