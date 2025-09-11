@@ -22,7 +22,7 @@ function MSTAbilityCost($cardID): int
 
 function MSTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_LinkBasePower, $CombatChain;
+  global $mainPlayer, $combatChainState, $CombatChain;
   $from = $CombatChain->AttackCard()->From();
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
@@ -34,12 +34,13 @@ function MSTCombatEffectActive($cardID, $attackID): bool
     "first_tenet_of_chi_wind_blue" => $from != "PLAY" && ColorContains($attackID, 3, $mainPlayer) && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer)),
     "prismatic_leyline_yellow-RED" => ColorContains($attackID, 1, $mainPlayer),
     "prismatic_leyline_yellow-YELLOW" => ColorContains($attackID, 2, $mainPlayer),
-    "water_the_seeds_red", "water_the_seeds_yellow", "water_the_seeds_blue" => $combatChainState[$CCS_LinkBasePower] <= 1,
+    "water_the_seeds_red", "water_the_seeds_yellow", "water_the_seeds_blue" => LinkBasePower() <= 1,
     "longdraw_half_glove" => CardSubType($attackID) == "Arrow",
     "tide_chakra_red-1", "tide_chakra_yellow-1", "tide_chakra_blue-1", "tide_chakra_red-2", "tide_chakra_yellow-2", "tide_chakra_blue-2", "hiss_red", "hiss_yellow", "hiss_blue", "intimate_inducement_red-BUFF",
     "intimate_inducement_yellow-BUFF", "intimate_inducement_blue-BUFF", "venomous_bite_red", "venomous_bite_yellow", "venomous_bite_blue", "fang_strike", "slither", "tooth_and_claw_red-BUFF", "waves_of_aqua_marine", "attune_with_cosmic_vibrations_blue",
     "levels_of_enlightenment_blue", "dense_blue_mist_blue-HITPREVENTION", "dense_blue_mist_blue-DEBUFF", "deep_blue_sea_blue", "wide_blue_yonder_blue", "big_blue_sky_blue", "a_drop_in_the_ocean_blue", "the_grain_that_tips_the_scale_blue", "just_a_nick_red-BUFF",
     "just_a_nick_red-HIT", "maul_yellow-BUFF", "maul_yellow-HIT", "stonewall_gauntlet", "emissary_of_tides_red", "murky_water_red", "shadowrealm_horror_red-1", "shadowrealm_horror_red-2" => true,
+    "cosmic_awakening_blue-1", "cosmic_awakening_blue-2", "cosmic_awakening_blue-3" => true,
     default => false,
   };
 }
@@ -68,7 +69,7 @@ function MSTEffectPowerModifier($cardID): int
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention, $CS_PlayIndex;
-  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CCS_LinkBasePower, $CS_NumAttacks;
+  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CS_NumAttacks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch ($cardID) {
@@ -341,19 +342,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chiArray = explode(",", SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi"));
       $amountChiPitch = count($chiArray);
       if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") {
-        switch ($amountChiPitch) {
-          case 1:
-            $combatChainState[$CCS_LinkBasePower] = 10;
-            break;
-          case 2:
-            $combatChainState[$CCS_LinkBasePower] = 15;
-            break;
-          case 3:
-            $combatChainState[$CCS_LinkBasePower] = 20;
-            break;
-          default:
-            break;
-        }
+        AddCurrentTurnEffect("$cardID-$amountChiPitch", $currentPlayer);
       }
       return "";
     case "levels_of_enlightenment_blue":

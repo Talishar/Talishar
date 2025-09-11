@@ -218,6 +218,34 @@ class Card {
   function DoesAttackHaveGoAgain() {
     return false;
   }
+
+  function EffectSetBasePower($basePower) {
+    return $basePower;
+  }
+
+  function MultiplyBasePower() {
+    return 1;
+  }
+
+  function EffectMultiplyBasePower() {
+    return 1;
+  }
+
+  function CharMultiplyBasePower() {
+    return 1;
+  }
+
+  function DivideBasePower() {
+    return 1;
+  }
+
+  function EffectDivideBasePower() {
+    return 1;
+  }
+
+  function CharDivideBasePower() {
+    return 1;
+  }
 }
 
 ?>

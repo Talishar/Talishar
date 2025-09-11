@@ -882,29 +882,29 @@ function OnAttackEffects($power)
   }
 }
 
-function CurrentEffectBaseAttackSet()
-{
-  global $currentPlayer, $currentTurnEffects;
-  $mod = -1;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
-      switch ($currentTurnEffects[$i]) {
-        case "transmogrify_red":
-          if ($mod < 8) $mod = 8;
-          break;
-        case "transmogrify_yellow":
-          if ($mod < 7) $mod = 7;
-          break;
-        case "transmogrify_blue":
-          if ($mod < 6) $mod = 6;
-          break;
-        default:
-          break;
-      }
-    }
-  }
-  return $mod;
-}
+// function CurrentEffectBaseAttackSet()
+// {
+//   global $currentPlayer, $currentTurnEffects;
+//   $mod = -1;
+//   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+//     if ($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
+//       switch ($currentTurnEffects[$i]) {
+//         case "transmogrify_red":
+//           if ($mod < 8) $mod = 8;
+//           break;
+//         case "transmogrify_yellow":
+//           if ($mod < 7) $mod = 7;
+//           break;
+//         case "transmogrify_blue":
+//           if ($mod < 6) $mod = 6;
+//           break;
+//         default:
+//           break;
+//       }
+//     }
+//   }
+//   return $mod;
+// }
 
 function CurrentEffectCostModifiers($cardID, $from)
 {

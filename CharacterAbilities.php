@@ -1672,7 +1672,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
 
 function CharacterAttackAbilities($attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_LinkBasePower, $CS_PlayIndex;
+  global $mainPlayer, $combatChainState, $CS_PlayIndex;
   $char = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;//Don't do effect if destroyed
@@ -1687,11 +1687,6 @@ function CharacterAttackAbilities($attackID)
         if ($attackID == "teklo_blaster") {
           GiveAttackGoAgain();
           WriteLog(CardLink($char[$i], $char[$i]) . " gives Go Again");
-        }
-        break;
-      case "cosmo_scroll_of_ancestral_tapestry":
-        if (HasWard($attackID, $mainPlayer) && SubtypeContains($attackID, "Aura", $mainPlayer)) {
-          $combatChainState[$CCS_LinkBasePower] = WardAmount($attackID, $mainPlayer, GetClassState($mainPlayer, $CS_PlayIndex));
         }
         break;
       default:

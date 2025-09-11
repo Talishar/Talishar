@@ -1232,7 +1232,7 @@ function FinalizeChainLink($chainClosed = false)
   $numHitsOnLink = ($combatChainState[$CCS_DamageDealt] > 0 ? 1 : 0);
   $numHitsOnLink += intval($combatChainState[$CCS_HitThisLink]);
   array_push($chainLinkSummary, $numHitsOnLink);
-  array_push($chainLinkSummary, CurrentEffectBaseAttackSet());
+  array_push($chainLinkSummary, LinkBasePower());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
   
   ResolveWagers($chainClosed);
@@ -2802,7 +2802,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 
 function PayAdditionalCosts($cardID, $from, $index="-")
 {
-  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState, $CCS_LinkBasePower;
+  global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState;
   $cardSubtype = CardSubType($cardID);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -2996,8 +2996,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       BanishFromSoul($currentPlayer);
       break;
     case "just_a_nick_red":
-      if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA" && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") $modalities = "Buff_Power";
+      if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA" && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") $modalities = "Buff_Power";
       else $modalities = "Gain_On-Hit";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
@@ -3034,8 +3034,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
       break;
     case "maul_yellow":
-      if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($combatChain[0]) == "AA") $modalities = "Buff_Power";
+      if (LinkBasePower() <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif (LinkBasePower() <= 1 && CardType($combatChain[0]) == "AA") $modalities = "Buff_Power";
       else $modalities = "Gain_On-Hit";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
@@ -3665,7 +3665,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
 function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1)
 {
   global $turn, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
-  global $CS_CharacterIndex, $CS_PlayCCIndex, $CCS_LinkBasePower;
+  global $CS_CharacterIndex, $CS_PlayCCIndex;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
@@ -3800,15 +3800,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
       $chainClosed = ProcessAttackTarget($spectraTargets);
-      $baseAttackSet = CurrentEffectBaseAttackSet();
-      if($baseAttackSet != -1) {
-        $powerValue = $baseAttackSet;
-      }
-      else {
-        $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
-      }
+      $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
-      $combatChainState[$CCS_LinkBasePower] = BasePowerModifiers($cardID, $powerValue);
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
       if ($definedCardType == "AA" && $powerValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && (SearchCharacterActive($currentPlayer, "kayo_berserker_runt") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $currentPlayer))) && $powerValue >= 6) KayoStaticAbility($cardID);

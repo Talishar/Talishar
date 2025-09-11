@@ -2,7 +2,7 @@
 
 function ModalAbilities($player, $card, $lastResult, $index=-1)
 {
-  global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen, $CCS_LinkBasePower;
+  global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen;
   if(isset($lastResult[0])) SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);
   AddDecisionQueue("CURRENTEFFECTAFTERPLAYORACTIVATEABILITY", $player, "<-");
   switch($card)
@@ -17,12 +17,12 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
     case "JUSTANICK":
       switch($lastResult) {
         case "Buff_Power":
-          if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") AddCurrentTurnEffect("just_a_nick_red-BUFF", $player);
+          if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") AddCurrentTurnEffect("just_a_nick_red-BUFF", $player);
           break;
         case "Gain_On-Hit":
           if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("just_a_nick_red-HIT", $player); break;
         case "Both":
-          if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") AddCurrentTurnEffect("just_a_nick_red-BUFF", $player);
+          if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") AddCurrentTurnEffect("just_a_nick_red-BUFF", $player);
           if (HasStealth($CombatChain->AttackCard()->ID())) AddCurrentTurnEffect("just_a_nick_red-HIT", $player);
           break;
       }
@@ -698,6 +698,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("SETLAYERTARGET", $player, "scour_blue", 1);
       break;
     case "ALLURINGINDUCEMENT":
+      //this is broken for now
       global $combatChain, $combatChainState, $CCS_LinkBasePower;
       $combatChain[0] = $lastResult;
       $combatChainState[$CCS_LinkBasePower] = PowerValue($combatChain[0], $mainPlayer, "CC");

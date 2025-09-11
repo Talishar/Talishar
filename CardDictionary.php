@@ -939,7 +939,7 @@ function BlockValue($cardID)
   }
 }
 
-function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
+function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
 {
   global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn;
   if (!$cardID) return "";
@@ -1000,8 +1000,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false)
     "escalate_order_red" => 6, // fabcube error
     default => $basePower,
   };
-  // call BasePowerModifiers here?
-  if ($lyathActive) $basePower = ceil($basePower / 2);
+  // Lyath ability is handled elsewhere while attacking
+  if ($lyathActive && !$attacking) $basePower = ceil($basePower / 2);
   return $basePower;
 }
 
@@ -2218,7 +2218,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
   global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $CCS_LinkBasePower, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
   global $CS_NumCardsDrawn, $chainLinkSummary;
   if ($player == "") $player = $currentPlayer;
@@ -2875,7 +2875,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "just_a_nick_red":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (HasStealth($CombatChain->AttackCard()->ID())) return false;
-      if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "astral_etchings_red":
     case "astral_etchings_yellow":
@@ -2894,7 +2894,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "maul_yellow":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CardNameContains($CombatChain->AttackCard()->ID(), "Crouching Tiger", $player)) return false;
-      if ($combatChainState[$CCS_LinkBasePower] <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "longdraw_half_glove":
       return (count($myHand) + count($myArsenal)) < 2;
@@ -4957,6 +4957,7 @@ function WardAmount($cardID, $player, $index = -1)
     case "meridian_pathway":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "manifestation_of_miragai_blue":
+      WriteLog("HERE: $index");
       return $auras[$index + 3] ?? 0;
     case "three_visits_red":
       return SearchPitchForColor($player, 3) * 3;

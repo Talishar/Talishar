@@ -29,7 +29,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_LinkBasePower;
+  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -3160,7 +3160,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " copy and become " . CardLink($lastResult, $lastResult));
-      $combatChainState[$CCS_LinkBasePower] = PowerValue($lastResult, $mainPlayer, "CC");
       $combatChain[0] = $lastResult;
       return $lastResult;
     case "EXTRAATTACK":

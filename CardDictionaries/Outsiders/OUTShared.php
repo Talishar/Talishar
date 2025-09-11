@@ -172,7 +172,7 @@ function OUTAbilityCost($cardID)
 
   function OUTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState, $CCS_LinkBasePower;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState;
     global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia, $CombatChain;
     $rv = "";
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -192,7 +192,6 @@ function OUTAbilityCost($cardID)
           DestroyCharacter($currentPlayer, $index);
         }
         AttackReplaced($card->ID(), $currentPlayer);
-        $combatChainState[$CCS_LinkBasePower] = ModifiedPowerValue($combatChain[0], $currentPlayer, "CC", source:"");
         $card->Remove();
         return "";
       case "redback_shroud":

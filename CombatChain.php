@@ -1916,3 +1916,92 @@ function AfterDamage()
   if (SearchLayersForPhase("FINALIZECHAINLINK") != -1) return true;
   return false;
 }
+
+function LinkBasePower()
+{
+  global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain;
+  $attackID = $CombatChain->AttackCard()->ID();
+  $attackOriginUID = $combatChain[8];
+  if (SubTypeContains($attackID, "Aura")) {
+    $index = SearchAurasForUniqueID($attackOriginUID, $mainPlayer);
+  }
+  else $index = 0;
+  $basePower = PowerValue($attackID, $mainPlayer, 'CC', $index, true, true);
+  $attackCard = GetClass($attackID, $mainPlayer);
+  //substage 2
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+    if ($card != "-") $basePower = $card->EffectSetBasePower($basePower);
+    switch ($currentTurnEffects[$i]) {
+      case "kayo_underhanded_cheat":
+      case "kayo_strong_arm":
+        $basePower = 6;
+        break;
+      case "transmogrify_red":
+        $basePower = 8;
+        break;
+      case "transmogrify_yellow":
+        $basePower = 7;
+        break;
+      case "transmogrify_blue":
+        $basePower = 6;
+        break;
+      case "cosmic_awakening_blue-1":
+        $basePower = 10;
+        break;
+      case "cosmic_awakening_blue-2":
+        $basePower = 15;
+        break;
+      case "cosmic_awakening_blue-3":
+        $basePower = 20;
+        break;
+      default:
+        break;
+    }
+  }
+  //substage 3
+  if ($attackCard != "-") $basePower = $basePower * $attackCard->MultiplyBasePower();
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+    if ($card != "-") $basePower = $card->EffectMultiplyBasePower() * $basePower;
+    switch ($currentTurnEffects[$i]) {
+      case "kayo_berserker_runt-DOUBLE":
+        $basePower = 2 * $basePower;
+        break;
+      default:
+        break;
+    }
+  }
+  //substage 4
+  if ($attackCard != "-") $basePower = ceil($basePower / $attackCard->DivideBasePower());
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+    if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
+    switch ($currentTurnEffects[$i]) {
+      case "kayo_berserker_runt-HALF":
+        $basePower = ceil($basePower / 2);
+        break;
+      case "fatigue_shot_red":
+      case "fatigue_shot_yellow":
+      case "fatigue_shot_blue":
+        $basePower = ceil($basePower / 2);
+        break;
+      default:
+        break;
+    }
+  }
+  $char = GetPlayerCharacter($mainPlayer);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    $card = GetClass($char[$i], $mainPlayer);
+    if ($card != "-") $basePower = ceil($basePower / $card->CharDivideBasePower());
+    switch ($char[$i]) {
+      case "lyath_goldmane_vile_savant":
+      case "lyath_goldmane":
+        $basePower = ceil($basePower / 2);
+        break;
+      default:
+        break;
+    }
+  }
+  return $basePower;
+}

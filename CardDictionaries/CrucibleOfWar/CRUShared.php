@@ -107,6 +107,7 @@
 
   function CRUCombatEffectActive($cardID, $attackID) {
     global $CombatChain, $combatChainState, $mainPlayer, $CCS_IsBoosted, $CS_ArsenalFacing;
+    $cardID = explode("-", $cardID)[0];
     switch($cardID) {
       case "massacre_red": return true;
       case "predatory_assault_red": case "predatory_assault_yellow": case "predatory_assault_blue": return true;
@@ -139,6 +140,7 @@
       case "increase_the_tension_red-1": case "increase_the_tension_yellow-1": case "increase_the_tension_blue-1": return CardSubtype($attackID) == "Arrow";
       case "mauvrion_skies_red": case "mauvrion_skies_yellow": case "mauvrion_skies_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
       case "lunging_press_blue": return true;
+      case "kayo_berserker_runt": return true;
       default: return false;
     }
   }
@@ -542,14 +544,14 @@ function CRUHitEffect($cardID)
 
 function KayoStaticAbility($cardId)
 {
-  global $combatChainState, $CCS_LinkBasePower, $mainPlayer;
+  global $combatChainState, $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
   if(PowerCantBeModified($cardId)) return;
   if($roll >= 5) {
     if(CanGainAttack($cardId)) {
-      $combatChainState[$CCS_LinkBasePower] *= 2;
+      AddCurrentTurnEffect("kayo_berserker_runt-DOUBLE", $mainPlayer);
     }
-  } else $combatChainState[$CCS_LinkBasePower] = floor($combatChainState[$CCS_LinkBasePower] / 2);
+  } else AddCurrentTurnEffect("kayo_berserker_runt-HALF", $mainPlayer);
 }
 
 function KassaiEndTurnAbility()

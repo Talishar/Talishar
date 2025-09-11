@@ -51,13 +51,14 @@ function SUPCombatEffectActive($cardID, $attackID): bool
   return match ($cardID) {
     "confidence" => TypeContains($attackID, "AA", $mainPlayer),
     "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
+    "kayo_underhanded_cheat", "kayo_strong_arm" => true,
     default => false,
   };
 }
 
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $mainPlayer, $combatChainState, $CCS_LinkBasePower, $combatChain, $chainLinkSummary, $chainLinks;
+  global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks;
   global $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
@@ -73,7 +74,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "kayo_strong_arm":
       if ($currentPlayer == $mainPlayer) {
         //check to make sure they targeted the current chain link
-        $combatChainState[$CCS_LinkBasePower] = 6;
+        AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       else {
         $targetIndex = intval(explode("-", $target)[1]);
@@ -298,6 +299,9 @@ function BOO($player)
     default:
       break;
   }
+  $totalPower = 0;
+  $totalDef = 0;
+  EvaluateCombatChain($totalPower, $totalDef);
 }
 
 function Cheer($player)

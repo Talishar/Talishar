@@ -5,7 +5,7 @@ include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
-  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_LinkBasePower, $CCS_WeaponIndex;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
   global $CCS_WeaponIndex, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
@@ -14,11 +14,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
 
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, true);
-    if ($chainCard->ID() == "manifestation_of_miragai_blue" && SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
-      $combatChainState[$CCS_LinkBasePower] = WardAmount($chainCard->ID(), $mainPlayer, $combatChainState[$CCS_WeaponIndex]);
-    }
     if ($chainCard->PlayerID() == $mainPlayer) {
-      if ($i == 0 && $attackType != "W") $power = $combatChainState[$CCS_LinkBasePower];
+      if ($i == 0 && $attackType != "W") $power = LinkBasePower();
       else $power = $canGainAttack ? PowerValue($chainCard->ID(), $mainPlayer, "CC") : PowerValue($chainCard->ID(), $mainPlayer, "CC", base: true);
       if ($canGainAttack || $i == 0 || $power < 0) {
         array_push($powerModifiers, $chainCard->ID());
@@ -126,11 +123,9 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
 
 // function to recheck if things should trigger after gamestate change (like Lyath losing his ability)
 function ReEvalCombatChain() {
-  global $combatChain, $CombatChain, $combatChainState, $CCS_LinkBasePower, $mainPlayer, $defPlayer;
+  global $combatChain, $CombatChain, $combatChainState, $mainPlayer, $defPlayer;
   if ($CombatChain->HasCurrentLink()) {
     // checking if things should trigger/be modified with the power change
-    $attackID = $CombatChain->AttackCard()->ID();
-    $combatChainState[$CCS_LinkBasePower] = PowerValue($attackID, $mainPlayer, "CC");
     for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
       if ($combatChain[$i + 1] == $defPlayer) ProcessPhantasmOnBlock($i);
     }
@@ -506,14 +501,14 @@ function ArsenalPlayCardAbilities($cardID)
 
 function HasIncreasedAttack()
 {
-  global $CombatChain, $combatChainState, $CCS_LinkBasePower, $mainPlayer, $combatChain;
+  global $CombatChain, $combatChainState, $mainPlayer, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
     $power = CachedTotalPower();
     if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
       if ($power > WardAmount($combatChain[0], $mainPlayer)) return true;
       else return false;
     }
-    if ($power > $combatChainState[$CCS_LinkBasePower]) return true;
+    if ($power > LinkBasePower()) return true;
   }
   return false;
 }
@@ -2648,11 +2643,6 @@ function BasePowerModifiers($attackID, $powerValue)
     if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
     $effects = explode("-", $currentTurnEffects[$i]);
     switch ($effects[0]) {
-      case "fatigue_shot_red":
-      case "fatigue_shot_yellow":
-      case "fatigue_shot_blue":
-        $powerValue = ceil($powerValue / 2);
-        break;
       case "ghostly_touch":
         if ($attackID == "UPR551") $powerValue = $effects[1];
         break;
