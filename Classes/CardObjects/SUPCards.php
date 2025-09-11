@@ -1757,4 +1757,28 @@ class reckless_stampede_red extends card {
     AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
   }
 }
+
+class smashing_ground_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "smashing_ground_blue";
+    $this->controller = $controller;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $totalPower = CachedTotalPower();
+    if (IsHeroAttackTarget() && $totalPower >= 6) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card you want to destroy from their arsenal", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
+  } 
+}
 ?>
