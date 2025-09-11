@@ -22,7 +22,8 @@ class Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
-    return "NOT IMPLEMENTED";
+    if (CardType($this->cardID) != "AA") return "NOT IMPLEMENTED";
+    else return "";
   }
 
   function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {

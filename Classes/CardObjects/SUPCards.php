@@ -1730,4 +1730,31 @@ class beat_the_same_drum_blue extends card {
     }
   }
 }
+
+class reckless_stampede_red extends card {
+  function __construct($controller) {
+    $this->cardID = "reckless_stampede_red";
+    $this->controller = $controller;
+  }
+
+  function AttackGetsBlockedEffect($cardID) {
+    $numBlocking = $cardID == "" ? NumCardsBlocking() : 1;
+    for($i = 0; $i < $numBlocking; ++$i) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    Clash($this->cardID, $this->controller);
+    PlayerOpt($this->controller, 1);
+    PlayerOpt($otherPlayer, 1);
+  }
+
+  function WonClashAbility($winnerID) {
+    $otherPlayer = $winnerID == 1 ? 2 : 1;
+    AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-");
+    AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
+  }
+}
 ?>

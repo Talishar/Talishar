@@ -694,6 +694,7 @@ function isUnimplemented($cardID) {
         "challenge_the_alpha_yellow" => false,
         "steal_victory_blue" => false,
         "beat_the_same_drum_blue" => false,
+        "reckless_stampede_red" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
