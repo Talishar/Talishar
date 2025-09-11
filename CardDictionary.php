@@ -4958,7 +4958,6 @@ function WardAmount($cardID, $player, $index = -1)
     case "meridian_pathway":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player) ? 3 : 0;
     case "manifestation_of_miragai_blue":
-      WriteLog("HERE: $index");
       return $auras[$index + 3] ?? 0;
     case "three_visits_red":
       return SearchPitchForColor($player, 3) * 3;
