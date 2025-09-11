@@ -237,6 +237,7 @@ function SetID($cardID)
     "wrenchtastic" => "DUM", // AI custom weapon
     "meet_madness_red" => "AAC014", //temporary
     "UPR551" => "UPR551", //ghostly touch
+    "alpha_instinct_blue" => "ARR022", //temporary
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
