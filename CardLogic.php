@@ -1381,6 +1381,8 @@ function AddTowerEffectTrigger($cardID)
 {
   global $mainPlayer;
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->AddTowerHitTrigger();
   switch ($cardID) {
     case "colossal_bearing_red":
     case "smack_of_reality_red":

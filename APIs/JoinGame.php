@@ -713,6 +713,7 @@ function isUnimplemented($cardID) {
         "tension_in_the_air_yellow" => false,
         "tension_in_the_air_blue" => false,
         "renounce_violence_blue" => false,
+        "cut_a_long_story_short_yellow" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,

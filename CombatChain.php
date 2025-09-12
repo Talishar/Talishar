@@ -1785,6 +1785,11 @@ function CacheCombatResult()
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
+  // hard code this exception to avoid circularity
+  $shortCards = ["cut_a_long_story_short_yellow"];
+  if (in_array($combatChain[0], $shortCards) && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
+    ++$combatChainState[$CCS_CachedTotalPower];
+  }
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();

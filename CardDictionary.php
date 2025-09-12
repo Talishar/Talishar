@@ -3714,6 +3714,8 @@ function HasPiercing($cardID, $from = "")
 
 function HasTower($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasTower();
   switch ($cardID) {
     case "colossal_bearing_red":
     case "lay_down_the_law_red":

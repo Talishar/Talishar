@@ -262,6 +262,18 @@ class Card {
   function ComboActive($lastAttackName) {
     return false;
   }
+
+  function HasTower() {
+    return false;
+  }
+
+  function AddTowerHitTrigger() {
+    return;
+  }
+
+  function ProcessTowerEffect() {
+    return;
+  }
 }
 
 ?>

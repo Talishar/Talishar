@@ -81,6 +81,8 @@
       WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return true;
     }
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") return $card->ProcessTowerEffect();
     switch($cardID)
     {
       case "colossal_bearing_red":

@@ -2363,4 +2363,28 @@ class renounce_violence_blue extends card {
     }
   }
 }
+
+class cut_a_long_story_short_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "cut_a_long_story_short_yellow";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return HasIncreasedAttack() ? 1 : 0;
+  }
+
+  function HasTower() {
+    return true;
+  }
+
+  function AddTowerHitTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "TOWEREFFECT");
+  }
+
+  function ProcessTowerEffect() {
+    global $defPlayer;
+    DiscardHand($defPlayer);
+  }
+}
 ?>
