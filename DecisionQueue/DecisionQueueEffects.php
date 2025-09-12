@@ -1109,7 +1109,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("MZREMOVE", $player, "<-", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "COMBATCHAINLINK-0",1);
         AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, 1, 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "{0}",1);
       }
       return $lastResult;
     case "TRUTHORTRICKERY":
