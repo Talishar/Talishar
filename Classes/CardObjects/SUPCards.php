@@ -1127,7 +1127,7 @@ class leave_them_hanging_red extends card {
     RemoveSuspense($this->controller, "MYAURAS-$index");
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
   }
 
@@ -2001,6 +2001,348 @@ class ironfist_revelation extends card {
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $this->controller, "IRONFIST", 1);
     }
+  }
+}
+
+class aura_of_suspense {
+  public $cardID;
+  public $controller;
+
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+  function HasSuspense() {
+    return true;
+  }
+
+  function StartTurnAbility($index) {
+    RemoveSuspense($this->controller, "MYAURAS-$index", false);
+  }
+
+  function LeavesPlayAbility($mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger();
+  }
+
+  function ProcessTrigger() {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier(): int {
+    //fill this in
+    return 0;
+  }
+
+  function CombatEffectActive() {
+    return true;
+  }
+}
+
+class act_of_glory_red extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "act_of_glory_red";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 6;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class act_of_glory_yellow extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "act_of_glory_yellow";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 5;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class act_of_glory_blue extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "act_of_glory_blue";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 4;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class edge_of_their_seats_red extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "edge_of_their_seats_red";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 5;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class edge_of_their_seats_yellow extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "edge_of_their_seats_yellow";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 4;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class edge_of_their_seats_blue extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "edge_of_their_seats_blue";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class tension_in_the_air_red extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "tension_in_the_air_red";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 4;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class tension_in_the_air_yellow extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "tension_in_the_air_yellow";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
+  }
+}
+
+class tension_in_the_air_blue extends card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "tension_in_the_air_blue";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    $this->archetype->LeavesPlayAbility($mainPhase);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->archetype->ProcessTrigger();
+  }
+
+  function EffectPowerModifier($param, $attached = false): int {
+    //fill this in
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->archetype->CombatEffectActive();
   }
 }
 ?>

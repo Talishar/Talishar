@@ -22,8 +22,11 @@ class Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
-    if (CardType($this->cardID) != "AA") return "NOT IMPLEMENTED";
-    else return "";
+    if (CardType($this->cardID) == "AA") return "";
+    if (SubtypeContains($this->cardID, "Item")) return "";
+    if (SubtypeContains($this->cardID, "Aura")) return "";
+    if (SubtypeContains($this->cardID, "Ally")) return "";
+    else return "NOT IMPLEMENTED";
   }
 
   function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
@@ -174,7 +177,7 @@ class Card {
     return;
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
     return;
   }
 

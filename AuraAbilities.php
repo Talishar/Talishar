@@ -197,7 +197,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
-function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
+function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPhase = true)
 {
   global $mainPlayer;
   $auras = &GetAurasLocation($player, $location);
@@ -207,7 +207,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS")
   $uniqueID = $auras[$index + $uniqueIDIndex];
   $otherPlayer = $player == 1 ? 2 : 1;
   $card = GetClass($cardID, $player);
-  if ($card != "-") return $card->LeavesPlayAbility($index, $uniqueID, $location);
+  if ($card != "-") return $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase);
   switch ($cardID) {
     case "ironsong_pride_red":
       $char = &GetPlayerCharacter($player);
@@ -347,10 +347,10 @@ function AuraPlayCounters($cardID)
   }
 }
 
-function DestroyAuraUniqueID($player, $uniqueID, $location = "AURAS", $skipTrigger = false)
+function DestroyAuraUniqueID($player, $uniqueID, $location = "AURAS", $skipTrigger = false, $mainPhase = true)
 {
   $index = $location == "AURAS" ? SearchAurasForUniqueID($uniqueID, $player) : SearchCharacterForUniqueID($uniqueID, $player);
-  if ($index != -1) DestroyAura($player, $index, $uniqueID, $location, $skipTrigger);
+  if ($index != -1) DestroyAura($player, $index, $uniqueID, $location, $skipTrigger, mainPhase:$mainPhase);
 }
 
 function DestroyAuraByID($player, $cardID)
@@ -400,7 +400,7 @@ function &GetAurasLocation($player, $location)
   return $auras;
 }
 
-function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false)
+function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true)
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
   $auras = &GetAurasLocation($player, $location);
@@ -410,7 +410,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
-  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose);
+  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose, $mainPhase);
   AuraDestroyed($player, $cardID, $isToken, $from);
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
@@ -441,10 +441,10 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
   }
 }
 
-function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false)
+function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true)
 {
   global $CS_SuspensePoppedThisTurn, $layers;
-  if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location);
+  if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location, $mainPhase);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
     $cardID = $auras[$index];
@@ -778,7 +778,7 @@ function AuraStartTurnAbilities()
     }
   }
   foreach ($toRemove as $uniqueId) {
-    DestroyAuraUniqueID($mainPlayer, $uniqueId);
+    DestroyAuraUniqueID($mainPlayer, $uniqueId, mainPhase: false);
   }
   $defPlayerAuras = &GetAuras($defPlayer);
   for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {

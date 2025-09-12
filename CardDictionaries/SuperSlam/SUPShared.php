@@ -344,7 +344,7 @@ function GetSuspenseAuras($player)
   return $susp;
 }
 
-function RemoveSuspense($player, $MZIndex)
+function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
@@ -352,7 +352,7 @@ function RemoveSuspense($player, $MZIndex)
   $ind = explode("-", $MZIndex)[1];
   --$auras[$ind + 2];
   if ($auras[$ind + 2] == 0) {
-    DestroyAura($targetPlayer, $ind);
+    DestroyAura($targetPlayer, $ind, mainPhase:$mainPhase);
   }
 }
 
