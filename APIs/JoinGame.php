@@ -697,6 +697,10 @@ function isUnimplemented($cardID) {
         "reckless_stampede_red" => false,
         "smashing_ground_blue" => false,
         "battered_beaten_and_broken_yellow" => false,
+        "revolting_gesture_red" => false,
+        "low_blow_red" => false,
+        "concealed_object_blue" => false,
+        "escalate_violence_blue" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,

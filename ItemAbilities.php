@@ -640,3 +640,13 @@ function FindNullTime($cardName)
   $foundNullTime = $foundNullTime || SearchItemForModalities($cardName, $defPlayer, "null_time_zone_blue") != -1;
   return $foundNullTime;
 }
+
+function ItemBeginEndTurnAbilities()
+{
+  global $mainPlayer;
+  $items = GetItems($mainPlayer);
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    $card = GetClass($items[$i], $mainPlayer);
+    if ($card != "-") $card->BeginEndTurnAbilities($i);
+  }
+}

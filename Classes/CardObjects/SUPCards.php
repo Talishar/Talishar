@@ -1814,4 +1814,102 @@ class battered_beaten_and_broken_yellow extends card {
     AddDecisionQueue("MZREMOVE", $this->controller, "THEIRBANISH", 1);
   }
 }
+
+class revolting_gesture_red extends card {
+  function __construct($controller) {
+    $this->cardID = "revolting_gesture_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    PlayAura("might", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  } 
+}
+
+class low_blow_red extends card {
+  function __construct($controller) {
+    $this->cardID = "low_blow_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $CS_BooedThisTurn;
+    return GetClassState($this->controller, $CS_BooedThisTurn) ? 3 : 0;
+  }
+}
+
+class concealed_object_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "concealed_object_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY") {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    else AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    BOO($this->controller);
+  }
+
+  function BeginEndTurnAbilities($index) {
+    DestroyItemForPlayer($this->controller, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") Tap("MYITEMS-$index", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if ($from == "PLAY") {
+      if (CheckTapped("MYITEMS-$index", $this->controller)) return true;
+      if (!$CombatChain->HasCurrentLink() && !IsLayerStep()) return true;
+    }
+    return false;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    if ($from == "PLAY") return "I";
+    else return "";
+  }
+}
+
+class escalate_violence_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "escalate_violence_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if (SearchAurasForCardName("Might", $this->controller, false) != "") {
+      PlayAura("might", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+  }
+
+}
 ?>

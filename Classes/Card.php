@@ -247,6 +247,10 @@ class Card {
   function CharDivideBasePower() {
     return 1;
   }
+
+  function BeginEndTurnAbilities($index) {
+    return;
+  }
 }
 
 ?>

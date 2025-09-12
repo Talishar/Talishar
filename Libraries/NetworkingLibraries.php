@@ -1469,6 +1469,7 @@ function FinalizeTurn()
   AuraEndTurnAbilities();
   AllyEndTurnAbilities();
   MainCharacterEndTurnAbilities();
+  ItemBeginEndTurnAbilities();
   //4.4.3a Allies life totals are reset
   AllyBeginEndTurnEffects();
   //4.4.3b The turn player may put a card from their hand face down into an empty arsenal zone they own
