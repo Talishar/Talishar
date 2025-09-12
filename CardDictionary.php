@@ -5548,6 +5548,8 @@ function IsGold($cardID) {
 }
 
 function GetClass($cardID, $player) {
+  if (str_contains($cardID, "BLIND")) return "-";
+  $cardID = ExtractCardID($cardID);
   $className = match($cardID) {
     "1000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
     default => $cardID

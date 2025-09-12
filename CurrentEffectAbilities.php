@@ -1727,7 +1727,11 @@ function CurrentEffectGrantsGoAgain()
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
-      
+      $card = GetClass($turnEffects[0], $mainPlayer);
+      if ($card != "-") {
+        $param = explode("-", $turnEffects[0])[1] ?? "-";
+        if ($card->CurrentEffectGrantsGoAgain($param)) return true;
+      }
       switch ($turnEffects[0]) {
         case "driving_blade_red":
         case "driving_blade_yellow":

@@ -274,6 +274,10 @@ class Card {
   function ProcessTowerEffect() {
     return;
   }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return false;
+  }
 }
 
 ?>

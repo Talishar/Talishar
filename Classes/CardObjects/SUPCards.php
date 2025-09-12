@@ -2387,4 +2387,33 @@ class cut_a_long_story_short_yellow extends card {
     DiscardHand($defPlayer);
   }
 }
+
+class painful_passage_red extends card {
+  function __construct($controller) {
+    $this->cardID = "painful_passage_red";
+    $this->controller = $controller;
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    MZMoveCard($this->controller, "MYHAND:type=AA", "MYBANISH,HAND,", may: true);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a path through the painful passage");
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "buff,go_again", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "MYBANISH", 1);
+    AddDecisionQueue("MZOP", $this->controller, "LASTMZINDEX", 1);
+    AddDecisionQueue("MZOP", $this->controller, "GETUNIQUEID", 1);
+    AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $this->controller, "$this->cardID-{0},PLAY", 1);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "buff" ? 3 : 0;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "go_again";
+  }
+}
 ?>
