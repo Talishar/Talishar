@@ -1949,6 +1949,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
       AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
       AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
+      AddDecisionQueue("WRITELOGCARDLINK", $player, "<-", 1);
       break;
     case "fearless_confrontation_blue":
       AddCurrentTurnEffect($parameter, $mainPlayer);

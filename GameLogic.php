@@ -2613,7 +2613,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       AddPlayerHand($parameter, $player, "INVENTORY");
-      return "";
+      return $parameter;
     case "LISTDRACDAGGERGRAVEYARD":
       return ListDracDaggersGraveyard($player);
     case "EQUIPCARDGRAVEYARD":
