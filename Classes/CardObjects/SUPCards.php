@@ -1429,7 +1429,7 @@ class show_of_strength_red extends card {
     global $combatChain, $defPlayer;
     $modifier = 0;
     for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-      if ($combatChain[$i + 1] == $defPlayer && PowerValue($combatChain[$i], $defPlayer, index:$i) >= 6) $modifier -= 1;
+      if ($combatChain[$i + 1] == $defPlayer && PowerValue($combatChain[$i], $defPlayer, index:$i) + $combatChain[$i + 5]  >= 6) $modifier -= 1;
     }
     return $modifier;
   }
