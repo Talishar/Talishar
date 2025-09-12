@@ -218,9 +218,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
             $condition = false;
             if ($currentPlayer == $mainPlayer) {
-              if (ModifiedPowerValue($combatChain[0], $currentPlayer, "CC") + $combatChain[5] >= 6) $condition = true;
-              foreach ($chainLinks as $link) {
-                if (ModifiedPowerValue($link[0], $currentPlayer, "CC") + $link[4] > 6) $condition = true;
+              if (CachedTotalPower() >= 6) $condition = true;
+              for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
+                if ($chainLinkSummary[$i + 1] >= 6) $condition = true;
               }
               if ($condition) {
                 Deal2OrDiscard($targetPlayer);
