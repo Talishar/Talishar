@@ -371,11 +371,11 @@ $CS_NumAttackCardsAttacked = 101;
 $CS_NumAttackCardsBlocked = 102;
 $CS_CheeredThisTurn = 103;
 $CS_BooedThisTurn = 104;
-$CS_SuspensePoppedThisTurn = 104;
-$CS_SeismicSurgesCreated = 105;
-$CS_CardsInDeckBeforeOpt = 106; //to be set as a player starts opting, used to validate the result of the opt
-$CS_NumToughnessDestroyed = 107;
-$CS_NumConfidenceDestroyed = 108;
+$CS_SuspensePoppedThisTurn = 105;
+$CS_SeismicSurgesCreated = 106;
+$CS_CardsInDeckBeforeOpt = 107; //to be set as a player starts opting, used to validate the result of the opt
+$CS_NumToughnessDestroyed = 108;
+$CS_NumConfidenceDestroyed = 109;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
