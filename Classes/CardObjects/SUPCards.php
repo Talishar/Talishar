@@ -1806,6 +1806,11 @@ class battered_beaten_and_broken_yellow extends card {
     return false;
   }
 
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    $auraCount = intdiv(count(GetAuras($this->controller)), AuraPieces());
+    return $auraCount >= 3 ? 3 : 0;
+  }
+
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRBANISH:isIntimidated=true");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an intimidated card to put into the graveyard (The cards were intimated in left to right order)", 1);
