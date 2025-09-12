@@ -593,8 +593,9 @@ function IsCardBanned($cardID, $format, $character)
 
 function isCardRestricted($cardName, $format, $count) {
   //restrictions go by card name, not card id
+  if ($format == "compllcc") $format = "llcc";
   $restrictedCards = [
-    "llcc", "compllcc" => ["Awakening", "Bonds of Ancestry", "Electromagnetic Somersault", "Crippling Crush", "Cull", "Oaken Old",
+    "llcc" => ["Awakening", "Bonds of Ancestry", "Electromagnetic Somersault", "Crippling Crush", "Cull", "Oaken Old",
       "Open the Flood Gates", "Succumb to Temptation", "Warmonger's Diplomacy",
     ]
   ];
