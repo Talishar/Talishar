@@ -701,6 +701,8 @@ function isUnimplemented($cardID) {
         "low_blow_red" => false,
         "concealed_object_blue" => false,
         "escalate_violence_blue" => false,
+        "tempest_palm_gustwave_yellow" => false,
+        "angelic_attendant_yellow" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
