@@ -645,7 +645,7 @@ function ItemBeginEndTurnAbilities()
 {
   global $mainPlayer;
   $items = GetItems($mainPlayer);
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  for ($i = count($items) - ItemPieces(); $i >= 0 ; $i -= ItemPieces()) {
     $card = GetClass($items[$i], $mainPlayer);
     if ($card != "-") $card->BeginEndTurnAbilities($i);
   }
