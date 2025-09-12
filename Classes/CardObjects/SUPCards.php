@@ -2345,4 +2345,22 @@ class tension_in_the_air_blue extends card{
     return $this->archetype->CombatEffectActive();
   }
 }
+
+class renounce_violence_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "renounce_violence_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Destroy a might to create a toughness");
+    for ($i = 0; $i < 3; ++$i) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:isSameName=might&THEIRAURAS:isSameName=might", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+      AddDecisionQueue("PLAYAURA", $this->controller, "toughness", 1);
+    }
+  }
+}
 ?>

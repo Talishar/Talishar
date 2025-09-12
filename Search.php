@@ -1552,6 +1552,13 @@ function SearchMultizone($player, $searches)
                 break;
               case "THEIRARSENAL":
                 $searchResult = SearchArsenalForCardName($otherPlayer, $name);
+                break;
+              case "MYAURAS":
+                $searchResult = SearchAurasForCardName($name, $player);
+                break;
+              case "THEIRAURAS":
+                $searchResult = SearchAurasForCardName($name, $otherPlayer);
+                break;
               default:
                 break;
             }
