@@ -1347,6 +1347,7 @@ function AddCrushEffectTrigger($cardID)
     case "star_struck_yellow":
     case "boulder_drop_yellow":
     case "boulder_drop_blue":
+    case "boulder_drop_red":
     case "put_em_in_their_place_red":
     case "batter_to_a_pulp_red":
     case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":

@@ -536,7 +536,7 @@
       case "cartilage_crush_red": case "cartilage_crush_yellow": case "cartilage_crush_blue": case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":
       case "debilitate_red": case "debilitate_yellow": case "debilitate_blue": case "disable_blue": case "disable_yellow": case "disable_red":
       case "mangle_red": case "righteous_cleansing_yellow": case "crush_the_weak_red": case "crush_the_weak_yellow": case "crush_the_weak_blue": case "chokeslam_red":
-      case "chokeslam_yellow": case "chokeslam_blue": case "boulder_drop_yellow": case "boulder_drop_blue":
+      case "chokeslam_yellow": case "chokeslam_blue": case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red": 
       case "star_struck_yellow": 
       case "put_em_in_their_place_red":
       case "batter_to_a_pulp_red":
@@ -630,7 +630,7 @@
         $damageDone = $combatChainState[$CCS_DamageDealt];
         AddNextTurnEffect("star_struck_yellow," . $damageDone, $defPlayer);
         break;
-      case "boulder_drop_yellow": case "boulder_drop_blue":
+      case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red":
         MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
         break;
       case "put_em_in_their_place_red":
