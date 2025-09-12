@@ -213,14 +213,15 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             break;
           case "boo":
             Boo($currentPlayer);
+            CacheCombatResult();
             break;
           case "deal_2_damage":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
             $condition = false;
             if ($currentPlayer == $mainPlayer) {
               if (CachedTotalPower() >= 6) $condition = true;
-              for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
-                if ($chainLinkSummary[$i + 1] >= 6) $condition = true;
+              for ($j = 0; $j < count($chainLinkSummary); $j += ChainLinkSummaryPieces()) {
+                if ($chainLinkSummary[$j + 1] >= 6) $condition = true;
               }
               if ($condition) {
                 Deal2OrDiscard($targetPlayer);
@@ -299,9 +300,9 @@ function BOO($player)
     default:
       break;
   }
-  $totalPower = 0;
-  $totalDef = 0;
-  EvaluateCombatChain($totalPower, $totalDef);
+  // $totalPower = 0;
+  // $totalDef = 0;
+  // EvaluateCombatChain($totalPower, $totalDef);
 }
 
 function Cheer($player)
