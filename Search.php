@@ -1022,6 +1022,15 @@ function SearchCurrentTurnEffectsForUniqueID($uniqueID)
   return -1;
 }
 
+function SearchPermanentsForUniqueID($uniqueID, $player)
+{
+  $perms = GetPermanents($player);
+  for ($i = 0; $i < count($perms); $i += PermanentPieces()) {
+    if ($perms[$i + 3] == $uniqueID) return $i;
+  }
+  return -1;
+}
+
 function SearchCurrentTurnEffectsForPartielID($partial)
 {
   global $currentTurnEffects;

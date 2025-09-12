@@ -17,6 +17,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
     array_push($permanents, $cardID);
     array_push($permanents, $from);
     array_push($permanents, $subCards);
+    array_push($permanents, GetUniqueId($cardID, $player));
   }
   return count($permanents) - PermanentPieces();
 }

@@ -1912,4 +1912,64 @@ class escalate_violence_blue extends card {
   }
 
 }
+
+class tempest_palm_gustwave_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "tempest_palm_gustwave_yellow";
+    $this->controller = $controller;
+  }
+
+  function HasCombo() {
+    return true;
+  }
+
+  function ComboActive($lastAttackName) {
+    return $lastAttackName == "Surging Strike";
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return ComboActive() ? 2 : 0;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    global $chainLinks;
+    return count($chainLinks) >= 2;
+  }
+}
+
+class angelic_attendant_yellow extends card{
+  function __construct($controller) {
+    $this->cardID = "angelic_attendant_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uniqueID = explode("-", $target)[1];
+    $index = SearchPermanentsForUniqueID($uniqueID, $this->controller);
+    if ($index != -1) {
+      AddDecisionQueue("AWAKEN", $this->controller, "MYPERMS-$index", 1);
+      return "";
+    }
+    else {
+      //currently a bug where it still goes to soul even when fizzled
+      return "FAILED";
+    }
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return SearchPermanents($this->controller, subtype: "Figment") == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYPERM:subtype=Figment");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a figment to awaken.");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "SOUL";
+  }
+}
 ?>

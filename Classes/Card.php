@@ -251,6 +251,14 @@ class Card {
   function BeginEndTurnAbilities($index) {
     return;
   }
+
+  function HasCombo() {
+    return false;
+  }
+
+  function ComboActive($lastAttackName) {
+    return false;
+  }
 }
 
 ?>

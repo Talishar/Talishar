@@ -172,7 +172,11 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $rv = "";
   switch($cardID) {
     case "prism_awakener_of_sol": case "prism_advent_of_thrones":
-      AddDecisionQueue("AWAKEN", $currentPlayer, $target, 1);
+      $uniqueID = explode("-", $target)[1];
+      $index = SearchPermanentsForUniqueID($uniqueID, $currentPlayer);
+      if ($index != -1) {
+        AddDecisionQueue("AWAKEN", $currentPlayer, "MYPERMS-$index", 1);
+      }
       return "";
     case "luminaris_celestial_fury":
       GiveAttackGoAgain();

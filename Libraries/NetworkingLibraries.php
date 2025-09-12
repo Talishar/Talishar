@@ -2156,6 +2156,7 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Figment");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a figment to awaken");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "celestial_reprimand_red":

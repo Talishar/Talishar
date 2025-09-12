@@ -1791,6 +1791,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $allies = GetAllies($otherPlayer);
             $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
           }
+          if ($targetArr[0] == "MYPERM") {
+            $permanents = GetPermanents($player);
+            $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
+          }
           $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
           break;
       }
@@ -1800,6 +1804,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "comet_storm__shock_red" => $cleanTarget,
         "null__shock_yellow" => $cleanTarget,
         "consign_to_cosmos__shock_yellow" => $cleanTarget,
+        "angelic_attendant_yellow" => $cleanTarget,
         default => $target,
       };
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {

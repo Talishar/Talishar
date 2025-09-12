@@ -4237,6 +4237,8 @@ function RepriseActive()
 
 function HasCombo($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasCombo();
   switch ($cardID) {
     case "lord_of_wind_blue":
     case "mugenshi_release_yellow":
@@ -4324,10 +4326,14 @@ function ComboActive($cardID = "")
   if ($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if ($cardID == "") return false;
   if (count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
+  $card = GetClass($cardID, $mainPlayer);
   $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
   for ($i = 0; $i < count($lastAttackNames); ++$i) {
     $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
     if (SearchCurrentTurnEffects("amnesia_red", $mainPlayer)) $lastAttackName = "";
+    if ($card != "-") {
+      if ($card->ComboActive($lastAttackName)) return true;
+    }
     switch ($cardID) {
       case "lord_of_wind_blue":
         if ($lastAttackName == "Mugenshi: RELEASE") return true;
