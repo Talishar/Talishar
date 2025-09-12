@@ -1972,4 +1972,30 @@ class angelic_attendant_yellow extends card{
     return "SOUL";
   }
 }
+
+class ironfist_revelation extends card {
+  function __construct($controller) {
+    $this->cardID = "ironfist_revelation";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $arsenal = &GetArsenal($this->controller);
+    $choices = [];
+    for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+      if ($arsenal[$i + 1] == "DOWN" && HasCrush($arsenal[$i])) array_push($choices, "MYARS-$i");
+    }
+    if (count($choices) > 0) {
+      $choices = implode(",", $choices);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Turn a card in your arsenal with crush face up?");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $this->controller, "IRONFIST", 1);
+    }
+  }
+}
 ?>

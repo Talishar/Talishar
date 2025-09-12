@@ -268,6 +268,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   array_push($arsenal, $counters); //Counters
   array_push($arsenal, "0"); //Is Frozen (1 = Frozen)
   array_push($arsenal, GetUniqueId($cardID, $player)); //Unique ID
+  array_push($arsenal, 0); //Num Power Counters
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($facing == "UP") {
     if ($from == "DECK" && ($cardID == "back_alley_breakline_red" || $cardID == "back_alley_breakline_yellow" || $cardID == "back_alley_breakline_blue") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {

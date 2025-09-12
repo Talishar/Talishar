@@ -701,8 +701,7 @@ function isUnimplemented($cardID) {
         "low_blow_red" => false,
         "concealed_object_blue" => false,
         "escalate_violence_blue" => false,
-        "tempest_palm_gustwave_yellow" => false,
-        "angelic_attendant_yellow" => false,
+        "ironfist_revelation" => false,
 
         "blood_follows_blade_yellow" => false,
         "take_the_bait_red" => false,
@@ -710,11 +709,14 @@ function isUnimplemented($cardID) {
         "golden_gait", "golden_galea", "golden_gauntlets", "golden_heart_plate" => false,
         "hunter_or_hunted_blue" => false,
         "backspin_thrust_red" => false,
+        "tempest_palm_gustwave_yellow" => false,
+        "angelic_attendant_yellow" => false,
         default => true
       };
     case "APS":
       return match($cardID) {
         "standing_ovation_blue" => false,
+        "boulder_drop_red" => false,
         default => true
       };
     case "ARR":

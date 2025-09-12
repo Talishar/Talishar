@@ -5,7 +5,7 @@ include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
-  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CCS_NumPowerCounters;
   global $CCS_WeaponIndex, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
@@ -33,6 +33,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       $totalDefense += BlockingCardDefense($i * CombatChainPieces());
     }
   }
+  // check +1 counters
+  if ($canGainAttack && $combatChainState[$CCS_NumPowerCounters] > 0) $totalPower += $combatChainState[$CCS_NumPowerCounters];
   // //Now check current turn effects
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {

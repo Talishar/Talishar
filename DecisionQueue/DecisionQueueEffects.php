@@ -1134,6 +1134,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("TAKEDAMAGE", $otherPlayer, 2);
       }
       return $lastResult;
+    case "IRONFIST":
+      $index = explode("-", $lastResult)[1];
+      $arsenal = &GetArsenal($player);
+      $arsenal[$index + 1] = "UP";
+      ++$arsenal[$index + 6];
     default: return "";
   }
 

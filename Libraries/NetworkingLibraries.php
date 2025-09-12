@@ -3,7 +3,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
-  global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState;
+  global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $roguelikeGameID, $CS_SkipAllRunechants;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
@@ -57,6 +57,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $uniqueID = $arsenal[$index + 5];
         if (SubtypeContains($arsenal[$index], "Arrow")) SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
+        if ($arsenal[$index + 6] > 0) $combatChainState[$CCS_NumPowerCounters] = $arsenal[$index + 6];
         $facing = $arsenal[$index+1];
         if(!IsStaticType(CardType($arsenal[$index], "ARS"), "ARS", $arsenal[$index])) RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$facing);
