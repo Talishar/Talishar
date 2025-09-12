@@ -1998,15 +1998,17 @@ function LinkBasePower()
     }
     $char = GetPlayerCharacter($mainPlayer);
     for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-      $card = GetClass($char[$i], $mainPlayer);
-      if ($card != "-") $basePower = ceil($basePower / $card->CharDivideBasePower());
-      switch ($char[$i]) {
-        case "lyath_goldmane_vile_savant":
-        case "lyath_goldmane":
-          $basePower = ceil($basePower / 2);
-          break;
-        default:
-          break;
+      if ($char[$i + 1] == 2) {
+        $card = GetClass($char[$i], $mainPlayer);
+        if ($card != "-") $basePower = ceil($basePower / $card->CharDivideBasePower());
+        switch ($char[$i]) {
+          case "lyath_goldmane_vile_savant":
+          case "lyath_goldmane":
+            $basePower = ceil($basePower / 2);
+            break;
+          default:
+            break;
+        }
       }
     }
     return $basePower;
