@@ -590,7 +590,7 @@ function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false,
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    $effectID = explode(",", $cardID)[0];
+    $effectID = explode(",", $currentTurnEffects[$i])[0];
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($effectID == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
