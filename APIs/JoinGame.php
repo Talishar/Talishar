@@ -768,6 +768,8 @@ function isUnimplemented($cardID) {
       return match($cardID) {
         "standing_ovation_blue" => false,
         "boulder_drop_red" => false,
+        "moment_maker" => false,
+        "superstar_blue" => false,
         default => true
       };
     case "ARR":
