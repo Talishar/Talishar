@@ -2637,6 +2637,71 @@ class unexpected_backhand_blue extends Card {
   }
 }
 
+class rapturous_applause extends BaseCard {
+  public $cardID;
+  public $controller;
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+  function WonClashWithAbility($winnerID) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $winnerID);
+  }
+
+  function ProcessTrigger() {
+    Cheer($this->controller);
+  }
+}
+
+class rapturous_applause_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rapturous_applause_red";
+    $this->controller = $controller;
+    $this->baseCard = new rapturous_applause($this->cardID, $this->controller);
+  }
+
+  function WonClashWithAbility($winnerID) {
+    $this->baseCard->WonClashWithAbility($winnerID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class rapturous_applause_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rapturous_applause_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rapturous_applause(this->cardID, this->controller);
+  }
+
+  function WonClashWithAbility($winnerID) {
+    $this->baseCard->WonClashWithAbility($winnerID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class rapturous_applause_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rapturous_applause_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rapturous_applause($this->cardID, $this->controller);
+  }
+
+  function WonClashWithAbility($winnerID) {
+    $this->baseCard->WonClashWithAbility($winnerID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
 class strongest_survive {
   public $cardID;
   public $controller;
