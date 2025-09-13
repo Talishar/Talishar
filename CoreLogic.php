@@ -1349,7 +1349,8 @@ function NumCardsNonEquipBlocking()
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
-      if ($type != "E" && $type != "I" && $type != "C") ++$num;
+      // the following line specifically skipped Instants, and I don't know why. Teklo evos?
+      if ($type != "E" && $type != "C") ++$num;
       if (DelimStringContains(CardSubType($chainCard->ID()), "Evo")) --$num;
     }
   }
