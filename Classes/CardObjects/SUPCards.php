@@ -2574,4 +2574,76 @@ class authority_of_ataya_blue extends Card {
     AddCurrentTurnEffect($this->cardID, $otherPlayer);
   }
 }
+
+class strongest_survive {
+  public $cardID;
+  public $controller;
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+  function AddOnHitTrigger() {
+    global $CCS_DamageDealt, $combatChainState, $defPlayer;
+    $minAttack = $combatChainState[$CCS_DamageDealt] + 1;
+    if (CanRevealCards($defPlayer)) {
+      AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND:minAttack=$minAttack");
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card with at least $minAttack power or discard a card", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      AddDecisionQueue("MZREVEAL", $defPlayer, "<-", 1);
+      AddDecisionQueue("ELSE", $defPlayer, "-");
+      AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to discard", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $defPlayer, "<-", 1);
+      AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-$this->controller", 1);
+    }
+    else {
+      PummelHit($defPlayer);
+    }
+  }
+}
+
+class strongest_survive_red extends Card{
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "strongest_survive_red";
+    $this->controller = $controller;
+    $this->baseCard = new strongest_survive($this->cardID, $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) $this->baseCard->AddOnHitTrigger();
+      return true;
+    }
+    return false;
+  }
+}
+
+class strongest_survive_yellow extends Card{
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "strongest_survive_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new strongest_survive($this->cardID, $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    $this->baseCard->AddOnHitTrigger();
+  }
+}
+
+class strongest_survive_blue extends Card{
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "strongest_survive_blue";
+    $this->controller = $controller;
+    $this->baseCard = new strongest_survive($this->cardID, $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    $this->baseCard->AddOnHitTrigger();
+  }
+}
 ?>
