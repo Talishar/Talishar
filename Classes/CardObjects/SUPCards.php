@@ -3047,12 +3047,32 @@ class strong_stomach_for_adversity extends Card {
   }
 }
 
+class cruel_ambition_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cruel_ambition_red";
+    $this->controller = $controller;
+    
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("might", $this->controller, 3);
+  }
+}
+
+class humble_entrance_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "humble_entrance_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("toughness", $this->controller, 3);
+  }
+}
+    
 class cries_of_encore_red extends Card {
   function __construct($controller) {
     $this->cardID = "cries_of_encore_red";
     $this->controller = $controller;
   }
-
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
   }
