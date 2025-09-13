@@ -1427,6 +1427,8 @@ function OnBlockEffects($index, $from)
 function CombatChainCloseAbilities($player, $cardID, $chainLink)
 {
   global $chainLinkSummary, $mainPlayer, $defPlayer, $chainLinks;
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->CombatChainCloseAbility($chainLink);
   switch ($cardID) {
     case "swing_big_red":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID && $chainLinks[$chainLink][1] == $player) {

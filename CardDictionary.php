@@ -1000,7 +1000,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
-    "escalate_order_red" => 6, // fabcube error
+    "a_good_clean_fight_red" => 7, // fabcube error
     default => $basePower,
   };
   // Lyath ability is handled elsewhere while attacking
@@ -5521,7 +5521,8 @@ function HasEffectActive($cardID) {
   }
 }
 
-function BlindCard($cardID, $unblind=false) {
+function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
+  if (!$unblind && $excludeEquips && TypeContains($cardID, "E")) return $cardID;
   $blindMarker = "BLIND";
   $c = strlen($blindMarker) + 1;
   if ($cardID === null) return "";

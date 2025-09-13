@@ -301,6 +301,10 @@ class Card {
   function PitchAbility($from) {
     return;
   }
+
+  function CombatChainCloseAbility($chainLink) {
+    return;
+  }
 }
 
 ?>

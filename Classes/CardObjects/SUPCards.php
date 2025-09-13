@@ -3161,4 +3161,25 @@ class goon_tactics_blue extends GoonCard {
     $deck->DestroyTop();
   }
 }
+
+class a_good_clean_fight_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "a_good_clean_fight_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    if (IsHeroAttackTarget()) BlindPlayer($defPlayer, excludeEquips: true);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    global $defPlayer;
+    BlindPlayer($defPlayer, unblind:true);
+  }
+
+  function CardCost($from = '-') {
+    return 3; //fabcube error
+  }
+}
 ?>
