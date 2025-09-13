@@ -2544,4 +2544,16 @@ class hit_the_gas_blue extends Card {
     // AddDecisionQueue("DRAW", $this->controller, 1, 1);
   }
 }
+
+class authority_of_ataya_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "authority_of_ataya_blue";
+    $this->controller = $controller;
+  }
+
+  function PitchAbility($from) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    AddCurrentTurnEffect($this->cardID, $otherPlayer);
+  }
+}
 ?>

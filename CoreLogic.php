@@ -3204,6 +3204,8 @@ function PitchAbility($cardID, $from="HAND")
     && !SearchCurrentTurnEffects("MERIDIANWARD", $currentPlayer)) {
     AddLayer("TRIGGER", $currentPlayer, "meridian_pathway");
   }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") $card->PitchAbility($from);
   switch ($cardID) {
     case "heart_of_fyendal_blue":
     case "eye_of_ophidia_blue":

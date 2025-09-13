@@ -278,6 +278,10 @@ class Card {
   function CurrentEffectGrantsGoAgain($param) {
     return false;
   }
+
+  function PitchAbility($from) {
+    return;
+  }
 }
 
 ?>

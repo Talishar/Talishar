@@ -1107,6 +1107,9 @@ function CurrentEffectCostModifiers($cardID, $from)
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
           }
           break;
+        case "authority_of_ataya_blue":
+          if (TypeContains($cardID, "DR", $currentPlayer)) ++$costModifier;
+          break;
         default:
           break;
       }

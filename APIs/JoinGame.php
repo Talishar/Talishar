@@ -717,6 +717,7 @@ function isUnimplemented($cardID) {
         "cut_a_long_story_short_yellow" => false,
         "cheers_blue" => false,
         "booze_blue" => false,
+        "authority_of_ataya_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
