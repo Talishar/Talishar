@@ -325,7 +325,8 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   }
   if ($from == "GY") {
     if ($isPlayable || PlayableFromGraveyard($cardID)) return 7;
-      if (($hero == "gravy_bones" || $hero == "gravy_bones_shipwrecked_looter") && HasWateryGrave($cardID)) return 7;
+    if (($hero == "gravy_bones" || $hero == "gravy_bones_shipwrecked_looter") && HasWateryGrave($cardID)) return 7;
+    if (SearchCurrentTurnEffects("cries_of_encore_red", $playerID) && HasSuspense($cardID)) return 7;
     return 0;
   }
   if ($isPlayable && ComboActive($cardID)) return 3;

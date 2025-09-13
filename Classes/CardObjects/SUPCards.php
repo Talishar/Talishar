@@ -3046,4 +3046,41 @@ class strong_stomach_for_adversity extends Card {
     return $foundMight && $foundConf ? 2 : 0;
   }
 }
+
+class cries_of_encore_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cries_of_encore_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if (PlayerHasLessHealth($this->controller)) Cheer($this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $CS_CheeredThisTurn;
+    if (IsHeroAttackTarget() && GetClassState($this->controller, $CS_CheeredThisTurn)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:hasSuspense=1");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura of suspense to be able to play from graveyard this turn");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZOP", $this->controller, "GETUNIQUEID", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "$this->cardID!-!{0}", 1);
+  }
+
+  function CardCost($from = '-') {
+    return 3; //fabcube error
+  }
+}
 ?>
