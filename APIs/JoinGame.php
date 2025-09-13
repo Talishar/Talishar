@@ -718,6 +718,10 @@ function isUnimplemented($cardID) {
         "cheers_blue" => false,
         "booze_blue" => false,
         "authority_of_ataya_blue" => false,
+        "tuffnut" => false,
+        "lyath_goldmane" => false,
+        "pleiades" => false,
+        "kayo_strong_arm" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
