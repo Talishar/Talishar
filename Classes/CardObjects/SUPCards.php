@@ -2432,4 +2432,39 @@ class adaptive_alpha_mold extends card {
     ModularMove($this->cardID, $additionalCosts);
   }
 }
+
+class battlefield_beacon_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "battlefield_beacon_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $combatChainState, $CCS_SoulBanishedThisChain;
+    $count = isset($combatChainState[$CCS_SoulBanishedThisChain]) ? intval($combatChainState[$CCS_SoulBanishedThisChain]) : 0;
+    if ($count <= 0) return;
+    if ($count > 9) $count = 9;
+    $options = [
+      "Create_a_Courage_token",
+      "Create_a_Courage_token",
+      "Create_a_Courage_token",
+      "Create_a_Toughness_token",
+      "Create_a_Toughness_token",
+      "Create_a_Toughness_token",
+      "Create_a_Vigor_token",
+      "Create_a_Vigor_token",
+      "Create_a_Vigor_token",
+    ];
+    $modes = $count . "-" . implode(",", $options) . "-" . $count;
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose $count " . ($count == 1 ? "mode" : "modes"));
+    AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $modes, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "BFB," . $this->cardID, 1);
+  }
+}
 ?>
