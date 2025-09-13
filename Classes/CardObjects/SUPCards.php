@@ -2575,54 +2575,73 @@ class authority_of_ataya_blue extends Card {
   }
 }
 
-class unexpected_backhand_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "unexpected_backhand_red";
+class unexpected_backhand {
+  public $cardID;
+  public $controller;
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
     $this->controller = $controller;
   }
 
   function WonClashWithAbility($winnerID) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $winnerID);
+  }
+
+  function ProcessTrigger($target) {
+    $otherPlayer = $target == 1 ? 2 : 1;
+    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
+    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+  }
+}
+
+class unexpected_backhand_red extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "unexpected_backhand_red";
+    $this->controller = $controller;
+    $this->baseCard = new unexpected_backhand($this->cardID, $this->controller);
+  }
+
+  function WonClashWithAbility($winnerID) {
+    $this->baseCard->WonClashWithAbility($winnerID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
-    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+    $this->baseCard->ProcessTrigger($target);
   }
 }
 
 class unexpected_backhand_yellow extends Card {
+  public $baseCard;
   function __construct($controller) {
     $this->cardID = "unexpected_backhand_yellow";
     $this->controller = $controller;
+    $this->baseCard = new unexpected_backhand($this->cardID, $this->controller);
   }
 
   function WonClashWithAbility($winnerID) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+    $this->baseCard->WonClashWithAbility($winnerID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
-    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+    $this->baseCard->ProcessTrigger($target);
   }
 }
 
 class unexpected_backhand_blue extends Card {
+  public $baseCard;
   function __construct($controller) {
     $this->cardID = "unexpected_backhand_blue";
     $this->controller = $controller;
+    $this->baseCard = new unexpected_backhand($this->cardID, $this->controller);
   }
 
   function WonClashWithAbility($winnerID) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+    $this->baseCard->WonClashWithAbility($winnerID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
-    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+    $this->baseCard->ProcessTrigger($target);
   }
 }
 
