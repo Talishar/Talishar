@@ -2575,27 +2575,20 @@ class authority_of_ataya_blue extends Card {
   }
 }
 
-class unexpected_backhand {
-  public $cardID;
-  public $controller;
-  function __construct($cardID, $controller) {
-    $this->cardID = $cardID;
-    $this->controller = $controller;
-  }
-
+class unexpected_backhand extends BaseCard{
   function WonClashWithAbility($winnerID) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, $winnerID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
-  function ProcessTrigger($target) {
-    $otherPlayer = $target == 1 ? 2 : 1;
+  function ProcessTrigger() {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
     WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
     DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
   }
 }
 
 class unexpected_backhand_red extends Card {
-  public $baseCard;
+
   function __construct($controller) {
     $this->cardID = "unexpected_backhand_red";
     $this->controller = $controller;
@@ -2607,12 +2600,12 @@ class unexpected_backhand_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($target);
+    $this->baseCard->ProcessTrigger();
   }
 }
 
 class unexpected_backhand_yellow extends Card {
-  public $baseCard;
+
   function __construct($controller) {
     $this->cardID = "unexpected_backhand_yellow";
     $this->controller = $controller;
@@ -2624,12 +2617,11 @@ class unexpected_backhand_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($target);
+    $this->baseCard->ProcessTrigger();
   }
 }
 
 class unexpected_backhand_blue extends Card {
-  public $baseCard;
   function __construct($controller) {
     $this->cardID = "unexpected_backhand_blue";
     $this->controller = $controller;
@@ -2641,7 +2633,7 @@ class unexpected_backhand_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($target);
+    $this->baseCard->ProcessTrigger();
   }
 }
 

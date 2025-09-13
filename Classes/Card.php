@@ -1,16 +1,29 @@
 <?php
+
+// this is an abstract class that stores functions used by multiple cards
+// eg. "unexpected_backhand" stores functions used by the red/yellow/blue versions of the card
+class BaseCard {
+  public $cardID;
+  public $controller;
+
+  function __construct($cardID, $controller="-") {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+}
+
 // This is an interface with functions that each zone's card class must implement
-
-
 class Card {
   // Properties
   public $cardID;
   public $controller;
+  public $baseCard;
 
   // Constructor
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
+    $this->BaseCard = new BaseCard($cardID, $controller);
   }
 
   function IsType($types) {
