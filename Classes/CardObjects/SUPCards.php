@@ -2515,4 +2515,33 @@ class booze_blue extends Card {
     return true;
   }
 }
+
+class hit_the_gas_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "hit_the_gas_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    //eventually we'll want to make this check if it should draw only after you finish flipping cards
+    $search = "MYBANISH:isSameName=hyper_driver_red";
+    $count = count(explode(",", SearchMultizone($this->controller, $search)));
+    // AddDecisionQueue("PASSPARAMETER", $this->controller, 1);
+    // AddDecisionQueue("SETDQVAR", $this->controller, 0, 1); // number of cards flipped
+    for ($i = 0; $i < $count; ++$i) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a hyper driver to turn face-down",1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZOP", $this->controller, "TURNBANISHFACEDOWN", 1);
+      AddDecisionQueue("GAINACTIONPOINTS", $this->controller, 1, 1);
+      if ($i == 2) AddDecisionQueue("DRAW", $this->controller, 1, 1);
+      // AddDecisionQueue("INCDQVAR", $this->controller, "0", 1);
+    }
+    // AddDecisionQueue("PASSPARAMETER", $this->controller, "PASS", 1);
+    // AddDecisionQueue("ELSE", $this->controller, "-");
+    // AddDecisionQueue("PASSPARAMETER", $this->controller, "{0}", 1);
+    // AddDecisionQueue("LESSTHANPASS", $this->controller, 3, 1);
+    // AddDecisionQueue("DRAW", $this->controller, 1, 1);
+  }
+}
 ?>

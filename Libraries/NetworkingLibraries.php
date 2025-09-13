@@ -670,9 +670,23 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         EquipEquipment($playerID, $cardID);
       }
       elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
-        WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
-        $hand = &GetHand($playerID);
-        array_push($hand, $cardID);
+        if ($num == "banish") {
+          WriteLog("Player " . $playerID . " manually added a card to their banish", highlight: true);
+          BanishCardForPlayer($cardID, $playerID, "MANUAL");
+        }
+        elseif ($num == "grave") {
+          WriteLog("Player " . $playerID . " manually added a card to their graveyard", highlight: true);
+          AddGraveyard($cardID, $playerID, "MANUAL");
+        }
+        elseif ($num == "deck") {
+          WriteLog("Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
+          AddTopDeck($cardID, $playerID, "MANUAL");
+        }
+        else {
+          WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
+          $hand = &GetHand($playerID);
+          array_push($hand, $cardID);
+        }
       }
       else {
         WriteLog("Player " . $playerID . " manually created a token", highlight: true);
