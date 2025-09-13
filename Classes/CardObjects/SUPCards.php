@@ -2467,3 +2467,4 @@ class battlefield_beacon_yellow extends Card {
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BFB," . $this->cardID, 1);
   }
 }
+?>
