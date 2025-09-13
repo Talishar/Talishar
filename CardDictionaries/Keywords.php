@@ -145,12 +145,13 @@
     }
   }
 
-  function WonClashAbility($playerID, $cardID, $effectController="", $switched=false) {
+  function WonClashAbility($playerID, $cardID, $effectController="", $switchedPlayers=[false, false]) {
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
     
     $deck = new Deck($playerID);
-    if (!$switched) {
+    $switched = $switchedPlayers[0] || $switchedPlayers[1];
+    if ($switched) {
       switch ($deck->Top()) {
         case "the_golden_son_yellow":
         case "thunk_red": case "thunk_yellow": case "thunk_blue":
@@ -264,7 +265,7 @@
         break;
       default: break;
     }
-    if ($switched) PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
+    if ($switchedPlayers[$playerID-1]) PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
     }
 
   function VictorAbility($playerID, $cardID, $effectController="") {

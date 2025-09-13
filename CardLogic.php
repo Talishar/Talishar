@@ -4281,7 +4281,7 @@ function PlayerOpt($player, $amount, $optKeyword = true)
   SetClassState($player, $CS_CardsInDeckBeforeOpt, $deck->RemainingCards());
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPXREMOVE," . $amount);
   AddDecisionQueue("OPT", $player, "<-", 1);
-  if ($heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
+  if ($optKeyword && $heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
 }
 
 function BanishRandom($player, $source)

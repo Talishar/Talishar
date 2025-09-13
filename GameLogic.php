@@ -2746,7 +2746,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WONCLASH":
       $winner = $dqVars[0];
       $params = explode(",", $parameter);
-      $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true);
+      $switchedPlayers = [SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true), SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true)];
       $mainDeck = new Deck($mainPlayer);
       $defDeck = new Deck($defPlayer);
       if ($winner != $defPlayer && $defDeck->Top() == "overturn_the_results_blue") {
@@ -2760,7 +2760,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Boo($mainPlayer);
       }
       if ($winner > 0) {
-        WonClashAbility($winner, $params[0], $params[1], $switched);
+        WonClashAbility($winner, $params[0], $params[1], $switchedPlayers);
       }
       else {
         $char = GetPlayerCharacter($mainPlayer);
