@@ -151,7 +151,7 @@
     
     $deck = new Deck($playerID);
     $switched = $switchedPlayers[0] || $switchedPlayers[1];
-    if ($switched) {
+    if (!$switched) {
       switch ($deck->Top()) {
         case "the_golden_son_yellow":
         case "thunk_red": case "thunk_yellow": case "thunk_blue":
@@ -168,7 +168,7 @@
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $card = GetClass($cardID, $effectController);
-    if ($card != "-") $card->WonClashAbility($playerID);
+    if ($card != "-") $card->WonClashAbility($playerID, $switched);
     switch($cardID)
     {
       case "millers_grindstone":
