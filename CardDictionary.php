@@ -290,11 +290,13 @@ function CardSubType($cardID, $uniqueID = -1)
     default:
       break;
   }
+  //equipment that could go in any zone
+  $adaptive = ["adaptive_plating", "adaptive_dissolver", "adaptive_alpha_mold", "frostbite"];
   if ($uniqueID > -1 && (IsModular($cardID) || $cardID == "frostbite")) {
     global $currentTurnEffects;
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effectArr = explode("-", $currentTurnEffects[$i]);
-      if ($effectArr[0] != "adaptive_plating" && $effectArr[0] != "adaptive_dissolver" && $effectArr[0] != "frostbite") continue;
+      if (!in_array($effectArr[0], $adaptive)) continue;
       $effectArr = explode(",", $effectArr[1]);
       if ($effectArr[0] != $uniqueID) continue;
       if($effectArr[1] == "Base") return $effectArr[2];
@@ -5299,6 +5301,7 @@ function IsModular($cardID)
   switch ($cardID) {
     case "adaptive_plating":
     case "adaptive_dissolver":
+    case "adaptive_alpha_mold":
       return true;
     default:
       return false;

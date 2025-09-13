@@ -297,6 +297,10 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
       if($lastResult != "None") EquipEquipment($player, "adaptive_dissolver", $lastResult);
       return $lastResult;
+    case "ADAPTIVEALPHAMOLD":
+      if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
+      if($lastResult != "None") EquipEquipment($player, "adaptive_alpha_mold", $lastResult);
+      return $lastResult;
     case "UPTHEANTE":
       $numNewWagers = 0;
       $params = explode(",", $lastResult);

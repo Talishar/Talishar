@@ -1246,7 +1246,7 @@ function CombatChainClosedCharacterEffects()
     $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $defPlayer) continue;
-      $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
+      $charIndex = FindCharacterIndexUniqueID($defPlayer, $chainLinks[$i][$j + 8]);
       if ($charIndex == -1) {
         $charIndex = SearchCharacterForUniqueID($chainLinks[$i][$j + 8], $mainPlayer);
         if ($charIndex == -1) continue;
@@ -1270,7 +1270,7 @@ function CombatChainClosedCharacterEffects()
           if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC") + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($equipPlayer, $charIndex);
           }
-        } 
+        }
         elseif (HasBattleworn($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
           $equipCharacter[$charIndex + 4] -= 1;//Add -1 block counter
         }
@@ -1745,6 +1745,13 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effect = explode(",", $currentTurnEffects[$i]);
       if ($effect[0] == "adaptive_dissolver-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+    }
+  }
+  if ($cardID == "adaptive_alpha_mold") {
+    if($subtype == "Base") return true;
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+      $effect = explode(",", $currentTurnEffects[$i]);
+      if ($effect[0] == "adaptive_alpha_mold-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
     }
   }
   return DelimStringContains($cardSubtype, $subtype);

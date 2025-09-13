@@ -844,6 +844,7 @@ function EquipEquipment($player, $cardID, $slot = "")
   }
   if ($cardID == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
   if ($cardID == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
+  if ($cardID == "adaptive_alpha_mold") AddCurrentTurnEffect("adaptive_alpha_mold-" . $uniqueID . ",Base," . $slot, $player);
   if ($cardID == "frostbite") AddCurrentTurnEffect("frostbite-" . $uniqueID . "," . $slot, $player);
   AddEquipTrigger($cardID, $player);
 }

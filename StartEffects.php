@@ -198,6 +198,9 @@ function InventoryStartGameAbilities($player)
       case "adaptive_dissolver":
         addAdaptiveEquipmentDecision($player, $inventory[$i], "ADAPTIVEDISSOLVER");
         break;
+      case "adaptive_alpha_mold":
+        addAdaptiveEquipmentDecision($player, $inventory[$i], "ADAPTIVEALPHAMOLD");
+        break;
     }
   }
 }

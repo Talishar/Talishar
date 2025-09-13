@@ -2393,6 +2393,7 @@ class painful_passage_red extends card {
     $this->cardID = "painful_passage_red";
     $this->controller = $controller;
   }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     MZMoveCard($this->controller, "MYHAND:type=AA", "MYBANISH,HAND,", may: true);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a path through the painful passage");
@@ -2414,6 +2415,21 @@ class painful_passage_red extends card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return $param == "go_again";
+  }
+}
+
+class adaptive_alpha_mold extends card {
+  function __construct($controller) {
+    $this->cardID = "adaptive_alpha_mold";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    ModularMove($this->cardID, $additionalCosts);
   }
 }
 ?>
