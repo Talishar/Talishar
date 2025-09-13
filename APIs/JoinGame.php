@@ -743,6 +743,8 @@ function isUnimplemented($cardID) {
         "plate_of_tough_love" => false,
         "laughing_knee_slappers" => false,
         "strong_stomach_for_adversity" => false,
+        "cruel_ambition_red" => false,
+        "humble_entrance_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
