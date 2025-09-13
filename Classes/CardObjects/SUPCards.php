@@ -2978,4 +2978,27 @@ class tough_smashup_blue extends Card {
     $this->baseCard->WonClashAbility($winnerID, $switched);
   }
 }
+
+class energetic_impact_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "energetic_impact_blue";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    global $combatChain;
+    $num6Block = 0;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if (ModifiedPowerValue($combatChain[$i], $this->controller, "CC", "energetic_impact_blue") >= 6) ++$num6Block;
+    }
+    if ($num6Block) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    PlayAura("vigor", $this->controller);
+    WriteLog(CardLink("energetic_impact_blue", "energetic_impact_blue") . " created a " . CardLink("vigor", "vigor") . " token");
+  }
+}
 ?>
