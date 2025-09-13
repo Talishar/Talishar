@@ -729,6 +729,9 @@ function isUnimplemented($cardID) {
         "strongest_survive_red" => false,
         "strongest_survive_yellow" => false,
         "strongest_survive_blue" => false,
+        "rapturous_applause_red" => false,
+        "rapturous_applause_yellow" => false,
+        "rapturous_applause_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
