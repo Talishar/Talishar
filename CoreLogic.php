@@ -1257,6 +1257,8 @@ function CombatChainClosedCharacterEffects()
         $equipCharacter = &$character;
         $equipPlayer = $defPlayer;
       }
+      // Looks like sometimes the origin unique ID of cards blocking from hand can get mixed up
+      if ($equipCharacter[$charIndex] != $chainLinks[$i][$j]) continue;
       if ($chainLinks[$i][$j] == "carrion_husk") {
         $character[$charIndex + 1] = 0;
         BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
