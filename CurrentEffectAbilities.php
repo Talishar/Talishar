@@ -1972,7 +1972,7 @@ function CurrentEffectEndTurnAbilities()
           $remove = true;
         }
         break;
-      case "adaptive_plating": case "adaptive_dissolver": case "frostbite":
+      case "adaptive_plating": case "adaptive_dissolver": case "adaptive_alpha_mold": case "frostbite":
         AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
         break;
       case "blinding_of_the_old_ones_red":
@@ -2567,6 +2567,7 @@ function AdministrativeEffect($effectID)
     case "barbed_castaway":
     case "adaptive_plating":
     case "adaptive_dissolver":
+    case "adaptive_alpha_mold":
     case "marked":
       return true;
     default:

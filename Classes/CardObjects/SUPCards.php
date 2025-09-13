@@ -1274,41 +1274,6 @@ class cutting_retort_red extends card {
   }
 }
 
-class battlefield_beacon_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "battlefield_beacon_yellow";
-    $this->controller = $controller;
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    global $combatChainState, $CCS_SoulBanishedThisChain;
-    $count = isset($combatChainState[$CCS_SoulBanishedThisChain]) ? intval($combatChainState[$CCS_SoulBanishedThisChain]) : 0;
-    if ($count <= 0) return;
-    if ($count > 9) $count = 9;
-    $options = [
-      "Create_a_Courage_token",
-      "Create_a_Courage_token",
-      "Create_a_Courage_token",
-      "Create_a_Toughness_token",
-      "Create_a_Toughness_token",
-      "Create_a_Toughness_token",
-      "Create_a_Vigor_token",
-      "Create_a_Vigor_token",
-      "Create_a_Vigor_token",
-    ];
-    $modes = $count . "-" . implode(",", $options) . "-" . $count;
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose $count " . ($count == 1 ? "mode" : "modes"));
-    AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $modes, 1);
-    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
-    AddDecisionQueue("SPECIFICCARD", $this->controller, "BFB," . $this->cardID, 1);
-  }
-}
-
 class two_steps_ahead_blue extends card {
   function __construct($controller) {
     $this->cardID = "two_steps_ahead_blue";
@@ -2428,6 +2393,7 @@ class painful_passage_red extends card {
     $this->cardID = "painful_passage_red";
     $this->controller = $controller;
   }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     MZMoveCard($this->controller, "MYHAND:type=AA", "MYBANISH,HAND,", may: true);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a path through the painful passage");
@@ -2451,4 +2417,53 @@ class painful_passage_red extends card {
     return $param == "go_again";
   }
 }
-?>
+
+class adaptive_alpha_mold extends card {
+  function __construct($controller) {
+    $this->cardID = "adaptive_alpha_mold";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    ModularMove($this->cardID, $additionalCosts);
+  }
+}
+
+class battlefield_beacon_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "battlefield_beacon_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $combatChainState, $CCS_SoulBanishedThisChain;
+    $count = isset($combatChainState[$CCS_SoulBanishedThisChain]) ? intval($combatChainState[$CCS_SoulBanishedThisChain]) : 0;
+    if ($count <= 0) return;
+    if ($count > 9) $count = 9;
+    $options = [
+      "Create_a_Courage_token",
+      "Create_a_Courage_token",
+      "Create_a_Courage_token",
+      "Create_a_Toughness_token",
+      "Create_a_Toughness_token",
+      "Create_a_Toughness_token",
+      "Create_a_Vigor_token",
+      "Create_a_Vigor_token",
+      "Create_a_Vigor_token",
+    ];
+    $modes = $count . "-" . implode(",", $options) . "-" . $count;
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose $count " . ($count == 1 ? "mode" : "modes"));
+    AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $modes, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "BFB," . $this->cardID, 1);
+  }
+}
