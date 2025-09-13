@@ -3051,6 +3051,7 @@ class cruel_ambition_red extends Card {
   function __construct($controller) {
     $this->cardID = "cruel_ambition_red";
     $this->controller = $controller;
+  }
     
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("might", $this->controller, 3);
