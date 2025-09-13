@@ -3074,6 +3074,7 @@ class cries_of_encore_red extends Card {
     $this->cardID = "cries_of_encore_red";
     $this->controller = $controller;
   }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
   }
@@ -3102,6 +3103,62 @@ class cries_of_encore_red extends Card {
 
   function CardCost($from = '-') {
     return 3; //fabcube error
+  }
+}
+
+class GoonCard extends Card {
+  function HaveGoons() {
+    $auras = &GetAuras($this->controller);
+    // Need to divide by pieces to get the actual aura count.
+    $count = count($auras) / AuraPieces();
+    return $count >= 3;
+  }
+
+  function PowerModifier($from = "", $resourcesPaid = 0, $repriseActive = -1, $attackID = "-") {
+    return $this->HaveGoons() ? 3 : 0;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if($this->HaveGoons()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+}
+
+class goon_battery_blue extends GoonCard {
+  function __construct($controller) {
+    $this->cardID = "goon_battery_blue";
+    $this->controller = $controller;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    Tap("THEIRCHAR-0", $this->controller);
+  }
+}
+
+class goon_beatdown_blue extends GoonCard {
+  function __construct($controller) {
+    $this->cardID = "goon_beatdown_blue";
+    $this->controller = $controller;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    Boo($this->controller);
+  }
+}
+
+class goon_tactics_blue extends GoonCard {
+  function __construct($controller) {
+    $this->cardID = "goon_tactics_blue";
+    $this->controller = $controller;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    $deck->DestroyTop();
   }
 }
 ?>

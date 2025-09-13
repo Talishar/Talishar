@@ -746,6 +746,9 @@ function isUnimplemented($cardID) {
         "cruel_ambition_red" => false,
         "humble_entrance_blue" => false,
         "cries_of_encore_red" => false,
+        "goon_battery_blue" => false,
+        "goon_beatdown_blue" => false,
+        "goon_tactics_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
