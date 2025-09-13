@@ -106,14 +106,6 @@ class bait extends Card {
     return true;
   }
 
-  function EffectPowerModifier($param, $attached = false) {
-    return 1;
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
   function PayAbilityAdditionalCosts($from, $index = '-', $zoneIndex = -1) {
     $auras = &GetAuras($this->controller);
     if (!IsReactionPhase()) {
