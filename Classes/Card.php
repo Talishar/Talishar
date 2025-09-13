@@ -158,7 +158,7 @@ class Card {
     return GeneratedHasTemper($this->cardID) == "true";
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     return;
   }
 

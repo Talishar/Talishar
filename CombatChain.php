@@ -997,7 +997,7 @@ function OnBlockResolveEffects($cardID = "")
       $defendingCard = $combatChain[$i];
       $card = GetClass($defendingCard, $defPlayer);
       if ($card != "-") {
-        $card -> OnBlockResolveEffects($blockedFromHand, $i);
+        $card -> OnBlockResolveEffects($blockedFromHand, $i, $start);
       }
       if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
       if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);

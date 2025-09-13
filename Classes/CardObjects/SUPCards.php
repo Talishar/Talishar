@@ -1311,7 +1311,7 @@ class truth_or_trickery_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1352,7 +1352,7 @@ class will_of_the_crowd_blue extends Card {
     $this->controller = $controller;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1433,7 +1433,7 @@ class good_natured_brutality_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     global $combatChain;
     $uniqueID = $combatChain[$i + 7];
     AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$uniqueID);
@@ -1469,7 +1469,7 @@ class no_hero_stands_alone_yellow extends Card {
     return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0 ? 3 : 0;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1682,7 +1682,7 @@ class steal_victory_blue extends Card {
     $this->controller = $controller;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -2008,7 +2008,7 @@ class ironfist_revelation extends Card {
     $this->controller = $controller;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -2828,7 +2828,7 @@ class vigorous_smashup_red extends Card {
     $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     $this->baseCard->OnBlockResolveEffects();
   }
 
@@ -2848,7 +2848,7 @@ class vigorous_smashup_yellow extends Card {
     $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     $this->baseCard->OnBlockResolveEffects();
   }
 
@@ -2868,7 +2868,7 @@ class vigorous_smashup_blue extends Card {
     $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     $this->baseCard->OnBlockResolveEffects();
   }
 
@@ -2918,7 +2918,7 @@ class tough_smashup_red extends Card {
     $this->baseCard = new tough_smashup($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     $this->baseCard->OnBlockResolveEffects();
   }
 
@@ -2938,7 +2938,7 @@ class tough_smashup_yellow extends Card {
     $this->baseCard = new tough_smashup($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     $this->baseCard->OnBlockResolveEffects();
   }
 
@@ -2958,7 +2958,7 @@ class tough_smashup_blue extends Card {
     $this->baseCard = new tough_smashup($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     $this->baseCard->OnBlockResolveEffects();
   }
 
@@ -2977,11 +2977,12 @@ class energetic_impact_blue extends Card {
     $this->controller = $controller;
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     global $combatChain;
     $num6Block = 0;
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-      if (ModifiedPowerValue($combatChain[$i], $this->controller, "CC", "energetic_impact_blue") >= 6) ++$num6Block;
+    for ($j = $start; $j < count($combatChain); $j += CombatChainPieces()) {
+      if ($j == $i) continue;
+      if (ModifiedPowerValue($combatChain[$j], $this->controller, "CC", "energetic_impact_blue") >= 6) ++$num6Block;
     }
     if ($num6Block) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
