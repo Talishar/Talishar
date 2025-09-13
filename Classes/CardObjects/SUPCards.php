@@ -1745,16 +1745,48 @@ class reckless_stampede_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
     Clash($this->cardID, $this->controller);
-    PlayerOpt($this->controller, 1);
-    PlayerOpt($otherPlayer, 1);
   }
 
   function WonClashAbility($winnerID, $switched) {
     $otherPlayer = $winnerID == 1 ? 2 : 1;
     AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-");
     AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
+
+    // Prompt Controller to Sink
+    $revealedCardController = $this->controller;
+    if ($switched) {
+      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    }
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
+
+    // Prompt Other Player to Sink
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $revealedCardController = $otherPlayer;
+    if ($switched) {
+      $revealedCardController = $otherPlayer == 1 ? 2 : 1;
+    }
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $otherPlayer, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Player $otherPlayer sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $otherPlayer, "-");
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Player $otherPlayer left the revealed card there", 1);
   }
 }
 
@@ -2793,7 +2825,7 @@ class vigorous_smashup extends BaseCard {
     AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
     AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
     AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the top revealed there", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
   }
 }
 
@@ -2883,7 +2915,7 @@ class tough_smashup extends BaseCard {
     AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
     AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
     AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the top revealed there", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
   }
 }
 
