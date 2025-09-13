@@ -203,6 +203,11 @@ class Card {
     return;
   }
 
+  // Triggers when a clash is won with this card on top of the deck.
+  function WonClashWithAbility($winnerID) {
+    return;
+  }
+
   function AddGraveyardEffect($from, $effectController) {
     return;
   }
