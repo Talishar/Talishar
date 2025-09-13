@@ -726,6 +726,9 @@ function isUnimplemented($cardID) {
         "lyath_goldmane" => false,
         "pleiades" => false,
         "kayo_strong_arm" => false,
+        "strongest_survive_red" => false,
+        "strongest_survive_yellow" => false,
+        "strongest_survive_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
