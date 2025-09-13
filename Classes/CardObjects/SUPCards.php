@@ -632,7 +632,7 @@ class take_the_bait_red extends Card {
 //   }
 // }
 
-class the_old_switcheroo_blue extends card {
+class the_old_switcheroo_blue extends Card {
   public $archetype;
 
   function __construct($controller) {
@@ -674,7 +674,7 @@ class the_old_switcheroo_blue extends card {
   }
 }
 
-class cheap_shot_yellow extends card {
+class cheap_shot_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "the_old_switcheroo_blue";
     $this->controller = $controller;
@@ -692,7 +692,7 @@ class cheap_shot_yellow extends card {
   }
 }
 
-class fight_fair_red extends card {
+class fight_fair_red extends Card {
   function __construct($controller) {
     $this->cardID = "fight_fair_red";
     $this->controller = $controller;
@@ -729,7 +729,7 @@ class fight_fair_red extends card {
   }
 }
 
-class fight_dirty_red extends card {
+class fight_dirty_red extends Card {
   function __construct($controller) {
     $this->cardID = "fight_dirty_rred";
     $this->controller = $controller;
@@ -798,7 +798,7 @@ class turn_the_crowd_hateful {
   }
 }
 
-class turn_the_crowd_hateful_red extends card {
+class turn_the_crowd_hateful_red extends Card {
   public $baseCard;
 
   function __construct($controller) {
@@ -828,7 +828,7 @@ class turn_the_crowd_hateful_red extends card {
   }
 }
 
-class turn_the_crowd_hateful_yellow extends card {
+class turn_the_crowd_hateful_yellow extends Card {
   public $baseCard;
 
   function __construct($controller) {
@@ -858,7 +858,7 @@ class turn_the_crowd_hateful_yellow extends card {
   }
 }
 
-class turn_the_crowd_hateful_blue extends card {
+class turn_the_crowd_hateful_blue extends Card {
   public $baseCard;
 
   function __construct($controller) {
@@ -927,7 +927,7 @@ class turn_the_crowd_grateful {
   }
 }
 
-class turn_the_crowd_grateful_red extends card {
+class turn_the_crowd_grateful_red extends Card {
   public $baseCard;
 
   function __construct($controller) {
@@ -957,7 +957,7 @@ class turn_the_crowd_grateful_red extends card {
   }
 }
 
-class turn_the_crowd_grateful_yellow extends card {
+class turn_the_crowd_grateful_yellow extends Card {
   public $baseCard;
 
   function __construct($controller) {
@@ -987,7 +987,7 @@ class turn_the_crowd_grateful_yellow extends card {
   }
 }
 
-class turn_the_crowd_grateful_blue extends card {
+class turn_the_crowd_grateful_blue extends Card {
   public $baseCard;
 
   function __construct($controller) {
@@ -1017,7 +1017,7 @@ class turn_the_crowd_grateful_blue extends card {
   }
 }
 
-class heroic_pose_red extends card {
+class heroic_pose_red extends Card {
   function __construct($controller) {
     $this->cardID = "heroic_pose_red";
     $this->controller = $controller;
@@ -1054,7 +1054,7 @@ class villainous_pose {
   }
 }
 
-class villainous_pose_red extends card {
+class villainous_pose_red extends Card {
   public $baseCard;
   function __construct($controller) {
     $this->cardID = "villainous_pose_red";
@@ -1075,7 +1075,7 @@ class villainous_pose_red extends card {
   } 
 }
 
-class villainous_pose_yellow extends card {
+class villainous_pose_yellow extends Card {
   public $baseCard;
   function __construct($controller) {
     $this->cardID = "villainous_pose_yellow";
@@ -1096,7 +1096,7 @@ class villainous_pose_yellow extends card {
   } 
 }
 
-class villainous_pose_blue extends card {
+class villainous_pose_blue extends Card {
   public $baseCard;
   function __construct($controller) {
     $this->cardID = "villainous_pose_blue";
@@ -1117,7 +1117,7 @@ class villainous_pose_blue extends card {
   } 
 }
 
-class leave_them_hanging_red extends card {
+class leave_them_hanging_red extends Card {
   function __construct($controller) {
     $this->cardID = "leave_them_hanging_red";
     $this->controller = $controller;
@@ -1166,7 +1166,7 @@ class leave_them_hanging_red extends card {
   }
 }
 
-class sadistic_scowl_red extends card {
+class sadistic_scowl_red extends Card {
   function __construct($controller) {
     $this->cardID = "sadistic_scowl_red";
     $this->controller = $controller;
@@ -1202,7 +1202,7 @@ class sadistic_scowl_red extends card {
   }
 }
 
-class fix_the_match_yellow extends card {
+class fix_the_match_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "fix_the_match_yellow";
     $this->controller = $controller;
@@ -1236,7 +1236,7 @@ class fix_the_match_yellow extends card {
   }
 }
 
-class kick_the_hornets_nest_yellow extends card {
+class kick_the_hornets_nest_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "kick_the_hornets_nest_yellow";
     $this->controller = $controller;
@@ -1255,7 +1255,7 @@ class kick_the_hornets_nest_yellow extends card {
   }
 }
 
-class cutting_retort_red extends card {
+class cutting_retort_red extends Card {
   function __construct($controller) {
     $this->cardID = "cutting_retort_red";
     $this->controller = $controller;
@@ -1274,7 +1274,7 @@ class cutting_retort_red extends card {
   }
 }
 
-class two_steps_ahead_blue extends card {
+class two_steps_ahead_blue extends Card {
   function __construct($controller) {
     $this->cardID = "two_steps_ahead_blue";
     $this->controller = $controller;
@@ -1287,7 +1287,7 @@ class two_steps_ahead_blue extends card {
   }
 }
 
-class gang_robbery_yellow extends card {
+class gang_robbery_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "gang_robbery_yellow";
     $this->controller = $controller;
@@ -1313,7 +1313,7 @@ class gang_robbery_yellow extends card {
   }
 }
 
-class truth_or_trickery_yellow extends card {
+class truth_or_trickery_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "truth_or_trickery_yellow";
     $this->controller = $controller;
@@ -1338,7 +1338,7 @@ class truth_or_trickery_yellow extends card {
   }
 }
 
-class visit_the_boneyard_blue extends card {
+class visit_the_boneyard_blue extends Card {
   function __construct($controller) {
     $this->cardID = "visit_the_boneyard_blue";
     $this->controller = $controller;
@@ -1354,7 +1354,7 @@ class visit_the_boneyard_blue extends card {
   }
 }
 
-class will_of_the_crowd_blue extends card {
+class will_of_the_crowd_blue extends Card {
   function __construct($controller) {
     $this->cardID = "will_of_the_crowd_blue";
     $this->controller = $controller;
@@ -1376,7 +1376,7 @@ class will_of_the_crowd_blue extends card {
   }
 }
 
-class wind_up_the_crowd_blue extends card {
+class wind_up_the_crowd_blue extends Card {
   public $archetype;
 
   function __construct($controller) {
@@ -1419,7 +1419,7 @@ class wind_up_the_crowd_blue extends card {
   }
 }
 
-class show_of_strength_red extends card {
+class show_of_strength_red extends Card {
   function __construct($controller) {
     $this->cardID = "show_of_strength_red";
     $this->controller = $controller;
@@ -1435,7 +1435,7 @@ class show_of_strength_red extends card {
   }
 }
 
-class good_natured_brutality_yellow extends card {
+class good_natured_brutality_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "good_natured_brutality_yellow";
     $this->controller = $controller;
@@ -1461,7 +1461,7 @@ class good_natured_brutality_yellow extends card {
   }
 }
 
-class no_hero_stands_alone_yellow extends card {
+class no_hero_stands_alone_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "no_hero_stands_alone_yellow";
     $this->controller = $controller;
@@ -1495,7 +1495,7 @@ class no_hero_stands_alone_yellow extends card {
   }
 }
 
-class escalate_order_red extends card {
+class escalate_order_red extends Card {
   function __construct($controller) {
     $this->cardID = "escalate_order_red";
     $this->controller = $controller;
@@ -1516,7 +1516,7 @@ class escalate_order_red extends card {
   }
 }
 
-class song_of_sinew_yellow extends card {
+class song_of_sinew_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "song_of_sinew_yellow";
     $this->controller = $controller;
@@ -1554,7 +1554,7 @@ class song_of_sinew_yellow extends card {
   }
 }
 
-class jaws_of_victory_red extends card {
+class jaws_of_victory_red extends Card {
   function __construct($controller) {
     $this->cardID = "jaws_of_victory_red";
     $this->controller = $controller;
@@ -1574,7 +1574,7 @@ class jaws_of_victory_red extends card {
   }
 }
 
-class gauntlets_of_tyrannical_rex extends card {
+class gauntlets_of_tyrannical_rex extends Card {
   function __construct($controller) {
     $this->cardID = "gauntlets_of_tyrannical_rex";
     $this->controller = $controller;
@@ -1618,7 +1618,7 @@ class gauntlets_of_tyrannical_rex extends card {
   }
 }
 
-class big_bully_red extends card {
+class big_bully_red extends Card {
   function __construct($controller) {
     $this->cardID = "big_bully_red";
     $this->controller = $controller;
@@ -1640,7 +1640,7 @@ class big_bully_red extends card {
   }
 }
 
-class challenge_the_alpha_yellow extends card {
+class challenge_the_alpha_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "challenge_the_alpha_yellow";
     $this->controller = $controller;
@@ -1684,7 +1684,7 @@ class challenge_the_alpha_yellow extends card {
   }
 }
 
-class steal_victory_blue extends card {
+class steal_victory_blue extends Card {
   function __construct($controller) {
     $this->cardID = "steal_victory_blue";
     $this->controller = $controller;
@@ -1705,7 +1705,7 @@ class steal_victory_blue extends card {
   }
 }
 
-class beat_the_same_drum_blue extends card {
+class beat_the_same_drum_blue extends Card {
   function __construct($controller) {
     $this->cardID = "beat_the_same_drum_blue";
     $this->controller = $controller;
@@ -1731,7 +1731,7 @@ class beat_the_same_drum_blue extends card {
   }
 }
 
-class reckless_stampede_red extends card {
+class reckless_stampede_red extends Card {
   function __construct($controller) {
     $this->cardID = "reckless_stampede_red";
     $this->controller = $controller;
@@ -1758,7 +1758,7 @@ class reckless_stampede_red extends card {
   }
 }
 
-class smashing_ground_blue extends card {
+class smashing_ground_blue extends Card {
   function __construct($controller) {
     $this->cardID = "smashing_ground_blue";
     $this->controller = $controller;
@@ -1782,7 +1782,7 @@ class smashing_ground_blue extends card {
   } 
 }
 
-class battered_beaten_and_broken_yellow extends card {
+class battered_beaten_and_broken_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "battered_beaten_and_broken_yellow";
     $this->controller = $controller;
@@ -1820,7 +1820,7 @@ class battered_beaten_and_broken_yellow extends card {
   }
 }
 
-class revolting_gesture_red extends card {
+class revolting_gesture_red extends Card {
   function __construct($controller) {
     $this->cardID = "revolting_gesture_red";
     $this->controller = $controller;
@@ -1840,7 +1840,7 @@ class revolting_gesture_red extends card {
   } 
 }
 
-class low_blow_red extends card {
+class low_blow_red extends Card {
   function __construct($controller) {
     $this->cardID = "low_blow_red";
     $this->controller = $controller;
@@ -1852,7 +1852,7 @@ class low_blow_red extends card {
   }
 }
 
-class concealed_object_blue extends card {
+class concealed_object_blue extends Card {
   function __construct($controller) {
     $this->cardID = "concealed_object_blue";
     $this->controller = $controller;
@@ -1900,7 +1900,7 @@ class concealed_object_blue extends card {
   }
 }
 
-class escalate_violence_blue extends card {
+class escalate_violence_blue extends Card {
   function __construct($controller) {
     $this->cardID = "escalate_violence_blue";
     $this->controller = $controller;
@@ -1918,7 +1918,7 @@ class escalate_violence_blue extends card {
 
 }
 
-class tempest_palm_gustwave_yellow extends card {
+class tempest_palm_gustwave_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "tempest_palm_gustwave_yellow";
     $this->controller = $controller;
@@ -1942,7 +1942,7 @@ class tempest_palm_gustwave_yellow extends card {
   }
 }
 
-class angelic_attendant_yellow extends card{
+class angelic_attendant_yellow extends Card{
   function __construct($controller) {
     $this->cardID = "angelic_attendant_yellow";
     $this->controller = $controller;
@@ -1978,7 +1978,7 @@ class angelic_attendant_yellow extends card{
   }
 }
 
-class ironfist_revelation extends card {
+class ironfist_revelation extends Card {
   function __construct($controller) {
     $this->cardID = "ironfist_revelation";
     $this->controller = $controller;
@@ -2040,7 +2040,7 @@ class aura_of_suspense {
   }
 }
 
-class act_of_glory_red extends card{
+class act_of_glory_red extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "act_of_glory_red";
@@ -2074,7 +2074,7 @@ class act_of_glory_red extends card{
   }
 }
 
-class act_of_glory_yellow extends card{
+class act_of_glory_yellow extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "act_of_glory_yellow";
@@ -2108,7 +2108,7 @@ class act_of_glory_yellow extends card{
   }
 }
 
-class act_of_glory_blue extends card{
+class act_of_glory_blue extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "act_of_glory_blue";
@@ -2142,7 +2142,7 @@ class act_of_glory_blue extends card{
   }
 }
 
-class edge_of_their_seats_red extends card{
+class edge_of_their_seats_red extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "edge_of_their_seats_red";
@@ -2176,7 +2176,7 @@ class edge_of_their_seats_red extends card{
   }
 }
 
-class edge_of_their_seats_yellow extends card{
+class edge_of_their_seats_yellow extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "edge_of_their_seats_yellow";
@@ -2210,7 +2210,7 @@ class edge_of_their_seats_yellow extends card{
   }
 }
 
-class edge_of_their_seats_blue extends card{
+class edge_of_their_seats_blue extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "edge_of_their_seats_blue";
@@ -2244,7 +2244,7 @@ class edge_of_their_seats_blue extends card{
   }
 }
 
-class tension_in_the_air_red extends card{
+class tension_in_the_air_red extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "tension_in_the_air_red";
@@ -2278,7 +2278,7 @@ class tension_in_the_air_red extends card{
   }
 }
 
-class tension_in_the_air_yellow extends card{
+class tension_in_the_air_yellow extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "tension_in_the_air_yellow";
@@ -2312,7 +2312,7 @@ class tension_in_the_air_yellow extends card{
   }
 }
 
-class tension_in_the_air_blue extends card{
+class tension_in_the_air_blue extends Card{
   public $archetype;
   function __construct($controller) {
     $this->cardID = "tension_in_the_air_blue";
@@ -2346,7 +2346,7 @@ class tension_in_the_air_blue extends card{
   }
 }
 
-class renounce_violence_blue extends card {
+class renounce_violence_blue extends Card {
   function __construct($controller) {
     $this->cardID = "renounce_violence_blue";
     $this->controller = $controller;
@@ -2364,7 +2364,7 @@ class renounce_violence_blue extends card {
   }
 }
 
-class cut_a_long_story_short_yellow extends card {
+class cut_a_long_story_short_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "cut_a_long_story_short_yellow";
     $this->controller = $controller;
@@ -2388,7 +2388,7 @@ class cut_a_long_story_short_yellow extends card {
   }
 }
 
-class painful_passage_red extends card {
+class painful_passage_red extends Card {
   function __construct($controller) {
     $this->cardID = "painful_passage_red";
     $this->controller = $controller;
@@ -2418,7 +2418,7 @@ class painful_passage_red extends card {
   }
 }
 
-class adaptive_alpha_mold extends card {
+class adaptive_alpha_mold extends Card {
   function __construct($controller) {
     $this->cardID = "adaptive_alpha_mold";
     $this->controller = $controller;
@@ -2465,6 +2465,54 @@ class battlefield_beacon_yellow extends Card {
     AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $modes, 1);
     AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BFB," . $this->cardID, 1);
+  }
+}
+
+class cheers_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cheers_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Cheer($this->controller);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger(-1);
+  }
+
+  function StartTurnAbility($index) {
+    return true;
+  }
+}
+
+class booze_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cheers_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Boo($this->controller);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger(-1);
+  }
+
+  function StartTurnAbility($index) {
+    return true;
   }
 }
 ?>
