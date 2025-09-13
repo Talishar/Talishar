@@ -2781,10 +2781,6 @@ class vigorous_smashup extends BaseCard {
     $revealedCardController = $this->controller;
     if ($switched) {
       $revealedCardController = $this->controller == 1 ? 2 : 1;
-      AddDecisionQueue("WRITELOG", $this->controller, "This shit was switched.", 1);
-    }
-    else {
-      AddDecisionQueue("WRITELOG", $this->controller, "This shit was NOT switched.", 1);
     }
     PlayAura("vigor", $winnerID);
     AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
@@ -2846,6 +2842,96 @@ class vigorous_smashup_blue extends Card {
     $this->cardID = "vigorous_smashup_blue";
     $this->controller = $controller;
     $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class tough_smashup extends BaseCard {
+  function OnBlockResolveEffects() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    Clash($this->cardID, $this->controller);
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
+    $revealedCardController = $this->controller;
+    if ($switched) {
+      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    }
+    PlayAura("toughness", $winnerID);
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the top revealed there", 1);
+  }
+}
+
+class tough_smashup_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_smashup_red";
+    $this->controller = $controller;
+    $this->baseCard = new tough_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class tough_smashup_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_smashup_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new tough_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class tough_smashup_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_smashup_blue";
+    $this->controller = $controller;
+    $this->baseCard = new tough_smashup($this->cardID, $this->controller);
   }
 
   function OnBlockResolveEffects($blockedFromHand, $i) {
