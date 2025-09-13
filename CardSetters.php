@@ -435,12 +435,17 @@ function BanishFromSoul($player, $index = 0)
   global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
+  global $combatChainState, $CCS_SoulBanishedThisChain;
+  global $CombatChain;
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) BanishFromSpecificSoul($mainSoul, $player, $index);
     else BanishFromSpecificSoul($defSoul, $player, $index);
   } else {
     if ($player == $myStateBuiltFor) BanishFromSpecificSoul($mySoul, $player, $index);
     else BanishFromSpecificSoul($theirSoul, $player, $index);
+  }
+  if ($player == $mainPlayer) {
+    ++$combatChainState[$CCS_SoulBanishedThisChain];
   }
 }
 

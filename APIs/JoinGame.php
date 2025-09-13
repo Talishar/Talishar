@@ -627,6 +627,7 @@ function isUnimplemented($cardID) {
       };
     case "SUP":
       return match($cardID) {
+        "battlefield_beacon_yellow" => false,
         "lyath_goldmane_vile_savant" => false,
         "kayo_underhanded_cheat" => false,
         "tuffnut_bumbling_hulkster" => false,
