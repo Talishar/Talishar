@@ -212,7 +212,8 @@ class Card {
     return;
   }
 
-  function WonClashAbility($winnerID) {
+  // Ideally, we would pass in a "ClashResult" object with information if clashes keep getting more complex to keep the signature simple.
+  function WonClashAbility($winnerID, $switched) {
     return;
   }
 

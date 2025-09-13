@@ -1231,7 +1231,7 @@ class fix_the_match_yellow extends Card {
     Clash($this->cardID, $this->controller);
   }
 
-  function WonClashAbility($winnerID) {
+  function WonClashAbility($winnerID, $switched) {
     PlayAura("might", $winnerID);
   }
 }
@@ -1485,7 +1485,7 @@ class no_hero_stands_alone_yellow extends Card {
     Clash($this->cardID, $this->controller);
   }
 
-  function WonClashAbility($winnerID) {
+  function WonClashAbility($winnerID, $switched) {
     // will need to make this able to choose past chain links and make it clear which card is a past chain link
     AddDecisionQueue("MULTIZONEINDICES", $winnerID, "COMBATCHAINLINK");
     AddDecisionQueue("SETDQCONTEXT", $winnerID, "Choose a card to give -3 power and block (or pass)", 1);
@@ -1745,16 +1745,48 @@ class reckless_stampede_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
     Clash($this->cardID, $this->controller);
-    PlayerOpt($this->controller, 1);
-    PlayerOpt($otherPlayer, 1);
   }
 
-  function WonClashAbility($winnerID) {
+  function WonClashAbility($winnerID, $switched) {
     $otherPlayer = $winnerID == 1 ? 2 : 1;
     AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-");
     AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
+
+    // Prompt Controller to Sink
+    $revealedCardController = $this->controller;
+    if ($switched) {
+      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    }
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
+
+    // Prompt Other Player to Sink
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $revealedCardController = $otherPlayer;
+    if ($switched) {
+      $revealedCardController = $otherPlayer == 1 ? 2 : 1;
+    }
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $otherPlayer, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $otherPlayer, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Player $otherPlayer sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $otherPlayer, "-");
+    AddDecisionQueue("WRITELOG", $otherPlayer, "Player $otherPlayer left the revealed card there", 1);
   }
 }
 
@@ -2638,13 +2670,6 @@ class unexpected_backhand_blue extends Card {
 }
 
 class rapturous_applause extends BaseCard {
-  public $cardID;
-  public $controller;
-  function __construct($cardID, $controller) {
-    $this->cardID = $cardID;
-    $this->controller = $controller;
-  }
-
   function WonClashWithAbility($winnerID) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, $winnerID);
   }
@@ -2771,6 +2796,186 @@ class strongest_survive_blue extends Card{
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     $this->baseCard->AddOnHitTrigger();
+  }
+}
+
+class vigorous_smashup extends BaseCard {
+  function OnBlockResolveEffects() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    Clash($this->cardID, $this->controller);
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
+    $revealedCardController = $this->controller;
+    if ($switched) {
+      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    }
+    PlayAura("vigor", $winnerID);
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
+  }
+}
+
+class vigorous_smashup_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "vigorous_smashup_red";
+    $this->controller = $controller;
+    $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class vigorous_smashup_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "vigorous_smashup_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class vigorous_smashup_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "vigorous_smashup_blue";
+    $this->controller = $controller;
+    $this->baseCard = new vigorous_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class tough_smashup extends BaseCard {
+  function OnBlockResolveEffects() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    Clash($this->cardID, $this->controller);
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
+    $revealedCardController = $this->controller;
+    if ($switched) {
+      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    }
+    PlayAura("toughness", $winnerID);
+    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
+  }
+}
+
+class tough_smashup_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_smashup_red";
+    $this->controller = $controller;
+    $this->baseCard = new tough_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class tough_smashup_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_smashup_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new tough_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
+  }
+}
+
+class tough_smashup_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_smashup_blue";
+    $this->controller = $controller;
+    $this->baseCard = new tough_smashup($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    $this->baseCard->WonClashAbility($winnerID, $switched);
   }
 }
 ?>
