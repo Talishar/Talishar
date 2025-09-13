@@ -739,6 +739,10 @@ function isUnimplemented($cardID) {
         "tough_smashup_yellow" => false,
         "tough_smashup_blue" => false,
         "energetic_impact_blue" => false,
+        "tough_leather_boots" => false,
+        "plate_of_tough_love" => false,
+        "laughing_knee_slappers" => false,
+        "strong_stomach_for_adversity" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

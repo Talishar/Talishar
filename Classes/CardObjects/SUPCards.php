@@ -2994,4 +2994,56 @@ class energetic_impact_blue extends Card {
     WriteLog(CardLink("energetic_impact_blue", "energetic_impact_blue") . " created a " . CardLink("vigor", "vigor") . " token");
   }
 }
+
+class tough_leather_boots extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_leather_boots";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    $foundVigor = SearchAurasForCardName("Vigor", $this->controller, false) != "";
+    $foundToughness = SearchAurasForCardName("Toughness", $this->controller, false) != "";
+    return $foundToughness && $foundVigor ? 2 : 0;
+  }
+}
+
+class plate_of_tough_love extends Card {
+  function __construct($controller) {
+    $this->cardID = "plate_of_tough_love";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    $foundConf = SearchAurasForCardName("Confidence", $this->controller, false) != "";
+    $foundToughness = SearchAurasForCardName("Toughness", $this->controller, false) != "";
+    return $foundToughness && $foundConf ? 2 : 0;
+  }
+}
+
+class laughing_knee_slappers extends Card {
+  function __construct($controller) {
+    $this->cardID = "laughing_knee_slappers";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    $foundMight = SearchAurasForCardName("Might", $this->controller, false) != "";
+    $foundVigor = SearchAurasForCardName("Vigor", $this->controller, false) != "";
+    return $foundMight && $foundVigor ? 2 : 0;
+  }
+}
+
+class strong_stomach_for_adversity extends Card {
+  function __construct($controller) {
+    $this->cardID = "strong_stomach_for_adversity";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    $foundMight = SearchAurasForCardName("Might", $this->controller, false) != "";
+    $foundConf = SearchAurasForCardName("Confidence", $this->controller, false) != "";
+    return $foundMight && $foundConf ? 2 : 0;
+  }
+}
 ?>
