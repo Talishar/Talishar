@@ -104,7 +104,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "in_the_palm_of_your_hand_red":
-    case "up_on_a_pedestal_blue":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
     case "mocking_blow_red":
@@ -329,7 +328,6 @@ function HasSuspense($cardID)
   if ($card != "-") return $card->HasSuspense();
   return match($cardID) {
     "in_the_palm_of_your_hand_red" => true,
-    "up_on_a_pedestal_blue" => true,
     default => false
   };
 }

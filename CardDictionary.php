@@ -958,6 +958,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
     $basePower = PowerValue($cardID, $player, $from, $index, true);
+    $card = GetClass($cardID, $player);
+    if ($card != "-") return $card->WeaponPowerModifier($basePower);
     switch ($cardID) {
       case "anothos": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? $basePower+2 : $basePower;
       case "nebula_blade": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? $basePower+3 : $basePower;

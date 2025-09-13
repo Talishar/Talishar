@@ -599,19 +599,6 @@ class take_the_bait_red extends Card {
 // }
 
 
-// class up_on_a_pedestal_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "up_on_a_pedestal_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class uplifting_performance_blue extends Card {
 
 //   function __construct($controller) {
@@ -2028,10 +2015,7 @@ class ironfist_revelation extends Card {
   }
 }
 
-class aura_of_suspense {
-  public $cardID;
-  public $controller;
-
+class aura_of_suspense extends BaseCard{
   function __construct($cardID, $controller) {
     $this->cardID = $cardID;
     $this->controller = $controller;
@@ -3180,6 +3164,41 @@ class a_good_clean_fight_red extends Card {
 
   function CardCost($from = '-') {
     return 3; //fabcube error
+  }
+}
+
+class up_on_a_pedestal_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "up_on_a_pedestal_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger($uniqueID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack to put on top of your deck (or pass)", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZADDTOTOPDECK", $this->controller, "-", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "⤴️ <0> was put on the top of the deck.", 1);
   }
 }
 ?>

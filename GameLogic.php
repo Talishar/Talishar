@@ -19,6 +19,7 @@ include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
 include "Classes/CardObjects/SUPCards.php";
+include "Classes/CardObjects/APSCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
@@ -306,6 +307,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $parameter = "THEIRCHAR:subtype=Ally&$parameter";
       }
       $rv = SearchMultizone($player, $parameter);
+      // we may want to dedupe this eventually, not pressing issue
       return $rv == "" ? "PASS" : $rv;
     case "SCOURINDICES":
       $targPlayer = explode("|", $parameter)[0];

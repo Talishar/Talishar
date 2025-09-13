@@ -39,6 +39,7 @@ class Card {
     if (SubtypeContains($this->cardID, "Item")) return "";
     if (SubtypeContains($this->cardID, "Aura")) return "";
     if (SubtypeContains($this->cardID, "Ally")) return "";
+    if (SubtypeContains($this->cardID, "W")) return "";
     else return "NOT IMPLEMENTED";
   }
 
@@ -304,6 +305,12 @@ class Card {
 
   function CombatChainCloseAbility($chainLink) {
     return;
+  }
+
+  function WeaponPowerModifier($basePower) {
+    // this function is distinct for PowerModifier, use if for weapons that buff themselves
+    // (like anothos) rather than weapons that buff their attacks (like starfall)
+    return $basePower;
   }
 }
 

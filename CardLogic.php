@@ -4034,15 +4034,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "in_the_palm_of_your_hand_red":
         Draw($player, effectSource:$parameter);
         break;
-      case "up_on_a_pedestal_blue":
-        $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
-        AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an attack to put on top of your deck (or pass)", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZADDTOTOPDECK", $player, "-", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("WRITELOG", $player, "⤴️ <0> was put on the top of the deck.", 1);
-        break;
       case "base_of_the_mountain":
         $search = "MYHAND:type=AA&MYHAND:type=A";
         $fromMod = "Hand,MOUNTAIN";
