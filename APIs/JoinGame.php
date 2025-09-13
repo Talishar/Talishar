@@ -745,6 +745,7 @@ function isUnimplemented($cardID) {
         "strong_stomach_for_adversity" => false,
         "cruel_ambition_red" => false,
         "humble_entrance_blue" => false,
+        "cries_of_encore_red" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

@@ -1695,7 +1695,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2])) return false;
+  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index)) return false;
   
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
@@ -4791,13 +4791,18 @@ function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
   else return false;
 }
 
-function PlayableFromGraveyard($cardID, $mod="-", $player = "")
+function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
 {
-  global $currentPlayer, $mainPlayer;
+  global $currentPlayer, $mainPlayer, $currentTurnEffects;
   if ($player == "") $player = $currentPlayer;
   if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $mainPlayer) return true;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $mainPlayer) return true;
+  if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) {
+    $discard = GetDiscard($player);
+    $effectIndex = SearchCurrentTurnEffectsForUniqueID($discard[$index + 1]);
+    if ($effectIndex != -1 && $currentTurnEffects[$effectIndex] == "cries_of_encore_red") return true;
+  }
   return match ($cardID) {
     "graven_call" => true,
     default => false,

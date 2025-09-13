@@ -669,6 +669,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             case "MYBANISH":
             case "THEIRBANISH":
               return $zone[$mzArr[1] + 2];
+            case "DISCARD":
+            case "MYDISCARD":
+            case "THEIRDISCARD":
+              return $zone[$mzArr[1] + 1];
             default:
               return "-1";
           }
@@ -997,6 +1001,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("!", $parameter);
       $from = count($params) > 1 ? $params[1] : "";
       $uniqueID = count($params) > 2 ? $params[2] : -1;
+      WriteLog("HERE $uniqueID");
       AddCurrentTurnEffect($params[0], $player, $from, $uniqueID);
       return "1";
     case "ADDCURRENTEFFECTNEXTATTACK":
