@@ -2317,7 +2317,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       GainResources($player, PitchValue($lastResult));
       return $lastResult;
     case "TRANSFORM":
-      $materialIndex = SearchPermanentsForUniqueID($lastResult, $player);
+      $materialIndex = is_numeric($lastResult) ? $lastResult : SearchPermanentsForUniqueID($lastResult, $player);
       $params = explode(",", $parameter);
       return "ALLY-" . ResolveTransform($player, $materialIndex, $params[0], $params[1]);
     case "TRANSFORMPERMANENT":
