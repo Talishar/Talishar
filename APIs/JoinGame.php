@@ -732,6 +732,12 @@ function isUnimplemented($cardID) {
         "rapturous_applause_red" => false,
         "rapturous_applause_yellow" => false,
         "rapturous_applause_blue" => false,
+        "vigorous_smashup_red" => false,
+        "vigorous_smashup_yellow" => false,
+        "vigorous_smashup_blue" => false,
+        "tough_smashup_red" => false,
+        "tough_smashup_yellow" => false,
+        "tough_smashup_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
