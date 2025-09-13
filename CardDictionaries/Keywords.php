@@ -158,6 +158,8 @@
           AddLayer("TRIGGER", $playerID, $deck->Top());
           break;
         default:
+          $topCard = GetClass($deck->Top(), $effectController);
+          if ($topCard != "-") $topCard->WonClashWithAbility($playerID);
           break;
       }
     }

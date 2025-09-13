@@ -676,7 +676,7 @@ class the_old_switcheroo_blue extends Card {
 
 class cheap_shot_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "the_old_switcheroo_blue";
+    $this->cardID = "cheap_shot_yellow";
     $this->controller = $controller;
   }
 
@@ -2572,6 +2572,57 @@ class authority_of_ataya_blue extends Card {
   function PitchAbility($from) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddCurrentTurnEffect($this->cardID, $otherPlayer);
+  }
+}
+
+class unexpected_backhand_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "unexpected_backhand_red";
+    $this->controller = $controller;
+  }
+
+  function WonClashWithAbility($winnerID) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
+    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+  }
+}
+
+class unexpected_backhand_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "unexpected_backhand_yellow";
+    $this->controller = $controller;
+  }
+
+  function WonClashWithAbility($winnerID) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
+    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+  }
+}
+
+class unexpected_backhand_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "unexpected_backhand_blue";
+    $this->controller = $controller;
+  }
+
+  function WonClashWithAbility($winnerID) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
+    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
   }
 }
 
