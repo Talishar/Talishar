@@ -2364,6 +2364,24 @@ class renounce_violence_blue extends Card {
   }
 }
 
+class rip_up_their_virtues_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rip_up_their_virtues_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Destroy a toughness to create a might");
+    for ($i = 0; $i < 3; ++$i) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:isSameName=toughness&THEIRAURAS:isSameName=toughness", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+      AddDecisionQueue("PLAYAURA", $this->controller, "might", 1);
+    }
+  }
+}
+
 class cut_a_long_story_short_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "cut_a_long_story_short_yellow";
