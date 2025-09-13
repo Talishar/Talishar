@@ -2494,7 +2494,7 @@ class cheers_blue extends Card {
 
 class booze_blue extends Card {
   function __construct($controller) {
-    $this->cardID = "cheers_blue";
+    $this->cardID = "booze_blue";
     $this->controller = $controller;
   }
 
