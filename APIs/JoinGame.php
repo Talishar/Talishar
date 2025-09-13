@@ -714,6 +714,7 @@ function isUnimplemented($cardID) {
         "tension_in_the_air_yellow" => false,
         "tension_in_the_air_blue" => false,
         "renounce_violence_blue" => false,
+        "rip_up_their_virtues_blue" => false,
         "cut_a_long_story_short_yellow" => false,
         "cheers_blue" => false,
         "booze_blue" => false,
