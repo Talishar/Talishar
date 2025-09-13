@@ -307,20 +307,28 @@ function logCompletedGameStats()
 
 	$conn = GetDBConnection();
 
+	// Build parameterized query safely
+	$params = [$winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer];
+	$paramTypes = "sssssss";
+	
 	if ($p1id != "" && $p1id != "-") {
 		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
-		$values .= ", " . $p1id;
+		$values .= ", ?";
+		$params[] = $p1id;
+		$paramTypes .= "s";
 	}
 	if ($p2id != "" && $p2id != "-") {
 		$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
-		$values .= ", " . $p2id;
+		$values .= ", ?";
+		$params[] = $p2id;
+		$paramTypes .= "s";
 	}
 
 	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
 	$gameResultID = 0;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "sssssss", $winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer);
+		mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
 		mysqli_stmt_execute($stmt);
 		$gameResultID = mysqli_insert_id($conn);
 		mysqli_stmt_close($stmt);

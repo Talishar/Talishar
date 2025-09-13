@@ -38,10 +38,11 @@ function PasswordLogin($username, $password, $rememberMe) {
   if($passwordValid)
   {
     session_start();
+    session_regenerate_id(true); // Regenerate session ID on login
 		$_SESSION["userid"] = $userData["usersId"];
 		$_SESSION["useruid"] = $userData["usersUid"];
 		$_SESSION["useremail"] = $userData["usersEmail"];
-		$_SESSION["userspwd"] = $userData["usersPwd"];
+		// Remove password from session for security
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$_SESSION["isBanned"] = $userData["isBanned"];
@@ -52,8 +53,9 @@ function PasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
+			// Generate secure remember me token
+			$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
+			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
 			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 		session_write_close();
@@ -92,10 +94,11 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
   if($passwordValid)
   {
     session_start();
+    session_regenerate_id(true); // Regenerate session ID on login
 		$_SESSION["userid"] = $userData["usersId"];
 		$_SESSION["useruid"] = $userData["usersUid"];
 		$_SESSION["useremail"] = $userData["usersEmail"];
-		$_SESSION["userspwd"] = $userData["usersPwd"];
+		// Remove password from session for security
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$rememberMeToken = $userData["rememberMeToken"];
@@ -109,11 +112,12 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 		{
 			if($rememberMeToken == "")
 			{
-				$cookie = hash("sha256", rand() . $_SESSION["userspwd"] . rand());
+				// Generate secure remember me token
+				$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
 				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 			}
 			else $cookie = $rememberMeToken;
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/");
+			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
 		}
 		session_write_close();
 

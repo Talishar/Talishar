@@ -17,6 +17,7 @@ require_once("Libraries/CoreLibraries.php");
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
+include_once "./Libraries/ValidationLibraries.php";
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"];
@@ -28,6 +29,18 @@ $playerID = $_GET["playerID"];
 $authKey = $_GET["authKey"];
 $mode = $_GET["mode"];
 
+// Validate player ID
+if (!validatePlayerID($playerID)) {
+  echo "Invalid player ID.";
+  exit;
+}
+
+// Validate mode is a valid integer
+if (!validateInteger($mode, 1, 999999)) {
+  echo "Invalid mode.";
+  exit;
+}
+
 if($mode == 100015)
 {
   if($playerID == 1 && intval(GetCachePiece($gameName, 15)) == 1) exit;
@@ -36,15 +49,27 @@ if($mode == 100015)
 }
 
 //We should also have some information on the type of command
-$buttonInput = isset($_GET["buttonInput"]) ? $_GET["buttonInput"] : ""; //The player that is the target of the command - e.g. for changing life total
-$cardID = isset($_GET["cardID"]) ? $_GET["cardID"] : "";
-$chkCount = isset($_GET["chkCount"]) ? $_GET["chkCount"] : 0;
+$buttonInput = isset($_GET["buttonInput"]) ? sanitizeString($_GET["buttonInput"]) : ""; //The player that is the target of the command - e.g. for changing life total
+$cardID = isset($_GET["cardID"]) ? sanitizeString($_GET["cardID"]) : "";
+$chkCount = isset($_GET["chkCount"]) ? intval($_GET["chkCount"]) : 0;
+
+// Validate card ID if provided
+if (!empty($cardID) && !validateCardID($cardID)) {
+  echo "Invalid card ID.";
+  exit;
+}
+
+// Validate check count
+if ($chkCount < 0 || $chkCount > 100) {
+  echo "Invalid check count.";
+  exit;
+}
 $chkInput = [];
 for ($i = 0; $i < $chkCount; ++$i) {
-  $chk = isset($_GET[("chk" . $i)]) ? $_GET[("chk" . $i)] : "";
+  $chk = isset($_GET[("chk" . $i)]) ? sanitizeString($_GET[("chk" . $i)]) : "";
   if ($chk != "") array_push($chkInput, $chk);
 }
-$inputText = isset($_GET["inputText"]) ? $_GET["inputText"] : "";
+$inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : "";
 
 SetHeaders();
 
