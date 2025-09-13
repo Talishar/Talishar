@@ -1145,27 +1145,20 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "BFB":
       if(!is_array($lastResult)) $modes = $lastResult == "PASS" ? [] : explode(",", $lastResult);
       else $modes = $lastResult;
-      $created = [];
       for ($i = 0; $i < count($modes); ++$i) {
         switch($modes[$i]) {
           case "Create_a_Courage_token":
             PlayAura("courage", $player, isToken:true, effectController:$player, effectSource:$initiator);
-            $created[] = CardLink("courage","courage");
             break;
           case "Create_a_Toughness_token":
             PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$initiator);
-            $created[] = CardLink("toughness","toughness");
             break;
           case "Create_a_Vigor_token":
             PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$initiator);
-            $created[] = CardLink("vigor","vigor");
             break;
           default:
             break;
         }
-      }
-      if (count($created) > 0) {
-        WriteLog("Created " . implode(", ", $created) . ".");
       }
       return "";
   }

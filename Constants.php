@@ -424,7 +424,7 @@ $CCS_NumUsedInReactions = 42;
 $CCS_NumReactionPlayedActivated = 43; //Number of reactions played or activated
 $CCS_NumCardsBlocking = 44; //used to track when cards "defend together"
 $CCS_NumPowerCounters = 45;
-$CCS_SoulBanishedThisChain = 46; // Number of cards banished from your soul this combat chain
+$CCS_SoulBanishedThisChain = 46;
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
