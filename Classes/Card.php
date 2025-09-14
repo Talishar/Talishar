@@ -119,7 +119,7 @@ class Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-") {
+  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-", $mode="-") {
     return;
   }
 
@@ -338,6 +338,14 @@ class Card {
   }
 
   function IsGrantedBuff() {
+    return false;
+  }
+
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+    return;
+  }
+
+  function IsCombatEffectPersistent($mode) {
     return false;
   }
 }

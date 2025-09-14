@@ -150,7 +150,7 @@ class blood_follows_blade_yellow extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-") {
     PlayAlly("cintari_sellsword", $this->controller, isToken:true);
   }
 
@@ -3716,6 +3716,45 @@ class heroic_grit_yellow extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return CountAura("toughness", $this->controller);
+  }
+}
+
+class time_flies_when_youre_having_fun_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "time_flies_when_youre_having_fun_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "ARS") AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect("$this->cardID-ONHIT", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-") {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
+    return 1;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return $mode == "ONHIT";
+  }
+
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+    global $defPlayer;
+    if((IsHeroAttackTarget() || $targetPlayer == $defPlayer) && $mode == "ONHIT" && TypeContains($sourceID, "AA")) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "$this->cardID-$mode", "EFFECTHITEFFECT", $sourceID);
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "-" ? 3 : 0;
   }
 }
 ?>

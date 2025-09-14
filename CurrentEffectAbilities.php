@@ -20,10 +20,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
   }
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
-  if (class_exists($cardID)) {
-    $card = new $cardID($mainPlayer);
-    return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1]);
-  }
+  $mode = explode("-", $cardID)[1] ?? "-";
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1] ?? "-", $mode);
   switch ($cardID) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
@@ -2063,6 +2062,9 @@ function IsCombatEffectPersistent($cardID)
   $effectArr = explode(",", $cardID);
   $cardID = ShiyanaCharacter($effectArr[0]);
   if (DelimStringContains($cardID, "art_of_the_dragon_blood_red", true)) return true;
+  $mode = explode("-", $cardID)[1] ?? "-";
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->IsCombatEffectPersistent($mode);
   switch ($cardID) {
     case "bloodrush_bellow_yellow":
     case "bravo_showstopper":

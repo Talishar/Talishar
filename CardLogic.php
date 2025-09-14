@@ -1403,6 +1403,9 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return false;
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
+  $mode = explode("-", $effects[0])[1] ?? "-";
+  $card = GetClass($parameter, $mainPlayer);
+  if ($card != "-") $card->AddCardEffectHitTrigger($source, $targetPlayer, $mode);
   switch ($effects[0]) {
     case "spoils_of_war_red-2":
     case "eclipse_existence_blue":
