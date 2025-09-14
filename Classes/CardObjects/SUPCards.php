@@ -2870,7 +2870,7 @@ class strongest_survive {
       AddDecisionQueue("ELSE", $defPlayer, "-");
       AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
       AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to discard", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $defPlayer, "<-", 1);
       AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-$this->controller", 1);
     }
