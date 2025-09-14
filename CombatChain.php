@@ -528,7 +528,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumBluePlayed, $currentTurnEffects, $combatChain;
   $blockModifier = 0;
-  $noGain = CanGainBlock($cardID);
+  $noGain = !CanGainBlock($cardID);
   $cardType = CardType($cardID);
   // should probably refactor this as an EffectBlockModifier function
   if (!$noGain) {
