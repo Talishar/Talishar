@@ -3832,9 +3832,12 @@ class what_happens_next_blue extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function PermCostModifier() {
+  function PermCostModifier($cardID, $from) {
     global $CS_NumCostedCardsPlayed;
-    if (GetClassState($this->controller, $CS_NumCostedCardsPlayed) == 0) return -1;
+    if (CardCost($cardID, $from) > 0 && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityName($cardID, $from) != "Ability") {
+      if (GetClassState($this->controller, $CS_NumCostedCardsPlayed) == 0) return -1;
+    }
+    return 0;
   }
 }
 

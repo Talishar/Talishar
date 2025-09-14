@@ -462,7 +462,7 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
   return $cardID;
 }
 
-function AuraCostModifier($cardID = "")
+function AuraCostModifier($cardID = "", $from = "-")
 {
   global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -471,7 +471,7 @@ function AuraCostModifier($cardID = "")
   $modifier = 0;
   for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $card = GetClass($myAuras[$i], $currentPlayer);
-    if ($card != "-") $modifier += $card->PermCostModifier();
+    if ($card != "-") $modifier += $card->PermCostModifier($cardID, $from);
     switch ($myAuras[$i]) {
       case "frostbite":
         $modifier += 1;

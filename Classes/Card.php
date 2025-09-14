@@ -357,7 +357,7 @@ class Card {
     return 0;
   }
 
-  function PermCostModifier() {
+  function PermCostModifier($cardID, $from) {
     return 0;
   }
 
