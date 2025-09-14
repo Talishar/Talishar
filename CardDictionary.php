@@ -5548,6 +5548,8 @@ function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
 
 //For effects that grant an ability to an AA card that then grants the attack power
 function IsGrantedBuff($cardID) {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->IsGrantedBuff();
   return match($cardID) {
     "barraging_beatdown_red", "barraging_beatdown_yellow", "barraging_beatdown_blue" => true,
     default => false,

@@ -3641,4 +3641,28 @@ class turning_point_blue extends Card {
     return GetClassState($this->controller, $CS_CheeredThisTurn) ? 3 : 0;
   }
 }
+
+class heroic_grit_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "heroic_grit_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    PlayAura("toughness", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function IsGrantedBuff() {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return CountAura("toughness", $this->controller);
+  }
+}
 ?>

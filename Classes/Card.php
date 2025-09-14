@@ -336,6 +336,10 @@ class Card {
   function AbilityPlayableFromGraveyard($index) {
     return false;
   }
+
+  function IsGrantedBuff() {
+    return false;
+  }
 }
 
 ?>
