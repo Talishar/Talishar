@@ -3207,7 +3207,7 @@ class cruel_ambition_red extends Card {
   }
     
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    PlayAura("might", $this->controller, 3);
+    PlayAura("might", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
   }
 }
 
@@ -4615,6 +4615,31 @@ class arrogant_showboating_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $count = CountBlockingCards();
     PlayAura("might", $this->controller, $count, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class vigorous_roar_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "vigorous_roar_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) {
+        PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+      }
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
   }
 }
 

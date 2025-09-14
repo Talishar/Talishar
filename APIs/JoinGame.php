@@ -810,6 +810,7 @@ function isUnimplemented($cardID) {
         "arrogant_showboating_blue" => false,
         "not_so_mighty_blue" => false,
         "tear_down_the_idols_red" => false,
+        "vigorous_roar_red" => false,
         "clench_the_upper_hand_red" => false,
         "clench_the_upper_hand_yellow" => false,
         "clench_the_upper_hand_blue" => false,
