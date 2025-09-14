@@ -3284,7 +3284,7 @@ class dis extends BaseCard {
 }
 
 class disarm_yellow extends Card {
-    function __construct($controller) {
+  function __construct($controller) {
     $this->cardID = "disarm_yellow";
     $this->controller = $controller;
     $this->baseCard = new dis($this->cardID, $this->controller);
@@ -3311,7 +3311,7 @@ class disarm_yellow extends Card {
 }
 
 class disembody_red extends Card {
-    function __construct($controller) {
+  function __construct($controller) {
     $this->cardID = "disembody_red";
     $this->controller = $controller;
     $this->baseCard = new dis($this->cardID, $this->controller);
@@ -3338,7 +3338,7 @@ class disembody_red extends Card {
 }
 
 class disperse_blue extends Card {
-    function __construct($controller) {
+  function __construct($controller) {
     $this->cardID = "disperse_blue";
     $this->controller = $controller;
     $this->baseCard = new dis($this->cardID, $this->controller);
@@ -3361,6 +3361,52 @@ class disperse_blue extends Card {
     if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
       MZMoveCard($mainPlayer, "MYARS", "MYBOTDECK", silent:true);
     }
+  }
+}
+
+class rough_up extends BaseCard {
+  function PowerModifier() {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 1;
+    }
+    return 0;
+  }
+}
+
+class rough_up_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rough_up_red";
+    $this->controller = $controller;
+    $this->baseCard = new rough_up($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
+}
+
+class rough_up_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rough_up_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rough_up($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
+}
+
+class rough_up_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rough_up_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rough_up($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
   }
 }
 ?>

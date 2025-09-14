@@ -756,6 +756,9 @@ function isUnimplemented($cardID) {
         "disarm_yellow" => false,
         "disembody_red" => false,
         "disperse_blue" => false,
+        "rough_up_red" => false,
+        "rough_up_yellow" => false,
+        "rough_up_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
