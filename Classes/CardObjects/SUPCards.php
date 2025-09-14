@@ -3497,4 +3497,31 @@ class rough_up_blue extends Card {
     return $this->baseCard->PowerModifier();
   }
 }
+
+class power_play extends Card {
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return str_contains($from, "ARS") ? 5 : 0;
+  }
+}
+
+class power_play_red extends power_play {
+  function __construct($controller) {
+    $this->cardID = "power_play_red";
+    $this->controller = $controller;
+  }
+}
+
+class power_play_yellow extends power_play {
+  function __construct($controller) {
+    $this->cardID = "power_play_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class power_play_blue extends power_play {
+  function __construct($controller) {
+    $this->cardID = "power_play_blue";
+    $this->controller = $controller;
+  }
+}
 ?>
