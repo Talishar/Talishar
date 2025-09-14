@@ -1621,7 +1621,7 @@ function CanBlock($cardID, $from)
   if (IsBlockRestricted($cardID, player:$defPlayer, from: $from)) return false;
   $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
   $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
-  $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2;
+  $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence") &&  NumNonBlocksDefending() >= 2;
   if ($from == "HAND" && $dominateRestricted) return false;
   if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && $overpowerRestricted) return false;
   if (!TypeContains($cardID, "B") && $confidenceRestricted) return false;
@@ -1748,7 +1748,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
-    if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+    if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
       if (NumNonBlocksDefending() >= 2) return false;
     }
   }
@@ -1923,7 +1923,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
   }
-  if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+  if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
   }
   //current turn effects
@@ -1959,7 +1959,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
 function CanBlockWithEquipment()
 {
   global $CombatChain, $mainPlayer;
-  if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+  if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2) return false;
   }
   switch ($CombatChain->AttackCard()->ID()) {
