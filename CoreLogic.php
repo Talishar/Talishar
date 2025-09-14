@@ -529,6 +529,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
+  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $otherPlayer)) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;

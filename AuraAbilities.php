@@ -1683,7 +1683,7 @@ function isSpectraAttackTarget() {
 function AuraBlockModifier($cardID, $from)
 {
   global $defPlayer, $CombatChain;
-  $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
+  $noGain = !CanGainBlock($cardID);
   $defAuras = &GetAuras($defPlayer);
   $totalBlockModifier = 0;
   $cardType = CardType($cardID);

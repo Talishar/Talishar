@@ -4467,6 +4467,9 @@ function CanGainAttack($cardID)
 }
 
 function CanGainBlock($cardID) {
+  global $CombatChain, $mainPlayer;
+  if ($CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow") return false;
+  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-BLOCK", $mainPlayer)) return false;
   return true;
 }
 

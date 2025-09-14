@@ -4006,4 +4006,53 @@ class boots_to_the_boards extends Card {
     AddDecisionQueue("SPECIFICCARD", $this->controller, "DIGIN,$this->cardID", 1);
   }
 }
+
+class beat_of_the_ironsong_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "beat_of_the_ironsong_blue";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !CardNameContains($CombatChain->AttackCard()->ID(), "Dawnblade", $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $combatChainState, $CCS_WeaponIndex, $CS_AdditionalCosts;
+    $char = GetPlayerCharacter($this->controller);
+    $ind = $combatChainState[$CCS_WeaponIndex];
+    $numModes = $char[$ind + 3] + 1;
+    $message = $numModes > 1 ? "Choose $numModes modes" : "Choose a mode";
+    $modes = "Buff_power,Go_again,Block_gaining_defense,Can't_be_prevented";
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, $message);
+    AddDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modes-$numModes");
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    foreach (explode(",", $additionalCosts) as $mode) {
+      switch ($mode) {
+        case "Buff_power":
+          $CombatChain->AttackCard()->ModifyPower(1);
+          break;
+        case "Go_again":
+          GiveAttackGoAgain();
+          break;
+        case "Block_gaining_defense":
+          AddCurrentTurnEffect("$this->cardID-BLOCK", $this->controller);
+          break;
+        case "Can't_be_prevented":
+          AddCurrentTurnEffect("$this->cardID-PREVENT", $this->controller);
+          break;
+      }
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 ?>

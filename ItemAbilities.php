@@ -549,7 +549,7 @@ function ItemDamagePeventionAmount($player, $index, $damage=0, $preventable=true
 function ItemBlockModifier($cardID)
 {
   global $mainPlayer, $defPlayer, $CombatChain;
-  $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
+  $noGain = !CanGainBlock($cardID);
   $items = &GetItems($mainPlayer);
   $totalBlockModifier = 0;
   for ($i = 0; $i < count($items); $i += ItemPieces()) {

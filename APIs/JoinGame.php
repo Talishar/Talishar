@@ -801,6 +801,7 @@ function isUnimplemented($cardID) {
         "angelic_attendant_yellow" => false,
         "adaptive_alpha_mold" => false,
         "hit_the_gas_blue" => false,
+        "beat_of_the_ironsong_blue" => false,
         default => true
       };
     case "APS":
