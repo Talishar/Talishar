@@ -2571,6 +2571,7 @@ class painful_passage_red extends Card {
     MZMoveCard($this->controller, "MYHAND:type=AA", "MYBANISH,HAND,", may: true);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a path through the painful passage");
     AddDecisionQueue("BUTTONINPUT", $this->controller, "buff,go_again", 1);
+    AddDecisionQueue("WRITELOGLASTRESULT", $this->controller, "-", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "MYBANISH", 1);
     AddDecisionQueue("MZOP", $this->controller, "LASTMZINDEX", 1);
