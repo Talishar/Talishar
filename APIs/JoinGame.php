@@ -806,6 +806,7 @@ function isUnimplemented($cardID) {
         "whos_the_tough_guy_red" => false,
         "whos_the_tough_guy_yellow" => false,
         "whos_the_tough_guy_blue" => false,
+        "darling_of_the_crowd_yellow" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

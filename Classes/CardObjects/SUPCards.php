@@ -3962,11 +3962,13 @@ class virtuoso_bodice extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $suspAuras = implode(",", GetSuspenseAuras($this->controller));
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
-    AddDecisionQueue("GAINRESOURCES", $this->controller, 2, 1);
+    if ($suspAuras != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
+      AddDecisionQueue("GAINRESOURCES", $this->controller, 2, 1);
+    }
   }
 }
 
@@ -3982,12 +3984,14 @@ class attention_grabbers extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $suspAuras = implode(",", GetSuspenseAuras($this->controller));
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-    AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, 2, 1);
+    if ($suspAuras != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+      AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, 2, 1);
+    }
   }
 }
 
@@ -4529,6 +4533,18 @@ class whos_the_tough_guy_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $this->baseCard->PlayAbility();
+  }
+}
+
+class darling_of_the_crowd_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "darling_of_the_crowd_yellow";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
   }
 }
 ?>
