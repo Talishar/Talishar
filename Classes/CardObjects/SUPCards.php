@@ -4306,4 +4306,84 @@ class mightybone_knuckles extends Card {
     PlayAura("might", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
   }
 }
+
+class tame_the_beastly_behavior_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tame_the_beastly_behavior_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (TalentContains($defChar[0], "REVILED", $defPlayer) && IsHeroAttackTarget()) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ATTACKTRIGGER");
+    }
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $CombatChain;
+    $CombatChain->AttackCard()->ModifyPower(1);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (TalentContains($defChar[0], "REVILED", $defPlayer) && IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card you want to put on the bottom of the deck", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZADDZONE", $this->controller, "THEIRBOTDECK", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+  }
+}
+
+class shining_courage_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shining_courage_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $index = explode("-", $target)[1];
+    CombatChainDefenseModifier($index, 3);
+    Cheer($this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $AOptions = GetChainLinkCards($this->controller, "A", "C");
+    $AAOptions = GetChainLinkCards($this->controller, "AA", "C");
+    if ($AOptions == "") $numOptions = $AAOptions;
+    if ($AAOptions == "") $numOptions = $AOptions;
+    else $numOptions = "$AAOptions,$AOptions";
+    if ($numOptions != "") {
+      $numOptions = explode(",", $numOptions);
+      $options = [];
+      foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+      $options = implode(",", $options);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending action card to buff");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $options, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+    else {
+      WriteLog(CardLink($this->cardID, $this->cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
+    }
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $combatChain;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] == $this->controller && (TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA"))) return false;
+    }
+    return true;
+  }
+}
 ?>

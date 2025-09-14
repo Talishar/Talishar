@@ -799,6 +799,8 @@ function isUnimplemented($cardID) {
         "horns_of_the_despised" => false,
         "hold_firm" => false,
         "mightybone_knuckles" => false,
+        "tame_the_beastly_behavior_red" => false,
+        "shining_courage_red" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
