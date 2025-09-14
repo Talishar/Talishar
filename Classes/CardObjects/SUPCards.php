@@ -1489,10 +1489,6 @@ class escalate_order_red extends Card {
       PlayAura("toughness", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
     }
   }
-
-  function CardCost($from = '-') {
-    return 2; //fabcube error
-  }
 }
 
 class song_of_sinew_yellow extends Card {
@@ -3199,10 +3195,6 @@ class cries_of_encore_red extends Card {
     AddDecisionQueue("MZOP", $this->controller, "GETUNIQUEID", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "$this->cardID!-!{0}", 1);
-  }
-
-  function CardCost($from = '-') {
-    return 3; //fabcube error
   }
 }
 
