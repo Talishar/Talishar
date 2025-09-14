@@ -790,6 +790,10 @@ function isUnimplemented($cardID) {
         "attention_grabbers" => false,
         "boots_to_the_boards" => false,
         "catch_of_the_day_blue" => false,
+        "story_beats_red" => false,
+        "story_beats_yellow" => false,
+        "story_beats_blue" => false,
+        "hungry_for_more_red" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
