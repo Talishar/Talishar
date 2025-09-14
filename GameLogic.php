@@ -18,6 +18,7 @@ include "Classes/Discard.php";
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
+include "Classes/CardObjects/SEACards.php";
 include "Classes/CardObjects/SUPCards.php";
 include "Classes/CardObjects/APSCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
