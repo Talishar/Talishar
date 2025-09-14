@@ -4386,4 +4386,149 @@ class shining_courage_red extends Card {
     return true;
   }
 }
+
+class empowering_ruckus_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "empowering_ruckus_yellow";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
+  }
+}
+
+class fight_from_behind extends BaseCard {
+  function ProcessTrigger() {
+    if (PlayerHasLessHealth($this->controller)) Cheer($this->controller);
+  }
+
+  function AddTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+}
+
+class fight_from_behind_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "fight_from_behind_red";
+    $this->controller = $controller;
+    $this->baseCard = new fight_from_behind($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class fight_from_behind_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "fight_from_behind_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new fight_from_behind($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class fight_from_behind_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "fight_from_behind_blue";
+    $this->controller = $controller;
+    $this->baseCard = new fight_from_behind($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class whos_the_tough_guy extends BaseCard {
+  function CombatChainCloseAbility($chainLink) {
+    global $chainLinkSummary, $defPlayer, $chainLinks;
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $this->cardID && $chainLinks[$chainLink][1] == $this->controller) {
+        PlayAura("toughness", $defPlayer);
+    }
+  }
+
+  function PlayAbility() {
+    if (IsHeroAttackTarget()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+}
+
+class whos_the_tough_guy_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "whos_the_tough_guy_red";
+    $this->controller = $controller;
+    $this->baseCard = new whos_the_tough_guy($this->cardID, $this->controller);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    $this->baseCard->CombatChainCloseAbility($chainLink);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+}
+
+class whos_the_tough_guy_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "whos_the_tough_guy_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new whos_the_tough_guy($this->cardID, $this->controller);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    $this->baseCard->CombatChainCloseAbility($chainLink);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+}
+
+class whos_the_tough_guy_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "whos_the_tough_guy_blue";
+    $this->controller = $controller;
+    $this->baseCard = new whos_the_tough_guy($this->cardID, $this->controller);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    $this->baseCard->CombatChainCloseAbility($chainLink);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+}
 ?>

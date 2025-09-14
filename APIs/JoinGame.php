@@ -801,6 +801,11 @@ function isUnimplemented($cardID) {
         "mightybone_knuckles" => false,
         "tame_the_beastly_behavior_red" => false,
         "shining_courage_red" => false,
+        "empowering_ruckus_yellow" => false,
+        "fight_from_behind_yellow" => false,
+        "whos_the_tough_guy_red" => false,
+        "whos_the_tough_guy_yellow" => false,
+        "whos_the_tough_guy_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
