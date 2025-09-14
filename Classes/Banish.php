@@ -47,8 +47,9 @@ class Banish {
     for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
       $modArr = explode("-", $this->banish[$i+1]);
       $cardModifier = $modArr[0];
-      if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
-      if($cardModifier == "Source" && $modifier == "TCL") $this->banish[$i+1] = $newMod;
+      if ($modifier == "shadowrealm_horror_red" && str_contains($cardModifier, $modifier)) $this->banish[$i+1] = $newMod;
+      else if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
+      else if($cardModifier == "Source" && $modifier == "TCL") $this->banish[$i+1] = $newMod;
     }
   }
 }

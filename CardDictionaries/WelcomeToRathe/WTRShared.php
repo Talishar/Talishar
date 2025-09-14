@@ -531,6 +531,8 @@
   {
     global $mainPlayer;
     if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") return $card->HasCrush();
     switch($cardID) {
       case "crippling_crush_red": case "spinal_crush_red": case "cranial_crush_blue": case "buckling_blow_red": case "buckling_blow_yellow": case "buckling_blow_blue":
       case "cartilage_crush_red": case "cartilage_crush_yellow": case "cartilage_crush_blue": case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":
@@ -572,6 +574,8 @@
       WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return true;
     }
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") return $card->ProcessCrushEffect();
     switch($cardID) {
       case "crippling_crush_red":
         DiscardRandom($defPlayer, $cardID, $mainPlayer);
@@ -647,67 +651,7 @@
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         break;
       case "blinding_of_the_old_ones_red":
-        // $char = &GetPlayerCharacter($defPlayer);
-        // $char[1] = 3;
-        $deck = &GetDeck($defPlayer);
-        for ($i = 0; $i < count($deck); $i += DeckPieces()) {
-          $deck[$i] = BlindCard($deck[$i]);
-        }
-
-        $discard = &GetDiscard($defPlayer);
-        for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
-          $discard[$i] = BlindCard($discard[$i]);
-        }
-
-        $banish = &GetBanish($defPlayer);
-        for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-          $banish[$i] = BlindCard($banish[$i]);
-        }
-
-        $pitch = &GetPitch($defPlayer);
-        for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-          $pitch[$i] = BlindCard($pitch[$i]);
-        }
-
-        $hand = &GetHand($defPlayer);
-        for ($i = 0; $i < count($hand); $i += HandPieces()) {
-          $hand[$i] = BlindCard($hand[$i]);
-        }
-
-        $arsenal = &GetArsenal($defPlayer);
-        for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-          $arsenal[$i] = BlindCard($arsenal[$i]);
-        }
-
-        $char = &GetPlayerCharacter($defPlayer);
-        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-          $char[$i] = BlindCard($char[$i]);
-        }
-
-        $items = &GetItems($defPlayer);
-        for ($i = 0; $i < count($items); $i += ItemPieces()) {
-          $items[$i] = BlindCard($items[$i]);
-        }
-
-        $auras = &GetAuras($defPlayer);
-        for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          $auras[$i] = BlindCard($auras[$i]);
-        }
-
-        $allies = &GetAllies($defPlayer);
-        for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-          $allies[$i] = BlindCard($allies[$i]);
-        }
-
-        for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-          if ($combatChain[$i + 1] == $defPlayer) $combatChain[$i] = BlindCard($combatChain[$i]);
-        }
-
-        foreach ($chainLinks as $link) {
-          for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
-            if ($link[$i + 1] == $defPlayer) $link[$i] = BlindCard($link[$i]);
-          }
-        }
+        BlindPlayer($defPlayer);
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "smelting_of_the_old_ones_red": 

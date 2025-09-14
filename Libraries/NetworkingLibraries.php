@@ -176,12 +176,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
       if (!PlayableFromBanish($cardID, $banish[$index + 1], true)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
-      if ($banish[$index + 1] == "shadowrealm_horror_red") {
-        SearchCurrentTurnEffects("shadowrealm_horror_red-3", $currentPlayer, true);
+      if (str_contains($banish[$index + 1], "shadowrealm_horror_red")) {
         $currentPlayerBanish = new Banish($currentPlayer);
-        $otherPlayerBanish = new Banish($otherPlayer);
-        $currentPlayerBanish->UnsetBanishModifier("shadowrealm_horror_red");
-        $otherPlayerBanish->UnsetBanishModifier("shadowrealm_horror_red");
+        $currentPlayerBanish->UnsetBanishModifier($banish[$index + 1]);
+        $effectIndex = SearchCurrentTurnEffectsForUniqueID($banish[$index + 1]);
+        if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
       }
       if($banish[$index + 1] == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$banish[$index + 1]);
@@ -670,9 +669,28 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         EquipEquipment($playerID, $cardID);
       }
       elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
-        WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
-        $hand = &GetHand($playerID);
-        array_push($hand, $cardID);
+        if ($num == "banish") {
+          WriteLog("Player " . $playerID . " manually added a card to their banish", highlight: true);
+          BanishCardForPlayer($cardID, $playerID, "MANUAL");
+        }
+        elseif ($num == "grave") {
+          WriteLog("Player " . $playerID . " manually added a card to their graveyard", highlight: true);
+          AddGraveyard($cardID, $playerID, "MANUAL");
+        }
+        elseif ($num == "deck") {
+          WriteLog("Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
+          AddTopDeck($cardID, $playerID, "MANUAL");
+        }
+        elseif ($num == "inv") {
+          WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
+          $inventory = &GetInventory($playerID);
+          array_push($inventory, $cardID);
+        }
+        else {
+          WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
+          $hand = &GetHand($playerID);
+          array_push($hand, $cardID);
+        }
       }
       else {
         WriteLog("Player " . $playerID . " manually created a token", highlight: true);
@@ -1570,7 +1588,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
-  global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked;
+  global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -1677,7 +1695,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           $baseCost = 0;
           AddAdditionalCost($currentPlayer, "ALTERNATIVECOST");
         }
-        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + SelfCostModifier($cardID, $from) : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index, $baseCost);
+        $resources[1] += ($dynCostResolved > 0 ? $dynCostResolved + SelfCostModifier($cardID, $from) : $baseCost) + CurrentEffectCostModifiers($cardID, $from) + AuraCostModifier($cardID, $from) + CharacterCostModifier($cardID, $from, $baseCost) + BanishCostModifier($from, $index, $baseCost);
         if ($isAlternativeCostPaid && $resources[1] > 0) WriteLog("<span style='color:red;'>Alternative costs do not offset additional costs.</span>");
       }
       if ($resources[1] < 0) $resources[1] = 0;
@@ -1843,6 +1861,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityName($cardID, $from) != "Ability") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
       SearchCurrentTurnEffects("fealty", $currentPlayer, remove:true);
+    }
+    if (CardCost($cardID, $from) > 0 && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityName($cardID, $from) != "Ability") {
+      IncrementClassState($currentPlayer, $CS_NumCostedCardsPlayed);
     }
     if (HasStealth($cardID) && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
       IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
@@ -2806,6 +2827,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState;
+  global $layers;
   $cardSubtype = CardSubType($cardID);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -3490,10 +3512,11 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
       break;
     case "shadowrealm_horror_red":
+      $uid = $layers[count($layers) - LayerPieces() + 6];
       $num6Banished = RandomBanish3GY($cardID, $cardID);
       if ($num6Banished > 0) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       if ($num6Banished > 1) AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-      if ($num6Banished > 2) AddCurrentTurnEffect($cardID . "-3", $currentPlayer);
+      if ($num6Banished > 2) AddCurrentTurnEffect($cardID . "-3", $currentPlayer, uniqueID:$uid);
       break;
     case "saving_grace_yellow":
       Charge();

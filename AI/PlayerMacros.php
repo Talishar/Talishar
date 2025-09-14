@@ -122,6 +122,10 @@ function HasPlayableCard($player, $phase)
   for($i=0; $i<count($theirBanish); $i+=BanishPieces()) {
     if(IsPlayable($theirBanish[$i], $phase, "THEIRBANISH", $i, $restriction, $player)) return true;
   }
+  $discard = GetDiscard($player);
+  for($i=0; $i<count($discard); $i+=DiscardPieces()) {
+    if(IsPlayable($discard[$i], $phase, "GY", $i, $restriction, $player)) return true;
+  }
   $auras = &GetAuras($player);
   for($i=0; $i<count($auras); $i+=AuraPieces()) {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;

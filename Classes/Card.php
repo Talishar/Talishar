@@ -1,16 +1,29 @@
 <?php
+
+// this is an abstract class that stores functions used by multiple cards
+// eg. "unexpected_backhand" stores functions used by the red/yellow/blue versions of the card
+class BaseCard {
+  public $cardID;
+  public $controller;
+
+  function __construct($cardID, $controller="-") {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+}
+
 // This is an interface with functions that each zone's card class must implement
-
-
 class Card {
   // Properties
   public $cardID;
   public $controller;
+  public $baseCard;
 
   // Constructor
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
+    $this->BaseCard = new BaseCard($cardID, $controller);
   }
 
   function IsType($types) {
@@ -26,6 +39,7 @@ class Card {
     if (SubtypeContains($this->cardID, "Item")) return "";
     if (SubtypeContains($this->cardID, "Aura")) return "";
     if (SubtypeContains($this->cardID, "Ally")) return "";
+    if (TypeContains($this->cardID, "W")) return "";
     else return "NOT IMPLEMENTED";
   }
 
@@ -105,7 +119,7 @@ class Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-") {
+  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-", $mode="-") {
     return;
   }
 
@@ -145,7 +159,7 @@ class Card {
     return GeneratedHasTemper($this->cardID) == "true";
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i) {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     return;
   }
 
@@ -199,7 +213,13 @@ class Card {
     return;
   }
 
-  function WonClashAbility($winnerID) {
+  // Ideally, we would pass in a "ClashResult" object with information if clashes keep getting more complex to keep the signature simple.
+  function WonClashAbility($winnerID, $switched) {
+    return;
+  }
+
+  // Triggers when a clash is won with this card on top of the deck.
+  function WonClashWithAbility($winnerID) {
     return;
   }
 
@@ -275,8 +295,74 @@ class Card {
     return;
   }
 
+  function HasCrush() {
+    return false;
+  }
+
+  function AddCrushEffectTrigger() {
+    return;
+  }
+
+  function ProcessCrushEffect() {
+    return;
+  }
+
   function CurrentEffectGrantsGoAgain($param) {
     return false;
+  }
+
+  function PitchAbility($from) {
+    return;
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    return;
+  }
+
+  function WeaponPowerModifier($basePower) {
+    // this function is distinct for PowerModifier, use if for weapons that buff themselves
+    // (like anothos) rather than weapons that buff their attacks (like starfall)
+    return $basePower;
+  }
+
+  function EntersArenaAbility() {
+    return;
+  }
+
+  function PlayableFromGraveyard($index) {
+    return false;
+  }
+
+  function AbilityPlayableFromGraveyard($index) {
+    return false;
+  }
+
+  function IsGrantedBuff() {
+    return false;
+  }
+
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+    return;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return false;
+  }
+
+  function AuraPowerModifiers($index, &$powerModifiers) {
+    return 0;
+  }
+
+  function PermDamagePreventionAmount($index, $type, $damage, $active, &$cancelRemove, $check) {
+    return 0;
+  }
+
+  function PermCostModifier($cardID, $from) {
+    return 0;
+  }
+
+  function DefaultActiveState() {
+    return 2;
   }
 }
 

@@ -529,6 +529,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
+  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $otherPlayer)) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
@@ -1261,6 +1262,8 @@ function CombatChainClosedCharacterEffects()
         $equipCharacter = &$character;
         $equipPlayer = $defPlayer;
       }
+      // Looks like sometimes the origin unique ID of cards blocking from hand can get mixed up
+      if ($equipCharacter[$charIndex] != $chainLinks[$i][$j]) continue;
       if ($chainLinks[$i][$j] == "carrion_husk") {
         $character[$charIndex + 1] = 0;
         BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
@@ -1325,7 +1328,8 @@ function NumDefendedFromHand()
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
-      if (CardType($chainCard->ID()) != "I" && $chainCard->From() == "HAND") ++$num;
+      // this used to explicitly exclude instant cards and I don't know why, removing for now
+      if ($chainCard->From() == "HAND") ++$num;
     }
   }
   return $num;
@@ -1339,7 +1343,8 @@ function NumCardsBlocking()
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
-      if ($type != "I" && $type != "C") ++$num;
+      // for some reason this explicitly excluded instants, not sure why, removing for now
+      if ($type != "C") ++$num;
     }
   }
   return $num;
@@ -1353,7 +1358,8 @@ function NumCardsNonEquipBlocking()
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
-      if ($type != "E" && $type != "I" && $type != "C") ++$num;
+      // the following line specifically skipped Instants, and I don't know why. Teklo evos?
+      if ($type != "E" && $type != "C") ++$num;
       if (DelimStringContains(CardSubType($chainCard->ID()), "Evo")) --$num;
     }
   }
@@ -1530,7 +1536,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     if ($index > -1 && $index < count($banish)) {
       if ($banish[$index + 1] !== null) {
         $mod = explode("-", $banish[$index + 1])[0];
-        if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || $mod == "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
+        if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red"))) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
       }
     }
   }
@@ -3207,6 +3213,8 @@ function PitchAbility($cardID, $from="HAND")
     && !SearchCurrentTurnEffects("MERIDIANWARD", $currentPlayer)) {
     AddLayer("TRIGGER", $currentPlayer, "meridian_pathway");
   }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") $card->PitchAbility($from);
   switch ($cardID) {
     case "heart_of_fyendal_blue":
     case "eye_of_ophidia_blue":

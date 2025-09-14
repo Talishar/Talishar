@@ -345,7 +345,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   for ($i=0; $i < count($theirDiscard); $i += DiscardPieces()) {
-    if (PlayableFromGraveyard($theirDiscard[$i], $theirDiscard[$i+2], $otherPlayer)) {
+    if (PlayableFromGraveyard($theirDiscard[$i], $theirDiscard[$i+2], $otherPlayer, $i)) {
       array_push($theirHandContents, JSONRenderedCard($theirDiscard[$i], borderColor:7));
     }
   }
@@ -527,7 +527,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerDiscardArr = [];
   for($i = 0; $i < count($myDiscard); $i += DiscardPieces()) {
     $overlay = 0;
-    $action = $currentPlayer == $playerID && PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2]) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
+    $action = $currentPlayer == $playerID && (PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2], $playerID, $i) || AbilityPlayableFromGraveyard($myDiscard[$i], $i)) && IsPlayable($myDiscard[$i], $turn[0], "GY", $i) ? 36 : 0;
     $mod = explode("-", $myDiscard[$i + 2])[0];
     $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod);
     if($mod == "DOWN") {

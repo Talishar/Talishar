@@ -123,7 +123,7 @@
       $playerID = $switched ? 3 - $i : $i;
       $deck = new Deck($playerID);
       if($deck->Reveal(1, $switched)) {
-        $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $i, "DECK", source:$cardID);
+        $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $playerID, "DECK", source:$cardID);
         if(!TypeContains($deck->Top(), "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
         if($i == 1) $p1Power = $power;
         else $p2Power = $power;
@@ -145,11 +145,12 @@
     }
   }
 
-  function WonClashAbility($playerID, $cardID, $effectController="", $switched=false) {
+  function WonClashAbility($playerID, $cardID, $effectController="", $switchedPlayers=[false, false]) {
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
     
     $deck = new Deck($playerID);
+    $switched = $switchedPlayers[0] || $switchedPlayers[1];
     if (!$switched) {
       switch ($deck->Top()) {
         case "the_golden_son_yellow":
@@ -158,6 +159,8 @@
           AddLayer("TRIGGER", $playerID, $deck->Top());
           break;
         default:
+          $topCard = GetClass($deck->Top(), $effectController);
+          if ($topCard != "-") $topCard->WonClashWithAbility($playerID);
           break;
       }
     }
@@ -165,7 +168,7 @@
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $card = GetClass($cardID, $effectController);
-    if ($card != "-") $card->WonClashAbility($playerID);
+    if ($card != "-") $card->WonClashAbility($playerID, $switched);
     switch($cardID)
     {
       case "millers_grindstone":
@@ -262,7 +265,7 @@
         break;
       default: break;
     }
-    if ($switched) PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
+    if ($switchedPlayers[$playerID-1]) PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
     }
 
   function VictorAbility($playerID, $cardID, $effectController="") {

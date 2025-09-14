@@ -103,10 +103,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SUSPENSE", $currentPlayer, "ADD", 1);
       }
       break;
-    case "in_the_palm_of_your_hand_red":
-    case "up_on_a_pedestal_blue":
-      AddLayer("TRIGGER", $currentPlayer, $cardID);
-      break;
     case "mocking_blow_red":
     case "mocking_blow_yellow":
     case "mocking_blow_blue":
@@ -159,12 +155,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             break;
           case "remove_hero_abilities":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or lose your hero ability.");
-            AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
-            AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
             AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
-            AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else lose your hero ability", 1);
+            AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
             AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
             AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
             AddDecisionQueue("ELSE", $targetPlayer, "-");
@@ -311,15 +304,17 @@ function Cheer($player)
   SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
   WriteLog("Let's go! The crowd cheers for " . CardLink($char[0], $char[0]) . "!");
-  switch($char[0]) {
-    case "pleiades":
-    case "pleiades_superstar":
-    case "tuffnut":
-    case "tuffnut_bumbling_hulkster":
-      AddLayer("TRIGGER", $player, $char[0]);
-      break;
-    default:
-      break;
+  if ($char[1] < 3) {
+    switch($char[0]) {
+      case "pleiades":
+      case "pleiades_superstar":
+      case "tuffnut":
+      case "tuffnut_bumbling_hulkster":
+        AddLayer("TRIGGER", $player, $char[0]);
+        break;
+      default:
+        break;
+    }
   }
 }
 
@@ -327,11 +322,6 @@ function HasSuspense($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasSuspense();
-  return match($cardID) {
-    "in_the_palm_of_your_hand_red" => true,
-    "up_on_a_pedestal_blue" => true,
-    default => false
-  };
 }
 
 function GetSuspenseAuras($player)

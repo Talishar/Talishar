@@ -128,3 +128,63 @@ function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
   }
 }
+
+function BlindPlayer($player, $unblind=false, $excludeEquips=false)
+{
+  global $chainLinks;
+  $deck = &GetDeck($player);
+  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
+    $deck[$i] = BlindCard($deck[$i], $unblind, $excludeEquips);
+  }
+
+  $discard = &GetDiscard($player);
+  for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+    $discard[$i] = BlindCard($discard[$i], $unblind, $excludeEquips);
+  }
+
+  $banish = &GetBanish($player);
+  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+    $banish[$i] = BlindCard($banish[$i], $unblind, $excludeEquips);
+  }
+
+  $pitch = &GetPitch($player);
+  for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+    $pitch[$i] = BlindCard($pitch[$i], $unblind, $excludeEquips);
+  }
+
+  $hand = &GetHand($player);
+  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+    $hand[$i] = BlindCard($hand[$i], $unblind, $excludeEquips);
+  }
+
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    $arsenal[$i] = BlindCard($arsenal[$i], $unblind, $excludeEquips);
+  }
+
+  $char = &GetPlayerCharacter($player);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    $char[$i] = BlindCard($char[$i], $unblind, $excludeEquips);
+  }
+
+  $items = &GetItems($player);
+  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    $items[$i] = BlindCard($items[$i], $unblind, $excludeEquips);
+  }
+
+  $auras = &GetAuras($player);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    $auras[$i] = BlindCard($auras[$i], $unblind, $excludeEquips);
+  }
+
+  $allies = &GetAllies($player);
+  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+    $allies[$i] = BlindCard($allies[$i], $unblind, $excludeEquips);
+  }
+
+  foreach ($chainLinks as $link) {
+    for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+      if ($link[$i + 1] == $player) $link[$i] = BlindCard($link[$i], $unblind, $excludeEquips);
+    }
+  }
+}

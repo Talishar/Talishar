@@ -20,10 +20,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
   }
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
-  if (class_exists($cardID)) {
-    $card = new $cardID($mainPlayer);
-    return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1]);
-  }
+  $mode = explode("-", $cardID)[1] ?? "-";
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1] ?? "-", $mode);
   switch ($cardID) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
@@ -1107,6 +1106,9 @@ function CurrentEffectCostModifiers($cardID, $from)
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
           }
           break;
+        case "authority_of_ataya_blue":
+          if (TypeContains($cardID, "DR", $currentPlayer)) ++$costModifier;
+          break;
         default:
           break;
       }
@@ -1851,6 +1853,9 @@ function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
             return true;
           }
           break;
+        case "no_tall_tales_yellow":
+          if (!str_contains($from, "THEIR")) return true;
+          break;
         default:
           break;
       }
@@ -1976,55 +1981,7 @@ function CurrentEffectEndTurnAbilities()
         AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
         break;
       case "blinding_of_the_old_ones_red":
-        $deck = &GetDeck($mainPlayer);
-        for ($i = 0; $i < count($deck); $i += DeckPieces()) {
-          $deck[$i] = BlindCard($deck[$i], true);
-        }
-
-        $discard = &GetDiscard($mainPlayer);
-        for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
-          $discard[$i] = BlindCard($discard[$i], true);
-        }
-
-        $banish = &GetBanish($mainPlayer);
-        for ($i = 0; $i < count($banish); $i += BanishPieces()) {
-          $banish[$i] = BlindCard($banish[$i], true);
-        }
-
-        $pitch = &GetPitch($mainPlayer);
-        for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-          $pitch[$i] = BlindCard($pitch[$i], true);
-        }
-
-        $hand = &GetHand($mainPlayer);
-        for ($i = 0; $i < count($hand); $i += HandPieces()) {
-          $hand[$i] = BlindCard($hand[$i], true);
-        }
-
-        $arsenal = &GetArsenal($mainPlayer);
-        for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-          $arsenal[$i] = BlindCard($arsenal[$i], true);
-        }
-
-        $char = &GetPlayerCharacter($mainPlayer);
-        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-          $char[$i] = BlindCard($char[$i], true);
-        }
-
-        $items = &GetItems($mainPlayer);
-        for ($i = 0; $i < count($items); $i += ItemPieces()) {
-          $items[$i] = BlindCard($items[$i], true);
-        }
-
-        $auras = &GetAuras($mainPlayer);
-        for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          $auras[$i] = BlindCard($auras[$i], true);
-        }
-
-        $allies = &GetAllies($mainPlayer);
-        for ($i = 0; $i < count($allies); $i += AllyPieces()) {
-          $allies[$i] = BlindCard($allies[$i], true);
-        }
+        BlindPlayer($mainPlayer, unblind: true);
         $remove = true;
         break;
       case "annexation_of_all_things_known_yellow":
@@ -2105,6 +2062,9 @@ function IsCombatEffectPersistent($cardID)
   $effectArr = explode(",", $cardID);
   $cardID = ShiyanaCharacter($effectArr[0]);
   if (DelimStringContains($cardID, "art_of_the_dragon_blood_red", true)) return true;
+  $mode = explode("-", $cardID)[1] ?? "-";
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->IsCombatEffectPersistent($mode);
   switch ($cardID) {
     case "bloodrush_bellow_yellow":
     case "bravo_showstopper":

@@ -1016,16 +1016,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "trap_and_release_blue":
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
-    case "king_kraken_harpoon_red":
-    case "king_shark_harpoon_red":
     case "conqueror_of_the_high_seas_red":
     case "cogwerx_dovetail_red":
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case 'cloud_city_steamboat_blue':
-    case "red_fin_harpoon_blue":
-    case "yellow_fin_harpoon_blue":
-    case "blue_fin_harpoon_blue":
     case "cogwerx_zeppelin_red":
     case "cogwerx_zeppelin_yellow":
     case "cogwerx_zeppelin_blue":
@@ -1317,6 +1312,8 @@ function AddCrushEffectTrigger($cardID)
   if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer)) {
     AddLayer("TRIGGER", $mainPlayer, $cardID, "leave_a_dent_blue", "CRUSHEFFECT");
   }
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->AddCrushEffectTrigger();
   switch ($cardID) {
     case "crippling_crush_red":
     case "spinal_crush_red":
@@ -1401,6 +1398,9 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return false;
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0])[0];
+  $mode = explode("-", $effects[0])[1] ?? "-";
+  $card = GetClass($parameter, $mainPlayer);
+  if ($card != "-") $card->AddCardEffectHitTrigger($source, $targetPlayer, $mode);
   switch ($effects[0]) {
     case "spoils_of_war_red-2":
     case "eclipse_existence_blue":
@@ -1949,6 +1949,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       }
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to add to hand");
       AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
+      AddDecisionQueue("WRITELOGLASTRESULT", $player, "-", 1);
       AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
       AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
       AddDecisionQueue("WRITELOGCARDLINK", $player, "<-", 1);
@@ -4031,18 +4032,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
         break;
-      case "in_the_palm_of_your_hand_red":
-        Draw($player, effectSource:$parameter);
-        break;
-      case "up_on_a_pedestal_blue":
-        $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
-        AddDecisionQueue("MULTIZONEINDICES", $player, $search);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an attack to put on top of your deck (or pass)", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZADDTOTOPDECK", $player, "-", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("WRITELOG", $player, "⤴️ <0> was put on the top of the deck.", 1);
-        break;
       case "base_of_the_mountain":
         $search = "MYHAND:type=AA&MYHAND:type=A";
         $fromMod = "Hand,MOUNTAIN";
@@ -4281,7 +4270,7 @@ function PlayerOpt($player, $amount, $optKeyword = true)
   SetClassState($player, $CS_CardsInDeckBeforeOpt, $deck->RemainingCards());
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPXREMOVE," . $amount);
   AddDecisionQueue("OPT", $player, "<-", 1);
-  if ($heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
+  if ($optKeyword && $heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
 }
 
 function BanishRandom($player, $source)
@@ -4470,6 +4459,13 @@ function CanGainAttack($cardID)
   global $combatChain, $mainPlayer;
   if (SearchCurrentTurnEffects("buzzsaw_trap_blue", $mainPlayer)) return false;
   return !SearchCurrentTurnEffects("chokeslam_red", $mainPlayer) || CardType($combatChain[0]) != "AA";
+}
+
+function CanGainBlock($cardID) {
+  global $CombatChain, $mainPlayer;
+  if ($CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow") return false;
+  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-BLOCK", $mainPlayer)) return false;
+  return true;
 }
 
 function IsWeaponGreaterThanTwiceBasePower()

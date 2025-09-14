@@ -528,7 +528,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumBluePlayed, $currentTurnEffects, $combatChain;
   $blockModifier = 0;
-  $noGain = $CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow";
+  $noGain = !CanGainBlock($cardID);
   $cardType = CardType($cardID);
   // should probably refactor this as an EffectBlockModifier function
   if (!$noGain) {
@@ -997,7 +997,7 @@ function OnBlockResolveEffects($cardID = "")
       $defendingCard = $combatChain[$i];
       $card = GetClass($defendingCard, $defPlayer);
       if ($card != "-") {
-        $card -> OnBlockResolveEffects($blockedFromHand, $i);
+        $card -> OnBlockResolveEffects($blockedFromHand, $i, $start);
       }
       if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
       if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
@@ -1427,6 +1427,8 @@ function OnBlockEffects($index, $from)
 function CombatChainCloseAbilities($player, $cardID, $chainLink)
 {
   global $chainLinkSummary, $mainPlayer, $defPlayer, $chainLinks;
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->CombatChainCloseAbility($chainLink);
   switch ($cardID) {
     case "swing_big_red":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID && $chainLinks[$chainLink][1] == $player) {
@@ -1780,14 +1782,14 @@ function CombatChainPayAdditionalCosts($index, $from)
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   // hard code this exception to avoid circularity
-  $shortCards = ["cut_a_long_story_short_yellow"];
-  if (in_array($combatChain[0], $shortCards) && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
+  $card = GetClass($combatChain[0], $mainPlayer);
+  if (is_a($card, "SUPDwarfCard") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
     ++$combatChainState[$CCS_CachedTotalPower];
   }
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");

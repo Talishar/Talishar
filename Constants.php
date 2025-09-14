@@ -376,6 +376,7 @@ $CS_SeismicSurgesCreated = 106;
 $CS_CardsInDeckBeforeOpt = 107; //to be set as a player starts opting, used to validate the result of the opt
 $CS_NumToughnessDestroyed = 108;
 $CS_NumConfidenceDestroyed = 109;
+$CS_NumCostedCardsPlayed = 110; //number of cards that cost more than 0 played
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -424,6 +425,7 @@ $CCS_NumUsedInReactions = 42;
 $CCS_NumReactionPlayedActivated = 43; //Number of reactions played or activated
 $CCS_NumCardsBlocking = 44; //used to track when cards "defend together"
 $CCS_NumPowerCounters = 45;
+$CCS_SoulBanishedThisChain = 46;
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -438,7 +440,7 @@ function ResetCombatChainState()
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
-  global $CCS_NumPowerCounters;
+  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -483,6 +485,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
   $combatChainState[$CCS_NumCardsBlocking] = 0;
   $combatChainState[$CCS_NumPowerCounters] = 0;
+  $combatChainState[$CCS_SoulBanishedThisChain] = 0;
   
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
@@ -613,7 +616,7 @@ function ResetMainClassState()
   global $CS_PowDamageDealt, $CS_NumTimesAttacked, $CS_NumAllyPutInGraveyard, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
   global $CS_TunicTicks, $CS_NumGoldCreated, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
   global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn, $CS_SeismicSurgesCreated, $CS_CardsInDeckBeforeOpt;
-  global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed;
+  global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -723,6 +726,7 @@ function ResetMainClassState()
   $mainClassState[$CS_CardsInDeckBeforeOpt] = "-";
   $mainClassState[$CS_NumToughnessDestroyed] = 0;
   $mainClassState[$CS_NumConfidenceDestroyed] = 0;
+  $mainClassState[$CS_NumCostedCardsPlayed] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

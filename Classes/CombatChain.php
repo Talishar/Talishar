@@ -101,7 +101,7 @@ class ChainCard {
 
     function ModifyDefense($amount) {
       global $CombatChain;
-      if ($CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow" && $amount > 0) $amount = 0;
+      if (!CanGainBlock($this->chain[$this->index+6])) $amount = 0;
       $this->chain[$this->index+6] += $amount;
     }
 
@@ -111,5 +111,12 @@ class ChainCard {
 
     function StaticBuffs() {
       return $this->chain[$this->index+10];
+    }
+
+    function CardBlockValue() {
+      if (CanGainBlock($this->ID())) {
+        return BlockValue($this->ID()) + $this->chain[$this->index + 6];
+      }
+      else return BlockValue($this->ID());
     }
 }

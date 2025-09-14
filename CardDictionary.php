@@ -958,6 +958,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
     $basePower = PowerValue($cardID, $player, $from, $index, true);
+    $card = GetClass($cardID, $player);
+    if ($card != "-") return $card->WeaponPowerModifier($basePower);
     switch ($cardID) {
       case "anothos": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? $basePower+2 : $basePower;
       case "nebula_blade": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? $basePower+3 : $basePower;
@@ -1000,7 +1002,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
-    "escalate_order_red" => 6, // fabcube error
+    "a_good_clean_fight_red" => 7, // fabcube error
     default => $basePower,
   };
   // Lyath ability is handled elsewhere while attacking
@@ -1619,7 +1621,7 @@ function CanBlock($cardID, $from)
   if (IsBlockRestricted($cardID, player:$defPlayer, from: $from)) return false;
   $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
   $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
-  $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2;
+  $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence") &&  NumNonBlocksDefending() >= 2;
   if ($from == "HAND" && $dominateRestricted) return false;
   if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && $overpowerRestricted) return false;
   if (!TypeContains($cardID, "B") && $confidenceRestricted) return false;
@@ -1695,8 +1697,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2])) return false;
-  
+  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
@@ -1747,7 +1748,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         if (CardType(GetCardIDBeforeTransform($cardID)) == "A") return false;
       }
     }
-    if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+    if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
       if (NumNonBlocksDefending() >= 2) return false;
     }
   }
@@ -1850,6 +1851,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
     return true;
   }
+  if ($from == "GY" && AbilityPlayableFromGraveyard($cardID, $index) && CanPlayInstant($phase)) {
+    return true;
+  }
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
     if (($phase == "M" && $mainPlayer == $currentPlayer)) {
@@ -1919,7 +1923,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
     if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
   }
-  if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+  if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
   }
   //current turn effects
@@ -1955,7 +1959,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
 function CanBlockWithEquipment()
 {
   global $CombatChain, $mainPlayer;
-  if (SearchCurrentTurnEffects("confidence", $mainPlayer)) {
+  if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2) return false;
   }
   switch ($CombatChain->AttackCard()->ID()) {
@@ -2022,7 +2026,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
   if ($goesWhereEffect != -1) return $goesWhereEffect;
-  if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
+  //hardcode in old favorite for now
+  if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR" && $cardID != "old_favorite_yellow") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   $type = CardType($cardID);
   if (DelimStringContains($type, "W")) return "-";
@@ -2342,7 +2347,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "pummel_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if ($subtype == "Club" || $subtype == "Hammer" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2)) return false;
+      $isClub = SubtypeContains($CombatChain->AttackCard()->ID(), "Club");
+      $isHammer = SubtypeContains($CombatChain->AttackCard()->ID(), "Hammer");
+      if ($isClub || $isHammer || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2)) return false;
       return true;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
@@ -4079,6 +4086,8 @@ function CharacterNumUsesPerTurn($cardID)
 //Active (2 = Always Active, 1 = Yes, 0 = No)
 function CharacterDefaultActiveState($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->DefaultActiveState();
   switch ($cardID) {
     case "silken_form":
     case "heat_wave":
@@ -4673,7 +4682,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "spew_shadow_red" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
-  if ($mod == "shadowrealm_horror_red" && SearchCurrentTurnEffects("shadowrealm_horror_red-3", $player) && CardType($cardID) != "E") return true;
+  if (str_contains($mod, "shadowrealm_horror_red") && SearchCurrentTurnEffects("shadowrealm_horror_red-3", $player) && CardType($cardID) != "E") return true;
   if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("runechant", $player, false)) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
@@ -4791,13 +4800,20 @@ function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
   else return false;
 }
 
-function PlayableFromGraveyard($cardID, $mod="-", $player = "")
+function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
 {
-  global $currentPlayer, $mainPlayer;
+  global $currentPlayer, $mainPlayer, $currentTurnEffects;
   if ($player == "") $player = $currentPlayer;
   if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $mainPlayer) return true;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $mainPlayer) return true;
+  if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) {
+    $discard = GetDiscard($player);
+    $effectIndex = SearchCurrentTurnEffectsForUniqueID($discard[$index + 1]);
+    if ($effectIndex != -1 && $currentTurnEffects[$effectIndex] == "cries_of_encore_red") return true;
+  }
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return PlayableFromGraveyard($index);
   return match ($cardID) {
     "graven_call" => true,
     default => false,
@@ -4856,12 +4872,8 @@ function Is1H($cardID): bool|int
 function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
 {
   global $currentPlayer, $mainPlayer;
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    $ret = $card->AbilityPlayableFromCombatChain($index);
-    unset($card);
-    return $ret;
-  }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->AbilityPlayableFromCombatChain($index);
   $isAttacking = $currentPlayer == $mainPlayer;
   $auras = GetAuras($currentPlayer);
   return match ($cardID) {
@@ -4876,6 +4888,14 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
     "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
     default => false
   };
+}
+
+function AbilityPlayableFromGraveyard($cardID, $index) {
+  global $currentPlayer;
+  $discard = GetDiscard($currentPlayer);
+  if (isFaceDownMod($discard[$index + 2])) return false;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->AbilityPlayableFromGraveyard($index);
 }
 
 function CardCaresAboutPitch($cardID): bool
@@ -5516,7 +5536,8 @@ function HasEffectActive($cardID) {
   }
 }
 
-function BlindCard($cardID, $unblind=false) {
+function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
+  if (!$unblind && $excludeEquips && TypeContains($cardID, "E")) return $cardID;
   $blindMarker = "BLIND";
   $c = strlen($blindMarker) + 1;
   if ($cardID === null) return "";
@@ -5532,6 +5553,8 @@ function BlindCard($cardID, $unblind=false) {
 
 //For effects that grant an ability to an AA card that then grants the attack power
 function IsGrantedBuff($cardID) {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->IsGrantedBuff();
   return match($cardID) {
     "barraging_beatdown_red", "barraging_beatdown_yellow", "barraging_beatdown_blue" => true,
     default => false,

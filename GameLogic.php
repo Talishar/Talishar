@@ -18,7 +18,9 @@ include "Classes/Discard.php";
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
+include "Classes/CardObjects/SEACards.php";
 include "Classes/CardObjects/SUPCards.php";
+include "Classes/CardObjects/APSCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
@@ -306,6 +308,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $parameter = "THEIRCHAR:subtype=Ally&$parameter";
       }
       $rv = SearchMultizone($player, $parameter);
+      // we may want to dedupe this eventually, not pressing issue
       return $rv == "" ? "PASS" : $rv;
     case "SCOURINDICES":
       $targPlayer = explode("|", $parameter)[0];
@@ -669,6 +672,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             case "MYBANISH":
             case "THEIRBANISH":
               return $zone[$mzArr[1] + 2];
+            case "DISCARD":
+            case "MYDISCARD":
+            case "THEIRDISCARD":
+              return $zone[$mzArr[1] + 1];
             default:
               return "-1";
           }
@@ -2317,7 +2324,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       GainResources($player, PitchValue($lastResult));
       return $lastResult;
     case "TRANSFORM":
-      $materialIndex = SearchPermanentsForUniqueID($lastResult, $player);
+      $materialIndex = is_numeric($lastResult) ? $lastResult : SearchPermanentsForUniqueID($lastResult, $player);
       $params = explode(",", $parameter);
       return "ALLY-" . ResolveTransform($player, $materialIndex, $params[0], $params[1]);
     case "TRANSFORMPERMANENT":
@@ -2746,7 +2753,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WONCLASH":
       $winner = $dqVars[0];
       $params = explode(",", $parameter);
-      $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true);
+      $switchedPlayers = [SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true), SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true)];
       $mainDeck = new Deck($mainPlayer);
       $defDeck = new Deck($defPlayer);
       if ($winner != $defPlayer && $defDeck->Top() == "overturn_the_results_blue") {
@@ -2760,7 +2767,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         Boo($mainPlayer);
       }
       if ($winner > 0) {
-        WonClashAbility($winner, $params[0], $params[1], $switched);
+        WonClashAbility($winner, $params[0], $params[1], $switchedPlayers);
       }
       else {
         $char = GetPlayerCharacter($mainPlayer);
