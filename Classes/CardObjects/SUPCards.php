@@ -3837,6 +3837,81 @@ class what_happens_next_blue extends Card {
   }
 }
 
+class look_tuff extends Card {
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to pay 1 to avoid losing 1 damage.");
+    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_1_to_losing_1_damage", 1);
+    AddDecisionQueue("NOPASS", $this->controller, "-", 1, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, 1, 1);
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "-", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $this->controller, "-1", 1);
+  }
+}
+
+class bluster_buff_red extends look_tuff {
+  function __construct($controller) {
+    $this->cardID = "bluster_buff_red";
+    $this->controller = $controller;
+  }
+}
+
+class chest_puff_red extends look_tuff {
+  function __construct($controller) {
+    $this->cardID = "chest_puff_red";
+    $this->controller = $controller;
+  }
+}
+
+class look_tuff_red extends look_tuff {
+  function __construct($controller) {
+    $this->cardID = "look_tuff_red";
+    $this->controller = $controller;
+  }
+}
+
+class punch_above_your_weight extends Card {
+  protected $buffAmount;
+
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    ChooseToPay($this->controller, $this->cardID, "0,3");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "COMBATCHAINLINK-0", 1);
+    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $this->controller, "$this->buffAmount", 1);
+  }
+}
+
+class punch_above_your_weight_red extends punch_above_your_weight {
+  function __construct($controller) {
+    $this->cardID = "punch_above_your_weight_red";
+    $this->controller = $controller;
+    $this->buffAmount = 5;
+  }
+}
+
+class punch_above_your_weight_yellow extends punch_above_your_weight {
+  function __construct($controller) {
+    $this->cardID = "punch_above_your_weight_yellow";
+    $this->controller = $controller;
+    $this->buffAmount = 4;
+  }
+}
+
+class punch_above_your_weight_blue extends punch_above_your_weight {
+  function __construct($controller) {
+    $this->cardID = "punch_above_your_weight_blue";
+    $this->controller = $controller;
+    $this->buffAmount = 3;
+  }
+}
+
 class tiara_of_suspense extends Card {
   function __construct($controller) {
     $this->cardID = "tiara_of_suspense";
