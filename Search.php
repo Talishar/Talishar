@@ -207,8 +207,9 @@ function SearchInner(
         if ($hasStealth && !hasStealth($cardID)) continue;
         if ($hasWateryGrave && !HasWateryGrave($cardID)) continue;
         if ($hasCrush && !HasCrush($cardID)) continue;
-        if ($cardList != "") $cardList = $cardList . ",";
         if ($hasSuspense && !HasSuspense($cardID)) continue;
+        if ($cardList != "") $cardList = $cardList . ",";
+        
         $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
       }
     }
