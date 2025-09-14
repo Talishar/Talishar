@@ -1127,10 +1127,6 @@ class leave_them_hanging_red extends Card {
     return true;
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1): void {
-    $this->EntersArenaAbility();
-  }
-
   function EntersArenaAbility() {
     $context = "Choose who to intimidate";
     if(ShouldAutotargetOpponent($this->controller)) {
@@ -2596,10 +2592,6 @@ class cheers_blue extends Card {
     $this->controller = $controller;
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->EntersArenaAbility();
-  }
-
   function EntersArenaAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
@@ -2622,10 +2614,6 @@ class booze_blue extends Card {
   function __construct($controller) {
     $this->cardID = "booze_blue";
     $this->controller = $controller;
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->EntersArenaAbility();
   }
 
   function EntersArenaAbility() {
@@ -3296,10 +3284,6 @@ class up_on_a_pedestal_blue extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->EntersArenaAbility();
-  }
-
   function EntersArenaAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
@@ -3333,10 +3317,6 @@ class in_the_palm_of_your_hand_red extends Card {
     $this->cardID = "in_the_palm_of_your_hand_red";
     $this->controller = $controller;
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->EntersArenaAbility();
   }
 
   function EntersArenaAbility() {
