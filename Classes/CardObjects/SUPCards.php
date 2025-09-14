@@ -3201,4 +3201,146 @@ class up_on_a_pedestal_blue extends Card {
     AddDecisionQueue("WRITELOG", $this->controller, "⤴️ <0> was put on the top of the deck.", 1);
   }
 }
+
+class buckwild extends BaseCard {
+  function DoesAttackHaveGoAgain() {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return true;
+    }
+    return false;
+  }
+}
+
+class buckwild_red extends card {
+  function __construct($controller) {
+    $this->cardID = "buckwild_red";
+    $this->controller = $controller;
+    $this->baseCard = new buckwild($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->DoesAttackHaveGoAgain();
+  }
+}
+
+class buckwild_yellow extends card {
+  function __construct($controller) {
+    $this->cardID = "buckwild_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new buckwild($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->DoesAttackHaveGoAgain();
+  }
+}
+
+class buckwild_blue extends card {
+  function __construct($controller) {
+    $this->cardID = "buckwild_blue";
+    $this->controller = $controller;
+    $this->baseCard = new buckwild($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->DoesAttackHaveGoAgain();
+  }
+}
+
+class dis extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    global $CS_CheeredThisTurn;
+    if (GetClassState($this->controller, $CS_CheeredThisTurn)) PlayAura("toughness", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function OnBlockResolveEffects($i) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+  }
+}
+
+class disarm_yellow extends Card {
+    function __construct($controller) {
+    $this->cardID = "disarm_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new dis($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($i);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain, $mainPlayer;
+    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+      MZMoveCard($mainPlayer, "MYHAND", "MYBOTDECK", silent:true);
+    }
+  }
+}
+
+class disembody_red extends Card {
+    function __construct($controller) {
+    $this->cardID = "disembody_red";
+    $this->controller = $controller;
+    $this->baseCard = new dis($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($i);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain, $mainPlayer;
+    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+      MZMoveCard($mainPlayer, "MYAURAS", "MYBOTDECK", silent:true);
+    }
+  }
+}
+
+class disperse_blue extends Card {
+    function __construct($controller) {
+    $this->cardID = "disperse_blue";
+    $this->controller = $controller;
+    $this->baseCard = new dis($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($i);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain, $mainPlayer;
+    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+      MZMoveCard($mainPlayer, "MYARS", "MYBOTDECK", silent:true);
+    }
+  }
+}
 ?>

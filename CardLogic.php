@@ -4463,6 +4463,10 @@ function CanGainAttack($cardID)
   return !SearchCurrentTurnEffects("chokeslam_red", $mainPlayer) || CardType($combatChain[0]) != "AA";
 }
 
+function CanGainBlock($cardID) {
+  return true;
+}
+
 function IsWeaponGreaterThanTwiceBasePower()
 {
   global $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
