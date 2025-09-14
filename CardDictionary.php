@@ -4083,6 +4083,8 @@ function CharacterNumUsesPerTurn($cardID)
 //Active (2 = Always Active, 1 = Yes, 0 = No)
 function CharacterDefaultActiveState($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->DefaultActiveState();
   switch ($cardID) {
     case "silken_form":
     case "heat_wave":

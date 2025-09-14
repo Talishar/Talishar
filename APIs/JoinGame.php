@@ -784,6 +784,10 @@ function isUnimplemented($cardID) {
         "punch_above_your_weight_red" => false,
         "punch_above_your_weight_yellow" => false,
         "punch_above_your_weight_blue" => false,
+        "tiara_of_suspense" => false,
+        "virtuoso_bodice" => false,
+        "attention_grabbers" => false,
+        "boots_to_the_boards" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
