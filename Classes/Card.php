@@ -295,6 +295,18 @@ class Card {
     return;
   }
 
+  function HasCrush() {
+    return false;
+  }
+
+  function AddCrushEffectTrigger() {
+    return;
+  }
+
+  function ProcessCrushEffect() {
+    return;
+  }
+
   function CurrentEffectGrantsGoAgain($param) {
     return false;
   }

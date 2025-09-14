@@ -1317,6 +1317,8 @@ function AddCrushEffectTrigger($cardID)
   if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer)) {
     AddLayer("TRIGGER", $mainPlayer, $cardID, "leave_a_dent_blue", "CRUSHEFFECT");
   }
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->AddCrushEffectTrigger();
   switch ($cardID) {
     case "crippling_crush_red":
     case "spinal_crush_red":

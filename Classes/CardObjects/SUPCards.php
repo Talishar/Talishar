@@ -1658,7 +1658,7 @@ class challenge_the_alpha_yellow extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     global $defPlayer;
-    PummelHit($defPlayer, context: "Choose a card to discard, choose a 6 power card to to assert dominance and deal 2 the opponent");
+    PummelHit($defPlayer, context: "Choose a card to discard, choose a 6 power card to to assert dominance and deal 2 to the opponent");
     AddDecisionQueue("SPECIFICCARD", $defPlayer, "ALPHA", 1);
   }
 }
@@ -2390,16 +2390,13 @@ class rip_up_their_virtues_blue extends Card {
   }
 }
 
-class cut_a_long_story_short_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "cut_a_long_story_short_yellow";
-    $this->controller = $controller;
-  }
-
+class SUPDwarfCard extends Card {
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
     return HasIncreasedAttack() ? 1 : 0;
   }
+}
 
+class SUPTowerDwarfCard extends SUPDwarfCard {
   function HasTower() {
     return true;
   }
@@ -2407,10 +2404,109 @@ class cut_a_long_story_short_yellow extends Card {
   function AddTowerHitTrigger() {
     AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "TOWEREFFECT");
   }
+}
+
+class cut_a_long_story_short_yellow extends SUPTowerDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "cut_a_long_story_short_yellow";
+    $this->controller = $controller;
+  }
 
   function ProcessTowerEffect() {
     global $defPlayer;
     DiscardHand($defPlayer);
+  }
+}
+
+class cut_off_at_the_knees_yellow extends SUPTowerDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "cut_off_at_the_knees_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessTowerEffect() {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    for ($i = 0; $i < 3; ++$i) {
+      if($deck->Empty()) break;
+      else DestroyTopCard($defPlayer);
+    }
+  }
+}
+
+class cut_the_small_talk_yellow extends SUPTowerDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "cut_the_small_talk_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessTowerEffect() {
+    global $mainPlayer;
+    MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS"), $mainPlayer);
+  }
+}
+
+class no_tall_tales_yellow extends SUPTowerDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "no_tall_tales_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessTowerEffect() {
+    global $mainPlayer;
+    global $defPlayer;
+    AddNextTurnEffect($this->cardID, $defPlayer);
+    AddCurrentTurnEffect($this->cardID, $mainPlayer);
+  }
+}
+
+class SUPCrushDwarfCard extends SUPDwarfCard {
+  function HasCrush() {
+    return true;
+  }
+
+  function AddCrushEffectTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "CRUSHEFFECT");
+  }
+}
+
+class short_shrift_yellow extends SUPCrushDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "short_shrift_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessCrushEffect() {
+    global $defPlayer;
+    PummelHit($defPlayer);
+  }
+}
+
+class small_problem_yellow extends SUPCrushDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "small_problem_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessCrushEffect() {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
+
+class wee_wrecking_ball_yellow extends SUPCrushDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "wee_wrecking_ball_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessCrushEffect() {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card you want to destroy from their arsenal", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
   }
 }
 
