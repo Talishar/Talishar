@@ -682,6 +682,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           WriteLog("Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
           AddTopDeck($cardID, $playerID, "MANUAL");
         }
+        elseif ($num == "inv") {
+          WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
+          $inventory = &GetInventory($playerID);
+          array_push($inventory, $cardID);
+        }
         else {
           WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
           $hand = &GetHand($playerID);
