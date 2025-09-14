@@ -1383,6 +1383,7 @@ class visit_the_boneyard_blue extends Card {
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZADDZONE", $this->controller, "MYTOPDECK", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    AddDecisionQueue("WRITELOGLASTRESULT", $this->controller, "-", 1);
     PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
   }
 }
