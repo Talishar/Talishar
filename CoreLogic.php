@@ -1532,7 +1532,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     if ($index > -1 && $index < count($banish)) {
       if ($banish[$index + 1] !== null) {
         $mod = explode("-", $banish[$index + 1])[0];
-        if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || $mod == "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
+        if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red"))) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
       }
     }
   }

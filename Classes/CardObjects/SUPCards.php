@@ -1159,7 +1159,6 @@ class leave_them_hanging_red extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    WriteLog("HERE!!! $mainPhase");
     if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
     else $this->ProcessTrigger("-", additionalCosts:"BUFF");
   }

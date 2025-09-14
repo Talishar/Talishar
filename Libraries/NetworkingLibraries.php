@@ -176,12 +176,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
       if (!PlayableFromBanish($cardID, $banish[$index + 1], true)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
-      if ($banish[$index + 1] == "shadowrealm_horror_red") {
-        SearchCurrentTurnEffects("shadowrealm_horror_red-3", $currentPlayer, true);
+      if (str_contains($banish[$index + 1], "shadowrealm_horror_red")) {
         $currentPlayerBanish = new Banish($currentPlayer);
-        $otherPlayerBanish = new Banish($otherPlayer);
-        $currentPlayerBanish->UnsetBanishModifier("shadowrealm_horror_red");
-        $otherPlayerBanish->UnsetBanishModifier("shadowrealm_horror_red");
+        $currentPlayerBanish->UnsetBanishModifier($banish[$index + 1]);
+        $effectIndex = SearchCurrentTurnEffectsForUniqueID($banish[$index + 1]);
+        if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
       }
       if($banish[$index + 1] == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$banish[$index + 1]);
@@ -2828,6 +2827,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState;
+  global $layers;
   $cardSubtype = CardSubType($cardID);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -3512,10 +3512,11 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
       break;
     case "shadowrealm_horror_red":
+      $uid = $layers[count($layers) - LayerPieces() + 6];
       $num6Banished = RandomBanish3GY($cardID, $cardID);
       if ($num6Banished > 0) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       if ($num6Banished > 1) AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-      if ($num6Banished > 2) AddCurrentTurnEffect($cardID . "-3", $currentPlayer);
+      if ($num6Banished > 2) AddCurrentTurnEffect($cardID . "-3", $currentPlayer, uniqueID:$uid);
       break;
     case "saving_grace_yellow":
       Charge();

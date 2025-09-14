@@ -4682,7 +4682,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "spew_shadow_red" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
-  if ($mod == "shadowrealm_horror_red" && SearchCurrentTurnEffects("shadowrealm_horror_red-3", $player) && CardType($cardID) != "E") return true;
+  if (str_contains($mod, "shadowrealm_horror_red") && SearchCurrentTurnEffects("shadowrealm_horror_red-3", $player) && CardType($cardID) != "E") return true;
   if (HasRunegate($cardID) && SearchCount(SearchAurasForCard("runechant", $player, false)) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
