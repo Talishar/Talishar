@@ -155,12 +155,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             break;
           case "remove_hero_abilities":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or lose your hero ability.");
-            AddDecisionQueue("YESNO", $targetPlayer, "if_you_want_to_discard_or_lose_hero_ability", 1);
-            AddDecisionQueue("NOPASS", $targetPlayer, "-", 1);
             AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
-            AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else lose your hero ability", 1);
+            AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
             AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
             AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
             AddDecisionQueue("ELSE", $targetPlayer, "-");
