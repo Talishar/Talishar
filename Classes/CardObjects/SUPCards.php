@@ -2711,7 +2711,7 @@ class strongest_survive {
     $this->controller = $controller;
   }
 
-  function AddOnHitTrigger() {
+  function OnHitEffect() {
     global $CCS_DamageDealt, $combatChainState, $defPlayer;
     $minAttack = $combatChainState[$CCS_DamageDealt] + 1;
     if (CanRevealCards($defPlayer)) {
@@ -2742,10 +2742,14 @@ class strongest_survive_red extends Card{
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     if (IsHeroAttackTarget()) {
-      if (!$check) $this->baseCard->AddOnHitTrigger();
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ONHITEFFECT");
       return true;
     }
     return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->OnHitEffect();
   }
 }
 
@@ -2758,7 +2762,15 @@ class strongest_survive_yellow extends Card{
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    $this->baseCard->AddOnHitTrigger();
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->OnHitEffect();
   }
 }
 
@@ -2771,7 +2783,15 @@ class strongest_survive_blue extends Card{
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    $this->baseCard->AddOnHitTrigger();
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->OnHitEffect();
   }
 }
 
