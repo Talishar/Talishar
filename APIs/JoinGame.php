@@ -778,6 +778,12 @@ function isUnimplemented($cardID) {
         "the_suspense_is_killing_me_blue" => false,
         "to_be_continued_blue" => false,
         "what_happens_next_blue" => false,
+        "bluster_buff_red" => false,
+        "chest_puff_red" => false,
+        "look_tuff_red" => false,
+        "punch_above_your_weight_red" => false,
+        "punch_above_your_weight_yellow" => false,
+        "punch_above_your_weight_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
