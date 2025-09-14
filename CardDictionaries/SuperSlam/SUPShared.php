@@ -304,15 +304,17 @@ function Cheer($player)
   SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
   WriteLog("Let's go! The crowd cheers for " . CardLink($char[0], $char[0]) . "!");
-  switch($char[0]) {
-    case "pleiades":
-    case "pleiades_superstar":
-    case "tuffnut":
-    case "tuffnut_bumbling_hulkster":
-      AddLayer("TRIGGER", $player, $char[0]);
-      break;
-    default:
-      break;
+  if ($char[1] < 3) {
+    switch($char[0]) {
+      case "pleiades":
+      case "pleiades_superstar":
+      case "tuffnut":
+      case "tuffnut_bumbling_hulkster":
+        AddLayer("TRIGGER", $player, $char[0]);
+        break;
+      default:
+        break;
+    }
   }
 }
 
