@@ -2346,7 +2346,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "pummel_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if ($subtype == "Club" || $subtype == "Hammer" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2)) return false;
+      $isClub = SubtypeContains($CombatChain->AttackCard()->ID(), "Club");
+      $isHammer = SubtypeContains($CombatChain->AttackCard()->ID(), "Hammer");
+      if ($isClub || $isHammer || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2)) return false;
       return true;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
