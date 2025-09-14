@@ -3619,4 +3619,24 @@ class never_give_up_yellow extends Card {
     return $from == "GY" ? "I" : "";
   }
 }
+
+class turning_point_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "turning_point_blue";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if (PlayerHasLessHealth($this->controller)) Cheer($this->controller);
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? 3 : 0;
+  }
+}
 ?>
