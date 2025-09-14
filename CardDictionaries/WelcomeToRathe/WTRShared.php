@@ -531,6 +531,8 @@
   {
     global $mainPlayer;
     if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") return $card->HasCrush();
     switch($cardID) {
       case "crippling_crush_red": case "spinal_crush_red": case "cranial_crush_blue": case "buckling_blow_red": case "buckling_blow_yellow": case "buckling_blow_blue":
       case "cartilage_crush_red": case "cartilage_crush_yellow": case "cartilage_crush_blue": case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":
@@ -572,6 +574,8 @@
       WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return true;
     }
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") return $card->ProcessCrushEffect();
     switch($cardID) {
       case "crippling_crush_red":
         DiscardRandom($defPlayer, $cardID, $mainPlayer);

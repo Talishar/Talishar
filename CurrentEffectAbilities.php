@@ -1854,6 +1854,9 @@ function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
             return true;
           }
           break;
+        case "no_tall_tales_yellow":
+          if (!str_contains($from, "THEIR")) return true;
+          break;
         default:
           break;
       }
