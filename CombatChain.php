@@ -1782,14 +1782,14 @@ function CombatChainPayAdditionalCosts($index, $from)
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink;
+  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   // hard code this exception to avoid circularity
-  $shortCards = ["cut_a_long_story_short_yellow"];
-  if (in_array($combatChain[0], $shortCards) && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
+  $card = GetClass($combatChain[0], $mainPlayer);
+  if (is_a($card, "SUPDwarfCard") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
     ++$combatChainState[$CCS_CachedTotalPower];
   }
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
