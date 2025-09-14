@@ -1173,6 +1173,11 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
     if($preventionAmount > 0 && !$cancelRemove) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
     elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " prevented " . $preventionAmount . " damage.");
   }
+  //hardcode this for now, figure out a better way to handle this later
+  if ($auras[$index] == "to_be_continued_blue") {
+    --$auras[$index + 5];
+    $cancelRemove = true;
+  }
   if (!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }
