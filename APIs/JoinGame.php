@@ -768,6 +768,7 @@ function isUnimplemented($cardID) {
         "power_play_red" => false,
         "power_play_yellow" => false,
         "power_play_blue" => false,
+        "never_give_up_yellow" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

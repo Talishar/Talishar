@@ -328,6 +328,14 @@ class Card {
   function EntersArenaAbility() {
     return;
   }
+
+  function PlayableFromGraveyard($index) {
+    return false;
+  }
+
+  function AbilityPlayableFromGraveyard($index) {
+    return false;
+  }
 }
 
 ?>

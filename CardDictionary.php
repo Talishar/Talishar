@@ -1697,8 +1697,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index)) return false;
-  
+  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
@@ -1850,6 +1849,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
   if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
+    return true;
+  }
+  if ($from == "GY" && AbilityPlayableFromGraveyard($cardID, $index) && CanPlayInstant($phase)) {
     return true;
   }
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
@@ -4805,6 +4807,8 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
     $effectIndex = SearchCurrentTurnEffectsForUniqueID($discard[$index + 1]);
     if ($effectIndex != -1 && $currentTurnEffects[$effectIndex] == "cries_of_encore_red") return true;
   }
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return PlayableFromGraveyard($index);
   return match ($cardID) {
     "graven_call" => true,
     default => false,
@@ -4863,12 +4867,8 @@ function Is1H($cardID): bool|int
 function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
 {
   global $currentPlayer, $mainPlayer;
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    $ret = $card->AbilityPlayableFromCombatChain($index);
-    unset($card);
-    return $ret;
-  }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->AbilityPlayableFromCombatChain($index);
   $isAttacking = $currentPlayer == $mainPlayer;
   $auras = GetAuras($currentPlayer);
   return match ($cardID) {
@@ -4883,6 +4883,14 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
     "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
     default => false
   };
+}
+
+function AbilityPlayableFromGraveyard($cardID, $index) {
+  global $currentPlayer;
+  $discard = GetDiscard($currentPlayer);
+  if (isFaceDownMod($discard[$index + 2])) return false;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->AbilityPlayableFromGraveyard($index);
 }
 
 function CardCaresAboutPitch($cardID): bool

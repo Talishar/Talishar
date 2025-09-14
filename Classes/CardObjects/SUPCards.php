@@ -3555,4 +3555,68 @@ class power_play_blue extends power_play {
     $this->controller = $controller;
   }
 }
+
+class never_give_up_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "never_give_up_yellow";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $combatChain;
+    if ($from == "GY") {
+      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i + 1] == $this->controller && (TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA"))) return false;
+      }
+      return true;
+    }
+    else return false;
+  }
+
+  function AbilityPlayableFromGraveyard($index) {
+    global $defPlayer, $CS_CheeredThisTurn;
+    if ($this->controller != $defPlayer) return false;
+    if (GetClassState($this->controller, $CS_CheeredThisTurn) == 0) return false;
+    if (!PlayerHasLessHealth($this->controller)) return false;
+    return true;
+  }
+
+  function CardCost($from = '-') {
+    if ($from == "GY") return 2;
+    else return 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $AOptions = GetChainLinkCards($this->controller, "A", "C");
+    $AAOptions = GetChainLinkCards($this->controller, "AA", "C");
+    if ($AOptions == "") $numOptions = $AAOptions;
+    if ($AAOptions == "") $numOptions = $AOptions;
+    else $numOptions = "$AAOptions,$AOptions";
+    if ($numOptions != "") {
+      $numOptions = explode(",", $numOptions);
+      $options = [];
+      foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+      $options = implode(",", $options);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending action card to buff");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $options, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+    else {
+      WriteLog(CardLink($this->cardID, $this->cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
+    }
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("ADDBOTDECK", $this->controller, "-", 1);
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $index = explode("-", $target)[1];
+    CombatChainDefenseModifier($index, 3);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $from == "GY" ? "I" : "";
+  }
+}
 ?>
