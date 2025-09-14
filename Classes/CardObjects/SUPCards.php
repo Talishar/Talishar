@@ -1103,11 +1103,13 @@ class leave_them_hanging_red extends Card {
   }
 
   function StartTurnAbility($index) {
-    RemoveSuspense($this->controller, "MYAURAS-$index");
+    RemoveSuspense($this->controller, "MYAURAS-$index", mainPhase: false);
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
+    WriteLog("HERE!!! $mainPhase");
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
+    else $this->ProcessTrigger("-", additionalCosts:"BUFF");
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
