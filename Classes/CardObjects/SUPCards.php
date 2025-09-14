@@ -4547,4 +4547,74 @@ class darling_of_the_crowd_yellow extends Card {
     return GetClassState($this->controller, $CS_CheeredThisTurn) ? 1 : 0;
   }
 }
+
+class not_so_mighty_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "not_so_mighty_blue";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $mainPlayer;
+    $mainChar = GetPlayerCharacter($mainPlayer);
+    if (!IsAllyAttacking() && TalentContains($mainChar[0], "REVILED", $mainPlayer)) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:isSameName=might");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("PLAYAURA", $this->controller, "toughness", 1);
+  }
+}
+
+class tear_down_the_idols_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tear_down_the_idols_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (TalentContains($defChar[0], "REVERED", $defPlayer) && IsHeroAttackTarget()) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ATTACKTRIGGER");
+    }
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $defPlayer;
+    Intimidate($defPlayer);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (TalentContains($defChar[0], "REVERED", $defPlayer) && IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    PummelHit($defPlayer);
+  }
+}
+
+class arrogant_showboating_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arrogant_showboating_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $count = CountBlockingCards();
+    PlayAura("might", $this->controller, $count, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
 ?>

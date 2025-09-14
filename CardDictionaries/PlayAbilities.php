@@ -304,12 +304,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       return "";
     case "tenacity_yellow":
-      $buff = NumCardsBlocking();
-      for ($i = 0; $i < count($chainLinks); ++$i) {
-        for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-          if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
-        }
-      }
+      $buff = CountBlockingCards();
       AddCurrentTurnEffect($cardID . "," . $buff, $currentPlayer);
       return "";
     case "seduce_secrets_yellow":
@@ -927,6 +922,17 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     default:
       return "";
   }
+}
+
+function CountBlockingCards() {
+  global $chainLinks, $defPlayer;
+  $buff = NumCardsBlocking();
+  for ($i = 0; $i < count($chainLinks); ++$i) {
+    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
+    }
+  }
+  return $buff;
 }
 
 function PhantomTidemawDestroy($player = -1, $index = -1)
