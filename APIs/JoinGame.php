@@ -794,6 +794,7 @@ function isUnimplemented($cardID) {
         "story_beats_yellow" => false,
         "story_beats_blue" => false,
         "hungry_for_more_red" => false,
+        "old_favorite_yellow" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

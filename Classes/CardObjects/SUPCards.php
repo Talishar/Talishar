@@ -4189,4 +4189,37 @@ class story_beats_blue extends Card {
     $this->baseCard->ProcessTrigger();
   }
 }
+
+class old_favorite_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "old_favorite_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $CS_CheeredThisTurn;
+    if (GetClassState($this->controller, $CS_CheeredThisTurn)) {
+      PlayAura("toughness", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return $from == "CHAINCLOSING" && $stillOnCombatChain && SearchCurrentTurnEffects($this->cardID, $this->controller, true) ? "BOTDECK" : "GY";
+  }
+}
 ?>

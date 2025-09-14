@@ -2026,7 +2026,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
   if ($goesWhereEffect != -1) return $goesWhereEffect;
-  if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR") return "GY"; //If it was blocking, don't put it where it would go if it was played
+  //hardcode in old favorite for now
+  if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR" && $cardID != "old_favorite_yellow") return "GY"; //If it was blocking, don't put it where it would go if it was played
   $subtype = CardSubType($cardID);
   $type = CardType($cardID);
   if (DelimStringContains($type, "W")) return "-";
