@@ -996,25 +996,77 @@ class turn_the_crowd_grateful_blue extends Card {
   }
 }
 
-class heroic_pose_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "heroic_pose_red";
-    $this->controller = $controller;
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+class heroic_pose extends BaseCard {
+  function PlayAbility() {
     AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
     Cheer($this->controller);
   }
 
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+  function CombatEffectActive() {
     return true;
+  }
+}
+
+class heroic_pose_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "heroic_pose_red";
+    $this->controller = $controller;
+    $this->baseCard = new heroic_pose($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
   }
 
   function EffectPowerModifier($param, $attached = false) {
     return 3;
   }
 }
+
+class heroic_pose_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "heroic_pose_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new heroic_pose($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
+
+class heroic_pose_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "heroic_pose_blue";
+    $this->controller = $controller;
+    $this->baseCard = new heroic_pose($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
 
 class villainous_pose {
   public $cardID, $controller;

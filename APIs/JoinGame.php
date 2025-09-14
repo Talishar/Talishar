@@ -771,6 +771,9 @@ function isUnimplemented($cardID) {
         "never_give_up_yellow" => false,
         "turning_point_blue" => false,
         "heroic_grit_yellow" => false,
+        "heroic_pose_red" => false,
+        "heroic_pose_yellow" => false,
+        "heroic_pose_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
