@@ -775,6 +775,9 @@ function isUnimplemented($cardID) {
         "heroic_pose_yellow" => false,
         "heroic_pose_blue" => false,
         "time_flies_when_youre_having_fun_red" => false,
+        "the_suspense_is_killing_me_blue" => false,
+        "to_be_continued_blue" => false,
+        "what_happens_next_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
