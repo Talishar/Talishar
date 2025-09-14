@@ -1337,7 +1337,8 @@ function NumCardsBlocking()
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
-      if ($type != "I" && $type != "C") ++$num;
+      // for some reason this explicitly excluded instants, not sure why, removing for now
+      if ($type != "C") ++$num;
     }
   }
   return $num;
