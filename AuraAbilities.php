@@ -1048,6 +1048,9 @@ function AuraBeginEndPhaseAbilities()
           DealArcane(2, 2, "PLAYCARD", "looming_doom_blue", false, $mainPlayer);
         }
         break;
+      case "parched_terrain_red":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "parched_terrain_red-1", uniqueID: $auras[$i + 6]);
+        break;
       default:
         break;
     }

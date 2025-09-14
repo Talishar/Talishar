@@ -725,6 +725,7 @@ function isUnimplemented($cardID) {
         "tempest_palm_gustwave_yellow" => false,
         "angelic_attendant_yellow" => false,
         "adaptive_alpha_mold" => false,
+        "parched_terrain_red" => false,
         default => true
       };
     case "APS":
