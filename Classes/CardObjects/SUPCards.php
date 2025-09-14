@@ -4058,4 +4058,110 @@ class beat_of_the_ironsong_blue extends Card {
     return true;
   }
 }
+
+class hungry_for_more_red extends Card{
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "hungry_for_more_red";
+    $this->controller = $controller;
+    $this->archetype = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->archetype->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    $this->archetype->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger($uniqueID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainHealth(3, $this->controller);
+  }
+}
+
+class story_beats extends BaseCard {
+
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    $suspAuras = implode(",", GetSuspenseAuras($this->controller));
+    if (strlen($suspAuras) > 0) {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "add or remove a counter from an aura of suspense");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "ADD,REMOVE", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to {0} a suspense counter", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SUSPENSE", $this->controller, "{0}", 1);
+    }
+  }
+}
+
+class story_beats_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "story_beats_red";
+    $this->controller = $controller;
+    $this->baseCard = new story_beats($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class story_beats_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "story_beats_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new story_beats($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class story_beats_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "story_beats_blue";
+    $this->controller = $controller;
+    $this->baseCard = new story_beats($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
 ?>
