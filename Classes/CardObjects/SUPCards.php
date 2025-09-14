@@ -3757,4 +3757,83 @@ class time_flies_when_youre_having_fun_red extends Card {
     return $param == "-" ? 3 : 0;
   }
 }
+
+class the_suspense_is_killing_me_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "the_suspense_is_killing_me_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function AuraPowerModifiers($index, &$powerModifiers) {
+    global $CS_NumAttacks;
+    if (GetClassState($this->controller, $CS_NumAttacks) == 1) {
+      array_push($powerModifiers, $this->cardID);
+      array_push($powerModifiers, 1);
+      return 1;
+    }
+    return 0;
+  }
+}
+
+class to_be_continued_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "to_be_continued_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function NumUses() {
+    return 1;
+  }
+
+  function PermDamagePreventionAmount($index, $type, $damage, $active, &$cancelRemove, $check) {
+    global $CS_DamageTaken;
+    $cancelRemove = true;
+    $auras = &GetAuras($this->controller);
+    $damageTaken = GetClassState($this->controller, $CS_DamageTaken);
+    if($damageTaken == 0 && $auras[$index + 5] > 0) {
+      if ($damage > 0) --$auras[$index + 5];
+      return 1;
+    }
+    return 0;
+  }
+}
+
+class what_happens_next_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "what_happens_next_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function PermCostModifier() {
+    global $CS_NumCostedCardsPlayed;
+    if (GetClassState($this->controller, $CS_NumCostedCardsPlayed) == 0) return -1;
+  }
+}
 ?>

@@ -127,12 +127,8 @@ function CreatesAuraForOpponent($cardID)
 
 function AuraNumUses($cardID)
 {
-  if (class_exists($cardID)) {
-    $card = new $cardID("-");
-    $ret = $card->NumUses();
-    unset($card);
-    return $ret;
-  }
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->NumUses();
   switch ($cardID) {
     case "shimmers_of_silver_blue":
     case "haze_bending_blue":
@@ -474,6 +470,8 @@ function AuraCostModifier($cardID = "")
   $theirAuras = &GetAuras($otherPlayer);
   $modifier = 0;
   for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $card = GetClass($myAuras[$i], $currentPlayer);
+    if ($card != "-") $modifier += $card->PermCostModifier();
     switch ($myAuras[$i]) {
       case "frostbite":
         $modifier += 1;
@@ -1124,6 +1122,8 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
   $auras = &GetAuras($player);
   if (HasWard($auras[$index], $player)) $preventedDamage = WardAmount($auras[$index], $player, $index);
   elseif (HasArcaneShelter($auras[$index]) && $type == "ARCANE") $preventedDamage = ArcaneShelterAmount($auras[$index]);
+  $card = GetClass($auras[$index], $player);
+  if ($card != "-") $preventedDamage = $card->PermDamagePreventionAmount($index, $type, $damage, $active, $cancelRemove, $check);
   switch ($auras[$index]) {
     case "enchanting_melody_red":
       $preventedDamage = 4;
@@ -1170,7 +1170,8 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
   if ($preventable) {
     $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
     $damage -= $preventionAmount;
-    if($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
+    if($preventionAmount > 0 && !$cancelRemove) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
+    elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " prevented " . $preventionAmount . " damage.");
   }
   if (!$cancelRemove) DestroyAura($player, $index);
   return $damage;
@@ -1498,6 +1499,8 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
   $myAuras = &GetAuras($player);
   if (!$onBlock) {//This codeblock was counting CMH twice on block
     for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
+      $card = GetClass($myAuras[$i], $player);
+      if ($card != "-") $modifier += $card->AuraPowerModifiers($index, $powerModifiers);
       switch ($myAuras[$i]) {
         case "channel_mount_heroic_red":
           if (CardType($chainCard->ID()) == "AA") {

@@ -348,6 +348,18 @@ class Card {
   function IsCombatEffectPersistent($mode) {
     return false;
   }
+
+  function AuraPowerModifiers($index, &$powerModifiers) {
+    return 0;
+  }
+
+  function PermDamagePreventionAmount($index, $type, $damage, $active, &$cancelRemove, $check) {
+    return 0;
+  }
+
+  function PermCostModifier() {
+    return 0;
+  }
 }
 
 ?>

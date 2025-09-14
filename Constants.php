@@ -376,6 +376,7 @@ $CS_SeismicSurgesCreated = 106;
 $CS_CardsInDeckBeforeOpt = 107; //to be set as a player starts opting, used to validate the result of the opt
 $CS_NumToughnessDestroyed = 108;
 $CS_NumConfidenceDestroyed = 109;
+$CS_NumCostedCardsPlayed = 110; //number of cards that cost more than 0 played
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -615,7 +616,7 @@ function ResetMainClassState()
   global $CS_PowDamageDealt, $CS_NumTimesAttacked, $CS_NumAllyPutInGraveyard, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
   global $CS_TunicTicks, $CS_NumGoldCreated, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
   global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn, $CS_SeismicSurgesCreated, $CS_CardsInDeckBeforeOpt;
-  global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed;
+  global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -725,6 +726,7 @@ function ResetMainClassState()
   $mainClassState[$CS_CardsInDeckBeforeOpt] = "-";
   $mainClassState[$CS_NumToughnessDestroyed] = 0;
   $mainClassState[$CS_NumConfidenceDestroyed] = 0;
+  $mainClassState[$CS_NumCostedCardsPlayed] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")
