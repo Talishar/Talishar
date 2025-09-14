@@ -1324,7 +1324,8 @@ function NumDefendedFromHand()
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
-      if (CardType($chainCard->ID()) != "I" && $chainCard->From() == "HAND") ++$num;
+      // this used to explicitly exclude instant cards and I don't know why, removing for now
+      if ($chainCard->From() == "HAND") ++$num;
     }
   }
   return $num;
