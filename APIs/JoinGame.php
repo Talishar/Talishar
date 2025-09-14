@@ -822,6 +822,12 @@ function isUnimplemented($cardID) {
         "take_that_blue" => false,
         "disdainful_delight_yellow" => false,
         "not_so_tuff_blue" => false,
+        "shoot_your_mouth_off_red" => false,
+        "shoot_your_mouth_off_yellow" => false,
+        "shoot_your_mouth_off_blue" => false,
+        "give_em_a_piece_of_your_mind_red" => false,
+        "give_em_a_piece_of_your_mind_yellow" => false,
+        "give_em_a_piece_of_your_mind_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

@@ -4858,4 +4858,76 @@ class not_so_tuff_blue extends Card {
     AddDecisionQueue("PLAYAURA", $this->controller, "might", 1);
   }
 }
+
+class shoot_your_mouth_off extends Card {
+  function CombatChainCloseAbility($chainLink) {
+    global $chainLinkSummary, $defPlayer, $chainLinks;
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $this->cardID && $chainLinks[$chainLink][1] == $this->controller) {
+        PlayAura("confidence", $defPlayer);
+    }
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    if (IsHeroAttackTarget()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+}
+
+class shoot_your_mouth_off_red extends shoot_your_mouth_off {
+  function __construct($controller) {
+    $this->cardID = "shoot_your_mouth_off_red";
+    $this->controller = $controller;
+  }
+}
+
+class shoot_your_mouth_off_yellow extends shoot_your_mouth_off {
+  function __construct($controller) {
+    $this->cardID = "shoot_your_mouth_off_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class shoot_your_mouth_off_blue extends shoot_your_mouth_off {
+  function __construct($controller) {
+    $this->cardID = "shoot_your_mouth_off_blue";
+    $this->controller = $controller;
+  }
+}
+
+class give_em_a_piece_of_your_mind extends Card {
+  function CombatChainCloseAbility($chainLink) {
+    global $chainLinkSummary, $defPlayer, $chainLinks;
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $this->cardID && $chainLinks[$chainLink][1] == $this->controller) {
+        PlayAura("vigor", $defPlayer);
+    }
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    if (IsHeroAttackTarget()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+}
+
+class give_em_a_piece_of_your_mind_red extends give_em_a_piece_of_your_mind {
+  function __construct($controller) {
+    $this->cardID = "give_em_a_piece_of_your_mind_red";
+    $this->controller = $controller;
+  }
+}
+
+class give_em_a_piece_of_your_mind_yellow extends give_em_a_piece_of_your_mind {
+  function __construct($controller) {
+    $this->cardID = "give_em_a_piece_of_your_mind_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class give_em_a_piece_of_your_mind_blue extends give_em_a_piece_of_your_mind {
+  function __construct($controller) {
+    $this->cardID = "give_em_a_piece_of_your_mind_blue";
+    $this->controller = $controller;
+  }
+}
 ?>
