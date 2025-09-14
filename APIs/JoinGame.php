@@ -789,6 +789,7 @@ function isUnimplemented($cardID) {
         "virtuoso_bodice" => false,
         "attention_grabbers" => false,
         "boots_to_the_boards" => false,
+        "catch_of_the_day_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

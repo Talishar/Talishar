@@ -4058,4 +4058,29 @@ class beat_of_the_ironsong_blue extends Card {
     return true;
   }
 }
+
+class catch_of_the_day_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "catch_of_the_day_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect("$this->cardID-DOUBLETRIGGER", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Arrow", $this->controller);
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return $mode == "DOUBLETRIGGER";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "-" ? 2 : 0;
+  }
+}
 ?>

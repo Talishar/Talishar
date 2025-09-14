@@ -1,5 +1,85 @@
 <?php
 
+class GoFishCard extends Card {
+  public $DQEffectName;
+  public $targetedProperty;
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+        $doubleTrigger = SearchCurrentTurnEffects("catch_of_the_day_blue-DOUBLETRIGGER", $this->controller);
+        if ($doubleTrigger) {
+          AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = "-", $uniqueID = -1, $target="-") {
+    global $CS_NumCannonsActivated, $defPlayer;
+    if (GetClassState($this->controller, $CS_NumCannonsActivated) == 0){
+      AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND", 1);
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card from hand, $this->targetedProperty will be discarded");
+      AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $defPlayer, $this->DQEffectName, 1);
+    }
+    else {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card from their hand, $this->targetedProperty will be discarded");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $this->controller, $this->DQEffectName, 1);
+    }
+  }
+}
+
+class king_kraken_harpoon_red extends GoFishCard {
+  function __construct($controller) {
+    $this->cardID = "king_kraken_harpoon_red";
+    $this->controller = $controller;
+    $this->DQEffectName = "KINGKRAKENHARPOON";
+    $this->targetedProperty = "non-attack action cards";
+  }
+}
+
+class king_shark_harpoon_red extends GoFishCard {
+  function __construct($controller) {
+    $this->cardID = "king_shark_harpoon_red";
+    $this->controller = $controller;
+    $this->DQEffectName = "KINGSHARKHARPOON";
+    $this->targetedProperty = "attack action cards";
+  }
+}
+
+class red_fin_harpoon_blue extends GoFishCard {
+  function __construct($controller) {
+    $this->cardID = "red_fin_harpoon_blue";
+    $this->controller = $controller;
+    $this->DQEffectName = "REDFINHARPOON";
+    $this->targetedProperty = "red cards";
+  }
+}
+
+class yellow_fin_harpoon_blue extends GoFishCard {
+  function __construct($controller) {
+    $this->cardID = "yellow_fin_harpoon_blue";
+    $this->controller = $controller;
+    $this->DQEffectName = "YELLOWFINHARPOON";
+    $this->targetedProperty = "yellow cards";
+  }
+}
+
+class blue_fin_harpoon_blue extends GoFishCard {
+  function __construct($controller) {
+    $this->cardID = "blue_fin_harpoon_blue";
+    $this->controller = $controller;
+    $this->DQEffectName = "BLUEFINHARPOON";
+    $this->targetedProperty = "blue cards";
+  }
+}
+
 // class amethyst_amulet_blue extends Card {
 
 //   function __construct($controller) {
@@ -221,17 +301,7 @@
 // }
 
 
-// class blue_fin_harpoon_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "blue_fin_harpoon_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
 
 
 // class blue_sea_tricorn extends Card {
@@ -1547,32 +1617,6 @@
 // }
 
 
-// class king_kraken_harpoon_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "king_kraken_harpoon_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class king_shark_harpoon_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "king_shark_harpoon_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class light_fingers extends Card {
 
 //   function __construct($controller) {
@@ -2240,19 +2284,6 @@
 
 //   function __construct($controller) {
 //     $this->cardID = "rally_the_coast_guard_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class red_fin_harpoon_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "red_fin_harpoon_blue";
 //     $this->controller = $controller;
 //     }
 
@@ -3137,19 +3168,6 @@
 
 //   function __construct($controller) {
 //     $this->cardID = "washed_up_wave";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class yellow_fin_harpoon_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "yellow_fin_harpoon_blue";
 //     $this->controller = $controller;
 //     }
 

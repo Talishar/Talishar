@@ -1016,16 +1016,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "trap_and_release_blue":
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
-    case "king_kraken_harpoon_red":
-    case "king_shark_harpoon_red":
     case "conqueror_of_the_high_seas_red":
     case "cogwerx_dovetail_red":
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
     case 'cloud_city_steamboat_blue':
-    case "red_fin_harpoon_blue":
-    case "yellow_fin_harpoon_blue":
-    case "blue_fin_harpoon_blue":
     case "cogwerx_zeppelin_red":
     case "cogwerx_zeppelin_yellow":
     case "cogwerx_zeppelin_blue":
