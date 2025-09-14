@@ -1720,13 +1720,8 @@ class reckless_stampede_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
     Clash($this->cardID, $this->controller);
-  }
-
-  function WonClashAbility($winnerID, $switched) {
-    $otherPlayer = $winnerID == 1 ? 2 : 1;
-    AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-");
-    AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
 
     // Prompt Controller to Sink
     $revealedCardController = $this->controller;
@@ -1762,6 +1757,11 @@ class reckless_stampede_red extends Card {
     AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
     AddDecisionQueue("ELSE", $otherPlayer, "-");
     AddDecisionQueue("WRITELOG", $otherPlayer, "Player $otherPlayer left the revealed card there", 1);
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-");
+    AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
   }
 }
 
@@ -2893,16 +2893,13 @@ class vigorous_smashup extends BaseCard {
   }
 
   function ProcessTrigger() {
+    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
     Clash($this->cardID, $this->controller);
-  }
-
-  function WonClashAbility($winnerID, $switched) {
     // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
     $revealedCardController = $this->controller;
     if ($switched) {
       $revealedCardController = $this->controller == 1 ? 2 : 1;
     }
-    PlayAura("vigor", $winnerID);
     AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
@@ -2914,6 +2911,10 @@ class vigorous_smashup extends BaseCard {
     AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
     AddDecisionQueue("ELSE", $this->controller, "-");
     AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    PlayAura("vigor", $winnerID);
   }
 }
 
@@ -2983,16 +2984,13 @@ class tough_smashup extends BaseCard {
   }
 
   function ProcessTrigger() {
+    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
     Clash($this->cardID, $this->controller);
-  }
-
-  function WonClashAbility($winnerID, $switched) {
     // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
     $revealedCardController = $this->controller;
     if ($switched) {
       $revealedCardController = $this->controller == 1 ? 2 : 1;
     }
-    PlayAura("toughness", $winnerID);
     AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
@@ -3004,6 +3002,10 @@ class tough_smashup extends BaseCard {
     AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
     AddDecisionQueue("ELSE", $this->controller, "-");
     AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
+  }
+
+  function WonClashAbility($winnerID, $switched) {
+    PlayAura("toughness", $winnerID);
   }
 }
 
