@@ -3836,4 +3836,98 @@ class what_happens_next_blue extends Card {
     if (GetClassState($this->controller, $CS_NumCostedCardsPlayed) == 0) return -1;
   }
 }
+
+class tiara_of_suspense extends Card {
+  function __construct($controller) {
+    $this->cardID = "tiara_of_suspense";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) == 0;
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $suspAuras = GetSuspenseAuras($this->controller);
+    if (count($suspAuras) > 0) {
+      $suspAuras = implode(",", GetSuspenseAuras($this->controller));
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to add a suspense counter to", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SUSPENSE", $this->controller, "ADD", 1);
+    }
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+}
+
+class virtuoso_bodice extends Card {
+  function __construct($controller) {
+    $this->cardID = "virtuoso_bodice";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $suspAuras = implode(",", GetSuspenseAuras($this->controller));
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
+    AddDecisionQueue("GAINRESOURCES", $this->controller, 2, 1);
+  }
+}
+
+class attention_grabbers extends Card {
+  function __construct($controller) {
+    $this->cardID = "attention_grabbers";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $suspAuras = implode(",", GetSuspenseAuras($this->controller));
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+    AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, 2, 1);
+  }
+}
+
+class boots_to_the_boards extends Card {
+  function __construct($controller) {
+    $this->cardID = "boots_to_the_boards";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
+    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "DIGIN,$this->cardID", 1);
+  }
+}
 ?>

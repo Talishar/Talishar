@@ -360,6 +360,10 @@ class Card {
   function PermCostModifier() {
     return 0;
   }
+
+  function DefaultActiveState() {
+    return 2;
+  }
 }
 
 ?>

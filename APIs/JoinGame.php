@@ -778,6 +778,10 @@ function isUnimplemented($cardID) {
         "the_suspense_is_killing_me_blue" => false,
         "to_be_continued_blue" => false,
         "what_happens_next_blue" => false,
+        "tiara_of_suspense" => false,
+        "virtuoso_bodice" => false,
+        "attention_grabbers" => false,
+        "boots_to_the_boards" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
