@@ -39,7 +39,7 @@ class Card {
     if (SubtypeContains($this->cardID, "Item")) return "";
     if (SubtypeContains($this->cardID, "Aura")) return "";
     if (SubtypeContains($this->cardID, "Ally")) return "";
-    if (SubtypeContains($this->cardID, "W")) return "";
+    if (TypeContains($this->cardID, "W")) return "";
     else return "NOT IMPLEMENTED";
   }
 

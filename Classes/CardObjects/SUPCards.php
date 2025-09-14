@@ -4221,4 +4221,89 @@ class old_favorite_yellow extends Card {
     return $from == "CHAINCLOSING" && $stillOnCombatChain && SearchCurrentTurnEffects($this->cardID, $this->controller, true) ? "BOTDECK" : "GY";
   }
 }
+
+class helm_of_the_adored extends Card {
+  function __construct($controller) {
+    $this->cardID = "helm_of_the_adored";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Cheer($this->controller);
+  }
+}
+
+class horns_of_the_despised extends Card {
+  function __construct($controller) {
+    $this->cardID = "horns_of_the_despised";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Boo($this->controller);
+  }
+}
+
+class hold_firm extends Card {
+  function __construct($controller) {
+    $this->cardID = "hold_firm";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return !PlayerHasLessHealth($this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("toughness", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class mightybone_knuckles extends Card {
+  function __construct($controller) {
+    $this->cardID = "mightybone_knuckles";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    return !PlayerHasLessHealth($otherPlayer);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("might", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
 ?>

@@ -795,6 +795,10 @@ function isUnimplemented($cardID) {
         "story_beats_blue" => false,
         "hungry_for_more_red" => false,
         "old_favorite_yellow" => false,
+        "helm_of_the_adored" => false,
+        "horns_of_the_despised" => false,
+        "hold_firm" => false,
+        "mightybone_knuckles" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
