@@ -103,9 +103,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SUSPENSE", $currentPlayer, "ADD", 1);
       }
       break;
-    case "in_the_palm_of_your_hand_red":
-      AddLayer("TRIGGER", $currentPlayer, $cardID);
-      break;
     case "mocking_blow_red":
     case "mocking_blow_yellow":
     case "mocking_blow_blue":
@@ -326,10 +323,6 @@ function HasSuspense($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasSuspense();
-  return match($cardID) {
-    "in_the_palm_of_your_hand_red" => true,
-    default => false
-  };
 }
 
 function GetSuspenseAuras($player)

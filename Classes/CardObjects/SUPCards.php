@@ -1128,6 +1128,10 @@ class leave_them_hanging_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1): void {
+    $this->EntersArenaAbility();
+  }
+
+  function EntersArenaAbility() {
     $context = "Choose who to intimidate";
     if(ShouldAutotargetOpponent($this->controller)) {
       AddDecisionQueue("PASSPARAMETER", $this->controller, "THEIRCHAR-0");
@@ -2593,6 +2597,10 @@ class cheers_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->EntersArenaAbility();
+  }
+
+  function EntersArenaAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -2617,6 +2625,10 @@ class booze_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->EntersArenaAbility();
+  }
+
+  function EntersArenaAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3285,6 +3297,10 @@ class up_on_a_pedestal_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->EntersArenaAbility();
+  }
+
+  function EntersArenaAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3309,6 +3325,39 @@ class up_on_a_pedestal_blue extends Card {
     AddDecisionQueue("MZADDTOTOPDECK", $this->controller, "-", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
     AddDecisionQueue("WRITELOG", $this->controller, "⤴️ <0> was put on the top of the deck.", 1);
+  }
+}
+
+class in_the_palm_of_your_hand_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "in_the_palm_of_your_hand_red";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->EntersArenaAbility();
+  }
+
+  function EntersArenaAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else Draw($this->controller, false, effectSource:$this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Draw($this->controller, effectSource:$this->cardID);
   }
 }
 

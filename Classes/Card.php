@@ -324,6 +324,10 @@ class Card {
     // (like anothos) rather than weapons that buff their attacks (like starfall)
     return $basePower;
   }
+
+  function EntersArenaAbility() {
+    return;
+  }
 }
 
 ?>

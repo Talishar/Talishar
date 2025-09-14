@@ -79,6 +79,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   else if ($cardID != "frostbite") IncrementClassState($player, $CS_NumAuras, $number);
   if ($cardID == "fealty") IncrementClassState($player, $CS_FealtyCreated, $number);
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->EntersArenaAbility();
 }
 
 function StealAura($srcPlayer, $index, $destPlayer, $from)
@@ -308,9 +310,6 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
       AddDecisionQueue("DISCARDCARD", $player, "HAND-$player", 1);
       AddDecisionQueue("DRAW", $player, $cardID);
-      break;
-    case "in_the_palm_of_your_hand_red":
-      AddLayer("TRIGGER", $player, $cardID);
       break;
     default:
       break;
@@ -753,14 +752,6 @@ function AuraStartTurnAbilities()
       AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
       DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
       IncrementClassState($mainPlayer, $CS_NumConfidenceDestroyed, 1);
-      break;
-    case "in_the_palm_of_your_hand_red":
-      --$auras[$i + 2];
-      if ($auras[$i + 2] == 0) {
-        // need to do this to pass "mainPhase: false"
-        Draw($mainPlayer, false, true, $auras[$i]);
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6], skipTrigger:true);
-      }
       break;
     case "daily_grind_blue":
     case "seismic_shelter_blue":
