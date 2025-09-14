@@ -2822,7 +2822,7 @@ class rapturous_applause_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "rapturous_applause_yellow";
     $this->controller = $controller;
-    $this->baseCard = new rapturous_applause(this->cardID, this->controller);
+    $this->baseCard = new rapturous_applause($this->cardID, $this->controller);
   }
 
   function WonClashWithAbility($winnerID) {
