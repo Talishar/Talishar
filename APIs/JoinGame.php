@@ -842,6 +842,7 @@ function isUnimplemented($cardID) {
         "hit_the_gas_blue" => false,
         "beat_of_the_ironsong_blue" => false,
         "gallow_end_of_the_line_yellow" => false,
+        "channel_the_tranquil_domain_yellow" => false,
         default => true
       };
     case "APS":

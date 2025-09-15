@@ -4998,4 +4998,53 @@ class gallow_end_of_the_line_yellow extends Card {
     }
   }
 }
+
+class channel_the_tranquil_domain_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_the_tranquil_domain_yellow";
+    $this->controller = $controller;
+  }
+
+  function Trigger($uniqueID) {
+    $index = SearchAurasForUniqueID($uniqueID, $this->controller);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS&MYAURAS", 1);
+    if ($index != -1) AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "MYAURAS-$index", 1);
+    else AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose target aura", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $auras = GetAuras($this->controller);
+    $uid = $auras[$index + 6];
+    $this->Trigger($uid);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $auras = GetAuras($this->controller);
+    $uid = $auras[count($auras) - AuraPieces() + 6];
+    $this->Trigger($uid);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "CHANNEL") {
+      ChannelTalent($target, "EARTH");
+    }
+    else {
+      $targetPlayer = explode("-", $target)[0];
+      $targetUID = explode("-", $target)[1];
+      $targetIndex = SearchAurasForUniqueID($targetUID, $targetPlayer);
+      $targetMZIndex = $targetPlayer == $this->controller ? "MYAURAS-$targetIndex" : "THEIRAURAS-$targetIndex";
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $targetMZIndex);
+      AddDecisionQueue("MZBOTTOM", $this->controller, "-", 1);
+    }
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $auras = GetAuras($this->controller);
+    AddLayer("TRIGGER", $this->controller, $auras[$index], $auras[$index+6], "CHANNEL");
+  }
+}
 ?>

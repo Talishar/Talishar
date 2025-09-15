@@ -368,6 +368,10 @@ class Card {
   function HasWateryGrave() {
     return false;
   }
+
+  function BeginningActionPhaseAbility($index) {
+    return;
+  }
 }
 
 ?>
