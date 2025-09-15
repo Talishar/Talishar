@@ -832,6 +832,8 @@ function isUnimplemented($cardID) {
         "overbearing_presence" => false,
         "disturb_the_peace_red" => false,
         "asking_for_trouble_yellow" => false,
+        "familiar_story_red" => false,
+        "familiar_stench_red" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

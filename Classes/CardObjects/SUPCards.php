@@ -1252,8 +1252,9 @@ class fix_the_match_yellow extends Card {
     AddDecisionQueue("MULTIADDTOPDECK", $this->controller, "-", 1);
   }
 
-  function AttackGetsBlockedEffect($cardID) {
-    $numBlocking = $cardID == "" ? NumCardsBlocking() : 1;
+  function AttackGetsBlockedEffect($start) {
+    global $combatChain;
+    $numBlocking = intdiv(count($combatChain) - $start, CombatChainPieces());
     for($i = 0; $i < $numBlocking; ++$i) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
     }
@@ -1766,8 +1767,9 @@ class reckless_stampede_red extends Card {
     $this->controller = $controller;
   }
 
-  function AttackGetsBlockedEffect($cardID) {
-    $numBlocking = $cardID == "" ? NumCardsBlocking() : 1;
+  function AttackGetsBlockedEffect($start) {
+    global $combatChain;
+    $numBlocking = intdiv(count($combatChain) - $start, CombatChainPieces());
     for($i = 0; $i < $numBlocking; ++$i) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
     }
@@ -5244,6 +5246,50 @@ class asking_for_trouble_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     PlayAura("vigor", $otherPlayer, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class familiar_stench_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "familiar_stench_red";
+    $this->controller = $controller;
+  }
+
+  function AttackGetsBlockedEffect($start) {
+    global $combatChain, $defPlayer;
+    for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i+1] == $defPlayer && ClassContains($combatChain[$i], "BRUTE", $defPlayer)) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID);
+        return;
+      }
+    }
+    return;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class familiar_story_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "familiar_story_red";
+    $this->controller = $controller;
+  }
+
+  function AttackGetsBlockedEffect($start) {
+    global $combatChain, $defPlayer;
+    for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i+1] == $defPlayer && ClassContains($combatChain[$i], "GUARDIAN", $defPlayer)) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID);
+        return;
+      }
+    }
+    return;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("confidence", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
   }
 }
 

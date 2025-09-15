@@ -209,7 +209,7 @@ class Card {
     }
   }
 
-  function AttackGetsBlockedEffect($cardID) {
+  function AttackGetsBlockedEffect($start) {
     return;
   }
 

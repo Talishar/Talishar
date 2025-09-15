@@ -908,9 +908,33 @@ function OnBlockResolveEffects($cardID = "")
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
   }
+
+  $blockedFromHand = 0;
+  $blockedWithIce = 0;
+  $blockedWithEarth = 0;
+  $blockedWithAura = 0;
+  $numDefending = 0; //number of total cards defending
+  $start = -1; //contains the index where cards "defending together" starts
+  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $defPlayer) ++$numDefending;
+    if ($numDefending > $combatChainState[$CCS_NumCardsBlocking]) {
+      $start = $start == -1 ? $i : $start;
+      if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
+      if ($combatChain[$i + 2] == "HAND" && $combatChain[$i + 1] == $defPlayer) ++$blockedFromHand;
+      if (TalentContains($combatChain[$i], "ICE", $defPlayer)) ++$blockedWithIce;
+      if (TalentContains($combatChain[$i], "EARTH", $defPlayer)) ++$blockedWithEarth;
+      if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
+    }
+  }
+  if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain, may not be necessary anymore
+      $defendingCard = $cardID;
+      $start = count($combatChain) - CombatChainPieces();
+  }
+  else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
+
   if ($CombatChain->HasCurrentLink()) {
     $card = GetClass($combatChain[0], $mainPlayer);
-    if ($card != "-") $card->AttackGetsBlockedEffect($cardID);
+    if ($card != "-") $card->AttackGetsBlockedEffect($start);
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":
@@ -970,28 +994,6 @@ function OnBlockResolveEffects($cardID = "")
         break;
     }
   }
-  $blockedFromHand = 0;
-  $blockedWithIce = 0;
-  $blockedWithEarth = 0;
-  $blockedWithAura = 0;
-  $numDefending = 0; //number of total cards defending
-  $start = -1; //contains the index where cards "defending together" starts
-  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i + 1] == $defPlayer) ++$numDefending;
-    if ($numDefending > $combatChainState[$CCS_NumCardsBlocking]) {
-      $start = $start == -1 ? $i : $start;
-      if (ColorContains($combatChain[$i], 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
-      if ($combatChain[$i + 2] == "HAND" && $combatChain[$i + 1] == $defPlayer) ++$blockedFromHand;
-      if (TalentContains($combatChain[$i], "ICE", $defPlayer)) ++$blockedWithIce;
-      if (TalentContains($combatChain[$i], "EARTH", $defPlayer)) ++$blockedWithEarth;
-      if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
-    }
-  }
-  if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain, may not be necessary anymore
-      $defendingCard = $cardID;
-      $start = count($combatChain) - CombatChainPieces();
-  }
-  else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
   for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
       $defendingCard = $combatChain[$i];
