@@ -913,6 +913,10 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life");
     return false;
   }
+  if ((SearchAurasForCard("parched_terrain_red", 1) != "" || SearchAurasForCard("parched_terrain_red", 2) != "") && $preventable) {
+    WriteLog(CardLink("parched_terrain_red", "parched_terrain_red") . " prevents heroes from gaining " . ($amount == 1 ? "health" : $amount . " health"));
+    return false;
+  }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;

@@ -843,6 +843,7 @@ function isUnimplemented($cardID) {
         "tempest_palm_gustwave_yellow" => false,
         "angelic_attendant_yellow" => false,
         "adaptive_alpha_mold" => false,
+        "parched_terrain_red" => false,
         "hit_the_gas_blue" => false,
         "beat_of_the_ironsong_blue" => false,
         "gallow_end_of_the_line_yellow" => false,

@@ -22877,6 +22877,7 @@ return match($cardID) {
 "panel_beater_yellow" => "MECHANOLOGIST",
 "panel_beater_blue" => "MECHANOLOGIST",
 "parable_of_humility_yellow" => "ILLUSIONIST",
+"parched_terrain_red" => "GENERIC",
 "parry_blade" => "WARRIOR",
 "passing_mirage_blue" => "ILLUSIONIST",
 "patch_the_hole" => "RANGER",
