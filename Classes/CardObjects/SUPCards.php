@@ -5660,4 +5660,128 @@ class who_blinks_first_blue extends Card {
     }
   }
 }
+
+class full_of_bravado extends BaseCard {
+  function ProcessTrigger() {
+    $suspAuras = GetSuspenseAuras($this->controller);
+    if (count($suspAuras) > 0) {
+      PlayAura("confidence", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
+  }
+
+  function AddTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+}
+
+class full_of_bravado_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "full_of_bravado_red";
+    $this->controller = $controller;
+    $this->baseCard = new full_of_bravado($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class full_of_bravado_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "full_of_bravado_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new full_of_bravado($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class full_of_bravado_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "full_of_bravado_blue";
+    $this->controller = $controller;
+    $this->baseCard = new full_of_bravado($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->AddTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class bash_brute_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bash_brute_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $combatChain, $defPlayer;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] == $defPlayer && ClassContains($combatChain[$i], "BRUTE", $defPlayer)) return 1;
+    }
+    return 0;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "BRUTE", $defPlayer)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:type=T");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
+
+class sit_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sit_red";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CombatChain, $mainPlayer;
+    if (ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer)) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $CombatChain->Card($target)->ModifyDefense(3);
+  }
+}
 ?>

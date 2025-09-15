@@ -852,6 +852,11 @@ function isUnimplemented($cardID) {
         "flex_strength_blue" => false,
         "turn_heads_blue" => false,
         "who_blinks_first_blue" => false,
+        "full_of_bravado_red" => false,
+        "full_of_bravado_yellow" => false,
+        "full_of_bravado_blue" => false,
+        "bash_brute_red" => false,
+        "sit_red" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
