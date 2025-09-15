@@ -5784,4 +5784,82 @@ class sit_red extends Card {
     $CombatChain->Card($target)->ModifyDefense(3);
   }
 }
+
+class unwavering_resolve_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "unwavering_resolve_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    $deck = GetDeck($this->controller);
+    return count($deck) == 0 ? 4 : 0;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return NumCardsDefended() > 3;
+  }
+}
+
+class right_behind_you extends BaseCard {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $combatChain;
+    if ($combatChain[$i + 2] != "HAND") return;
+    if ($blockedFromHand >= 2) AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+  }
+
+  function ProcessTrigger($target) {
+    global $CombatChain;
+    $CombatChain->Card($target)->ModifyDefense(1);
+    PlayerOpt($this->controller, 1, false);
+  }
+}
+
+class right_behind_you_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "right_behind_you_red";
+    $this->controller = $controller;
+    $this->baseCard = new right_behind_you($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+}
+
+class right_behind_you_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "right_behind_you_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new right_behind_you($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+}
+
+class right_behind_you_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "right_behind_you_blue";
+    $this->controller = $controller;
+    $this->baseCard = new right_behind_you($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+}
 ?>
