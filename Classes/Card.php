@@ -372,6 +372,10 @@ class Card {
   function BeginningActionPhaseAbility($index) {
     return;
   }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+    return 0;
+  }
 }
 
 ?>

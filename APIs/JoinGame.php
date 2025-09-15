@@ -843,6 +843,7 @@ function isUnimplemented($cardID) {
         "beat_of_the_ironsong_blue" => false,
         "gallow_end_of_the_line_yellow" => false,
         "channel_the_tranquil_domain_yellow" => false,
+        "mage_hunter_arrow_red" => false,
         default => true
       };
     case "APS":

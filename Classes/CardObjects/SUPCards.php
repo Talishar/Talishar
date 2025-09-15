@@ -5047,4 +5047,96 @@ class channel_the_tranquil_domain_yellow extends Card {
     AddLayer("TRIGGER", $this->controller, $auras[$index], $auras[$index+6], "CHANNEL");
   }
 }
+
+class mage_hunter_arrow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mage_hunter_arrow_red";
+    $this->controller = $controller;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && (ClassContains($defChar[0], "RUNEBLADE", $defPlayer) || ClassContains($defChar[0], "WIZARD", $defPlayer))) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+    global $mainPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
+    $layerCount = count($layers);
+    $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+    $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $defPlayer, "null_time_zone_blue") != -1;
+    $arsenal = GetArsenal($this->controller);
+    if ($arsenal[$index + 1] == "DOWN") return "-,Attack";
+    $names = "Ability";
+    if($foundNullTime && $from == "ARS") return $names;
+    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+      $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $this->controller);
+      $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($this->cardID)), $this->controller);
+      if (!$warmongersPeace && !$underEdict && CanAttack($this->cardID, $from, $index, type:"AA")) {
+        if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $this->controller) || SearchCurrentTurnEffects("fealty", $this->controller)) $names .= ",Attack";
+      }
+    }
+    return $names;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    global $layers;
+    return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    return ($from == "ARS");
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "ARS") == "I" && $from == "ARS") return 0;
+    return 1;
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1) {
+    global $CS_NumActionsPlayed;
+    $names = GetAbilityNames($this->cardID, $index, $from);
+    $names = str_replace("-,", "", $names);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
+    } elseif ($names != "" && $from == "ARS") {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose to play the ability or attack");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, $names);
+      AddDecisionQueue("SETABILITYTYPE", $this->controller, $this->cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEATTACK", $this->controller, $this->cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("DISCARDCARD", $this->controller, "ARS-$this->cardID", 1);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+    if ($type == "ARCANE") {
+      $remove = true;
+      return 3;
+    }
+    return 0;
+  }
+}
 ?>

@@ -1192,6 +1192,11 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
     if ($currentTurnEffects[$i + 1] == $player) {
       $preventedDamage = 0;
       $effects = explode("-", $currentTurnEffects[$i]);
+      $card = GetClass($effects[0], $player);
+      if ($card != "-") {
+        $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
+        if ($preventable) $preventedDamage += $prevention;
+      }
       switch ($effects[0]) {
         case "dissipation_shield_yellow":
           if ($preventable) $preventedDamage += intval($effects[1]);
