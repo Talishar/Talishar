@@ -5326,6 +5326,72 @@ class bash_guardian_red extends Card {
   }
 }
 
+class high_pitched_howl extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessTrigger() {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) {
+        PlayAura("vigor", $this->controller, 1, true, effectSource:$this->cardID, effectController:$this->controller);
+        return;
+      };
+    }
+    return;
+  }
+}
+
+class high_pitched_howl_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "high_pitched_howl_red";
+    $this->controller = $controller;
+    $this->baseCard = new high_pitched_howl($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class high_pitched_howl_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "high_pitched_howl_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new high_pitched_howl($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class high_pitched_howl_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "high_pitched_howl_blue";
+    $this->controller = $controller;
+    $this->baseCard = new high_pitched_howl($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
 class flex extends BaseCard {
   function sixPower() {
     return CachedTotalPower() >= 6;
