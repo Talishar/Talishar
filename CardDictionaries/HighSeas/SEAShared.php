@@ -1275,6 +1275,9 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && $MZindex == "MYCHAR-0" && !ClassContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
     return true;
   }
+  if(SearchCurrentTurnEffects("turn_heads_blue", $player) && $MZindex == "MYCHAR-0") {
+    return true;
+  }
   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
   elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ? $untapPrevented = true : $untapPrevented = false;
   return $untapPrevented;

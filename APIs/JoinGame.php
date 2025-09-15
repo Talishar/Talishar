@@ -850,6 +850,8 @@ function isUnimplemented($cardID) {
         "flex_strength_red" => false,
         "flex_strength_yellow" => false,
         "flex_strength_blue" => false,
+        "turn_heads_blue" => false,
+        "who_blinks_first_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

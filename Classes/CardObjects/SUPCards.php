@@ -5595,4 +5595,69 @@ class flex_strength_blue extends Card {
     return $this->baseCard->sixPower() ? 3 : 0;
   }
 }
+
+class turn_heads_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "turn_heads_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger($uniqueID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $otherChar = GetPlayerCharacter($otherPlayer);
+    if (ClassContains($otherChar[0], "BRUTE", $otherPlayer)) {
+      Tap("THEIRCHAR-0", $this->controller);
+      if ($otherPlayer == $mainPlayer) AddCurrentTurnEffect($this->cardID, $otherPlayer);
+      else AddNextTurnEffect($this->cardID, $otherPlayer);
+    }
+  }
+}
+
+class who_blinks_first_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "who_blinks_first_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    else $this->ProcessTrigger($uniqueID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $otherChar = GetPlayerCharacter($otherPlayer);
+    if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    }
+  }
+}
 ?>
