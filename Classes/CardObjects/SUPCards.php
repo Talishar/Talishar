@@ -4985,6 +4985,7 @@ class gallow_end_of_the_line_yellow extends Card {
 
   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
     global $CS_NumActionsPlayed;
+    $names = "";
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
     if (SearchHand($this->controller, hasWateryGrave: true) != "") $names = "Instant";
     $allies = &GetAllies($this->controller);
