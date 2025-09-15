@@ -5324,4 +5324,82 @@ class bash_guardian_red extends Card {
     AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
   }
 }
+
+class flex extends BaseCard {
+  function sixPower() {
+    return CachedTotalPower() >= 6;
+  }
+}
+
+class flex_speed_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "flex_speed_red";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->sixPower();
+  }
+}
+
+class flex_speed_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "flex_speed_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->sixPower();
+  }
+}
+
+class flex_speed_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flex_speed_blue";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->sixPower();
+  }
+}
+
+class flex_strength_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "flex_strength_red";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->sixPower() ? 3 : 0;
+  }
+}
+
+class flex_strength_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "flex_strength_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->sixPower() ? 3 : 0;
+  }
+}
+
+class flex_strength_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flex_strength_blue";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->sixPower() ? 3 : 0;
+  }
+}
 ?>

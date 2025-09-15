@@ -834,6 +834,12 @@ function isUnimplemented($cardID) {
         "asking_for_trouble_yellow" => false,
         "familiar_story_red" => false,
         "familiar_stench_red" => false,
+        "flex_speed_red" => false,
+        "flex_speed_yellow" => false,
+        "flex_speed_blue" => false,
+        "flex_strength_red" => false,
+        "flex_strength_yellow" => false,
+        "flex_strength_blue" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
