@@ -4613,10 +4613,10 @@ class vigorous_roar_red extends Card {
 
 class clench_the_upper_hand extends BaseCard {
   function PlayAbility() {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ATTACKTRIGGER");
+    AddLayer("TRIGGER", $this->controller, $this->cardID, 1);
   }
 
-  function ProcessAttackTrigger() {
+  function ProcessTrigger() {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     if (PlayerHasLessHealth($otherPlayer)) BOO($this->controller);
   }
@@ -4633,8 +4633,12 @@ class clench_the_upper_hand_red extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessAttackTrigger();
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-'): void {
+    $this->baseCard->ProcessTrigger();
   }
 }
 
@@ -4649,8 +4653,12 @@ class clench_the_upper_hand_blue extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessAttackTrigger();
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-'): void {
+    $this->baseCard->ProcessTrigger();
   }
 }
 
@@ -4665,8 +4673,12 @@ class clench_the_upper_hand_yellow extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessAttackTrigger();
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-'): void {
+    $this->baseCard->ProcessTrigger();
+  }
+  
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->PlayAbility();
   }
 }
 
