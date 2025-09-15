@@ -1560,13 +1560,19 @@ function FinalizeTurn()
     } else --$nextTurnEffects[$i + 4];
   }
   $nextTurnEffects = array_values($nextTurnEffects);
-  if (!$extraTurn) {
+  // this is needed to reset the defending player's class state even if their turn is getting skipped
+  $defPlayer = $mainPlayer;
+  $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
+  $currentPlayer = $mainPlayer;
+  BuildMainPlayerGameState();
+  ResetMainClassState();
+
+  if ($extraTurn) {
     $defPlayer = $mainPlayer;
     $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
     $currentPlayer = $mainPlayer;
+    BuildMainPlayerGameState();
   }
-  BuildMainPlayerGameState();
-  ResetMainClassState();
   //Start of turn effects
   if ($mainPlayer == 1) StatsStartTurn();
   StartTurnAbilities();
