@@ -3644,24 +3644,7 @@ class never_give_up_yellow extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $AOptions = GetChainLinkCards($this->controller, "A", "C");
-    $AAOptions = GetChainLinkCards($this->controller, "AA", "C");
-    if ($AOptions == "") $numOptions = $AAOptions;
-    if ($AAOptions == "") $numOptions = $AOptions;
-    else $numOptions = "$AAOptions,$AOptions";
-    if ($numOptions != "") {
-      $numOptions = explode(",", $numOptions);
-      $options = [];
-      foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
-      $options = implode(",", $options);
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending action card to buff");
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $options, 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-    }
-    else {
-      WriteLog(CardLink($this->cardID, $this->cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
-    }
+    TargetDefendingAction($this->controller, $this->cardID, true);
     AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
     AddDecisionQueue("ADDBOTDECK", $this->controller, "-", 1);
@@ -4364,24 +4347,7 @@ class shining_courage_red extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $AOptions = GetChainLinkCards($this->controller, "A", "C");
-    $AAOptions = GetChainLinkCards($this->controller, "AA", "C");
-    if ($AOptions == "") $numOptions = $AAOptions;
-    if ($AAOptions == "") $numOptions = $AOptions;
-    else $numOptions = "$AAOptions,$AOptions";
-    if ($numOptions != "") {
-      $numOptions = explode(",", $numOptions);
-      $options = [];
-      foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
-      $options = implode(",", $options);
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending action card to buff");
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $options, 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-    }
-    else {
-      WriteLog(CardLink($this->cardID, $this->cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
-    }
+    TargetDefendingAction($this->controller, $this->cardID, true);
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -5389,6 +5355,84 @@ class high_pitched_howl_blue extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     $this->baseCard->ProcessTrigger();
+  }
+}
+
+class dramatic_pause_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "dramatic_pause_red";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function EntersArenaAbility() {
+    TargetDefendingAction($this->controller, $this->cardID);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $index = explode("-", $target)[1];
+    CombatChainDefenseModifier($index, 3);
+  }
+}
+
+class dramatic_pause_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "dramatic_pause_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function EntersArenaAbility() {
+    TargetDefendingAction($this->controller, $this->cardID);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $index = explode("-", $target)[1];
+    CombatChainDefenseModifier($index, 2);
+  }
+}
+
+class dramatic_pause_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "dramatic_pause_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
+  }
+
+  function EntersArenaAbility() {
+    TargetDefendingAction($this->controller, $this->cardID);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function HasSuspense() {
+    return $this->baseCard->HasSuspense();
+  }
+
+  function StartTurnAbility($index) {
+    return $this->baseCard->StartTurnAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $index = explode("-", $target)[1];
+    CombatChainDefenseModifier($index, 1);
   }
 }
 

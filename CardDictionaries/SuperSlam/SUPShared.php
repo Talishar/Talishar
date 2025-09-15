@@ -354,3 +354,24 @@ function AddSuspense($player, $MZIndex)
   $ind = explode("-", $MZIndex)[1];
   ++$auras[$ind + 2];
 }
+
+function TargetDefendingAction($player, $cardID, $setTarget=false) {
+  $AOptions = GetChainLinkCards($player, "A", "C");
+  $AAOptions = GetChainLinkCards($player, "AA", "C");
+  if ($AOptions == "") $numOptions = $AAOptions;
+  elseif ($AAOptions == "") $numOptions = $AOptions;
+  else $numOptions = "$AAOptions,$AOptions";
+  if ($numOptions != "") {
+    $numOptions = explode(",", $numOptions);
+    $options = [];
+    foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+    $options = implode(",", $options);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending action card to buff");
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, $options, 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
+    if ($setTarget) AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+  }
+  else {
+    WriteLog(CardLink($cardID, $cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
+  }
+}
