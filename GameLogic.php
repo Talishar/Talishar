@@ -352,23 +352,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       // only allows for choosing the first of a stack of tokens
       // right now only takes into account cardID for deduping
       // carving out an exception for spectral shields as you may want to hit ones with counters
+      // it will skip adding whatever index is given in the parameter
       $inds = explode(",", $lastResult);
       $foundMine = [];
       $foundTheirs = [];
       $dedupedInds = [];
       foreach($inds as $index) {
-        if (str_contains($index, "THEIR")) {
-          $cardID = GetMZCard($player, $index);
-          if (!TypeContains($cardID, "T") || !in_array($cardID, $foundTheirs) || $cardID == "spectral_shield") {
-            array_push($foundTheirs, $cardID);
-            array_push($dedupedInds, $index);
+        if ($parameter == "-" || $index != $parameter) {
+          if (str_contains($index, "THEIR")) {
+            $cardID = GetMZCard($player, $index);
+            if (!TypeContains($cardID, "T") || !in_array($cardID, $foundTheirs) || $cardID == "spectral_shield") {
+              array_push($foundTheirs, $cardID);
+              array_push($dedupedInds, $index);
+            }
           }
-        }
-        else {
-          $cardID = GetMZCard($player, $index);
-          if (!TypeContains($cardID, "T") || !in_array($cardID, $foundMine) || $cardID == "spectral_shield") {
-            array_push($foundMine, $cardID);
-            array_push($dedupedInds, $index);
+          else {
+            $cardID = GetMZCard($player, $index);
+            if (!TypeContains($cardID, "T") || !in_array($cardID, $foundMine) || $cardID == "spectral_shield") {
+              array_push($foundMine, $cardID);
+              array_push($dedupedInds, $index);
+            }
           }
         }
       }
@@ -2215,7 +2218,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "chum_friendly_first_mate_yellow",
         "cutty_shark_quick_clip_yellow",
         "kelpie_tangled_mess_yellow",
-        "shelly_hardened_travleer" => $CS_PlayIndex,
+        "shelly_hardened_travleer",
+        "gallow_end_of_the_line_yellow" => $CS_PlayIndex,
         default => $CS_CharacterIndex
       };
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);
@@ -2883,6 +2887,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "blast_to_oblivion_red":
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
+        case "channel_the_tranquil_domain_yellow":
           AddLayer("TRIGGER", $player, $params[0], "$targetedPlayer-" . GetMZUID($targetedPlayer, $target));
           break;
         case "pain_in_the_backside_red":

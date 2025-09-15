@@ -364,6 +364,18 @@ class Card {
   function DefaultActiveState() {
     return 2;
   }
+
+  function HasWateryGrave() {
+    return false;
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    return;
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+    return 0;
+  }
 }
 
 ?>

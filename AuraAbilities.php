@@ -812,6 +812,8 @@ function AuraBeginningActionPhaseAbilities(){
   }
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $EffectContext = $auras[$i];
+    $card = GetClass($auras[$i], $mainPlayer);
+    if ($card != "-") $card->BeginningActionPhaseAbility($i);
     switch ($auras[$i]) {
       //These are all "beginning of the action phase" events with priority holding
       case "forged_for_war_yellow":
@@ -903,6 +905,8 @@ function AuraBeginEndPhaseTriggers()
   global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated, $defPlayer, $CS_AttacksWithWeapon;
   $auras = &GetAuras($mainPlayer);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $card = GetClass($auras[$i], $mainPlayer);
+    if ($card != "-") $card->BeginEndTurnAbilities($i);
     switch ($auras[$i]) {
       case "read_the_ripples_red":
       case "read_the_ripples_yellow":
@@ -921,8 +925,8 @@ function AuraBeginEndPhaseTriggers()
       case "channel_mount_isen_blue":
       case "channel_thunder_steppe_yellow":
       case "channel_lightning_valley_yellow":
-          AddLayer("TRIGGER", $mainPlayer, $auras[$i], $auras[$i+6], "CHANNEL");
-          break;
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], $auras[$i+6], "CHANNEL");
+        break;
       case "fealty":
         $fealtySurvives = GetClassState($mainPlayer, $CS_FealtyCreated) + GetClassState($mainPlayer, $CS_NumDraconicPlayed);
         if (!$fealtySurvives) {

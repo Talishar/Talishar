@@ -134,6 +134,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "kelpie_tangled_mess_yellow" => "A",
     "shelly_hardened_traveler_yellow" => "A",
     "oysten_heart_of_gold_yellow" => "A",
+    "gallow_end_of_the_line_yellow" => "A",
     "polly_cranka" => "Companion",
     "sticky_fingers" => "Companion",
     "treasure_island" => "Macro",
@@ -370,6 +371,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "riggermortis_yellow":
     case "oysten_heart_of_gold_yellow":
     case "anka_drag_under_yellow":
+    case "gallow_end_of_the_line_yellow":
       return "Ally";
     default:
       return "";
@@ -489,6 +491,7 @@ function CardClass($cardID)
     case "shelly_hardened_traveler_yellow":
     case "gravy_bones":
     case "gravy_bones_shipwrecked_looter":
+    case "gallow_end_of_the_line_yellow":
       return "PIRATE,NECROMANCER";
     case "marlynn":
     case "marlynn_treasure_hunter":
@@ -1226,6 +1229,7 @@ function TriggerTargets($cardID)
     "azvolai" => "any_arcane",
     "verdance", "verdance_thorn_of_the_rose", "sigil_of_aether_blue" => "any_arcane",
     "leave_them_hanging_red" => "any_hero",
+    "channel_the_tranquil_domain_yellow" => "aura_permanent",
     default => ""
   };
 }
@@ -1828,7 +1832,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
     if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
-  if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "anka_drag_under_yellow") && $from == "PLAY") {
+  if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "anka_drag_under_yellow" || $cardID == "gallow_end_of_the_line_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
     else if ($currentPlayer == $mainPlayer && $actionPoints > 0 && CanAttack($cardID, "PLAY", $index, "MYALLY", type:"AA")) return true;
     else if (CanPlayInstant($phase) && SearchHand($currentPlayer, hasWateryGrave:true) != "") return true;
@@ -1940,7 +1944,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
       }
     }
   }
-  if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura()) return true;
+  if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura($cardID)) return true;
   switch ($cardID) {
     case "face_adversity":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) == 0;
@@ -1977,12 +1981,14 @@ function CanBlockWithEquipment()
   }
 }
 
-function CanBlockWithAura()
+function CanBlockWithAura($cardID)
 {
-  global $CombatChain;
+  global $CombatChain, $defPlayer;
   switch ($CombatChain->AttackCard()->ID()) {
     case "cut_through_the_facade_red":
       return false;
+    case "disturb_the_peace_red":
+      return !ClassContains($cardID, "GUARDIAN", $defPlayer);
     default:
       return true;
   }
@@ -5547,7 +5553,7 @@ function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
   }
   else {
     if (str_contains($cardID, $blindMarker)) return $cardID;
-    return "$cardID-$blindMarker";
+    return "$cardID~$blindMarker";
   }
 }
 

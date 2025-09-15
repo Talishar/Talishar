@@ -665,47 +665,61 @@ function EffectHasBlockModifier($cardID)
 function EffectBlockModifier($cardID, $index, $from)
 {
   global $CombatChain, $defPlayer, $mainPlayer;
+  $blockModifier = 0;
   switch ($cardID) {
     case "phantasmal_footsteps":
-      if ($CombatChain->Card($index)->ID() == $cardID) return 1;
-      return 0;
+      if ($CombatChain->Card($index)->ID() == $cardID) $blockModifier += 1;
+      $blockModifier += 0;
+      break;
     case "korshem_crossroad_of_elements-2":
-      return 1;
+      $blockModifier += 1;
+      break;
     case "amulet_of_earth_blue":
-      return 1;
+      $blockModifier += 1;
+      break;
     case "rampart_of_the_rams_head":
-      return ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
+      $blockModifier += ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
+      break;
     case "fletch_a_red_tail_red":
-      return (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
+      $blockModifier += (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
+      break;
     case "fletch_a_yellow_tail_yellow":
-      return (PitchValue($CombatChain->Card($index)->ID()) == 2 && HasAimCounter() ? -1 : 0);
+      $blockModifier += (PitchValue($CombatChain->Card($index)->ID()) == 2 && HasAimCounter() ? -1 : 0);
+      break;
     case "fletch_a_blue_tail_blue":
-      return (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
+      $blockModifier += (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
+      break;
     case "defender_of_daybreak_red":
     case "defender_of_daybreak_yellow":
     case "defender_of_daybreak_blue":
-      return (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
+      $blockModifier += (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
+      break;
     case "lay_down_the_law_red":
-      return (CachedTotalPower() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
+      $blockModifier += (CachedTotalPower() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
+      break;
     case "ratchet_up_red":
     case "ratchet_up_yellow":
     case "ratchet_up_blue":
-      return IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;
+      $blockModifier += IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;break;
     case "headliner_helm":
     case "stadium_centerpiece":
     case "ticket_puncher":
     case "grandstand_legplates":
     case "bloodied_oval":
-      return $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;
+      $blockModifier += $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;break;
     case "wide_blue_yonder_blue":
-      return SearchPitchForColor($mainPlayer, 3);
+      $blockModifier += SearchPitchForColor($mainPlayer, 3);
+      break;
     case "heavy_industry_surveillance":
     case "heavy_industry_ram_stop":
     case "breaker_helm_protos":
-      return 1;
+      $blockModifier += 1;
+      break;
     default:
-      return 0;
+      break;
   }
+  if ($blockModifier > 0 && !CanGainBlock($cardID)) $blockModifier = 0;
+  return $blockModifier;
 }
 
 function RemoveEffectsFromCombatChain($cardID = "")
@@ -1178,6 +1192,11 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
     if ($currentTurnEffects[$i + 1] == $player) {
       $preventedDamage = 0;
       $effects = explode("-", $currentTurnEffects[$i]);
+      $card = GetClass($effects[0], $player);
+      if ($card != "-") {
+        $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
+        if ($preventable) $preventedDamage += $prevention;
+      }
       switch ($effects[0]) {
         case "dissipation_shield_yellow":
           if ($preventable) $preventedDamage += intval($effects[1]);

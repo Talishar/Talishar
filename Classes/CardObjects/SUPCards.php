@@ -4889,4 +4889,388 @@ class parched_terrain_red extends Card {
     }
   }
 }
+
+class shoot_your_mouth_off extends Card {
+  function CombatChainCloseAbility($chainLink) {
+    global $chainLinkSummary, $defPlayer, $chainLinks;
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $this->cardID && $chainLinks[$chainLink][1] == $this->controller) {
+        PlayAura("confidence", $defPlayer);
+    }
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    if (IsHeroAttackTarget()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+}
+
+class shoot_your_mouth_off_red extends shoot_your_mouth_off {
+  function __construct($controller) {
+    $this->cardID = "shoot_your_mouth_off_red";
+    $this->controller = $controller;
+  }
+}
+
+class shoot_your_mouth_off_yellow extends shoot_your_mouth_off {
+  function __construct($controller) {
+    $this->cardID = "shoot_your_mouth_off_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class shoot_your_mouth_off_blue extends shoot_your_mouth_off {
+  function __construct($controller) {
+    $this->cardID = "shoot_your_mouth_off_blue";
+    $this->controller = $controller;
+  }
+}
+
+class give_em_a_piece_of_your_mind extends Card {
+  function CombatChainCloseAbility($chainLink) {
+    global $chainLinkSummary, $defPlayer, $chainLinks;
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $this->cardID && $chainLinks[$chainLink][1] == $this->controller) {
+        PlayAura("vigor", $defPlayer);
+    }
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    if (IsHeroAttackTarget()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+}
+
+class give_em_a_piece_of_your_mind_red extends give_em_a_piece_of_your_mind {
+  function __construct($controller) {
+    $this->cardID = "give_em_a_piece_of_your_mind_red";
+    $this->controller = $controller;
+  }
+}
+
+class give_em_a_piece_of_your_mind_yellow extends give_em_a_piece_of_your_mind {
+  function __construct($controller) {
+    $this->cardID = "give_em_a_piece_of_your_mind_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class give_em_a_piece_of_your_mind_blue extends give_em_a_piece_of_your_mind {
+  function __construct($controller) {
+    $this->cardID = "give_em_a_piece_of_your_mind_blue";
+    $this->controller = $controller;
+  }
+}
+
+class gallow_end_of_the_line_yellow extends Card {
+  // I'd definitely like to make a gravy ally base class in the long run
+  function __construct($controller) {
+    $this->cardID = "gallow_end_of_the_line_yellow";
+    $this->controller = $controller;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $allies = &GetAllies($this->controller);
+      Tap("MYALLY-$index", $this->controller);
+      $ally[$index + 1] = 2;//Not once per turn effects
+    }
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return ($from != "PLAY") ? "" : "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+    global $CS_NumActionsPlayed;
+    $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
+    if (SearchHand($this->controller, hasWateryGrave: true) != "") $names = "Instant";
+    $allies = &GetAllies($this->controller);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, piece: $CS_NumActionsPlayed) >= 1) {
+      return $names;
+    } else if ($canAttack) {
+      $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+    }
+    return $names;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return GetResolvedAbilityType($this->cardID, "PLAY") == "AA" ? 1 : 0;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $abilityType = GetResolvedAbilityType($this->cardID, $from);
+    if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($this->cardID, $otherPlayer);
+  }
+
+  function HasWateryGrave() {
+    return true;
+  }
+
+  function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
+    $allies = GetAllies($this->controller);
+    if (GetResolvedAbilityType($this->cardID, $from) == "I") {
+      AddDecisionQueue("FINDINDICES", $this->controller, "HANDWATERYGRAVE,-,NOPASS");
+      AddDecisionQueue("REVERTGAMESTATEIFNULL", $this->controller, "You don't have any watery grave cards in hand to discard!", 1);
+      AddDecisionQueue("CHOOSEHAND", $this->controller, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-" . $this->controller, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $allies[$zoneIndex + 5], 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+  }
+}
+
+class channel_the_tranquil_domain_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_the_tranquil_domain_yellow";
+    $this->controller = $controller;
+  }
+
+  function Trigger($uniqueID) {
+    $index = SearchAurasForUniqueID($uniqueID, $this->controller);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS&MYAURAS", 1);
+    if ($index != -1) AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "MYAURAS-$index", 1);
+    else AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose target aura", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $auras = GetAuras($this->controller);
+    $uid = $auras[$index + 6];
+    $this->Trigger($uid);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $auras = GetAuras($this->controller);
+    $uid = $auras[count($auras) - AuraPieces() + 6];
+    $this->Trigger($uid);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "CHANNEL") {
+      ChannelTalent($target, "EARTH");
+    }
+    else {
+      $targetPlayer = explode("-", $target)[0];
+      $targetUID = explode("-", $target)[1];
+      $targetIndex = SearchAurasForUniqueID($targetUID, $targetPlayer);
+      $targetMZIndex = $targetPlayer == $this->controller ? "MYAURAS-$targetIndex" : "THEIRAURAS-$targetIndex";
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $targetMZIndex);
+      AddDecisionQueue("MZBOTTOM", $this->controller, "-", 1);
+    }
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $auras = GetAuras($this->controller);
+    AddLayer("TRIGGER", $this->controller, $auras[$index], $auras[$index+6], "CHANNEL");
+  }
+}
+
+class mage_hunter_arrow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mage_hunter_arrow_red";
+    $this->controller = $controller;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && (ClassContains($defChar[0], "RUNEBLADE", $defPlayer) || ClassContains($defChar[0], "WIZARD", $defPlayer))) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, 1, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+    global $mainPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
+    $layerCount = count($layers);
+    $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+    $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $defPlayer, "null_time_zone_blue") != -1;
+    $arsenal = GetArsenal($this->controller);
+    if ($arsenal[$index + 1] == "DOWN") return "-,Attack";
+    $names = "Ability";
+    if($foundNullTime && $from == "ARS") return $names;
+    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+      $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $this->controller);
+      $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($this->cardID)), $this->controller);
+      if (!$warmongersPeace && !$underEdict && CanAttack($this->cardID, $from, $index, type:"AA")) {
+        if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $this->controller) || SearchCurrentTurnEffects("fealty", $this->controller)) $names .= ",Attack";
+      }
+    }
+    return $names;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    global $layers;
+    return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    return ($from == "ARS");
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "ARS") == "I" && $from == "ARS") return 0;
+    return 1;
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1) {
+    global $CS_NumActionsPlayed;
+    $names = GetAbilityNames($this->cardID, $index, $from);
+    $names = str_replace("-,", "", $names);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
+    } elseif ($names != "" && $from == "ARS") {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose to play the ability or attack");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, $names);
+      AddDecisionQueue("SETABILITYTYPE", $this->controller, $this->cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEATTACK", $this->controller, $this->cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("DISCARDCARD", $this->controller, "ARS-$this->cardID", 1);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+    if ($type == "ARCANE") {
+      $remove = true;
+      return 3;
+    }
+    return 0;
+  }
+}
+
+class overbearing_presence extends Card {
+  function __construct($controller) {
+    $this->cardID = "overbearing_presence";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
+    }
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("vigor", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class disturb_the_peace_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "disturb_the_peace_red";
+    $this->controller = $controller;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "GUARDIAN", $defPlayer)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
+
+class asking_for_trouble_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "asking_for_trouble_yellow";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    PlayAura("vigor", $otherPlayer, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class bash_guardian_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bash_guardian_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $combatChain, $defPlayer;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] == $defPlayer && ClassContains($combatChain[$i], "GUARDIAN", $defPlayer)) return 1;
+    }
+    return 0;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "GUARDIAN", $defPlayer)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:type=T");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
 ?>

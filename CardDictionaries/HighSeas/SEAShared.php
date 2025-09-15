@@ -1282,6 +1282,8 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
 
 function HasWateryGrave($cardID): bool
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-")  return $card->HasWateryGrave();
   return match($cardID) {
     "chum_friendly_first_mate_yellow" => true,
     "anka_drag_under_yellow" => true,

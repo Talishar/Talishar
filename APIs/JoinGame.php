@@ -822,6 +822,16 @@ function isUnimplemented($cardID) {
         "take_that_blue" => false,
         "disdainful_delight_yellow" => false,
         "not_so_tuff_blue" => false,
+        "shoot_your_mouth_off_red" => false,
+        "shoot_your_mouth_off_yellow" => false,
+        "shoot_your_mouth_off_blue" => false,
+        "give_em_a_piece_of_your_mind_red" => false,
+        "give_em_a_piece_of_your_mind_yellow" => false,
+        "give_em_a_piece_of_your_mind_blue" => false,
+        "bash_guardian_red" => false,
+        "overbearing_presence" => false,
+        "disturb_the_peace_red" => false,
+        "asking_for_trouble_yellow" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,
@@ -836,6 +846,9 @@ function isUnimplemented($cardID) {
         "parched_terrain_red" => false,
         "hit_the_gas_blue" => false,
         "beat_of_the_ironsong_blue" => false,
+        "gallow_end_of_the_line_yellow" => false,
+        "channel_the_tranquil_domain_yellow" => false,
+        "mage_hunter_arrow_red" => false,
         default => true
       };
     case "APS":
