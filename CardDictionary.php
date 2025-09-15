@@ -5551,7 +5551,7 @@ function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
   }
   else {
     if (str_contains($cardID, $blindMarker)) return $cardID;
-    return "$cardID-$blindMarker";
+    return "$cardID~$blindMarker";
   }
 }
 
