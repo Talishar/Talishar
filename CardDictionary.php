@@ -1753,7 +1753,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       }
     }
     if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
-      if (NumNonBlocksDefending() >= 2) return false;
+      if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return false;
     }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player)) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
