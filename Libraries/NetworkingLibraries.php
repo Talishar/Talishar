@@ -1162,7 +1162,6 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
       }
     }
     if (!HitEffectsArePrevented($cardID)) {
-      WriteLog("HERE!!!");
       $count = count($combatChain);
       $pieces = CombatChainPieces();
       for ($i = 0; $i < $count; $i += $pieces) {
