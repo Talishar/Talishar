@@ -5037,14 +5037,19 @@ class channel_the_tranquil_domain_yellow extends Card {
   }
 
   function Trigger($uniqueID) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
     $index = SearchAurasForUniqueID($uniqueID, $this->controller);
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS&MYAURAS", 1);
-    if ($index != -1) AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "MYAURAS-$index", 1);
-    else AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "-", 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose target aura", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    $myAuras = GetAuras($this->controller);
+    $theirAuras = GetAuras($otherPlayer);
+    if (count($myAuras) + count($theirAuras) > AuraPieces()) { //check if there are any legal targets
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS&MYAURAS", 1);
+      if ($index != -1) AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "MYAURAS-$index", 1);
+      else AddDecisionQueue("DEDUPEMULTIZONEINDS", $this->controller, "-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose target aura", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    }
   }
 
   function BeginningActionPhaseAbility($index) {
