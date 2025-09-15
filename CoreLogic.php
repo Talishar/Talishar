@@ -159,11 +159,17 @@ function AddPower(&$totalPower, $amount): void
 function BlockingCardDefense($index)
 {
   global $combatChain, $defPlayer, $currentTurnEffects;
+  $canGainBlock = CanGainBlock($combatChain[$index]);
   $from = isset($combatChain[$index + 2]) ? $combatChain[$index + 2] : "-";
   $cardID = isset($combatChain[$index]) ? $combatChain[$index] : "-";
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = (isset($combatChain[$index + 3]) ? intval($combatChain[$index + 3]) : 0) + intval($baseCost);
-  $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC")) + (BlockCantBeModified($cardID) ? 0 : (isset($combatChain[$index + 6]) ? intval(BlockModifier($cardID, $from, $resourcesPaid, $index)) + intval($combatChain[$index + 6]) : 0));
+  $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC"));
+  if (!BlockCantBeModified($cardID)) {
+    // $defense += $combatChain[$index + 6];
+    if (isset($combatChain[$index + 6]) && ($combatChain[$index + 6] < 0 || $canGainBlock)) $defense += $combatChain[$index + 6];
+    $defense += intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
+  }
   if (TypeContains($cardID, "E", $defPlayer)) {
     $defCharacter = &GetPlayerCharacter($defPlayer);
     $charIndex = isset($combatChain[$index + 8]) ? SearchCharacterForUniqueID($combatChain[$index + 8], $defPlayer) : null;
