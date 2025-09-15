@@ -128,6 +128,7 @@ function AllyHealth($cardID)
   return match($cardID) {
     "polly_cranka_ally" => 1,
     "sticky_fingers_ally" => 2,
+    "gallow_end_of_the_line_yellow" => 3, //missing from fabcube
     default => GeneratedCharacterHealth($cardID)
   };
 }
@@ -525,6 +526,8 @@ function AllyPayAdditionalCosts($cardIndex, $from)
   global $currentPlayer;
   $ally = &GetAllies($currentPlayer);
   $cardID = $ally[$cardIndex];
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") $card->PayAdditionalCosts($from, $cardIndex);
   switch ($cardID) {
     case "chum_friendly_first_mate_yellow":
     case "riggermortis_yellow":

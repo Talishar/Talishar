@@ -2215,7 +2215,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "chum_friendly_first_mate_yellow",
         "cutty_shark_quick_clip_yellow",
         "kelpie_tangled_mess_yellow",
-        "shelly_hardened_travleer" => $CS_PlayIndex,
+        "shelly_hardened_travleer",
+        "gallow_end_of_the_line_yellow" => $CS_PlayIndex,
         default => $CS_CharacterIndex
       };
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);

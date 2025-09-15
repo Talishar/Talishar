@@ -2975,6 +2975,7 @@ function HitEffectsArePrevented($cardID)
 {
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $mainPlayer, $defPlayer;
   // if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return true;
+  if (SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return true;
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return true;
   if ($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, true);
   return $combatChainState[$CCS_ChainLinkHitEffectsPrevented];

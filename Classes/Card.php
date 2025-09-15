@@ -364,6 +364,10 @@ class Card {
   function DefaultActiveState() {
     return 2;
   }
+
+  function HasWateryGrave() {
+    return false;
+  }
 }
 
 ?>

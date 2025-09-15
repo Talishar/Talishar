@@ -4930,4 +4930,72 @@ class give_em_a_piece_of_your_mind_blue extends give_em_a_piece_of_your_mind {
     $this->controller = $controller;
   }
 }
+
+class gallow_end_of_the_line_yellow extends Card {
+  // I'd definitely like to make a gravy ally base class in the long run
+  function __construct($controller) {
+    $this->cardID = "gallow_end_of_the_line_yellow";
+    $this->controller = $controller;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $allies = &GetAllies($this->controller);
+      Tap("MYALLY-$index", $this->controller);
+      $ally[$index + 1] = 2;//Not once per turn effects
+    }
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return ($from != "PLAY") ? "" : "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+    global $CS_NumActionsPlayed;
+    $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
+    if (SearchHand($this->controller, hasWateryGrave: true) != "") $names = "Instant";
+    $allies = &GetAllies($this->controller);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, piece: $CS_NumActionsPlayed) >= 1) {
+      return $names;
+    } else if ($canAttack) {
+      $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+    }
+    return $names;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return GetResolvedAbilityType($this->cardID, "PLAY") == "AA" ? 1 : 0;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $abilityType = GetResolvedAbilityType($this->cardID, $from);
+    if ($from == "PLAY" && $abilityType == "I") AddCurrentTurnEffect($this->cardID, $otherPlayer);
+  }
+
+  function HasWateryGrave() {
+    return true;
+  }
+
+  function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
+    $allies = GetAllies($this->controller);
+    if (GetResolvedAbilityType($this->cardID, $from) == "I") {
+      AddDecisionQueue("FINDINDICES", $this->controller, "HANDWATERYGRAVE,-,NOPASS");
+      AddDecisionQueue("REVERTGAMESTATEIFNULL", $this->controller, "You don't have any watery grave cards in hand to discard!", 1);
+      AddDecisionQueue("CHOOSEHAND", $this->controller, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
+      AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-" . $this->controller, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $allies[$zoneIndex + 5], 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+  }
+}
 ?>
