@@ -828,6 +828,10 @@ function isUnimplemented($cardID) {
         "give_em_a_piece_of_your_mind_red" => false,
         "give_em_a_piece_of_your_mind_yellow" => false,
         "give_em_a_piece_of_your_mind_blue" => false,
+        "bash_guardian_red" => false,
+        "overbearing_presence" => false,
+        "disturb_the_peace_red" => false,
+        "asking_for_trouble_yellow" => false,
         
         "painful_passage_red" => false,
         "blood_follows_blade_yellow" => false,

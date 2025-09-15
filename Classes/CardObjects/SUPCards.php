@@ -5139,4 +5139,107 @@ class mage_hunter_arrow_red extends Card {
     return 0;
   }
 }
+
+class overbearing_presence extends Card {
+  function __construct($controller) {
+    $this->cardID = "overbearing_presence";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
+    }
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("vigor", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class disturb_the_peace_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "disturb_the_peace_red";
+    $this->controller = $controller;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "GUARDIAN", $defPlayer)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
+
+class asking_for_trouble_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "asking_for_trouble_yellow";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    PlayAura("vigor", $otherPlayer, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class bash_guardian_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bash_guardian_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $combatChain, $defPlayer;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] == $defPlayer && ClassContains($combatChain[$i], "GUARDIAN", $defPlayer)) return 1;
+    }
+    return 0;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    if (IsHeroAttackTarget() && ClassContains($defChar[0], "GUARDIAN", $defPlayer)) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:type=T");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
 ?>

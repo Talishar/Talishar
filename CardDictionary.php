@@ -1944,7 +1944,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
       }
     }
   }
-  if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura()) return true;
+  if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura($cardID)) return true;
   switch ($cardID) {
     case "face_adversity":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) == 0;
@@ -1981,12 +1981,14 @@ function CanBlockWithEquipment()
   }
 }
 
-function CanBlockWithAura()
+function CanBlockWithAura($cardID)
 {
-  global $CombatChain;
+  global $CombatChain, $defPlayer;
   switch ($CombatChain->AttackCard()->ID()) {
     case "cut_through_the_facade_red":
       return false;
+    case "disturb_the_peace_red":
+      return !ClassContains($cardID, "GUARDIAN", $defPlayer);
     default:
       return true;
   }
