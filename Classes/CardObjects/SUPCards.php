@@ -4266,6 +4266,10 @@ class hold_firm extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("toughness", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
   }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
 }
 
 class mightybone_knuckles extends Card {
@@ -4293,6 +4297,10 @@ class mightybone_knuckles extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("might", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
   }
 }
 
@@ -5185,6 +5193,10 @@ class overbearing_presence extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("vigor", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
   }
 }
 
