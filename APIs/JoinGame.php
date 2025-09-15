@@ -840,6 +840,8 @@ function isUnimplemented($cardID) {
         "dramatic_pause_red" => false,
         "dramatic_pause_yellow" => false,
         "dramatic_pause_blue" => false,
+        "stand_strong" => false,
+        "bark_obscenities_red" => false,
         "flex_speed_red" => false,
         "flex_speed_yellow" => false,
         "flex_speed_blue" => false,

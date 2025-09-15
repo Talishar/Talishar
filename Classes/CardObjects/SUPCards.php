@@ -5200,6 +5200,60 @@ class overbearing_presence extends Card {
   }
 }
 
+class stand_strong extends Card {
+  function __construct($controller) {
+    $this->cardID = "stand_strong";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $pitch = GetPitch($this->controller);
+    $suspAuras = GetSuspenseAuras($this->controller);
+    return count($suspAuras) == 0;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("confidence", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+}
+
+class bark_obscenities_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bark_obscenities_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 4;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $defPlayer;
+    $defChar = GetPlayerCharacter($defPlayer);
+    return IsHeroAttackTarget() && ClassContains($defChar[0], "GUARDIAN", $defPlayer);
+  }
+}
+
 class disturb_the_peace_red extends Card {
   function __construct($controller) {
     $this->cardID = "disturb_the_peace_red";
