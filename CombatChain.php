@@ -776,7 +776,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     }
   }
   $card = GetClass($combatChain[0], $mainPlayer);
-  if ($card != "-") $card->AttackGetsBlockedEffect($cardID);
+  if ($card != "-") $card->AttackGetsBlockedEffect(count($combatChain) - CombatChainPieces());
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
