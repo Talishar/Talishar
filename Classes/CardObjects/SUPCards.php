@@ -4882,7 +4882,7 @@ class parched_terrain_red extends Card {
       for ($j = 0; $j < $sandCounters; $j++) {
         AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:pitch=1");
         AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a red card to banish from your graveyard");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
         AddDecisionQueue("MZBANISH", $this->controller, "GY,-", 1);
         AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
       }

@@ -953,6 +953,9 @@ function AuraBeginEndPhaseTriggers()
         PlayAura("seismic_surge", $mainPlayer, 1, true, effectController:$mainPlayer, effectSource:$auras[$i]);
         if ($auras[$i + 2] == 0) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
+      case "parched_terrain_red":
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "parched_terrain_red-1", uniqueID: $auras[$i + 6]);
+        break;
       default:
         break;
     }
@@ -1029,9 +1032,6 @@ function AuraBeginEndPhaseAbilities()
           --$auras[$i + 2];
           DealArcane(2, 2, "PLAYCARD", "looming_doom_blue", false, $mainPlayer);
         }
-        break;
-      case "parched_terrain_red":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "parched_terrain_red-1", uniqueID: $auras[$i + 6]);
         break;
       default:
         break;
