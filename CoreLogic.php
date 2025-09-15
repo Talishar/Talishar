@@ -2653,32 +2653,6 @@ function CanRevealCards($player)
   return true;
 }
 
-function BasePowerModifiers($attackID, $powerValue)
-{
-  // this needs to be reworked to be constantly checking rather than only checking on play/activation
-  global $currentTurnEffects, $mainPlayer, $CS_Num6PowBan;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
-    if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
-    $effects = explode("-", $currentTurnEffects[$i]);
-    switch ($effects[0]) {
-      case "ghostly_touch":
-        if ($attackID == "UPR551") $powerValue = $effects[1];
-        break;
-      default:
-        break;
-    }
-  }
-  switch ($attackID) {
-    case "diabolic_offering_blue":
-      $powerValue = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
-      break;
-    default:
-      break;
-  }
-  return $powerValue;
-}
-
 function GetDamagePreventionIndices($player, $type, $damage, $preventable=true)
 {
   $rv = "";

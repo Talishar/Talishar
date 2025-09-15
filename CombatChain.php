@@ -1928,7 +1928,7 @@ function AfterDamage()
 
 function LinkBasePower()
 {
-  global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain;
+  global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan;
   if ($CombatChain->HasCurrentLink()) {
     $attackID = $CombatChain->AttackCard()->ID();
     $attackOriginUID = $combatChain[8];
@@ -1942,7 +1942,8 @@ function LinkBasePower()
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
       if ($card != "-") $basePower = $card->EffectSetBasePower($basePower);
-      switch ($currentTurnEffects[$i]) {
+      $effects = explode("-", $currentTurnEffects[$i]);
+      switch ($effects[0]) {
         case "kayo_underhanded_cheat":
         case "kayo_strong_arm":
           $basePower = 6;
@@ -1964,6 +1965,9 @@ function LinkBasePower()
           break;
         case "cosmic_awakening_blue-3":
           $basePower = 20;
+          break;
+        case "ghostly_touch":
+          if ($attackID == "UPR551") $basePower = $effects[1];
           break;
         default:
           break;

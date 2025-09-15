@@ -947,7 +947,8 @@ function BlockValue($cardID)
 
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
 {
-  global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn;
+  global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
+  global $currentTurnEffects;
   if (!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
@@ -990,9 +991,22 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
       }
     }
   }
-  if ($cardID == "mutated_mass_blue") $basePower = SearchPitchForNumCosts($mainPlayer) * 2;
-  else if ($cardID == "fractal_replication_red") $basePower = FractalReplicationStats("Power");
-  else if ($cardID == "spectral_procession_red") $basePower = CountAura("spectral_shield", $currentPlayer);
+  switch ($cardID) { // cards with * base power
+    case "mutated_mass_blue":
+      $basePower = SearchPitchForNumCosts($mainPlayer) * 2;
+      break;
+    case "fractal_replication_red":
+      $basePower = FractalReplicationStats("Power");
+      break;
+    case "spectral_procession_red":
+      $basePower = CountAura("spectral_shield", $currentPlayer);
+      break;
+    case "diabolic_offering_blue":
+      $basePower = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+      break;
+    default:
+      break;
+  }
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
