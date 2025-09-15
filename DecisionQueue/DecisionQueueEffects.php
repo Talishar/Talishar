@@ -1103,7 +1103,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "CUTTING":
-      if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) $lastResult = 1;
+      if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) {
+        WriteLog(CardLink("cutting_retort_red", "cutting_retort_red") . " does not work on an opponent under amnesia");
+        return $lastResult;
+      }
       AddDecisionQueue("PASSPARAMETER", $player, 1);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
       for ($i = 0; $i < $lastResult; ++$i) {
