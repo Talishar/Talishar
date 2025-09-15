@@ -3,6 +3,7 @@
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated;
+  if ($number == 0) return; //there is no event
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -39,7 +40,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
 
   if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) $number -= $numMinusTokens;
   if ($cardID == "runechant") $number += CountCurrentTurnEffects("mordred_tide_red", $player);
-  if ($cardID == "seismic_surge") $number += CountAura("promising_terrain_blue", $player);
+  if ($cardID == "seismic_surge" && $number > 0) $number += CountAura("promising_terrain_blue", $player);
   if ($cardID == "spectral_shield") {
     $index = SearchArsenalReadyCard($player, "the_librarian");
     if ($index > -1) TheLibrarianEffect($player, $index);
