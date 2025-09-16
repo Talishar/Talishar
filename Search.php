@@ -1528,7 +1528,9 @@ function SearchMultizone($player, $searches)
             $isCardID = true;
             break;
           case "isSameName":
-            $name = CardName($condition[1]);
+          case "shareNames":
+            if ($condition[0] == "isSameName") $name = CardName($condition[1]);
+            else $name = $condition[1];
             switch ($zone) {
               case "MYDECK":
                 $searchResult = SearchDeckByName($player, $name);

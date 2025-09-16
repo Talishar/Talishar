@@ -1091,10 +1091,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0");
       AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, $lastResult, 1);;
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
       // banishing up to 3 more cards
       for ($i = 0; $i < 3; $i++) {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:isSameName={0}&THEIRDECK:isSameName={0}&THEIRARSENAL:isSameName={0}", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRHAND:shareNames={0}&THEIRDECK:shareNames={0}&THEIRARSENAL:shareNames={0}", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose which cards you want your opponent to banish", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
