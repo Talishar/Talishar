@@ -72,13 +72,15 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "convection_amplifier_red":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
-      if($index != -1) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        --$items[$index+1];
-        if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
-        $rv = "Gives your next attack this turn Dominate";
+      if ($from == "PLAY") {
+        $index = GetClassState($currentPlayer, $CS_PlayIndex);
+        $items = &GetItems($currentPlayer);
+        if($index != -1) {
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+          --$items[$index+1];
+          if($items[$index+1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
+          $rv = "Gives your next attack this turn Dominate";
+        }
       }
       return $rv;
     case "locked_and_loaded_red": case "locked_and_loaded_yellow": case "locked_and_loaded_blue":
