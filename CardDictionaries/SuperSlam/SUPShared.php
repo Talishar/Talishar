@@ -74,11 +74,14 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "kayo_strong_arm":
       if ($currentPlayer == $mainPlayer) {
         //check to make sure they targeted the current chain link
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        $uid = $CombatChain->AttackCard()->UniqueID();
+        AddCurrentTurnEffect($cardID, $currentPlayer, $uid);
       }
       else {
         $targetIndex = intval(explode("-", $target)[1]);
-        CombatChainPowerModifier($targetIndex, 6 - $combatChain[$targetIndex + 5]);
+        $uid = $CombatChain->Card($targetIndex)->UniqueID();
+        AddCurrentTurnEffect($cardID, $currentPlayer, "", $uid);
+        ReEvalCombatChain();
       }
       break;
     case "tuffnut":

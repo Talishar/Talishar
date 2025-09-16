@@ -4382,16 +4382,27 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 
-function ModifiedPowerValue($cardID, $player, $from, $source = "")
+function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
 {
-  global $CS_Num6PowBan;
+  global $CS_Num6PowBan, $CombatChain, $currentTurnEffects;
   if ($cardID == "") return 0;
   $power = PowerValue($cardID, $player, $from);
-  if ($cardID == "mutated_mass_blue") return SearchPitchForNumCosts($player) * 2;
-  else if ($cardID == "fractal_replication_red") return FractalReplicationStats("Power");
-  else if ($cardID == "spectral_procession_red") return CountAura("spectral_shield", $player);
-  else if ($cardID == "diabolic_offering_blue") return GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
-  else if ($cardID == "nitro_mechanoidb") return SearchCurrentTurnEffects("galvanic_bender-UNDER", $player) > 0 ? 6 : 5;
+  if ($cardID == "mutated_mass_blue") $power = SearchPitchForNumCosts($player) * 2;
+  else if ($cardID == "fractal_replication_red") $power = FractalReplicationStats("Power");
+  else if ($cardID == "spectral_procession_red") $power = CountAura("spectral_shield", $player);
+  else if ($cardID == "diabolic_offering_blue") $power = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
+  
+  if ($index != -1) {
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+      if ($currentTurnEffects[$i] == "kayo_underhanded_cheat" || $currentTurnEffects[$i] == "kayo_strong_arm") {
+        if ($currentTurnEffects[$i + 2] == $CombatChain->Card($index)->UniqueID()) {
+          $power = 6;
+        }
+      }
+    }
+  }
+
+  else if ($cardID == "nitro_mechanoidb") $power = SearchCurrentTurnEffects("galvanic_bender-UNDER", $player) > 0 ? 6 : 5;
   if ($from != "CC") {
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);

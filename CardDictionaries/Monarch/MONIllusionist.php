@@ -160,7 +160,7 @@
     if($defendingCardType != "AA") return false;
     if(ClassContains($card->ID(), "ILLUSIONIST", $defPlayer)) return false;
     if(PowerCantBeModified($card->ID())) return PowerValue($card->ID(), $defPlayer, "CC") >= 6;
-    $powerValue = ModifiedPowerValue($card->ID(), $defPlayer, "CC", source:$card->ID());
+    $powerValue = ModifiedPowerValue($card->ID(), $defPlayer, "CC", $card->ID(), $index);
     $powerValue += AuraPowerModifiers($index, $powerModifiers, onBlock: true);
     $powerValue += $card->PowerValue();//Combat chain power modifier
     return $powerValue >= 6;

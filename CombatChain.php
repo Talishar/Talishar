@@ -1931,6 +1931,7 @@ function LinkBasePower()
   global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan;
   if ($CombatChain->HasCurrentLink()) {
     $attackID = $CombatChain->AttackCard()->ID();
+    $attackUID = $CombatChain->AttackCard()->UniqueID();
     $attackOriginUID = $combatChain[8];
     if (SubTypeContains($attackID, "Aura")) {
       $index = SearchAurasForUniqueID($attackOriginUID, $mainPlayer);
@@ -1946,7 +1947,7 @@ function LinkBasePower()
       switch ($effects[0]) {
         case "kayo_underhanded_cheat":
         case "kayo_strong_arm":
-          $basePower = 6;
+          if ($mainPlayer == $currentTurnEffects[$i + 1]) $basePower = 6;
           break;
         case "transmogrify_red":
           $basePower = 8;
