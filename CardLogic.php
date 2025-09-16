@@ -4162,6 +4162,13 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
             array_push($uniqueAuras, $name);
           }
         }
+        $character = GetPlayerCharacter($player);
+        for($i = 0; $i < count($character); $i += CharacterPieces()) {
+          $name = NameOverride($character[$i], $player);
+          if (TypeContains($character[$i], "T") && !in_array($name, $uniqueAuras) && SubtypeContains($character[$i], "Aura", $player)) {
+            array_push($uniqueAuras, $name);
+          }
+        }
       }
       if ($target == "-") $index = 0;
       else $index = explode("-", $target)[1];
