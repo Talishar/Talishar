@@ -676,6 +676,8 @@ function CardCost($cardID, $from="-")
     case "two_sides_to_the_blade_red":
     case "roiling_fissure_blue":
       return 1;
+    case "nitro_mechanoidc":
+      return -1;
     default:
       break;
   }
