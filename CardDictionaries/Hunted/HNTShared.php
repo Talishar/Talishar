@@ -1147,6 +1147,9 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "prismatic_leyline_yellow-RED" => true,
     "prismatic_leyline_yellow-YELLOW" => true,
     "prismatic_leyline_yellow-BLUE" => true,
+    "minnowism_red" => true,
+    "minnowism__yellow" => true,
+    "minnowism_blue" => true,
     default => false
   };
 }
