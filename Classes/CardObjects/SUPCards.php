@@ -2072,12 +2072,17 @@ class aura_of_suspense extends BaseCard{
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
-  function ProcessTrigger() {
+  function ProcessTrigger($target, $additionalCosts) {
     global $CombatChain;
-    if (!$CombatChain->HasCurrentLink() && !IsLayerStep()) {
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
     }
-    else AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    else {
+      if (!$CombatChain->HasCurrentLink() && !IsLayerStep()) {
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      }
+      else AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    }
   }
 
   function EffectPowerModifier(): int {
@@ -2111,7 +2116,7 @@ class act_of_glory_red extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2145,7 +2150,7 @@ class act_of_glory_yellow extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2179,7 +2184,7 @@ class act_of_glory_blue extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2213,7 +2218,7 @@ class edge_of_their_seats_red extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2247,7 +2252,7 @@ class edge_of_their_seats_yellow extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2281,7 +2286,7 @@ class edge_of_their_seats_blue extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2315,7 +2320,7 @@ class tension_in_the_air_red extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2349,7 +2354,7 @@ class tension_in_the_air_yellow extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -2383,7 +2388,7 @@ class tension_in_the_air_blue extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->archetype->ProcessTrigger();
+    $this->archetype->ProcessTrigger($target, $additionalCosts);
   }
 
   function EffectPowerModifier($param, $attached = false): int {
@@ -3354,13 +3359,18 @@ class up_on_a_pedestal_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack to put on top of your deck (or pass)", 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("MZADDTOTOPDECK", $this->controller, "-", 1);
-    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-    AddDecisionQueue("WRITELOG", $this->controller, "⤴️ <0> was put on the top of the deck.", 1);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack to put on top of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZADDTOTOPDECK", $this->controller, "-", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("WRITELOG", $this->controller, "⤴️ <0> was put on the top of the deck.", 1);
+    }
   }
 }
 
@@ -3388,7 +3398,12 @@ class in_the_palm_of_your_hand_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Draw($this->controller, effectSource:$this->cardID);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      Draw($this->controller, effectSource:$this->cardID);
+    }
   }
 }
 
@@ -3761,6 +3776,12 @@ class the_suspense_is_killing_me_blue extends Card {
     }
     return 0;
   }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+  }
 }
 
 class to_be_continued_blue extends Card {
@@ -3793,6 +3814,12 @@ class to_be_continued_blue extends Card {
     }
     return 0;
   }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+  }
 }
 
 class what_happens_next_blue extends Card {
@@ -3816,6 +3843,12 @@ class what_happens_next_blue extends Card {
       if (GetClassState($this->controller, $CS_NumCostedCardsPlayed) == 0) return -1;
     }
     return 0;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
   }
 }
 
@@ -4087,7 +4120,12 @@ class hungry_for_more_red extends Card{
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    GainHealth(3, $this->controller);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      GainHealth(3, $this->controller);
+    }
   }
 }
 
@@ -5513,8 +5551,13 @@ class dramatic_pause_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $index = explode("-", $target)[1];
-    CombatChainDefenseModifier($index, 3);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      $index = explode("-", $target)[1];
+      CombatChainDefenseModifier($index, 3);
+    }
   }
 }
 
@@ -5539,8 +5582,13 @@ class dramatic_pause_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $index = explode("-", $target)[1];
-    CombatChainDefenseModifier($index, 2);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      $index = explode("-", $target)[1];
+      CombatChainDefenseModifier($index, 2);
+    }
   }
 }
 
@@ -5565,8 +5613,13 @@ class dramatic_pause_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $index = explode("-", $target)[1];
-    CombatChainDefenseModifier($index, 1);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      $index = explode("-", $target)[1];
+      CombatChainDefenseModifier($index, 1);
+    }
   }
 }
 
@@ -5669,12 +5722,17 @@ class turn_heads_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    $otherChar = GetPlayerCharacter($otherPlayer);
-    if (ClassContains($otherChar[0], "BRUTE", $otherPlayer)) {
-      Tap("THEIRCHAR-0", $this->controller);
-      if ($otherPlayer == $mainPlayer) AddCurrentTurnEffect($this->cardID, $otherPlayer);
-      else AddNextTurnEffect($this->cardID, $otherPlayer);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      $otherPlayer = $this->controller == 1 ? 2 : 1;
+      $otherChar = GetPlayerCharacter($otherPlayer);
+      if (ClassContains($otherChar[0], "BRUTE", $otherPlayer)) {
+        Tap("THEIRCHAR-0", $this->controller);
+        if ($otherPlayer == $mainPlayer) AddCurrentTurnEffect($this->cardID, $otherPlayer);
+        else AddNextTurnEffect($this->cardID, $otherPlayer);
+      }
     }
   }
 }
@@ -5700,13 +5758,18 @@ class who_blinks_first_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    $otherChar = GetPlayerCharacter($otherPlayer);
-    if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+    else {
+      $otherPlayer = $this->controller == 1 ? 2 : 1;
+      $otherChar = GetPlayerCharacter($otherPlayer);
+      if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) {
+        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+      }
     }
   }
 }
