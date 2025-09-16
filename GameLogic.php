@@ -2644,16 +2644,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $trueSteal = $parameter == "STEAL";
       StealEquipment($targetPlayer, $index, $player, $trueSteal);
       return $cardID;
-    case "REMOVEMODULAR":
-      $character = &GetPlayerCharacter($player);
-      $index = -1;
-      for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-        if ($character[$i + 11] == $parameter) {
-          $index = $i;
-          break;
-        }
-      }
-      RemoveCharacter($player, $index);
+    case "MODULARMOVE":
       $effectIndex = -1;
       for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
         if (DelimStringContains($currentTurnEffects[$i], $parameter, partial:true)) {
@@ -2661,9 +2652,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         }
       }
-      RemoveCurrentTurnEffect($effectIndex);
-      if ($index == -1) WriteLog("Something went horribly wrong, please submit a bug report");
-      return "";
+      if ($effectIndex == -1) WriteLog("Something went horribly wrong, please submit a bug report");
+      $effectArr = explode(",", $currentTurnEffects[$i]);
+      $effectArr[count($effectArr) - 1] = $lastResult;
+      $currentTurnEffects[$i] = implode(",", $effectArr);
+      return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
       if ((CardType($params[0]) == "AA" && (GetResolvedAbilityType($params[0], $params[1]) == "") || GetResolvedAbilityType($params[0], $params[1]) == "AA")) GetTargetOfAttack($params[0]);
