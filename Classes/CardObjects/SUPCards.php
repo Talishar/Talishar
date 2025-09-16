@@ -5131,9 +5131,11 @@ class channel_the_tranquil_domain_yellow extends Card {
       $targetPlayer = explode("-", $target)[0];
       $targetUID = explode("-", $target)[1];
       $targetIndex = SearchAurasForUniqueID($targetUID, $targetPlayer);
-      $targetMZIndex = $targetPlayer == $this->controller ? "MYAURAS-$targetIndex" : "THEIRAURAS-$targetIndex";
-      AddDecisionQueue("PASSPARAMETER", $this->controller, $targetMZIndex);
-      AddDecisionQueue("MZBOTTOM", $this->controller, "-", 1);
+      if ($targetIndex != -1) {
+        $targetMZIndex = $targetPlayer == $this->controller ? "MYAURAS-$targetIndex" : "THEIRAURAS-$targetIndex";
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $targetMZIndex);
+        AddDecisionQueue("MZBOTTOM", $this->controller, "-", 1);
+      }
     }
   }
 
