@@ -102,7 +102,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       case "zephyr_needle":
       case "zephyr_needle_r":
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
+          $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
+          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
@@ -164,7 +165,8 @@ function BlockingCardDefense($index)
   $cardID = isset($combatChain[$index]) ? $combatChain[$index] : "-";
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = (isset($combatChain[$index + 3]) ? intval($combatChain[$index + 3]) : 0) + intval($baseCost);
-  $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC"));
+  $uid = $combatChain[$index + 2] == "EQUIP" ? $combatChain[$index + 8] : $combatChain[$index + 7];
+  $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC", "", $uid));
   if (!BlockCantBeModified($cardID)) {
     // $defense += $combatChain[$index + 6];
     if (isset($combatChain[$index + 6]) && ($combatChain[$index + 6] < 0 || $canGainBlock)) $defense += $combatChain[$index + 6];
@@ -1096,7 +1098,7 @@ function UnsetAllyModifier($player, $modifier, $newMod = "-") {
     }
 }
 
-function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "")
+function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false)
 {
   global $combatChain;
   $pieces = "";
@@ -1116,10 +1118,38 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
       }
       if ($excluded) continue;
       if ($pieces != "") $pieces .= ",";
-      $pieces .= $i;
+      if (!$asMZInd) $pieces .= $i;
+      else $pieces .= "COMBATCHAINLINK-$i";
     }
   }
   return $pieces;
+}
+
+function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false) {
+  global $chainLinks, $defPlayer;
+  $ret = [];
+  $exclCardTypeArray = explode(",", $exclCardTypes);
+  $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
+  for ($i = 0; $i < count($chainLinks); ++$i) {
+    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      $cardID = $chainLinks[$i][$j];
+      $thisType = CardType($cardID);
+      $thisSubType = CardSubType($cardID);
+      if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
+      $excluded = false;
+      for ($k = 0; $k < count($exclCardTypeArray); ++$k) {
+        if ($thisType == $exclCardTypeArray[$k]) $excluded = true;
+      }
+      for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
+        if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+      }
+      if ($excluded) continue;
+      if (!$asMZInd) array_push($ret, "$j-$i");
+      else array_push($ret, "PASTCHAINLINK-$j-$i");
+      }
+    }
+  }
+  return implode(",", $ret);
 }
 
 function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "")
@@ -1280,7 +1310,7 @@ function CombatChainClosedCharacterEffects()
             $equipCharacter[$charIndex + 4] -= 1; //Add -1 block counter
             $equipCharacter[$charIndex + 6] = 0;
           }
-          if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC") + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
+          if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($equipPlayer, $charIndex);
           }
         }
@@ -1289,7 +1319,7 @@ function CombatChainClosedCharacterEffects()
         }
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
-        $blockModifier = (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC") + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
+        $blockModifier = (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
         $bladeBeckoner = ["blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots"];
         if (IsWeapon($chainLinks[$i][0], "PLAY") && in_array($chainLinks[$i][$j], $bladeBeckoner)) {
           $blockModifier += 1;

@@ -439,10 +439,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
       return CombatChainDefenseModifier($lastResult, intval($parameter));
-    case "HALVEBASEDEFENSE":
-      $combatChain[$lastResult + 6] -= floor(ModifiedBlockValue($combatChain[$lastResult], $defPlayer, "CC") / 2);
-      return $lastResult;
     case "PUTCOMBATCHAINDEFENSE0":
+      //look at making this set base defense
       $index = GetCombatChainIndex($lastResult, $player);
       $combatChain[$index + 6] -= ModifiedBlockValue($lastResult, $defPlayer, "CC");
       return $lastResult;
@@ -1110,7 +1108,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "EQUIPDEFENSE":
       $char = &GetPlayerCharacter($player);
-      $defense = ModifiedBlockValue($char[$lastResult], $defPlayer, "CC") + $char[$lastResult + 4];
+      $defense = ModifiedBlockValue($char[$lastResult], $defPlayer, "CC", $char[$lastResult + 11]) + $char[$lastResult + 4];
       if ($defense < 0) $defense = 0;
       return $defense;
     case "ALLCARDTYPEORPASS":
@@ -2908,6 +2906,30 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "sigil_of_aether_blue":
           $targetLoc = explode("-", $target)[0];
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
+          break;
+        case "decimator_great_axe":
+          $location = explode("-", $target)[0];
+          $ind1 = explode("-", $target)[1];
+          $ind2 = explode("-", $target)[2] ?? 0;
+          $from = match ($location) {
+            "COMBATCHAINLINK" => $combatChain[$ind1 + 2],
+            "PASTCHAINLINK" => $uid = $chainLinks[$ind2][$ind1 + 3],
+            default =>  "-",
+          };
+          if ($from == "EQUIP") {
+            $uid = match ($location) {
+              "COMBATCHAINLINK" => $combatChain[$ind1 + 8],
+              "PASTCHAINLINK" => $uid = $chainLinks[$ind2][$ind1 + 8],
+              default =>  "-",
+            };
+          }
+          else {
+            $uid = match ($location) {
+              "COMBATCHAINLINK" => $combatChain[$ind1 + 7],
+              default =>  "-", //currently no good way for (or point in) tracking def debuffs on non-equips on past chain links
+            };
+          }
+          AddLayer("TRIGGER", $player, $params[0], "$location-$uid");
           break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);

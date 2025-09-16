@@ -786,10 +786,15 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (!SearchCurrentTurnEffects("decimator_great_axe", $mainPlayer)) {
         $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E", exclCardSubTypes: "Evo");
         if ($nonEquipBlockingCards != "") {
-          $options = GetChainLinkCards($defPlayer);
-          AddCurrentTurnEffect("decimator_great_axe", $mainPlayer);
-          AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-          AddDecisionQueue("HALVEBASEDEFENSE", $defPlayer, "-", 1);
+          $options = GetChainLinkCards($defPlayer, asMZInd:true);
+          $pastOptions = GetPastChainLinkCards($defPlayer, asMZInd:true);
+          if ($pastOptions != "") $options .= ",$pastOptions";
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $options);
+          AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
+          AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
+          // AddCurrentTurnEffect("decimator_great_axe", $mainPlayer);
+          // AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
+          // AddDecisionQueue("HALVEBASEDEFENSE", $defPlayer, "-", 1);
         }
       }
       break;
@@ -952,14 +957,18 @@ function OnBlockResolveEffects($cardID = "")
         }
         break;
       case "decimator_great_axe":
-        $nonEquipBlockingCards = "";
         if (!SearchCurrentTurnEffects("decimator_great_axe", $mainPlayer)) {
-          $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", exclCardTypes: "E", exclCardSubTypes: "Evo");
+          $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E", exclCardSubTypes: "Evo");
           if ($nonEquipBlockingCards != "") {
-            $options = GetChainLinkCards($defPlayer);
-            AddCurrentTurnEffect("decimator_great_axe", $mainPlayer);
-            AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-            AddDecisionQueue("HALVEBASEDEFENSE", $mainPlayer, "-", 1);
+            $options = GetChainLinkCards($defPlayer, asMZInd:true);
+            $pastOptions = GetPastChainLinkCards($defPlayer, asMZInd:true);
+            if ($pastOptions != "") $options .= ",$pastOptions";
+            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $options);
+            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
+            AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
+            // AddCurrentTurnEffect("decimator_great_axe", $mainPlayer);
+            // AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
+            // AddDecisionQueue("HALVEBASEDEFENSE", $defPlayer, "-", 1);
           }
         }
         break;

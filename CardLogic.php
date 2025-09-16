@@ -2180,7 +2180,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "zephyr_needle_r":
         EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC")) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
+          $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
+          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
           if ($totalBlock > 0 && ($blockVal > $totalPower) && $combatChain[$i + 1] == $defPlayer) {
             DestroyCurrentWeapon();
           }
@@ -4114,6 +4115,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "alpha_instinct_blue":
         PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
         break;
+      case "decimator_great_axe":
+        $zone = explode("-", $target)[0];
+        $uid = explode("-", $target)[1];
+        AddCurrentTurnEffect($parameter, $player, '', $uid);
+        break;
       default:
         break;
     }
@@ -4414,8 +4420,9 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   return $power;
 }
 
-function ModifiedBlockValue($cardID, $player, $from, $source="")
+function ModifiedBlockValue($cardID, $player, $from, $source="", $uniqueID=-1)
 {
+  global $currentTurnEffects;
   if ($cardID == "") return 0;
   $block = BlockValue($cardID);
   if ($from == "CC") {
@@ -4428,6 +4435,19 @@ function ModifiedBlockValue($cardID, $player, $from, $source="")
           break;
         default:
           break;
+      }
+    }
+  }
+  if ($uniqueID != -1) {
+    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+      if ($currentTurnEffects[$i + 2] == $uniqueID) {
+        switch ($currentTurnEffects[$i]) {
+          case "decimator_great_axe":
+            $block = ceil($block / 2);
+            break;
+          default:
+            break;
+        }
       }
     }
   }

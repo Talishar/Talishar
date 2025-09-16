@@ -1331,6 +1331,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($option[0] == "CC") $source = $combatChain;
         else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
         else if ($option[0] == "COMBATCHAINATTACKS") $source = GetCombatChainAttacks();
+        else if ($option[0] == "PASTCHAINLINK") $source = $chainLinks[$option[2]];
         else if ($option[0] == "PRELAYERS") $source = GetPreLayers();
         else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
         else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
@@ -1392,6 +1393,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
         //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
         if ($option[0] == "MYARS") $label = "Arsenal";
+        //Add indication for past chain links
+        if ($option[0] == "PASTCHAINLINK") $label = "Chain link " . $option[2]+1;
         //Add indication for Attacking Mechanoid
         if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "nitro_mechanoida" || GetMZCard($currentPlayer, $options[$i]) == "teklovossen_the_mechropotenta")) $label = "Attacking";
 

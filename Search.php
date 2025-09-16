@@ -1314,11 +1314,16 @@ function GetMZCardLink($player, $MZ)
   $index = $params[1];
   if ($index == "") return "";
   if (is_numeric($index)) {
-    if (isset($zoneDS[$index]) && is_string($zoneDS[$index])) {
-      if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD" || $zoneDS[$index] == "ABILITY") $index += 2;
-      $cardID = $zoneDS[$index] == "runechant_batch" ? "runechant" : $zoneDS[$index];
-      return CardLink($cardID, $cardID);
+    if ($params[0] == "PASTCHAINLINK") {
+      $cardID = $zoneDS[$params[2]][$index];
     }
+    else {
+      if (isset($zoneDS[$index]) && is_string($zoneDS[$index])) {
+        if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD" || $zoneDS[$index] == "ABILITY") $index += 2;
+        $cardID = $zoneDS[$index] == "runechant_batch" ? "runechant" : $zoneDS[$index];
+      }
+    }
+    return CardLink($cardID, $cardID);
   }
   else { //the index was a UID
     $pieces = GetMZZonePieces($params[0]);

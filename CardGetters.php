@@ -3,7 +3,7 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $layers, $combatChain;
+  global $layers, $combatChain, $chainLinks;
   $rv = "";
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
@@ -23,7 +23,9 @@ function &GetMZZone($player, $zone)
   else if ($zone == "COMBATCHAINATTACKS") {
     $attacks = GetCombatChainAttacks();
     return $attacks;
-  }  return $rv;
+  }
+  else if ($zone == "PASTCHAINLINK") return $chainLinks;
+  return $rv;
 }
 
 function GetMZZonePieces($zone)
@@ -44,6 +46,7 @@ function GetMZZonePieces($zone)
   else if ($zone == "LAYER") return LayerPieces();
   else if ($zone == "CC" || $zone == "COMBATCHAINLINK") $rv = CombatChainPieces();
   else if ($zone == "COMBATCHAINATTACKS") $rv = ChainLinksPieces();
+  else if ($zone == "PASTCHAINLINK") $rv = ChainLinksPieces();
   return $rv;
 }
 
@@ -60,7 +63,7 @@ function GetMZZoneUIDIndex($zone)
     "ITEMS", "MYITEMS", "THEIRITEMS" => 4,
     "LAYER" => 6,
     "CC", "COMBATCHAINLINK" => 7,
-    "COMBATCHAINATTACKS" => 8,
+    "COMBATCHAINATTACKS", "PASTCHAINLINK" => 8,
     default => -1,
   };
 }
