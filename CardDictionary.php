@@ -68,7 +68,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
   global $CS_AdditionalCosts, $currentPlayer;
   $cardID = BlindCard($cardID, true);
   $controller = $controller == "-" ? $currentPlayer : $controller;
-  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN"];
+  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
   
   // Handle meld cards

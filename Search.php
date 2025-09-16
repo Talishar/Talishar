@@ -228,6 +228,7 @@ function isPriorityStep($cardID)
     case "ATTACKSTEP":
     case "RESOLUTIONSTEP":
     case "CLOSINGCHAIN":
+    case "STARTTURN":
       return true;
     default:
       return false;

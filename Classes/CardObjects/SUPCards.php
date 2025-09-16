@@ -423,19 +423,6 @@ class hunter_or_hunted_blue extends Card {
 }
 
 
-// class in_the_palm_of_your_hand_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "in_the_palm_of_your_hand_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class light_up_the_leaves_red extends Card {
 
 //   function __construct($controller) {
@@ -1159,8 +1146,7 @@ class leave_them_hanging_red extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
-    else $this->ProcessTrigger("-", additionalCosts:"BUFF");
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -2083,8 +2069,7 @@ class aura_of_suspense extends BaseCard{
   }
 
   function LeavesPlayAbility($mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger();
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger() {
@@ -2663,8 +2648,7 @@ class cheers_blue extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger(-1);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function StartTurnAbility($index) {
@@ -2687,8 +2671,7 @@ class booze_blue extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger(-1);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function StartTurnAbility($index) {
@@ -3363,8 +3346,7 @@ class up_on_a_pedestal_blue extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger($uniqueID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -3398,8 +3380,7 @@ class in_the_palm_of_your_hand_red extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else Draw($this->controller, false, effectSource:$this->cardID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -4098,8 +4079,7 @@ class hungry_for_more_red extends Card{
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger($uniqueID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -5680,8 +5660,7 @@ class turn_heads_blue extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger($uniqueID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -5712,8 +5691,7 @@ class who_blinks_first_blue extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
-    if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
-    else $this->ProcessTrigger($uniqueID);
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
