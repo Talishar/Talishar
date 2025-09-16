@@ -1019,7 +1019,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
-    "a_good_clean_fight_red" => 7, // fabcube error
+    "story_beats_blue" => 5, //fabcube error
+    "story_beats_yellow" => 6, //fabcube error
     default => $basePower,
   };
   // Lyath ability is handled elsewhere while attacking
