@@ -509,255 +509,257 @@ function AuraStartTurnAbilities()
     if ($card != "-") {
       if ($card->StartTurnAbility($i)) array_push($toRemove, $auras[$i + 6]);
     }
-    switch ($auras[$i]) {
-    //These are all start of turn events without priority
-    case "genesis_yellow":
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for " . CardLink($auras[$i], $auras[$i]));
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);
-      break;
-    case "blessing_of_savagery_red":
-    case "blessing_of_savagery_yellow":
-    case "blessing_of_savagery_blue":
-      if ($auras[$i] == "blessing_of_savagery_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_savagery_yellow") ? 2 : 1;
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "never_yield_blue":
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      $hand = &GetHand($mainPlayer);
-      if (count($hand) == 0) {
-        Draw($mainPlayer, false);
-      }
-      if (PlayerHasLessHealth($mainPlayer)) {
-        GainHealth(2, $mainPlayer);
-      }
-      if (SearchCount(SearchCharacter($mainPlayer, type: "E")) < SearchCount(SearchCharacter($defPlayer, type: "E"))) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZOP", $mainPlayer, "GETCARDINDEX", 1);
-        AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "1", 1);
-      }
-      break;
-    case "blessing_of_patience_red":
-    case "blessing_of_patience_yellow":
-    case "blessing_of_patience_blue":
-      if ($auras[$i] == "blessing_of_patience_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_patience_yellow") ? 2 : 1;
-      GainHealth($amount, $mainPlayer);
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "mindstate_of_tiger_blue":
-      AddPlayerHand("crouching_tiger", $mainPlayer, "-");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "blessing_of_qi_red":
-    case "blessing_of_qi_yellow":
-    case "blessing_of_qi_blue":
-      if ($auras[$i] == "blessing_of_qi_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_qi_yellow") ? 2 : 1;
-      $index = BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer);
-      $banish = new Banish($mainPlayer);
-      AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish->Card($index)->UniqueID());
-      AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . ",BANISH");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "blessing_of_steel_red":
-    case "blessing_of_steel_yellow":
-    case "blessing_of_steel_blue":
-      if ($auras[$i] == "blessing_of_steel_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_steel_yellow") ? 2 : 1;
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "blessing_of_ingenuity_red":
-    case "blessing_of_ingenuity_yellow":
-    case "blessing_of_ingenuity_blue":
-      if ($auras[$i] == "blessing_of_ingenuity_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_ingenuity_yellow") ? 2 : 1;
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "hyper_driver_red", "hyper_driver_yellow", "hyper_driver_blue"), SearchBanishForCardMulti($mainPlayer, "hyper_driver_red", "hyper_driver_yellow", "hyper_driver_blue"));
-      $countHyper = count(explode(",", $searchHyper));
-      if ($amount > $countHyper) $amount = $countHyper;
-      for ($j = 0; $j < $amount; ++$j) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue&MYBANISH:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-        AddDecisionQueue("MZOP", $mainPlayer, "GETCARDID", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+    if (isset($auras[$i])) {
+      switch ($auras[$i]) {
+      //These are all start of turn events without priority
+      case "genesis_yellow":
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for " . CardLink($auras[$i], $auras[$i]));
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        AddDecisionQueue("PUTPLAY", $mainPlayer, "False", 1);
-      }
-      break;
-    case "blessing_of_focus_red":
-    case "blessing_of_focus_yellow":
-    case "blessing_of_focus_blue":
-      if ($auras[$i] == "blessing_of_focus_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_focus_yellow") ? 2 : 1;
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      PlayerOpt($mainPlayer, $amount);
-      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BLESSINGOFFOCUS", 1);
-      break;
-    case "blessing_of_occult_red":
-    case "blessing_of_occult_yellow":
-    case "blessing_of_occult_blue":
-      if ($auras[$i] == "blessing_of_occult_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_occult_yellow") ? 2 : 1;
-      PlayAura("runechant", $mainPlayer, $amount, true);
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "blessing_of_aether_red":
-    case "blessing_of_aether_yellow":
-    case "blessing_of_aether_blue":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "blessing_of_spirits_red":
-    case "blessing_of_spirits_yellow":
-    case "blessing_of_spirits_blue":
-      if ($auras[$i] == "blessing_of_spirits_red") $amount = 3;
-      else $amount = ($auras[$i] == "blessing_of_spirits_yellow") ? 2 : 1;
-      PlayAura("spectral_shield", $mainPlayer, $amount);
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "chains_of_mephetis_blue":
-      if ($auras[$i + 2] > 0) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_doom_counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
-        AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
-      } else {
-        WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);
+        break;
+      case "blessing_of_savagery_red":
+      case "blessing_of_savagery_yellow":
+      case "blessing_of_savagery_blue":
+        if ($auras[$i] == "blessing_of_savagery_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_savagery_yellow") ? 2 : 1;
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      }
-      break;
-    case "crash_down_red":
-    case "earthlore_empowerment_red":
-    case "crash_down_yellow":
-    case "earthlore_empowerment_yellow":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "might":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
-      break;
-    case "vigor":
-      GainResources($mainPlayer, 1);
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
-      break;
-    case "contest_the_mindfield_blue":
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "stacked_in_your_favor_red":
-    case "stacked_in_your_favor_yellow":
-    case "stacked_in_your_favor_blue":
-      $effectSource = $auras[$i];
-      WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      Draw($mainPlayer, effectSource: $effectSource);
-      MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
-      break;
-    case "big_bop_red":
-    case "big_bop_yellow":
-    case "big_bop_blue":
-      AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "bigger_than_big_red":
-    case "bigger_than_big_yellow":
-    case "bigger_than_big_blue":
-      AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "agility":
-      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
-      break;
-    case "restless_coalescence_yellow":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
-      break;
-    case "sigil_of_solitude_red":
-    case "sigil_of_solitude_yellow":
-    case "sigil_of_solitude_blue":
-      $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
-      if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "channel_mount_isen_blue":
-      $character = &GetPlayerCharacter($mainPlayer);
-      $eqFrostbiteCount = 0;
-      for ($k = 0; $k < count($character); $k += CharacterPieces()) {
-        if ($character[$k] == "frostbite") {
-          $slot = "";
-          for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
-            $effect = explode(",", $currentTurnEffects[$j]);
-            if ($effect[0] == "frostbite-" . $character[$k + 11]) {
-              $slot = $effect[1];
-              if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
-                $eqFrostbiteCount += 1;
+        break;
+      case "never_yield_blue":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $hand = &GetHand($mainPlayer);
+        if (count($hand) == 0) {
+          Draw($mainPlayer, false);
+        }
+        if (PlayerHasLessHealth($mainPlayer)) {
+          GainHealth(2, $mainPlayer);
+        }
+        if (SearchCount(SearchCharacter($mainPlayer, type: "E")) < SearchCount(SearchCharacter($defPlayer, type: "E"))) {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=E;hasNegCounters=true");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment to remove a -1 defense counter", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MZOP", $mainPlayer, "GETCARDINDEX", 1);
+          AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "1", 1);
+        }
+        break;
+      case "blessing_of_patience_red":
+      case "blessing_of_patience_yellow":
+      case "blessing_of_patience_blue":
+        if ($auras[$i] == "blessing_of_patience_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_patience_yellow") ? 2 : 1;
+        GainHealth($amount, $mainPlayer);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "mindstate_of_tiger_blue":
+        AddPlayerHand("crouching_tiger", $mainPlayer, "-");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "blessing_of_qi_red":
+      case "blessing_of_qi_yellow":
+      case "blessing_of_qi_blue":
+        if ($auras[$i] == "blessing_of_qi_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_qi_yellow") ? 2 : 1;
+        $index = BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer);
+        $banish = new Banish($mainPlayer);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish->Card($index)->UniqueID());
+        AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . ",BANISH");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "blessing_of_steel_red":
+      case "blessing_of_steel_yellow":
+      case "blessing_of_steel_blue":
+        if ($auras[$i] == "blessing_of_steel_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_steel_yellow") ? 2 : 1;
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "blessing_of_ingenuity_red":
+      case "blessing_of_ingenuity_yellow":
+      case "blessing_of_ingenuity_blue":
+        if ($auras[$i] == "blessing_of_ingenuity_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_ingenuity_yellow") ? 2 : 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "hyper_driver_red", "hyper_driver_yellow", "hyper_driver_blue"), SearchBanishForCardMulti($mainPlayer, "hyper_driver_red", "hyper_driver_yellow", "hyper_driver_blue"));
+        $countHyper = count(explode(",", $searchHyper));
+        if ($amount > $countHyper) $amount = $countHyper;
+        for ($j = 0; $j < $amount; ++$j) {
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue&MYBANISH:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue");
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
+          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
+          AddDecisionQueue("MZOP", $mainPlayer, "GETCARDID", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
+          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+          AddDecisionQueue("PUTPLAY", $mainPlayer, "False", 1);
+        }
+        break;
+      case "blessing_of_focus_red":
+      case "blessing_of_focus_yellow":
+      case "blessing_of_focus_blue":
+        if ($auras[$i] == "blessing_of_focus_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_focus_yellow") ? 2 : 1;
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        PlayerOpt($mainPlayer, $amount);
+        AddDecisionQueue("SPECIFICCARD", $mainPlayer, "BLESSINGOFFOCUS", 1);
+        break;
+      case "blessing_of_occult_red":
+      case "blessing_of_occult_yellow":
+      case "blessing_of_occult_blue":
+        if ($auras[$i] == "blessing_of_occult_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_occult_yellow") ? 2 : 1;
+        PlayAura("runechant", $mainPlayer, $amount, true);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "blessing_of_aether_red":
+      case "blessing_of_aether_yellow":
+      case "blessing_of_aether_blue":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "blessing_of_spirits_red":
+      case "blessing_of_spirits_yellow":
+      case "blessing_of_spirits_blue":
+        if ($auras[$i] == "blessing_of_spirits_red") $amount = 3;
+        else $amount = ($auras[$i] == "blessing_of_spirits_yellow") ? 2 : 1;
+        PlayAura("spectral_shield", $mainPlayer, $amount);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "chains_of_mephetis_blue":
+        if ($auras[$i + 2] > 0) {
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_doom_counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
+          AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
+        } else {
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
+          DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        }
+        break;
+      case "crash_down_red":
+      case "earthlore_empowerment_red":
+      case "crash_down_yellow":
+      case "earthlore_empowerment_yellow":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "might":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
+        break;
+      case "vigor":
+        GainResources($mainPlayer, 1);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
+        break;
+      case "contest_the_mindfield_blue":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "stacked_in_your_favor_red":
+      case "stacked_in_your_favor_yellow":
+      case "stacked_in_your_favor_blue":
+        $effectSource = $auras[$i];
+        WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        Draw($mainPlayer, effectSource: $effectSource);
+        MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
+        break;
+      case "big_bop_red":
+      case "big_bop_yellow":
+      case "big_bop_blue":
+        AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "bigger_than_big_red":
+      case "bigger_than_big_yellow":
+      case "bigger_than_big_blue":
+        AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "agility":
+        if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
+        break;
+      case "restless_coalescence_yellow":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
+        break;
+      case "sigil_of_solitude_red":
+      case "sigil_of_solitude_yellow":
+      case "sigil_of_solitude_blue":
+        $AurasArray = explode(",", SearchAura($mainPlayer, class: "ILLUSIONIST"));
+        if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "channel_mount_isen_blue":
+        $character = &GetPlayerCharacter($mainPlayer);
+        $eqFrostbiteCount = 0;
+        for ($k = 0; $k < count($character); $k += CharacterPieces()) {
+          if ($character[$k] == "frostbite") {
+            $slot = "";
+            for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
+              $effect = explode(",", $currentTurnEffects[$j]);
+              if ($effect[0] == "frostbite-" . $character[$k + 11]) {
+                $slot = $effect[1];
+                if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
+                  $eqFrostbiteCount += 1;
+                }
               }
             }
           }
         }
-      }
-      LoseHealth($eqFrostbiteCount, $mainPlayer);
-      WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
-      break;
-    case "agility_stance_yellow":
-      if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); 
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "flurry_stance_red":
-      $character = &GetPlayerCharacter($mainPlayer);
-      $weaponIndex1 = CharacterPieces();
-      $weaponIndex2 = CharacterPieces() * 2;
-      if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
-      if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "power_stance_blue":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "blessing_of_vynserakai_red":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "shifting_tides_blue":
-      $deck = new Deck($mainPlayer);
-      if($deck->Empty()) {
-        AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+        LoseHealth($eqFrostbiteCount, $mainPlayer);
+        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
+        break;
+      case "agility_stance_yellow":
+        if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); 
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
+      case "flurry_stance_red":
+        $character = &GetPlayerCharacter($mainPlayer);
+        $weaponIndex1 = CharacterPieces();
+        $weaponIndex2 = CharacterPieces() * 2;
+        if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
+        if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "power_stance_blue":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "blessing_of_vynserakai_red":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "shifting_tides_blue":
+        $deck = new Deck($mainPlayer);
+        if($deck->Empty()) {
+          AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+          DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+          break;
+        }
+        $top = $deck->Top(true);
+        Pitch($top, $mainPlayer);
+        if(ColorContains($top, 3, $mainPlayer)) {
+          WriteLog("🌊 The tides shifted to the bottom of your deck");
+          AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
+        }
+        else {
+          AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+        }
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      case "confidence":
+        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        IncrementClassState($mainPlayer, $CS_NumConfidenceDestroyed, 1);
+        break;
+      case "daily_grind_blue":
+      case "seismic_shelter_blue":
+        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        break;
+      default:
+        break;
       }
-      $top = $deck->Top(true);
-      Pitch($top, $mainPlayer);
-      if(ColorContains($top, 3, $mainPlayer)) {
-        WriteLog("🌊 The tides shifted to the bottom of your deck");
-        AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
-      }
-      else {
-        AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
-      }
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    case "confidence":
-      AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      IncrementClassState($mainPlayer, $CS_NumConfidenceDestroyed, 1);
-      break;
-    case "daily_grind_blue":
-    case "seismic_shelter_blue":
-      DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-      break;
-    default:
-      break;
     }
   }
   foreach ($toRemove as $uniqueId) {
