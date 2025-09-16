@@ -2087,7 +2087,11 @@ class aura_of_suspense extends BaseCard{
   }
 
   function ProcessTrigger() {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    global $CombatChain;
+    if (!$CombatChain->HasCurrentLink() && !IsLayerStep()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    else AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
   }
 
   function EffectPowerModifier(): int {
