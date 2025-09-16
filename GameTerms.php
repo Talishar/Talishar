@@ -110,6 +110,8 @@ function TypeToPlay($phase)
       return "a card name";
     case "CHOOSENUMBER":
       return "a number";
+    case "STARTTURN":
+      return "an order for trigger (enable Always Hold Priority to reorder)";
   }
 }
 
