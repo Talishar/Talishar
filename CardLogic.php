@@ -335,6 +335,7 @@ function ShouldHoldPriorityNow($player)
   global $layerPriority, $layers;
   if ($layerPriority[$player - 1] != "1") return false;
   if ($layers[count($layers) - LayerPieces()] == "ENDPHASE") return false;
+  if ($layers[count($layers) - LayerPieces()] == "STARTTURN") return false;
   $currentLayer = $layers[count($layers) - LayerPieces()];
   $layerType = CardType($currentLayer);
   if (HoldPrioritySetting($player) == 3 && $layerType != "AA" && $layerType != "W") return false;
@@ -520,7 +521,11 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "ABILITY") {
           ProcessAbility($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
           ProcessDecisionQueue();
-        } else {
+        }
+        else if ($cardID == "STARTTURN") {
+          ProcessDecisionQueue();
+        }
+        else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           PlayCardEffect($cardID, $params[0], isset($params[1]) ? $params[1] : 0, $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
           ClearDieRoll($player);

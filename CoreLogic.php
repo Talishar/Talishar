@@ -3280,6 +3280,8 @@ function UnityEffect($cardID)
 function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-", $num=1)
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn, $currentTurnEffects;
+  //main phase argument is deprecated
+  $mainPhase = SearchLayersForPhase("STARTTURN") == -1 && SearchLayersForPhase("ENDPHASE") == -1;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("talisman_of_tithes_blue", $otherPlayer);

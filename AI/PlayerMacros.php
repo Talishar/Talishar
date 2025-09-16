@@ -23,6 +23,7 @@ function ProcessMacros()
       else if($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
       else if((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < (LayerPieces() * 3)) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
+      else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
