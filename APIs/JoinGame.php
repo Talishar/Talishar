@@ -878,6 +878,9 @@ function isUnimplemented($cardID) {
         "gallow_end_of_the_line_yellow" => false,
         "channel_the_tranquil_domain_yellow" => false,
         "mage_hunter_arrow_red" => false,
+        "prime_the_crowd_red" => false,
+        "prime_the_crowd_yellow" => false,
+        "prime_the_crowd_blue" => false,
         default => true
       };
     case "APS":

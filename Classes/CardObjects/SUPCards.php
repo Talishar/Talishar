@@ -4954,6 +4954,67 @@ class give_em_a_piece_of_your_mind_blue extends give_em_a_piece_of_your_mind {
   }
 }
 
+class prime_the_crowd extends Card {
+  function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+
+    $p1Char = GetPlayerCharacter(1);
+    $p2Char = GetPlayerCharacter(2);
+
+    if (TalentContains($p1Char[0], "REVERED", 1)) {
+      Cheer(1);
+    }
+    if (TalentContains($p2Char[0], "REVERED", 2)) {
+      Cheer(2);
+    }
+
+    if (TalentContains($p1Char[0], "REVILED", 1)) {
+      BOO(1);
+    }
+    if (TalentContains($p2Char[0], "REVILED", 2)) {
+      BOO(2);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+  }
+}
+
+class prime_the_crowd_red extends prime_the_crowd {
+  function __construct($controller) {
+    $this->cardID = "prime_the_crowd_red";
+    $this->controller = $controller;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 4;
+  }
+}
+
+class prime_the_crowd_yellow extends prime_the_crowd {
+  function __construct($controller) {
+    $this->cardID = "prime_the_crowd_yellow";
+    $this->controller = $controller;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
+
+class prime_the_crowd_blue extends prime_the_crowd {
+  function __construct($controller) {
+    $this->cardID = "prime_the_crowd_blue";
+    $this->controller = $controller;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
+
 class gallow_end_of_the_line_yellow extends Card {
   // I'd definitely like to make a gravy ally base class in the long run
   function __construct($controller) {
