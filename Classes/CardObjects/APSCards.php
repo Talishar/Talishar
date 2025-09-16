@@ -71,7 +71,8 @@ class superstar_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Cheer($this->controller);
+    if ($additionalCosts == "DESTROY") DestroyAuraUniqueID($this->controller, $target);
+    else Cheer($this->controller);
   }
 }
 ?>
