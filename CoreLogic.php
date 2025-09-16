@@ -266,7 +266,6 @@ function StartTurnAbilities()
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
-  AuraBeginningActionPhaseAbilities();
 
   $mainItems = &GetItems($mainPlayer);
   for ($i = count($mainItems) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
@@ -307,6 +306,11 @@ function StartTurnAbilities()
     $defArsenal[$i + 4] = "0";//Reset Frozen
   }
   MZStartTurnMayAbilities();
+}
+
+function StartActionPhaseAbilities() {
+  AuraBeginningActionPhaseAbilities();
+  ItemBeginningActionPhaseAbilities();
 }
 
 function MZStartTurnMayAbilities()

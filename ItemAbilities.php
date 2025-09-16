@@ -393,17 +393,28 @@ function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable 
   return $damage;
 }
 
+function ItemBeginningActionPhaseAbilities() {
+  global $mainPlayer;
+  $mainItems = &GetItems($mainPlayer);
+  for ($i = 0; $i < count($mainItems); $i += ItemPieces()) {
+    switch($mainItems[$i]) {
+      case "teklo_core_blue":
+      case "dissipation_shield_yellow":
+      case "dissolution_sphere_yellow":
+      case "signal_jammer_blue":
+        AddLayer("TRIGGER", $mainPlayer, $mainItems[$i], "-", "-", $mainItems[$i + 4]);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 function ItemStartTurnAbility($index)
 {
   global $mainPlayer;
   $mainItems = &GetItems($mainPlayer);
   switch ($mainItems[$index]) {
-    case "teklo_core_blue":
-    case "dissipation_shield_yellow":
-    case "dissolution_sphere_yellow":
-    case "signal_jammer_blue":
-      AddLayer("TRIGGER", $mainPlayer, $mainItems[$index], "-", "-", $mainItems[$index + 4]);
-      break;
     case "null_time_zone_blue":
       if ($mainItems[$index + 1] > 0 && GetItemGemState($mainPlayer, $mainItems[$index], $index) == 0) --$mainItems[$index + 1];
       elseif($mainItems[$index + 1] > 0) {

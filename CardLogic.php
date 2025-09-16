@@ -523,6 +523,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         }
         else if ($cardID == "STARTTURN") {
+          StartActionPhaseAbilities();
           ProcessDecisionQueue();
         }
         else {
