@@ -1151,6 +1151,7 @@ class leave_them_hanging_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     if ($additionalCosts == "BUFF") AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    elseif ($additionalCosts == "DESTROY") DestroyAuraUniqueID($this->controller, $target);
     else {
       $otherPlayer = $this->controller == 1 ? 2 : 1;
       $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;

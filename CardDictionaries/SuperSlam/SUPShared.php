@@ -344,7 +344,7 @@ function RemoveSuspense($player, $MZIndex, $mainPhase = true)
   $auras = &GetAuras($targetPlayer);
   $ind = explode("-", $MZIndex)[1];
   --$auras[$ind + 2];
-  if ($auras[$ind + 2] == 0) {
+  if ($auras[$ind + 2] <= 0) {
     AddLayer("TRIGGER", $targetPlayer, "$auras[$ind]", $auras[$ind + 6], "DESTROY");
   }
 }
