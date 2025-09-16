@@ -48,7 +48,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if ($cardID == "gold" && $mainPhase != "False") { //We skip gold created during 4.1.8 pre turn 0
     IncrementClassState($player, $CS_NumGoldCreated, $number);
     UndestroyHook($player);
-    if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player) {
+    if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player && $char[1] < 3) {
       $EffectContext = $hero;
       WriteLog("Player $player drew a card from Victor");
       Draw($player);
