@@ -2508,7 +2508,7 @@ class no_tall_tales_yellow extends SUPTowerDwarfCard {
     global $mainPlayer;
     global $defPlayer;
     AddNextTurnEffect($this->cardID, $defPlayer);
-    AddCurrentTurnEffect($this->cardID, $mainPlayer);
+    AddCurrentTurnEffect("$this->cardID-SELF", $mainPlayer);
   }
 }
 
