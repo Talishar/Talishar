@@ -22,3 +22,7 @@ $patreonClientSecret = "op://$APP_ENV/Patreon/credential";
 $prodServerIP = "op://$APP_ENV/Production Server/URL";
 $prodServerUsername = "op://$APP_ENV/Production Server/username";
 $prodServerPassword = "op://$APP_ENV/Production Server/password";
+
+// Fabtcgmeta
+$fabtcgmetaEndpoint = "op://$APP_ENV/Fabtcgmeta/endpoint";
+$fabtcgmetaKey = "op://$APP_ENV/Fabtcgmeta/credential";

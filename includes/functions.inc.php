@@ -341,6 +341,9 @@ function logCompletedGameStats()
 	// Sends data to FabInsights DB
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
 
+	// Sends data to fabtcgmeta.com
+	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFabtcgmetaResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+
 	mysqli_close($conn);
 }
 
@@ -489,6 +492,41 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     curl_close($ch);
 }
 
+function SendFabtcgmetaResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID)
+{
+	global $p2IsAI, $gameName, $p1uid, $p2uid, $playerHashSalt, $fabtcgmetaEndpoint, $fabtcgmetaKey;
+	
+	if ($p2IsAI == "1") return;
+	
+	if (empty($fabtcgmetaEndpoint) || empty($fabtcgmetaKey)) {
+		return; // Silently skip if not configured
+	}
+
+	$hashedP1Name = HashPlayerName($p1uid, $playerHashSalt);
+	$hashedP2Name = HashPlayerName($p2uid, $playerHashSalt);
+
+	$payloadArr = [];
+	$payloadArr['gameID'] = $gameID;
+	$payloadArr['gameName'] = $gameName;
+	$payloadArr['player1Name'] = $hashedP1Name;
+	$payloadArr['player2Name'] = $hashedP2Name;
+	$payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $p1DeckLink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero));
+	$payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $p2DeckLink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
+	$payloadArr['format'] = GetCachePiece(intval($gameName), 13);
+
+	$ch = curl_init($fabtcgmetaEndpoint);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, [
+		'Content-Type: application/json',
+		'x-functions-key: ' . $fabtcgmetaKey
+	]);
+
+	$response = curl_exec($ch);
+	curl_close($ch);
+}
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
