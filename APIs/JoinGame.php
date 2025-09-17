@@ -628,7 +628,6 @@ function isUnimplemented($cardID) {
       };
     case "SUP":
       return match($cardID) {
-        "act_of_glory_yellow" => true,
         default => false
       };
     case "APS":
