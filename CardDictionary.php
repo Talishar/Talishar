@@ -1793,7 +1793,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
   }
   if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
-  if ($from != "PLAY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
+  if ($from != "PLAY" && $from != "GY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction, phase:$phase)) return false;
   elseif ($phase == "CHOOSEHANDCANCEL" && $from == "HAND") {
     if (count($layers) > 0) {
