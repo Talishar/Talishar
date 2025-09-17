@@ -376,6 +376,10 @@ class Card {
   function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
     return 0;
   }
+
+  function SpecialType() {
+    return "-";
+  }
 }
 
 ?>

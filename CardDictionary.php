@@ -141,7 +141,11 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W", // AI custom weapon
   ];
-
+  $card = GetClass($cardID, 0);
+  if ($card != "-") {
+    $specialType = $card->SpecialType();
+    if ($specialType != "-") return $specialType;
+  }
   if (isset($specialCases[$cardID])) {
     return $specialCases[$cardID];
   }
