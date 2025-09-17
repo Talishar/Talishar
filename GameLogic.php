@@ -708,10 +708,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
           if ($character[$mzArr[1]] == "teklovossen_the_mechropotentb") {
-            if ($character[10] != "-") {
+            if ($character[10] != "-" && $character[10] != "") {
               $character[10] .= ",$paramArr[1]";
-              ++$character[2]; // Update the counter
             } else $character[10] = $paramArr[1];
+            ++$character[2]; // Update the counter
             break;
           } else if ($character[$mzArr[1] + 10] != "-") {
             $character[$mzArr[1] + 10] .= ",$paramArr[1]";
