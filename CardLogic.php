@@ -3135,7 +3135,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "apex_bonebreaker":
         $num6Block = 0;
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if (ModifiedPowerValue($combatChain[$i], $player, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
+          if ($CombatChain->Card($i)->TotalPower() >= 6) ++$num6Block;
         }
         if ($num6Block) {
           PlayAura("might", $player);

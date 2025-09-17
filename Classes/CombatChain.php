@@ -94,6 +94,16 @@ class ChainCard {
       return $this->chain[$this->index+5];
     }
 
+    function TotalPower() {
+      $powerModifiers = [];
+      $player = $this->PlayerID();
+      if(PowerCantBeModified($this->ID())) return PowerValue($this->ID(), $player, "CC");
+      $powerValue = ModifiedPowerValue($this->ID(), $player, "CC", $this->ID(), $this->index);
+      $powerValue += AuraPowerModifiers($this->index, $powerModifiers, onBlock: true);
+      $powerValue += $this->PowerValue();//Combat chain power modifier
+      return $powerValue;
+    }
+
     function ModifyPower($amount) {
       $this->chain[$this->index+5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();
