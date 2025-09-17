@@ -267,12 +267,19 @@ function Deal2OrDiscard($targetPlayer)
 {
   $hand = GetHand($targetPlayer);
   if (count($hand) > 0) {
-    AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
-    AddDecisionQueue("BUTTONINPUT", $targetPlayer, "Take_2_Damage,Discard", 1);
-    AddDecisionQueue("EQUALPASS", $targetPlayer, "Take_2_Damage", 1);
+    // AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
+    // AddDecisionQueue("BUTTONINPUT", $targetPlayer, "Take_2_Damage,Discard", 1);
+    // AddDecisionQueue("EQUALPASS", $targetPlayer, "Take_2_Damage", 1);
+    // AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
+    // AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
+    // AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+    // AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
+    // AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+    // AddDecisionQueue("ELSE", $targetPlayer, "-");
+    // is this more intuitive?
     AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-    AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
-    AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else take 2 damage", 1);
+    AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
     AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
     AddDecisionQueue("ELSE", $targetPlayer, "-");
