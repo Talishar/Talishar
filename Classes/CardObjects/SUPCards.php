@@ -3974,7 +3974,7 @@ class virtuoso_bodice extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $suspAuras = implode(",", GetSuspenseAuras($this->controller));
+    $suspAuras = implode(",", GetSuspenseAuras($this->controller, true));
     if ($suspAuras != "") {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
@@ -3996,7 +3996,7 @@ class attention_grabbers extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $suspAuras = implode(",", GetSuspenseAuras($this->controller));
+    $suspAuras = implode(",", GetSuspenseAuras($this->controller, true));
     if ($suspAuras != "") {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
@@ -4137,6 +4137,7 @@ class story_beats extends BaseCard {
   }
 
   function ProcessTrigger() {
+    //there may be problems if this can ever happen at instant speed
     $suspAuras = implode(",", GetSuspenseAuras($this->controller));
     if (strlen($suspAuras) > 0) {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "add or remove a counter from an aura of suspense");

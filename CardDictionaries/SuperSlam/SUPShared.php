@@ -334,12 +334,12 @@ function HasSuspense($cardID)
   if ($card != "-") return $card->HasSuspense();
 }
 
-function GetSuspenseAuras($player)
+function GetSuspenseAuras($player, $hasCounter = false)
 {
   $auras = GetAuras($player);
   $susp = [];
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (HasSuspense($auras[$i])) array_push($susp, "MYAURAS-$i");
+    if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) array_push($susp, "MYAURAS-$i");
   }
   return $susp;
 }

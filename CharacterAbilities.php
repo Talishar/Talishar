@@ -1406,7 +1406,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "pleiades":
     case "pleiades_superstar":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
-      $suspAuras = implode(",", GetSuspenseAuras($currentPlayer));
+      $suspAuras = implode(",", GetSuspenseAuras($currentPlayer, true));
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $suspAuras);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a suspense counter from", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
