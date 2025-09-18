@@ -554,7 +554,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //My deck
   $response->playerDeckCount = count($myDeck);
   $playerHero = ShiyanaCharacter($myCharacter[0], $playerID);
-  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($playerHero == "dash_database" || $playerHero == "dash_io") && $turn[0] != "OPT" && $turn[0] != "P" && $turn[0] != "CHOOSETOPOPPONENT" && $turn[0] != "DOCRANK") {
+  // cards that DIO cannot look at the top card of her deck while they are resolving
+  $blockDIO = ["spark_of_genius_yellow", "teklovossens_workshop_red", "teklovossens_workshop_yellow", "teklovossens_workshop_blue"];
+  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($playerHero == "dash_database" || $playerHero == "dash_io") && $turn[0] != "OPT" && $turn[0] != "P" && $turn[0] != "CHOOSETOPOPPONENT" && ($turn[0] != "DOCRANK" || !isset($EffectContext) || !in_array($EffectContext, $blockDIO))) {
     $playable = $playerID == $currentPlayer && IsPlayable($myDeck[0], $turn[0], "DECK", 0);
     $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:$playable ? 35 : 0, actionDataOverride:strval(0), borderColor: $playable ? 6 : 0, controller:$playerID);
   }
