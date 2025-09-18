@@ -587,7 +587,7 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "clash") return !isClashLegal($cardID, $character);
 
   //Ban spoiler cards in non-open-format
-  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && isSpecialUsePromo($cardID)) return true;
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "precon" && isSpecialUsePromo($cardID)) return true;
   if(isBannedInFormat($cardID, $format)) return true;
   return false;
 }
