@@ -1349,8 +1349,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $label = "";
         $tapped = false;
 
-        if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $otherPlayer == $mainPlayer) $label = "Attacking";
-        if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $playerID == $mainPlayer) $label = "Attacking";
+        if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) $label = "Attacking";
+        if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $playerID == $mainPlayer) $label = "Attacking";
 
         //Add indication for attacking Allies and Auras
         if (count($layers) > 0 && $layers[0] != "") {
