@@ -504,6 +504,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       RemoveArsenal($otherPlayer, $index);
       PlayCard($cardID, "THEIRARS", -1, $index, $uniqueID, zone: "THEIRARS");
       break;
+    case 38: // Past chain link, $from=="COMBATCHAINATTACKS"
+      $index = $cardID; //Overridden to be index instead
+      $combatChainAttacks = GetCombatChainAttacks();
+      $cardID = $combatChainAttacks[$index];
+      if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", $index)) {
+        SetClassState($playerID, $CS_PlayIndex, $index);
+        $card = GetClass($cardID, $currentPlayer);
+        if ($card != "-") $card->PayAdditionalCosts("COMBATCHAINATTACKS", $index);
+        else CombatChainPayAdditionalCosts($index, "COMBATCHAINATTACKS");
+        PlayCard($cardID, "COMBATCHAINATTACKS", -1, -1, "-", zone: "COMBATCHAINATTACKS");
+      }
+      break;
     case 99: //Pass
       if (CanPassPhase($turn[0])) {
         if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") {
@@ -1175,7 +1187,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
           if (CachedTotalPower() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
       }
-      
+
       if (IsHeroAttackTarget()) {
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
         CheckHitContracts($mainPlayer, $otherPlayer);
@@ -1702,7 +1714,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         AddCurrentTurnEffect("fealty-ATTACK", $currentPlayer);
       }
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
-      $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from)));
+      $baseCost = $from == "PLAY" || $from == "EQUIP" || $from == "COMBATCHAINATTACKS" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from));
       if(HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
@@ -3891,7 +3903,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         break;
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
-  } else if ($from != "PLAY" && $from != "EQUIP") {
+  } else if ($from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS") {
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
     else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer, from: $from);

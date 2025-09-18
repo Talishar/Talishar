@@ -684,6 +684,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerEquipment = $myCharData;
 
+  // Now display any previous chain links that can be activated
+  $playablePastLinks = [];
+  $attacks = GetCombatChainAttacks();
+  for ($i = 0; $i < count($attacks); $i += ChainLinksPieces()) {
+    $label = "Chain Link " . $i + 1;
+    $overlay = 0;
+    $action = $currentPlayer == $playerID && IsPlayable($attacks[$i], $turn[0], "COMBATCHAINATTACKS", $i) ? 38 : 0;
+    $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID, $mod);
+    $cardID = $attacks[$i];
+    if ($action != 0 && $cardID == "palantir_aeronought_red") array_push($playablePastLinks, JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label));
+  }
+  $response->playerBanish = array_merge($response->playerBanish, $playablePastLinks);
+
   // what's up their arse
   $theirArse = [];
   if ($theirArsenal != "") {

@@ -39,7 +39,7 @@ function SEAAbilityType($cardID, $from="-"): string
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => $from == "PLAY" ? "I": "AA",
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => $from == "PLAY" ? "I": "AA",
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
-    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $from == "PLAY" ? "I": "AA",
+    "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA",
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $from == "PLAY" ? "I": "AA",
     "polly_cranka", "polly_cranka_ally" => "A",
     "sticky_fingers", "sticky_fingers_ally" => "AA",
@@ -216,7 +216,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
   global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain, $defPlayer, $combatChainState, $CCS_CachedTotalPower, $layers;
-  global $CS_ArcaneTargetsSelected;
+  global $CS_ArcaneTargetsSelected, $chainLinks;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
@@ -725,20 +725,30 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "palantir_aeronought_red":
-      if($from != "PLAY" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
-      elseif($from == "PLAY") {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        $numUsed = $combatChain[11];
+      if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+      elseif($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+        if ($from == "PLAY") {
+          $numUsed = $combatChain[11];
+          AddCurrentTurnEffect($cardID, $currentPlayer);
+        }
+        else {
+          $attacks = GetCombatChainAttacks();
+          $attackInd = -1;
+          for ($i = 0; $i < count($attacks); $i += ChainLinksPieces()) {
+            if ($attacks[$i] == $cardID && $attacks[$i + 9] <= 3) {
+              $numUsed = $attacks[$i + 9];
+              $attackInd = intdiv($i, ChainLinksPieces());
+            }
+          }
+        }
         if ($numUsed == 3) {
           AddDecisionQueue("SEARCHCOMBATCHAIN", $currentPlayer, "-");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card to destroy");
           AddDecisionQueue("CHOOSECARDID", $currentPlayer, "<-", 1);
           AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
-          ++$combatChain[11];
+          if ($from == "PLAY") ++$combatChain[11];
+          else ++$chainLinks[$attackInd][9];
         }
-      }
-      elseif ($from == "CHAINLINKS") {
-        
       }
       return "";
     case "jolly_bludger_yellow":

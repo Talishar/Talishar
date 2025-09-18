@@ -1758,13 +1758,21 @@ function CombatChainClosedTriggers()
 
 function CombatChainPayAdditionalCosts($index, $from)
 {
-  global $combatChain, $currentPlayer;
-  $i = $index * CombatChainPieces();
+  global $combatChain, $currentPlayer, $chainLinks;
+  if ($from == "PLAY") {
+    $i = $index * CombatChainPieces();
+    $cardID = $combatChain[$i];
+  }
+  else {
+    $i = $index;
+    $cardID = $chainLinks[$i][0];
+  }
   if(!isset($combatChain[$i]))  {
     //PHP error happening here. Undefined array key 121 in /opt/lampp/htdocs/game/CombatChain.php on line 1503
     return; 
   }
-  switch($combatChain[$i]) {
+  
+  switch($cardID) {
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
     case "sky_skimmer_blue":
@@ -1783,7 +1791,8 @@ function CombatChainPayAdditionalCosts($index, $from)
       //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
-      ++$combatChain[$i + 11];
+      if ($from == "PLAY") ++$combatChain[$i + 11];
+      else ++$chainLinks[$i][9];
       break;
     default:
       break;

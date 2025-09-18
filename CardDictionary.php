@@ -1723,6 +1723,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
   } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
+  elseif ($from == "COMBATCHAINATTACKS" && !AbilityPlayableFromCombatChain($cardID, "-")) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
@@ -1873,7 +1874,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
-  if ($from == "PLAY" && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
+  if (($from == "PLAY" || $from == "COMBATCHAINATTACKS") && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
     return true;
   }
   if ($from == "GY" && AbilityPlayableFromGraveyard($cardID, $index) && CanPlayInstant($phase)) {
@@ -3229,9 +3230,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "jolly_bludger_yellow":
     case "cogwerx_dovetail_red":
       if ($player != $mainPlayer) return true;
-      if ($from != "PLAY") return false;
+      if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if ($from == "PLAY" && $combatChain[11] >= 3) return true;
+      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 3) return true;
       return false;
     case "old_knocker":
       return CheckTapped("MYCHAR-0", $currentPlayer);
