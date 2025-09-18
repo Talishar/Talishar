@@ -563,7 +563,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = [];
   $response->playerDeckPopup = false;
-  if ($playerID == $currentPlayer) {
+  if ($playerID == $currentPlayer || IsGameOver()) {
     if(IsGameOver() || (($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && (isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0")) || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
       for($i=0; $i<count($myDeck); $i+=DeckPieces()) {
         array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
