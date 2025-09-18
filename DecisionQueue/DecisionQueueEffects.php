@@ -1123,8 +1123,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "TRUTHORTRICKERY":
+      $defHero = GetPlayerCharacter($defPlayer)[0];
       $deck = new Deck($defPlayer);
       $topCard = $deck->Top();
+      if ($lastResult == "NO") WriteLog("You call " . CardLink($defHero, $defHero) . " a liar!");
+      else WriteLog("You think " . CardLink($defHero, $defHero) . " is honest this time");
       WriteLog("The top card of their deck was " . CardLink($topCard, $topCard));
       $topColor = ColorOverride($topCard, $defPlayer);
       $chosenColor = match($params[1]) {
@@ -1138,6 +1141,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       elseif ($topColor != $chosenColor && $lastResult == "YES") {
         PummelHit($player, context: "Why would you ever trust them? Discard a card");
       }
+      else WriteLog("You see through " . CardLink($defHero, $defHero) . "'s trickery");
       return $lastResult;
     case "ALPHA":
       if (ModifiedPowerValue($lastResult, $player, "HAND") >= 6) {
