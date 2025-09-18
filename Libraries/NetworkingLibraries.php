@@ -1175,10 +1175,12 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
           if (CachedTotalPower() >= 13) AddTowerEffectTrigger($combatChain[$i]);
         }
       }
+      
       if (IsHeroAttackTarget()) {
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
         CheckHitContracts($mainPlayer, $otherPlayer);
       }
+
       $count = count($currentTurnEffects);
       $pieces = CurrentTurnEffectsPieces();
       for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
@@ -1188,6 +1190,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
           }
         }
       }
+
       $currentTurnEffects = array_values($currentTurnEffects);
       $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
       MainCharacterHitTrigger($cardID, $targetPlayer);
@@ -1196,21 +1199,24 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
       AttackDamageAbilitiesTrigger($damageDone);
-    }
-    $count = count($currentTurnEffects);
-    $pieces = CurrentTurnEffectsPieces();
-    for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-      if ($currentTurnEffects[$i] == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
-      if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+
+      foreach(explode(",", $combatChain[10]) as $effectSetID) {
+        $effect = ConvertToCardID($effectSetID);
+        if (IsCombatEffectActive($effect) && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
+          AddEffectHitTrigger($effect, source:$combatChain[0], target:$damageTarget); // Effects that do gives their effect to the attack
+        }
+      }
+
+      $count = count($currentTurnEffects);
+      $pieces = CurrentTurnEffectsPieces();
+      for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+        if ($currentTurnEffects[$i] == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
+        if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
+          AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+        }
       }
     }
-    foreach(explode(",", $combatChain[10]) as $effectSetID) {
-      $effect = ConvertToCardID($effectSetID);
-      if (IsCombatEffectActive($effect) && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
-        AddEffectHitTrigger($effect, source:$combatChain[0], target:$damageTarget); // Effects that do gives their effect to the attack
-      }
-    }
+
     if (IsHeroAttackTarget()) {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       if (CheckMarked($otherPlayer)) {
