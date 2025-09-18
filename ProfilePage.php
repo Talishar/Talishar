@@ -38,7 +38,7 @@ if (isset($_SESSION["isPatron"])) {
 <div id="cardDetail" style="z-index:100000; display:none; position:fixed;"></div>
 
 <div class='ContentWindow' style='left:60%; right:20px; top:60px; height:90%;'>
-  <h2>Welcome <?php echo $_SESSION['useruid'] ?>!</h2>
+  <h2>Welcome <?php echo htmlspecialchars($_SESSION['useruid'], ENT_QUOTES, 'UTF-8') ?>!</h2>
 
   <?php
 
