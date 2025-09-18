@@ -3773,7 +3773,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " fail to resolve because dominate is active and there is already a card defending from hand.");
+      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because dominate is active and there is already a card defending from hand.");
+      $skipDRResolution = true;
+    }
+    if ($definedCardType == "DR" && $from == "HAND" && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2) {
+      $discard = new Discard($currentPlayer);
+      $discard->Add($cardID, "LAYER");
+      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because confidence is active and there are already 2 non-block card defending.");
       $skipDRResolution = true;
     }
     if (!$isBlock && CardType($cardID) == "AR") {

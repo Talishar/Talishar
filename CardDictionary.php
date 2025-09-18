@@ -1503,7 +1503,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       if($foundNullTime && $from == "HAND") return $names;
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
-      $effectRestricted = !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
+      $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
       if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase() && IsHeroAttackTarget()) {
         $names .= ",Defense Reaction";
         if ($from != "HAND") $names = "-,Defense Reaction";
@@ -1774,7 +1774,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       }
     }
     if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
-      if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return false;
+      if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B") && !str_contains(GetAbilityTypes($cardID, $index, $from), "I")) return false;
     }
   }
   if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player)) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
@@ -3297,7 +3297,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "pleiades_superstar":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       //check that there's an aura with a suspense counter
-      if (count(GetSuspenseAuras($currentPlayer)) == 0) return true;
+      if (count(GetSuspenseAuras($currentPlayer, true)) == 0) return true;
       return false;
     default:
       return false;
