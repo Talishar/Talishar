@@ -158,12 +158,15 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             break;
           case "remove_hero_abilities":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-            AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-            AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else lose your hero ability", 1);
-            AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
-            AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-            AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
-            AddDecisionQueue("ELSE", $targetPlayer, "-");
+            $hand = GetHand($targetPlayer);
+            if (count($hand) > 0) {
+              AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND");
+              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else lose your hero ability", 1);
+              AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
+              AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
+              AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+              AddDecisionQueue("ELSE", $targetPlayer, "-");
+            }
             AddDecisionQueue("SPECIFICCARD", $targetPlayer, "LIAR", 1);
             break;
           default: break;
@@ -277,7 +280,7 @@ function Deal2OrDiscard($targetPlayer)
     // AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
     // AddDecisionQueue("ELSE", $targetPlayer, "-");
     // is this more intuitive?
-    AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
+    AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND");
     AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else take 2 damage", 1);
     AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
