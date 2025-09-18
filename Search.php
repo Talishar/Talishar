@@ -1147,7 +1147,7 @@ function CountAura($cardID, $player)
   $pieces = AuraPieces();
   $total = 0;
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i] == $cardID) ++$total;
+    if (CardName($auras[$i]) == CardName($cardID)) ++$total;
   }
   return $total;
 }
