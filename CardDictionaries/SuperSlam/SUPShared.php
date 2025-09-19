@@ -296,19 +296,18 @@ function BOO($player)
   SetClassState($player, $CS_BooedThisTurn, 1);
   $char = GetPlayerCharacter($player);
   WriteLog("BOOOOO! The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
-  switch($char[0]) {
-    case "lyath_goldmane":
-    case "lyath_goldmane_vile_savant":
-    case "kayo_underhanded_cheat":
-    case "kayo_strong_arm":
-      AddLayer("TRIGGER", $player, $char[0]);
-      break;
-    default:
-      break;
+  if ($char[1] < 3) {
+    switch($char[0]) {
+      case "lyath_goldmane":
+      case "lyath_goldmane_vile_savant":
+      case "kayo_underhanded_cheat":
+      case "kayo_strong_arm":
+        AddLayer("TRIGGER", $player, $char[0]);
+        break;
+      default:
+        break;
+    }
   }
-  // $totalPower = 0;
-  // $totalDef = 0;
-  // EvaluateCombatChain($totalPower, $totalDef);
 }
 
 function Cheer($player)
