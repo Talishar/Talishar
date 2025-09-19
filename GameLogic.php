@@ -3477,6 +3477,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         else $lastResult = "USEDUP";
       }
       return implode(",", $ret);
+    case "DEDUPE":
+      $ret = [];
+      $lastResultArr = explode(",", $lastResult);
+      foreach($lastResultArr as $option) {
+        if (!in_array($option, $ret)) array_push($ret, $option);
+      }
+      WriteLog("HERE: " . implode(",", $ret));
+      return implode(",", $ret);
     default:
       return "NOTSTATIC";
   }

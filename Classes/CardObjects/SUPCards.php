@@ -3366,6 +3366,7 @@ class up_on_a_pedestal_blue extends Card {
     else {
       $search = "MYDISCARD:type=AA;class=GUARDIAN&MYDISCARD:type=AA;talent=REVERED";
       AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+      AddDecisionQueue("DEDUPE", $this->controller, "-", 1);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack to put on top of your deck (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("MZADDTOTOPDECK", $this->controller, "-", 1);
