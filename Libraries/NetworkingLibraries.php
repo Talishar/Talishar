@@ -487,6 +487,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($discard[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "GY")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
+      if (HasSuspense($cardID)) SearchCurrentTurnEffects("cries_of_encore_red", $currentPlayer, 1);
       PlayCard($cardID, "GY", -1, $index, isset($discard[$index + 2]) ? $discard[$index + 2] : -1, zone: "MYDISCARD");
       break;
     case 37: // Their Arsenal

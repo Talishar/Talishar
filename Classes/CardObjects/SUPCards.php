@@ -3246,16 +3246,7 @@ class cries_of_encore_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $choices = SearchMultizone($this->controller, "MYDISCARD:hasSuspense=1");
-    // AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:hasSuspense=1");
-    if ($choices != "") {
-      AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura of suspense to be able to play from graveyard this turn");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("MZOP", $this->controller, "GETUNIQUEID", 1);
-      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "$this->cardID!-!{0}", 1);
-    }
+    AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 }
 

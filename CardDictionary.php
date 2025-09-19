@@ -4836,13 +4836,9 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
   if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $mainPlayer) return true;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $mainPlayer) return true;
-  if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) {
-    $discard = GetDiscard($player);
-    $effectIndex = SearchCurrentTurnEffectsForUniqueID($discard[$index + 1]);
-    if ($effectIndex != -1 && $currentTurnEffects[$effectIndex] == "cries_of_encore_red") return true;
-  }
+  if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) return true;
   $card = GetClass($cardID, $player);
-  if ($card != "-") return PlayableFromGraveyard($index);
+  if ($card != "-") return $card->PlayableFromGraveyard($index);
   return match ($cardID) {
     "graven_call" => true,
     default => false,
