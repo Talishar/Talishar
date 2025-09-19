@@ -3272,7 +3272,7 @@ class GoonCard extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    if($this->HaveGoons()) {
+    if($this->HaveGoons() && IsHeroAttackTarget()) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
     }
