@@ -910,7 +910,6 @@ function OnBlockResolveEffects($cardID = "")
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
   }
-
   $blockedFromHand = 0;
   $blockedWithIce = 0;
   $blockedWithEarth = 0;
@@ -928,12 +927,13 @@ function OnBlockResolveEffects($cardID = "")
       if (SubtypeContains($combatChain[$i], "Aura", $defPlayer)) ++$blockedWithAura;
     }
   }
-  if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain, may not be necessary anymore
-      $defendingCard = $cardID;
-      $start = count($combatChain) - CombatChainPieces();
-  }
-  else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
+  // if ($cardID != "") { //Code for when a card is pulled as a defending card on the chain, may not be necessary anymore
+  //     $defendingCard = $cardID;
+  //     $start = count($combatChain) - CombatChainPieces();
+  // }
+  // else $start = $start == -1 ? CombatChainPieces() : $start; // this shouldn't be necessary, but try to catch potential problems above
 
+  if ($start == -1) return; //there wasn't a new card added as defending
   if ($CombatChain->HasCurrentLink()) {
     $card = GetClass($combatChain[0], $mainPlayer);
     if ($card != "-") $card->AttackGetsBlockedEffect($start);
