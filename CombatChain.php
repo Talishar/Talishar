@@ -709,9 +709,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "blade_beckoner_boots":
       if (IsWeaponAttack()) $blockModifier += 1;
       break;
-    case "quickdodge_flexors":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += 2;
-      break;
     case "breaker_helm_protos":
       if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
       break;

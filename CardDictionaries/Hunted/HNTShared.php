@@ -735,7 +735,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "quickdodge_flexors":
-      if (CanBlockWithEquipment()) {
+      $successfullyBlocked = false;
+      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+        if ($combatChain[$i] == "quickdodge_flexors") $successfullyBlocked = true;
+      }
+      if ($successfullyBlocked) {
         $char = &GetPlayerCharacter($currentPlayer);
         // remove flexors from its previous link
         for ($i = 0; $i < count($chainLinks); ++$i) {

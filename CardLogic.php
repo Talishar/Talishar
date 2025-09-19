@@ -4437,6 +4437,7 @@ function ModifiedBlockValue($cardID, $player, $from, $source="", $uniqueID=-1)
   if ($cardID == "") return 0;
   $block = BlockValue($cardID);
   if ($from == "CC") {
+    if ($cardID == "quickdodge_flexors" && SearchCurrentTurnEffects("quickdodge_flexors", $player)) $block = 2;
     $char = GetPlayerCharacter($player);
     if ($char[1] < 3) {
       switch ($char[0]) {
