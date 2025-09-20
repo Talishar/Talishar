@@ -3483,7 +3483,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       foreach($lastResultArr as $option) {
         if (!in_array($option, $ret)) array_push($ret, $option);
       }
-      WriteLog("HERE: " . implode(",", $ret));
       return implode(",", $ret);
     default:
       return "NOTSTATIC";
