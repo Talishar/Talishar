@@ -880,6 +880,8 @@ function BlockValue($cardID)
       return 2;
     case "the_librarian":
       return 2;
+    case "gallow_end_of_the_line_yellow":
+      return -1;
     default:
       break;
   }
