@@ -1565,7 +1565,7 @@ function FinalizeTurn()
   AuraEndTurnCleanup();
   DoGamestateUpdate();
   //Update all the player neutral stuff
-  if ($mainPlayer == 2) $currentTurn += 1;
+  if ($mainPlayer == 2 && !$extraTurn) $currentTurn += 1;
   $turn[0] = "M";
   $turn[2] = "";
   $turn[3] = "";
