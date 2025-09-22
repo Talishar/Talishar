@@ -3286,10 +3286,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "kayo_strong_arm":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       if ($currentPlayer == $mainPlayer) {
-        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1) return true;
+        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) return true;
         $previousLink = SearchCombatChainAttacks($currentPlayer, type:"AA") == "";
         $currentLink = !TypeContains($CombatChain->AttackCard()->ID(), "AA", $currentPlayer);
-        if ($previousLink && $currentLink) return true;
+        $unresolvedAttacks = SearchLayersCardType("AA") == "";
+        if ($previousLink && $currentLink && $unresolvedAttacks) return true;
       }
       else {
         //for now only support buffing cards on the current chain link
