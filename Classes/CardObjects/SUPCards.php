@@ -573,17 +573,32 @@ class take_the_bait_red extends Card {
 }
 
 
-// class toby_jugs extends Card {
+class toby_jugs extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "toby_jugs";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "toby_jugs";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CombatChain;
+    $uid = $CombatChain->Card($i)->UniqueID();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $uid);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $defCard = $CombatChain->FindCardUID($target);
+    if ($defCard != "") {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID, $this->cardID));
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "0,1");
+      AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+      AddDecisionQueue("LESSTHANPASS", $this->controller, "1", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, 2, 1);
+      AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $this->controller, $defCard->Index(), 1);
+    }
+  }
+}
 
 
 // class uplifting_performance_blue extends Card {
