@@ -20,6 +20,14 @@ class CombatChain {
     return new ChainCard($index);
   }
 
+  function FindCardUID($uid) {
+    if (!$this->HasCurrentLink()) return "";
+    for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
+      if ($this->chain[$i + 7] == $uid) return new ChainCard($i);
+    }
+    return "";
+  }
+
   function AttackCard() {
     return new ChainCard(0);
   }

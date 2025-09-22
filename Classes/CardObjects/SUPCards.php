@@ -3457,7 +3457,9 @@ class dis extends BaseCard {
   }
 
   function OnBlockResolveEffects($i) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+    global $CombatChain;
+    $uid = $CombatChain->Card($i)->UniqueID();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $uid);
   }
 }
 
@@ -3483,7 +3485,8 @@ class disarm_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
     // This should technically check LKI if the combat chain is forced closed
-    if ($CombatChain->HasCurrentLink() && $CombatChain->Card($target)->CardBlockValue() >= 6) {
+    $defCard = $CombatChain->FindCardUID($target);
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
       MZMoveCard($mainPlayer, "MYHAND", "MYBOTDECK", silent:true);
     }
   }
@@ -3510,7 +3513,8 @@ class disembody_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
-    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+    $defCard = $CombatChain->FindCardUID($target);
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
       MZMoveCard($mainPlayer, "MYAURAS", "MYBOTDECK", silent:true);
     }
   }
@@ -3537,7 +3541,8 @@ class disperse_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
-    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+    $defCard = $CombatChain->FindCardUID($target);
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
       MZMoveCard($mainPlayer, "MYARS", "MYBOTDECK", silent:true);
     }
   }
