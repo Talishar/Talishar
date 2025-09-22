@@ -3482,7 +3482,8 @@ class disarm_yellow extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
-    if ($CombatChain->Card($target)->CardBlockValue() >= 6) {
+    // This should technically check LKI if the combat chain is forced closed
+    if ($CombatChain->HasCurrentLink() && $CombatChain->Card($target)->CardBlockValue() >= 6) {
       MZMoveCard($mainPlayer, "MYHAND", "MYBOTDECK", silent:true);
     }
   }

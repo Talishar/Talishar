@@ -368,6 +368,8 @@ function AddSuspense($player, $MZIndex)
 }
 
 function TargetDefendingAction($player, $cardID, $setTarget=false) {
+  global $CombatChain;
+  if (!$CombatChain->HasCurrentLink()) return;
   $AOptions = GetChainLinkCards($player, "A", "C");
   $AAOptions = GetChainLinkCards($player, "AA", "C");
   if ($AOptions == "") $numOptions = $AAOptions;
