@@ -322,6 +322,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
       }
       $rv = implode(",", $rv);
+      WriteLog("HERRE: $choices, $rv");
       return $rv == "" ? "PASS" : $rv;
     case "CUTTINGINDICES":
       $currentNames = [];
