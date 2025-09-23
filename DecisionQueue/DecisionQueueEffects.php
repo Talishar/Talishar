@@ -686,20 +686,18 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $target = $lastResult;
       $targetPlayer = substr($target, 0, 5) == "THEIR";
       $parameter = $targetPlayer ? "THEIRAURAS" : "MYAURAS";
-      AddDecisionQueue("PASSPARAMETER", $player, $resourcesPaid, 1);
-      AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, $target);
-      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      PrependDecisionQueue("SETLAYERTARGET", $player, "scour_blue", 1);
+      PrependDecisionQueue("SCOURSHOWSELECTEDTARGET", $player, "-", 1);
       for($i=0; $i<$resourcesPaid; ++$i) {
-        AddDecisionQueue("SCOURINDICES", $player, "$parameter|{0}", 1);
-        AddDecisionQueue("DEDUPEMULTIZONEINDS", $player, "-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0");
+        PrependDecisionQueue("SETDQVAR", $player, "0");
+        PrependDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose " . $resourcesPaid-$i . " aura(s) to destroy", 1);
+        PrependDecisionQueue("DEDUPEMULTIZONEINDS", $player, "-", 1);
+        PrependDecisionQueue("SCOURINDICES", $player, "$parameter|{0}", 1);
       }
-      AddDecisionQueue("SCOURSHOWSELECTEDTARGET", $player, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $player, "scour_blue", 1);
+      PrependDecisionQueue("SETDQVAR", $player, "0", 1);
+      PrependDecisionQueue("PASSPARAMETER", $player, $target);
       break;
     case "ALLURINGINDUCEMENT":
       //this is broken for now
