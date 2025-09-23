@@ -4915,19 +4915,19 @@ class parched_terrain_red extends Card {
       WriteLog("Not enough red cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
       DestroyAuraUniqueID($this->controller, $uniqueID);
     } else {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish $sandCounters cards to keep " . CardLink($this->cardID, $this->cardID) . "?");
+      AddDecisionQueue("YESNO", $this->controller, "<-", 1);
+      AddDecisionQueue("NOPASS", $this->controller, "<-", 1);
       for ($j = 0; $j < $sandCounters; $j++) {
-        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish $sandCounters cards to keep " . CardLink($this->cardID, $this->cardID) . "?");
-        AddDecisionQueue("YESNO", $this->controller, "<-", 1);
-        AddDecisionQueue("NOPASS", $this->controller, "<-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:pitch=1", 1);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a red card to banish from your graveyard", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
         AddDecisionQueue("MZBANISH", $this->controller, "GY,-", 1);
         AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
-        AddDecisionQueue("ELSE", $this->controller, "-");
-        AddDecisionQueue("PASSPARAMETER", $this->controller, "MYAURAS-$auraIndex", 1);
-        AddDecisionQueue("MZDESTROY", $this->controller, "", 1);
       }
+      AddDecisionQueue("ELSE", $this->controller, "-");
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYAURAS-$auraIndex", 1);
+      AddDecisionQueue("MZDESTROY", $this->controller, "", 1);
     }
   }
 }
