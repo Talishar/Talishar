@@ -1945,23 +1945,26 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       if ($combatChain[10] != "PHANTASM") AddLayer("LAYER", $player, "PHANTASM", $combatChain[0], $parameter);
       break;
     case "outside_interference_blue":
-      $inventory = &GetInventory($player);
-      $choices = [];
-      foreach ($inventory as $cardID) {
-        if (TalentContains($cardID, "REVILED", $player) && TypeContains($cardID, "AA")) {
-          array_push($choices, $cardID);
-        };
+      if (CanRevealCards($player)) {
+        $inventory = &GetInventory($player);
+        $choices = [];
+        foreach ($inventory as $cardID) {
+          if (TalentContains($cardID, "REVILED", $player) && TypeContains($cardID, "AA")) {
+            array_push($choices, $cardID);
+          };
+        }
+        if (count($choices) == 0) {
+          WriteLog("Player " . $player . " doesn't have any reviled attacks");
+          return;
+        }
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to add to hand");
+        AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
+        AddDecisionQueue("WRITELOGLASTRESULT", $player, "-", 1);
+        AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
+        AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
+        AddDecisionQueue("REVEALCARDS", $player, "<-", 1);
       }
-      if (count($choices) == 0) {
-        WriteLog("Player " . $player . " doesn't have any reviled attacks");
-        return;
-      }
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to add to hand");
-      AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
-      AddDecisionQueue("WRITELOGLASTRESULT", $player, "-", 1);
-      AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
-      AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
-      AddDecisionQueue("WRITELOGCARDLINK", $player, "<-", 1);
+      else WriteLog("You cannot reveal a card from your inventory");
       break;
     case "fearless_confrontation_blue":
       AddCurrentTurnEffect($parameter, $mainPlayer);
