@@ -987,6 +987,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
                   if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
                 }
               }
+              AddGraveyard($lastResult, $defPlayer, "CC", $player);
             }
             break;
         }
