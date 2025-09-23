@@ -4127,6 +4127,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $uid = explode("-", $target)[1];
         AddCurrentTurnEffect($parameter, $player, '', $uid);
         break;
+      case "halo_of_lumina_light":
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYBANISH:pitch=2;subtype=Aura");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a yellow aura to put into play");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("PUTPLAY", $player, "0", 1);
+        break;
       default:
         break;
     }
