@@ -667,6 +667,20 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       else $num = 1;
       if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
       $cardID = str_replace(" ", "_", $cardID);
+      $color = end(explode("_", $cardID));
+      switch ($color) {
+        case "r":
+          $cardID .= "ed";
+          break;
+        case "y":
+          $cardID .= "ellow";
+          break;
+        case "b":
+          $cardID .= "lue";
+          break;
+        default:
+          break;
+      }
       if (CardName($cardID) == "") {
         if (CardName($cardID . "_red") != "") $cardID .= "_red";
         elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
