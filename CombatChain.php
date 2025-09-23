@@ -526,7 +526,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
 function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
 {
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
-  global $CS_NumBluePlayed, $currentTurnEffects, $combatChain;
+  global $CS_NumBluePlayed, $currentTurnEffects, $combatChain, $combatChainState, $CCS_CachedTotalPower;
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID);
   $cardType = CardType($cardID);
@@ -571,6 +571,10 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   // Effect Block Modifier ends here
   $blockModifier += AuraBlockModifier($cardID, $from);
   $blockModifier += ItemBlockModifier($cardID);
+
+  $blockCard = $index != -1 ? $CombatChain->Card($index) : "-";
+  $totalPower = $combatChainState[$CCS_CachedTotalPower];
+
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
   foreach($chainLinks as $link) {
@@ -578,7 +582,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       if ($link[$i+1] == $defPlayer && $link[$i+2] == 1) {
         switch ($link[$i]) {
           case "captain_of_the_guard_blue":
-            if ($index != -1 && PowerValue($cardID, $defPlayer, "CC", $index) > PowerValue($attackID, $mainPlayer, "CC", 0)) {
+            if ($blockCard != "-" && $blockCard->TotalPower() > $totalPower) {
               if (!$noGain) ++$blockModifier;
             }
             break;
@@ -592,7 +596,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     if ($combatChain[$i+1] == $defPlayer) {
       switch ($combatChain[$i]) {
           case "captain_of_the_guard_blue":
-            if ($index != -1 && PowerValue($cardID, $defPlayer, "CC", $index) > PowerValue($attackID, $mainPlayer, "CC", 0)) {
+            if ($blockCard != "-" && $blockCard->TotalPower() > $totalPower) {
               if (!$noGain) ++$blockModifier;
             }
             break;
