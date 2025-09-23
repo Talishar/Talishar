@@ -694,6 +694,7 @@ class fight_fair_red extends Card {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
     }
+    return false;
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
@@ -731,6 +732,7 @@ class fight_dirty_red extends Card {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
     }
+    return false;
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
