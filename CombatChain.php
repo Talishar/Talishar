@@ -830,7 +830,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "buzzsaw_trap_blue":
-      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "collapsing_trap_blue":
       if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
