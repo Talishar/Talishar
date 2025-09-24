@@ -1459,7 +1459,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
   if ($card != "-") $card->CombatChainCloseAbility($chainLink);
   switch ($cardID) {
     case "swing_big_red":
-      if (SearchCurrentTurnEffects($cardID, $mainPlayer, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID && $chainLinks[$chainLink][1] == $player) {
+      if ($player == $mainPlayer && SearchCurrentTurnEffects($cardID, $mainPlayer, true) && $chainLinkSummary[$chainLink * ChainLinkSummaryPieces()] == 0 && $chainLinks[$chainLink][0] == $cardID) {
         PlayAura("quicken", $defPlayer);
       }
       break;
