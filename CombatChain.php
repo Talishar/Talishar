@@ -1004,6 +1004,7 @@ function OnBlockResolveEffects($cardID = "")
         break;
     }
   }
+  $blockingCards = [];
   for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
     if ($combatChain[$i + 1] == $defPlayer) {
       $defendingCard = $combatChain[$i];
@@ -1221,7 +1222,22 @@ function OnBlockResolveEffects($cardID = "")
         AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
       }
       ++$combatChainState[$CCS_NumCardsBlocking];
+      array_push($blockingCards, CardLink($defendingCard, $defendingCard));
     }
+  }
+  $message = "Player $defPlayer blocked with";
+  switch (count($blockingCards)) {
+    case 1: 
+      WriteLog("$message $blockingCards[0]");
+      break;
+    case 2:
+      WriteLog("$message $blockingCards[0] and $blockingCards[1]");
+      break;
+    default:
+      $lastCard = array_pop($blockingCards);
+      $otherCards = implode(",", $blockingCards);
+      WriteLog("$message $otherCards, and $lastCard");
+      break;
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "mark_of_lightning", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
     AddLayer("TRIGGER", $mainPlayer, "mark_of_lightning");
