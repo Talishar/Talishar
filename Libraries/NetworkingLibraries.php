@@ -3833,10 +3833,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           return;
         }
       }
-      if (IsPlayRestricted($cardID, $restriction, $from, resolutionCheck: true) && $additionalCosts == "-") {
-        WriteLog(CardLink($cardID, $cardID) . " fail to resolve because the target is no longer a legal target.");
-        return;
-      }
+      // We need to handle fizzling in the the card's play ability, not here.
+      // if (IsPlayRestricted($cardID, $restriction, $from, resolutionCheck: true) && $additionalCosts == "-") {
+      //   WriteLog(CardLink($cardID, $cardID) . " fails to resolve because the target is no longer a legal target.");
+      //   return;
+      // }
     }
     if ($resourcesPaid != "Skipped") {
       switch ($cardID) {
