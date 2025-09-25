@@ -1314,7 +1314,7 @@ function CombatChainClosedCharacterEffects()
             $equipCharacter[$charIndex + 4] -= 1; //Add -1 block counter
             $equipCharacter[$charIndex + 6] = 0;
           }
-          if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]) <= 0) {
+          if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
             DestroyCharacter($equipPlayer, $charIndex);
           }
         }

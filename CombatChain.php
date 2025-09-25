@@ -530,7 +530,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID);
   $cardType = CardType($cardID);
-  $blockCard = $index != -1 ? $CombatChain->Card($index) : "-";
+  $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
   // should probably refactor this as an EffectBlockModifier function
   if (!$noGain) {
     if ($cardType == "AA") {
@@ -545,6 +545,11 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   }
   if ($cardType == "E") {
     $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
+    if ($blockCard == "-" && str_contains($index, ",")) {
+      $i = explode(",", $index)[0];
+      $j = explode(",", $index)[1];
+      $originUniqueID = $chainLinks[$i][$j + 8];
+    }
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       switch ($currentTurnEffects[$i]) {
         case "shred_red":
