@@ -125,7 +125,10 @@
     if(!$CombatChain->HasCurrentLink()) return false;
     $attackID = $CombatChain->AttackCard()->ID();
     if (SearchAurasForCard("passing_mirage_blue", $mainPlayer) != "" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) == 1) return false;
-    if((SearchCurrentTurnEffects("dream_weavers", $mainPlayer) && CardType($attackID) == "AA") || SearchCurrentTurnEffects("semblance_blue", $mainPlayer) || SearchCurrentTurnEffects("miragai", $mainPlayer)) { return false; }
+    if (SearchCurrentTurnEffects("dream_weavers", $mainPlayer) && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) return false;
+    if (SearchCurrentTurnEffects("semblance_blue", $mainPlayer)) return false;
+    if (SearchCurrentTurnEffects("miragai", $mainPlayer)) return false;
+    
     if(SearchCurrentTurnEffectsForCycle("veiled_intentions_red", "veiled_intentions_yellow", "veiled_intentions_blue", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("phantasmify_red", "phantasmify_yellow", "phantasmify_blue", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("transmogrify_red", "transmogrify_yellow", "transmogrify_blue", $mainPlayer)) return true;
