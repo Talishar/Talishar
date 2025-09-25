@@ -530,6 +530,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID);
   $cardType = CardType($cardID);
+  $blockCard = $index != -1 ? $CombatChain->Card($index) : "-";
   // should probably refactor this as an EffectBlockModifier function
   if (!$noGain) {
     if ($cardType == "AA") {
@@ -543,19 +544,20 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     }
   }
   if ($cardType == "E") {
+    $originUniqueID = $blockCard->OriginUniqueID();
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       switch ($currentTurnEffects[$i]) {
         case "shred_red":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 4;
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 4;
           break;
         case "shred_yellow":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 3;
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 3;
           break;
         case "shred_blue":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 2;
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 2;
           break;
         case "tarantula_toxin_red-SHRED":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $cardID) $blockModifier -= 3;
+          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 3;
           break;
       }
     }
@@ -571,8 +573,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   // Effect Block Modifier ends here
   $blockModifier += AuraBlockModifier($cardID, $from);
   $blockModifier += ItemBlockModifier($cardID);
-
-  $blockCard = $index != -1 ? $CombatChain->Card($index) : "-";
   $totalPower = $combatChainState[$CCS_CachedTotalPower];
 
   $defAuras = &GetAuras($defPlayer);

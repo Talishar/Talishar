@@ -3500,6 +3500,7 @@ function EvoHandling($cardID, $player, $from)
         $char[$i + 7] = 0;//Should not be flagged for destruction
         $char[$i + 8] = 0;//Should not be frozen
         $char[$i + 9] = CharacterDefaultActiveState($char[$i]);
+        $char[$i + 11] = GetUniqueId($char[$i], $player);//new object, so old effects shouldn't track it
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
         $replaced = 1;

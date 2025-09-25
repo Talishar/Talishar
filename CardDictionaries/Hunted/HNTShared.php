@@ -352,8 +352,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $targetCard = GetMZCard($currentPlayer, $target);
             $targetInd = explode("-", $target)[1];
             if (TypeContains($targetCard, "E")) {
-              // I'm going to assume that a player can't have two copies of the same blocking equipment
-              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$targetInd]);
+              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$targetInd+8]);
             }
             else {
               CombatChainDefenseModifier($targetInd, -3);

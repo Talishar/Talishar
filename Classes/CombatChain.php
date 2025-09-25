@@ -127,6 +127,10 @@ class ChainCard {
       return $this->chain[$this->index+7];
     }
 
+    function OriginUniqueID() {
+      return $this->chain[$this->index+8];
+    }
+
     function StaticBuffs() {
       return $this->chain[$this->index+10];
     }

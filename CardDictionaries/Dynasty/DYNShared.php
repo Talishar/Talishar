@@ -324,8 +324,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $targetCard = GetMZCard($currentPlayer, $target);
         $targetInd = explode("-", $target)[1];
         if (TypeContains($targetCard, "E")) {
-          // I'm going to assume that a player can't have two copies of the same blocking equipment
-          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd]);
+          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd+8]);
         }
         else {
           CombatChainDefenseModifier($targetInd, $amount);
