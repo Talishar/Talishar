@@ -544,7 +544,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     }
   }
   if ($cardType == "E") {
-    $originUniqueID = $blockCard->OriginUniqueID();
+    $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       switch ($currentTurnEffects[$i]) {
         case "shred_red":
