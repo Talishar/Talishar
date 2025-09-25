@@ -509,7 +509,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID; //Overridden to be index instead
       $combatChainAttacks = GetCombatChainAttacks();
       $cardID = $combatChainAttacks[$index];
-      if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", $index)) {
+      if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", intdiv($index, ChainLinksPieces()))) {
         SetClassState($playerID, $CS_PlayIndex, $index);
         $card = GetClass($cardID, $currentPlayer);
         if ($card != "-") $card->PayAdditionalCosts("COMBATCHAINATTACKS", $index);
