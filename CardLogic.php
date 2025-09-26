@@ -3119,7 +3119,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $index = FindCharacterIndex($player, "evo_magneto_blue_equip");
           if ($index != -1) {
             CharacterChooseSubcard($player, $index, isMandatory: false);
-            AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+            AddDecisionQueue("ADDDISCARD", $player, "CHAR", 1);
             AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
