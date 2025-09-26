@@ -3138,7 +3138,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
     case "outed_red":
-      return CheckMarked($currentPlayer) && IsHeroAttackTarget();
+      return CheckMarked($currentPlayer);
     case "lay_low_yellow":
       return CheckMarked($currentPlayer) && !IsAllyAttacking();
     case "exposed_blue":
