@@ -2471,9 +2471,13 @@ function NumNegCounterEquipBlock()
 {
   global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredNegCounterEquipmentBlock;
   $numNegCounterEquipBlock = 0;
+  $defChar = GetPlayerCharacter($defPlayer);
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-    if (DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i + 1] == $defPlayer && $combatChain[$i + 4] < 0 && $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] < 1) ++$numNegCounterEquipBlock;
-    else if (TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i + 1] == $defPlayer && $combatChain[$i + 4] < 0) ++$numNegCounterEquipBlock;
+    if ($combatChain[$i + 2] == "EQUIP" && TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i+1] == $defPlayer) {
+      $uid = $combatChain[$i + 8];
+      $charIndex = SearchCharacterForUniqueID($uid, $defPlayer);
+      if ($charIndex != -1 && $defChar[$charIndex + 4] < 0) ++$numNegCounterEquipBlock;
+    }
   }
   return $numNegCounterEquipBlock;
 }
