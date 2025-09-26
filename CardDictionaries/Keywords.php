@@ -265,8 +265,10 @@
         break;
       default: break;
     }
-    if ($switchedPlayers[$playerID-1]) PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
+    if (SearchCurrentTurnEffects("the_old_switcheroo_blue-DISCARD", $playerID, true)) {
+      PummelHit($otherPlayer, context: "You fell for the old switcheroo! Discard a card!", effectController:$effectController);
     }
+  }
 
   function VictorAbility($playerID, $cardID, $effectController="") {
     $otherPlayer = $playerID == 1 ? 2 : 1;
@@ -292,6 +294,8 @@
         PrependDecisionQueue("PASSPARAMETER", $playerID, $goldIndices, 1);
       } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "gold-1", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
+      PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $otherPlayer, "the_old_switcheroo_blue", 1);
+      PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, "the_old_switcheroo_blue", 1);
       PrependDecisionQueue("NOPASS", $playerID, "-", 1);
       PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("gold", "gold") ."_to_clash_again", 1);
       PrependDecisionQueue("SETDQVAR", $playerID, "1");

@@ -628,6 +628,7 @@ class the_old_switcheroo_blue extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect("$this->cardID-DISCARD", $this->controller);
   }
 
   function CardCost($from = '-') {
