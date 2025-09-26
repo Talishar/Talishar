@@ -3215,9 +3215,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "cloud_skiff_yellow":
     case "cloud_skiff_blue":
       if ($player != $mainPlayer) return true;
-      if ($from != "PLAY") return false;
+      if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if ($from == "PLAY" && $combatChain[11] >= 1) return true;
+      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 3) return true;
       return false;
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
@@ -3226,9 +3227,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "cogwerx_zeppelin_yellow":
     case "cogwerx_zeppelin_blue":
       if ($player != $mainPlayer) return true;
-      if ($from != "PLAY") return false;
+      if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if ($from == "PLAY" && $combatChain[11] >= 2) return true;
+      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 3) return true;
       return false;
     case "palantir_aeronought_red":
     case "jolly_bludger_yellow":

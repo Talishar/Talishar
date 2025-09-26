@@ -696,7 +696,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $action = $currentPlayer == $playerID && IsPlayable($attacks[$i], $turn[0], "COMBATCHAINATTACKS", $linkNum) ? 38 : 0;
     $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID);
     $cardID = $attacks[$i];
-    if ($action != 0 && $cardID == "palantir_aeronought_red") array_push($playablePastLinks, JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label));
+    if ($action != 0) array_push($playablePastLinks, JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   // $response->playerHand = $myHandContents;
   $response->playerBanish = array_merge($response->playerBanish, $playablePastLinks);
