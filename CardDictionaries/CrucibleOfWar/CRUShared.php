@@ -547,9 +547,7 @@ function KayoStaticAbility($cardId)
   $roll = GetDieRoll($mainPlayer);
   if(PowerCantBeModified($cardId)) return;
   if($roll >= 5) {
-    if(CanGainAttack($cardId)) {
-      AddCurrentTurnEffect("kayo_berserker_runt-DOUBLE", $mainPlayer);
-    }
+    AddCurrentTurnEffect("kayo_berserker_runt-DOUBLE", $mainPlayer);
   } else AddCurrentTurnEffect("kayo_berserker_runt-HALF", $mainPlayer);
 }
 
