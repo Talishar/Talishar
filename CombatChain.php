@@ -1783,17 +1783,16 @@ function CombatChainPayAdditionalCosts($index, $from)
   global $combatChain, $currentPlayer, $chainLinks;
   if ($from == "PLAY") {
     $i = $index * CombatChainPieces();
+    if(!isset($combatChain[$i]))  {
+      //PHP error happening here. Undefined array key 121 in /opt/lampp/htdocs/game/CombatChain.php on line 1503
+      return; 
+    }
     $cardID = $combatChain[$i];
   }
   else {
     $i = $index;
     $cardID = $chainLinks[$i][0];
   }
-  if(!isset($combatChain[$i]))  {
-    //PHP error happening here. Undefined array key 121 in /opt/lampp/htdocs/game/CombatChain.php on line 1503
-    return; 
-  }
-  
   switch($cardID) {
     case "sky_skimmer_red":
     case "sky_skimmer_yellow":
