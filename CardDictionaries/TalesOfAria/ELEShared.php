@@ -42,7 +42,7 @@
         else return "A";
       case "shock_charmers": return "I";
       case "shock_striker_red": case "shock_striker_yellow": case "shock_striker_blue": 
-        if($from == "PLAY") return "I";
+        if($from == "PLAY" || $from == "COMBATCHAINATTACKS") return "I";
         else return "AA";
       case "amulet_of_lightning_blue": 
         if($from == "PLAY") return "I";

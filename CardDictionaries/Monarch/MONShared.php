@@ -54,7 +54,7 @@
       case "blood_drop_brocade": return "I";
       case "stubby_hammerers": case "time_skippers": return "A";
       case "exude_confidence_red": 
-        if($from == "PLAY") return "I";
+        if($from == "PLAY" || $from == "COMBATCHAINATTACKS") return "I";
         else return "AA";
       case "rally_the_rearguard_red": case "rally_the_rearguard_yellow": case "rally_the_rearguard_blue": 
         if($from == "PLAY") return "I";
