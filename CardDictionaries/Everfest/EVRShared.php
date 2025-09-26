@@ -426,7 +426,7 @@
         return "";
       case "firebreathing_red":
         if($from == "PLAY") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer, "PLAY");
-        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For no activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
         return "";
       case "cash_out_blue":
         PutItemIntoPlayForPlayer("silver", $currentPlayer, 0, intval($additionalCosts));

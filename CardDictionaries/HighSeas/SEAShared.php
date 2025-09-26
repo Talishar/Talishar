@@ -723,7 +723,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For no activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       break;
     case "palantir_aeronought_red":
       if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
@@ -761,7 +761,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "jolly_bludger_yellow-OP", 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For no activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "cogwerx_dovetail_red":
@@ -769,7 +769,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For no activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       return "";
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
@@ -778,7 +778,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cogwerx_zeppelin_yellow":
     case "cogwerx_zeppelin_blue":
       if ($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For no activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       return "";
     case "scurv_stowaway":
       PutItemIntoPlayForPlayer("goldkiss_rum", $currentPlayer);

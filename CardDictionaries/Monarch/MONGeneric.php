@@ -11,7 +11,7 @@
       case "time_skippers": GainActionPoints(2, $currentPlayer); return "";
       case "exude_confidence_red":
         if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(2);
-        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For no activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
         return "";
       case "seek_horizon_red": case "seek_horizon_yellow": case "seek_horizon_blue":
         if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
