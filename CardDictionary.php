@@ -3094,14 +3094,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
     case "danger_digits":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, subtype:"Dagger") == "") {
+      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, "AA", "Dagger") == "") {
         $restriction = "No dagger to throw";
         return true;
       }
       return false;
     case "throw_dagger_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, subtype:"Dagger") == "") {
+      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, "AA", "Dagger") == "") {
         $restriction = "No dagger to throw";
         return true;
       }
