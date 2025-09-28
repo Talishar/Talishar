@@ -1121,7 +1121,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "authority_of_ataya_blue":
-          if (TypeContains($cardID, "DR", $currentPlayer)) ++$costModifier;
+          if (TypeContains($cardID, "DR", $currentPlayer) && IsPlayed($cardID, $from, $currentPlayer)) ++$costModifier;
           break;
         default:
           break;

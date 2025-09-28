@@ -3839,3 +3839,22 @@ function Pitch($cardID, $player)
   $resources[0] += PitchValue($cardID);
 }
 
+function IsPlayed($cardID, $from="", $player=-1, $index=0) {
+  global $layers;
+
+  $cardType = CardType($cardID, $from, $player);
+  if (IsStaticType($cardType, $from, $cardID)) return false;
+  if (isset($layers[$index])) {
+    if ($layers[$index] != $cardID) return false;
+    else return true;
+  }
+  else {
+    // below is an alternate implementation. The two should be equivalent, but for now above is simpler.
+    // use this as a fallback in case something goes wrong with the above
+    $abilityTypes = GetAbilityTypes($cardID, $index, $from);
+    if ($abilityTypes == "") return true;
+    $resolvedAbilityType = GetResolvedAbilityType($cardID, $from, $player);
+    if ($resolvedAbilityType != $cardType) return false;
+    return true;
+  }
+}
