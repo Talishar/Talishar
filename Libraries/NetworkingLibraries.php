@@ -1417,10 +1417,10 @@ function EndStep()
   AuraBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  if (HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
   UndoIntimidate(1);
   UndoIntimidate(2);
   RemoveBanishedCardFromGraveyard();
-  if (HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
   UndoShiyanaBaseLife();
 }
 
