@@ -3630,7 +3630,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "ollin_ice_cap":
-        PlayAura("frostbite", $player, effectController: $defPlayer);
+        PlayAura("frostbite", $mainPlayer, effectController: $defPlayer);
         break;
       case "tectonic_crust":
         PlayAura("seismic_surge", $defPlayer, effectController: $defPlayer);
