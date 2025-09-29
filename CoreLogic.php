@@ -175,7 +175,8 @@ function BlockingCardDefense($index)
   if (TypeContains($cardID, "E", $defPlayer)) {
     $defCharacter = &GetPlayerCharacter($defPlayer);
     $charIndex = isset($combatChain[$index + 8]) ? SearchCharacterForUniqueID($combatChain[$index + 8], $defPlayer) : null;
-    $defense += $defCharacter[$charIndex + 4];
+    $counters = $defCharacter[$charIndex + 4];
+    if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
