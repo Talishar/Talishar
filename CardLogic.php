@@ -666,7 +666,7 @@ function CardPlayTrigger($cardID, $from)
 
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
 {
-  global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn;
+  global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   // Can this check be generalized to use a function to check for all hit prevention effects?
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
@@ -674,7 +674,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
   switch ($cardID) {
-    case "dawnblade":
     case "snatch_red":
     case "snatch_yellow":
     case "snatch_blue":
@@ -965,6 +964,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "bittering_thorns_blue":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "dawnblade":
+      //checking whether dawnblade *will* trigger is a little trickier
+      if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 2) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return false;
+      }
+      elseif(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1) return true;
+      else return false;
     case "breaking_point_red":
       if(IsHeroAttackTarget() && RuptureActive()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");

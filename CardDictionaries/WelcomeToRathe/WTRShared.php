@@ -447,12 +447,9 @@
         Draw($mainPlayer);
         break;
       case "dawnblade":
-        if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1) {
-          $mainCharacter = &GetPlayerCharacter($mainPlayer);
-          $index = FindCharacterIndex($mainPlayer, $cardID);
-          ++$mainCharacter[$index+3];
-        }
-        IncrementClassState($mainPlayer, $CS_HitsWDawnblade, 1);
+        $mainCharacter = &GetPlayerCharacter($mainPlayer);
+        $index = FindCharacterIndex($mainPlayer, $cardID);
+        ++$mainCharacter[$index+3];
       break;
       case "snatch_red": case "snatch_yellow": case "snatch_blue": Draw($mainPlayer); break;
       default: break;

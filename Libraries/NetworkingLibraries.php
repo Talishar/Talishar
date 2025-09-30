@@ -1157,7 +1157,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
 {
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
-  global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer;
+  global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
   if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
@@ -1179,6 +1179,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
     if (IsWeaponAttack()) {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
+      if ($cardID == "dawnblade") IncrementClassState($mainPlayer, $CS_HitsWDawnblade);
       if (SubtypeContains($cardID, "Sword", $mainPlayer)) IncrementClassState($mainPlayer, $CS_HitsWithSword);
       if (SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer) != -1) {
         $index = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
