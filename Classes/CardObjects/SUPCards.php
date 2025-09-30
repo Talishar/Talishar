@@ -3504,7 +3504,7 @@ class disarm_yellow extends Card {
     global $CombatChain, $mainPlayer;
     // This should technically check LKI if the combat chain is forced closed
     $defCard = $CombatChain->FindCardUID($target);
-    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6 && !IsAllyAttacking()) {
       MZMoveCard($mainPlayer, "MYHAND", "MYBOTDECK", silent:true);
     }
   }
@@ -3532,7 +3532,7 @@ class disembody_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
     $defCard = $CombatChain->FindCardUID($target);
-    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6 && !IsAllyAttacking()) {
       MZMoveCard($mainPlayer, "MYAURAS", "MYBOTDECK", silent:true);
     }
   }
@@ -3560,7 +3560,7 @@ class disperse_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
     $defCard = $CombatChain->FindCardUID($target);
-    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6 && !IsAllyAttacking()) {
       MZMoveCard($mainPlayer, "MYARS", "MYBOTDECK", silent:true);
     }
   }
