@@ -694,7 +694,7 @@
     }
   }
 
-  function HeaveIndices()
+  function HeaveIndices($resourceCounting=false)
   {
     global $mainPlayer;
     if(ArsenalFull($mainPlayer)) return "";
@@ -712,7 +712,7 @@
       if (is_numeric(PitchValue($hand[$i]))) $availableResources = $totalResources - PitchValue($hand[$i]);
       else $availableResources = $totalResources;
       $heaveVal = HeaveValue($hand[$i]);
-      if($heaveVal > 0 && $availableResources >= $heaveVal) {
+      if($heaveVal > 0 && ($availableResources >= $heaveVal || !$resourceCounting)) {
         if($heaveIndices != "") $heaveIndices .= ",";
         $heaveIndices .= $i;
       }
