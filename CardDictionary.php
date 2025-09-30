@@ -1345,7 +1345,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "war_cry_of_themis_yellow", "burn_bare", "light_up_the_leaves_red" => "I,A",
 
     "haunting_rendition_red", "mental_block_blue" => "B,I",
-    "shelter_from_the_storm_red" => "I,DR",
+    "shelter_from_the_storm_red" => $from == "HAND" ? "I,DR" : "-,DR",
     "war_cry_of_bellona_yellow" => "I,AR",
 
     "chum_friendly_first_mate_yellow" => ($from != "PLAY") ? "" : "I,AA",
