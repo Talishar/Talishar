@@ -450,7 +450,7 @@
         $mainCharacter = &GetPlayerCharacter($mainPlayer);
         $index = FindCharacterIndex($mainPlayer, $cardID);
         ++$mainCharacter[$index+3];
-      break;
+        break;
       case "snatch_red": case "snatch_yellow": case "snatch_blue": Draw($mainPlayer); break;
       default: break;
     }
