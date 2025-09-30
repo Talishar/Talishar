@@ -8,9 +8,11 @@ class GoFishCard extends Card {
     if (IsHeroAttackTarget()) {
       if (!$check) {
         AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
-        $doubleTrigger = SearchCurrentTurnEffects("catch_of_the_day_blue-DOUBLETRIGGER", $this->controller);
-        if ($doubleTrigger) {
-          AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+        $doubleTriggers = CountCurrentTurnEffects("catch_of_the_day_blue-DOUBLETRIGGER", $this->controller);
+        if ($doubleTriggers > 0) {
+          for ($i = 1; $i < pow(2, $doubleTriggers); ++$i) {
+            AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+          }
         }
       }
       return true;
