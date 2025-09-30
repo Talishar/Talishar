@@ -206,15 +206,7 @@ function ItemPlayAbilities($cardID, $from)
     switch ($items[$i]) {
       case "talisman_of_cremation_blue":
         if ($from == "BANISH") {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card name to banish with Talisman of Cremation");
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "THEIRDISCARD:isSameName=", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-          $remove = true;
+          AddLayer("TRIGGER", $currentPlayer, $items[$i], uniqueID:$items[$i+4]);
         }
         break;
       default:

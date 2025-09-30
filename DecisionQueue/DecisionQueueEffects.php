@@ -1102,6 +1102,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
       }
       return $lastResult;
+    case "CREMATION":
+      $discard = GetDiscard($otherPlayer);
+      for ($i = count($discard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
+        if (ShareName(CardName($discard[$i]), GamestateUnsanitize($lastResult))) {
+          BanishCardForPlayer($discard[$i], $otherPlayer, "DISCARD", banishedBy:"talisman_of_cremation_blue", banisher: $player);
+          RemoveDiscard($otherPlayer, $i);
+        }
+      }
+      return $lastResult;
     case "CUTTING":
       if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) {
         WriteLog(CardLink("cutting_retort_red", "cutting_retort_red") . " does not work on an opponent under amnesia");

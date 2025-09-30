@@ -4134,6 +4134,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
         AddDecisionQueue("PUTPLAY", $player, "0", 1);
         break;
+      case "talisman_of_cremation_blue":
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card name to banish with Talisman of Cremation");
+        AddDecisionQueue("INPUTCARDNAME", $player, "-");
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("WRITELOG", $player, "<b>📣{0}</b> is being cremated!", 1);
+        AddDecisionQueue("SPECIFICCARD", $player, "CREMATION", 1);
+        $index = SearchItemsForUniqueID($uniqueID, $player);
+        if ($index != -1) DestroyItemForPlayer($player, $index);
+        break;
       default:
         break;
     }
