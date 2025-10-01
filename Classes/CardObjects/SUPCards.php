@@ -5224,7 +5224,7 @@ class mage_hunter_arrow_red extends Card {
     $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $mainPlayer, "null_time_zone_blue") != -1;
     $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $defPlayer, "null_time_zone_blue") != -1;
     $arsenal = GetArsenal($this->controller);
-    if ($arsenal[$index + 1] == "DOWN") return "-,Attack";
+    if (!isset($arsenal[$index + 1]) || $arsenal[$index + 1] == "DOWN") return "-,Attack";
     $names = "Ability";
     if($foundNullTime && $from == "ARS") return $names;
     if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
