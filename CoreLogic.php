@@ -822,14 +822,16 @@ function CombatChainDamageModifiers($player, $source, $type)
   global $chainLinks, $CombatChain, $mainPlayer;
   $modifier = 0;
   if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
-  switch ($CombatChain->AttackCard()->ID()) {
-    case "ball_lightning_red":
-    case "ball_lightning_yellow":
-    case "ball_lightning_blue":
-      if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
-      break;
-    default:
-      break;
+  if ($CombatChain->HasCurrentLink()) {
+    switch ($CombatChain->AttackCard()->ID()) {
+      case "ball_lightning_red":
+      case "ball_lightning_yellow":
+      case "ball_lightning_blue":
+        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+        break;
+      default:
+        break;
+    }
   }
   for ($i = 0; $i < count($chainLinks); ++$i) {
     if ($chainLinks[$i][2] == 1) {
