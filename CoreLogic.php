@@ -563,6 +563,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
+  if ($damage > 0) $damage += CombatChainDamageModifiers($player, $source, $type);
   if ($preventable) {
     if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $damage, $source);
     if (ConsumeDamagePrevention($player)) return 0;//I damage can be prevented outright, don't use up your limited damage prevention
@@ -808,15 +809,40 @@ function CurrentEffectDamageModifiers($player, $source, $type)
       case "frazzle_blue":
         if ($type == "COMBAT" || $type == "ATTACKHIT") ++$modifier;
         break;
-      case "ball_lightning_red":
-      case "ball_lightning_yellow":
-      case "ball_lightning_blue":
-        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
-        break;
       default:
         break;
     }
     if ($remove == 1) RemoveCurrentTurnEffect($i);
+  }
+  return $modifier;
+}
+
+function CombatChainDamageModifiers($player, $source, $type)
+{
+  global $chainLinks, $CombatChain, $mainPlayer;
+  $modifier = 0;
+  if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
+  switch ($CombatChain->AttackCard()->ID()) {
+    case "ball_lightning_red":
+    case "ball_lightning_yellow":
+    case "ball_lightning_blue":
+      if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+      break;
+    default:
+      break;
+  }
+  for ($i = 0; $i < count($chainLinks); ++$i) {
+    if ($chainLinks[$i][2] == 1) {
+      switch ($chainLinks[$i][0]) {
+        case "ball_lightning_red":
+        case "ball_lightning_yellow":
+        case "ball_lightning_blue":
+          if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+          break;
+        default:
+          break;
+      }
+    }
   }
   return $modifier;
 }

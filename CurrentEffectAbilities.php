@@ -747,9 +747,6 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "explosive_growth_red":
       case "explosive_growth_yellow":
       case "explosive_growth_blue":
-      case "ball_lightning_red":
-      case "ball_lightning_yellow":
-      case "ball_lightning_blue":
       case "spreading_flames_red":
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":

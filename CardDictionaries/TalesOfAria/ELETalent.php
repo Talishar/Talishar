@@ -176,9 +176,6 @@
         //only add current turn effect if there's no target (ie. played in layer step)
         else AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "lightning_surge_red": case "lightning_surge_yellow": case "lightning_surge_blue":
         if($from == "ARS") GiveAttackGoAgain();
         return "";
