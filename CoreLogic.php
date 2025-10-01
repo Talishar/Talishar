@@ -1003,9 +1003,6 @@ function PlayerLoseHealth($player, $amount)
   $amount = AuraLoseHealthAbilities($player, $amount);
   if(!IsPlayerAI($player) || $player == 1) $health -= $amount;
   IncrementClassState($player, $CS_HealthLost, $amount);
-  if ($health <= 0 && !IsGameOver()) {
-    PlayerWon(($player == 1 ? 2 : 1));
-  }
 }
 
 function IsGameOver()
