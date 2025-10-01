@@ -796,7 +796,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
         $otherPlayer = $playerID == 1 ? 2 : 1;
-        if (!IsGameOver()) PlayerLoseHealth($otherPlayer, GetHealth($otherPlayer));
+        if (!IsGameOver()) PlayerWon($playerID);
         WriteLog("🚩The opponent forfeit due to inactivity.");
       }
       break;
