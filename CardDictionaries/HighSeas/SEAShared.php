@@ -567,7 +567,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck = GetDeck($currentPlayer);
       $foundBlues = [];
       $topTwo = [];
-      for ($i = 0; $i < 2; ++$i) {
+      $deckSize = count($deck) / DeckPieces();
+      for ($i = 0; $i < min([2, $deckSize]); ++$i) {
         $val = CardLink($deck[$i], $deck[$i]);
         array_push($topTwo, $val);
         if (ColorContains($deck[$i], 3, $currentPlayer)) array_push($foundBlues, $val);

@@ -1578,7 +1578,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       $names = "";
       if (CheckTapped("MYALLY-$index", $currentPlayer)) return "Ability";
       if (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $canAttack) return "-,Attack";
-      if ($allies[$index + 8] > 0) $names = "Ability";
+      if ($allies[$index + 8] ?? 0 > 0) $names = "Ability";
       if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
     case "fearless_confrontation_blue":

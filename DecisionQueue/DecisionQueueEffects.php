@@ -883,6 +883,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       else $remainingInds = 2;
       $deck = new Deck($player);
+      $remainingInds = min([$remainingInds, $deck->RemainingCards()]);
       for ($i = 0; $i < $remainingInds; ++$i) {
         $cardID = $deck->Top(true, 1);
         AddGraveyard($cardID, $player, "DECK", $player);
