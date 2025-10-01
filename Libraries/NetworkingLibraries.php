@@ -1547,7 +1547,7 @@ function FinalizeTurn()
     if ($defCharacter[$i + 6] == 1) {
       DestroyCharacter($defPlayer, $i-1); //Destroy if it was flagged for destruction
     }
-    if ($defCharacter[$i] == 1 || $defCharacter[$i] == 2) {
+    elseif ($defCharacter[$i] == 1 || $defCharacter[$i] == 2) {
       if ($defCharacter[$i] != 4) $defCharacter[$i] = 2;
       $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i - 1]);
     }
