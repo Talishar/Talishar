@@ -327,6 +327,7 @@ function AlwaysAllowUndo($player)
 function AltArtsDisabled($player)
 {
   global $SET_DisableAltArts;
+  if ($player > 2) return true; //spectators
   $settings = GetSettings($player);
   if($settings == null || count($settings) <= $SET_DisableAltArts) return false;
   return $settings[$SET_DisableAltArts] == "1";
