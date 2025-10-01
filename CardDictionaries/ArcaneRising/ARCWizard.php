@@ -212,6 +212,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
+    $damage += CombatChainDamageModifiers($player, $source, $type);
     if ($type != "PLAYCARD" && $type != "ARCANESHOCK") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
     if ($fromQueue) {
       if (!$limitDuplicates) {
