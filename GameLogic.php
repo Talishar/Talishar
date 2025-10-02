@@ -2369,6 +2369,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $MakeStartGameBackup = true;
       return 0;
     case "QUICKREMATCH":
+      //reset health so they don't immediately die again
+      $p1Health = &GetHealth(1);
+      $p1Health = 1;
+      $p2Health = &GetHealth(2);
+      $p2Health = 1;
       $currentTime = round(microtime(true) * 1000);
       SetCachePiece($gameName, 2, $currentTime);
       SetCachePiece($gameName, 3, $currentTime);
@@ -2379,6 +2384,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMATCH":
       global $GameStatus_Rematch, $inGameStatus;
       if ($lastResult == "YES") {
+        //reset health so they don't immediately die again
+        $p1Health = &GetHealth(1);
+        $p1Health = 1;
+        $p2Health = &GetHealth(2);
+        $p2Health = 1;
         $inGameStatus = $GameStatus_Rematch;
         ClearGameFiles($gameName);
       }
