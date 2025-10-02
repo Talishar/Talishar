@@ -1456,7 +1456,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
       return $names;
     case "under_the_trap_door_blue":
       // can't use the ability if there are no traps in graveyard
-      $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "") ? "Ability" : "";
+      $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "") ? "Ability" : "-";
       if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
