@@ -1304,9 +1304,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $target = is_array($parameter) ? $parameter : explode("-", $parameter);
       $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
       $parameters = explode("-", $lastResult);
-      $damage = $parameters[0];
-      $source = $parameters[1];
-      $type = $parameters[2];
+      $damage = $parameters[0] ?? 0;
+      $source = $parameters[1] ?? "-";
+      $type = $parameters[2] ?? "-";
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
         if ($allies[$target[1] + 6] > 0) {
@@ -1320,7 +1320,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
         return $damage;
       } else {
-        PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, $lastResult);
+        PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$player");
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
@@ -1332,9 +1332,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = intval($params[0]);
       $source = count($params) > 1 ? $params[1] : "-";
       $type = count($params) > 2 ? $params[2] : "-";
+      $playerSource = $params[3] ?? "-";
       if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
       $damage -= intval($lastResult);
-      $damage = DealDamageAsync($player, $damage, $type, $source);
+      $damage = DealDamageAsync($player, $damage, $type, $source, $playerSource);
       if ($type == "COMBAT") $dqState[6] = $damage;
       $treasureID = SearchLandmarksForID("treasure_island");
       if ($treasureID != -1) {
@@ -1482,7 +1483,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $source = $parameters[1];
       $playerSource = $parameters[2];
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
-      $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source);
+      $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source, $playerSource);
       if ($damage < 0) $damage = 0;
       WriteLog("Player " . $playerSource . " is dealing $damage arcane damage from " . CardLink($source, $source), $player);
       if (DelimStringContains(CardSubType($source), "Ally") && $damage > 0) ProcessDealDamageEffect($source); // Interaction with Burn Them All! + Nekria
@@ -2032,7 +2033,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dqVars[0] = $damage;
         $dqState[6] = $damage;
       }
-      return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2]);
+      $playerSource = $params[3] ?? "-";
+      return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2], $playerSource);
     case "SETSCOURDQVAR":
       $targetType = 0;
       $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0));

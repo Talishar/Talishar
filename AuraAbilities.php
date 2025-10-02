@@ -1254,13 +1254,13 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
 }
 
 
-function AuraDamageTakenAbilities($player, $damage, $source)
+function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
 {
   global $CS_DamageTaken, $CS_ArcaneDamageTaken, $CS_DamageDealt, $CS_ArcaneDamageDealt;
   $otherPlayer = $player == 1 ? 2 : 1;
 
   $auras = &GetAuras($player);
-  $selfInflicted = $source == "bloodrot_pox";
+  $selfInflicted = $source == "bloodrot_pox" || $player == $playerSource;
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
     $remove = 0;
     switch ($auras[$i]) {

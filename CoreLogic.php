@@ -553,7 +553,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   return true;
 }
 
-function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
+function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $playerSource="-")
 {
   global $CS_DamagePrevention, $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState;
   $classState = &GetPlayerClassState($player);
@@ -614,7 +614,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA")
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
   $dqVars[0] = $damage;
   if ($type == "COMBAT") $dqState[6] = $damage;
-  PrependDecisionQueue("FINALIZEDAMAGE", $player, $damage . "," . $type . "," . $source);
+  PrependDecisionQueue("FINALIZEDAMAGE", $player, "$damage,$type,$source,$playerSource");
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
@@ -672,7 +672,7 @@ function AddDamagePreventionSelection($player, $damage, $type, $preventable)
   PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage,$preventable");
 }
 
-function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
+function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $playerSource)
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain;
@@ -695,7 +695,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source)
         PummelHit();
       }
     }
-    AuraDamageTakenAbilities($player, $damage, $source);
+    AuraDamageTakenAbilities($player, $damage, $source, $playerSource);
     ItemDamageTakenAbilities($player, $damage);
     AuraDamageDealtAbilities($otherPlayer, $damage);
     if (SearchAuras("ode_to_wrath_yellow", $otherPlayer)) {
