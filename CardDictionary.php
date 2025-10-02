@@ -2273,7 +2273,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (!$resolutionCheck) { //when running a resoulution check, only check for targets
-    if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) return true;
+    if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) {
+      //exception for manual tunic mode
+      if ($cardID == "fyendals_spring_tunic" && $currentPlayer == $mainPlayer && ManualTunicSetting($player) && GetClassState($player, piece: $CS_TunicTicks) == 0) {
+        if (GetClassState($player, $CS_NumCardsPlayed) == 0 && $character[$index + 2] < 3) return false;
+      }
+      return true;
+    }
     if (CardCareAboutChiPitch($cardID) && SearchHand($player, subtype: "Chi") == "") return true;
     if (SearchCurrentTurnEffects("herald_of_judgment_yellow", $player) && $from == "BANISH") {
       $restriction = "herald_of_judgment_yellow";
