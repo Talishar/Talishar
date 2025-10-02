@@ -555,7 +555,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 
 function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $playerSource="-")
 {
-  global $CS_DamagePrevention, $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState;
+  global $CS_DamagePrevention, $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState, $mainPlayer;
   $classState = &GetPlayerClassState($player);
   if ($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -613,7 +613,10 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $pl
   $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
   $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
   $dqVars[0] = $damage;
-  if ($type == "COMBAT") $dqState[6] = $damage;
+  if ($type == "COMBAT") {
+    $dqState[6] = $damage;
+    $playerSource = $mainPlayer;
+  }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, "$damage,$type,$source,$playerSource");
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
   if ($source == "runechant") {
