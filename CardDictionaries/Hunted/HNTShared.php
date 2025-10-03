@@ -349,13 +349,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         if ($additionalCosts == "Reduce_Block" || $additionalCosts == "Both") {
           if ($target != "-") {
-            $targetCard = GetMZCard($currentPlayer, $target);
+            $targetCardID = GetMZCard($currentPlayer, $target);
             $targetInd = explode("-", $target)[1];
-            if (TypeContains($targetCard, "E")) {
-              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$targetInd+8]);
+            $targetCard =  $CombatChain->FindCardUID($targetInd);
+            $ind = $targetCard != "" ? $targetCard->Index() : 0;
+            if (TypeContains($targetCardID, "E")) {
+              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$ind+8]);
             }
             else {
-              CombatChainDefenseModifier($targetInd, -3);
+              CombatChainDefenseModifier($ind, -3);
             }
           }
         }
