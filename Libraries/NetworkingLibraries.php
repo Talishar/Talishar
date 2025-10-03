@@ -2191,12 +2191,16 @@ function GetLayerTarget($cardID, $from)
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":
-      $choices = explode(",", GetPastChainLinkCards($defPlayer, asMZInd: true, blockingClass: "ASSASSIN"));
+      $pastChoices = GetPastChainLinkCards($defPlayer, asMZInd: true, blockingClass: "ASSASSIN");
       if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) {
-        $choices = array_merge($choices, explode(",", GetChainLinkCards($defPlayer, asMZInd:true)));
+        $currentChoices =  GetChainLinkCards($defPlayer, asMZInd:true);
       }
+      else $currentChoices = "";
+      if ($currentChoices == "") $choices = $pastChoices;
+      elseif ($pastChoices == "") $choices = $currentChoices;
+      else $choices = "$pastChoices,$currentChoices";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred");
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $choices));
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $choices);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
