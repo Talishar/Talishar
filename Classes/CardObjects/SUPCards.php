@@ -3697,7 +3697,7 @@ class turning_point_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    if (PlayerHasLessHealth($this->controller)) Cheer($this->controller);
+    if (!IsAllyAttacking() && PlayerHasLessHealth($this->controller)) Cheer($this->controller);
   }
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
