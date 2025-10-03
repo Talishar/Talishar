@@ -561,10 +561,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "dragonscaler_flight_path":
       if (substr($target, 0, strlen("COMBATCHAINLINK")) == "COMBATCHAINLINK") {
-        if (intval(explode("-", $target)[1]) != 0) {
-          WriteLog("Please don't target that with dragonscaler flight path");
-          return "";
-        }
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       $targetID = GetMZCard($currentPlayer, $target);
