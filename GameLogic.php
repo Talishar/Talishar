@@ -2718,6 +2718,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $char[$parameter + 10] = implode(",", $subcards);
       UpdateSubcardCounterCount($currentPlayer, $parameter);
+      if ($char[$parameter + 10] == "") $char[$parameter + 10] = "-";
       return $cardID;
     case "REMOVESOUL":
       $char = &GetPlayerCharacter($player);
