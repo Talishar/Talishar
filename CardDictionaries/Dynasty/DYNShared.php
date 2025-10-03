@@ -161,7 +161,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrouchingTigerPlayedThisTurn;
-  global $combatChain;
+  global $combatChain, $chainLinks, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -323,11 +323,16 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if ($target != "-") {
         $targetCard = GetMZCard($currentPlayer, $target);
         $targetInd = explode("-", $target)[1];
+        $targetInd2 = explode("-", $target)[2] ?? "-";
+        $targetZone = explode("-", $target)[0];
         if (TypeContains($targetCard, "E")) {
-          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$combatChain[$targetInd+8]);
+          $uid = $targetZone == "COMBATCHAINLINK" ? $combatChain[$targetInd+8] : $chainLinks[$targetInd2][$targetInd+8];
+          AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$uid);
         }
-        else {
-          CombatChainDefenseModifier($targetInd, $amount);
+        elseif ($targetZone == "COMBATCHAINLINK") {
+          $targetCard = $CombatChain->FindCardUID($targetInd);
+          $index = $targetCard != "" ? $targetCard->Index() : -1;
+          if ($index != -1) CombatChainDefenseModifier($index, $amount);
         }
       }
       return "";

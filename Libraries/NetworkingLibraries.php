@@ -2031,7 +2031,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer, $defPlayer, $layers;
+  global $currentPlayer, $defPlayer, $layers, $CombatChain, $mainPlayer;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->GetLayerTarget($from);
   switch ($cardID) {
@@ -2191,20 +2191,15 @@ function GetLayerTarget($cardID, $from)
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":
-      $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
-      if ($numOptions != "") {
-        $numOptions = explode(",", $numOptions);
-        $options = [];
-        foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
-        $options = implode(",", $options);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      $choices = explode(",", GetPastChainLinkCards($defPlayer, asMZInd: true, blockingClass: "ASSASSIN"));
+      if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) {
+        $choices = array_merge($choices, explode(",", GetChainLinkCards($defPlayer, asMZInd:true)));
       }
-      else {
-        WriteLog(CardLink($cardID, $cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
-      }
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred");
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $choices));
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "platinum_amulet_blue":
       if ($from == "PLAY"){

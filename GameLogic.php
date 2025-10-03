@@ -1806,6 +1806,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $permanents = GetPermanents($player);
             $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
           }
+          if ($targetArr[0] == "PASTCHAINLINK") {
+            // It's not possible for this index to get messed up before resolution
+            $cleanTarget = $lastResult;
+          }
+          if ($targetArr[0] == "COMBATCHAINLINK") {
+            $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
+          }
           $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
           break;
       }
@@ -1816,6 +1823,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "null__shock_yellow" => $cleanTarget,
         "consign_to_cosmos__shock_yellow" => $cleanTarget,
         "angelic_attendant_yellow" => $cleanTarget,
+        "shred_red", "shred_yellow", "shred_blue" => $cleanTarget,
         default => $target,
       };
       for ($i = 0; $i < count($layers); $i += LayerPieces()) {

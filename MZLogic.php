@@ -495,9 +495,11 @@ function GetMZCard($player, $MZIndex)
   else {
     $zoneDS = &GetMZZone($player, $params[0]);
     $index = $params[1];
+    $index2 = $params[2] ?? 0;
     if (isset($zoneDS[$index]) && ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD" || $zoneDS[$index] == "ABILITY")) $index += 2;
-    if ($index == "" || !isset($zoneDS[$index])) return "";
-    return $zoneDS[$index];
+    if ($index == "" || (!isset($zoneDS[$index]) && $params[0] != "PASTCHAINLINK")) return "";
+    if ($params[0] == "PASTCHAINLINK") return $zoneDS[$index2][$index];
+    else return $zoneDS[$index];
   }
 }
 

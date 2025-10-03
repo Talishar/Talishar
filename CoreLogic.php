@@ -1158,12 +1158,13 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   return $pieces;
 }
 
-function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false) {
-  global $chainLinks, $defPlayer;
+function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "") {
+  global $chainLinks, $defPlayer, $mainPlayer;
   $ret = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
   for ($i = 0; $i < count($chainLinks); ++$i) {
+    if ($blockingClass != "" && !ClassContains($chainLinks[$i][0], $blockingClass, $mainPlayer)) continue;
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       $cardID = $chainLinks[$i][$j];
       $thisType = CardType($cardID);
@@ -3098,7 +3099,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         $targetArr[0] = "LAYER";
         $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
       }
-      if (isset($targetArr[1])) $cleanedTarget = $targetArr[0] . "-" . $targetArr[1];
+      if ($targetArr[0] == "PASTCHAINLINK") {
+        $cleanedTarget = implode("-", $targetArr);
+      }
+      elseif (isset($targetArr[1])) $cleanedTarget = $targetArr[0] . "-" . $targetArr[1];
       else $cleanedTarget = $targetArr[0];
       array_push($cleanedTargets, $cleanedTarget);
     }
