@@ -687,6 +687,7 @@ function CardCost($cardID, $from="-")
   }
   $card = GetClass($cardID, 0);
   if ($card != "-" && $card->SpecialCost() != -1) return $card->SpecialCost();
+  elseif ($card != "-") return $card->CardCost($from);
   if ($set != "DUM") {
     return GeneratedCardCost($cardID);
   }
