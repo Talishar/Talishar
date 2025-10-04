@@ -166,11 +166,11 @@
         $amount = 3;
         if($cardID == "lightning_press_yellow") $amount = 2;
         else if($cardID == "lightning_press_blue") $amount = 1;
-        $targetIndex = intval(explode("-", $target)[1]);
+        $targetIndex = explode("-", $target)[1];
         $targetCard = $CombatChain->FindCardUID($targetIndex);
         $index = $targetCard != "" ? $targetCard->Index() : -1;
         if (explode("-", $target)[0] == "COMBATCHAINLINK") {
-          if ($CombatChain->HasCurrentLink() && $index != -1) CombatChainPowerModifier($targetIndex, $amount);
+          if ($CombatChain->HasCurrentLink() && $index != -1) CombatChainPowerModifier($index, $amount);
         }
         elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
           // targeting a past chain link, do nothing for now
