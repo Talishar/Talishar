@@ -5334,6 +5334,8 @@ function Rarity($cardID)
     case "thunder_quake_yellow":
     case "thunder_quake_blue": // Commoner workaround. Can be deleted later when the database is updated.
       return "C";
+    case "valda_brightaxe":
+      return "T";
   }
   if ($set != "DUM") {
     return GeneratedRarity($cardID);
