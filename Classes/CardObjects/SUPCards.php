@@ -3686,7 +3686,10 @@ class never_give_up_yellow extends Card {
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $index = explode("-", $target)[1];
+    global $CombatChain;
+    $targetIndex = explode("-", $target)[1];
+    $targetCard = $CombatChain->FindCardUID($targetIndex);
+    $index = $targetCard != "" ? $targetCard->Index() : -1;
     CombatChainDefenseModifier($index, 3);
   }
 
