@@ -564,9 +564,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "dragonscaler_flight_path":
       if (substr($target, 0, strlen("COMBATCHAINLINK")) == "COMBATCHAINLINK") {
         AddCurrentTurnEffect($cardID, $currentPlayer);
+        $targetID = $CombatChain->AttackCard()->ID();
+        $targetUID = $CombatChain->AttackCard()->OriginUniqueID();
       }
-      $targetID = GetMZCard($currentPlayer, $target);
-      $targetUID = GetMZUID($currentPlayer, $target);
+      else {
+        $targetID = GetMZCard($currentPlayer, $target);
+        $targetUID = GetMZUID($currentPlayer, $target);
+      }
       $type = TypeContains($targetID, "W", $currentPlayer);
       $subtype = SubtypeContains($targetID, "Ally", $currentPlayer);
       if($type) {
