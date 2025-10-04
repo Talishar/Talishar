@@ -3232,7 +3232,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if ($from == "PLAY" && $combatChain[11] >= 1) return true;
-      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 3) return true;
+      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 1) return true;
       return false;
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
@@ -3431,7 +3431,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       break;
   }
   if (canBeAddedToChainDuringDR($cardID) && $phase == "D") return true;
-  if ($phase != "B" && $from == "EQUIP" || $from == "PLAY") $cardType = GetResolvedAbilityType($cardID, $from);
+  if ($phase != "B" && ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS")) $cardType = GetResolvedAbilityType($cardID, $from);
   else if ($phase == "M" && $cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
   else $cardType = CardType($cardID);
   if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
@@ -3452,6 +3452,7 @@ function IsStaticType($cardType, $from = "", $cardID = "")
     DelimStringContains($cardType, "D") || 
     DelimStringContains($cardType, "Companion") || 
     $from == "PLAY" || 
+    $from == "COMBATCHAINATTACKS" || 
     ($from == "ARS" && DelimStringContains($cardType, "M")) || 
     ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID))) {
       return true;

@@ -15,21 +15,30 @@ class backspin_thrust_red extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
-    global $mainPlayer, $combatChain;
+    global $mainPlayer, $combatChain, $chainLinks;
     if ($this->controller != $mainPlayer) return true;
-    if ($from != "PLAY") return false;
+    if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
     if (GetTapped($this->controller, "MYITEMS", "subtype=Cog") == "") return true;
     if ($from == "PLAY" && $combatChain[11] >= 1) return true;
+    if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 1) return true;
     return false;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    global $combatChain;
-    if ($from == "CC") {
-      $i = $index * CombatChainPieces();
-      $inds = GetTapped($this->controller, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $this->controller, 0);
-      ++$combatChain[$i + 11];
+    global $combatChain, $chainLinks;
+    if (is_numeric($index)) {
+      if ($from == "PLAY") {
+        $i = 0;
+      }
+      else {
+        $i = intdiv($index, ChainLinksPieces());
+      }
+      if ($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+        $inds = GetTapped($this->controller, "MYITEMS", "subtype=Cog");
+        if($inds != "") Tap(explode(",", $inds)[0], $this->controller, 0);
+        if ($from == "COMBATCHAINATTACKS") ++$chainLinks[$i][9];
+        else ++$combatChain[$i + 11];
+      }
     }
   }
 
@@ -39,7 +48,7 @@ class backspin_thrust_red extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return $from == "PLAY" ? "I": "AA";
+    return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
   }
 
   function EffectPowerModifier($param, $attached = false) {
