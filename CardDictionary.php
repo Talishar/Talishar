@@ -5632,6 +5632,6 @@ function GetClass($cardID, $player) {
     "1000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
     default => $cardID
   };
-  if (class_exists($className) && is_a($className, "Card")) return new $className($player);
+  if (class_exists($className)) return new $className($player);
   else return "-";
 }

@@ -2873,13 +2873,7 @@ class rapturous_applause_blue extends Card {
   }
 }
 
-class strongest_survive {
-  public $cardID;
-  public $controller;
-  function __construct($cardID, $controller) {
-    $this->cardID = $cardID;
-    $this->controller = $controller;
-  }
+class strongest_survive extends BaseCard{
 
   function OnHitEffect() {
     global $CCS_DamageDealt, $combatChainState, $defPlayer;
