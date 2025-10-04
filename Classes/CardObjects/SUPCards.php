@@ -27,13 +27,13 @@ class backspin_thrust_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     global $combatChain, $chainLinks;
     if (is_numeric($index)) {
-      if ($from == "PLAY") {
+      if ($from == "CC") {
         $i = 0;
       }
       else {
         $i = intdiv($index, ChainLinksPieces());
       }
-      if ($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+      if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
         $inds = GetTapped($this->controller, "MYITEMS", "subtype=Cog");
         if($inds != "") Tap(explode(",", $inds)[0], $this->controller, 0);
         if ($from == "COMBATCHAINATTACKS") ++$chainLinks[$i][9];
