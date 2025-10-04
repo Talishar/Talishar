@@ -14,3 +14,38 @@ class time_walk extends Card {
     return "A";
   }
 }
+
+class fangs_a_lot_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "fangs_a_lot_blue";
+    $this->controller = $controller;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Fangs A Lot";
+  }
+
+  function SpecialClass() {
+    return "GENERIC";
+  }
+}

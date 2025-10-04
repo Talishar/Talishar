@@ -35,10 +35,15 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
   if (!TypeContains($cardID, "T", $player)) { //If you banish a token, the token ceases to exist.
-    $rv = count($banish);
-    array_push($banish, $cardID);
-    array_push($banish, $mod);
-    array_push($banish, GetUniqueId($cardID, $player));
+    if ($cardID == "fangs_a_lot_blue" && $from == "DISCARD") {
+      AddPlayerHand($cardID, $player, $from);
+    }
+    else {
+      $rv = count($banish);
+      array_push($banish, $cardID);
+      array_push($banish, $mod);
+      array_push($banish, GetUniqueId($cardID, $player));
+    }
   }
   // created cards don't count as cards put into banish
   if ($from != "-") ++$classState[$CS_CardsBanished];

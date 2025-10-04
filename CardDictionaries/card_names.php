@@ -35,6 +35,8 @@ function CardName($cardID)
     // $arr = str_split($setID, 3);
     // if(count($arr) < 2) return "";
     // $set = $arr[0];
+    $card = GetClass($cardID, 0);
+    if ($card != "-" && $card->SpecialName() != "-") return $card->SpecialName();
     $set = CardSet($cardID);
     if($set != "DUM")
     {

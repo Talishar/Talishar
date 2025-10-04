@@ -539,6 +539,8 @@ function CardClass($cardID)
     default:
       break;
   }
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->SpecialClass() != "-") return $card->SpecialClass();
   return GeneratedCardClass($cardID);
 }
 
@@ -615,8 +617,6 @@ function CardCost($cardID, $from="-")
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
-  $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->CardCost($from);
   switch ($cardID) {
     case "imposing_visage_blue":
       return 3;
@@ -685,6 +685,8 @@ function CardCost($cardID, $from="-")
     default:
       break;
   }
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->SpecialCost() != -1) return $card->SpecialCost();
   if ($set != "DUM") {
     return GeneratedCardCost($cardID);
   }
@@ -854,6 +856,8 @@ function PitchValue($cardID)
         break;
     }
   }
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->SpecialPitch() != -1) return $card->SpecialPitch();
   if ($set != "DUM") {
     return GeneratedPitchValue($cardID);
   }
@@ -885,6 +889,8 @@ function BlockValue($cardID)
     default:
       break;
   }
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->SpecialBlock() != -1) return $card->SpecialBlock();
   if (!$cardID) return "";
   $set = CardSet($cardID);
   switch ($cardID) {
@@ -1033,6 +1039,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "full_of_bravado_blue" => 5, //fabcube error
     default => $basePower,
   };
+  $card = GetClass($cardID, $player);
+  if ($card != "-" && $card->SpecialPower() != -1) $basePower = $card->SpecialPower();
   // Lyath ability is handled elsewhere while attacking
   if ($lyathActive && !$attacking) $basePower = ceil($basePower / 2);
   return $basePower;

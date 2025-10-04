@@ -377,8 +377,33 @@ class Card {
     return 0;
   }
 
+  //"Special" functions override the generated card dictionary
   function SpecialType() {
     return "-";
+  }
+
+  function SpecialPower() {
+    return -1;
+  }
+
+  function SpecialBlock() {
+    return -1;
+  }
+
+  function SpecialPitch() {
+    return -1;
+  }
+
+  function SpecialName() {
+    return "-";
+  }
+
+  function SpecialClass() {
+    return "-";
+  }
+  
+  function SpecialCost() {
+    return -1;
   }
 }
 
