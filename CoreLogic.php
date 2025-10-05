@@ -1141,7 +1141,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     $thisType = CardType($combatChain[$i]);
     $thisSubType = CardSubType($combatChain[$i]);
-    if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
+    if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || TypeContains($combatChain[$i], $cardType, $playerID)) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
       $excluded = false;
       for ($j = 0; $j < count($exclCardTypeArray); ++$j) {
         if ($thisType == $exclCardTypeArray[$j]) $excluded = true;
@@ -3086,18 +3086,27 @@ function ClearGameFiles($gameName)
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
 {
-  global $currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn, $currentTurnEffects;
+  global $currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn, $currentTurnEffects, $CombatChain;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
+  // clean up targets. Make this its own function?
   if ($target != "-") {
     $targets = explode(",", $target);
     $cleanedTargets = [];
     foreach ($targets as $targ) {
       $targetArr = explode("-", $targ);
-      if ($targetArr[0] == "LAYERUID") {
-        $targetArr[0] = "LAYER";
-        $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
+      switch ($targetArr[0]) {
+        case "LAYERUID":
+          $targetArr[0] = "LAYER";
+          $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
+          break;
+        case "COMBATCHAINLINK":
+          if (!is_numeric($targetArr[1])) {
+            $targetCard = $CombatChain->FindCardUID($targetArr[1]);
+            $targetArr[1] = $targetCard != "" ? $targetCard->Index() : -1;
+          }
+          break;
       }
       if ($targetArr[0] == "PASTCHAINLINK") {
         $cleanedTarget = implode("-", $targetArr);
@@ -3118,6 +3127,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
     AddDecisionQueue("MELD", $currentPlayer, $cardID, 1);
     return "";
   }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->PlayAbility($from, $resourcesPaid, $target, $additionalCosts);
   if ($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "ARC") {
     switch ($class) {

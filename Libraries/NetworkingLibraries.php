@@ -3952,12 +3952,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $playText = "";
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
-      if (class_exists($cardID)) {
-        $card = new $cardID($currentPlayer);
-        $playText = $card->PlayAbility($from, $resourcesPaid, $target, $additionalCosts);
-        unset($card);
-      }
-      else $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
+      $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();

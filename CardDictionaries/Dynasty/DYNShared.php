@@ -330,9 +330,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$uid);
         }
         elseif ($targetZone == "COMBATCHAINLINK") {
-          $targetCard = $CombatChain->FindCardUID($targetInd);
-          $index = $targetCard != "" ? $targetCard->Index() : -1;
-          if ($index != -1) CombatChainDefenseModifier($index, $amount);
+          CombatChainDefenseModifier($targetInd, $amount);
         }
       }
       return "";
