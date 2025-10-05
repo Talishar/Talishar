@@ -351,13 +351,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           if ($target != "-") {
             $targetCardID = GetMZCard($currentPlayer, $target);
             $targetInd = explode("-", $target)[1];
-            $targetCard =  $CombatChain->FindCardUID($targetInd);
-            $ind = $targetCard != "" ? $targetCard->Index() : 0;
             if (TypeContains($targetCardID, "E")) {
-              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$ind+8]);
+              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$targetInd+8]);
             }
             else {
-              CombatChainDefenseModifier($ind, -3);
+              CombatChainDefenseModifier($targetInd, -3);
             }
           }
         }
