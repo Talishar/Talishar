@@ -597,7 +597,7 @@ function isCardRestricted($cardName, $format, $count) {
   if ($format == "compllcc") $format = "llcc";
   $restrictedCards = [
     "llcc" => ["Awakening", "Bonds of Ancestry", "Electromagnetic Somersault", "Crippling Crush", "Cull", "Oaken Old",
-      "Open the Flood Gates", "Succumb to Temptation", "Warmonger's Diplomacy",
+      "Open the Flood Gates", "Succumb to Temptation", "Count Your Blessings",
     ]
   ];
   return isset($restrictedCards[$format]) && in_array($cardName, $restrictedCards[$format]) && $count > 1;
@@ -674,7 +674,7 @@ function isBannedInFormat($cardID, $format) {
           "waning_moon", "zephyr_needle", "reality_refractor"
       ],
       "llcc" => [
-          "kraken's_aethervein", "crown_of_seeds", "carrion_husk"
+          "kraken's_aethervein", "crown_of_seeds", "carrion_husk", "zephyr_needle"
       ]
   ];
 
