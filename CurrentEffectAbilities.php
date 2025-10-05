@@ -341,7 +341,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
           return;
         }
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");
-        AddDecisionQueue("CHOOSECARD", $mainPlayer, $weapons);
+        AddDecisionQueue("MAYCHOOSECARD", $mainPlayer, $weapons);
         AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "-INVENTORY");
         AddDecisionQueue("EQUIPCARDINVENTORY", $mainPlayer, "<-");
       }
