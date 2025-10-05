@@ -1753,7 +1753,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
       }
       elseif ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
-      if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
+      if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index, $facing); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "" || ($dynCost == 0 && substr($from, 0, 5) != "THEIR")) {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
@@ -2352,7 +2352,7 @@ function GetLayerTarget($cardID, $from)
   }
 }
 
-function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
+function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
 {
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
   global $actionPoints, $mainPlayer, $currentTurnEffects;
@@ -2369,7 +2369,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1)
     }
   }
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->AddPrePitchDecisionQueue($from, $index);
+  if ($card != "-") return $card->AddPrePitchDecisionQueue($from, $index, $facing);
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {

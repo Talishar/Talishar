@@ -107,7 +107,7 @@ class Card {
     return "";
   }
 
-  function GetAbilityNames($index=-1, $from="-", $foundNullTime=false, $layerCount=0) {
+  function GetAbilityNames($index=-1, $from="-", $foundNullTime=false, $layerCount=0, $facing="-") {
     return "";
   }
 
@@ -171,7 +171,7 @@ class Card {
     return false;
   }
 
-  function AddPrePitchDecisionQueue($from, $index=-1) {
+  function AddPrePitchDecisionQueue($from, $index=-1, $facing="-") {
     return;
   }
 

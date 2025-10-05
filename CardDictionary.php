@@ -1395,7 +1395,7 @@ function GetEasyAbilityNames($cardID, $index, $from) {
   }
 }
 
-function GetAbilityNames($cardID, $index = -1, $from = "-"): string
+function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): string
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
   global $defPlayer, $CombatChain;
@@ -1408,12 +1408,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-"): string
   //don't count resolution step as a layer blocking actions
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    $ret = $card->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
-    unset($card);
-    return $ret;
-  }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
   switch ($cardID) {
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":

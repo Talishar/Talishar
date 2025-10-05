@@ -13,7 +13,7 @@ class windup {
     return "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     return GetEasyAbilityNames($this->cardID, $index, $from);
   }
 
@@ -35,7 +35,7 @@ class windup {
     return 3;
   }
 
-  function AddPrePitchDecisionQueue($from, $index = -1) {
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     global $CS_NumActionsPlayed;
     $names = GetAbilityNames($this->cardID, $index, $from);
     $names = str_replace("-,", "", $names);

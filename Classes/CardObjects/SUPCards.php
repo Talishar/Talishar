@@ -88,7 +88,7 @@ class bait extends Card {
     return ($from == "CC" && $index != 0) ? "AR" : "AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     global $CS_NumActionsPlayed;
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYAURA");
     $names = ["-", "-"];
@@ -648,7 +648,7 @@ class the_old_switcheroo_blue extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -660,7 +660,7 @@ class the_old_switcheroo_blue extends Card {
     return $this->archetype->CanPlayAsInstant($index, $from);
   }
 
-  function AddPrePitchDecisionQueue($from, $index = -1) {
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 }
@@ -1450,7 +1450,7 @@ class wind_up_the_crowd_blue extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -1462,7 +1462,7 @@ class wind_up_the_crowd_blue extends Card {
     return $this->archetype->CanPlayAsInstant($index, $from);
   }
 
-  function AddPrePitchDecisionQueue($from, $index = -1) {
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 }
@@ -5091,7 +5091,7 @@ class gallow_end_of_the_line_yellow extends Card {
     return ($from != "PLAY") ? "" : "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     global $CS_NumActionsPlayed;
     $names = "";
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
@@ -5224,13 +5224,13 @@ class mage_hunter_arrow_red extends Card {
     return "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0) {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     global $mainPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
     $layerCount = count($layers);
     $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $mainPlayer, "null_time_zone_blue") != -1;
     $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $defPlayer, "null_time_zone_blue") != -1;
     $arsenal = GetArsenal($this->controller);
-    if (!isset($arsenal[$index + 1]) || $arsenal[$index + 1] == "DOWN") return "-,Attack";
+    if ($facing != "UP") return "-,Attack";
     $names = "Ability";
     if($foundNullTime && $from == "ARS") return $names;
     if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
@@ -5253,7 +5253,9 @@ class mage_hunter_arrow_red extends Card {
   }
 
   function CanPlayAsInstant($index = -1, $from = '') {
-    return ($from == "ARS");
+    $arsenal = GetArsenal($this->controller);
+    if (!is_numeric($index)) return false;
+    return ($from == "ARS" && isset($arsenal[$index + 1]) && $arsenal[$index + 1] == "UP");
   }
 
   function CardCost($from = '-') {
@@ -5261,9 +5263,9 @@ class mage_hunter_arrow_red extends Card {
     return 1;
   }
 
-  function AddPrePitchDecisionQueue($from, $index = -1) {
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     global $CS_NumActionsPlayed;
-    $names = GetAbilityNames($this->cardID, $index, $from);
+    $names = GetAbilityNames($this->cardID, $index, $from, $facing);
     $names = str_replace("-,", "", $names);
     if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
       AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
