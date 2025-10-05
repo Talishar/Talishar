@@ -33,7 +33,9 @@
         if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "awakening_blue":
-        $num = GetHealth($currentPlayer == 1 ? 2 : 1) - GetHealth($currentPlayer);
+        $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+        if (!IsPlayerAI($otherPlayer)) $num = GetHealth($otherPlayer) - GetHealth($currentPlayer);
+        else $num = 10;
         PlayAura("seismic_surge", $currentPlayer, $num * (DelimStringContains($additionalCosts, "EARTH") ? 2 : 1));
         MZMoveCard($currentPlayer, "MYDECK:type=AA;class=GUARDIAN;maxCost=" . CountAura("seismic_surge", $currentPlayer), "MYHAND", may:true, isReveal:true);
         return "";
