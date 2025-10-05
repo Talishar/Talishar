@@ -63,7 +63,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     default:
       break;
   }
-  PlayAbility($cardID, $from, 0);
+  PlayAbility($cardID, $from, 0, additionalCosts:"putIntoPlay");
 }
 
 function ItemUses($cardID)

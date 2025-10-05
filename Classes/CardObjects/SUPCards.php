@@ -1940,7 +1940,7 @@ class concealed_object_blue extends Card {
     if ($from == "PLAY") {
       AddCurrentTurnEffect($this->cardID, $this->controller);
     }
-    else AddLayer("TRIGGER", $this->controller, $this->cardID);
+    elseif($additionalCosts == "putIntoPlay") AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
