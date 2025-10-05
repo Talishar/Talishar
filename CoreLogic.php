@@ -940,11 +940,6 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
   $p2Char = &GetPlayerCharacter($otherPlayer);
-  if ((SearchCurrentTurnEffects("poison_the_well_blue", 1, remove: true) || SearchCurrentTurnEffects("poison_the_well_blue", 2, remove: true)) && $preventable) {
-    WriteLog("<span style='color:green;'>🧪 Somebody poisoned the water hole.</span>");
-    LoseHealth($amount, $player);
-    return false;
-  }
   if (SearchCurrentTurnEffects("dread_scythe", $player) && $preventable) {
     WriteLog(CardLink("dread_scythe", "dread_scythe") . " prevented you from gaining life");
     return false;
@@ -959,6 +954,11 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   }
   if ((SearchAurasForCard("parched_terrain_red", 1) != "" || SearchAurasForCard("parched_terrain_red", 2) != "") && $preventable) {
     WriteLog(CardLink("parched_terrain_red", "parched_terrain_red") . " prevents heroes from gaining " . ($amount == 1 ? "health" : $amount . " health"));
+    return false;
+  }
+  if ((SearchCurrentTurnEffects("poison_the_well_blue", 1, remove: true) || SearchCurrentTurnEffects("poison_the_well_blue", 2, remove: true)) && $preventable) {
+    WriteLog("<span style='color:green;'>🧪 Somebody poisoned the water hole.</span>");
+    LoseHealth($amount, $player);
     return false;
   }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
