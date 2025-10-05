@@ -299,7 +299,10 @@ function OUTAbilityCost($cardID)
               AddArsenal($topCard, $currentPlayer, "DECK", "UP");
               $deck->Top(remove:true);
             }
-            DestroyCharacter($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
+            $char = GetPlayerCharacter($currentPlayer);
+            if ($char[GetClassState($currentPlayer, $CS_PlayIndex)] == $cardID) {
+              DestroyCharacter($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
+            }
           }
         }
         return "";
