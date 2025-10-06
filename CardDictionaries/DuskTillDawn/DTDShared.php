@@ -204,7 +204,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       MZMoveCard($currentPlayer, "MYDISCARD:type=A;pitch=2&MYDISCARD:type=AA;pitch=2", "MYTOPDECK", may:true);
       return;
     case "figment_of_tenacity_yellow":
-      if(count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+      if(count($combatChain) > 0 || IsLayerStep()) AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "figment_of_triumph_yellow":
