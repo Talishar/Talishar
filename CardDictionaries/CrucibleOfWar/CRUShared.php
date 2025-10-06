@@ -145,7 +145,7 @@
   }
 
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts) {
-  global $mainPlayer, $CS_NumBoosted, $combatChainState, $currentPlayer, $defPlayer;
+  global $mainPlayer, $CS_NumBoosted, $combatChainState, $currentPlayer, $defPlayer, $CombatChain;
   global $CS_AttacksWithWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
@@ -380,7 +380,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       PlayAura("runechant", $currentPlayer, 4);
       return "";
     case "mauvrion_skies_red": case "mauvrion_skies_yellow": case "mauvrion_skies_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if ($CombatChain->HasCurrentLink() || IsLayerStep()) AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+      else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "sutcliffes_research_notes_red": case "sutcliffes_research_notes_yellow": case "sutcliffes_research_notes_blue":
       if($cardID == "sutcliffes_research_notes_red") $count = 3;
