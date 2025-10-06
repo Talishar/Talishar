@@ -1086,12 +1086,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return "";
     case "HUNTERORHUNTED":
+      WriteLog("HERE: $lastResult");
       $cardID = "hunter_or_hunted_blue";
       // Getting the card id into {0} makes it more compatible with bonds of agony logic
       AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0");
       AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, $lastResult, 1);;
+      AddDecisionQueue("PASSPARAMETER", $player, str_replace(":", "|", $lastResult), 1);;
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
       // banishing up to 3 more cards
       for ($i = 0; $i < 3; $i++) {
