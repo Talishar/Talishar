@@ -1508,7 +1508,7 @@ function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
   $numRolls = 1 + CountCurrentTurnEffects("ready_to_roll_blue", $player);
   $highRoll = 0;
   for ($i = 0; $i < $numRolls; ++$i) {
-    $roll = GetRandom(1, 6);
+    $roll = GetRandom(1, 6, $reroll);
     WriteLog("🎲<b>" . $roll . "</b> was rolled.");
     if ($roll > $highRoll) $highRoll = $roll;
   }

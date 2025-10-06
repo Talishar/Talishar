@@ -11,15 +11,15 @@ function DelimStringContains($str, $find, $partial=false)
   return false;
 }
 
-function GetRandom($low=-1, $high=-1)
+function GetRandom($low=-1, $high=-1, $reroll=false)
 {
   global $randomSeeded;
-  if(!$randomSeeded) SeedRandom();
+  if(!$randomSeeded) SeedRandom($reroll);
   if($low == -1) return mt_rand();
   return mt_rand($low, $high);
 }
 
-function SeedRandom()
+function SeedRandom($reroll=false)
 {
   global $randomSeeded, $currentTurn, $turn, $currentPlayer, $layers, $combatChain;
   $seedString = $currentTurn . implode("", $turn) . $currentPlayer;
@@ -53,6 +53,7 @@ function SeedRandom()
   for($i=0; $i<count($deck); ++$i) $seedString .= $deck[$i];
 
   $seedString = hash("sha256", $seedString);
+  if ($reroll) ++$seedString;
   mt_srand(crc32($seedString));
   $randomSeeded = true;
 }
