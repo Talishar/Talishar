@@ -1997,14 +1997,10 @@ function LinkBasePower()
         case "transmogrify_blue":
           $basePower = 6;
           break;
-        case "cosmic_awakening_blue-1":
-          $basePower = 10;
-          break;
-        case "cosmic_awakening_blue-2":
-          $basePower = 15;
-          break;
-        case "cosmic_awakening_blue-3":
-          $basePower = 20;
+        case "cosmic_awakening_blue":
+          $basePower = match($effects[1]) {
+            "1" => 10, "2" => 15, "3" => 20,
+          };
           break;
         case "ghostly_touch":
           if ($attackID == "UPR551") $basePower = $effects[1];
