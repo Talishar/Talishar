@@ -3599,7 +3599,7 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
 function EvoHasUnderCard($player, $index)
 {
   $char = &GetPlayerCharacter($player);
-  return $char[$index + 10] != "";
+  return $char[$index + 10] != "" && $char[$index + 10] != "-";
 }
 
 function EvoTransformAbility($toCardID, $fromCardID, $player = "")
