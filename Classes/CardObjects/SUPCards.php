@@ -1082,13 +1082,7 @@ class heroic_pose_blue extends Card {
 }
 
 
-class villainous_pose {
-  public $cardID, $controller;
-  function __construct($cardID, $controller) {
-    $this->cardID = $cardID;
-    $this->controller = $controller;
-  }
-
+class villainous_pose extends BaseCard{
   function PlayAbility() {
     AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
     BOO($this->controller);
