@@ -4157,9 +4157,10 @@ class story_beats extends BaseCard {
     $suspAuras = implode(",", GetSuspenseAuras($this->controller));
     if (strlen($suspAuras) > 0) {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "add or remove a counter from an aura of suspense");
-      AddDecisionQueue("BUTTONINPUT", $this->controller, "ADD,REMOVE", 1);
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "ADD,REMOVE,SKIP", 1);
       AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-      AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
+      AddDecisionQueue("EQUALPASS", $this->controller, "SKIP", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras, 1);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to {0} a suspense counter", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SUSPENSE", $this->controller, "{0}", 1);
