@@ -285,7 +285,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       {
         case "Might_(+1)": PlayAura("might", $defPlayer); break;
         case "Vigor_(Resource)": PlayAura("vigor", $defPlayer); break;
-        case "Quicken_(Go Again)": PlayAura("quicken", $defPlayer); break;
+        case "Quicken_(Go_Again)": PlayAura("quicken", $defPlayer); break;
         default: break;
       }
       return $lastResult;
