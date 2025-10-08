@@ -1014,7 +1014,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
       $basePower = FractalReplicationStats("Power");
       break;
     case "spectral_procession_red":
-      $basePower = CountAura("spectral_shield", $currentPlayer);
+      $basePower = CountAura("spectral_shield", $mainPlayer);
       break;
     case "diabolic_offering_blue":
       $basePower = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
