@@ -1574,7 +1574,7 @@ class song_of_sinew_yellow extends Card {
       for ($i = 0; $i < count($cards); ++$i) {
         if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 6) ++$numSixes;
       }
-      WriteLog("$this->cardID is buffing the next attack by $numSixes!");
+      WriteLog(CardLink($this->cardID, $this->cardID) . " is buffing the next attack by $numSixes!");
       AddCurrentTurnEffect("$this->cardID-$numSixes", $this->controller);
       $cardList = implode(",", $cards);
       AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
