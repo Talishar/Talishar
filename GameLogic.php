@@ -2775,16 +2775,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $switchedPlayers = [SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true), SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true)];
       $mainDeck = new Deck($mainPlayer);
       $defDeck = new Deck($defPlayer);
-      if ($winner != $defPlayer && $defDeck->Top() == "overturn_the_results_blue") {
-        $winner = $defPlayer;
-        WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
-        Boo($defPlayer);
-      }
-      if ($winner != $mainPlayer && $mainDeck->Top() == "overturn_the_results_blue") {
-        $winner = $mainPlayer;
-        WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
-        Boo($mainPlayer);
-      }
       if ($winner > 0) {
         WonClashAbility($winner, $params[0], $params[1], $switchedPlayers);
       }

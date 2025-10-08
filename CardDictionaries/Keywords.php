@@ -131,17 +131,58 @@
     }
     //DQVAR 0 = Winner
     if($p1Power >= 0 && ($p1Power > $p2Power || $p2Power == "")) {
-      $dqVars[0] = 1;
-      VictorAbility(2, $cardID, $effectController);
+      $p2Deck = new Deck(2);
+      if (!$p2Deck->Empty() && $p2Deck->Top() == "overturn_the_results_blue") {
+        WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
+        Boo(2);
+        $dqVars[0] = 2;
+        VictorAbility(1, $cardID, $effectController);
+      }
+      else {
+        $dqVars[0] = 1;
+        VictorAbility(2, $cardID, $effectController);
+      }
     }
     else if($p2Power >= 0 && ($p2Power > $p1Power || $p1Power == "")) {
-      $dqVars[0] = 2;
-      VictorAbility(1, $cardID, $effectController);
+      $p1Deck = new Deck(1);
+      if (!$p1Deck->Empty() && $p1Deck->Top() == "overturn_the_results_blue") {
+        WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
+        Boo(1);
+        $dqVars[0] = 1;
+        VictorAbility(2, $cardID, $effectController);
+      }
+      else {
+        $dqVars[0] = 2;
+        VictorAbility(1, $cardID, $effectController);
+      }
     }
     else {
-      $dqVars[0] = 0;
-      VictorAbility($mainPlayer, $cardID, $effectController);
-      VictorAbility($defPlayer, $cardID, $effectController);
+      WriteLog("HERE!!!");
+      $mainDeck = new Deck($mainPlayer);
+      $defDeck = new Deck($defPlayer);
+      $overturned = false;
+      // the main player will almost always choose the defending player to apply their effect first
+      if (!$defDeck->Empty() && $defDeck->Top() == "overturn_the_results_blue") {
+        $dqVars[0] = $defPlayer;
+        WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
+        Boo($defPlayer);
+        $overturned = true;
+      }
+      if (!$mainDeck->Empty() && $mainDeck->Top() == "overturn_the_results_blue") {
+        $dqVars[0] = $mainPlayer;
+        WriteLog("THE RESULTS OF THE CLASH WERE OVERTURNED!");
+        Boo($mainPlayer);
+        $overturned = true;
+      }
+      if (!$overturned) {
+        $dqVars[0] = 0;
+        VictorAbility($mainPlayer, $cardID, $effectController);
+        VictorAbility($defPlayer, $cardID, $effectController);
+      }
+      else {
+        $loser = $dqVars == 1 ? 2 : 1;
+        VictorAbility($loser, $cardID, $effectController);
+      }
     }
   }
 
