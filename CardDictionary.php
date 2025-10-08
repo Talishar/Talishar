@@ -1268,17 +1268,18 @@ function TriggerTargets($cardID)
   };
 }
 
-function GetAbilityType($cardID, $index = -1, $from = "-")
+function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
 {
   global $currentPlayer, $mainPlayer;
+  $player = $player == "-" ? $currentPlayer : $player;
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
-  if ($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura")) {
-    if (SearchCharacterForCard($currentPlayer, "luminaris") || SearchCharacterForCard($currentPlayer, "iris_of_reality") || SearchCharacterForCard($currentPlayer, "reality_refractor")) return "AA";
+  if ($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura")) {
+    if (SearchCharacterForCard($currentPlayer, "luminaris") || SearchCharacterForCard($player, "iris_of_reality") || SearchCharacterForCard($player, "reality_refractor")) return "AA";
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && $currentPlayer == $mainPlayer) return "AA";
-  if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return "AA";
+  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && $player == $mainPlayer) return "AA";
+  if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($player, "storm_of_sandikai")) return "AA";
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->AbilityType($index, $from);
   if ($set == "WTR") return WTRAbilityType($cardID, $index, $from);
@@ -1679,7 +1680,7 @@ function GetResolvedAbilityType($cardID, $from = "-", $player = -1)
   $player = $player ==  -1 ? $currentPlayer : $player;
   $abilityIndex = GetClassState($player, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
-  if ($abilityTypes == "" || $abilityIndex == "-" || !str_contains($abilityTypes, ",")) return GetAbilityType($cardID, -1, $from);
+  if ($abilityTypes == "" || $abilityIndex == "-" || !str_contains($abilityTypes, ",")) return GetAbilityType($cardID, -1, $from, $player);
   $abilityTypes = explode(",", $abilityTypes);
   if (isset($abilityTypes[$abilityIndex])) {
     return $abilityTypes[$abilityIndex];
@@ -3428,8 +3429,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       break;
   }
   if (canBeAddedToChainDuringDR($cardID) && $phase == "D") return true;
-  if ($phase != "B" && ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS")) $cardType = GetResolvedAbilityType($cardID, $from);
-  else if ($phase == "M" && $cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from);
+  if ($phase != "B" && ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS")) $cardType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
+  else if ($phase == "M" && $cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
   else $cardType = CardType($cardID);
   if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
   if (DelimStringContains($cardType, "I")) return false; //Instants as yet never go on the combat chain
