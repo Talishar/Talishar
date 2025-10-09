@@ -179,7 +179,7 @@
         VictorAbility($defPlayer, $cardID, $effectController);
       }
       else {
-        $loser = $dqVars == 1 ? 2 : 1;
+        $loser = $dqVars[0] == 1 ? 2 : 1;
         VictorAbility($loser, $cardID, $effectController);
       }
     }
@@ -315,6 +315,7 @@
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
     $goldIndices = GetGoldIndices($playerID);
+    WriteLog("HERE: $hero");
     if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
