@@ -157,7 +157,6 @@
       }
     }
     else {
-      WriteLog("HERE!!!");
       $mainDeck = new Deck($mainPlayer);
       $defDeck = new Deck($defPlayer);
       $overturned = false;
