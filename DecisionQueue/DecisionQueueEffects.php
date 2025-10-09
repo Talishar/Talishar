@@ -1086,7 +1086,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return "";
     case "HUNTERORHUNTED":
-      WriteLog("HERE: $lastResult");
       $cardID = "hunter_or_hunted_blue";
       // Getting the card id into {0} makes it more compatible with bonds of agony logic
       AddDecisionQueue("PASSPARAMETER", $player, "THEIRDECK-0");

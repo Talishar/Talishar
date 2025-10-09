@@ -1309,7 +1309,7 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
   return $damage;
 }
 
-function AuraDamageDealtAbilities($player, $damage)
+function AuraDamageDealtAbilities($player, $damage, $playerSource)
 {
   $auras = &GetAuras($player);
   for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
@@ -1321,7 +1321,7 @@ function AuraDamageDealtAbilities($player, $damage)
         $remove = 1;
         break;
       case "ley_line_of_the_old_ones_blue":
-        AddLayer("TRIGGER", $player, $auras[$i]);
+        if ($playerSource == $player) AddLayer("TRIGGER", $player, $auras[$i]);
         break;
       default:
         break;

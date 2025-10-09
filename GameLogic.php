@@ -1307,6 +1307,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0] ?? 0;
       $source = $parameters[1] ?? "-";
       $type = $parameters[2] ?? "-";
+      $playerSource = $parameters[3] ?? "-";
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
         if ($allies[$target[1] + 6] > 0) {
@@ -1320,7 +1321,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
         return $damage;
       } else {
-        PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$player");
+        PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
@@ -2276,7 +2277,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
         if (!str_contains($mzIndex[0], "ALLY")) {
           if ($mzIndex[1] == 0) {
-            DamageTrigger($target, $damage, $params[1], GetMZCard($target, $lastResultArr[$i]));
+            DamageTrigger($target, $damage, $params[1], GetMZCard($target, $lastResultArr[$i]), $player);
           }
           else { //perched allies
             if ($damage > 0) {

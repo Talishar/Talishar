@@ -528,10 +528,10 @@ function HasIncreasedAttack()
   return false;
 }
 
-function DamageTrigger($player, $damage, $type, $source = "NA")
+function DamageTrigger($player, $damage, $type, $source = "NA", $playerSource = "NA")
 {
   PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);
-  PrependDecisionQueue("PASSPARAMETER", $player, $damage . "-" . $source . "-" . $type);
+  PrependDecisionQueue("PASSPARAMETER", $player, $damage . "-" . $source . "-" . $type . "-" . $playerSource);
   return $damage;
 }
 
@@ -700,7 +700,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     }
     AuraDamageTakenAbilities($player, $damage, $source, $playerSource);
     ItemDamageTakenAbilities($player, $damage);
-    AuraDamageDealtAbilities($otherPlayer, $damage);
+    AuraDamageDealtAbilities($otherPlayer, $damage, $playerSource);
     if (SearchAuras("ode_to_wrath_yellow", $otherPlayer)) {
       LoseHealth(CountAura("ode_to_wrath_yellow", $otherPlayer), $player);
       WriteLog("Lost life from " . CardLink("ode_to_wrath_yellow", "ode_to_wrath_yellow"));
