@@ -69,16 +69,16 @@ class bait extends Card {
     }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
     if (IsReactionPhase()) {
-      // GiveAttackGoAgain();
-      // CombatChainPowerModifier(0, 1);
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      if ($CombatChain->AttackCard()->ID() == $this->cardID) AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller);
+      else AddCurrentTurnEffectFromCombat("$this->cardID-BUFF", $this->controller);
     }
     return "";
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 1;
+    return $param == "BUFF" ? 1 : 0;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -87,7 +87,7 @@ class bait extends Card {
   }
 
   function CurrentEffectGrantsGoAgain($param) {
-    return true;
+    return $param == "BUFF";
   }
 
   function NumUses() {
