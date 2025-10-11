@@ -3774,7 +3774,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
-    RemoveThisLinkEffects();
     for ($i = count($targetArr) - 1; $i >= 0; --$i) {
       if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
         // remove spectra cards from target
@@ -3885,6 +3884,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
+      if ($definedCardType == "AA") RemoveThisLinkEffects();
       if ($definedCardType == "AA" && $powerValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID) == "" || GetResolvedAbilityType($cardID) == "AA") && (SearchCharacterActive($currentPlayer, "kayo_berserker_runt") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $currentPlayer))) && $powerValue >= 6) KayoStaticAbility($cardID);
       $openedChain = true;
