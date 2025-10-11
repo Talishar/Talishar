@@ -295,6 +295,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "PRELAYERIDS":
+          $preLayers = GetPreLayers();
+          $rv = [];
+          for ($i = count($preLayers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+            if ($preLayers[$i + 1] == $player) array_push($rv, $preLayers[$i+2] . "|" . $preLayers[$i+6]);
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;
@@ -2983,6 +2991,46 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "TRIGGERORDERING":
+      $firstPlayer = $lastResult == "Mine" ? $defPlayer : $mainPlayer;
+      $secondPlayer = $firstPlayer == 1 ? 2 : 1;
+      $preLayers = GetPreLayers();
+      $firstPreLayers = 0;
+      $secondPreLayers = 0;
+      $firstUniquePreLayers = [];
+      $secondUniquePreLayers = [];
+      for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+        if ($preLayers[$i+1] == $firstPlayer) {
+          ++$firstPreLayers;
+          if (!in_array($preLayers[$i+2], $firstUniquePreLayers)) array_push($firstUniquePreLayers, $preLayers[$i+2]);
+        }
+        else {
+          ++$secondPreLayers;
+          if (!in_array($preLayers[$i+2], $secondUniquePreLayers)) array_push($secondUniquePreLayers, $preLayers[$i+2]);
+        }
+      }
+
+      if (count($secondUniquePreLayers) > 1) {
+        PrependDecisionQueue("ORDERTRIGGERS", $secondPlayer, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $secondPlayer, "PRELAYERIDS", 1);
+      }
+      else {
+        for ($i = 0; $i < $secondPreLayers; ++$i) {
+          PrependDecisionQueue("ADDPRELAYERTOSTACK", $secondPlayer, "<-", 1);
+          PrependDecisionQueue("PASSPARAMETER", $secondPlayer, "PRELAYERS-FIRST", 1);
+        }
+      }
+      if (count($firstUniquePreLayers) > 1) {
+        PrependDecisionQueue("ORDERTRIGGERS", $firstPlayer, "<-", 1);
+        PrependDecisionQueue("FINDINDICES", $firstPlayer, "PRELAYERIDS", 1);
+      }
+      else {
+        for ($i = 0; $i < $firstPreLayers; ++$i) {
+          PrependDecisionQueue("ADDPRELAYERTOSTACK", $firstPlayer, "<-", 1);
+          PrependDecisionQueue("PASSPARAMETER", $firstPlayer, "PRELAYERS-FIRST", 1);
+        }
+      }
+      break;
     case "UNDERCURRENTDESIRES":
       if ($lastResult == "") {
         WriteLog("No cards were selected, " . CardLink("sacred_art_undercurrent_desires_blue", "sacred_art_undercurrent_desires_blue") . " did not banish any cards");

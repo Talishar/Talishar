@@ -229,12 +229,12 @@ function PopLayer()
   return count($layers);//How far it is from the end
 }
 
-function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-", $layerUID = "-")
+function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-", $layerUID = "-", $skipOrdering = false)
 {
   global $layers, $dqState;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  $skipOrdering = ["runechant", "seismic_surge"];
-  if ($cardID == "TRIGGER" && !in_array($parameter, $skipOrdering)) { // put triggers into "pre-layers" where they can be ordered
+  $skipOrdering = in_array($parameter, ["runechant", "seismic_surge"]) || $skipOrdering;
+  if ($cardID == "TRIGGER" && !$skipOrdering) { // put triggers into "pre-layers" where they can be ordered
     array_unshift($layers, $layerUID);
     array_unshift($layers, $uniqueID);
     array_unshift($layers, $additionalCosts);
@@ -372,45 +372,7 @@ function AddTriggersToStack()
       AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Mine,Theirs", 1);
     }
     else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "Theirs");
-    AddDecisionQueue("NOTEQUALPASS", $mainPlayer, "Theirs", 1);
-    $message =  "Add a trigger to the stack (They resolve in REVERSE order that you add them. Left to right.) Pass to leave as is.";
-    for ($i = 0; $i < $mainPreLayers; ++$i) {
-      if (HoldPrioritySetting($mainPlayer) != 4 && $i < $mainPreLayers - 1) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, $message, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      }
-      else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "PRELAYERS-FIRST", 1);
-      AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
-    }
-    for ($i = 0; $i < $defPreLayers; ++$i) {
-      if (HoldPrioritySetting($defPlayer) != 4 && $i < $defPreLayers - 1) {
-        AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, $message, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
-      }
-      else AddDecisionQueue("PASSPARAMETER", $defPlayer, "PRELAYERS-FIRST", 1);
-      AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
-    }
-    AddDecisionQueue("ELSE", $mainPlayer, "-");
-    for ($i = 0; $i < $defPreLayers; ++$i) {
-      if (HoldPrioritySetting($defPlayer) != 4 && $i < $defPreLayers - 1) {
-        AddDecisionQueue("FINDINDICES", $defPlayer, "PRELAYERS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, $message, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
-      }
-      else AddDecisionQueue("PASSPARAMETER", $defPlayer, "PRELAYERS-FIRST", 1);
-      AddDecisionQueue("ADDPRELAYERTOSTACK", $defPlayer, "<-", 1);
-    }
-    for ($i = 0; $i < $mainPreLayers; ++$i) {
-      if (HoldPrioritySetting($mainPlayer) != 4 && $i < $mainPreLayers - 1) {
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "PRELAYERS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, $message, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      }
-      else AddDecisionQueue("PASSPARAMETER", $mainPlayer, "PRELAYERS-FIRST", 1);
-      AddDecisionQueue("ADDPRELAYERTOSTACK", $mainPlayer, "<-", 1);
-    }
+    AddDecisionQueue("TRIGGERORDERING", $mainPlayer, "-", 1);
   }
 }
 

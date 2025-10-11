@@ -161,6 +161,37 @@ switch ($mode) {
       }
       ContinueDecisionQueue();
       break;
+    case 108: // change trigger order
+      $cardListTop = $submission->cardListTop;
+      $cardListTopString = implode(",", $cardListTop);
+      $turn[2] = $cardListTopString;
+      break;
+    case 109: // reorder triggers
+      $cardList = $submission->cardListTop;
+      foreach ($cardList as $card) {
+        $index = -1;
+        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+          if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
+            $index = $i;
+          }
+        }
+        if ($index != -1) {
+          $pretrigger = array_slice($layers, $index, LayerPieces());
+          $pretrigger[0] = "TRIGGER";
+          for ($j = $index + LayerPieces() - 1; $j >= $index; --$j) {
+            unset($layers[$j]);
+          }
+          $layers = array_merge($pretrigger, $layers);
+        }
+      }
+      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID) {
+          WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
+          $layers[$i] = "TRIGGER";
+        }
+      }
+      ContinueDecisionQueue();
+      break;
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";

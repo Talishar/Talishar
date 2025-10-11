@@ -1260,6 +1260,22 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
       break;
 
+    case "ORDERTRIGGERS":
+      if ($turn[1] == $playerID) {
+        $playerInputPopup->active = true;
+        $layers = array_filter(explode(",", $turn[2] ?? ""));
+        $orderedLayers = [];
+        foreach($layers as $layer) {
+          $ID = explode("|", $layer)[0] ?? "-";
+          $UID = explode("|", $layer)[1] ?? "-";
+          //right now passing the UID doesn't do anything, I hope to use it in the future
+          array_push($orderedLayers, JSONRenderedCard($ID, uniqueID:$UID, action: 0));
+        }
+        
+        $playerInputPopup->popup = CreatePopupAPI("TRIGGERORDER", [], 0, 1, GetPhaseHelptext(), 1, "Order your triggers. The rightmost trigger will resolve first.", topCards: $orderedLayers);
+      }
+      break;
+
     case "CHOOSETOPOPPONENT":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
