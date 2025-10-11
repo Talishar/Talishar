@@ -784,6 +784,28 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "poisoned_blade_yellow":
       case "poisoned_blade_blue":
       case "quickdodge_flexors":
+        $remove = 1;
+        break;
+      default:
+        break;
+    }
+    if ($remove && SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1) RemoveCurrentTurnEffect($i);
+  }
+}
+
+function RemoveThisLinkEffects($cardID="")
+{
+  global $currentTurnEffects, $combatChainState, $CCS_EclecticMag, $CCS_NextInstantBouncesAura;
+  $searchedEffect = "";
+  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    $remove = false;
+    if($cardID == "") {
+      $effectArr = explode("-", $currentTurnEffects[$i]);
+      $effectArr2 = explode(",", $effectArr[0]);
+      $searchedEffect = $effectArr2[0];  
+    }
+    else $searchedEffect = $cardID;
+    switch ($searchedEffect) {
       case "gone_in_a_flash_red":
         $remove = 1;
         break;
@@ -792,6 +814,8 @@ function RemoveEffectsFromCombatChain($cardID = "")
     }
     if ($remove && SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1) RemoveCurrentTurnEffect($i);
   }
+  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
+  $combatChainState[$CCS_EclecticMag] = 0;
 }
 
 function OnAttackEffects($power)

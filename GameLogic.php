@@ -3200,11 +3200,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "GONEINAFLASH":
       CleanUpCombatEffects();
-      if (SearchLayersForPhase("RESOLUTIONSTEP") == -1) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      if (SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
       elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
       else $chainLinks[count($chainLinks)-1][2] = 0;
       AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
-      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
+      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) {
         //only close the chain if removed before the resolution step
         CloseCombatChain(false);
       }

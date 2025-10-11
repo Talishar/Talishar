@@ -1830,7 +1830,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     //gone in a flash is the active chainlink
     $goneActive = $CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red";
     //we're in the resolution step of gone's chain link
-    $goneActive = $goneActive || (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1 && SearchLayersForCardID("gone_in_a_flash_red") == -1);
+    $goneActive = $goneActive || ((SearchLayersForPhase("RESOLUTIONSTEP") != -1 || IsLayerStep()) && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1 && SearchLayersForCardID("gone_in_a_flash_red") == -1);
+    //we're in the link step of the next attack
     if($goneActive && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
       if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
         AddLayer("TRIGGER", $mainPlayer, "gone_in_a_flash_red");
@@ -1955,17 +1956,23 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")) {
       IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     } 
-    if (($CombatChain->HasCurrentLink()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
+    if (($CombatChain->HasCurrentLink() || IsLayerStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
       if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
-        $triggeredID = $CombatChain->AttackCard()->ID();
-        $context = "Blast to Oblivion trigger: Choose an aura to return to its owner's hand (or pass)";
-        $search = "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T";
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $triggeredID, 1);
+        if (IsLayerStep()) {
+          if (count($chainLinks) > 0) $triggeredID = $chainLinks[count($chainLinks) - 1][0];
+          else $triggeredID = "-";
+        }
+        else $triggeredID = $CombatChain->AttackCard()->ID();
         $combatChainState[$CCS_NextInstantBouncesAura] = 0;
+        if ($triggeredID != "-") {
+          $context = "Blast to Oblivion trigger: Choose an aura to return to its owner's hand (or pass)";
+          $search = "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T";
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("ADDTRIGGER", $currentPlayer, $triggeredID, 1);
+        }
       }
     }
     AddCharacterPlayCardTrigger($cardID, $playType, $from);
@@ -3767,6 +3774,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
+    RemoveThisLinkEffects();
     for ($i = count($targetArr) - 1; $i >= 0; --$i) {
       if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
         // remove spectra cards from target
@@ -4163,6 +4171,5 @@ function EndResolutionStep()
     $layerIndex += LayerPieces();
   }
   UnsetChainLinkBanish();
-  SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true);
   return $layerIndex;
 }

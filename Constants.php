@@ -509,6 +509,7 @@ function ResetCombatChainState()
   CombatChainClosedCharacterEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsFromCombatChain();
+  RemoveThisLinkEffects();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $defCharacter[$i + 6] = 0;
@@ -589,8 +590,6 @@ function ResetChainLinkState()
   $combatChainState[$CCS_PhantasmThisLink] = 0;
   $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = 0;
   $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = 0;
-  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
-  $combatChainState[$CCS_EclecticMag] = 0;
   $combatChainState[$CCS_NumUsedInReactions] = 0;
   $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
   $combatChainState[$CCS_NumCardsBlocking] = 0;
