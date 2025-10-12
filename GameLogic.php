@@ -2127,7 +2127,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else AddCombatChain($lastResult, $player, $parameter, 0, -1);
       OnBlockResolveEffects($lastResult);
-      OnDefenseReactionResolveEffects("CC", cardID: $lastResult);
+      if (TypeContains($lastResult, "DR")) OnDefenseReactionResolveEffects("CC", cardID: $lastResult);
       return $lastResult;
     case "ATTACKWITHIT":
       PlayCardSkipCosts($lastResult, "DECK");
