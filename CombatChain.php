@@ -773,7 +773,7 @@ function PlayBlockModifier($cardID)
 
 function OnDefenseReactionResolveEffects($from, $cardID)
 {
-  global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain, $CS_NumBlueDefended;
+  global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain, $CS_NumBlueDefended, $combatChainState, $CCS_NumCardsBlocking;
   $blockedFromHand = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(DelimStringContains(CardType($combatChain[$i]), "DR")) {
@@ -904,6 +904,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     if ($remove) RemoveCurrentTurnEffect($i);
   }
   ProcessMirageOnBlock(count($combatChain) - CombatChainPieces());
+  ++$combatChainState[$CCS_NumCardsBlocking];
 }
 
 function OnBlockResolveEffects($cardID = "")
