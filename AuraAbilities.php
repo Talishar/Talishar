@@ -1701,7 +1701,7 @@ function AuraBlockModifier($cardID, $from)
   $noGain = !CanGainBlock($cardID);
   $defAuras = &GetAuras($defPlayer);
   $totalBlockModifier = 0;
-  $cardType = CardType($cardID);
+  $cardType = CardType($cardID, "CC");
   for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
     $blockModifier = 0;
     switch ($defAuras[$i]) {
