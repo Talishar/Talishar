@@ -1435,6 +1435,14 @@ function EquipPayAdditionalCosts($cardIndex)
       }
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
+    case "coronet_peak":
+      $options = "THEIRCHAR-0";
+      if (!ShouldAutotargetOpponent($currentPlayer)) $options = "MYCHAR-0,$options";
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero make pay or discard");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     default:
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used

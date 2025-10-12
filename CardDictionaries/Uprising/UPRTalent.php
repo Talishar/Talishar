@@ -61,14 +61,16 @@
         }
         return "";
       case "coronet_peak":
-        if(ShouldAutotargetOpponent($currentPlayer)) {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
-        } else {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
-        }
+        // if(ShouldAutotargetOpponent($currentPlayer)) {
+        //   AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
+        //   AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
+        // } else {
+        //   AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
+        //   AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
+        if (str_contains($target, "THEIRCHAR")) $targ = "Target_Opponent";
+        else $targ = "Target_Yourself";
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targ);
+        AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         return "";
       case "glacial_horns":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS", 1);
