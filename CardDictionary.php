@@ -2266,7 +2266,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
@@ -2393,14 +2393,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
       $isClub = SubtypeContains($CombatChain->AttackCard()->ID(), "Club");
       $isHammer = SubtypeContains($CombatChain->AttackCard()->ID(), "Hammer");
-      if ($isClub || $isHammer || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2)) return false;
+      if ($isClub || $isHammer || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2 || $combatChainState[$CCS_AttackCost] >= 2)) return false;
       return true;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if ($subtype == "Sword" || $subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") <= 1)) return false;
+      $attackCost = $combatChainState[$CCS_AttackCost] == -1 ? CardCost($CombatChain->AttackCard()->ID(), "CC") : $combatChainState[$CCS_AttackCost];
+      if ($subtype == "Sword" || $subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && $attackCost <= 1)) return false;
       return true;
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
