@@ -216,6 +216,7 @@ function GetCardBack($player)
     case 116: return "CBDazzyfizzle11";
     case 117: return "CBDazzyfizzle12";
     case 118: return "CBAggroBlaze";
+    case 119: return "CBFatAndFurious";
     default: return "CardBack";
   };
 }
