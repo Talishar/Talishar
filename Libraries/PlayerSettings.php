@@ -752,7 +752,7 @@ function IsTeamFatAndFurious($userName)
   switch ($userName) {
     case "PvtVoid":
     case "OopsAllPummels":
-    case "Angel Pillow":
+    case "AngelPillow":
     case "stefchwan":
     case "JK":
     case "Astropeleki":
