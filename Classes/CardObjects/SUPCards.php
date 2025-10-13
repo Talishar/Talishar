@@ -670,8 +670,8 @@ class the_old_switcheroo_blue extends Card {
     return $this->archetype->GoesOnCombatChain($phase, $from);
   }
 
-  function CanPlayAsInstant($index = -1, $from = '') {
-    return $this->archetype->CanPlayAsInstant($index, $from);
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
@@ -685,7 +685,7 @@ class cheap_shot_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function CanPlayAsInstant($index = -1, $from = '') {
+  function CanActivateAsInstant($index = -1, $from = '') {
     global $CS_BooedThisTurn;
     return GetClassState($this->controller, $CS_BooedThisTurn) > 0;
   }
@@ -1466,8 +1466,8 @@ class wind_up_the_crowd_blue extends Card {
     return $this->archetype->GoesOnCombatChain($phase, $from);
   }
 
-  function CanPlayAsInstant($index = -1, $from = '') {
-    return $this->archetype->CanPlayAsInstant($index, $from);
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
@@ -5261,7 +5261,7 @@ class mage_hunter_arrow_red extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CanPlayAsInstant($index = -1, $from = '') {
+  function CanActivateAsInstant($index = -1, $from = '') {
     $arsenal = GetArsenal($this->controller);
     if (!is_numeric($index)) return false;
     return ($from == "ARS" && isset($arsenal[$index + 1]) && $arsenal[$index + 1] == "UP");

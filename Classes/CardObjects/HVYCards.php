@@ -26,7 +26,7 @@ class windup {
     return "NOT IMPLEMENTED";
   }
 
-  function CanPlayAsInstant($index = -1, $from = '') {
+  function CanActivateAsInstant($index = -1, $from = '') {
     return ($from == "HAND");
   }
 

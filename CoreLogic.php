@@ -1582,7 +1582,7 @@ function GetBanishModifier($index)
   return "";
 }
 
-function CanPlayAsInstant($cardID, $index = -1, $from = "")
+function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false)
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
@@ -1591,10 +1591,52 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
+
+  // cards whose ability lets you play them at instant speed
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->CanPlayAsInstant($index, $from);
+  switch ($cardID) {
+    case "snapback_red":
+    case "snapback_yellow":
+    case "snapback_blue":
+      if (GetClassState($currentPlayer, $CS_NumWizardNonAttack)) return true;
+      break;
+    case "cindering_foresight_red":
+    case "cindering_foresight_yellow":
+    case "cindering_foresight_blue":
+      if ($currentPlayer != $mainPlayer) return true;
+      break;
+    case "rejuvenate_red":
+    case "rejuvenate_yellow":
+    case "rejuvenate_blue":
+      if (PlayerHasFused($currentPlayer)) return true;
+      break;
+    case "blessing_of_salvation_red":
+    case "blessing_of_salvation_yellow":
+    case "blessing_of_salvation_blue":
+    case "cleansing_light_red":
+    case "cleansing_light_yellow":
+    case "cleansing_light_blue":
+      if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0) return true;
+      break;
+    case "rattle_bones_red":
+      if (GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) return true;
+      break;
+    case "funeral_moon_red":
+    case "requiem_for_the_damned_red":
+    case "cull_red":
+      if (GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0) return true;
+      break;
+    case "astral_etchings_red":
+    case "astral_etchings_yellow":
+    case "astral_etchings_blue":
+      return SearchAuras("spectral_shield", $currentPlayer);
+    case "succumb_to_temptation_yellow":
+      return GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0;
+  }
+
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
   if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
-  if (GetClassState($currentPlayer, $CS_NumWizardNonAttack) && ($cardID == "snapback_red" || $cardID == "snapback_yellow" || $cardID == "snapback_blue")) return true;
-  if ($currentPlayer != $mainPlayer && ($cardID == "cindering_foresight_red" || $cardID == "cindering_foresight_yellow" || $cardID == "cindering_foresight_blue")) return true;
   if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
   if (DelimStringContains($cardType, "A") && $currentPlayer == $mainPlayer && $combatChainState[$CCS_EclecticMag]) return true;
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
@@ -1611,17 +1653,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
     }
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
-  if ($cardID == "rejuvenate_red" || $cardID == "rejuvenate_yellow" || $cardID == "rejuvenate_blue") {
-    return PlayerHasFused($currentPlayer);
-  } else if ($cardID == "blessing_of_salvation_red" || $cardID == "blessing_of_salvation_yellow" || $cardID == "blessing_of_salvation_blue") {
-    return GetClassState($currentPlayer, $CS_NumAddedToSoul);
-  } else if ($cardID == "cleansing_light_red" || $cardID == "cleansing_light_yellow" || $cardID == "cleansing_light_blue") {
-    return GetClassState($currentPlayer, $CS_NumAddedToSoul);
-  } else if ($cardID == "rattle_bones_red") {
-    return GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0;
-  } else if ($cardID == "funeral_moon_red") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
-  else if ($cardID == "requiem_for_the_damned_red") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
-  else if ($cardID == "cull_red") return GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
   if (SubtypeContains($cardID, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
     if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer) || SearchCurrentTurnEffects("teklovossen", $currentPlayer)) return true;
@@ -1647,68 +1678,65 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "")
   if (($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
   if (($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) return true;
-  $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->CanPlayAsInstant($index, $from);
-  switch ($cardID) {
-    case "mighty_windup_red":
-    case "mighty_windup_yellow":
-    case "mighty_windup_blue":
-    case "agile_windup_red":
-    case "agile_windup_yellow":
-    case "agile_windup_blue":
-    case "vigorous_windup_red":
-    case "vigorous_windup_yellow":
-    case "vigorous_windup_blue":
-    case "ripple_away_blue":
-    case "fruits_of_the_forest_red":
-    case "fruits_of_the_forest_yellow":
-    case "fruits_of_the_forest_blue":
-    case "trip_the_light_fantastic_red":
-    case "trip_the_light_fantastic_yellow":
-    case "trip_the_light_fantastic_blue":
-    case "haunting_rendition_red":
-    case "mental_block_blue":
-    case "chorus_of_the_amphitheater_red":
-    case "chorus_of_the_amphitheater_yellow":
-    case "chorus_of_the_amphitheater_blue":
-    case "arcane_twining_red":
-    case "arcane_twining_yellow":
-    case "arcane_twining_blue":
-    case "photon_splicing_red":
-    case "photon_splicing_yellow":
-    case "photon_splicing_blue":
-    case "reapers_call_red":
-    case "reapers_call_yellow":
-    case "reapers_call_blue":
-    case "shelter_from_the_storm_red":
-    case "tip_off_red":
-    case "tip_off_yellow":
-    case "tip_off_blue":
-    case "war_cry_of_themis_yellow":
-    case "war_cry_of_bellona_yellow":
-    case "deny_redemption_red":
-    case "bam_bam_yellow":
-    case "outside_interference_blue":
-    case "light_up_the_leaves_red":
-      return $from == "HAND";
-    case "under_the_trap_door_blue":
-      return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
-    case "astral_etchings_red":
-    case "astral_etchings_yellow":
-    case "astral_etchings_blue":
-      return SearchAuras("spectral_shield", $currentPlayer);
-    case "succumb_to_temptation_yellow":
-      return GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0;
-    case "burn_bare":
-      if ($from != "HAND") return false;
-      return IsPhantasmActive();
-    case "fearless_confrontation_blue":
-      if ($from != "HAND") return false;
-      if ($CombatChain->HasCurrentLink()) return true;
-      if (IsLayerStep()) return true;
-      return false;
-    default:
-      break;
+
+  if (!$secondCheck || $layers[0] == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used
+    $card = GetClass($cardID, $currentPlayer);
+    if ($card != "-") return $card->CanActivateAsInstant($index, $from); //rename this function to "CanActivateAsInstant"
+    switch ($cardID) { // cards that can be *activated* at instant speed
+      case "mighty_windup_red":
+      case "mighty_windup_yellow":
+      case "mighty_windup_blue":
+      case "agile_windup_red":
+      case "agile_windup_yellow":
+      case "agile_windup_blue":
+      case "vigorous_windup_red":
+      case "vigorous_windup_yellow":
+      case "vigorous_windup_blue":
+      case "ripple_away_blue":
+      case "fruits_of_the_forest_red":
+      case "fruits_of_the_forest_yellow":
+      case "fruits_of_the_forest_blue":
+      case "trip_the_light_fantastic_red":
+      case "trip_the_light_fantastic_yellow":
+      case "trip_the_light_fantastic_blue":
+      case "haunting_rendition_red":
+      case "mental_block_blue":
+      case "chorus_of_the_amphitheater_red":
+      case "chorus_of_the_amphitheater_yellow":
+      case "chorus_of_the_amphitheater_blue":
+      case "arcane_twining_red":
+      case "arcane_twining_yellow":
+      case "arcane_twining_blue":
+      case "photon_splicing_red":
+      case "photon_splicing_yellow":
+      case "photon_splicing_blue":
+      case "reapers_call_red":
+      case "reapers_call_yellow":
+      case "reapers_call_blue":
+      case "shelter_from_the_storm_red":
+      case "tip_off_red":
+      case "tip_off_yellow":
+      case "tip_off_blue":
+      case "war_cry_of_themis_yellow":
+      case "war_cry_of_bellona_yellow":
+      case "deny_redemption_red":
+      case "bam_bam_yellow":
+      case "outside_interference_blue":
+      case "light_up_the_leaves_red":
+        return $from == "HAND";
+      case "under_the_trap_door_blue":
+        return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
+      case "burn_bare":
+        if ($from != "HAND") return false;
+        return IsPhantasmActive();
+      case "fearless_confrontation_blue":
+        if ($from != "HAND") return false;
+        if ($CombatChain->HasCurrentLink()) return true;
+        if (IsLayerStep()) return true;
+        return false;
+      default:
+        break;
+    }
   }
   return false;
 }

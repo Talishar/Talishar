@@ -171,6 +171,10 @@ class Card {
     return false;
   }
 
+  function CanActivateAsInstant($index=-1, $from = "") {
+    return false;
+  }
+
   function AddPrePitchDecisionQueue($from, $index=-1, $facing="-") {
     return;
   }
