@@ -367,7 +367,7 @@ enum PatreonCampaign : string
       case "7330270": return ($userName == "PvtVoid" || $userName == "Steelfur");
       case "13518995": return ($userName == "PvtVoid" || $userName == "Tegunn" || $userName == "AurOraOraOraOraORa");
       case "14460977": return ($userName == "PvtVoid" || $userName == "AlpacaSciatrice");
-      case "14951942": return ($userName == "PvtVoid" || $userName == "OopsAllPummels");
+      case "14951942": return IsTeamFatAndFurious($userName);
       default: return "";
     }
   }

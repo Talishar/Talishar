@@ -459,9 +459,9 @@ function FormatName($formatCode)
   }
 }
 
-function IsTeamCardAdvantage($userID)
+function IsTeamCardAdvantage($userName)
 {
-  switch ($userID) {
+  switch ($userName) {
     case "JacobK": case "Pastry Boi": case "Brotworst": case "1nigoMontoya (Cody)": case "Motley":
     case "jimmyhl1329": case "Stilltzkin": case "krav": case "infamousb": case "FatFabJesus": case "MisterPNP":
       return true;
@@ -470,9 +470,9 @@ function IsTeamCardAdvantage($userID)
   return false;
 }
 
-function IsTeamSecondCycle($userID)
+function IsTeamSecondCycle($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "The4thAWOL": case "Beserk": case "Dudebroski": case "deathstalker182": case "TryHardYeti": case "Fledermausmann":
     case "Loganninty7": case "flamedog3": case "Swankypants": case "Blazing For Lethal?": case "Jeztus": case "gokkar":
     case "Kernalxklink": case "Kymo13":
@@ -482,9 +482,9 @@ function IsTeamSecondCycle($userID)
   return false;
 }
 
-function IsTeamSonicDoom($userID)
+function IsTeamSonicDoom($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
     case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
     case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
@@ -494,9 +494,9 @@ function IsTeamSonicDoom($userID)
   return false;
 }
 
-function IsTeamPummel($userID)
+function IsTeamPummel($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X": case "Tommaso":
     case "PDMPLB":
       return true;
@@ -505,9 +505,9 @@ function IsTeamPummel($userID)
   return false;
 }
 
-function IsTeamEmperorsRome($userID)
+function IsTeamEmperorsRome($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "Daniele90rm": case "Excelsa": case "kano90": case "Maalox10": case "TriangoloRotondo": case "Piervillo": case "Rean":
     case "Jekpack": case "playboikrame": case "Danyr99": case "ZiFrank": case "Fevic":
       return true;
@@ -516,9 +516,9 @@ function IsTeamEmperorsRome($userID)
   return false;
 }
 
-function IsTeamTalishar($userID)
+function IsTeamTalishar($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "HelpMeJace2":
     case "RainyDays":
     case "Ragnell":
@@ -532,9 +532,9 @@ function IsTeamTalishar($userID)
   return false;
 }
 
-function IsTeamTideBreakers($userID)
+function IsTeamTideBreakers($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "OotTheMonk": case "Yarandor": case "grossmaul2130": case "EggShot": case "Kasadoom": case "Gulto":
     case "FinnElbe": case "Stardragon": case "DragonSlayer": case "TerranceSkill": case "TaddelDown":
     case "Ilya": case "PastaPaul":
@@ -544,9 +544,9 @@ function IsTeamTideBreakers($userID)
   return false;
 }
 
-function IsTeamSunflowerSamurai($userID)
+function IsTeamSunflowerSamurai($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "Usagi":
     case "HidaEishi":
     case "kaikou":
@@ -570,9 +570,9 @@ function IsTeamSunflowerSamurai($userID)
   return false;
 }
 
-function isTeamCupofTCG($userID)
+function isTeamCupofTCG($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "Cody1304":
     case "Glem":
     case "parallaxdream":
@@ -584,9 +584,9 @@ function isTeamCupofTCG($userID)
   return false;
 }
 
-function isTeamScowlingFleshBag($userID)
+function isTeamScowlingFleshBag($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "ScowlingFleshBag":
     case "SmilingFleshBag":
     case "PvtVoid":
@@ -596,9 +596,9 @@ function isTeamScowlingFleshBag($userID)
   return false;
 }
 
-function IsTeamThaiCardsShop($userID)
+function IsTeamThaiCardsShop($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "terrythai03":
     case "PvtVoid":
       return true;
@@ -607,9 +607,9 @@ function IsTeamThaiCardsShop($userID)
   return false;
 }
 
-function IsTeamFABChaos($userID)
+function IsTeamFABChaos($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "SaXoChaos":
     case "nakezuma":
     case "Broken":
@@ -627,9 +627,9 @@ function IsTeamFABChaos($userID)
   return false;
 }
 
-function IsTeamColdFoilControl($userID)
+function IsTeamColdFoilControl($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "Z-Gin":
     case "Chaco":
     case "Kentshero":
@@ -644,9 +644,9 @@ function IsTeamColdFoilControl($userID)
   return false;
 }
 
-function IsTeamRighteousGaming($userID)
+function IsTeamRighteousGaming($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "RighteousGaming":
     case "Perodic":
     case "zzdog":
@@ -672,9 +672,9 @@ function IsTeamRighteousGaming($userID)
   return false;
 }
 
-function IsTeamMetalFab($userID)
+function IsTeamMetalFab($userName)
 {
-  switch($userID) {
+  switch($userName) {
       case "PvtVoid":
       case "deathstalker182":
       case "Closetnerds":
@@ -698,9 +698,9 @@ function IsTeamMetalFab($userID)
   return false;
 }
 
-function IsTeamPotatoSquad($userID)
+function IsTeamPotatoSquad($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "PvtVoid":
     case "Corry":
     case "Gibbie":
@@ -721,9 +721,9 @@ function IsTeamPotatoSquad($userID)
   return false;
 }
 
-function IsTeamFabledBrazil($userID)
+function IsTeamFabledBrazil($userName)
 {
-  switch($userID) {
+  switch($userName) {
     case "PvtVoid":
     case "tetsuo":
     case "hugodeoz":
@@ -743,6 +743,29 @@ function IsTeamFabledBrazil($userID)
     case "FiotzGames":
       return true;
     default: break;
+  }
+  return false;
+}
+
+function IsTeamFatAndFurious($userName)
+{
+  switch ($userName) {
+    case "PvtVoid":
+    case "FatAndFurious":
+    case "Angel Pillow":
+    case "stefchwan":
+    case "JK":
+    case "Astropeleki":
+    case "Debread":
+    case "Tilemachos27":
+    case "Intzah":
+    case "Cubacash":
+    case "Karyo":
+    case "Ironclad":
+    case "Jorin":
+      return true;
+    default:
+      break;
   }
   return false;
 }
