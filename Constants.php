@@ -594,6 +594,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_NumReactionPlayedActivated] = 0;
   $combatChainState[$CCS_NumCardsBlocking] = 0;
   $combatChainState[$CCS_NumPowerCounters] = 0;
+  RemoveThisLinkEffects();
 }
 
 function ResetMainClassState()
