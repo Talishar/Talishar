@@ -529,6 +529,7 @@ enum PatreonCampaign : string
           "agility=agility-ManSant",
           "might=might-ManSant",
           "quicken=quicken-ManSant",
+          "vigor=vigor-ManSant",
         ];
         break;
       case "279086": // Brandao
