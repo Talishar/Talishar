@@ -1594,7 +1594,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 
   // cards whose ability lets you play them at instant speed
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->CanPlayAsInstant($index, $from);
+  if ($card != "-") if ($card->CanPlayAsInstant($index, $from)) return true;
   switch ($cardID) {
     case "snapback_red":
     case "snapback_yellow":
@@ -1630,9 +1630,13 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     case "astral_etchings_red":
     case "astral_etchings_yellow":
     case "astral_etchings_blue":
-      return SearchAuras("spectral_shield", $currentPlayer);
+      if (SearchAuras("spectral_shield", $currentPlayer)) return true;
+      break;
     case "succumb_to_temptation_yellow":
-      return GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0;
+      if (GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) return true;
+      break;
+    default:
+      break;
   }
 
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
