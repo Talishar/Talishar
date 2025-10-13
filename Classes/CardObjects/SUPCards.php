@@ -685,7 +685,7 @@ class cheap_shot_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function CanActivateAsInstant($index = -1, $from = '') {
+  function CanPlayAsInstant($index = -1, $from = '') {
     global $CS_BooedThisTurn;
     return GetClassState($this->controller, $CS_BooedThisTurn) > 0;
   }
