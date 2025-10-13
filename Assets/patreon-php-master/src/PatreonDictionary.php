@@ -145,6 +145,7 @@ enum PatreonCampaign : string
   case Steelfur = "7330270";
   case FleshAndBad = "13518995";
   case SilvarisGarden = "14460977";
+  case FatAndFurious = "14951942";
 
   public function SessionID(): string
   {
@@ -200,6 +201,7 @@ enum PatreonCampaign : string
       case "7330270": return "isSteelfurPatron";
       case "13518995": return "isFleshAndBadPatron";
       case "14460977": return "isSilvarisGardenPatron";
+      case "14951942": return "isFatAndFuriousPatron";
       default: return "";
     }
   }
@@ -282,6 +284,7 @@ enum PatreonCampaign : string
       case "7330270": return "Steelfur";
       case "13518995": return "Flesh and Bad";
       case "14460977": return "Silvaris Garden";
+      case "14951942": return "Fat and Furious";
       default: return "";
     }
   }
@@ -318,7 +321,7 @@ enum PatreonCampaign : string
       case "7329070": return ($userName == "GoAgainGamingAz");
       case "1787491": return ($userName == "RedZoneRogue");
       case "8997252": return ($userName == "phillip");
-      case "8955846": return ($userName == "Man_Sant" || "PollyCranka" || $userName == "Aegisworn" || $userName == "PvtVoid");
+      case "8955846": return ($userName == "Man_Sant" || $userName == "PollyCranka" || $userName == "Aegisworn" || $userName == "PvtVoid");
       case "6839952": return ($userName == "chonigman" || $userName == "Ijaque");
       case "7285727": return ($userName == "Brendan" || $userName == "TheClub");
       case "8635931": return ($userName == "TheTekloFoundry");
@@ -364,6 +367,7 @@ enum PatreonCampaign : string
       case "7330270": return ($userName == "PvtVoid" || $userName == "Steelfur");
       case "13518995": return ($userName == "PvtVoid" || $userName == "Tegunn" || $userName == "AurOraOraOraOraORa");
       case "14460977": return ($userName == "PvtVoid" || $userName == "AlpacaSciatrice");
+      case "14951942": return IsTeamFatAndFurious($userName);
       default: return "";
     }
   }
@@ -525,6 +529,7 @@ enum PatreonCampaign : string
           "agility=agility-ManSant",
           "might=might-ManSant",
           "quicken=quicken-ManSant",
+          "vigor=vigor-ManSant",
         ];
         break;
       case "279086": // Brandao
@@ -632,6 +637,7 @@ enum PatreonCampaign : string
       case "7330270": return "110";
       case "13518995": return "111";
       case "14460977": return "113";
+      case "14951942": return "119";
       default: return "";
     }
   }
