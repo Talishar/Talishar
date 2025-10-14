@@ -760,9 +760,11 @@ function IsTeamFatAndFurious($userName)
     case "Tilemachos27":
     case "Intzah":
     case "Cubacash":
-    case "Karyo":
+    case "karyo":
     case "Ironclad":
     case "Jorin":
+    case "anastaso73":
+    case "z4risu":
       return true;
     default:
       break;
