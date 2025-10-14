@@ -986,6 +986,11 @@ function PassInput($autopass = true, $doublePass=false)
   elseif($turn[0] == "CHOOSEARCANE") {
     ContinueDecisionQueue("0");
   }
+  elseif($turn[0] == "ORDERTRIGGERS") {
+    for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $currentPlayer) $layers[$i] = "TRIGGER";
+    }
+  }
   else {
     if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");
     else WriteLog("Player " . $currentPlayer . " passed");

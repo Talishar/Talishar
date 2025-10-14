@@ -58,7 +58,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks;
+  global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks, $defPlayer;
   global $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
@@ -89,9 +89,18 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck = new Deck($currentPlayer);
       $top = $deck->Top(true);
       if ($top != "") {
-        Pitch($top, $currentPlayer);
-        if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
-          Cheer($currentPlayer);
+        $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($top)), $mainPlayer, "null_time_zone_blue") != -1;
+        $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($top)), $defPlayer, "null_time_zone_blue") != -1;
+        if (!$foundNullTime) {
+          Pitch($top, $currentPlayer);
+          if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
+            Cheer($currentPlayer);
+          }
+        }
+        else {
+          RevealCards($top);
+          WriteLog("Pitching " . CardLink($top, $top) . " prevented by " . CardLink("null_time_zone_blue", "null_time_zone_blue"));
+          $deck->AddTop($top);
         }
       }
       break;
