@@ -867,8 +867,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck->Reveal(1);
       $top = $deck->Top();
       if(ColorContains($top, 3, $currentPlayer)) {
-        $top = $deck->Top(true);
-        Pitch($top, $currentPlayer);
+        PitchTopCard($currentPlayer);
       }
       break;
     case "not_so_fast_yellow":
@@ -1373,4 +1372,28 @@ switch ($cardID) {
   default:
     return false;
   }
+}
+
+function PitchTopCard($player)
+{
+  global $mainPlayer, $defPlayer;
+  $deck = new Deck($player);
+  $top = $deck->Top(true);
+  if ($top != "") {
+    $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($top)), $mainPlayer, "null_time_zone_blue") != -1;
+    $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($top)), $defPlayer, "null_time_zone_blue") != -1;
+    if (!$foundNullTime) {
+      Pitch($top, $player);
+      return $top;
+      if (ModifiedPowerValue($top, $player, "DECK") >= 6) {
+        Cheer($player);
+      }
+    }
+    else {
+      RevealCards($top);
+      WriteLog("Pitching " . CardLink($top, $top) . " prevented by " . CardLink("null_time_zone_blue", "null_time_zone_blue"));
+      $deck->AddTop($top);
+    }
+  }
+  return "";
 }

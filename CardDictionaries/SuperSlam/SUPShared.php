@@ -86,22 +86,9 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
-      $deck = new Deck($currentPlayer);
-      $top = $deck->Top(true);
-      if ($top != "") {
-        $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($top)), $mainPlayer, "null_time_zone_blue") != -1;
-        $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($top)), $defPlayer, "null_time_zone_blue") != -1;
-        if (!$foundNullTime) {
-          Pitch($top, $currentPlayer);
-          if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
-            Cheer($currentPlayer);
-          }
-        }
-        else {
-          RevealCards($top);
-          WriteLog("Pitching " . CardLink($top, $top) . " prevented by " . CardLink("null_time_zone_blue", "null_time_zone_blue"));
-          $deck->AddTop($top);
-        }
+      $top = PitchTopCard($currentPlayer);
+      if (ModifiedPowerValue($top, $currentPlayer, "DECK") >= 6) {
+        Cheer($currentPlayer);
       }
       break;
     case "pleiades":
