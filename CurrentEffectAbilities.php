@@ -1279,7 +1279,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
             }
             if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
             $multiAttack = match($source) {
-              "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue" => true,
+              "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
               default => false,
             };
             if (SubtypeContains($source, "Dagger")) $multiAttack = true;

@@ -2285,7 +2285,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
         if (!str_contains($mzIndex[0], "ALLY")) {
           if ($mzIndex[1] == 0) {
-            DamageTrigger($target, $damage, $params[1], GetMZCard($target, $lastResultArr[$i]), $player);
+            
+            DamageTrigger($target, $damage, $params[1], $params[2], $player);
           }
           else { //perched allies
             if ($damage > 0) {
