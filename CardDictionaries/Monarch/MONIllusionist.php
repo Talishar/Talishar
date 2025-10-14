@@ -186,7 +186,11 @@
     if(IsPhantasmStillActive($source))
     {
       $attackID = $CombatChain->AttackCard()->ID();
-      if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally")) DestroyAlly($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+      if(DelimStringContains(CardSubType($attackID), "Ally")) {
+        $originUID = $CombatChain->AttackCard()->OriginUniqueID();
+        $allyInd = SearchAlliesForUniqueID($originUID, $mainPlayer);
+        if ($allyInd != -1) DestroyAlly($mainPlayer, $allyInd);
+      }
       if(ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
         GhostlyTouchPhantasmDestroy();
         if(!SubtypeContains($attackID, "Aura", $mainPlayer)) PhantomTidemawDestroy($mainPlayer);//Aura destroy is handled elsewhere
