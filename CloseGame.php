@@ -4,6 +4,7 @@ include "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 include "Libraries/SHMOPLibraries.php";
+include_once './Libraries/CSRFLibraries.php';
 
 session_start();
 
@@ -17,7 +18,12 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpay
   exit;
 }
 
-$gameToken = TryGET("gameToClose", "");
+// Validate CSRF token for POST requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    requireCSRFToken();
+}
+
+$gameToken = TryPOST("gameToClose", "");
 $folder = "./Games/" . $gameToken;
 
 deleteDirectory($folder);
