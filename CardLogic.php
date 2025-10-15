@@ -1935,7 +1935,6 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
         }
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to add to hand");
         AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
-        AddDecisionQueue("WRITELOGLASTRESULT", $player, "-", 1);
         AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
         AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $player, "<-", 1);
