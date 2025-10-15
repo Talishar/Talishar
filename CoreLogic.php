@@ -3636,6 +3636,8 @@ function EvoHasUnderCard($player, $index)
 
 function EvoTransformAbility($toCardID, $fromCardID, $player = "")
 {
+  global $CombatChain;
+
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($toCardID) {
     case "evo_steel_soul_memory_blue":
@@ -3670,13 +3672,17 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_whizz_bang_yellow":
     case "evo_whizz_bang_yellow_equip":
-      AddCurrentTurnEffect("evo_whizz_bang_yellow", $player);
+      if ($CombatChain->HasCurrentLink() || IsLayerStep()) {
+        AddCurrentTurnEffect("evo_whizz_bang_yellow", $player);
+      }
       break;
     case "evo_zip_line_yellow":
     case "evo_zip_line_yellow_equip":
-      AddDecisionQueue("YESNO", $player, "if you want to give the current attack go again");
-      AddDecisionQueue("NOPASS", $player, "-");
-      AddDecisionQueue("GIVEACTIONGOAGAIN", $player, "AA", 1);
+      if ($CombatChain->HasCurrentLink() || IsLayerStep()) {
+        AddDecisionQueue("YESNO", $player, "if you want to give the current attack go again");
+        AddDecisionQueue("NOPASS", $player, "-");
+        AddDecisionQueue("GIVEACTIONGOAGAIN", $player, "AA", 1);
+      }
       break;
     case "evo_recall_blue":
     case "evo_recall_blue_equip":
