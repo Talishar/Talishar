@@ -294,10 +294,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $chainPowerModifiers = [];
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
+  $blockVal = $turn[0] == "B" && $playerID == $mainPlayer ? 0 : $totalDefense;
   $activeChainLink->totalPower = $totalPower;
 
   // current chain link defence
-  $activeChainLink->totalDefence = $totalDefense;
+  $activeChainLink->totalDefence = $blockVal;
 
   $response->activeChainLink = $activeChainLink;
 
