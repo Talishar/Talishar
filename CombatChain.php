@@ -83,7 +83,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   else if ($set == "SUP") return SUPHitEffect($cardID);
   else if ($set == "APS") return APSHitEffect($cardID);
   else if ($set == "ARR") return ARRHitEffect($cardID);
-  else if ($set == "AAC") return AACHitEffect($cardID);
+  else if ($set == "AAC") return AACHitEffect($cardID, $target);
   else return -1;
 }
 

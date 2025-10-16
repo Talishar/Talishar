@@ -1279,7 +1279,23 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
       break;
     case "meet_madness_red":
       if(IsHeroAttackTarget()) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        if (!$check) {
+          $roll = GetRandom(1,3);
+          switch ($roll) {
+            case 1:
+              WriteLog("<b>The madness says \"Banish a card from hand!\"</b>");
+              break;
+            case 2:
+              WriteLog("<b>The madness says \"banish a card from arsenal!\"</b>");
+              break;
+            case 3:
+              WriteLog("<b>The madness says \"banish a card from the top of your deck!\"</b>");
+              break;
+            default:
+              break;
+          }
+          AddLayer("TRIGGER", $mainPlayer, $cardID, $roll, "ONHITEFFECT");
+        }
         return true;
       }
       break;
