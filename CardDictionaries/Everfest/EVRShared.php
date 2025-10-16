@@ -359,6 +359,7 @@
         }
         return "";
       case "scour_blue":
+        $activePlayer = $currentPlayer; // the game can get $currentPlayer mixed up if an attacking aura is destroyed
         $targetPlayer = substr($target, 0, 1) == "O" ? $otherPlayer: $currentPlayer;
         $damageTarget = substr($target, 0, 1) == "O" ? "THEIRCHAR-0": "MYCHAR-0";
         $auras = &GetAuras($targetPlayer);
@@ -388,7 +389,7 @@
             }
           }
         }
-        DealArcane($numDestroyed, source:"scour_blue", type:"PLAYCARD", resolvedTarget:$damageTarget);
+        DealArcane($numDestroyed, source:"scour_blue", type:"PLAYCARD", player:$activePlayer, resolvedTarget:$damageTarget);
         return "";
       case "emeritus_scolding_red": case "emeritus_scolding_yellow": case "emeritus_scolding_blue":
         $oppTurn = $currentPlayer != $mainPlayer;
