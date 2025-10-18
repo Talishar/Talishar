@@ -126,9 +126,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "felling_of_the_crown_red":
     case "plow_under_yellow":
-    case "rootbound_carapace_red":
-    case "rootbound_carapace_yellow":
-    case "rootbound_carapace_blue":
     case "blossoming_decay_red":
     case "blossoming_decay_yellow":
     case "blossoming_decay_blue":
@@ -136,6 +133,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cadaverous_tilling_yellow":
     case "cadaverous_tilling_blue":
       AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
+      return "";
+    case "rootbound_carapace_red":
+    case "rootbound_carapace_yellow":
+    case "rootbound_carapace_blue":
+      Decompose($currentPlayer, "ROOTBOUNDCARAPACE");
       return "";
     case "channel_the_millennium_tree_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
