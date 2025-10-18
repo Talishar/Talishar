@@ -2959,7 +2959,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "scowling_flesh_bag":
         global $mainPlayer;
-        Intimidate($mainPlayer);
+        $targetPlayer = str_contains($target, "THEIR") ? $mainPlayer : $player;
+        Intimidate($targetPlayer);
         break;
       case $CID_BloodRotPox:
         $hand = &GetHand($player);

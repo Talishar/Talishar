@@ -1063,7 +1063,6 @@ function OnBlockResolveEffects($cardID = "")
         case "wayfinders_crest":
         case "vambrace_of_determination":
         case "soulbond_resolve":
-        case "scowling_flesh_bag":
         case "firewall_red":
         case "firewall_yellow":
         case "firewall_blue":
@@ -1146,6 +1145,15 @@ function OnBlockResolveEffects($cardID = "")
         case "sunkwater_scalers":
         case "call_for_backup_red":
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          break;
+        case "scowling_flesh_bag":
+          $targets = "THEIRCHAR-0";
+          if (!ShouldAutotargetOpponent($defPlayer)) $targets = "MYCHAR-0,$targets";
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, $targets, 1);
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a hero to intimidate", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+          AddDecisionQueue("SHOWSELECTEDTARGET", $defPlayer, "<-", 1);
+          AddDecisionQueue("ADDTRIGGER", $defPlayer, $defendingCard, 1);
           break;
         case "apex_bonebreaker":
           $num6Block = 0;
