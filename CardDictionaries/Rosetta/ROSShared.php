@@ -135,7 +135,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cadaverous_tilling_red":
     case "cadaverous_tilling_yellow":
     case "cadaverous_tilling_blue":
-      AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
+      Decompose($currentPlayer, "ROOTBOUNDCARAPACE");
       return "";
     case "channel_the_millennium_tree_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

@@ -3392,11 +3392,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           WriteLog(CardLink($parameter, $parameter) . " layer fails as there are no remaining targets for the targeted effect.");
         }
         break;
-      case "rootbound_carapace_red":
-      case "rootbound_carapace_yellow":
-      case "rootbound_carapace_blue":
-        Decompose($player, "ROOTBOUNDCARAPACE");
-        break;
       case "blossoming_decay_red":
       case "blossoming_decay_yellow":
       case "blossoming_decay_blue":
