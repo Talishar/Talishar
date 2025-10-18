@@ -1664,13 +1664,18 @@ function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 
 function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $currentPlayer, $layers;
   $hasGoAgain = false;
+  $usedGreaves = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lightning_greaves": 
-          $hasGoAgain = true;
+          if ($cardID == $currentTurnEffects[$i + 2] && !$usedGreaves) {
+            $hasGoAgain = true;
+            $usedGreaves = true;
+            RemoveCurrentTurnEffect($i);
+          }
           break;
         default:
           break;

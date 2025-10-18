@@ -1835,13 +1835,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (CardName($cardID) == "Nimblism") IncrementClassState($currentPlayer, $CS_PlayedNimblism);
     //gone in a flash is the active chainlink
     $goneActive = $CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red";
-    //we're in the resolution step of gone's chain link
-    $goneActive = $goneActive || ((SearchLayersForPhase("RESOLUTIONSTEP") != -1 || IsLayerStep()) && $chainLinks[count($chainLinks) - 1][0] == "gone_in_a_flash_red" && $chainLinks[count($chainLinks) - 1][2] == 1 && SearchLayersForCardID("gone_in_a_flash_red") == -1);
-    //we're in the link step of the next attack
     if($goneActive && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
       if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
         AddLayer("TRIGGER", $mainPlayer, "gone_in_a_flash_red");
       }
+    }
+    if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains(CardType($cardID), "I")) {
+      // check whether lightning greaves has been activated *before* the card is played
+      AddCurrentTurnEffect("lightning_greaves", $currentPlayer, "", $cardID);
     }
     $hero = GetPlayerCharacter($currentPlayer)[0];
     if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($currentPlayer, 0)) {
