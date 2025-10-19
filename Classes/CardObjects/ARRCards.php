@@ -67,14 +67,8 @@ class bare_swing_yellow extends Card {
   }
 }
 
-class smell_fear_yellow extends Card {
-
-  function __construct($controller) {
-    $this->cardID = "smell_fear_yellow";
-    $this->controller = $controller;
-    }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+class smell_fear extends BaseCard {
+  function PlayAbility() {
     if (SearchCurrentTurnEffects("BEATCHEST", $this->controller)) Intimidate();
     AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
     return "";
@@ -84,15 +78,64 @@ class smell_fear_yellow extends Card {
     return true;
   }
 
+  function CombatEffectActive() {
+    global $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    return ClassContains($attackCard, "BRUTE", $this->controller);
+  }
+}
+
+class smell_fear_yellow extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "smell_fear_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new smell_fear($this->cardID, $this->controller);
+    }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function IsGrantedBuff() {
+    return $this->baseCard->IsGrantedBuff();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    global $CS_HaveIntimidated;
+    return GetClassState($this->controller, $CS_HaveIntimidated) >= 2 ? 3 : 0;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+}
+
+class smell_fear_blue extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "smell_fear_blue";
+    $this->controller = $controller;
+    $this->baseCard = new smell_fear($this->cardID, $this->controller);
+    }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function IsGrantedBuff() {
+    return $this->baseCard->IsGrantedBuff();
+  }
+
   function EffectPowerModifier($param, $attached = false) {
     global $CS_HaveIntimidated;
     return GetClassState($this->controller, $CS_HaveIntimidated) >= 2 ? 2 : 0;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    global $CombatChain;
-    $attackCard = $CombatChain->AttackCard()->ID();
-    return ClassContains($attackCard, "BRUTE", $this->controller);
+    return $this->baseCard->CombatEffectActive();
   }
 }
 
