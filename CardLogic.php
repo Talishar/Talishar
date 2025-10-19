@@ -4142,6 +4142,18 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
+    case "phantasmaclasm_red":
+      if(IsHeroAttackTarget()) {
+        AddDecisionQueue("SHOWHANDWRITELOG", $defPlayer, "<-", 1);
+        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+        AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+        AddDecisionQueue("SETDQVAR", $player, "0", 1);
+        AddDecisionQueue("WRITELOG", $player, "<0> was put on the bottom of the deck.", 1);
+        AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
+        AddDecisionQueue("DRAW", $defPlayer, "-");
+        }
+      break;
     case "unsheathed_red":
       CacheCombatResult();
       if (IsWeaponGreaterThanTwiceBasePower()) GiveAttackGoAgain(); // borrowing ideas from merciless battleaxe (merciless_battleaxe) and shift the tide of battle (shift_the_tide_of_battle_yellow)

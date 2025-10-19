@@ -16,16 +16,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "phantasmaclasm_red":
-        if(IsHeroAttackTarget()) {
-          AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
-          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-          AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was put on the bottom of the deck.", 1);
-          AddDecisionQueue("ADDBOTDECK", $otherPlayer, "Skip", 1);
-          AddDecisionQueue("DRAW", $otherPlayer, "-");
-        }
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "prismatic_shield_red": PlayAura("spectral_shield", $currentPlayer, 3); return "";
       case "prismatic_shield_yellow": PlayAura("spectral_shield", $currentPlayer, 2); return "";
