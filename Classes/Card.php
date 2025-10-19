@@ -409,6 +409,18 @@ class Card {
   function SpecialCost() {
     return -1;
   }
+
+  function HasBeatChest() {
+    return false;
+  }
+
+  function CurrentEffectCostModifier($cardID, &$remove) {
+    return 0;
+  }
+
+  function WhenBeatChest($index) {
+    return;
+  }
 }
 
 ?>

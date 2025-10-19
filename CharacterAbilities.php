@@ -1764,3 +1764,11 @@ function ListExposedEquipSlots($player)
   });
   return empty($available) ? "PASS" : implode(",", $available);
 }
+
+function CharacterBeatChestTrigger($player) {
+  $character = GetPlayerCharacter($player);
+  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    $card = GetClass($character[$i], $player);
+    if ($card != "-") $card->WhenBeatChest($i);
+  }
+}

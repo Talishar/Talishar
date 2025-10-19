@@ -956,6 +956,8 @@ function CurrentEffectCostModifiers($cardID, $from)
           if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
         }
       }
+      $card = GetClass($currentTurnEffects[$i], $currentPlayer);
+      if ($card != "-") $costModifier += $card->CurrentEffectCostModifier($cardID, $remove);
       switch ($currentTurnEffects[$i]) {
         case "cartilage_crush_red":
         case "cartilage_crush_yellow":

@@ -3854,6 +3854,8 @@ function RequiresBanish($cardID)
 
 function HasBeatChest($cardID)
 {
+  $card = GetClass($cardID, 1);
+  if ($card != "-") return $card->HasBeatChest();
   switch ($cardID) {
     case "rawhide_rumble_red":
     case "rawhide_rumble_yellow":
