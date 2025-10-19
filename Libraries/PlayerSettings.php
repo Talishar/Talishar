@@ -431,6 +431,7 @@ function FormatCode($format)
     case "openformatllcc": return 11;
     case "openformatllblitz": return 12; //Currently not used
     case "compllcc": return 13;
+    case "sage": return 14;
     case "precon": return -2;
     default: return -1;
   }
@@ -455,6 +456,7 @@ function FormatName($formatCode)
     case 11: return "openformatllcc";
     case 12: return "openformatllblitz"; //Currently not used
     case 13: return "compllcc";
+    case 14: return "sage";
     case -2: return "precon";
     default: return "-";
   }

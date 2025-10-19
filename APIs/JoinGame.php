@@ -262,7 +262,7 @@ if ($decklink != "") {
 
       if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "blitz" || $format == "compblitz" || $format == "clash") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
+        if (($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "sage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
           if ($isDeckLegal != "") $isDeckLegal .= ", ";
           $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
@@ -329,6 +329,12 @@ if ($decklink != "") {
   }
 
   if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "clash")) {
+    $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
+    echo (json_encode($response));
+    exit;
+  }
+
+  if (($totalCards < 40 || $totalCards > 55) && ($format == "sage")) {
     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
@@ -675,6 +681,29 @@ function isBannedInFormat($cardID, $format) {
       ],
       "llcc" => [
           "kraken's_aethervein", "crown_of_seeds", "carrion_husk", "zephyr_needle"
+      ],
+      "sage" => [
+        "fiddlers_green_red", "fiddlers_green_yellow", "fiddlers_green_blue",
+        "honing_hood", "nimby_red", "nimby_yellow", "nimby_blue",
+        "old_knocker", "reality_refractor", "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue",
+        "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_ironweave", "amulet_of_ice_blue",
+        "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue",
+        "belittle_red", "belittle_yellow", "belittle_blue",
+        "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
+        "cash_in_yellow", "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessing_blue",
+        "deadwood_dirge_red", "deadwood_dirge_yellow", "deadwood_dirge_blue",
+        "drone_of_brutality_red", "drone_of_brutality_blue", "drone_of_brutality_yellow",
+        "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
+        "fate_foreseen_red", "fate_foreseen_yellow", "fate_foreseen_blue",
+        "flic_flak_red", "flic_flak_yellow", "flic_flak_blue",
+        "goliath_gauntlet", "heartened_crosswrap", "mask_of_three_tails",
+        "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
+        "rake_the_embers_red", "rake_the_embers_yellow", "rake_the_embers_blue",
+        "ragamuffins_hat", "rootbound_carapace_red", "rootbound_carapace_yellow", "rootbound_carapace_blue",
+        "rosetta_thorn", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
+        "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
+        "sink_below_red", "sink_below_yellow", "sink_below_blue",
+        "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle"
       ]
   ];
 
