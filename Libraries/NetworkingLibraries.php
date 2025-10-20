@@ -1160,6 +1160,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
+  global $CS_HitCounter;
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
   if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
@@ -1176,7 +1177,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
     if ($wasHit) {
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
     $combatChainState[$CCS_DamageDealt] = $damageDone;
-    
+    IncrementClassState($mainPlayer, $CS_HitCounter);
     // Handle weapon hit effects
     if (IsWeaponAttack()) {
       ++$combatChainState[$CCS_HitsWithWeapon];

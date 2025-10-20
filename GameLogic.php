@@ -34,7 +34,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
-  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves;
+  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -2545,6 +2545,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $ind = intval(explode("-", $location)[1]);
         $sourceUID = $mainChar[$ind] == $cardID ? $mainChar[$ind + 11] : -1;
       }
+      IncrementClassState($mainPlayer, $CS_HitCounter);
       if (!SearchCurrentTurnEffects("tripwire_trap_red", $mainPlayer)) { //tripwire got an unannounced eratta to block flick hits
         AddOnHitTrigger($cardID, $sourceUID, targetPlayer: $targetPlayer);
         if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects

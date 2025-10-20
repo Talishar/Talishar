@@ -2269,7 +2269,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
@@ -3277,8 +3277,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchMultizone($player, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally") == "";
     case "iris_of_the_blossom":
       $hand = GetHand($currentPlayer);
-      // is it possible to hit without dealing Pow damge? And vice versa? I don't think it is
-      if (GetClassState($player, $CS_PowDamageDealt) == 0) return true;
+      if (GetClassState($player, $CS_HitCounter) == 0) return true;
       return CheckTapped("MYCHAR-$index", $currentPlayer) || count($hand) == 0;
     case "okana_scar_wraps":
       if (!$CombatChain->HasCurrentLink()) return true;
