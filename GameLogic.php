@@ -3012,7 +3012,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
 
-      if (count($secondUniquePreLayers) > 1) {
+      if (count($secondUniquePreLayers) > 1 && HoldPrioritySetting($mainPlayer) != 4 && !IsPlayerAI($secondPlayer)) {
         PrependDecisionQueue("ORDERTRIGGERS", $secondPlayer, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $secondPlayer, "PRELAYERIDS", 1);
       }
@@ -3022,7 +3022,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           PrependDecisionQueue("PASSPARAMETER", $secondPlayer, "PRELAYERS-FIRST", 1);
         }
       }
-      if (count($firstUniquePreLayers) > 1) {
+      if (count($firstUniquePreLayers) > 1 && HoldPrioritySetting($mainPlayer) != 4 && !IsPlayerAI($firstPlayer)) {
         PrependDecisionQueue("ORDERTRIGGERS", $firstPlayer, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $firstPlayer, "PRELAYERIDS", 1);
       }

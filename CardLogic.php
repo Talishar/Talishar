@@ -373,7 +373,7 @@ function AddTriggersToStack()
       if ($preLayers[$i+1] == $mainPlayer) ++$mainPreLayers;
       else ++$defPreLayers;
     }
-    if ($mainPreLayers > 0 && $defPreLayers > 0 && HoldPrioritySetting($mainPlayer) != 4) {
+    if ($mainPreLayers > 0 && $defPreLayers > 0 && HoldPrioritySetting($mainPlayer) != 4 && !IsPlayerAI($mainPlayer)) {
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Whose triggers do you want to resolve first?");
       AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Mine,Theirs", 1);
     }
