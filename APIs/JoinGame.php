@@ -262,7 +262,7 @@ if ($decklink != "") {
 
       if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "sage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
+        if (($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "sage" || $format == "compsage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
           if ($isDeckLegal != "") $isDeckLegal .= ", ";
           $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
@@ -304,7 +304,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz")) {
+  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz" || $format == "sage" || $format == "compsage")) {
     $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
@@ -334,7 +334,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if (($totalCards < 40 || $totalCards > 55) && ($format == "sage")) {
+  if (($totalCards < 40 || $totalCards > 55) && ($format == "sage" || $format == "compsage")) {
     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
@@ -591,7 +591,7 @@ function IsCardBanned($cardID, $format, $character)
     if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
   }
   if ($format == "clash") return !isClashLegal($cardID, $character);
-  if ($format == "sage") {
+  if ($format == "sage" || $format == "compsage") {
     $rarity = Rarity($cardID);
     if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
   }
@@ -654,6 +654,7 @@ function isBannedInFormat($cardID, $format) {
   if ($format == "compblitz") $format = "blitz";
   if ($format == "compcc") $format = "cc";
   if ($format == "compllcc") $format = "llcc";
+  if ($format == "compsage") $format = "sage";
 
   $bannedCards = [
       "blitz" => [

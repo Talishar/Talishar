@@ -67,13 +67,13 @@ if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llc
   echo json_encode($response);
   exit;
 }
-if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz")) {
+if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "sage" || $format == "compsage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
   exit;
 }
-if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format == "llblitz")) {
+if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format == "llblitz" || $format == "sage" || $format == "compsage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is above the maximum.";
   echo json_encode($response);

@@ -90,7 +90,7 @@ if($isShadowBanned) {
   if($format == "cc" || $format == "openformatcc" || $format == "llcc" || $format == "openformatllcc") $format = "shadowcc";
   else if($format == "compcc") $format = "shadowcompcc";
   else if($format == "compllcc") $format = "shadowcompllcc";
-  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "openformatblitz" || $format == "openformatllblitz") $format = "shadowblitz";
+  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "openformatblitz" || $format == "openformatllblitz" || $format == "sage" || $format == "compsage") $format = "shadowblitz";
 }
 
 $p1Data = [1];
