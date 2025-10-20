@@ -419,7 +419,7 @@ function FormatCode($format)
     case "cc": return 0;
     case "compcc": return 1;
     case "blitz": return 2;
-    case "compblitz": return 3; //Currently not used
+    case "compblitz": return 3;
     case "openformatcc": return 4;
     case "commoner": return 5;
     case "sealed": return 6;
@@ -445,7 +445,7 @@ function FormatName($formatCode)
     case 0: return "cc";
     case 1: return "compcc";
     case 2: return "blitz";
-    case 3: return "compblitz"; //Currently not used
+    case 3: return "compblitz";
     case 4: return "openformatcc";
     case 5: return "commoner";
     case 6: return "sealed";
