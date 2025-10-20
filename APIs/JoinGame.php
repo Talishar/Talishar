@@ -591,6 +591,10 @@ function IsCardBanned($cardID, $format, $character)
     if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
   }
   if ($format == "clash") return !isClashLegal($cardID, $character);
+  if ($format == "sage") {
+    $rarity = Rarity($cardID);
+    if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
+  }
 
   //Ban spoiler cards in non-open-format
   if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "precon" && isSpecialUsePromo($cardID)) return true;
