@@ -854,6 +854,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $index = FindCharacterIndex($player, "blood_splattered_vest");
       if($index != -1){
         GainResources($player, 1);
+        WriteLog("Player " . $player . " gained 1 resource from " . CardLink("blood_splattered_vest", "blood_splattered_vest"));
         if(++$char[$index + 2] >= 3) {
           DestroyCharacter($player, $index); # If it has three counters blow it up
           WriteLog(CardLink("blood_splattered_vest", "blood_splattered_vest") . " got too dirty...");
