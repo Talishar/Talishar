@@ -734,6 +734,11 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if (CardCost($combatChain[$i]) >= 3 && $combatChain[$i + 1] == $defPlayer) ++$blockModifier;
       }
+      foreach ($chainLinks as $link) {
+        for ($j = 0; $j < count($link); $j += ChainLinksPieces()) {
+          if ($link[$j + 1] == $defPlayer && CardCost($link[$j]) >= 3) ++$blockModifier;
+        }
+      }
       break;
     case "tremor_of_resistance":
       if (SearchAuras("seismic_surge", $defPlayer)) $blockModifier += 2;
