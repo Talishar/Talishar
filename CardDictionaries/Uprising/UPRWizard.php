@@ -7,7 +7,7 @@
     switch($cardID)
     {
       case "encase_red":
-        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane(3, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
@@ -43,7 +43,7 @@
         if($cardID == "aether_icevein_red") $damage = 5;
         else if($cardID == "aether_icevein_yellow") $damage = 4;
         else $damage = 3;
-        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
@@ -70,7 +70,7 @@
         if($cardID == "icebind_red") $damage = 3;
         else if($cardID == "icebind_yellow") $damage = 2;
         else $damage = 1;
-        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
@@ -78,7 +78,7 @@
         if($cardID == "polar_cap_red") $damage = 4;
         else if($cardID == "polar_cap_yellow") $damage = 3;
         else $damage = 2;
-        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";

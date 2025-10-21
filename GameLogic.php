@@ -1390,7 +1390,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $damage = $parameters[0];
         $source = $parameters[1];
         $type = $parameters[2];
-        $sourceType = CardType($source);
+        $sourceType = CardType(ExtractCardID($source));
         if ($type == "PLAYCARD") {
           $damage += ConsumeArcaneBonus($player);
           if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);

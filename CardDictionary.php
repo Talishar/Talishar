@@ -5566,6 +5566,7 @@ function canBeAddedToChainDuringDR($cardID){
 function ExtractCardID($cardID) {
   $cardID = explode(",", $cardID)[0];
   $cardID = explode("-", $cardID)[0];
+  $cardID = explode("|", $cardID)[0];
   return $cardID;
 }
 
