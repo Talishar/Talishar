@@ -2443,7 +2443,8 @@ function RemoveArsenalEffects($player, $cardToReturn, $uniqueID)
   if ($uniqueID == SearchCurrentTurnEffects("remorseless_red", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("remorseless_red", $otherPlayer, true); 
   $arrowWithEffects = ["head_shot_red", "head_shot_yellow", "head_shot_blue", "dry_powder_shot_red", "swift_shot_red"];
   if (in_array($cardToReturn, $arrowWithEffects)) {
-    SearchCurrentTurnEffects($cardToReturn, $player, true);
+    $index = SearchCurrentTurnEffectsForUniqueID($uniqueID);
+    if ($index != -1) RemoveCurrentTurnEffect($index);
   }
 }
 
