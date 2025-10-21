@@ -209,6 +209,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
   global $currentPlayer, $CS_ArcaneTargetsSelected;
   if ($player == 0) $player = $currentPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
+  $skipHitEffect = false; //we should *never* skip hit effects
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
@@ -1061,21 +1062,21 @@ function CheckSpellvoid($player, $damage)
 
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
-  global $CS_ArcaneDamageDealt;
+  global $CS_ArcaneDamageDealt, $layers;
   switch ($source) {
-    case "encase_red":
+    case "encase_red-FUSED":
       if (MZIsPlayer($target) && $damage > 0) {
         AddDecisionQueue("SPECIFICCARD", MZPlayerID($player, $target), "ENCASEDAMAGE", 1);
       }
       break;
-    case "aether_icevein_red":
-    case "aether_icevein_yellow":
-    case "aether_icevein_blue":
+    case "aether_icevein_red-FUSED":
+    case "aether_icevein_yellow-FUSED":
+    case "aether_icevein_blue-FUSED":
       if (MZIsPlayer($target)) PayOrDiscard(MZPlayerID($player, $target), 2, true);
       break;
-    case "icebind_red":
-    case "icebind_yellow":
-    case "icebind_blue":
+    case "icebind_red-FUSED":
+    case "icebind_yellow-FUSED":
+    case "icebind_blue-FUSED":
       if (MZIsPlayer($target) && $damage > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to freeze", 1);
@@ -1083,9 +1084,9 @@ function ArcaneHitEffect($player, $source, $target, $damage)
         AddDecisionQueue("MZOP", $player, "FREEZE", 1);
       }
       break;
-    case "polar_cap_red":
-    case "polar_cap_yellow":
-    case "polar_cap_blue":
+    case "polar_cap_red-FUSED":
+    case "polar_cap_yellow-FUSED":
+    case "polar_cap_blue-FUSED":
       if (MZIsPlayer($target) && $damage > 0) {
         AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "frostbite-1", 1);
       }
@@ -1097,8 +1098,9 @@ function ArcaneHitEffect($player, $source, $target, $damage)
     default:
       break;
   }
-
-  if ($damage > 0 && CardType($source) != "W" && SearchCurrentTurnEffects("conduit_of_frostburn", $player, true)) AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+  if ($damage > 0 && CardType(ExtractCardID($source)) != "W" && SearchCurrentTurnEffects("conduit_of_frostburn", $player, true)) {
+    AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+  }
   $auras = &GetAuras($player);
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     switch ($auras[$i]) {

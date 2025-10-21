@@ -41,7 +41,9 @@
         if($cardID == "aether_icevein_red") $damage = 5;
         else if($cardID == "aether_icevein_yellow") $damage = 4;
         else $damage = 3;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        else $source = $cardID;
+        DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "brain_freeze_red": case "brain_freeze_yellow": case "brain_freeze_blue":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
