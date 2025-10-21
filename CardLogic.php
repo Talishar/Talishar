@@ -3030,10 +3030,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         Draw($otherPlayer);
         break;
       case "civic_duty":
-        PlayAura("vigor", $otherPlayer);
+        PlayAura("vigor", $otherPlayer, effectController:$player);
         break;
       case "civic_guide":
-        PlayAura("might", $otherPlayer);
+        PlayAura("might", $otherPlayer, effectController:$player);
         break;
       case "tiger_eye_reflex_yellow":
       case "tiger_eye_reflex_blue":
