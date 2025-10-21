@@ -2746,7 +2746,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "fisticuffs":
       return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "fleet_foot_sandals":
-      return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 1;
+      return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", base:true) > 1;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
       return count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
