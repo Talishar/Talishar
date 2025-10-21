@@ -7,7 +7,9 @@
     switch($cardID)
     {
       case "encase_red":
-        DealArcane(3, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        else $source = $cardID;
+        DealArcane(3, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "freezing_point_red":
         if(DelimStringContains($additionalCosts, "ICE")) {
@@ -68,13 +70,17 @@
         if($cardID == "icebind_red") $damage = 3;
         else if($cardID == "icebind_yellow") $damage = 2;
         else $damage = 1;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        else $source = $cardID;
+        DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "polar_cap_red": case "polar_cap_yellow": case "polar_cap_blue":
         if($cardID == "polar_cap_red") $damage = 4;
         else if($cardID == "polar_cap_yellow") $damage = 3;
         else $damage = 2;
-        DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
+        if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID-FUSED";
+        else $source = $cardID;
+        DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "conduit_of_frostburn":
         AddCurrentTurnEffect($cardID, $currentPlayer);
