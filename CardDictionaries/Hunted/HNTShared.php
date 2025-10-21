@@ -662,8 +662,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "throw_dagger_blue":
       $daggerUID = explode(",", $target)[1] ?? "-";
       if ($daggerUID != "-") {
-        $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
-        if ($index == -1) return "FAILED";
+        if (str_contains($target, "COMBATCHAINATTACKS")) {
+          if ($chainLinks[$daggerUID][2] == 0) return "FAILED";
+        }
+        else {
+          $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
+          if ($index == -1) return "FAILED";
+        }
         if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
         else {
           WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
