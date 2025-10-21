@@ -235,10 +235,6 @@ function CombatChainDefenseModifier($index, $amount)
   global $combatChain, $CombatChain;
   if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
   if (isset($combatChain[$index])) {
-    if ($amount < 0) {
-      $defense = BlockingCardDefense($index);
-      if ($amount < $defense * -1) $amount = $defense * -1;
-    }
     $CombatChain->Card($index)->ModifyDefense($amount);
     switch ($combatChain[0]) {
       case "zephyr_needle":
