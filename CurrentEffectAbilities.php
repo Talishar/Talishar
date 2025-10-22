@@ -1893,11 +1893,14 @@ function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
       switch ($currentTurnEffects[$i]) {
         case "spinal_crush_red":
           $additionalCosts = $additionalCosts == "-" ? GetClassState($mainPlayer, $CS_AdditionalCosts) : $additionalCosts;
+          //this call to cardtype needs "Where the card is currently, not where was it played from
+          $cardType = CardType($cardID, "LAYER", additionalCosts:$additionalCosts);
+          $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
           if(HasMeld($cardID) && !IsMeldInstantName($additionalCosts)
-          || DelimStringContains(CardType($cardID), "AA") 
-          || DelimStringContains(CardType($cardID), "A") 
-          || GetResolvedAbilityType($cardID, $from) == "AA"
-          || GetResolvedAbilityType($cardID, $from) == "A" ){
+          || DelimStringContains($cardType, "AA") 
+          || DelimStringContains($cardType, "A") 
+          || $resolvedAbilityType == "AA"
+          || $resolvedAbilityType == "A" ){
             return true;
           }
           break;

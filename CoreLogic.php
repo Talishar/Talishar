@@ -2606,7 +2606,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumWateryGrave;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
-  $cardType = CardType($cardID);
+  $cardType = CardType($cardID, additionalCosts:$additionalCosts);
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID, $from);
