@@ -324,7 +324,7 @@ function MZStartTurnIndices()
   global $mainPlayer;
   $graveyard = &GetDiscard($mainPlayer);
   $cards = "";
-  for ($i = 0; $i < count($graveyard); $i += DiscardPieces()) {
+  for ($i = count($graveyard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
     switch ($graveyard[$i]) {
       case "thaw_red":
         if (ThawIndices($mainPlayer) != "") $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
