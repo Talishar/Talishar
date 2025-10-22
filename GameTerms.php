@@ -112,6 +112,8 @@ function TypeToPlay($phase)
       return "a number";
     case "STARTTURN":
       return "an order for trigger (enable Always Hold Priority to reorder)";
+    case "ORDERTRIGGERS":
+      return "an order for triggers (spacebar/pass to accept default order)";
   }
 }
 

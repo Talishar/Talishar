@@ -990,6 +990,7 @@ function PassInput($autopass = true, $doublePass=false)
     for ($i = 0; $i < count($layers); $i += LayerPieces()) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $currentPlayer) $layers[$i] = "TRIGGER";
     }
+    ContinueDecisionQueue();
   }
   else {
     if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");
