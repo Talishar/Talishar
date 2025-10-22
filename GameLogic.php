@@ -1389,17 +1389,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $parameters = explode("-", $parameter);
         $damage = $parameters[0];
         $source = $parameters[1];
+        $sourceID = ExtractCardID($source);
         $type = $parameters[2];
-        $sourceType = CardType(ExtractCardID($source));
+        $sourceType = CardType($sourceID);
         if ($type == "PLAYCARD") {
           $damage += ConsumeArcaneBonus($player);
           if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
-          WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
+          WriteLog(CardLink($sourceID, $sourceID) . " is dealing " . $damage . " arcane damage");
         }
         if ($type == "ARCANESHOCK") {
           $damage += ConsumeArcaneBonus($player, noRemove: true);
           if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
-          WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage");
+          WriteLog(CardLink($sourceID, $sourceID) . " is dealing " . $damage . " arcane damage");
         }
         if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
           $allies = &GetAllies($targetPlayer);
@@ -1454,7 +1455,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("SETDQVAR", $target, "1", 1);
         PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
         PrependDecisionQueue("SETDQVAR", $target, "0", 1);
-        PrependDecisionQueue("PASSPARAMETER", $target, "$damage-$source", 1);
+        PrependDecisionQueue("PASSPARAMETER", $target, "$damage-$sourceID", 1);
         return $parameter;
       }
       else {

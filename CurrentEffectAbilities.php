@@ -1210,6 +1210,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
   $otherPlayer = $player == 1 ? 2 : 1;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
+  $source = ExtractCardID($source);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $player) {
