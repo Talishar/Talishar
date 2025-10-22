@@ -3300,6 +3300,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "lyath_goldmane_vile_savant":
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
+    case "bravo_flattering_showman":
       return CheckTapped("MYCHAR-$index", $currentPlayer);
     case "kayo_underhanded_cheat":
     case "kayo_strong_arm":
