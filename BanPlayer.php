@@ -5,7 +5,7 @@ include "./HostFiles/Redirector.php";
 ob_end_clean();
 SetHeaders();
 
-include "./Libraries/HTTPLibraries.php";s
+include "./Libraries/HTTPLibraries.php";
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 
