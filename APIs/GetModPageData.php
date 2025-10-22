@@ -52,20 +52,20 @@ $conn = GetDBConnection();
 if ($conn) {
   $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
   $stmt = mysqli_stmt_init($conn);
-  
+
   if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_execute($stmt);
     $userData = mysqli_stmt_get_result($stmt);
-    
+
     while ($row = mysqli_fetch_array($userData, MYSQLI_NUM)) {
       if (!empty($row[0])) {
         array_push($response["recentAccounts"], $row[0]);
       }
     }
-    
+
     mysqli_stmt_close($stmt);
   }
-  
+
   mysqli_close($conn);
 }
 

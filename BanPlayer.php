@@ -1,6 +1,11 @@
 <?php
 
-include "./Libraries/HTTPLibraries.php";
+ob_start();
+include "./HostFiles/Redirector.php";
+ob_end_clean();
+SetHeaders();
+
+include "./Libraries/HTTPLibraries.php";s
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 
