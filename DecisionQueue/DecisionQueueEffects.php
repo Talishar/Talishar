@@ -748,11 +748,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         BanishCardForPlayer($cardID, $player, "DISCARD", banishedBy: "hyper_scrapper_blue");
         if (CardName($cardID) == "Hyper Driver") $scrappedHyperDriverAmount++;
       }
-      if ($scrappedHyperDriverAmount >= 3) {
-        GainResources($player, 6);
-        GiveAttackGoAgain();
-      }
-      $CombatChain->AttackCard()->ModifyPower(+$scrappedAmount);
+      AddCurrentTurnEffect("hyper_scrapper_blue", $player, "-", $scrappedHyperDriverAmount);
       return $scrappedAmount;
     case "MEGANETICLOCKWAVE":
       $cardID = GetMZCard($player, $lastResult);

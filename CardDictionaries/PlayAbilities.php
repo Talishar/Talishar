@@ -506,7 +506,7 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
-  global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed, $CS_DamagePrevention;
+  global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed, $CS_DamagePrevention, $currentTurnEffects, $CombatChain;
   $rv = "";
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($currentPlayer);
@@ -691,14 +691,14 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "hyper_scrapper_blue":
-      $items = SearchDiscard($currentPlayer, subtype: "Item");
-      $itemsCount = count(explode(",", $items));
-      if ($itemsCount < $resourcesPaid) {
-        WriteLog("Player " . $currentPlayer . " would need to banish " . $resourcesPaid . " items from their graveyard but they only have " . $itemsCount . " items in their graveyard.");
-        RevertGamestate();
+      $ind = SearchCurrentTurnEffects($cardID, $currentPlayer);
+      $scrappedHyperDriverAmount = $currentTurnEffects[$ind + 2];
+      RemoveCurrentTurnEffect($ind);
+      if ($scrappedHyperDriverAmount >= 3) {
+        GainResources($currentPlayer, 6);
+        GiveAttackGoAgain();
       }
-      AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, $resourcesPaid . "-" . $items . "-" . $resourcesPaid, 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "HYPERSCRAPPER");
+      $CombatChain->AttackCard()->ModifyPower(+$resourcesPaid);
       return "";
     case "scrap_trader_red":
       $numScrap = 0;
