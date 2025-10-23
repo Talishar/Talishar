@@ -2410,11 +2410,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       if (FindNullTime(GamestateSanitize($names[0]))) $names[0] = "-";
       if (FindNullTime(GamestateSanitize($names[1]))) $names[1] = "-";
     }
+    WriteLog("HERE: $mod");
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $names[0] = "-";
       // $option = $names[1];
     } elseif (
-      $mod != "INST" && $mod != "blossoming_spellblade_red" 
+      !IsInstantMod($mod) 
       && $cardType != "I"
       && (!$combatChainState[$CCS_EclecticMag]
       && (GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $currentPlayer))

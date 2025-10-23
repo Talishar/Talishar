@@ -5641,3 +5641,12 @@ function GetClass($cardID, $player) {
   if (class_exists($className)) return new $className($player);
   else return "-";
 }
+
+function IsInstantMod($mod) {
+  return match($mod) {
+    "INST" => true,
+    "blossoming_spellblade_red" => true,
+    "sonic_boom_yellow" => true,
+    default => false
+  };
+}
