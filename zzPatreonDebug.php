@@ -21,14 +21,20 @@ if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "Tower" && $
 
 $userName = $_GET["userName"];
 
-
-$conn = GetDBConnection();
-$sql = "SELECT * FROM users where usersUid='$userName'";
-$stmt = mysqli_stmt_init($conn);
-if (!mysqli_stmt_prepare($stmt, $sql)) {
-  echo ("ERROR");
+// Validate and sanitize input
+if (empty($userName) || !ctype_alnum($userName)) {
+  echo ("Invalid username.");
   exit();
 }
+
+$conn = GetDBConnection();
+$sql = "SELECT * FROM users WHERE usersUid = ?";
+$stmt = mysqli_stmt_init($conn);
+if (!mysqli_stmt_prepare($stmt, $sql)) {
+  echo ("Database error.");
+  exit();
+}
+mysqli_stmt_bind_param($stmt, "s", $userName);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_assoc($result);
