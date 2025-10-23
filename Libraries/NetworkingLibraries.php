@@ -2410,7 +2410,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       if (FindNullTime(GamestateSanitize($names[0]))) $names[0] = "-";
       if (FindNullTime(GamestateSanitize($names[1]))) $names[1] = "-";
     }
-    WriteLog("HERE: $mod");
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $names[0] = "-";
       // $option = $names[1];
@@ -2883,7 +2882,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState;
-  global $layers;
+  global $layers, $CS_DynCostResolved;
   $cardSubtype = CardSubType($cardID);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -3737,6 +3736,11 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "hyper_scrapper_blue":
+      $items = SearchDiscard($currentPlayer, subtype: "Item");
+      $resourcesPaid = GetClassState($currentPlayer, $CS_DynCostResolved);
+      AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, $resourcesPaid . "-" . $items . "-" . $resourcesPaid, 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "HYPERSCRAPPER");
     default:
       break;
   }
