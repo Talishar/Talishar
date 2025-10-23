@@ -1566,6 +1566,14 @@ function CurrentEffectAttackAbility($attackIndex=-1)
         case "knife_through_butter_blue-GOAGAIN":
           if (IsHeroAttackTarget() && CheckMarked($defPlayer)) GiveAttackGoAgain();
           break;
+        case "public_bounty_red-UNSET":
+        case "public_bounty_yellow-UNSET":
+        case "public_bounty_blue-UNSET":
+          if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+            $cardID = explode("-", $currentTurnEffects[$i])[0];
+            $currentTurnEffects[$i] = $cardID;
+          }
+          break;
         default:
           break;
       }

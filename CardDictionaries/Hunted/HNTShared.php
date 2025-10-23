@@ -188,6 +188,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   if ($cardID == "fealty" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
   if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return IsWeaponAttack();
+  if (($cardID == "public_bounty_red" || $cardID == "public_bounty_yellow" || $cardID == "public_bounty_blue") && count($dashArr) > 1 && $dashArr[1] == "UNSET") return false;
   if (($cardID == "knife_through_butter_red" || $cardID == "knife_through_butter_yellow" || $cardID == "knife_through_butter_blue") && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
   if (($cardID == "point_of_engagement_red" || $cardID == "point_of_engagement_yellow" || $cardID == "point_of_engagement_blue") && count($dashArr) > 1) {
     switch ($dashArr[1]) {
@@ -292,7 +293,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "trot_along_blue" => PowerValue($attackID, $mainPlayer, "LAYER", base:true) <= 3,
     "public_bounty_red",
     "public_bounty_yellow",
-    "public_bounty_blue" => IsHeroAttackTarget() && CheckMarked($defPlayer),
+    "public_bounty_blue" => IsHeroAttackTarget(),
     "retrace_the_past_blue" => true,
     "war_cry_of_themis_yellow" => SubtypeContains($attackID, "Angel", $mainPlayer),
     "war_cry_of_bellona_yellow" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
@@ -848,7 +849,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "public_bounty_red":
     case "public_bounty_yellow":
     case "public_bounty_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect("$cardID-UNSET", $currentPlayer);
       MarkHero($otherPlayer);
       break;
     case "thick_hide_hunter_yellow":
