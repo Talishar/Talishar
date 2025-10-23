@@ -1,8 +1,8 @@
 <?php
 
 ob_start();
-include "../HostFiles/Redirector.php";
-include "../Libraries/HTTPLibraries.php";
+include "./HostFiles/Redirector.php";
+include "./Libraries/HTTPLibraries.php";
 ob_end_clean();
 SetHeaders();
 
