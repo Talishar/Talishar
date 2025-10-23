@@ -47,7 +47,6 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function AJVCombatEffectActive($cardID, $attackID)
 {
 switch($cardID) {
-    case "summit_the_unforgiving": return true;
     case "gauntlets_of_the_boreal_domain-E": return CardNameContains($attackID, "Mangle");
     case "gauntlets_of_the_boreal_domain-I": return CardNameContains($attackID, "Mangle");
     case "crumble_to_eternity_blue": return true;
@@ -100,9 +99,15 @@ function FrostbiteExposed($otherPlayer, $player, $may=false) {
 }
 
 function CheckHeavy($player) {
-  $weapons = SearchCharacter($player, type:"W");
-  $numWeapons = $weapons != "" ? count(explode(",", $weapons)) : 0;
-  $offHands = SearchCharacter($player, subtype:"Off-Hand");
-  $numOffHands = $offHands != "" ? count(explode(",", $offHands)) : 0;
-  return $numWeapons + $numOffHands == 1;
+  $count = 0;
+  $char = GetPlayerCharacter($player);
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) ++$count;
+  }
+  return $count == 1;
+  // $weapons = SearchCharacter($player, type:"W");
+  // $numWeapons = $weapons != "" ? count(explode(",", $weapons)) : 0;
+  // $offHands = SearchCharacter($player, subtype:"Off-Hand");
+  // $numOffHands = $offHands != "" ? count(explode(",", $offHands)) : 0;
+  // return $numWeapons + $numOffHands == 1;
 }

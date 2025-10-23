@@ -429,8 +429,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       return (GetClassState($mainPlayer, $CS_NumAuras) > 0 ? 2 : 0);
     case "fast_and_furious_red":
       return (GetClassState($mainPlayer, $CS_NumCranked)) > 0 ? 1 : 0;
-    case "summit_the_unforgiving":
-      return (CheckHeavy($mainPlayer)) ? 2 : 0;
     case "plunge_the_prospect_red":
     case "plunge_the_prospect_yellow":
     case "plunge_the_prospect_blue":

@@ -983,6 +983,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     $card = GetClass($cardID, $player);
     if ($card != "-") return $card->WeaponPowerModifier($basePower);
     switch ($cardID) {
+      case "summit_the_unforgiving": return CheckHeavy($mainPlayer) ? $basePower + 2 : $basePower;
       case "anothos": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? $basePower+2 : $basePower;
       case "nebula_blade": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? $basePower+3 : $basePower;
       case "titans_fist": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? $basePower+1 : $basePower;
