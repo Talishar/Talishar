@@ -1644,7 +1644,8 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         }
         break;
       case "hard_knuckle":
-        if (CardType($cardID) == "AA") {
+        $abilityType = GetResolvedAbilityType($cardID, $from);
+        if (CardType($cardID) == "AA" && $abilityType != "I") {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
