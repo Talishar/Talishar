@@ -248,10 +248,13 @@
         PlayAura("seismic_surge", $currentPlayer, $amount);
         return "";
       case "steadfast_red": case "steadfast_yellow": case "steadfast_blue":
-        if($target != "-") {
-          if(substr($target, 0, 2) == "MY") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard(($currentPlayer == 1 ? 2 : 1), $target));
-          else AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
-        }
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID));
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{$cardID}!{$from}!", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-", 1);
         return "";
       case "twin_twisters_red": case "twin_twisters_yellow": case "twin_twisters_blue":
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts);

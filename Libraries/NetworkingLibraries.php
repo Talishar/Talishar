@@ -2128,15 +2128,6 @@ function GetLayerTarget($cardID, $from)
       }
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "steadfast_red":
-    case "steadfast_yellow":
-    case "steadfast_blue":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Steadfast");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
     case "scour_blue":
       global $CS_LastDynCost;
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
