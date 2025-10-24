@@ -556,7 +556,8 @@ function AssignArcaneBonus($playerID)
         while ($layers[$layerIndex] == "TRIGGER" || $layers[$layerIndex] == "PRETRIGGER") {
           $layerIndex += LayerPieces();
         }
-        WriteLog("Arcane bonus from " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
+        $effectID = ExtractCardID($currentTurnEffects[$i]);
+        WriteLog("Arcane bonus from " . CardLink($effectID, $effectID) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
         $uniqueID = $layers[$layerIndex + 6];
         $currentTurnEffects[$i + 2] = $uniqueID;
       }

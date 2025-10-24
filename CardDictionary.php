@@ -1501,6 +1501,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND") $names[0] = "Ability";
+      else return "-,Action";
       //can it be played?
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
 
@@ -1510,6 +1511,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && IsPhantasmActive()) $names[0] = "Ability";
+      else return "-,Action";
       //can it be played?
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
 
@@ -1613,6 +1615,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND") $names[0] = "Ability";
+      else return "-,Action";
       //can it be played?
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
 
