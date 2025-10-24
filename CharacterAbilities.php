@@ -1218,7 +1218,6 @@ function EquipPayAdditionalCosts($cardIndex)
       $char = new Character($currentPlayer, $cardIndex);
       $char->status = 0;
       BanishCardForPlayer($char->cardID, $currentPlayer, "EQUIP", "NA");
-      $char->Finished();
       BanishFromSoul($currentPlayer);
       break;
     case "spoiled_skull":
