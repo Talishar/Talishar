@@ -67,6 +67,38 @@ class bare_swing_yellow extends Card {
   }
 }
 
+class bare_swing_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "bare_swing_red";
+    $this->controller = $controller;
+    }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function HasBeatChest() {
+    return true;
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest");
+    if (SearchCurrentTurnEffects("BEATCHEST", $this->controller) && !$hasChest) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
 class smell_fear extends BaseCard {
   function PlayAbility() {
     if (SearchCurrentTurnEffects("BEATCHEST", $this->controller)) Intimidate();
@@ -82,6 +114,10 @@ class smell_fear extends BaseCard {
     global $CombatChain;
     $attackCard = $CombatChain->AttackCard()->ID();
     return ClassContains($attackCard, "BRUTE", $this->controller);
+  }
+
+  function HasBeatChest() {
+    return true;
   }
 }
 
@@ -110,6 +146,10 @@ class smell_fear_yellow extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
   }
+
+  function HasBeatChest() {
+    return $this->baseCard->HasBeatChest();
+  }
 }
 
 class smell_fear_blue extends Card {
@@ -136,6 +176,10 @@ class smell_fear_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
+  }
+
+  function HasBeatChest() {
+    return $this->baseCard->HasBeatChest();
   }
 }
 

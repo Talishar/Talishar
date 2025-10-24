@@ -69,10 +69,10 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $currentTurnEffects, $combatChain;
   if ($cardID == "BEATCHEST") {
+    CharacterBeatChestTrigger($player);
     if (SearchCurrentTurnEffects("BEATCHEST", $player)) { // don't duplicate the icon
       return;
     }
-    CharacterBeatChestTrigger($player);
   }
   $card = explode("-", $cardID)[0];
   if (CardType($card) == "A" && !CanPlayAsInstant($cardID, -1, $from) && count($combatChain) > 0 && IsCombatEffectActive($cardID) && !IsCombatEffectPersistent($cardID) && $from != "PLAY") {
