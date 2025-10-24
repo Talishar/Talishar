@@ -2511,15 +2511,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     case "life_of_the_party_red":
     case "life_of_the_party_yellow":
     case "life_of_the_party_blue":
-      global $chainLinkSummary;
-      $attackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
-      for ($i = 0; $i < count($attackNames); ++$i) {
-        $attackName = GamestateUnsanitize($attackNames[$i]);
-        if ($attackName == "Crazy Brew") {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "PASS");
-        }
-      }
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);

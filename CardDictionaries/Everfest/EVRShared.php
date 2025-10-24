@@ -766,10 +766,20 @@
 
   function LifeOfThePartyIndices()
   {
-    global $currentPlayer;
+    global $currentPlayer, $chainLinkSummary;
     $items = SearchMultizoneFormat(SearchItemsForCard("crazy_brew_blue", $currentPlayer), "MYITEMS");
     $handCards = SearchMultizoneFormat(SearchHandForCard($currentPlayer, "crazy_brew_blue"), "MYHAND");
-    return CombineSearches($items, $handCards);
+    $attackCards = [];
+    $attacks = GetCombatChainAttacks();
+    for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
+      $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
+      $attackID = $attacks[$ind];
+      $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
+      if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Crazy Brew")) {
+        array_push($attackCards, "COMBATCHAINATTACKS-$ind");
+      }
+    }
+    return CombineSearches(CombineSearches($items, $handCards), implode(",", $attackCards));
   }
 
   function CoalescentMirageDestroyed()
