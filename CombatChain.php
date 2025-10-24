@@ -2041,7 +2041,7 @@ function LinkBasePower()
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
       switch ($currentTurnEffects[$i]) {
         case "kayo_berserker_runt-HALF":
-          $basePower = ceil($basePower / 2);
+          $basePower = floor($basePower / 2);
           break;
         case "fatigue_shot_red":
         case "fatigue_shot_yellow":
