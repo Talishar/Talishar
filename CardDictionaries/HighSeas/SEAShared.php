@@ -692,8 +692,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
       if(empty($inds)) break;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap a cog you control");
-      //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       break;
     case "goldwing_turbine_red":
