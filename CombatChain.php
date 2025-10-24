@@ -1230,7 +1230,8 @@ function OnBlockResolveEffects($cardID = "")
           break;
         case "overcrowded_blue":
           //calling it an attack trigger for organization
-          AddLayer("TRIGGER", $defPlayer, $defendingCard, "COMBATCHAIN-$i", "ATTACKTRIGGER");
+          $uid = $combatChain[$i + 7];
+          AddLayer("TRIGGER", $defPlayer, $defendingCard, $uid, "ATTACKTRIGGER");
           break;
         default:
           break;

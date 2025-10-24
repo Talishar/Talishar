@@ -4197,10 +4197,17 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
           }
         }
       }
+      $index = -1;
       if ($target == "-") $index = 0;
-      else $index = explode("-", $target)[1];
-      $combatChain[$index + 5] += count($uniqueAuras);
-      $combatChain[$index + 6] += count($uniqueAuras);
+      else {
+        for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+          if ($combatChain[$i+7] == $target) $index = $i;
+        }
+      }
+      if ($index != -1) {
+        $combatChain[$index + 5] += count($uniqueAuras);
+        $combatChain[$index + 6] += count($uniqueAuras);
+      }
       break;
     case "hostile_encroachment_red":
       Draw($defPlayer, effectSource:$cardID);
