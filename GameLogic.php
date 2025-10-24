@@ -2895,8 +2895,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               $targetArr = explode(",", $target);
               $targetUids = [];
               foreach ($targetArr as $targ) {
+                $tp = str_contains($targ, "MY") ? $player : $targetedPlayer;
                 $targetLoc = explode("-", $targ)[0];
-                array_push($targetUids, "$targetLoc-" . GetMZUID($targetedPlayer, $targ));
+                array_push($targetUids, "$targetLoc-" . GetMZUID($tp, $targ));
               }
               AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional);
             }
