@@ -271,7 +271,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = GetAttackTargetNames($mainPlayer);
-  $activeChainLink->damagePrevention = (count($combatChain) > 0) ? GetDamagePrevention($defPlayer) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : GetDamagePrevention($defPlayer);
+  $activeChainLink->damagePrevention = ($combatChainCount > 0) ? GetDamagePrevention($defPlayer) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : GetDamagePrevention($defPlayer);
   $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
@@ -292,7 +292,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // current chain link attack
   $totalPower = 0;
   $totalDefense = 0;
-  if (count($combatChain) > 0) {
+  if ($combatChainCount > 0) {
     $chainPowerModifiers = [];
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
@@ -385,11 +385,12 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->opponentPitch = $opponentPitchArr;
 
-  $response->opponentDeckCount = count($theirDeck);
-  $response->opponentDeckCard = JSONRenderedCard(count($theirDeck) > 0 ? $TheirCardBack : $blankZone);
+  $theirDeckCount = count($theirDeck);
+  $response->opponentDeckCount = $theirDeckCount;
+  $response->opponentDeckCard = JSONRenderedCard($theirDeckCount > 0 ? $TheirCardBack : $blankZone);
   $opponentDeckArr = [];
   if(IsGameOver()) {
-    for($i=0; $i<count($theirDeck); $i+=DeckPieces()) {
+    for($i=0; $i<$theirDeckCount; $i+=DeckPieces()) {
       array_push($opponentDeckArr, JSONRenderedCard($theirDeck[$i]));
     }
   }
@@ -559,20 +560,21 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->playerPitch = $playerPitchArr;
 
   //My deck
-  $response->playerDeckCount = count($myDeck);
+  $myDeckCount = count($myDeck);
+  $response->playerDeckCount = $myDeckCount;
   $playerHero = ShiyanaCharacter($myCharacter[0], $playerID);
   // cards that DIO cannot look at the top card of her deck while they are resolving
   $blockDIO = ["spark_of_genius_yellow", "teklovossens_workshop_red", "teklovossens_workshop_yellow", "teklovossens_workshop_blue"];
-  if($playerID < 3 && count($myDeck) > 0 && $myCharacter[1] < 3 && ($playerHero == "dash_database" || $playerHero == "dash_io") && $turn[0] != "OPT" && $turn[0] != "P" && $turn[0] != "CHOOSETOPOPPONENT" && ($turn[0] != "DOCRANK" || !isset($EffectContext) || !in_array($EffectContext, $blockDIO))) {
+  if($playerID < 3 && $myDeckCount > 0 && $myCharacter[1] < 3 && ($playerHero == "dash_database" || $playerHero == "dash_io") && $turn[0] != "OPT" && $turn[0] != "P" && $turn[0] != "CHOOSETOPOPPONENT" && ($turn[0] != "DOCRANK" || !isset($EffectContext) || !in_array($EffectContext, $blockDIO))) {
     $playable = $playerID == $currentPlayer && IsPlayable($myDeck[0], $turn[0], "DECK", 0);
     $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:$playable ? 35 : 0, actionDataOverride:strval(0), borderColor: $playable ? 6 : 0, controller:$playerID);
   }
-  else $response->playerDeckCard = JSONRenderedCard(count($myDeck) > 0 ? $MyCardBack : $blankZone);
+  else $response->playerDeckCard = JSONRenderedCard($myDeckCount > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = [];
   $response->playerDeckPopup = false;
   if ($playerID == $currentPlayer || IsGameOver()) {
     if(IsGameOver() || (($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && (isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0")) || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSEDECK" || $turn[0] == "MULTICHOOSEDECK") {
-      for($i=0; $i<count($myDeck); $i+=DeckPieces()) {
+      for($i=0; $i<$myDeckCount; $i+=DeckPieces()) {
         array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
       }
     }
