@@ -2958,7 +2958,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "the_grain_that_tips_the_scale_blue":
       if ($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
       if (count($chainLinks) > 0) return false; //If there's an attack on previous chain links, there's a valid target
-      return !HasAttackLayer();
+      return !IsLayerStep();
     case "just_a_nick_red":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (HasStealth($CombatChain->AttackCard()->ID())) return false;
@@ -5449,6 +5449,7 @@ function HasEphemeral($cardID)
   }
 }
 
+//Deprecated, use IsLayerStep() instead
 function HasAttackLayer()
 {
   global $layers;

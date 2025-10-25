@@ -371,8 +371,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else Draw($currentPlayer, num:2);
       return "";
     case "a_drop_in_the_ocean_blue":
-      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) AddCurrentTurnEffect($cardID, $mainPlayer);
-      elseif ($target == "-" && !HasAttackLayer()) {
+      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) AddCurrentTurnEffect($cardID, $mainPlayer);
+      elseif ($target == "-" && !IsLayerStep()) {
         WriteLog("⚠️You need to select a target⚠️");
         RevertGamestate();
       }
@@ -396,8 +396,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "path_well_traveled_blue":
-      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) GiveAttackGoAgain();
-      elseif ($target == "-" && !HasAttackLayer()) {
+      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) GiveAttackGoAgain();
+      elseif ($target == "-" && !IsLayerStep()) {
         WriteLog("⚠️You need to select a target⚠️");
         RevertGamestate();
       }
@@ -430,8 +430,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST101_inner_chi_blue," . $from);
       return "";
     case "the_grain_that_tips_the_scale_blue":
-      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && HasAttackLayer())) AddCurrentTurnEffect($cardID, $mainPlayer);
-      elseif ($target == "-" && !HasAttackLayer()) {
+      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) AddCurrentTurnEffect($cardID, $mainPlayer);
+      elseif ($target == "-" && !IsLayerStep()) {
         WriteLog("⚠️You need to select a target⚠️");
         RevertGamestate();
       }
