@@ -91,15 +91,15 @@ class ChainCard {
     }
 
     function ResourcesPaid() {
-      return $this->chain[$this->index+3];
+      return isset($this->chain[$this->index+3]) ? $this->chain[$this->index+3] : 0;
     }
 
     function RepriseActive() {
-      return $this->chain[$this->index+4];
+      return isset($this->chain[$this->index+4]) ? $this->chain[$this->index+4] : 0;
     }
 
     function PowerValue() {
-      return $this->chain[$this->index+5];
+      return isset($this->chain[$this->index+5]) ? $this->chain[$this->index+5] : 0;
     }
 
     function TotalPower() {
@@ -119,20 +119,20 @@ class ChainCard {
 
     function ModifyDefense($amount) {
       global $CombatChain;
-      if (!CanGainBlock($this->chain[$this->index+6])) $amount = 0;
-      $this->chain[$this->index+6] += $amount;
+      if (!isset($this->chain[$this->index+6]) || !CanGainBlock($this->chain[$this->index+6])) $amount = 0;
+      if (isset($this->chain[$this->index+6])) $this->chain[$this->index+6] += $amount;
     }
 
     function UniqueID() {
-      return $this->chain[$this->index+7];
+      return isset($this->chain[$this->index+7]) ? $this->chain[$this->index+7] : null;
     }
 
     function OriginUniqueID() {
-      return $this->chain[$this->index+8];
+      return isset($this->chain[$this->index+8]) ? $this->chain[$this->index+8] : null;
     }
 
     function StaticBuffs() {
-      return $this->chain[$this->index+10];
+      return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : null;
     }
 
     function CardBlockValue() {

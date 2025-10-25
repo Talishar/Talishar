@@ -23,7 +23,7 @@ function WriteCache($name, $data)
 {
   if ($name == 0) return;
   $serData = trim(serialize(trim($data)));
-  $id = shmop_open($name, "c", 0644, 128);
+  $id = @shmop_open($name, "c", 0644, 128);
   if ($id == false) {
     exit;
   } else {
@@ -70,11 +70,11 @@ function ShmopReadCache($name)
 function DeleteCache($name)
 {
   //Always try to delete shmop
-  $id = shmop_open($name, "w", 0644, 128);
+  $id = @shmop_open($name, "w", 0644, 128);
   if($id) {
     shmop_delete($id);
   }
-  $gsID = shmop_open(GamestateID($name), "c", 0644, 16384);
+  $gsID = @shmop_open(GamestateID($name), "c", 0644, 16384);
   if($gsID) {
     shmop_delete($gsID);
   }

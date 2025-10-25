@@ -78,7 +78,7 @@ $response->displayName = ($yourName != "-" ? $yourName : "Player " . $playerID);
 
 
 $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-$handler = fopen($deckFile, "r");
+$handler = @fopen($deckFile, "r");
 if($handler) {
   $character = GetArray($handler);
   $response->overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($character[0]) : "");
