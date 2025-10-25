@@ -1484,7 +1484,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
     case "that_all_you_got_yellow":
       $AttackPowerValue = $chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1];
       if ($AttackPowerValue <= 2) {
-        Draw($player);
+        Draw($player, effectSource:$cardID);
         WriteLog(CardLink($cardID, $cardID) . " drew a card");
       }
       break;
