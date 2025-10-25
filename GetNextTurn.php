@@ -206,10 +206,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $altArts = $campaign->AltArts($playerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
-          for($i = 0; $i < count($altArts); ++$i) {
+          $altArtsCount = count($altArts);
+          for($i = 0; $i < $altArtsCount; ++$i) {
             $arr = explode("=", $altArts[$i]);
             $altArt = new stdClass();
-            $altArt->name = $campaign->CampaignName() . (count($altArts) > 1 ? " " . $i + 1 : "");
+            $altArt->name = $campaign->CampaignName() . ($altArtsCount > 1 ? " " . $i + 1 : "");
             $altArt->cardId = $arr[0];
             $altArt->altPath = $arr[1];
             array_push($initialLoad->altArts, $altArt);
@@ -234,7 +235,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //Display active chain link
   $activeChainLink = new stdClass();
   $combatChainReactions = [];
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+  $combatChainCount = count($combatChain);
+  for ($i = 0; $i < $combatChainCount; $i += CombatChainPieces()) {
     // vars for active chain link: Is there an action?
     $action = $currentPlayer == $playerID && $turn[0] != "P" && 
       $currentPlayer == $combatChain[$i + 1] &&
@@ -507,7 +509,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if(isset($turn[3])) $resourceRestrictedCard = $turn[3];
   if (strpos($turn[0], "CHOOSEHAND") !== false && ($turn[0] != "MULTICHOOSEHAND" || $turn[0] != "MAYMULTICHOOSEHAND")) $actionType = 16;
   $myHandContents = [];
-  for ($i = 0; $i < count($myHand); ++$i) {
+  $myHandCount = count($myHand);
+  for ($i = 0; $i < $myHandCount; ++$i) {
     if ($playerID == 3) {
       if(IsCasterMode() || IsGameOver()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
