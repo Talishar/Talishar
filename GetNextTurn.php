@@ -840,6 +840,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
     $gem = $theirItems[$i + 6] != 2 ? $theirItems[$i + 6] : NULL;
+    $label = "";
+    if($theirItems[$i] == "null_time_zone_blue") {
+      $label = GamestateUnsanitize($theirItems[$i + 8]);
+    }
     array_push($theirItemsOutput, 
     JSONRenderedCard(
       cardNumber: $theirItems[$i], 
@@ -851,6 +855,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       sType: $sType, 
       isFrozen: $theirItems[$i + 7] == 1,
       gem: $gem,
+      label: $label,
       tapped: $theirItems[$i + 10] == 1));
   }
   $response->opponentItems = $theirItemsOutput;
@@ -939,6 +944,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playable = $currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false;
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = ($currentPlayer == $playerID) && $playable == 1 ? 10 : 0;
+    $label = "";
     if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
     $actionDataOverride = strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
@@ -949,6 +955,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       if (DelimStringContains($myItems[$i + 8], "Opt", true)) $verseCounters = 1;
       if (DelimStringContains($myItems[$i + 8], "Draw_then_top_deck", true)) $rustCounters = 1;
       if (DelimStringContains($myItems[$i + 8], "Banish_top_deck", true)) $flowCounters = 1;
+    }
+    if ($myItems[$i] == "null_time_zone_blue") {
+      $label = GamestateUnsanitize($myItems[$i + 8]);
     }
     array_push($myItemsOutput, 
     JSONRenderedCard(
@@ -964,6 +973,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       isFrozen: $myItems[$i + 7] == 1, //Frozen
       gem: $gem, 
       restriction: $restriction,
+      label: $label,
       rustCounters: $rustCounters,
       verseCounters: $verseCounters,
       flowCounters: $flowCounters,
