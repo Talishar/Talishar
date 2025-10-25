@@ -1646,12 +1646,12 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
         break;
       case "MYALLY":
         $allies = GetAllies($currentPlayer);
-        if (!isset($allies[$index])) return false;
+        if (!isset($allies[$index]) || !isset($allies[$index + 3])) return false;
         if ($allies[$index + 3] != 0) return false;
         break;
       case "MYAURA":
         $auras = GetAuras($currentPlayer);
-        if (!isset($auras[$index])) return false;
+        if (!isset($auras[$index]) || !isset($auras[$index + 1])) return false;
         if ($auras[$index + 1] != 2) return false;
         break;
       default:

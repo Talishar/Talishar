@@ -723,7 +723,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
           isFrozen: $theirArsenal[$i + 4] == 1,
           actionDataOverride: strval($i),
-          powerCounters: $theirArsenal[$i + 6]
+          powerCounters: isset($theirArsenal[$i + 6]) ? $theirArsenal[$i + 6] : 0
         ));
       } else array_push($theirArse, JSONRenderedCard(
         cardNumber: $TheirCardBack,
@@ -764,7 +764,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
           isFrozen: $myArsenal[$i + 4] == 1,
-          powerCounters: $myArsenal[$i + 6],
+          powerCounters: isset($myArsenal[$i + 6]) ? $myArsenal[$i + 6] : 0,
         ));
       }
     }

@@ -50,7 +50,9 @@ function ReadCache($name)
   if ($name == 0) return "";
   $data = "";
   $data = ShmopReadCache($name);
-  return unserialize($data);
+  if (empty($data)) return "";
+  $unserialized = @unserialize($data);
+  return $unserialized === false ? "" : $unserialized;
 }
 
 function ShmopReadCache($name)
@@ -102,8 +104,9 @@ function GetCachePiece($name, $piece)
 {
   $piece -= 1;
   $cacheVal = ReadCache($name);
+  if (empty($cacheVal)) return "";
   $cacheArray = explode("!", $cacheVal);
-  if ($piece >= count($cacheArray)) return "";
+  if ($piece >= count($cacheArray) || $piece < 0) return "";
   return $cacheArray[$piece];
 }
 
