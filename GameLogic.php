@@ -1858,7 +1858,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SHOWSELECTEDTARGET":
       foreach (explode(",", $lastResult) as $targ) {
         $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
-        WriteLog("Player " . $targetPlayer . " targeted " . GetMZCardLink($targetPlayer, $targ));
+        WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
       }
       return $lastResult;
     case "SCOURSHOWSELECTEDTARGET":
