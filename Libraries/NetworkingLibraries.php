@@ -1669,7 +1669,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         default => false,
       };
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && (GetAbilityTypes($cardID, $index, $from) == "" || GetAbilityNames($cardID, $index, $from) == "-,Action") && !HasMeld($cardID)) {
-        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND", index: $index); //card is still getting removed from hand, just put it back
+        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
         $layerPriority[$currentPlayer - 1] = "0";
         ProcessInput($currentPlayer, 99, "", $cardID, 0, "");
