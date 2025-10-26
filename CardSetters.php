@@ -193,7 +193,7 @@ function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
   array_splice($deck, $deckIndexModifier, 0, $cardID);
 }
 
-function AddPlayerHand($cardID, $player, $from, $amount = 1)
+function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1)
 {
   global $CS_NumCrouchingTigerCreatedThisTurn, $EffectContext;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") && !str_contains($from, "DISCARD") && !str_contains($from, "BANISH")) {
@@ -204,10 +204,17 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1)
     WriteLog(CardLink($cardID, $cardID) . " is a token. So instead of going to hand, it ceases to exist.");
   }
   else {
-  $hand = &GetHand($player);
-  if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
-    for ($i = 0; $i < $amount; ++$i) {
-      array_push($hand, $cardID);
+    $hand = &GetHand($player);
+    if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
+    if ($index == -1) {
+      for ($i = 0; $i < $amount; ++$i) {
+        array_push($hand, $cardID);
+      }
+    }
+    else {
+      for ($i = 0; $i < $amount; ++$i) {
+        array_splice($hand, $index, 0, $cardID);
+      }
     }
   }
 }
