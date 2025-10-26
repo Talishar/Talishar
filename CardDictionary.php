@@ -2532,7 +2532,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "aether_ironweave":
       return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "blood_drop_brocade":
-      return GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($otherPlayer, $CS_DamageTaken) == 0;
+      if ($player == $mainPlayer) return GetClassState($player, piece: $CS_PowDamageDealt) == 0;
+      else return GetClassState($otherPlayer, piece: $CS_PowDamageDealt) == 0; // this is technically incorrect and will allow activating if the opponent hits your ally
     case "rally_the_rearguard_red":
     case "rally_the_rearguard_yellow":
     case "rally_the_rearguard_blue":
