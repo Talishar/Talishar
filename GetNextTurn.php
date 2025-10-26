@@ -1104,6 +1104,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // Do we have priority?
   $response->havePriority = $currentPlayer == $playerID ? true : false;
 
+  // For spectators, simulate havePriority as if they were player 1
+  if ($playerID == 3) {
+    $response->havePriority = $currentPlayer == 1 ? true : false;
+  }
+
   // opponent and player Action Points
   if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
     $response->opponentAP = 0;
