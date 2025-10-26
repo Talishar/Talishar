@@ -2010,7 +2010,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $banish = new Banish($otherPlayer);
     $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "THEIRDISCARD";
-  } else if ($from == "GY") {
+  } else if ($from == "GY" && !ActivatedFromGraveyard($cardID)) {
     $discard = new Discard($currentPlayer);
     $discard->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
   }
@@ -2872,7 +2872,7 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState;
-  global $layers, $CS_DynCostResolved;
+  global $layers, $CS_DynCostResolved, $mainPlayer, $defPlayer, $mainPlayerGamestateStillBuilt, $myStateBuiltFor;
   $cardSubtype = CardSubType($cardID);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -3480,6 +3480,9 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "graven_call":
       if ($from == "GY") {
+        //mark which specific graven call was activated
+        $graveyard = GetDiscard($currentPlayer);
+        $layers[3] = $graveyard[$index + 1];
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "silver-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
       }

@@ -340,14 +340,21 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return;
     case "graven_call":
       if ($from == "GY") {
-        $character = &GetPlayerCharacter($currentPlayer);
-        $uniqueID = EquipWeapon($currentPlayer, "graven_call");
-        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-          if ($character[$i + 11] == $uniqueID) {
-            if ($character[$i + 3] == 0) {
-              ++$character[$i + 3];
+        $discardIndex = SearchDiscardForUniqueID($target, $currentPlayer);
+        if ($discardIndex != -1) {
+          RemoveDiscard($currentPlayer, $discardIndex);
+          $character = &GetPlayerCharacter($currentPlayer);
+          $uniqueID = EquipWeapon($currentPlayer, "graven_call");
+          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+            if ($character[$i + 11] == $uniqueID) {
+              if ($character[$i + 3] == 0) {
+                ++$character[$i + 3];
+              }
             }
           }
+        }
+        else {
+          WriteLog("Graven Call failed to be equipped");
         }
       }
       return "";

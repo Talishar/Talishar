@@ -4902,6 +4902,13 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
   };
 }
 
+function ActivatedFromGraveyard($cardID) {
+  return match ($cardID) {
+    "graven_call" => true,
+    default => false,
+  };
+}
+
 function RequiresDieRoll($cardID, $from, $player): bool
 {
   global $turn;
