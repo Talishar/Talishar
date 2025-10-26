@@ -327,7 +327,7 @@ enum PatreonCampaign : string
       case "8635931": return ($userName == "TheTekloFoundry");
       case "8736344": return ($userName == "Smithel");
       case "7593240": return ($userName == "SinOnStream");
-      case "8458487": return ($userName == "FreshLord");
+      case "8458487": return ($userName == "FreshLord" || $userName == "PvtVoid");
       case "6996822": return ($userName == "Sloopdoop");
       case "1919413": return ($userName == "DMArmada");
       case "7733166": return ($userName == "NamVoTCGz" || $userName == "AlexTheCardGuy" || $userName == "RegularDegular" || $userName == "joshlau7" || $userName == "WillyB" || $userName == "Spoofy" || $userName == "ItsSebBruh" || $userName == "Knight");
