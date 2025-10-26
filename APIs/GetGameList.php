@@ -101,7 +101,7 @@ if ($handle = opendir($path)) {
       }
       if($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
         $openGame = new stdClass();
-        if($format != "compcc" && $format != "compblitz" && $format != "compllcc") $openGame->p1Hero = GetCachePiece($gameName, 7);
+        if($format != "compcc" && $format != "compblitz" && $format != "compllcc" && $format != "compsage") $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
         if($format == "commoner") $formatName = "Commoner";
         else if($format == "openformatcc") $formatName = "Open CC";
