@@ -1518,8 +1518,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
           $steamCounters = $option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1];
           $tapped = $option[0] == "THEIRITEMS" ? $theirItems[$index + 10] == 1 : $myItems[$index + 10] == 1;
-          $label = $option[0] == "THEIRITEMS" && $theirItems[$index + 8] != "" ? GamestateUnsanitize($theirItems[$index + 8]) : "";
-          $label = $option[0] == "MYITEMS" && $myItems[$index + 8] != "" ? GamestateUnsanitize($myItems[$index + 8]) : "";
+          $label = $option[0] == "THEIRITEMS" && $theirItems[$index + 8] != "" && $theirItems[$index + 8] != "-" ? GamestateUnsanitize($theirItems[$index + 8]) : "";
+          $label = $option[0] == "MYITEMS" && $myItems[$index + 8] != "" && $myItems[$index + 8] != "-" ? GamestateUnsanitize($myItems[$index + 8]) : "";
         }
         
         //Show Subtitles on MyDeck
