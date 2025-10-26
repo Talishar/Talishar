@@ -54,6 +54,42 @@ if ($isGamePlayer) {
     WriteLog("🔌Player $playerID has reconnected.");
     SetCachePiece($gameName, $playerID + 3, "0");
   }
+} else if ($playerID == 3) {
+  // Spectator tracking - record when spectators are viewing
+  // Use a temporary file to track spectator sessions since the cache only supports numeric indices 1-16
+  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
+  
+  // Generate a unique spectator ID based on IP and User-Agent
+  $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+  $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+  $sessionKey = md5($clientIp . '|' . $userAgent);
+  
+  $spectatorData = [];
+  
+  // Read existing spectator data
+  if (file_exists($spectatorFile)) {
+    $content = file_get_contents($spectatorFile);
+    if (!empty($content)) {
+      $spectatorData = json_decode($content, true);
+      if (!is_array($spectatorData)) {
+        $spectatorData = [];
+      }
+    }
+  }
+  
+  // Update current spectator's timestamp
+  $spectatorData[$sessionKey] = $currentTime;
+  
+  // Remove inactive spectators (older than 30 seconds)
+  $timeout = 30000; // 30 seconds
+  foreach ($spectatorData as $key => $timestamp) {
+    if (($currentTime - intval($timestamp)) > $timeout) {
+      unset($spectatorData[$key]);
+    }
+  }
+  
+  // Write updated spectator data
+  file_put_contents($spectatorFile, json_encode($spectatorData));
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -1787,6 +1823,30 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // If both players have enabled chat, is true, else false
   $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 && intval(GetCachePiece($gameName, 16)) == 1 ? true : false;
+
+  // Count active spectators (viewing within last 30 seconds)
+  $spectatorCount = 0;
+  $currentTime = round(microtime(true) * 1000);
+  $spectatorTimeout = 30000; // 30 seconds
+  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
+  
+  if (file_exists($spectatorFile)) {
+    $content = file_get_contents($spectatorFile);
+    if (!empty($content)) {
+      $spectatorData = json_decode($content, true);
+      if (is_array($spectatorData)) {
+        $spectatorCount = 0;
+        foreach ($spectatorData as $sessionKey => $timestamp) {
+          $timeDiff = $currentTime - intval($timestamp);
+          if ($timeDiff < $spectatorTimeout) {
+            $spectatorCount++;
+          }
+        }
+      }
+    }
+  }
+  
+  $response->spectatorCount = $spectatorCount;
 
   // encode and send it out
   echo json_encode($response);
