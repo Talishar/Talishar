@@ -1678,7 +1678,7 @@ function CanPlayNAA($cardID, $from, $index=-1)
   if ($combatChainState[$CCS_EclecticMag]) return true;
   // check action points
   if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
-  // check game phase
+  // check for empty stack (other than the current card)
   if (count($layers) > LayerPieces()) return false;
   return true;
 }
