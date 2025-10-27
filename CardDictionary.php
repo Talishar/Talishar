@@ -1663,7 +1663,7 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
 
 function CanPlayNAA($cardID, $from, $index=-1)
 {
-  global $currentPlayer, $mainPlayer, $CS_NextWizardNAAInstant, $defPlayer, $combatChainState, $CCS_EclecticMag, $combatChain, $actionPoints;
+  global $currentPlayer, $mainPlayer, $CS_NextWizardNAAInstant, $defPlayer, $combatChainState, $CCS_EclecticMag, $combatChain, $actionPoints, $layers;
   //check for overall blockers
   if (SearchCurrentTurnEffects("WarmongersWar", $currentPlayer)) return false;
   $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
@@ -1678,6 +1678,8 @@ function CanPlayNAA($cardID, $from, $index=-1)
   if ($combatChainState[$CCS_EclecticMag]) return true;
   // check action points
   if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
+  // check game phase
+  if (count($layers) > LayerPieces()) return false;
   return true;
 }
 
