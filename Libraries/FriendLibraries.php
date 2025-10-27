@@ -298,6 +298,11 @@ function RejectFriendRequest($userId, $requesterUserId) {
 function FindUserByUsername($username) {
   global $conn;
   
+  // Check if connection is available
+  if (!$conn) {
+    return null;
+  }
+  
   $username = trim($username);
   if (strlen($username) === 0) {
     return null;

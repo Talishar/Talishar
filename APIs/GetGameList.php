@@ -11,11 +11,13 @@ include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once "../AccountFiles/AccountDatabaseAPI.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
+include_once '../Libraries/BlockedUserLibraries.php';
 
 $path = "../Games";
 
 session_start();
 SetHeaders();
+$conn = GetDBConnection();
 
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {
@@ -31,6 +33,30 @@ $response->canSeeQueue = $canSeeQueue;
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
+
+// Get blocked users list for filtering
+$blockedUserNames = [];
+$usersWhoBlockedMe = [];
+if(IsUserLoggedIn()) {
+  $userId = LoggedInUser();
+  $blockedUsers = GetBlockedUsers($userId);
+  $blockedUserNames = array_map(function($user) { return $user['username']; }, $blockedUsers);
+  
+  // Also get users who have blocked the current player
+  $query = "SELECT u.usersUid FROM blocked_users b JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
+  if ($conn) {
+    $stmt = $conn->prepare($query);
+    if ($stmt) {
+      $stmt->bind_param("i", $userId);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      while ($row = $result->fetch_assoc()) {
+        $usersWhoBlockedMe[] = $row['usersUid'];
+      }
+      $stmt->close();
+    }
+  }
+}
 
 if(IsUserLoggedIn()) {
   $lastGameName = SessionLastGameName();
@@ -65,22 +91,34 @@ if ($handle = opendir($path)) {
         $gameInProgressCount += 1;
         if($visibility == "1")
         {
+          // Get the game creator (p1uid) from the GameFile.txt
+          $gameFilePath = $folder . "GameFile.txt";
+          $gameCreator = "";
+          if (file_exists($gameFilePath)) {
+            $lines = file($gameFilePath);
+            if (count($lines) >= 10) {
+              // p1uid is on line 10 (0-indexed line 9)
+              $gameCreator = trim($lines[9]);
+            }
+          }
+          
+          // Don't show games from blocked users
+          if(in_array($gameCreator, $blockedUserNames)) {
+            continue;
+          }
+          
+          // Don't show games from users who have blocked me
+          if(in_array($gameCreator, $usersWhoBlockedMe)) {
+            continue;
+          }
+          
           $gameInProgress = new stdClass();
           $gameInProgress->p1Hero = GetCachePiece($gameToken, 7);
           $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
           $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
           $gameInProgress->gameName = $gameToken;
           $gameInProgress->format = GetCachePiece($gameToken, 13);
-          
-          // Get the game creator (p1uid) from the GameFile.txt
-          $gameFilePath = $folder . "GameFile.txt";
-          if (file_exists($gameFilePath)) {
-            $lines = file($gameFilePath);
-            if (count($lines) >= 10) {
-              // p1uid is on line 10 (0-indexed line 9)
-              $gameInProgress->gameCreator = trim($lines[9]);
-            }
-          }
+          $gameInProgress->gameCreator = $gameCreator;
           
           if($gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") array_push($response->gamesInProgress, $gameInProgress);
         }
@@ -111,6 +149,16 @@ if ($handle = opendir($path)) {
         DeleteCache($gameToken);
       }
       if($status == 0 && $visibility == "public" && intval(GetCachePiece($gameName, 11)) < 3) {
+        // Don't show open games from blocked users
+        if(in_array($p1uid, $blockedUserNames)) {
+          continue;
+        }
+        
+        // Don't show open games from users who have blocked me
+        if(in_array($p1uid, $usersWhoBlockedMe)) {
+          continue;
+        }
+        
         $openGame = new stdClass();
         if($format != "compcc" && $format != "compblitz" && $format != "compllcc" && $format != "compsage") $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
