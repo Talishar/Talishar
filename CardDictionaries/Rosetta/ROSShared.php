@@ -39,6 +39,7 @@ function ROSEffectPowerModifier($cardID): int
     "strong_yield_blue", "electrostatic_discharge_blue", "condemn_to_slaughter_blue" => 1,
     "strong_yield_yellow", "electrostatic_discharge_yellow", "condemn_to_slaughter_yellow" => 2,
     "strong_yield_red", "electrostatic_discharge_red", "condemn_to_slaughter_red", "unsheathed_red" => 3,
+    "second_strike_red", "second_strike_yellow", "second_strike_blue" => 1,
     default => 0,
   };
 }
@@ -57,6 +58,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
     "machinations_of_dominion_blue" => CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "condemn_to_slaughter_red", "condemn_to_slaughter_yellow", "condemn_to_slaughter_blue", "succumb_to_temptation_yellow" => ClassContains($attackID, "RUNEBLADE", $mainPlayer),
     "unsheathed_red" => CardSubType($attackID) == "Sword", // this conditional should remove both the buff and 2x attack bonus go again.
+    "second_strike_red", "second_strike_yellow", "second_strike_blue" => true,
     default => false,
   };
 }
@@ -262,7 +264,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":
-      if (GetClassState($currentPlayer, $CS_DamageDealt) + GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) GiveAttackGoAgain();
+      AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
       return "";
     case "electrostatic_discharge_red":
     case "electrostatic_discharge_yellow":

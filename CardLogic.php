@@ -4144,7 +4144,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 
 function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
-  global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed;
+  global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed, $CS_DamageDealt, $CS_ArcaneDamageDealt;
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
@@ -4159,6 +4159,14 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
         AddDecisionQueue("DRAW", $defPlayer, "-");
         }
+      break;
+    case "second_strike_red":
+    case "second_strike_yellow":
+    case "second_strike_blue":
+      if ((GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt)) > 0) {
+        AddCurrentTurnEffect($cardID, $player);
+      }
+      if (GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt) > 0) GiveAttackGoAgain();
       break;
     case "unsheathed_red":
       CacheCombatResult();

@@ -415,10 +415,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     case "strength_of_four_seasons_yellow":
     case "strength_of_four_seasons_blue":
       return SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:talent=EARTH")) >= 4 ? 4 : 0;
-    case "second_strike_red":
-    case "second_strike_yellow":
-    case "second_strike_blue":
-      return (GetClassState($mainPlayer, $CS_DamageDealt) + GetClassState($mainPlayer, $CS_ArcaneDamageDealt)) > 0 ? 1 : 0;
     case "arcanic_spike_red":
     case "arcanic_spike_yellow":
     case "arcanic_spike_blue":
