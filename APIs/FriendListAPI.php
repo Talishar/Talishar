@@ -202,6 +202,26 @@ switch ($action) {
     }
     break;
 
+  case 'updateNickname':
+    $friendUserId = $_POST['friendUserId'] ?? '';
+    $nickname = $_POST['nickname'] ?? '';
+    
+    if (empty($friendUserId) || !is_numeric($friendUserId)) {
+      http_response_code(400);
+      $response->error = "Invalid friend user ID";
+      break;
+    }
+    
+    $result = UpdateFriendNickname($userId, $friendUserId, $nickname);
+    if ($result['success']) {
+      $response->success = true;
+      $response->message = $result['message'];
+    } else {
+      http_response_code(400);
+      $response->error = $result['message'];
+    }
+    break;
+
   default:
     http_response_code(400);
     $response->error = "Invalid action";

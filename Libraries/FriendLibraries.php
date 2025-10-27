@@ -64,7 +64,7 @@ function GetUserFriends($userId) {
   }
   
   $query = "
-    SELECT f.friendUserId, u.usersUid, u.usersId
+    SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname
     FROM friends f
     JOIN users u ON f.friendUserId = u.usersId
     WHERE f.userId = ? AND f.status = 'accepted'
@@ -84,7 +84,8 @@ function GetUserFriends($userId) {
   while ($row = $result->fetch_assoc()) {
     $friends[] = [
       'friendUserId' => $row['usersId'],
-      'username' => $row['usersUid']
+      'username' => $row['usersUid'],
+      'nickname' => $row['nickname'] ?: null
     ];
   }
   
@@ -509,3 +510,49 @@ function SearchUsers($searchTerm, $limit = 10) {
   $stmt->close();
   return $users;
 }
+
+/**
+ * Update a friend's nickname
+ * @param int $userId
+ * @param int $friendUserId
+ * @param string $nickname
+ * @return array ['success' => bool, 'message' => string]
+ */
+function UpdateFriendNickname($userId, $friendUserId, $nickname) {
+  global $conn;
+  
+  if (!is_numeric($userId) || !is_numeric($friendUserId)) {
+    return ['success' => false, 'message' => 'Invalid user IDs'];
+  }
+  
+  // Validate nickname length
+  $nickname = trim($nickname);
+  if (strlen($nickname) > 50) {
+    return ['success' => false, 'message' => 'Nickname is too long (max 50 characters)'];
+  }
+  
+  // Check if they are friends
+  if (!AreFriends($userId, $friendUserId)) {
+    return ['success' => false, 'message' => 'Not friends with this user'];
+  }
+  
+  // Update the nickname
+  $query = "UPDATE friends SET nickname = ? WHERE userId = ? AND friendUserId = ? AND status = 'accepted'";
+  $stmt = $conn->prepare($query);
+  
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+  }
+  
+  $stmt->bind_param("sii", $nickname, $userId, $friendUserId);
+  
+  if ($stmt->execute()) {
+    $stmt->close();
+    return ['success' => true, 'message' => 'Nickname updated successfully'];
+  } else {
+    $error = $stmt->error;
+    $stmt->close();
+    return ['success' => false, 'message' => 'Failed to update nickname: ' . $error];
+  }
+}
+
