@@ -49,8 +49,7 @@ $currentDate = date('U');
     exit();
   }
 
-  $tokenBin = hex2bin($validator);
-  $tokenCheck = password_verify($tokenBin, $row['pwdResetToken']);
+  $tokenCheck = password_verify($validator, $row['pwdResetToken']);
 
   // Then if they match we grab the users e-mail from the database.
   if ($tokenCheck === false) {

@@ -43,7 +43,7 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
   exit;
 } else {
   // Here we also hash the token to make it unreadable, in case a hacker accessess our database.
-  $hashedToken = password_hash($token, PASSWORD_DEFAULT);
+  $hashedToken = password_hash(bin2hex($token), PASSWORD_DEFAULT);
   mysqli_stmt_bind_param($stmt, "ssss", $userEmail, $selector, $hashedToken, $expires);
   mysqli_stmt_execute($stmt);
 }

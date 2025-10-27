@@ -945,6 +945,23 @@ function SendEmail($userEmail, $url)
 function SendEmailAPI($userEmail, $url)
 {
 	include "../APIKeys/APIKeys.php";
+	
+	// For development/testing: Log the reset link to file
+	$logMessage = "[" . date('Y-m-d H:i:s') . "] Password reset link for $userEmail: $url\n";
+	file_put_contents("../password_reset_test.log", $logMessage, FILE_APPEND);
+	
+	// Check if SendGrid API key is configured
+	if (empty($sendgridKey)) {
+		error_log("Password reset link for $userEmail: $url");
+		return;
+	}
+	
+	// Check if vendor/autoload.php exists (SendGrid installed)
+	if (!file_exists('../vendor/autoload.php')) {
+		error_log("SendGrid dependencies not installed. Reset link logged to file for testing.");
+		return;
+	}
+	
 	require '../vendor/autoload.php';
 
 	$email = new Mail();
@@ -968,7 +985,7 @@ function SendEmailAPI($userEmail, $url)
 	try {
 		$response = $sendgrid->send($email);
 	} catch (Exception $e) {
-		echo 'Caught exception: ' . $e->getMessage() . "\n";
+		error_log('SendGrid error: ' . $e->getMessage());
 	}
 }
 
