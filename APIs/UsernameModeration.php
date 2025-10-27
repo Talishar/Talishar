@@ -53,11 +53,11 @@ $action = TryPOSTData("action", "getOffensiveUsernames", $postData);
 
 // List of offensive terms/patterns (case-insensitive)
 $offensivePatterns = [
-    'n-word', 'nword', 'n word', 'racial slur',
+    'n-word', 'nword', 'n word', 'racial slur', 
     'b-tch', 'btch', 'whore', 'slut', 'skank',
     'f-ggot', 'fag', 'homo', 'gay slur',
-    'f-ck', 'fck', 'f word', 'sh1t', 'ass hole', 'asshole',
-    'nazi', 'kkk', 'antifa slur',
+    'f-ck', 'fck', 'f word', 'ass hole', 'asshole',
+    'nazi', 'kkk', 'antifa slur', 'penis', 'vagina', 'cunt'
     // Add more as needed - moderate these yourself
 ];
 
