@@ -3,9 +3,12 @@
 include_once "../WriteLog.php";
 include_once "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/BlockedUserLibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
+include_once "../AccountFiles/AccountSessionAPI.php";
+include_once "../Libraries/FriendLibraries.php";
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -114,6 +117,25 @@ if(($playerID == 3 && $joinerName == "starmorgs") || (($p1uid == "zeni" || $p1ui
   WriteGameFile();
   echo (json_encode($response));
   exit;
+}
+
+// Check if the joiner has blocked the game creator
+if (IsUserLoggedIn() && $playerID != 3) {
+  $joinerId = LoggedInUser();
+  $creatorName = $p1uid;
+  $creatorUser = FindUserByUsername($creatorName);
+  
+  if ($creatorUser) {
+    $creatorId = $creatorUser['usersId'];
+    
+    // Check if joiner has blocked the creator - if so, they can't join
+    if (IsUserBlocked($joinerId, $creatorId)) {
+      $response->error = "Unable to join this game.";
+      WriteGameFile();
+      echo (json_encode($response));
+      exit;
+    }
+  }
 }
 
 if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
