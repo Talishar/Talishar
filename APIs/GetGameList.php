@@ -71,6 +71,17 @@ if ($handle = opendir($path)) {
           $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
           $gameInProgress->gameName = $gameToken;
           $gameInProgress->format = GetCachePiece($gameToken, 13);
+          
+          // Get the game creator (p1uid) from the GameFile.txt
+          $gameFilePath = $folder . "GameFile.txt";
+          if (file_exists($gameFilePath)) {
+            $lines = file($gameFilePath);
+            if (count($lines) >= 10) {
+              // p1uid is on line 10 (0-indexed line 9)
+              $gameInProgress->gameCreator = trim($lines[9]);
+            }
+          }
+          
           if($gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") array_push($response->gamesInProgress, $gameInProgress);
         }
       }
@@ -119,6 +130,7 @@ if ($handle = opendir($path)) {
         $openGame->formatName = $formatName;
         $openGame->description = $description;
         $openGame->gameName = $gameToken;
+        $openGame->gameCreator = $p1uid;
         if($isShadowBanned) {
           if($format == "shadowblitz" || $format == "shadowcc") array_push($response->openGames, $openGame);
         } else {
