@@ -12,7 +12,6 @@ include_once "../includes/dbh.inc.php";
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
-
 header('Content-Type: application/json');
 
 if (!isset($_SESSION["useruid"])) {
@@ -23,8 +22,8 @@ if (!isset($_SESSION["useruid"])) {
 
 $useruid = $_SESSION["useruid"];
 
-$modList = ["OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "bavverst", "Tower", "PvtVoid", "Aegisworn"];
-if (!in_array($useruid, $modList)) {
+include_once '../includes/ModeratorList.inc.php';
+if (!IsUserModerator($useruid)) {
   http_response_code(403);
   echo json_encode(["error" => "Not authorized"]);
   exit;

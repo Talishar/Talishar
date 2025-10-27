@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 include_once './Libraries/CSRFLibraries.php';
+include_once './includes/ModeratorList.inc.php';
 
 session_start();
 
@@ -24,7 +25,7 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "bavverst" && $useruid != "Star_Seraph" && $useruid != "Tower" && $useruid != "PvtVoid" && $useruid != "Aegisworn") {
+if (!IsUserModerator($useruid)) {
   echo json_encode(["status" => "error", "message" => "You must log in to use this page."]);
   http_response_code(403);
   exit;

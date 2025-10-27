@@ -28,8 +28,8 @@ if (!isset($_SESSION["useruid"])) {
 }
 
 $useruid = $_SESSION["useruid"];
-$modList = ["OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "bavverst", "Tower", "PvtVoid", "Aegisworn"];
-if (!in_array($useruid, $modList)) {
+include_once '../includes/ModeratorList.inc.php';
+if (!IsUserModerator($useruid)) {
   http_response_code(403);
   echo json_encode(["error" => "Not authorized"]);
   exit;
@@ -56,9 +56,8 @@ $offensivePatterns = [
     'n-word', 'nword', 'n word', 'racial slur',
     'b-tch', 'btch', 'whore', 'slut', 'skank',
     'f-ggot', 'fag', 'homo', 'gay slur',
-    'f-ck', 'fck', 'f word', 'sh-t', 'sh1t', 'ass hole', 'asshole',
+    'f-ck', 'fck', 'f word', 'sh1t', 'ass hole', 'asshole',
     'nazi', 'kkk', 'antifa slur',
-    
     // Add more as needed - moderate these yourself
 ];
 

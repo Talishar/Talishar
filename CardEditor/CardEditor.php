@@ -2,6 +2,7 @@
 
 include "../Libraries/HTTPLibraries.php";
 include_once '../includes/dbh.inc.php';
+include_once '../includes/ModeratorList.inc.php';
 include_once "CardEditorDatabase.php";
 
 session_start();
@@ -11,7 +12,7 @@ if (!isset($_SESSION["useruid"])) {
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "bavverst" && $useruid != "Star_Seraph" && $useruid != "Tower" && $useruid != "PvtVoid" && $useruid != "thatzachary" && $useruid != "DKGaming") {
+if (!IsCardEditor($useruid)) {
   echo ("You must log in to use this page.");
   exit;
 }
