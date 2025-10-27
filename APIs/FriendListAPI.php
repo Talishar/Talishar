@@ -6,6 +6,12 @@ include "../Libraries/HTTPLibraries.php";
 ob_end_clean();
 SetHeaders();
 
+// Handle CORS preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(200);
+  exit;
+}
+
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
