@@ -148,7 +148,7 @@ function OUTAbilityCost($cardID)
       case "sedation_shot_red": case "sedation_shot_yellow": case "sedation_shot_blue": return true;
       case "skybound_shot_red": case "skybound_shot_yellow": case "skybound_shot_blue": return true;
       case "withering_shot_red": case "withering_shot_yellow": case "withering_shot_blue": return true;
-      case "mask_of_shifting_perspectives": return SubtypeContains($attackID, "Dagger");
+      case "mask_of_shifting_perspectives": return true;
       case "blade_cuff": return SubtypeContains($attackID, "Dagger");
       case "concealed_blade_blue": return true;
       case "knives_out_blue": return SubtypeContains($attackID, "Dagger");
