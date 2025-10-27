@@ -54,6 +54,42 @@ if ($isGamePlayer) {
     WriteLog("🔌Player $playerID has reconnected.");
     SetCachePiece($gameName, $playerID + 3, "0");
   }
+} else if ($playerID == 3) {
+  // Spectator tracking - record when spectators are viewing
+  // Use a temporary file to track spectator sessions since the cache only supports numeric indices 1-16
+  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
+  
+  // Generate a unique spectator ID based on IP and User-Agent
+  $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+  $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+  $sessionKey = md5($clientIp . '|' . $userAgent);
+  
+  $spectatorData = [];
+  
+  // Read existing spectator data
+  if (file_exists($spectatorFile)) {
+    $content = file_get_contents($spectatorFile);
+    if (!empty($content)) {
+      $spectatorData = json_decode($content, true);
+      if (!is_array($spectatorData)) {
+        $spectatorData = [];
+      }
+    }
+  }
+  
+  // Update current spectator's timestamp
+  $spectatorData[$sessionKey] = $currentTime;
+  
+  // Remove inactive spectators (older than 30 seconds)
+  $timeout = 30000; // 30 seconds
+  foreach ($spectatorData as $key => $timestamp) {
+    if (($currentTime - intval($timestamp)) > $timeout) {
+      unset($spectatorData[$key]);
+    }
+  }
+  
+  // Write updated spectator data
+  file_put_contents($spectatorFile, json_encode($spectatorData));
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -410,12 +446,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turn[0], "THEIRBANISH", $i) ? 15 : 0;
-    if (isFaceDownMod($mod)) {
+    $label = "";
+    if (isFaceDownMod($mod) && !IsGameOver()) {
       $cardID = "CardBack";
+    }
+    else if ($mod == "INT") {
+        $overlay = 1;
+        $label = "Intimidated";
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $playerID, $mod);
 
-    array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i)));
+    array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->opponentBanish = $opponentBanishArr;
   if (TalentContains($theirCharacter[0], "SHADOW")) {
@@ -596,7 +637,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = "CardBack";
+    elseif (isFaceDownMod($mod) && $playerID == 3 && !IsGameOver()) $cardID = "CardBack";
     if ($mod == "INT") {
       $overlay = 1;
       $label = "Intimidated";
@@ -712,6 +753,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $theirArse = [];
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
+      if (IsGameOver()) $theirArsenal[$i + 1] = "UP";
       if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
         $overlay = 0;
         $border = 0;
@@ -745,6 +787,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $myArse = [];
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
+      if (IsGameOver()) $myArsenal[$i + 1] = "UP";
       if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP" && !IsGameOver()) {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
@@ -1103,6 +1146,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // Do we have priority?
   $response->havePriority = $currentPlayer == $playerID ? true : false;
+
+  // For spectators, simulate havePriority as if they were player 1
+  if ($playerID == 3) {
+    $response->havePriority = $currentPlayer == 1 ? true : false;
+  }
 
   // opponent and player Action Points
   if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
@@ -1782,6 +1830,30 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // If both players have enabled chat, is true, else false
   $response->chatEnabled = intval(GetCachePiece($gameName, 15)) == 1 && intval(GetCachePiece($gameName, 16)) == 1 ? true : false;
+
+  // Count active spectators (viewing within last 30 seconds)
+  $spectatorCount = 0;
+  $currentTime = round(microtime(true) * 1000);
+  $spectatorTimeout = 30000; // 30 seconds
+  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
+  
+  if (file_exists($spectatorFile)) {
+    $content = file_get_contents($spectatorFile);
+    if (!empty($content)) {
+      $spectatorData = json_decode($content, true);
+      if (is_array($spectatorData)) {
+        $spectatorCount = 0;
+        foreach ($spectatorData as $sessionKey => $timestamp) {
+          $timeDiff = $currentTime - intval($timestamp);
+          if ($timeDiff < $spectatorTimeout) {
+            $spectatorCount++;
+          }
+        }
+      }
+    }
+  }
+  
+  $response->spectatorCount = $spectatorCount;
 
   // encode and send it out
   echo json_encode($response);

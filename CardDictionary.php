@@ -4245,6 +4245,7 @@ function CharacterDefaultActiveState($cardID)
     case "unicycle":
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
+    case "trench_of_sunken_treasure":
       return 1;
     default:
       return 2;

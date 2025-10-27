@@ -37,6 +37,9 @@ if (tryGet("quickChat")) {
 //array for contributors
 $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid");
 
+// List of mod usernames - should match frontend list
+$modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn");
+
 //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
 if(isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SESSION['useruid'], $contributors)) {
   $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
@@ -53,7 +56,10 @@ if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_arra
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
-$output = "<span style='font-weight:bold; color:<PLAYER" . $playerID . "COLOR>;'>" . $displayName . ": </span>" . $chatText;
+// Check if user is a mod - use gold color (#f0d666) for mods, otherwise use player color
+$isMod = isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $modUsernames);
+$chatColor = $isMod ? "#a58703ff" : "<PLAYER" . $playerID . "COLOR>";
+$output = "<span style='font-weight:bold; color:" . $chatColor . ";'>" . $displayName . ": </span>" . $chatText;
 if ($handler) {
   fwrite($handler, $output . "\r\n");
   if (GetCachePiece($gameName, 11) >= 3) fwrite($handler, "The lobby is reactivated.\r\n");
