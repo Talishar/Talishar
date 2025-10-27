@@ -446,12 +446,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardID = $theirBanish[$i];
     $mod = explode("-", $theirBanish[$i + 1])[0];
     $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turn[0], "THEIRBANISH", $i) ? 15 : 0;
-    if (isFaceDownMod($mod)) {
+    $label = "";
+    if (isFaceDownMod($mod) && !IsGameOver()) {
       $cardID = "CardBack";
+    }
+    else if ($mod == "INT") {
+        $overlay = 1;
+        $label = "Intimidated";
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $playerID, $mod);
 
-    array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i)));
+    array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->opponentBanish = $opponentBanishArr;
   if (TalentContains($theirCharacter[0], "SHADOW")) {
@@ -632,7 +637,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = "CardBack";
+    elseif (isFaceDownMod($mod) && $playerID == 3 && !IsGameOver()) $cardID = "CardBack";
     if ($mod == "INT") {
       $overlay = 1;
       $label = "Intimidated";
@@ -748,6 +753,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $theirArse = [];
   if ($theirArsenal != "") {
     for ($i = 0; $i < count($theirArsenal); $i += ArsenalPieces()) {
+      if (IsGameOver()) $theirArsenal[$i + 1] = "UP";
       if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && IsCasterMode() || IsGameOver()) {
         $overlay = 0;
         $border = 0;
@@ -781,6 +787,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $myArse = [];
   if ($myArsenal != "") {
     for ($i = 0; $i < count($myArsenal); $i += ArsenalPieces()) {
+      if (IsGameOver()) $myArsenal[$i + 1] = "UP";
       if ($playerID == 3 && !IsCasterMode() && $myArsenal[$i + 1] != "UP" && !IsGameOver()) {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
