@@ -41,8 +41,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
     }
 }
 
-$gameToken = TryPOST("gameToClose", "");
+// Handle both form-encoded and JSON POST data
+$postData = $_POST;
+if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    if (strpos($contentType, 'application/json') !== false) {
+        $jsonData = json_decode(file_get_contents('php://input'), true);
+        $postData = $jsonData ?? [];
+    }
+}
+
+function TryPOSTData($key, $default = "", $data = []) {
+    return isset($data[$key]) ? $data[$key] : $default;
+}
+
+$gameToken = trim(TryPOSTData("gameToClose", "", $postData));
+if (empty($gameToken)) {
+  header('Content-Type: application/json');
+  echo json_encode(["status" => "error", "message" => "Game token is empty"]);
+  http_response_code(400);
+  exit;
+}
 $folder = "./Games/" . $gameToken;
+
+if (!file_exists($folder)) {
+  header('Content-Type: application/json');
+  echo json_encode(["status" => "error", "message" => "Game folder not found"]);
+  http_response_code(404);
+  exit;
+}
 
 deleteDirectory($folder);
 DeleteCache($gameToken);

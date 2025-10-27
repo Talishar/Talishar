@@ -40,23 +40,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
     }
 }
 
-$playerToBan = TryPOST("playerToBan", "");
-$ipToBan = TryPOST("ipToBan", "");
-$playerNumberToBan = TryPOST("playerNumberToBan", "");
+// Handle both form-encoded and JSON POST data
+$postData = $_POST;
+if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    if (strpos($contentType, 'application/json') !== false) {
+        $jsonData = json_decode(file_get_contents('php://input'), true);
+        $postData = $jsonData ?? [];
+    }
+}
+
+function TryPOSTData($key, $default = "", $data = []) {
+    return isset($data[$key]) ? $data[$key] : $default;
+}
+
+$playerToBan = trim(TryPOSTData("playerToBan", "", $postData));
+$ipToBan = trim(TryPOSTData("ipToBan", "", $postData));
+$playerNumberToBan = trim(TryPOSTData("playerNumberToBan", "", $postData));
 
 $result = ["status" => "success"];
 
 if ($playerToBan != "") {
-  file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
-  BanPlayer($playerToBan);
-  $result["message"] = "Player $playerToBan has been banned.";
+  $writeResult = file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
+  if ($writeResult === false) {
+    $result["status"] = "error";
+    $result["message"] = "Failed to write banned player to file";
+  } else {
+    BanPlayer($playerToBan);
+    $result["message"] = "Player $playerToBan has been banned.";
+  }
 }
 if ($ipToBan != "") {
   $gameName = $ipToBan;
   include './MenuFiles/ParseGamefile.php';
   $ipToBan = $playerNumberToBan == "1" ? $hostIP : $joinerIP;
-  file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
-  $result["message"] = "IP $ipToBan has been banned.";
+  $writeResult = file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
+  if ($writeResult === false) {
+    $result["status"] = "error";
+    $result["message"] = "Failed to write banned IP to file";
+  } else {
+    $result["message"] = "IP $ipToBan has been banned.";
+  }
 }
 
 // Return JSON response for API calls
