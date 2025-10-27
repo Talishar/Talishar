@@ -6,6 +6,52 @@
  */
 
 /**
+ * Get banned player usernames from bannedPlayers.txt
+ * @return array Set-like array of banned usernames (lowercase for case-insensitive comparison)
+ */
+function GetBannedPlayers() {
+  static $bannedPlayers = null;
+  
+  if ($bannedPlayers !== null) {
+    return $bannedPlayers;
+  }
+  
+  $bannedPlayers = [];
+  $banFilePath = __DIR__ . '/../HostFiles/bannedPlayers.txt';
+  
+  if (!file_exists($banFilePath)) {
+    return $bannedPlayers;
+  }
+  
+  $banContent = file_get_contents($banFilePath);
+  if ($banContent === false) {
+    return $bannedPlayers;
+  }
+  
+  // Split by newlines and process each line
+  $lines = explode("\n", $banContent);
+  foreach ($lines as $line) {
+    $line = trim($line);
+    if (!empty($line)) {
+      // Store with lowercase for case-insensitive comparison
+      $bannedPlayers[strtolower($line)] = true;
+    }
+  }
+  
+  return $bannedPlayers;
+}
+
+/**
+ * Check if a username is banned
+ * @param string $username
+ * @return bool
+ */
+function IsBannedPlayer($username) {
+  $bannedPlayers = GetBannedPlayers();
+  return isset($bannedPlayers[strtolower($username)]);
+}
+
+/**
  * Get all accepted friends for a user
  * @param int $userId
  * @return array List of friend user IDs and names
@@ -451,10 +497,13 @@ function SearchUsers($searchTerm, $limit = 10) {
   
   $users = [];
   while ($row = $result->fetch_assoc()) {
-    $users[] = [
-      'usersId' => $row['usersId'],
-      'username' => $row['usersUid']
-    ];
+    // Filter out banned players
+    if (!IsBannedPlayer($row['usersUid'])) {
+      $users[] = [
+        'usersId' => $row['usersId'],
+        'username' => $row['usersUid']
+      ];
+    }
   }
   
   $stmt->close();
