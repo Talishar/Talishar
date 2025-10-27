@@ -1427,12 +1427,17 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "smashing_good_time_yellow-1":
     case "smashing_good_time_blue-1":
     case "glistening_steelblade_yellow-1":
-    case "mask_of_shifting_perspectives":
     case "premeditate_red-1":
     case "target_totalizer":
     case "hack_to_reality_yellow-HIT":
     case "regain_composure_blue":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      break;
+    case "mask_of_shifting_perspectives":
+      WriteLog("HERE: $source");
+      if (SubtypeContains($source, "Dagger")) {
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
       break;
     case "plunder_run_red-1": //triggers that won't apply on flick
     case "plunder_run_yellow-1":
