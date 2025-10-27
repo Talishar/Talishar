@@ -66,26 +66,38 @@ function IsReplay()
 
 function SetHeaders()
 {
-  // array holding allowed Origin domains
+  // array holding allowed Origin domains (with fixed regex patterns)
   $allowedOrigins = array(
-    "[0-9a-z\-]*\.talishar\.net",
-    "https\:\/\/talishar\.net",
-    "[0-9a-z\-]*\.talishar-fe\.pages\.dev",
-    "talishar.surge.sh"
+    "~^https?://[0-9a-z\-]*\.talishar\.net$~i",
+    "~^https?://talishar\.net$~i",
+    "~^https?://[0-9a-z\-]*\.talishar-fe\.pages\.dev$~i",
+    "~^https?://talishar\.surge\.sh$~i",
+    "~^https?://localhost(:[0-9]+)?$~i",
+    "~^https?://127\.0\.0\.1(:[0-9]+)?$~i"
   );
 
+  $originSet = false;
+  
   if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != '') {
     foreach ($allowedOrigins as $allowedOrigin) {
-      if (preg_match('#' . $allowedOrigin . '#', $_SERVER['HTTP_ORIGIN'])) {
+      if (preg_match($allowedOrigin, $_SERVER['HTTP_ORIGIN'])) {
         header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
-        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-        header('Access-Control-Max-Age: 1000');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
+        $originSet = true;
         break;
       }
     }
   }
+  
+  // Always set CORS headers to fix Brave browser issues
+  // If origin didn't match, use wildcard for requests without proper Origin headers
+  if (!$originSet && (!isset($_SERVER['HTTP_ORIGIN']) || $_SERVER['HTTP_ORIGIN'] == '')) {
+    header('Access-Control-Allow-Origin: *');
+  }
+  
+  header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+  header('Access-Control-Max-Age: 1000');
+  header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+  header('Access-Control-Allow-Credentials: true');
   header('X-Accel-Buffering: no');
 }
 
