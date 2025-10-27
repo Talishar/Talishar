@@ -56,7 +56,7 @@ $offensivePatterns = [
     'n-word', 'nword', 'n word', 'racial slur',
     'b-tch', 'btch', 'whore', 'slut', 'skank',
     'f-ggot', 'fag', 'homo', 'gay slur',
-    'f-ck', 'fck', 'f word', 'sh1t', 'ass hole', 'asshole',
+    'f-ck', 'fck', 'f word', 'ass hole', 'asshole',
     'nazi', 'kkk', 'antifa slur',
     // Add more as needed - moderate these yourself
 ];
