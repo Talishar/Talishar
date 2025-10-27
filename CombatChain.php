@@ -1794,6 +1794,7 @@ function CombatChainClosedTriggers()
 function CombatChainPayAdditionalCosts($index, $from)
 {
   global $combatChain, $currentPlayer, $chainLinks;
+  
   if ($from == "PLAY") {
     $i = $index * CombatChainPieces();
     if(!isset($combatChain[$i]))  {
@@ -1803,7 +1804,7 @@ function CombatChainPayAdditionalCosts($index, $from)
     $cardID = $combatChain[$i];
   }
   else {
-    $i = $index;
+    $i = intdiv($index, ChainLinksPieces());
     $cardID = $chainLinks[$i][0];
   }
   switch($cardID) {
