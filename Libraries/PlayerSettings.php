@@ -35,7 +35,6 @@ $SET_Playmat = 23; //Did this player enable caster mode
 $SET_AlwaysAllowUndo = 24;//Do you want to always allow undo
 $SET_DisableAltArts = 25;//Do you want to disable alt arts
 $SET_ManualTunic = 26;//Do you want to manually tick up tunic each turn
-$SET_GameDescription = 27;//What game description did this player use last
 
 function HoldPrioritySetting($player)
 {
@@ -391,7 +390,7 @@ function SaveSettingInDatabase($setting)
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
-  global $SET_ManualTunic, $SET_GameDescription;
+  global $SET_ManualTunic;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -410,7 +409,6 @@ function SaveSettingInDatabase($setting)
     case $SET_AlwaysAllowUndo:
     case $SET_DisableAltArts:
     case $SET_ManualTunic:
-    case $SET_GameDescription:
       return true;
     default: return false;
   }

@@ -68,7 +68,6 @@ if (isset($_SESSION["userid"])) {
   ChangeSetting("", $SET_Format, FormatCode($format), $_SESSION["userid"]);
   $visibilitySetting = ($visibility == "public" ? 1 : ($visibility == "friends-only" ? 2 : 0));
   ChangeSetting("", $SET_GameVisibility, $visibilitySetting, $_SESSION["userid"]);
-  ChangeSetting("", $SET_GameDescription, $gameDescription, $_SESSION["userid"]);
   if($deckbuilderID != "")
   {
     if(str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
