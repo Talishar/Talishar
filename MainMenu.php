@@ -26,6 +26,7 @@ if (isset($_SESSION["userid"])) {
   } else if (isset($settingArray[$SET_Language])) $language = $settingArray[$SET_Language];
   if (isset($settingArray[$SET_Format])) $defaultFormat = $settingArray[$SET_Format];
   if (isset($settingArray[$SET_GameVisibility])) $defaultVisibility = $settingArray[$SET_GameVisibility];
+  if (isset($settingArray[$SET_GameDescription])) $defaultGameDescription = $settingArray[$SET_GameDescription];
 }
 $_SESSION['language'] = $language;
 if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
