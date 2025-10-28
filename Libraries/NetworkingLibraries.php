@@ -588,12 +588,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
-        if (RevertGamestate()) {
-          $skipWriteGamestate = true;
-          WriteLog("Player " . $playerID . " undid their last action");
-        } else {
-          WriteLog("Player " . $playerID . " attempted to undo but there is no available backup");
-        }
+        RevertGamestate();
+        $skipWriteGamestate = true;
+        WriteLog("Player " . $playerID . " undid their last action");
       } else {
         //It's competitive queue, so we must request confirmation
         WriteLog("Player " . $playerID . " requests to undo the last action");
@@ -613,24 +610,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
-        // Use new unified turn revert functions
-        if ($buttonInput == "beginTurnGamestate.txt") {
-          if (RevertToBeginTurn($gameName)) {
-            WriteLog("Player " . $playerID . " reverted to the beginning of this turn");
-          } else {
-            WriteLog("Player " . $playerID . " attempted to revert to beginning of turn but backup not available");
-          }
-        } else if ($buttonInput == "lastTurnGamestate.txt") {
-          if (RevertToLastTurn($gameName)) {
-            WriteLog("Player " . $playerID . " reverted to the beginning of the last turn");
-          } else {
-            WriteLog("Player " . $playerID . " attempted to revert to beginning of last turn but backup not available");
-          }
-        } else {
-          // Legacy support for other backup files
-          RevertGamestate($buttonInput);
-          WriteLog("Player " . $playerID . " reverted back to a prior turn");
-        }
+        RevertGamestate($buttonInput);
+        WriteLog("Player " . $playerID . " reverted back to a prior turn");
       } else {
         //It's competitive queue, so we must request confirmation
         WriteLog("Player " . $playerID . " requests to undo the last action");
