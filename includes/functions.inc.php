@@ -940,7 +940,7 @@ function SendEmail($userEmail, $url)
 	require '../vendor/autoload.php';
 
 	$email = new Mail();
-	$email->setFrom("no-reply@fleshandbloodonline.com", "No-Reply");
+	$email->setFrom("noreply@sendgrid.net", "Talishar");
 	$email->setSubject("Talishar Password Reset Link");
 	$email->addTo($userEmail);
 	$email->addContent(
