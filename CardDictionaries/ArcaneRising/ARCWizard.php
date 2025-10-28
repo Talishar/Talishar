@@ -276,6 +276,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
 //4: My Hero only (For afflictions)
 function PlayRequiresTarget($cardID, $from)
 {
+  //modal card targeting is handled elsewhere
   switch ($cardID) {
     case "blazing_aether_red":
       return 0;//Blazing Aether
@@ -401,18 +402,10 @@ function PlayRequiresTarget($cardID, $from)
       return 2;//Destructive Aethertide
     case "eternal_inferno_red"://eternal inferno
       return 2;
-    case "chorus_of_the_amphitheater_red":
-    case "chorus_of_the_amphitheater_yellow":
-    case "chorus_of_the_amphitheater_blue":
-      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1; //Chorus of Amphitheater
     case "pop_the_bubble_red":
     case "pop_the_bubble_yellow":
     case "pop_the_bubble_blue":
       return 0;//Pop the Bubble
-    case "arcane_twining_red":
-    case "arcane_twining_yellow":
-    case "arcane_twining_blue":
-      return (GetResolvedAbilityType($cardID, "HAND") == "A") ? 2 : -1; //Arcane Twining
     case "etchings_of_arcana_red":
     case "etchings_of_arcana_yellow":
     case "etchings_of_arcana_blue":

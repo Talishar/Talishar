@@ -189,7 +189,7 @@ function BlockingCardDefense($index)
   return $defense;
 }
 
-function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID)
+function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID, $defending=false)
 {
   global $combatChain, $turn;
   $index = count($combatChain);
@@ -205,7 +205,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   array_push($combatChain, $cardID); //original cardID in case it becomes a copy
   array_push($combatChain, "-"); //Added static buffs (comma separated list of SetIDs, see ConvertToSetID/ConvertToCardID)
   array_push($combatChain, 0); //Number of times used
-  if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0])) OnBlockEffects($index, $from);
+  if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0]) || $defending) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility(count($combatChain) - CombatChainPieces());
   return $index;
 }
@@ -2610,7 +2610,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID, $from);
-    if (!$hasGoAgain && GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from);
+    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
   } else {
     $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID);
     if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {

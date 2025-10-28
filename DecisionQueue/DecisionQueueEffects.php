@@ -1071,7 +1071,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
           $banish[$i + 1] = "-";
           //try to add it as defending
           if (CanBlock($banish[$i], "BANISH")) {
-            AddCombatChain($banish[$i], $player, "BANISH", 0, -1);
+            AddCombatChain($banish[$i], $player, "BANISH", 0, -1, defending:true);
             OnBlockResolveEffects($banish[$i]);
             //only remove it if it successfully gets added as blocking
             array_push($toRemove, $i);

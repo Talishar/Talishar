@@ -1712,7 +1712,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           break;
         case "chane_bound_by_shadow":
         case "chane":
-          if (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) {
+          if ((ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) && $cardID != $currentTurnEffects[$i]) {
             $hasGoAgain = true;
             $remove = true;
           }

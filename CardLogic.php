@@ -1434,7 +1434,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       break;
     case "mask_of_shifting_perspectives":
-      WriteLog("HERE: $source");
       if (SubtypeContains($source, "Dagger")) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
