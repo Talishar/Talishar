@@ -936,16 +936,33 @@ function LoadSavedSettings($playerId)
 
 function SendEmail($userEmail, $url)
 {
-	include "../APIKeys/APIKeys.php";
+	include "../../APIKeys.php";
+	
+	// Log that we're attempting to send email
+	error_log("SendEmail called for: $userEmail");
+	
+	// Check if SendGrid key is available
+	if (empty($sendgridKey)) {
+		error_log("ERROR: SendGrid API key is empty!");
+		return false;
+	}
+	
+	// Check if vendor/autoload.php exists
+	if (!file_exists('../vendor/autoload.php')) {
+		error_log("ERROR: SendGrid vendor/autoload.php not found at ../vendor/autoload.php");
+		return false;
+	}
+	
 	require '../vendor/autoload.php';
 
-	$email = new Mail();
-	$email->setFrom("noreply@sendgrid.net", "Talishar");
-	$email->setSubject("Talishar Password Reset Link");
-	$email->addTo($userEmail);
-	$email->addContent(
-		"text/html",
-		"
+	try {
+		$email = new \SendGrid\Mail\Mail();
+		$email->setFrom("noreply@sendgrid.net", "Talishar");
+		$email->setSubject("Talishar Password Reset Link");
+		$email->addTo($userEmail);
+		$email->addContent(
+			"text/html",
+			"
         <p>
           We recieved a password reset request. The link to reset your password is below.
           If you did not make this request, you can ignore this email
@@ -955,21 +972,33 @@ function SendEmail($userEmail, $url)
           <a href=$url>Password Reset</a>
         </p>
       "
-	);
-	$sendgrid = new \SendGrid($sendgridKey);
-	try {
+		);
+		
+		error_log("Sending email via SendGrid to: $userEmail");
+		$sendgrid = new \SendGrid($sendgridKey);
 		$response = $sendgrid->send($email);
-		print $response->statusCode() . "\n";
-		print_r($response->headers());
-		print $response->body() . "\n";
+		$statusCode = $response->statusCode();
+		
+		error_log("SendGrid response status: $statusCode");
+		
+		if ($statusCode == 202) {
+			error_log("SUCCESS: Password reset email sent to $userEmail");
+			return true;
+		} else {
+			error_log("WARNING: SendGrid returned status $statusCode for $userEmail");
+			error_log("Response body: " . $response->body());
+			return false;
+		}
 	} catch (Exception $e) {
-		echo 'Caught exception: ' . $e->getMessage() . "\n";
+		error_log('ERROR in SendEmail: ' . $e->getMessage());
+		error_log('Exception trace: ' . $e->getTraceAsString());
+		return false;
 	}
 }
 
 function SendEmailAPI($userEmail, $url)
 {
-	include "../APIKeys/APIKeys.php";
+	include "../../APIKeys.php";
 	
 	// For development/testing: Log the reset link to file
 	$logMessage = "[" . date('Y-m-d H:i:s') . "] Password reset link for $userEmail: $url\n";
@@ -989,7 +1018,7 @@ function SendEmailAPI($userEmail, $url)
 	
 	require '../vendor/autoload.php';
 
-	$email = new Mail();
+	$email = new \SendGrid\Mail\Mail();
 	$email->setFrom("noreply@sendgrid.net", "Talishar");
 	$email->setSubject("Talishar Password Reset Link");
 	$email->addTo($userEmail);
