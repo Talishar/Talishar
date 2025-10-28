@@ -1,8 +1,5 @@
 <?php
 
-// Include backup history management library
-include_once "Libraries/GamestateBackupHistory.php";
-
 function GetStringArray($line)
 {
   $line = trim($line);
@@ -452,11 +449,13 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
       }
     }
   }
+  $result = copy($filepath . "gamestate.txt", $filepath . $filename);
+  if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
 }
 
 function MakeStartTurnBackup()
 {
-  global $mainPlayer, $currentTurn, $filepath, $gameName;
+  global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
   if (file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
@@ -465,14 +464,6 @@ function MakeStartTurnBackup()
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 1 && !file_exists($startGameFN)) {
     copy($filepath . "gamestate.txt", $startGameFN);
   }
-  
-  // Add previous turn checkpoint if not on turn 1 (so players can revert to start of previous turn)
-  if ($currentTurn > 1) {
-    AddPreviousTurnStartToStack($gameName, $filepath);
-  }
-  
-  // Add turn start checkpoint to unified undo stack (only one entry per turn)
-  AddTurnStartToStack($gameName, $filepath);
 }
 
 function GetAvailableUndoSteps()
