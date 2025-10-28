@@ -592,7 +592,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $skipWriteGamestate = true;
           WriteLog("Player " . $playerID . " undid their last action");
         } else {
-          WriteLog("Player " . $playerID . " attempted to undo but the maximum limit has been reached", highlight: true);
+          WriteLog("Player " . $playerID . " attempted to undo but there is no available backup");
         }
       } else {
         //It's competitive queue, so we must request confirmation
