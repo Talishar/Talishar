@@ -105,7 +105,7 @@ function MakeGamestateBackupHistory($gameName, $filepath = null)
   // DEBUG: Log state before truncation
   $stackSizeBefore = count($metadata["undoStack"]);
   $currentPosBefore = $metadata["currentPosition"];
-  WriteLog("BACKUP_DEBUG: Before truncation - Stack size: " . $stackSizeBefore . ", CurrentPosition: " . $currentPosBefore);
+  //WriteLog("BACKUP_DEBUG: Before truncation - Stack size: " . $stackSizeBefore . ", CurrentPosition: " . $currentPosBefore);
   
   // If we're not at the live state (currentPosition > 0), we're making a new action after an undo
   // In this case, truncate the stack to discard all "future" actions that are no longer reachable
