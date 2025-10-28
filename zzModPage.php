@@ -5,13 +5,14 @@ include_once 'MenuBar.php';
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 include_once './Libraries/CSRFLibraries.php';
+include_once './includes/ModeratorList.inc.php';
 
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
 }
 $useruid = $_SESSION["useruid"];
-if ($useruid != "OotTheMonk" && $useruid != "Launch" && $useruid != "LaustinSpayce" && $useruid != "Star_Seraph" && $useruid != "bavverst" && $useruid != "Tower" && $useruid != "PvtVoid" && $useruid != "Aegisworn") {
+if (!IsUserModerator($useruid)) {
   echo ("You must log in to use this page.");
   exit;
 }

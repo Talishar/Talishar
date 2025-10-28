@@ -6,6 +6,52 @@
  */
 
 /**
+ * Get banned player usernames from bannedPlayers.txt
+ * @return array Set-like array of banned usernames (lowercase for case-insensitive comparison)
+ */
+function GetBannedPlayers() {
+  static $bannedPlayers = null;
+  
+  if ($bannedPlayers !== null) {
+    return $bannedPlayers;
+  }
+  
+  $bannedPlayers = [];
+  $banFilePath = __DIR__ . '/../HostFiles/bannedPlayers.txt';
+  
+  if (!file_exists($banFilePath)) {
+    return $bannedPlayers;
+  }
+  
+  $banContent = file_get_contents($banFilePath);
+  if ($banContent === false) {
+    return $bannedPlayers;
+  }
+  
+  // Split by newlines and process each line
+  $lines = explode("\n", $banContent);
+  foreach ($lines as $line) {
+    $line = trim($line);
+    if (!empty($line)) {
+      // Store with lowercase for case-insensitive comparison
+      $bannedPlayers[strtolower($line)] = true;
+    }
+  }
+  
+  return $bannedPlayers;
+}
+
+/**
+ * Check if a username is banned
+ * @param string $username
+ * @return bool
+ */
+function IsBannedPlayer($username) {
+  $bannedPlayers = GetBannedPlayers();
+  return isset($bannedPlayers[strtolower($username)]);
+}
+
+/**
  * Get all accepted friends for a user
  * @param int $userId
  * @return array List of friend user IDs and names
@@ -18,7 +64,7 @@ function GetUserFriends($userId) {
   }
   
   $query = "
-    SELECT f.friendUserId, u.usersUid, u.usersId
+    SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname
     FROM friends f
     JOIN users u ON f.friendUserId = u.usersId
     WHERE f.userId = ? AND f.status = 'accepted'
@@ -38,7 +84,8 @@ function GetUserFriends($userId) {
   while ($row = $result->fetch_assoc()) {
     $friends[] = [
       'friendUserId' => $row['usersId'],
-      'username' => $row['usersUid']
+      'username' => $row['usersUid'],
+      'nickname' => $row['nickname'] ?: null
     ];
   }
   
@@ -451,12 +498,61 @@ function SearchUsers($searchTerm, $limit = 10) {
   
   $users = [];
   while ($row = $result->fetch_assoc()) {
-    $users[] = [
-      'usersId' => $row['usersId'],
-      'username' => $row['usersUid']
-    ];
+    // Filter out banned players
+    if (!IsBannedPlayer($row['usersUid'])) {
+      $users[] = [
+        'usersId' => $row['usersId'],
+        'username' => $row['usersUid']
+      ];
+    }
   }
   
   $stmt->close();
   return $users;
 }
+
+/**
+ * Update a friend's nickname
+ * @param int $userId
+ * @param int $friendUserId
+ * @param string $nickname
+ * @return array ['success' => bool, 'message' => string]
+ */
+function UpdateFriendNickname($userId, $friendUserId, $nickname) {
+  global $conn;
+  
+  if (!is_numeric($userId) || !is_numeric($friendUserId)) {
+    return ['success' => false, 'message' => 'Invalid user IDs'];
+  }
+  
+  // Validate nickname length
+  $nickname = trim($nickname);
+  if (strlen($nickname) > 50) {
+    return ['success' => false, 'message' => 'Nickname is too long (max 50 characters)'];
+  }
+  
+  // Check if they are friends
+  if (!AreFriends($userId, $friendUserId)) {
+    return ['success' => false, 'message' => 'Not friends with this user'];
+  }
+  
+  // Update the nickname
+  $query = "UPDATE friends SET nickname = ? WHERE userId = ? AND friendUserId = ? AND status = 'accepted'";
+  $stmt = $conn->prepare($query);
+  
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+  }
+  
+  $stmt->bind_param("sii", $nickname, $userId, $friendUserId);
+  
+  if ($stmt->execute()) {
+    $stmt->close();
+    return ['success' => true, 'message' => 'Nickname updated successfully'];
+  } else {
+    $error = $stmt->error;
+    $stmt->close();
+    return ['success' => false, 'message' => 'Failed to update nickname: ' . $error];
+  }
+}
+
