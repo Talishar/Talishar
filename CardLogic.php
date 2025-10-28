@@ -1413,7 +1413,9 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "ice_quake_red-HIT":
     case "ice_quake_yellow-HIT":
     case "ice_quake_blue-HIT":
-    
+    case "chill_to_the_bone_red":
+    case "chill_to_the_bone_yellow":
+    case "chill_to_the_bone_blue":
     case "shock_charmers":
     case "electrify_red":
     case "electrify_yellow":
@@ -1430,13 +1432,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "hack_to_reality_yellow-HIT":
     case "regain_composure_blue":
       AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      break;
-    case "chill_to_the_bone_red":
-    case "chill_to_the_bone_yellow":
-    case "chill_to_the_bone_blue":
-      if (IsHeroAttackTarget()) {
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      }
       break;
     case "mask_of_shifting_perspectives":
       if (SubtypeContains($source, "Dagger")) {

@@ -49,13 +49,6 @@
     mysqli_close($conn);
     exit;
   }
-  // Is the email taken already
-  if (emailExists($conn, $email) !== false) {
-    $response->error = "The provided email is already in use.";
-    echo(json_encode($response));
-    mysqli_close($conn);
-    exit;
-  }
 
   CreateUserAPI($conn, $username, $email, $pwd);
 
