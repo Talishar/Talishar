@@ -168,6 +168,7 @@ function MakeGamestateBackupHistory($gameName, $filepath = null)
 
 /**
  * Undo one step (move back in unified undo stack)
+ * When stepsBack=1 (single undo), skips turn checkpoints to only undo actions
  */
 function RevertGamestateByHistory($stepsBack, $gameName, $filepath = null)
 {
@@ -189,16 +190,40 @@ function RevertGamestateByHistory($stepsBack, $gameName, $filepath = null)
     return false;
   }
   
+  // For single undo (stepsBack=1), skip over turn checkpoints
+  // Only actual action entries should be undone by a single click
+  $searchPosition = $metadata["currentPosition"];
+  $actionCount = 0;
+  $targetIndex = -1;
+  
+  // Search backwards from current position to find the Nth action entry
+  for ($i = 0; $i < $stackSize; $i++) {
+    $checkIndex = $stackSize - 1 - $searchPosition - $i;
+    if ($checkIndex < 0) {
+      break;
+    }
+    
+    $entry = $stack[$checkIndex];
+    if ($entry["type"] === "action") {
+      $actionCount++;
+      if ($actionCount == $stepsBack) {
+        $targetIndex = $checkIndex;
+        break;
+      }
+    }
+  }
+  
+  if ($targetIndex === -1) {
+    return false;  // Couldn't find enough actions to undo
+  }
+  
+  $targetEntry = $stack[$targetIndex];
+  $newPosition = $stackSize - $targetIndex;
+  
   // Can't move further back than stack size
-  $newPosition = $metadata["currentPosition"] + $stepsBack;
   if ($newPosition > $stackSize) {
     return false;
   }
-  
-  // Get the backup entry at the target position (counting from most recent)
-  // Position 0 = live state (not in stack)
-  // Position N = stack[$stackSize - N]
-  $targetEntry = $stack[$stackSize - $newPosition];
   
   if ($targetEntry["type"] === "action") {
     $backupFilename = $filepath . BACKUP_FILE_PREFIX . $targetEntry["slot"] . ".txt";
