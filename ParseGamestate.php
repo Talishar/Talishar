@@ -380,6 +380,80 @@ function UpdateMainPlayerGameStateInner()
   $p2TurnStats = $mpgBuiltFor == 2 ? $mainTurnStats : $defTurnStats;
 }
 
+function MakeGamestateBackup($filename = "gamestateBackup.txt")
+{
+  global $filepath;
+  if(!file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
+  
+  // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, etc.)
+  if ($filename != "gamestateBackup.txt") {
+    $result = copy($filepath . "gamestate.txt", $filepath . $filename);
+    if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
+    return;
+  }
+  
+  // Multi-level undo: Rotate backups
+  // Shift all existing backups: 0->1, 1->2, 2->3, 3->4, delete 4
+  for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {
+    $oldFile = $filepath . "gamestateBackup_" . ($i - 1) . ".txt";
+    $newFile = $filepath . "gamestateBackup_" . $i . ".txt";
+    if (file_exists($oldFile)) {
+      copy($oldFile, $newFile);
+    }
+  }
+  
+  // Save current state as backup 0 (most recent)
+  $result = copy($filepath . "gamestate.txt", $filepath . "gamestateBackup_0.txt");
+  if(!$result) WriteLog("Copy of gamestate into gamestateBackup_0.txt failed.");
+}
+
+function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
+{
+  global $gameName, $skipWriteGamestate, $filepath;
+  
+  // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
+  if ($filename != "gamestateBackup.txt") {
+    if(!file_exists($filepath . $filename)) return;
+    copy($filepath . $filename, $filepath . "gamestate.txt");
+    $skipWriteGamestate = true;
+    $gamestate = file_get_contents($filepath . $filename);
+    WriteGamestateCache($gameName, $gamestate);
+    return;
+  }
+  
+  // Multi-level undo: Revert to backup N steps back
+  $targetBackup = $stepsBack - 1; // stepsBack=1 means backup_0, stepsBack=2 means backup_1, etc.
+  $backupFile = $filepath . "gamestateBackup_" . $targetBackup . ".txt";
+  
+  if(!file_exists($backupFile)) {
+    WriteLog("Cannot undo further: Please revert to start of this/previousturn instead.");
+    return;
+  }
+  
+  // Restore the target backup as current gamestate
+  copy($backupFile, $filepath . "gamestate.txt");
+  $skipWriteGamestate = true;
+  $gamestate = file_get_contents($backupFile);
+  WriteGamestateCache($gameName, $gamestate);
+  
+  // Shift backups: Remove the reverted backups and shift remaining ones
+  // If we reverted 2 steps, backups 0 and 1 are gone, backup 2 becomes 0, backup 3 becomes 1, etc.
+  for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+    $sourceIndex = $i + $stepsBack;
+    $sourceFile = $filepath . "gamestateBackup_" . $sourceIndex . ".txt";
+    $targetFile = $filepath . "gamestateBackup_" . $i . ".txt";
+    
+    if ($sourceIndex < MAX_UNDO_BACKUPS && file_exists($sourceFile)) {
+      copy($sourceFile, $targetFile);
+    } else {
+      // No more backups to shift, delete this slot
+      if (file_exists($targetFile)) {
+        unlink($targetFile);
+      }
+    }
+  }
+}
+
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $filepath, $gameName;
@@ -399,4 +473,21 @@ function MakeStartTurnBackup()
   
   // Add turn start checkpoint to unified undo stack (only one entry per turn)
   AddTurnStartToStack($gameName, $filepath);
+}
+
+function GetAvailableUndoSteps()
+{
+  global $filepath;
+  $availableSteps = 0;
+  
+  for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+    $backupFile = $filepath . "gamestateBackup_" . $i . ".txt";
+    if (file_exists($backupFile)) {
+      $availableSteps++;
+    } else {
+      break; // No more consecutive backups
+    }
+  }
+  
+  return $availableSteps;
 }

@@ -10,6 +10,9 @@ $Card_ResourceBanner = "banneret_of_vigor_yellow";
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
 
+// Multi-level undo configuration - Maximum number of undo backups to maintain
+define("MAX_UNDO_BACKUPS", 10);
+
 function DeckPieces()
 {
   return 1;
