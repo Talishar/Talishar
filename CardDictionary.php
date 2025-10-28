@@ -2270,7 +2270,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
       }
     }
   }
-  if (SearchCurrentTurnEffects("frost_lock_blue-3", $playerID) && CardCost($cardID, $from) == 0) {
+  if (SearchCurrentTurnEffects("frost_lock_blue-3", $playerID) && CardCost($cardID) == 0) {
     $restrictedBy = "frost_lock_blue";
     return true;
   }
