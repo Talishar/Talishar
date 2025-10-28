@@ -40,6 +40,11 @@ if (isset($_POST["submit"])) {
     header("location: ../Signup.php?error=usernametaken");
 		exit();
   }
+  // Is the email taken already
+  if (emailExists($conn, $email) !== false) {
+    header("location: ../Signup.php?error=emailtaken");
+		exit();
+  }
 
   // If we get to here, it means there are no user errors
 

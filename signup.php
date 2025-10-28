@@ -37,6 +37,8 @@ include_once 'MenuBar.php';
       echo "<p>Something went wrong!</p>";
     } else if ($_GET["error"] == "usernametaken") {
       echo "<p>Username already taken!</p>";
+    } else if ($_GET["error"] == "emailtaken") {
+      echo "<p>Email already taken!</p>";
     } else if ($_GET["error"] == "none") {
       echo "<h2>You've signed up!</h2>";
     }
