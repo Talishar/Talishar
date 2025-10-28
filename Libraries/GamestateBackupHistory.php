@@ -102,27 +102,25 @@ function MakeGamestateBackupHistory($gameName, $filepath = null)
     $metadata = LoadBackupMetadata($gameName, $filepath);
   }
   
-  // Check if the last backup in the stack has the same content as current gamestate
-  // This prevents duplicate backups when MakeGamestateBackup is called multiple times in quick succession
-  $lastStackEntry = count($metadata["undoStack"]) > 0 ? end($metadata["undoStack"]) : null;
-  $isDuplicate = false;
-  if ($lastStackEntry !== null && $lastStackEntry["type"] === "action") {
-    $lastBackupFile = $filepath . BACKUP_FILE_PREFIX . $lastStackEntry["slot"] . ".txt";
-    if (file_exists($lastBackupFile) && file_get_contents($lastBackupFile) === file_get_contents($filepath . "gamestate.txt")) {
-      // Current gamestate matches the last backup, don't create a duplicate
-      $isDuplicate = true;
-    }
-  }
-  
-  if ($isDuplicate) {
-    return true; // Successfully skipped duplicate backup
-  }
+  // DEBUG: Log state before truncation
+  $stackSizeBefore = count($metadata["undoStack"]);
+  $currentPosBefore = $metadata["currentPosition"];
+  WriteLog("BACKUP_DEBUG: Before truncation - Stack size: " . $stackSizeBefore . ", CurrentPosition: " . $currentPosBefore);
   
   // If we're not at the live state (currentPosition > 0), we're making a new action after an undo
   // In this case, truncate the stack to discard all "future" actions that are no longer reachable
   if ($metadata["currentPosition"] > 0) {
-    $newStackSize = count($metadata["undoStack"]) - $metadata["currentPosition"];
-    $metadata["undoStack"] = array_slice($metadata["undoStack"], 0, $newStackSize);
+    // CRITICAL: We must keep the current game state (before we started undoing) as a backup!
+    // The currentPosition tells us how many steps back we are. We need to find that state.
+    $stackSize = count($metadata["undoStack"]);
+    $currentStateIndex = $stackSize - $metadata["currentPosition"];
+    
+   // WriteLog("BACKUP_DEBUG: User made action after undo - currentStateIndex: " . $currentStateIndex . ", stackSize: " . $stackSize);
+    
+    // Truncate to remove "future" actions beyond our current undo position
+    $metadata["undoStack"] = array_slice($metadata["undoStack"], 0, $currentStateIndex);
+    
+   // WriteLog("BACKUP_DEBUG: After truncation - Stack size: " . count($metadata["undoStack"]));
   }
   
   // Get next action slot (rotating buffer)
@@ -136,6 +134,7 @@ function MakeGamestateBackupHistory($gameName, $filepath = null)
   
   // Add action to undo stack
   $metadata["undoStack"][] = ["type" => "action", "slot" => $slot];
+ // WriteLog("BACKUP_DEBUG: Created backup - slot: " . $slot . ", new stack size: " . count($metadata["undoStack"]));
   
   // If stack exceeds max, remove oldest ACTION items (preserve ALL turn checkpoints)
   while (count($metadata["undoStack"]) > MAX_BACKUP_SLOTS) {
@@ -186,55 +185,77 @@ function RevertGamestateByHistory($stepsBack, $gameName, $filepath = null)
   $stack = &$metadata["undoStack"];
   $stackSize = count($stack);
   
+  //WriteLog("UNDO_DEBUG: RevertGamestateByHistory called - stepsBack: " . $stepsBack . ", stackSize: " . $stackSize . ", currentPosition: " . $metadata["currentPosition"]);
+  
   if ($stackSize === 0) {
+    //WriteLog("UNDO_DEBUG: Stack is empty, cannot undo");
     return false;
   }
   
+  // Log the entire stack for debugging
+  $stackDebug = "";
+  for ($idx = 0; $idx < $stackSize; $idx++) {
+    $entry = $stack[$idx];
+    $stackDebug .= ($idx > 0 ? ", " : "") . $entry["type"];
+    if ($entry["type"] === "action") {
+      $stackDebug .= "(slot:" . $entry["slot"] . ")";
+    }
+  }
+ // WriteLog("UNDO_DEBUG: Stack contents: [" . $stackDebug . "]");
+  
   // For single undo (stepsBack=1), skip over turn checkpoints
   // Only actual action entries should be undone by a single click
-  $searchPosition = $metadata["currentPosition"];
   $actionCount = 0;
   $targetIndex = -1;
   
-  // Search backwards from current position to find the Nth action entry
-  for ($i = 0; $i < $stackSize; $i++) {
-    $checkIndex = $stackSize - 1 - $searchPosition - $i;
-    if ($checkIndex < 0) {
-      break;
-    }
-    
-    $entry = $stack[$checkIndex];
+  // Search backwards from live state (end of stack, accounting for currentPosition)
+  // Start from the most recent entry and work backwards
+  $searchStart = $stackSize - $metadata["currentPosition"] - 1;
+  
+  for ($i = $searchStart; $i >= 0; $i--) {
+    $entry = $stack[$i];
     if ($entry["type"] === "action") {
       $actionCount++;
+      //WriteLog("UNDO_DEBUG: Found action " . $actionCount . " at index " . $i . " (slot: " . $entry["slot"] . ")");
       if ($actionCount == $stepsBack) {
-        $targetIndex = $checkIndex;
+        $targetIndex = $i;
         break;
       }
     }
   }
   
   if ($targetIndex === -1) {
+    //WriteLog("UNDO_DEBUG: Could not find " . $stepsBack . " action(s) to undo. searchStart was: " . $searchStart);
     return false;  // Couldn't find enough actions to undo
   }
   
+  //WriteLog("UNDO_DEBUG: Target index found: " . $targetIndex);
+  
   $targetEntry = $stack[$targetIndex];
   $newPosition = $stackSize - $targetIndex;
+
+  //WriteLog("UNDO_DEBUG: newPosition will be: " . $newPosition . ", targetEntry type: " . $targetEntry["type"]);
   
   // Can't move further back than stack size
   if ($newPosition > $stackSize) {
+    //WriteLog("UNDO_DEBUG: newPosition exceeds stackSize");
     return false;
   }
   
   if ($targetEntry["type"] === "action") {
     $backupFilename = $filepath . BACKUP_FILE_PREFIX . $targetEntry["slot"] . ".txt";
+   // WriteLog("UNDO_DEBUG: Restoring from action backup slot " . $targetEntry["slot"]);
     if (!file_exists($backupFilename)) {
+     // WriteLog("UNDO_DEBUG: Backup file not found: " . $backupFilename);
       WriteLog("Action backup file not found: " . $backupFilename);
       return false;
     }
     if (!copy($backupFilename, $filepath . "gamestate.txt")) {
+      //WriteLog("UNDO_DEBUG: Failed to copy backup file to gamestate");
       return false;
     }
   } else if ($targetEntry["type"] === "turnStart") {
+    //WriteLog("UNDO_DEBUG: Restoring from turnStart backup");
     if (!file_exists($filepath . BEGIN_TURN_BACKUP)) {
       WriteLog("Turn start backup not found");
       return false;
@@ -243,6 +264,7 @@ function RevertGamestateByHistory($stepsBack, $gameName, $filepath = null)
       return false;
     }
   } else if ($targetEntry["type"] === "prevTurnStart") {
+    //WriteLog("UNDO_DEBUG: Restoring from prevTurnStart backup");
     if (!file_exists($filepath . LAST_TURN_BACKUP)) {
       WriteLog("Previous turn backup not found");
       return false;
@@ -257,6 +279,7 @@ function RevertGamestateByHistory($stepsBack, $gameName, $filepath = null)
   WriteGamestateCache($gameName, $gamestate);
   
   $metadata["currentPosition"] = $newPosition;
+  //WriteLog("UNDO_DEBUG: Undo successful - new currentPosition: " . $newPosition);
   SaveBackupMetadata($gameName, $metadata, $filepath);
   
   return true;
@@ -445,7 +468,9 @@ function GetAvailableUndoSteps($gameName, $filepath = null)
     return 0;
   }
   
-  return count($metadata["undoStack"]) - $metadata["currentPosition"];
+  $availableSteps = count($metadata["undoStack"]) - $metadata["currentPosition"];
+  //WriteLog("UNDO_DEBUG: GetAvailableUndoSteps - stackSize: " . count($metadata["undoStack"]) . ", currentPosition: " . $metadata["currentPosition"] . ", available: " . $availableSteps);
+  return $availableSteps;
 }
 
 /**
