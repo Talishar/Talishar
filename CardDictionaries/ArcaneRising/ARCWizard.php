@@ -276,6 +276,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
 //4: My Hero only (For afflictions)
 function PlayRequiresTarget($cardID, $from)
 {
+  //modal card targeting is handled elsewhere
   switch ($cardID) {
     case "blazing_aether_red":
       return 0;//Blazing Aether
