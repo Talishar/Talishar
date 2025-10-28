@@ -45,8 +45,10 @@
 
   function ClearLoginSession()
   {
-    //First clear the session
-    session_start();
+    // Only start session if it's not already active
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     session_unset();
     session_destroy();
 
@@ -60,9 +62,12 @@
     if (session_status() === PHP_SESSION_NONE) {
       // Set secure session parameters
       ini_set('session.cookie_httponly', 1);
-      ini_set('session.cookie_secure', 1);
+      // Only set secure flag if we're on HTTPS
+      if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        ini_set('session.cookie_secure', 1);
+      }
       ini_set('session.use_strict_mode', 1);
-      ini_set('session.cookie_samesite', 'Strict');
+      ini_set('session.cookie_samesite', 'Lax');
       
       session_start();
       
@@ -81,9 +86,12 @@
     if (session_status() === PHP_SESSION_NONE) {
       // Set secure session parameters
       ini_set('session.cookie_httponly', 1);
-      ini_set('session.cookie_secure', 1);
+      // Only set secure flag if we're on HTTPS
+      if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        ini_set('session.cookie_secure', 1);
+      }
       ini_set('session.use_strict_mode', 1);
-      ini_set('session.cookie_samesite', 'Strict');
+      ini_set('session.cookie_samesite', 'Lax');
       
       session_start();
       session_regenerate_id(true);
