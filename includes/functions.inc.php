@@ -965,7 +965,7 @@ function SendEmailAPI($userEmail, $url)
 	require '../vendor/autoload.php';
 
 	$email = new Mail();
-	$email->setFrom("no-reply@talishar.net", "No-Reply");
+	$email->setFrom("noreply@sendgrid.net", "Talishar");
 	$email->setSubject("Talishar Password Reset Link");
 	$email->addTo($userEmail);
 	$email->addContent(
@@ -984,6 +984,12 @@ function SendEmailAPI($userEmail, $url)
 	$sendgrid = new \SendGrid($sendgridKey);
 	try {
 		$response = $sendgrid->send($email);
+		$statusCode = $response->statusCode();
+		error_log("SendGrid email sent to $userEmail. Status: $statusCode");
+		if ($statusCode !== 202) {
+			error_log("SendGrid warning - unexpected status code: $statusCode");
+			error_log("Response body: " . $response->body());
+		}
 	} catch (Exception $e) {
 		error_log('SendGrid error: ' . $e->getMessage());
 	}
