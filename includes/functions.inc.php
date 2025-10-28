@@ -936,7 +936,13 @@ function LoadSavedSettings($playerId)
 
 function SendEmail($userEmail, $url)
 {
-	include "../../APIKeys.php";
+	// Get the path to APIKeys.php - it's at the root, two directories up from includes
+	$apiKeysPath = dirname(__DIR__) . '/../APIKeys.php';
+	if (!file_exists($apiKeysPath)) {
+		$apiKeysPath = dirname(dirname(__DIR__)) . '/APIKeys.php';
+	}
+	
+	include $apiKeysPath;
 	
 	// Log that we're attempting to send email
 	error_log("SendEmail called for: $userEmail");
@@ -947,13 +953,14 @@ function SendEmail($userEmail, $url)
 		return false;
 	}
 	
-	// Check if vendor/autoload.php exists
-	if (!file_exists('../vendor/autoload.php')) {
-		error_log("ERROR: SendGrid vendor/autoload.php not found at ../vendor/autoload.php");
+	// Check if vendor/autoload.php exists - relative to Talishar directory
+	$vendorPath = dirname(__DIR__) . '/vendor/autoload.php';
+	if (!file_exists($vendorPath)) {
+		error_log("ERROR: SendGrid vendor/autoload.php not found at $vendorPath");
 		return false;
 	}
 	
-	require '../vendor/autoload.php';
+	require $vendorPath;
 
 	try {
 		$email = new \SendGrid\Mail\Mail();
@@ -998,7 +1005,13 @@ function SendEmail($userEmail, $url)
 
 function SendEmailAPI($userEmail, $url)
 {
-	include "../../APIKeys.php";
+	// Get the path to APIKeys.php - it's at the root, two directories up from includes
+	$apiKeysPath = dirname(__DIR__) . '/../APIKeys.php';
+	if (!file_exists($apiKeysPath)) {
+		$apiKeysPath = dirname(dirname(__DIR__)) . '/APIKeys.php';
+	}
+	
+	include $apiKeysPath;
 	
 	// For development/testing: Log the reset link to file
 	$logMessage = "[" . date('Y-m-d H:i:s') . "] Password reset link for $userEmail: $url\n";
@@ -1010,13 +1023,14 @@ function SendEmailAPI($userEmail, $url)
 		return;
 	}
 	
-	// Check if vendor/autoload.php exists (SendGrid installed)
-	if (!file_exists('../vendor/autoload.php')) {
+	// Check if vendor/autoload.php exists - relative to Talishar directory
+	$vendorPath = dirname(__DIR__) . '/vendor/autoload.php';
+	if (!file_exists($vendorPath)) {
 		error_log("SendGrid dependencies not installed. Reset link logged to file for testing.");
 		return;
 	}
 	
-	require '../vendor/autoload.php';
+	require $vendorPath;
 
 	$email = new \SendGrid\Mail\Mail();
 	$email->setFrom("noreply@sendgrid.net", "Talishar");
