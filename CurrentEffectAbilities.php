@@ -162,13 +162,16 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       if (IsHeroAttackTarget()) PlayAura("frostbite", $defPlayer, effectController: $mainPlayer);
       break;
     case "chill_to_the_bone_red":
-      if (IsHeroAttackTarget()) PlayAura("frostbite", $defPlayer, 3, effectController: $mainPlayer);
+      PlayAura("frostbite", $defPlayer, 3, effectController: $mainPlayer);
+      SearchCurrentTurnEffects($cardID, $mainPlayer, true);
       break;
     case "chill_to_the_bone_yellow":
-      if (IsHeroAttackTarget()) PlayAura("frostbite", $defPlayer, 2, effectController: $mainPlayer);
+      PlayAura("frostbite", $defPlayer, 2, effectController: $mainPlayer);
+      SearchCurrentTurnEffects($cardID, $mainPlayer, true);
       break;
     case "chill_to_the_bone_blue":
-      if (IsHeroAttackTarget()) PlayAura("frostbite", $defPlayer, effectController: $mainPlayer);
+      PlayAura("frostbite", $defPlayer, effectController: $mainPlayer);
+      SearchCurrentTurnEffects($cardID, $mainPlayer, true);
       break;
     case "shock_charmers":
       if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
@@ -2268,6 +2271,9 @@ function IsCombatEffectPersistent($cardID)
     case "bam_bam_yellow":
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
+    case "chill_to_the_bone_red":
+    case "chill_to_the_bone_yellow":
+    case "chill_to_the_bone_blue":
       return true;
     default:
       return false;
