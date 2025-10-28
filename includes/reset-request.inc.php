@@ -42,12 +42,23 @@ if (isset($_POST['reset-request-submit'])) {
   mysqli_stmt_close($stmt);
   mysqli_close($conn);
 
+  // $to = $userEmail;
+
+  // $subject = 'Reset your password for Flesh and Blood Online';
+
+  // // Message
+  // $message = '<p>We recieved a password reset request. The link to reset your password is below. ';
+  // $message .= 'If you did not make this request, you can ignore this email</p>';
+  // $message .= '<p>Here is your password reset link: </br>';
+  // $message .= '<a href="' . $url . '">' . $url . '</a></p>';
+
+  // // Headers
+  // $headers = "From: Talishar <fleshandbloodonline@gmail.com>\r\n";
+  // $headers .= "Reply-To: fleshandbloodonline@gmail.com\r\n";
+  // $headers .= "Content-type: text/html\r\n";
+
   // Send e-mail
-  $emailSent = sendEmail($userEmail, $url);
-  
-  if (!$emailSent) {
-    error_log("WARNING: Email send function returned false for $userEmail");
-  }
+  sendEmail($userEmail, $url);
 
   // Finally we send them back to a page telling them to check their e-mail.
   header("Location: ../ResetPassword.php?reset=success");
