@@ -2266,6 +2266,8 @@ function IsCombatEffectPersistent($cardID)
     case "war_cry_of_bellona_yellow-DMG":
     case "fist_pump":
     case "bam_bam_yellow":
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
       return true;
     default:
       return false;
