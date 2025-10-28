@@ -18,9 +18,11 @@ if($_POST == NULL) {
 
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
-if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
-else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
+$authKey = $_POST["authKey"] ?? null;
+if (!$authKey) {
+  if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+  else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+}
 $action = $_POST["action"]; //"Go First" to choose to go first, anything else will choose to go second
 
 if (!IsGameNameValid($gameName)) {
