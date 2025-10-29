@@ -1665,7 +1665,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //cards with more complicated logic to figure out whether they can be used with an open chain
       //block the shortcut if they can't attack
       $blockShortcut = match ($cardID) {
-        "teklo_plasma_pistol", "plasma_barrel_shot" => !str_contains(GetAbilityNames($cardID, $index, $from), "Attack"),
+        "teklo_plasma_pistol", "plasma_barrel_shot" => str_contains(GetAbilityNames($cardID, $index, $from), "Attack"),
         default => false,
       };
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && (GetAbilityTypes($cardID, $index, $from) == "" || GetAbilityNames($cardID, $index, $from) == "-,Action") && !HasMeld($cardID)) {
