@@ -354,11 +354,11 @@ function ParseSettingsStringValueToIdInt(string $value)
     "MuteChat" => 14,
     "DisableStats" => 15,
     "IsCasterMode" => 16,
-    "IsStreamerMode" => 22,
-    "Playmat" => 23,
-    "AlwaysAllowUndo" => 24,
-    "DisableAltArts" => 25,
-    "ManualTunic" => 26,
+    "IsStreamerMode" => 23,
+    "Playmat" => 24,
+    "AlwaysAllowUndo" => 25,
+    "DisableAltArts" => 26,
+    "ManualTunic" => 27,
   ];
   return $settingsToId[$value];
 }
