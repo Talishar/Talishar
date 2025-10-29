@@ -1,4 +1,6 @@
 <?php
+const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
+
 function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, $isSimulation = false, $inputText = "")
 {
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
@@ -593,8 +595,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("Player " . $playerID . " undid their last action");
       } else {
         //It's competitive queue, so we must request confirmation
-        WriteLog("Player " . $playerID . " requests to undo the last action");
-        AddEvent("REQUESTUNDO", $playerID);
+        // Check if opponent has declined too many undo requests already
+        $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
+        $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
+        if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
+          AddEvent("UNDODENIEDNOTICE", $playerID);
+        } else {
+          WriteLog("Player " . $playerID . " requests to undo the last action");
+          AddEvent("REQUESTUNDO", $playerID);
+        }
       }
       break;
     case 10001:
@@ -614,9 +623,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("Player " . $playerID . " reverted back to a prior turn");
       } else {
         //It's competitive queue, so we must request confirmation
-        WriteLog("Player " . $playerID . " requests to undo the last action");
-        if ($buttonInput == "beginTurnGamestate.txt") AddEvent("REQUESTTHISTURNUNDO", $playerID);
-        else if ($buttonInput == "lastTurnGamestate.txt") AddEvent("REQUESTLASTTURNUNDO", $playerID);
+        // Check if opponent has declined too many undo requests already
+        $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
+        $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
+        if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
+          WriteLog("Player " . $playerID . " requested to undo but opponent has declined too many undo requests this turn");
+        } else {
+          WriteLog("Player " . $playerID . " requests to undo the last action");
+          if ($buttonInput == "beginTurnGamestate.txt") AddEvent("REQUESTTHISTURNUNDO", $playerID);
+          else if ($buttonInput == "lastTurnGamestate.txt") AddEvent("REQUESTLASTTURNUNDO", $playerID);
+        }
       }
       break;
     case 10004:
@@ -881,6 +897,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100017://Decline Undo
       WriteLog("Player " . $playerID . " declined the undo request");
+      // Increment the decline counter for THIS player (who is declining)
+      $declineCounterPiece = $playerID == 1 ? 17 : 18;
+      $currentDeclineCount = intval(GetCachePiece($gameName, $declineCounterPiece));
+      SetCachePiece($gameName, $declineCounterPiece, $currentDeclineCount + 1);
       break;
     case 100018://Confirm this turn undo
       RevertGamestate("beginTurnGamestate.txt");
@@ -1589,6 +1609,9 @@ function FinalizeTurn()
   $turn[0] = "M";
   $turn[2] = "";
   $turn[3] = "";
+  // Reset undo decline counters for both players at the start of each turn
+  SetCachePiece($GLOBALS['gameName'], 17, 0); // Reset player 1 undo decline counter
+  SetCachePiece($GLOBALS['gameName'], 18, 0); // Reset player 2 undo decline counter
   $actionPoints = 1;
   $combatChain = [];
   $currentTurnEffectsFromCombat = [];
