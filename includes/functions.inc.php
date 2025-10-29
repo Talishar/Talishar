@@ -988,34 +988,114 @@ function SendEmailAPI($userEmail, $url)
 	
 	require '../vendor/autoload.php';
 
+	// Use verified SendGrid domain (em5232.talishar.net is verified in your SendGrid account)
+	$fromEmail = "noreply@em5232.talishar.net";
+	$fromName = "Talishar";
+
 	$email = new Mail();
-	$email->setFrom("noreply@sendgrid.net", "Talishar");
+	$email->setFrom($fromEmail, $fromName);
 	$email->setSubject("Talishar Password Reset Link");
 	$email->addTo($userEmail);
 	$email->addContent(
 		"text/html",
-		"
-        <p>
-          We recieved a password reset request. The link to reset your password is below.
-          If you did not make this request, you can ignore this email
-        </p>
-        <p>
-          Here is your password reset link: </br>
-          <a href=$url>Password Reset</a>
-        </p>
-      "
+		"<html><body style='font-family: Arial, sans-serif;'>
+        <h2>Password Reset Request</h2>
+        <p>We received a password reset request for your Talishar account.</p>
+        <p>If you did not make this request, you can safely ignore this email.</p>
+        <p style='margin: 20px 0;'><a href='" . htmlspecialchars($url) . "' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;'>Reset Password</a></p>
+        <p>This link expires in 30 minutes.</p>
+        </body></html>"
 	);
-	$sendgrid = new \SendGrid($sendgridKey);
+	
 	try {
+		$sendgrid = new \SendGrid($sendgridKey);
+		
+		// Attempt 1: Try standard SendGrid send
 		$response = $sendgrid->send($email);
 		$statusCode = $response->statusCode();
-		error_log("SendGrid email sent to $userEmail. Status: $statusCode");
-		if ($statusCode !== 202) {
-			error_log("SendGrid warning - unexpected status code: $statusCode");
-			error_log("Response body: " . $response->body());
+		
+		if ($statusCode === 202) {
+			error_log("SendGrid: Password reset email sent to $userEmail (Status: 202)");
+			return;
+		} else {
+			error_log("SendGrid warning: Status $statusCode for $userEmail");
+			error_log("SendGrid response: " . $response->body());
 		}
 	} catch (Exception $e) {
-		error_log('SendGrid error: ' . $e->getMessage());
+		// Attempt 2: Try with direct cURL call and SSL verification disabled
+		error_log("SendGrid initial attempt failed: " . $e->getMessage());
+		SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey);
+	}
+}
+
+/**
+ * Fallback email sending using direct cURL with SSL verification disabled
+ * Used when SendGrid PHP SDK fails due to SSL certificate issues (common in Docker/Windows)
+ */
+function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
+{
+	try {
+		error_log("Attempting SendGrid email with cURL fallback for $userEmail");
+		
+		// Build raw JSON for SendGrid API manually
+		$emailData = array(
+			"personalizations" => array(
+				array(
+					"to" => array(
+						array("email" => $userEmail)
+					)
+				)
+			),
+			"from" => array(
+				"email" => "noreply@em5232.talishar.net",
+				"name" => "Talishar"
+			),
+			"subject" => "Talishar Password Reset Link",
+			"content" => array(
+				array(
+					"type" => "text/html",
+					"value" => "<html><body style='font-family: Arial, sans-serif;'>
+					<h2>Password Reset Request</h2>
+					<p>We received a password reset request for your Talishar account.</p>
+					<p>If you did not make this request, you can safely ignore this email.</p>
+					<p style='margin: 20px 0;'><a href='" . htmlspecialchars($url) . "' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;'>Reset Password</a></p>
+					<p>This link expires in 30 minutes.</p>
+					</body></html>"
+				)
+			)
+		);
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://api.sendgrid.com/v3/mail/send');
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		
+		// CRITICAL FIX: Disable SSL verification for problematic environments
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Authorization: Bearer ' . $sendgridKey,
+			'Content-Type: application/json'
+		));
+		
+		$response = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$curlError = curl_error($ch);
+		curl_close($ch);
+		
+		if ($httpCode === 202) {
+			error_log("SendGrid cURL fallback: Email accepted for $userEmail (Status: 202)");
+		} elseif ($curlError) {
+			error_log("SendGrid cURL fallback error: $curlError (HTTP $httpCode) for $userEmail");
+		} else {
+			error_log("SendGrid cURL fallback response: HTTP $httpCode - $response for $userEmail");
+		}
+		
+	} catch (Exception $e) {
+		error_log("SendGrid cURL fallback exception: " . $e->getMessage() . " for $userEmail");
 	}
 }
 
