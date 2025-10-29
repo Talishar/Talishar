@@ -3195,7 +3195,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "put_in_context_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 3) return true;
+      if (LinkBasePower() > 3) return true;
       return false;
     case "nip_at_the_heels_blue":
       if (!$CombatChain->HasCurrentLink()) return true;

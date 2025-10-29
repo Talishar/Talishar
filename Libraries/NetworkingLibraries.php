@@ -3822,6 +3822,18 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " fails to resolve because confidence is active and there are already 2 non-block card defending.");
       $skipDRResolution = true;
     }
+    // dreacts that can only defend specific things
+    switch ($cardID) {
+      case "put_in_context_blue":
+        if (LinkBasePower() > 3) {
+          $discard = new Discard($currentPlayer);
+          $discard->Add($cardID, "LAYER");
+          $skipDRResolution = true;
+        }
+        break;
+      default:
+        break;
+    }
     if (!$isBlock && CardType($cardID) == "AR") {
       if (substr($from, 0, 5) == "THEIR") AddGraveyard($cardID, $otherPlayer, $from, $currentPlayer);
       else AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
