@@ -13,8 +13,10 @@ SetHeaders();
 
 $response = new stdClass();
 $response->cardBacks = [];
-$numDefaultPlaymats = 16;
 $response->playmats = [];
+
+// Define default playmat IDs (kept in sync with frontend PLAYER_PLAYMATS)
+$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32];
 
 //Add default card back
 $cardBack = new stdClass();
@@ -23,11 +25,10 @@ $cardBack->id = 0;
 array_push($response->cardBacks, $cardBack);
 
 //Add default playmats
-for ($i = 0; $i < 16; ++$i) {
-  if($i == 7) continue;
+foreach ($defaultPlaymatIds as $playmatId) {
   $playmat = new stdClass();
-  $playmat->id = $i;
-  $playmat->name = GetPlaymatName($i);
+  $playmat->id = $playmatId;
+  $playmat->name = GetPlaymatName($playmatId);
   array_push($response->playmats, $playmat);
 }
 
@@ -72,31 +73,63 @@ function GetPlaymatName($id)
     case 3:
       return "Misteria";
     case 4:
-      return "Pits";
+      return "The Pits";
     case 5:
-      return "Savage";
+      return "Savage Lands";
     case 6:
       return "Solana";
     case 7:
-      return "Volcor";
+      return "Ironsong Determination";
     case 8:
-      return "Data-Doll";
+      return "Volcor";
     case 9:
-      return "Aria";
+      return "Data Doll";
     case 10:
-      return "Bare-Fangs-AHS";
+      return "Korshem";
     case 11:
-      return "Erase-Face-AHS";
+      return "Dynasty";
     case 12:
-      return "Dusk-Till-Dawn-AHS";
+      return "Everfest";
     case 13:
-      return "Exude-Confidence-AHS";
+      return "Find Center";
     case 14:
-      return "Command-and-Conquer-AHS";
+      return "Part The Mistveil";
     case 15:
-      return "Swarming-Gloomveil-AHS";
+      return "Rosetta";
     case 16:
-      return "FindCenter";
+      return "Bare Fangs AHS";
+    case 17:
+      return "Erase Face AHS";
+    case 18:
+      return "Dusk Till Dawn AHS";
+    case 19:
+      return "Exude Confidence AHS";
+    case 20:
+      return "Command and Conquer AHS";
+    case 21:
+      return "Swarming Gloomveil AHS";
+    case 22:
+      return "Three Floating";
+    case 23:
+      return "Man Sant";
+    case 24:
+      return "The Table Pit";
+    case 25:
+      return "Steelfur";
+    case 26:
+      return "Flesh And Bad";
+    case 27:
+      return "Fabled Brazil";
+    case 28:
+      return "New Horizons";
+    case 29:
+      return "Silvaris Garden";
+    case 30:
+      return "Candleheim";
+    case 31:
+      return "Isenloft";
+    case 32:
+      return "Volthaven";
     default:
       return "N/A";
   }
