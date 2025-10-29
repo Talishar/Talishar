@@ -417,6 +417,8 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+      AddDecisionQueue("ELSE", $currentPlayer, "-");
+      AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       Reload();
       return "";
     default:
