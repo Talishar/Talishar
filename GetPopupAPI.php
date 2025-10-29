@@ -172,7 +172,8 @@ function AddSetting(&$response, $name, $setting)
   $mySettings = &GetSettings($playerID);
   $thisSetting = new stdClass();
   $thisSetting->name = $name;
-  $thisSetting->value = $mySettings[$setting];
+  // Use isset to handle new settings that may not exist for existing players
+  $thisSetting->value = isset($mySettings[$setting]) ? $mySettings[$setting] : null;
   array_push($response, $thisSetting);
 }
 
