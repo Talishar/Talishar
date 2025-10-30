@@ -3106,11 +3106,20 @@ function NumChainLinks()
   return $numLinks;
 }
 
-function ClearGameFiles($gameName)
+function ClearGameFiles($gameName, $isRematch = false)
 {
-  @unlink("./Games/" . $gameName . "/gamestateBackup.txt");
-  @unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
-  @unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+  if ($isRematch) {
+    // For rematch, reset the undo backups with beginTurnGamestate
+    global $filepath;
+    $filepath = "./Games/" . $gameName . "/";
+    include_once "ParseGamestate.php";
+    ResetUndoBackupsForRematch();
+  } else {
+    // For normal cleanup, just unlink the files
+    @unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+    @unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+    @unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+  }
 }
 
 function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")

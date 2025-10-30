@@ -482,3 +482,26 @@ function GetAvailableUndoSteps()
   
   return $availableSteps;
 }
+
+function ResetUndoBackupsForRematch()
+{
+  global $filepath;
+  
+  // Check if beginTurnGamestate exists (it should at the start of a rematch)
+  $beginTurnFile = $filepath . "beginTurnGamestate.txt";
+  if (!file_exists($beginTurnFile)) {
+    return; // Nothing to reset if beginTurnGamestate doesn't exist
+  }
+  
+  $beginTurnContent = file_get_contents($beginTurnFile);
+  
+  // Populate all undo backup slots with beginTurnGamestate content
+  for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+    $backupFile = $filepath . "gamestateBackup_" . $i . ".txt";
+    file_put_contents($backupFile, $beginTurnContent);
+  }
+  
+  // Overwrite lastTurnGamestate with beginTurnGamestate as well
+  $lastTurnFile = $filepath . "lastTurnGamestate.txt";
+  file_put_contents($lastTurnFile, $beginTurnContent);
+}

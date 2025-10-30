@@ -2412,7 +2412,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $p2Health = &GetHealth(2);
         $p2Health = 1;
         $inGameStatus = $GameStatus_Rematch;
-        ClearGameFiles($gameName);
+        ClearGameFiles($gameName, true);
       }
       return 0;
     case "PLAYERTARGETEDABILITY":
