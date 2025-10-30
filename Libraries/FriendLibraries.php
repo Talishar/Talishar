@@ -355,7 +355,7 @@ function FindUserByUsername($username) {
     return null;
   }
   
-  $query = "SELECT usersId, usersUid FROM users WHERE usersUid = ? LIMIT 1";
+  $query = "SELECT usersId, usersUid FROM users WHERE LOWER(usersUid) = LOWER(?) LIMIT 1";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return null;
