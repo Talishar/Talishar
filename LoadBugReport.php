@@ -1,6 +1,9 @@
 <?php
 
 include './APIKeys/APIKeys.php';
+include './Libraries/HTTPLibraries.php';
+include_once './Libraries/SHMOPLibraries.php';
+include_once './HostFiles/Redirector.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   http_response_code(405);
@@ -26,6 +29,16 @@ SaveFile($source, $target, "gamestate.txt");
 SaveFile($source, $target, "gamestateBackup.txt");
 SaveFile($source, $target, "beginTurnGamestate.txt");
 SaveFile($source, $target, "lastTurnGamestate.txt");
+
+// Clear the gamestate cache to force reload from file
+// Read the new gamestate file and write it to cache
+$newGamestate = file_get_contents("./Games/{$target}/gamestate.txt");
+if ($newGamestate !== false) {
+  WriteGamestateCache($target, $newGamestate);
+}
+
+// Update gamestate to trigger SSE refresh
+GamestateUpdated($target);
 
 echo json_encode(array('success' => true));
 

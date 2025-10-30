@@ -113,8 +113,9 @@ function GetCachePiece($name, $piece)
 function IncrementCachePiece($gameName, $piece)
 {
   $oldVal = GetCachePiece($gameName, $piece);
-  SetCachePiece($gameName, $piece, $oldVal + 1);
-  return $oldVal + 1;
+  $intVal = (int)$oldVal; // Cast to int to handle empty strings
+  SetCachePiece($gameName, $piece, $intVal + 1);
+  return $intVal + 1;
 }
 
 function GamestateUpdated($gameName)
