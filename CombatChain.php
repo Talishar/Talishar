@@ -1156,7 +1156,7 @@ function OnBlockResolveEffects($cardID = "")
           break;
         case "apex_bonebreaker":
           $num6Block = 0;
-          for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+          for ($j = $start; $j < count($combatChain); $j += CombatChainPieces()) {
             if (ModifiedPowerValue($combatChain[$j], $defPlayer, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
           }
           if ($num6Block) {

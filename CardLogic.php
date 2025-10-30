@@ -3142,17 +3142,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "kayo_armed_and_dangerous":
       case "kayo":
       case "canopy_shelter_blue":
-        PlayAura("might", $player);
-        break;
       case "apex_bonebreaker":
-        $num6Block = 0;
-        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-          if ($CombatChain->Card($i)->TotalPower() >= 6) ++$num6Block;
-        }
-        if ($num6Block) {
-          PlayAura("might", $player);
-          WriteLog(CardLink("apex_bonebreaker", "apex_bonebreaker") . " created a " . CardLink("might", "might") . " token");
-        }
+        PlayAura("might", $player);
+        WriteLog(CardLink($parameter, $parameter) . " created a " . CardLink("might", "might") . " token");
         break;
       case "pack_call_red":
       case "pack_call_blue":
