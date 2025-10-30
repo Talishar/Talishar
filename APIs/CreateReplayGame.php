@@ -125,8 +125,41 @@ $gameStatus = 5; //Game started
 
 $firstPlayerChooser = "";
 $firstPlayer = 1;
-$p1Key = hash("sha256", rand() . rand());
-$p2Key = hash("sha256", rand() . rand() . rand());
+
+// Extract original auth keys from the replay gamestate file
+// Auth keys are stored in the gamestate file - p1Key and p2Key come after chainLinkSummary
+// Simpler approach: parse the file and look for the auth key pattern (SHA256 hashes are 64 hex chars)
+$origGamestateContent = file_get_contents($replayPath . "origGamestate.txt");
+$gamestateLine = explode("\r\n", $origGamestateContent);
+
+// SHA256 hashes are 64 character hex strings - look for them in the file
+$p1Key = "";
+$p2Key = "";
+
+// Search from near the end since auth keys come late in the file
+for ($i = count($gamestateLine) - 1; $i >= 0; $i--) {
+  $line = trim($gamestateLine[$i]);
+  // Check if this line is a valid SHA256 hash (64 hex characters)
+  if (strlen($line) === 64 && ctype_xdigit($line)) {
+    if ($p2Key === "") {
+      $p2Key = $line;
+    } elseif ($p1Key === "") {
+      $p1Key = $line;
+      break; // Found both keys
+    }
+  }
+}
+
+// Debug logging
+error_log("Replay GameState Debug: p1Key=$p1Key, p2Key=$p2Key");
+
+// Fallback to generating new keys if extraction fails
+if (empty($p1Key) || empty($p2Key)) {
+  error_log("Replay: Auth key extraction failed, generating new keys");
+  $p1Key = hash("sha256", rand() . rand());
+  $p2Key = hash("sha256", rand() . rand() . rand());
+}
+
 $p1uid = "-";
 $p2uid = "-";
 $p1id = "-";
