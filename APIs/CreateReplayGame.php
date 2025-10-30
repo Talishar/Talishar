@@ -150,9 +150,6 @@ for ($i = count($gamestateLine) - 1; $i >= 0; $i--) {
   }
 }
 
-// Debug logging
-error_log("Replay GameState Debug: p1Key=$p1Key, p2Key=$p2Key");
-
 // Fallback to generating new keys if extraction fails
 if (empty($p1Key) || empty($p2Key)) {
   error_log("Replay: Auth key extraction failed, generating new keys");
