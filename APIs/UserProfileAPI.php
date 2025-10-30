@@ -1,12 +1,6 @@
 <?php
 
 include_once "../AccountFiles/AccountSessionAPI.php";
-
-if (!IsUserLoggedIn()) {
-  echo (json_encode(new stdClass()));
-  exit;
-}
-
 include_once "../CardDictionary.php";
 include_once "../Libraries/UILibraries.php";
 include_once "../APIKeys/APIKeys.php";
@@ -15,6 +9,11 @@ include_once "../includes/dbh.inc.php";
 include_once "../Libraries/HTTPLibraries.php";
 
 SetHeaders();
+
+if (!IsUserLoggedIn()) {
+  echo (json_encode(new stdClass()));
+  exit;
+}
 
 $response = new stdClass();
 // $response->badges = [];
