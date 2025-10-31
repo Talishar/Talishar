@@ -1343,10 +1343,10 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
     "barbed_castaway" => "I,I",
 
+    "restless_coalescence_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", 
     "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", 
     "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", 
-    "restless_coalescence_yellow", 
     "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", 
     "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", 
     "ripple_away_blue", "under_the_trap_door_blue", 
@@ -1480,7 +1480,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "haunting_rendition_red": case "mental_block_blue":
       return "Block,Ability";
     case "restless_coalescence_yellow":
-      $canAttack = CanAttack($cardID, "PLAY", $index, "MYAURA", isWeapon:true);
+      $canAttack = CanAttack($cardID, "PLAY", $index, "MYAURA", type:"AA");
       if ($auras[$index + 3] > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;

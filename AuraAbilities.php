@@ -1641,7 +1641,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       Charge(may: false);
       break;
     case "restless_coalescence_yellow":
-      $abilityType = GetResolvedAbilityType($cardID);
+      $abilityType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
       if ($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1) {
         --$auras[$index + 3];
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]));
@@ -1652,6 +1652,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       break;
     case "fealty":
       DestroyAura($currentPlayer, $index);
+      break;
     default:
       break;
   }
