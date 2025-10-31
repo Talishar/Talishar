@@ -240,7 +240,6 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
         DestroyCharacter($player, $indexWeapon);
         $indexEquipment = FindCharacterIndex($player, "nitro_mechanoidb");
         DestroyCharacter($player, $indexEquipment, true);
-        SearchCurrentTurnEffects("galvanic_bender-UNDER", $player, true);
       }
       unset($items[$i]);
     }
@@ -266,7 +265,6 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
       RemoveCharacter($srcPlayer, $indexEquipment);
       $indexWeapon = FindCharacterIndex($srcPlayer, "nitro_mechanoida");
       RemoveCharacter($srcPlayer, $indexWeapon);
-      SearchCurrentTurnEffects("galvanic_bender-UNDER", $srcPlayer, true);
     }
     if($i == 8 && $mod != 0) {//8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
       $srcItems[$index + $i] = $srcItems[$index + $i] == "-" ? $mod : $srcItems[$index + $i] . ",$mod";

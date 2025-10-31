@@ -348,17 +348,6 @@ function CharacterDestroyEffect($cardID, $player)
 function CharacterBanishEffect($cardID, $player)
 {
   switch ($cardID) {
-    case "galvanic_bender":
-      global $currentTurnEffects;
-      $effectsCount = count($currentTurnEffects);
-      $effectPieces = CurrentTurnEffectsPieces();
-      for ($i = 0; $i < $effectsCount; $i += $effectPieces) {
-        if ($currentTurnEffects[$i] == "galvanic_bender-UNDER") {
-          RemoveCurrentTurnEffect($i);
-          break;
-        }
-      }
-      break;
     default:
       break;
   }
