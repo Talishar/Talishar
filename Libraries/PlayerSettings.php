@@ -35,6 +35,7 @@ $SET_Playmat = 24; //Did this player enable caster mode
 $SET_AlwaysAllowUndo = 25;//Do you want to always allow undo
 $SET_DisableAltArts = 26;//Do you want to disable alt arts
 $SET_ManualTunic = 27;//Do you want to manually tick up tunic each turn
+$SET_DisableFabInsights = 28; //Did the player disable global stat tracking
 
 function HoldPrioritySetting($player)
 {
@@ -302,6 +303,14 @@ function AreStatsDisabled($player)
   return $settings[$SET_DisableStats] == "1";
 }
 
+function AreGlobalStatsDisabled($player)
+{
+  global $SET_DisableFabInsights;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_DisableFabInsights] == "1";
+}
+
 function IsCasterMode()
 {
   global $SET_CasterMode;
@@ -359,6 +368,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "AlwaysAllowUndo" => 25,
     "DisableAltArts" => 26,
     "ManualTunic" => 27,
+    "DisableFabInsights" => 28,
   ];
   return $settingsToId[$value];
 }
@@ -390,7 +400,7 @@ function SaveSettingInDatabase($setting)
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
-  global $SET_ManualTunic;
+  global $SET_ManualTunic, $SET_DisableFabInsights;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -409,6 +419,7 @@ function SaveSettingInDatabase($setting)
     case $SET_AlwaysAllowUndo:
     case $SET_DisableAltArts:
     case $SET_ManualTunic:
+    case $SET_DisableFabInsights:
       return true;
     default: return false;
   }

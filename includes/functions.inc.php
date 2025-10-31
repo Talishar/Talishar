@@ -369,11 +369,17 @@ function logCompletedGameStats()
 
 	if (!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if (!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
-	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
-	
+	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
+		WriteLog("Sending game result to Fabrary", highlight:true);
+		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+	}
+	else WriteLog("No results sent to Fabrary as a player disabled stats", highlight:true);
 	// Sends data to FabInsights DB
-	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
-
+	if (!AreStatsDisabled(1) && !AreStatsDisabled(2) && !AreGlobalStatsDisabled(1) && !AreGlobalStatsDisabled(2)) {
+		WriteLog("Sending game result to FaBInsights", highlight:true);
+		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+	}
+	else WriteLog("No results sent to FaBInsights as a player disabled stats", highlight:true);
 	mysqli_close($conn);
 }
 
