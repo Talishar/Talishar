@@ -587,22 +587,24 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
     case 10000: //Undo
-      $format = GetCachePiece($gameName, 13);
-      $char = &GetPlayerCharacter($otherPlayer);
-      if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
-        RevertGamestate();
-        $skipWriteGamestate = true;
-        WriteLog("Player " . $playerID . " undid their last action");
-      } else {
-        //It's competitive queue, so we must request confirmation
-        // Check if opponent has declined too many undo requests already
-        $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
-        $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
-        if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
-          AddEvent("UNDODENIEDNOTICE", $playerID);
+      if (!IsReplay()) {
+        $format = GetCachePiece($gameName, 13);
+        $char = &GetPlayerCharacter($otherPlayer);
+        if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
+          RevertGamestate();
+          $skipWriteGamestate = true;
+          WriteLog("Player " . $playerID . " undid their last action");
         } else {
-          WriteLog("Player " . $playerID . " requests to undo the last action");
-          AddEvent("REQUESTUNDO", $playerID);
+          //It's competitive queue, so we must request confirmation
+          // Check if opponent has declined too many undo requests already
+          $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
+          $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
+          if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
+            AddEvent("UNDODENIEDNOTICE", $playerID);
+          } else {
+            WriteLog("Player " . $playerID . " requests to undo the last action");
+            AddEvent("REQUESTUNDO", $playerID);
+          }
         }
       }
       break;

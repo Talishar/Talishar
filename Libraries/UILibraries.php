@@ -222,7 +222,7 @@ function JSONRenderedCard(
 
   if($gem !== NULL) $card->gem = $gem;
   if($cardNumber !== NULL) $card->cardNumber = $cardNumber;
-  if($action !== NULL) $card->action = $action;
+  if($action !== NULL && !IsReplay()) $card->action = $action;
   if($overlay !== NULL) $card->overlay = $overlay;
   if($borderColor !== NULL) $card->borderColor = $borderColor;
   if($counters !== NULL) $card->counters = $counters;
