@@ -25,6 +25,23 @@ if (!$source || !$target) {
   exit();
 }
 
+// Validate that the bug report exists on the remote server
+$test_url = "https://legacy.talishar.net/game/BugReports/{$source}/gamestate.txt";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $test_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+curl_setopt($ch, CURLOPT_NOBODY, 1);
+curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($http_code != 200) {
+  http_response_code(404);
+  echo json_encode(array('error' => "Bug report {$source} does not exist"));
+  exit();
+}
+
 SaveFile($source, $target, "gamestate.txt");
 SaveFile($source, $target, "gamestateBackup.txt");
 SaveFile($source, $target, "beginTurnGamestate.txt");
@@ -43,7 +60,7 @@ GamestateUpdated($target);
 echo json_encode(array('success' => true));
 
 function SaveFile($source, $target, $file) {
-  $source_path = "https://legacy.talishar.net/game/BugReports/{$source}-0/{$file}";
+  $source_path = "https://legacy.talishar.net/game/BugReports/{$source}/{$file}";
   $target_path = "./Games/{$target}/{$file}";
   $target_realpath = "./$target_path";
   $gs_path = "./Games/{$target}/gamestate.txt";
