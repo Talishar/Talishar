@@ -453,6 +453,10 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
 }
 
+function SaveReplay() {
+  return false;
+}
+
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $filepath;
@@ -464,9 +468,12 @@ function MakeStartTurnBackup()
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 1 && !file_exists($startGameFN)) {
     copy($filepath . "gamestate.txt", $startGameFN);
   }
-  if (false) {
+  if (SaveReplay()) {
     $numberedTurnFN = $filepath . "turn_$currentTurn" . "_Gamestate.txt";
     copy($filepath . "gamestate.txt", $numberedTurnFN);
+    $commandFile = fopen("$filepath/commandfile.txt", "a");
+    fwrite($commandFile, "StartTurn $currentTurn\r\n");
+    fclose($commandFile);
   }
 }
 

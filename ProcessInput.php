@@ -78,8 +78,8 @@ if(IsReplay() && $mode == 99)
 {
   $filename = "./Games/$gameName/replayCommands.txt";
   $file = file($filename);
-  $line = $file[0];
-  unset($file[0]);
+  // $pointer = explode("\n", $file;
+  $line = $file[$pointer];
   $params = explode(" ", $line);
   $playerID = $params[0];
   $mode = $params[1];
@@ -94,11 +94,12 @@ if(IsReplay() && $mode == 99)
   //Automate extra passes
   for($i=1; $i<count($file); ++$i)
   {
-    $line = $file[$i];
+    ++$file[0];
+    $pointer = $file[0];
+    $line = $file[$pointer];
     $params = explode(" ", $line);
     if(intval($mode) != 99 || intval($params[1]) != 99) break;
     ++$numPass;
-    unset($file[$i]);
   }
   file_put_contents($filename, $file);
 }
@@ -138,7 +139,7 @@ $animations = [];
 $events = [];//Clear events each time so it's only updated ones that get sent
 
 // if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
-if (false && !IsReplay()) {
+if (SaveReplay() && !IsReplay()) {
   $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
   fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);

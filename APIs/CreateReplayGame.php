@@ -212,6 +212,10 @@ if (!empty($copyErrors)) {
   exit;
 }
 
+$commandFile = file_get_contents($commandFileDest);
+$commandFile = "0\r\n$commandFile";
+file_put_contents($commandFileDest, $commandFile);
+
 //Write initial gamestate to memory
 $gamestate = file_get_contents("../Games/" . $gameName . "/gamestate.txt");
 if ($gamestate === false) {
