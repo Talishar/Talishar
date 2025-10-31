@@ -137,7 +137,8 @@ $afterResolveEffects = [];
 $animations = [];
 $events = [];//Clear events each time so it's only updated ones that get sent
 
-if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
+// if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
+if (true && !IsReplay()) {
   $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
   fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
