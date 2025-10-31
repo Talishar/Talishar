@@ -1106,9 +1106,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CREMATION":
       $discard = GetDiscard($otherPlayer);
       for ($i = count($discard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
-        if (ShareName(CardName($discard[$i]), GamestateUnsanitize($lastResult))) {
-          BanishCardForPlayer($discard[$i], $otherPlayer, "DISCARD", banishedBy:"talisman_of_cremation_blue", banisher: $player);
-          RemoveDiscard($otherPlayer, $i);
+        if (!isFaceDownMod($discard[$i+2])) {
+          if (ShareName(CardName($discard[$i]), GamestateUnsanitize($lastResult))) {
+            BanishCardForPlayer($discard[$i], $otherPlayer, "DISCARD", banishedBy:"talisman_of_cremation_blue", banisher: $player);
+            RemoveDiscard($otherPlayer, $i);
+          }
         }
       }
       return $lastResult;
