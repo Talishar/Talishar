@@ -370,16 +370,16 @@ function logCompletedGameStats()
 	if (!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
 	if (!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
-		WriteLog("Sending game result to Fabrary", highlight:true);
+		WriteLog("Sending game result to <b>Fabrary</b>", highlight:true);
 		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
 	}
-	else WriteLog("No results sent to Fabrary as a player disabled stats", highlight:true);
+	else WriteLog("No results sent to <b>Fabrary</b> as a player disabled stats", highlight:true);
 	// Sends data to FabInsights DB
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2) && !AreGlobalStatsDisabled(1) && !AreGlobalStatsDisabled(2)) {
-		WriteLog("Sending game result to FaBInsights", highlight:true);
+		WriteLog("Sending game result to <b>FaBInsights</b>", highlight:true);
 		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
 	}
-	else WriteLog("No results sent to FaBInsights as a player disabled stats", highlight:true);
+	else WriteLog("No results sent to <b>FaBInsights</b> as a player disabled stats", highlight:true);
 	mysqli_close($conn);
 }
 
@@ -549,9 +549,26 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	if($winner == "1" || $winner == "2") {
+		$deck["winner"] = intval($winner);
+	}
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
+	
+	// Add hero information for display
+	// Get the player's own hero from the character array (first card in character section)
+	$characterCards = explode(" ", $character);
+	if(count($characterCards) > 0) {
+		$yourHeroCardID = GetNormalCardID($characterCards[0]);
+		$deck["yourHero"] = $yourHeroCardID;
+	}
+	
+	// Add opponent's hero if provided
+	if($opposingHero != "") {
+		$deck["opponentHero"] = GetNormalCardID($opposingHero);
+	}
+	
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
 
@@ -705,6 +722,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($playerHero != "") $deck["playerHero"] = $playerHero;

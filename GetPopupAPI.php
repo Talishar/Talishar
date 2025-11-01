@@ -105,7 +105,21 @@ switch ($popupType) {
     break;
   case "myStatsPopup":
     if($turn[0] == "OVER") SetCachePiece($gameName, 14, 99);//$MGS_GameOver
-    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, includeFullLog:true));
+    // Get opponent's hero for export display
+    $opponentPlayerID = ($playerID == 1 ? 2 : 1);
+    $opponentDeckFile = "./Games/" . $gameName . "/p" . $opponentPlayerID . "Deck.txt";
+    $opponentHero = "";
+    if(file_exists($opponentDeckFile)) {
+      $opponentDeckContent = file_get_contents($opponentDeckFile);
+      $opponentDeckLines = explode("\r\n", $opponentDeckContent);
+      if(count($opponentDeckLines) > 0) {
+        $opponentHeroLine = explode(" ", trim($opponentDeckLines[0]));
+        if(count($opponentHeroLine) > 0) {
+          $opponentHero = $opponentHeroLine[0];
+        }
+      }
+    }
+    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, $opponentHero, "", "", includeFullLog:true));
     exit;
   case "mySoulPopup":
     JSONPopup($response, $mySoul, SoulPieces());
