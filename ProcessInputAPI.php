@@ -149,6 +149,13 @@ switch ($mode) {
       $origDeckSize = GetClassState($playerID, $CS_CardsInDeckBeforeOpt);
       $proposedDeckSize = $deck->RemainingCards() + count($cardListTop) + count($cardListBottom);
       if ($origDeckSize == "-" || $origDeckSize == $proposedDeckSize) {
+        if (!IsReplay()) {
+          $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
+          $top = implode(",", $cardListTop);
+          $bot = implode(",", $cardListBottom);
+          fwrite($commandFile, "$playerID OPT $top $bot 0\r\n");
+          fclose($commandFile);
+        }
         $deck->Opt($cardListTop, $cardListBottom);
         $topCount = count($cardListTop);
         $bottomCount = count($cardListBottom);
@@ -168,6 +175,12 @@ switch ($mode) {
       break;
     case 109: // reorder triggers
       $cardList = $submission->cardListTop;
+      if (!IsReplay()) {
+          $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
+          $cards = implode(",", $cardList);
+          fwrite($commandFile, "$playerID REORDER $cards 0 0\r\n");
+          fclose($commandFile);
+        }
       foreach ($cardList as $card) {
         $index = -1;
         for ($i = 0; $i < count($layers); $i += LayerPieces()) {

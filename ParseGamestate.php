@@ -454,7 +454,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 }
 
 function SaveReplay() {
-  return false;
+  return true;
 }
 
 function MakeStartTurnBackup()
@@ -472,7 +472,7 @@ function MakeStartTurnBackup()
     $numberedTurnFN = $filepath . "turn_$currentTurn" . "_Gamestate.txt";
     copy($filepath . "gamestate.txt", $numberedTurnFN);
     $commandFile = fopen("$filepath/commandfile.txt", "a");
-    fwrite($commandFile, "StartTurn $currentTurn\r\n");
+    fwrite($commandFile, "$mainPlayer StartTurn $currentTurn 0\r\n");
     fclose($commandFile);
   }
 }

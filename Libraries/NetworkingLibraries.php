@@ -587,24 +587,22 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
     case 10000: //Undo
-      if (!IsReplay()) {
-        $format = GetCachePiece($gameName, 13);
-        $char = &GetPlayerCharacter($otherPlayer);
-        if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
-          RevertGamestate();
-          $skipWriteGamestate = true;
-          WriteLog("Player " . $playerID . " undid their last action");
+      $format = GetCachePiece($gameName, 13);
+      $char = &GetPlayerCharacter($otherPlayer);
+      if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
+        RevertGamestate();
+        $skipWriteGamestate = true;
+        WriteLog("Player " . $playerID . " undid their last action");
+      } else {
+        //It's competitive queue, so we must request confirmation
+        // Check if opponent has declined too many undo requests already
+        $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
+        $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
+        if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
+          AddEvent("UNDODENIEDNOTICE", $playerID);
         } else {
-          //It's competitive queue, so we must request confirmation
-          // Check if opponent has declined too many undo requests already
-          $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
-          $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
-          if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
-            AddEvent("UNDODENIEDNOTICE", $playerID);
-          } else {
-            WriteLog("Player " . $playerID . " requests to undo the last action");
-            AddEvent("REQUESTUNDO", $playerID);
-          }
+          WriteLog("Player " . $playerID . " requests to undo the last action");
+          AddEvent("REQUESTUNDO", $playerID);
         }
       }
       break;
@@ -914,6 +912,44 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100020://Decline chat request
       WriteLog("🚫 Player " . $playerID . " declined the invitation to chat");
+      break;
+    case "OPT": // should only show up in replays
+      $deck = new Deck($playerID);
+      $cardListTop = explode(",", $buttonInput);
+      $cardListBottom = explode(",", $cardID);
+      $deck->Opt($cardListTop, $cardListBottom);
+      $topCount = count($cardListTop);
+      $bottomCount = count($cardListBottom);
+      $topMessage = $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+      $bottomMessage = $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+      WriteLog("Player " . $playerID . " has put " . $topMessage . " and " . $bottomMessage . " of their deck.");
+      ContinueDecisionQueue();
+      break;
+    case "REORDER": // should only show up in replays
+      $cardList = explode(",", $buttonInput);
+      foreach ($cardList as $card) {
+        $index = -1;
+        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+          if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
+            $index = $i;
+          }
+        }
+        if ($index != -1) {
+          $pretrigger = array_slice($layers, $index, LayerPieces());
+          $pretrigger[0] = "TRIGGER";
+          for ($j = $index + LayerPieces() - 1; $j >= $index; --$j) {
+            unset($layers[$j]);
+          }
+          $layers = array_merge($pretrigger, $layers);
+        }
+      }
+      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID) {
+          WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
+          $layers[$i] = "TRIGGER";
+        }
+      }
+      ContinueDecisionQueue();
     default:
       break;
   }
