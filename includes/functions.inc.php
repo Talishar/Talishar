@@ -549,9 +549,26 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	if($winner == "1" || $winner == "2") {
+		$deck["winner"] = intval($winner);
+	}
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
+	
+	// Add hero information for display
+	// Get the player's own hero from the character array (first card in character section)
+	$characterCards = explode(" ", $character);
+	if(count($characterCards) > 0) {
+		$yourHeroCardID = GetNormalCardID($characterCards[0]);
+		$deck["yourHero"] = $yourHeroCardID;
+	}
+	
+	// Add opponent's hero if provided
+	if($opposingHero != "") {
+		$deck["opponentHero"] = GetNormalCardID($opposingHero);
+	}
+	
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
 
@@ -705,6 +722,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($playerHero != "") $deck["playerHero"] = $playerHero;
@@ -909,6 +927,9 @@ function SaveSetting($playerId, $settingNumber, $value)
 {
 	if($playerId == "") return;
 	$conn = GetDBConnection();
+	if (!$conn) {
+		return;
+	}
 	$sql = "insert into savedsettings (playerId, settingNumber, settingValue) values (?, ?, ?) ON DUPLICATE KEY UPDATE settingValue = VALUES(settingValue);";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
@@ -921,7 +942,9 @@ function SaveSetting($playerId, $settingNumber, $value)
 
 function LoadSavedSettings($playerId)
 {
-	if($playerId == "") return [];
+	if($playerId == "") {
+		return [];
+	}
 	$output = [];
 	$conn = GetDBConnection();
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
