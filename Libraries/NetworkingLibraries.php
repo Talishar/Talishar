@@ -2913,7 +2913,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       case "evo_battery_pack_yellow_equip":
       case "evo_cogspitter_yellow_equip":
       case "evo_charging_rods_yellow_equip":
-        CharacterChooseSubcard($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), fromDQ: true);
+        CharacterChooseSubcard($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), fromDQ: true, actionName:"destroy");
         AddDecisionQueue("ADDDISCARD", $currentPlayer, "-", 1);
         break;
       default:

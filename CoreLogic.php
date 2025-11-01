@@ -3620,7 +3620,7 @@ function CharacterAddSubcard($player, $index, $card)
   else $char[$index + 10] = $char[$index + 10] . "," . $card;
 }
 
-function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true)
+function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish")
 {
   $character = &GetPlayerCharacter($player);
   $subcards = explode(",", $character[$index + 10]);
@@ -3632,14 +3632,14 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
   }
   if ($chooseMultizoneData != "") {
     if ($count == 1) {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from " . CardName($character[$index]));
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to $actionName from " . CardName($character[$index]));
       if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
       else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData);
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index, 1);
       AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     } else {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to $actionName from " . CardName($character[$index]));
       AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index);
       AddDecisionQueue("REMOVESUBCARD", $player, $index);
