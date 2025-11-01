@@ -927,6 +927,9 @@ function SaveSetting($playerId, $settingNumber, $value)
 {
 	if($playerId == "") return;
 	$conn = GetDBConnection();
+	if (!$conn) {
+		return;
+	}
 	$sql = "insert into savedsettings (playerId, settingNumber, settingValue) values (?, ?, ?) ON DUPLICATE KEY UPDATE settingValue = VALUES(settingValue);";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
@@ -939,7 +942,9 @@ function SaveSetting($playerId, $settingNumber, $value)
 
 function LoadSavedSettings($playerId)
 {
-	if($playerId == "") return [];
+	if($playerId == "") {
+		return [];
+	}
 	$output = [];
 	$conn = GetDBConnection();
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
