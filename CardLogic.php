@@ -4160,6 +4160,18 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         AddDecisionQueue("DRAW", $defPlayer, "-");
         }
       break;
+    case "emissary_of_moon_red":
+    case "emissary_of_tides_red":
+    case "emissary_of_wind_red":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which cards to put on the bottom of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $player, "MYBOTDECK", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      if ($cardID == "emissary_of_moon_red") AddDecisionQueue("DRAW", $player, "-", 1);
+      elseif ($cardID == "emissary_of_tides_red") AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
+      elseif ($cardID == "emissary_of_wind_red") AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
+      break;
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":

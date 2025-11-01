@@ -3552,16 +3552,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       }
       break;
-    case "emissary_of_moon_red":
-    case "emissary_of_tides_red":
-    case "emissary_of_wind_red":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on the bottom of your deck (or pass)", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-      break;
     case "longdraw_half_glove":
       $myHand = &GetHand($currentPlayer);
       $myArsenal = &GetArsenal($currentPlayer);

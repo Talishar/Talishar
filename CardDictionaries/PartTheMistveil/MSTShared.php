@@ -567,18 +567,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID . "-BLUE", $currentPlayer);
       break;
     case "emissary_of_moon_red":
-      if ($additionalCosts != "-") Draw($currentPlayer);
-      break;
     case "emissary_of_tides_red":
-      if ($additionalCosts != "-") AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
     case "emissary_of_wind_red":
-      if ($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
-      break;
+      AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
+      break;    
     case "gravekeeping_red":
     case "gravekeeping_yellow":
     case "gravekeeping_blue":
-
       if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH,DISCARD,-,$mainPlayer", true, DQContext: "Choose a card to banish from their graveyard.");
       return "";
     case "water_the_seeds_red":
