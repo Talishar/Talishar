@@ -21,7 +21,7 @@ include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
 
 SetHeaders();
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
 
 // Start output buffering to catch any accidental output
 ob_start();
@@ -29,7 +29,7 @@ ob_start();
 //We should always have a player ID as a URL parameter
 // Check if the "gameName" key exists in the $_POST array
 $gameName = $_POST["gameName"] ?? null;
-$playerID = $_POST["playerID"];
+$playerID = $_POST["playerID"] ?? null;
 
 // For profile settings (playerID == 0), allow gameName to be 0
 if ($playerID != 0 && !IsGameNameValid($gameName)) {
@@ -37,11 +37,11 @@ if ($playerID != 0 && !IsGameNameValid($gameName)) {
   echo json_encode(['error' => 'Invalid game name.']);
   exit;
 }
-$authKey = $_POST["authKey"];
+$authKey = $_POST["authKey"] ?? "";
 
 //We should also have some information on the type of command
-$mode = $_POST["mode"];
-$submission = $_POST["submission"];
+$mode = $_POST["mode"] ?? null;
+$submission = $_POST["submission"] ?? [];
 $submission = json_encode($submission);
 $submission = json_decode($submission); //I don't know why it's not correctly parsing as objects all the way down here
 
