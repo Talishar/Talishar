@@ -785,3 +785,22 @@ function MSTHitEffect($cardID, $from): void
       break;
   }
 }
+
+function CountControlledAuras($player, $class="ILLUSIONIST") {
+  global $chainLinks, $combatChain;
+  $illusionistAuras = SearchAura($player, class: $class);
+  $count = SearchCount($illusionistAuras);
+  foreach ($chainLinks as $link) {
+    for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+      if ($link[$i + 1] == $player && ClassContains($link[$i], $class, $player) && SubtypeContains($link[$i], "Aura")) {
+        ++$count;
+      }
+    }
+  }
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $player && ClassContains($combatChain[$i], $class, $player) & SubtypeContains($combatChain[$i], "Aura")) {
+      ++$count;
+    }
+  }
+  return $count;
+}

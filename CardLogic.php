@@ -3293,7 +3293,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "essence_of_ancestry_body_red":
       case "essence_of_ancestry_soul_yellow":
       case "essence_of_ancestry_mind_blue":
-        AddCurrentTurnEffect($parameter, $player, "PLAY");
+        $numAuras = CountControlledAuras($player);
+        WriteLog("HERE: $numAuras");
+        if ($numAuras == 0) {
+          AddCurrentTurnEffect($parameter, $player, "PLAY");
+        }
         break;
       case "haunting_specter_red":
       case "haunting_specter_yellow":

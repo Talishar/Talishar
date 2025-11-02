@@ -231,9 +231,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
     case "essence_of_ancestry_body_red":
     case "essence_of_ancestry_soul_yellow":
     case "essence_of_ancestry_mind_blue":
-      $illusionistAuras = SearchAura($player, class: "ILLUSIONIST");
-      $aurasArray = explode(",", $illusionistAuras);
-      if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
+      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "haunting_specter_red":
     case "haunting_specter_yellow":
