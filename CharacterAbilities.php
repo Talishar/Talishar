@@ -397,7 +397,7 @@ function MainCharacterBeginEndPhaseTriggers()
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch ($characterID) {
       case "terra":
-        if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        if ($mainCharacter[$i + 1] != 2) break; //Do not process ability if it is disabled (e.g. Humble)
         AddLayer("TRIGGER", $mainPlayer, $characterID);
         break;
       default:
