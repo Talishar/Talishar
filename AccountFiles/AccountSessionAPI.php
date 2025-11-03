@@ -60,7 +60,7 @@
   function CheckSession()
   {
     if (session_status() === PHP_SESSION_NONE) {
-      // Set secure session parameters - do this ONCE per PHP process, not per request
+      // Set secure session parameters
       ini_set('session.cookie_httponly', 1);
       // Only set secure flag if we're on HTTPS
       if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
@@ -70,23 +70,21 @@
       ini_set('session.cookie_samesite', 'Lax');
       
       session_start();
-    }
-    
-    // Only regenerate session ID if it hasn't been done recently
-    // This prevents excessive CPU usage from repeated regeneration
-    if (!isset($_SESSION['last_regeneration'])) {
-      $_SESSION['last_regeneration'] = time();
-      session_regenerate_id(true);
-    } elseif (time() - $_SESSION['last_regeneration'] > 600) { // 10 minutes instead of 5 for performance
-      session_regenerate_id(true);
-      $_SESSION['last_regeneration'] = time();
+      
+      // Regenerate session ID periodically for security
+      if (!isset($_SESSION['last_regeneration'])) {
+        $_SESSION['last_regeneration'] = time();
+      } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
+        session_regenerate_id(true);
+        $_SESSION['last_regeneration'] = time();
+      }
     }
   }
   
   function SecureSessionStart()
   {
     if (session_status() === PHP_SESSION_NONE) {
-      // Set secure session parameters - do this ONCE per PHP process, not per request
+      // Set secure session parameters
       ini_set('session.cookie_httponly', 1);
       // Only set secure flag if we're on HTTPS
       if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
@@ -96,7 +94,6 @@
       ini_set('session.cookie_samesite', 'Lax');
       
       session_start();
-      // Regenerate once at login for security
       session_regenerate_id(true);
     }
   }
