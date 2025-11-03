@@ -42,6 +42,17 @@ function GetBannedPlayers() {
 }
 
 /**
+ * Internal helper to check if global connection is valid
+ * @return bool True if $GLOBALS['conn'] is a valid mysqli object
+ */
+function ValidateConnOrReturnEmpty() {
+  if (!isset($GLOBALS['conn']) || !$GLOBALS['conn']) {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Check if a username is banned
  * @param string $username
  * @return bool
@@ -59,7 +70,7 @@ function IsBannedPlayer($username) {
 function GetUserFriends($userId) {
   global $conn;
   
-  if (!is_numeric($userId)) {
+  if (!$conn || !is_numeric($userId)) {
     return [];
   }
   
@@ -102,7 +113,7 @@ function GetUserFriends($userId) {
 function AreFriends($userId, $friendUserId) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($friendUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return false;
   }
   
@@ -130,7 +141,7 @@ function AreFriends($userId, $friendUserId) {
 function AddFriend($userId, $friendUserId) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($friendUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
   
@@ -193,7 +204,7 @@ function AddFriend($userId, $friendUserId) {
 function RemoveFriend($userId, $friendUserId) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($friendUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
   
@@ -225,7 +236,7 @@ function RemoveFriend($userId, $friendUserId) {
 function AcceptFriendRequest($userId, $requesterUserId) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($requesterUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($requesterUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
   
@@ -274,7 +285,7 @@ function AcceptFriendRequest($userId, $requesterUserId) {
 function GetPendingRequests($userId) {
   global $conn;
   
-  if (!is_numeric($userId)) {
+  if (!$conn || !is_numeric($userId)) {
     return [];
   }
   
@@ -318,7 +329,7 @@ function GetPendingRequests($userId) {
 function RejectFriendRequest($userId, $requesterUserId) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($requesterUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($requesterUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
   
@@ -387,7 +398,7 @@ function FindUserByUsername($username) {
 function GetSentRequests($userId) {
   global $conn;
   
-  if (!is_numeric($userId)) {
+  if (!$conn || !is_numeric($userId)) {
     return [];
   }
   
@@ -431,7 +442,7 @@ function GetSentRequests($userId) {
 function CancelFriendRequest($userId, $recipientUserId) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($recipientUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($recipientUserId)) {
     return ['success' => false, 'message' => 'Invalid user IDs'];
   }
   
@@ -480,6 +491,10 @@ function CancelFriendRequest($userId, $recipientUserId) {
 function SearchUsers($searchTerm, $limit = 10) {
   global $conn;
   
+  if (!$conn) {
+    return [];
+  }
+  
   $searchTerm = trim($searchTerm);
   if (strlen($searchTerm) < 2) {
     return [];
@@ -521,7 +536,7 @@ function SearchUsers($searchTerm, $limit = 10) {
 function UpdateFriendNickname($userId, $friendUserId, $nickname) {
   global $conn;
   
-  if (!is_numeric($userId) || !is_numeric($friendUserId)) {
+  if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return ['success' => false, 'message' => 'Invalid user IDs'];
   }
   
