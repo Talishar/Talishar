@@ -370,6 +370,12 @@ function logCompletedGameStats()
 
 	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
+	
+	if (!$conn) {
+		error_log("Database connection failed in logCompletedGameStats()");
+		return;
+	}
+	
 	$gameResultID = 0;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
