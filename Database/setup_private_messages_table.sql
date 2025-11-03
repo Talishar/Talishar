@@ -1,5 +1,5 @@
 -- Create private_messages table for the messaging system
--- Run this SQL on the fabonline database
+-- Run this SQL on the fabonline2 database
 
 CREATE TABLE IF NOT EXISTS `private_messages` (
   `messageId` INT AUTO_INCREMENT PRIMARY KEY,
