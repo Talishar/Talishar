@@ -13,10 +13,6 @@ if (IsUserLoggedIn() && $decklink != "") {
   $sql = "DELETE FROM favoritedeck WHERE decklink=? AND usersId=?";
 
   $conn = GetDBConnection();
-  if (!$conn) {
-    http_response_code(500);
-    exit('Database connection failed');
-  }
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
     $userID = LoggedInUser();

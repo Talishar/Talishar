@@ -21,10 +21,6 @@ $response = new stdClass();
 
 if (IsUserLoggedIn()) {
   $conn = GetDBConnection();
-  if (!$conn) {
-    http_response_code(500);
-    exit('Database connection failed');
-  }
   $sql = "SELECT * FROM users where usersUid='" . LoggedInUserName() . "'";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {

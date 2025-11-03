@@ -20,11 +20,6 @@ session_start();
 SetHeaders();
 $conn = GetDBConnection();
 
-if (!$conn) {
-  http_response_code(500);
-  exit('Database connection failed');
-}
-
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {
     loginFromCookie();
