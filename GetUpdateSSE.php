@@ -53,18 +53,10 @@ ob_flush();
 flush();
 
 $count = 0;
-$loopStartTime = time();
-$maxIdleTime = 110; // seconds - just under 120 second limit
 
 while (true) {
   if(($count % 100 == 0) && !file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
   ++$count;
-  
-  // Check if we've been in the loop too long without reset
-  if ((time() - $loopStartTime) > $maxIdleTime) {
-    exit; // Exit gracefully to avoid timeout
-  }
-  
   $cacheVal = intval(GetCachePiece($gameName, 1));
   if ($cacheVal > $lastUpdate) {
     $lastUpdate = $cacheVal;
@@ -73,7 +65,6 @@ while (true) {
     ob_flush();
     flush();
     set_time_limit(120); //Reset script time limit
-    $loopStartTime = time(); // Reset the loop timer on activity
   }
   if (connection_aborted()) break;
 

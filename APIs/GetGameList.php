@@ -238,10 +238,7 @@ function deleteDirectory($dir)
     $handler = fopen($dir, "w");
     fwrite($handler, "");
     fclose($handler);
-    if (file_exists($dir)) {
-      return unlink($dir);
-    }
-    return true;
+    return unlink($dir);
   }
 
   foreach (scandir($dir) as $item) {
