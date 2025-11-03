@@ -27,6 +27,7 @@ if ($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
 // Write system message for inactivity - simple one-liner using WriteSystemMessage
 WriteSystemMessage("⌛Player " . intval($inactivePlayer) . " is inactive.");
 
-GamestateUpdated($gameName);
+// Do NOT call GamestateUpdated here as it resets the inactivity timer
+// The message will be included in the next natural GetNextTurn poll
 
 ?>
