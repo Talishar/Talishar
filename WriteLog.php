@@ -45,6 +45,22 @@ function WriteError($text)
   WriteLog("ERROR: $text");
 }
 
+function WriteSystemMessage($text, $path="./")
+{
+  global $gameName;
+  $filename = "{$path}Games/$gameName/gamelog.txt";
+  if(file_exists($filename)) $handler = fopen($filename, "a");
+  else return; //File does not exist
+  fwrite($handler, "$text\r\n");
+  fclose($handler);
+  if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
+    $filename = "{$path}Games/$gameName/fullGamelog.txt";
+    $handler = fopen($filename, "a");
+    fwrite($handler, "$text\r\n");
+    fclose($handler);
+  }
+}
+
 function EchoLog($gameName, $playerID)
 {
   $filename = "./Games/$gameName/gamelog.txt";
