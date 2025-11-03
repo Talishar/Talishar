@@ -22,22 +22,44 @@ function GetDBConnection()
 {
 	global $servername, $dBUsername, $dBPassword, $dBName;
 	try {
-		$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+		// Set a connection timeout to prevent hangs
+		$conn = @mysqli_connect($servername, $dBUsername, $dBPassword, $dBName, 3306);
+		
+		// Check if connection was successful
+		if (!$conn || mysqli_connect_errno()) {
+			error_log("Database connection failed: " . mysqli_connect_error());
+			return false;
+		}
+		
+		// Set charset to UTF-8
+		mysqli_set_charset($conn, "utf8mb4");
+		
+		return $conn;
 	} catch (\Exception $e) {
-		$conn = false;
+		error_log("Database connection exception: " . $e->getMessage());
+		return false;
 	}
-
-	return $conn;
 }
 
 function GetReportingDBConnection()
 {
 	global $reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName;
 	try {
-		$conn = mysqli_connect($reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName);
+		// Set a connection timeout to prevent hangs
+		$conn = @mysqli_connect($reportingServername, $reportingDBUsername, $reportingDBPassword, $reportingDBName, 3306);
+		
+		// Check if connection was successful
+		if (!$conn || mysqli_connect_errno()) {
+			error_log("Reporting database connection failed: " . mysqli_connect_error());
+			return false;
+		}
+		
+		// Set charset to UTF-8
+		mysqli_set_charset($conn, "utf8mb4");
+		
+		return $conn;
 	} catch (\Exception $e) {
-		$conn = false;
+		error_log("Reporting database connection exception: " . $e->getMessage());
+		return false;
 	}
-
-	return $conn;
 }
