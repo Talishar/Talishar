@@ -36,6 +36,13 @@ function WriteGamestateCache($name, $data)
 {
   if ($name == 0) return;
   $serData = trim(serialize(trim($data)));
+  
+  // Add a limit on size to prevent excessive writes
+  if (strlen($serData) > 16384) {
+    // Data too large, truncate or reject
+    return;
+  }
+  
   $gsID = shmop_open(GamestateID($name), "c", 0644, 16384);
   if ($gsID == false) {
     exit;
@@ -60,11 +67,33 @@ function ShmopReadCache($name)
   if (!trim($name)) {
     return "";
   }
+  
+  // Add timeout protection
+  $startTime = microtime(true);
+  $maxTime = 5; // 5 second max for shmop operations
+  
   @$id = shmop_open($name, "a", 0, 0);
   if (empty($id) || $id == false) {
     return "";
   }
-  return trim(shmop_read($id, 0, shmop_size($id)));
+  
+  // Check if we're running out of time
+  if ((microtime(true) - $startTime) > $maxTime) {
+    return "";
+  }
+  
+  $size = shmop_size($id);
+  if ($size <= 0 || $size > 16384) {
+    // Invalid size, return empty
+    return "";
+  }
+  
+  $data = shmop_read($id, 0, $size);
+  if ($data === false) {
+    return "";
+  }
+  
+  return trim($data);
 }
 
 function DeleteCache($name)
