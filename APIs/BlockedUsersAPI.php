@@ -37,7 +37,6 @@ if (!$_POST) {
 }
 
 $userId = LoggedInUser();
-global $conn;
 $conn = GetDBConnection();
 
 if ($conn->connect_error) {
