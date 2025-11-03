@@ -1481,7 +1481,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       return "Block,Ability";
     case "restless_coalescence_yellow":
       $canAttack = CanAttack($cardID, "PLAY", $index, "MYAURA", type:"AA");
-      if ($auras[$index + 3] > 0) $names = "Instant";
+      if ($auras[$index + 3] ?? 0 > 0) $names = "Instant";
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names;
       } else if ($canAttack) {
