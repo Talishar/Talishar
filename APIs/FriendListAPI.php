@@ -38,7 +38,7 @@ if (!$_POST) {
 $userId = LoggedInUser();
 $conn = GetDBConnection();
 
-if ($conn->connect_error) {
+if (!$conn || $conn->connect_error) {
   http_response_code(500);
   echo json_encode(["error" => "Database connection failed"]);
   exit;
