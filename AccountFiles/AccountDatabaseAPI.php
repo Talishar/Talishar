@@ -1,5 +1,5 @@
 <?php
-
+include "../Database/ConnectionManager.php";
 function LoadUserData($username) {
 	try {
 		$conn = GetLocalMySQLConnection();
