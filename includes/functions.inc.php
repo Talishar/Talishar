@@ -52,10 +52,6 @@ function pwdMatch($pwd, $pwdrepeat)
 function uidExists($conn, $username)
 {
 	$conn = GetDBConnection();
-	if (!$conn) {
-		header("location: ../Signup.php?error=db_unavailable");
-		exit();
-	}
 	$sql = "SELECT * FROM users WHERE usersUid = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -81,10 +77,6 @@ function uidExists($conn, $username)
 function emailExists($conn, $email)
 {
 	$conn = GetDBConnection();
-	if (!$conn) {
-		header("location: ../Signup.php?error=db_unavailable");
-		exit();
-	}
 	$sql = "SELECT * FROM users WHERE usersEmail = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -111,10 +103,6 @@ function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 {
 	if ($reportingServer) $conn = GetReportingDBConnection();
 	else $conn = GetDBConnection();
-	if (!$conn) {
-		header("location: ../Signup.php?error=db_unavailable");
-		exit();
-	}
 	$sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -136,9 +124,6 @@ function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 function CreateUserAPI($conn, $username, $email, $pwd)
 {
 	$conn = GetDBConnection();
-	if (!$conn) {
-		return false;
-	}
 	$sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -159,9 +144,6 @@ function loginFromCookie()
     if (isset($_COOKIE["rememberMeToken"])) {
         $token = $_COOKIE["rememberMeToken"];
         $conn = GetDBConnection();
-        if (!$conn) {
-            return; // Silently fail if database unavailable
-        }
         $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
@@ -298,7 +280,6 @@ function LoadFavoriteDecks($userID)
 {
 	if ($userID == "") return [];
 	$conn = GetDBConnection();
-	if (!$conn) return [];
 	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
@@ -370,12 +351,6 @@ function logCompletedGameStats()
 
 	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
-	
-	if (!$conn) {
-		error_log("Database connection failed in logCompletedGameStats()");
-		return;
-	}
-	
 	$gameResultID = 0;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
@@ -978,7 +953,6 @@ function LoadSavedSettings($playerId)
 	}
 	$output = [];
 	$conn = GetDBConnection();
-	if (!$conn) return [];
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
