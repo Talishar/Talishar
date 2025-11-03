@@ -59,7 +59,7 @@ if ($playerID == 3) {
   //Now audit the spectate
   $userID = LoggedInUser();
   $conn = GetDBConnection();
-  if (!$conn || $conn->connect_error) {
+  if ($conn->connect_error) {
     $response->error = "Database connection failed: " . ($conn && $conn->connect_error ? $conn->connect_error : "unknown");
     echo (json_encode($response));
     exit;
