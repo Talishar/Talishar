@@ -700,9 +700,12 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "hyper_scrapper_blue":
-      $ind = SearchCurrentTurnEffects($cardID, $currentPlayer);
-      $scrappedHyperDriverAmount = explode("-", $currentTurnEffects[$ind])[1];
-      RemoveCurrentTurnEffect($ind);
+      $ind = SearchDynamicCurrentTurnEffectsIndex($cardID, $currentPlayer);
+      if ($ind !=  -1) {
+        $scrappedHyperDriverAmount = explode(",", $currentTurnEffects[$ind])[1];
+        RemoveCurrentTurnEffect($ind);
+      }
+      else $scrappedHyperDriverAmount = 0;
       if ($scrappedHyperDriverAmount >= 3) {
         GainResources($currentPlayer, 6);
         GiveAttackGoAgain();
