@@ -31,3 +31,4 @@ BugReports/CreateGameFailsafe.txt
 .idea
 APIKeys/APIKeys.php
 /APIKeys
+.env
