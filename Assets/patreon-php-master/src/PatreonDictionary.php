@@ -29,7 +29,7 @@ enum ContentCreators : string
   {
     switch($this->value)
     {
-      case "0": return "https://www.youtube.com/playlist?list=PLIo1KFShm1L3e91QrlPG6ZdwfmqKk0NIP";
+      case "0": return "";
       case "731": return "https://www.youtube.com/@ManSantFaB";
       default: return "";
     }
