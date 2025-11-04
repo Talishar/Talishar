@@ -32,15 +32,27 @@ try {
     
     // Fallback: check if there's a config file
     if (!$botToken || !$channelId) {
-        $configFile = __DIR__ . '/.env';
-        if (file_exists($configFile)) {
-            $lines = file($configFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            foreach ($lines as $line) {
-                if (strpos($line, 'DISCORD_BOT_TOKEN=') === 0) {
-                    $botToken = trim(str_replace('DISCORD_BOT_TOKEN=', '', $line), '"\'');
+        // Try multiple .env file locations
+        $configPaths = [
+            __DIR__ . '/.env',
+            dirname(__DIR__) . '/.env',
+            '/opt/lampp/htdocs/game/.env',
+            '/opt/lampp/htdocs/.env',
+        ];
+        
+        foreach ($configPaths as $configFile) {
+            if (file_exists($configFile) && is_readable($configFile)) {
+                $lines = file($configFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                foreach ($lines as $line) {
+                    if (strpos($line, 'DISCORD_BOT_TOKEN=') === 0) {
+                        $botToken = trim(str_replace('DISCORD_BOT_TOKEN=', '', $line), '"\'');
+                    }
+                    if (strpos($line, 'DISCORD_CHANNEL_ID=') === 0) {
+                        $channelId = trim(str_replace('DISCORD_CHANNEL_ID=', '', $line), '"\'');
+                    }
                 }
-                if (strpos($line, 'DISCORD_CHANNEL_ID=') === 0) {
-                    $channelId = trim(str_replace('DISCORD_CHANNEL_ID=', '', $line), '"\'');
+                if ($botToken && $channelId) {
+                    break; // Found both values, stop searching
                 }
             }
         }
