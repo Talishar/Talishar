@@ -654,8 +654,7 @@ function isUnimplemented($cardID) {
   switch (CardSet($cardID)) {
     case "ARR":
       return match($cardID) {
-        "alpha_instinct_blue" => false,
-        default => true
+        default => false
       };
     case "AAC":
       return match($cardID) {
