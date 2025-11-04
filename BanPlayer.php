@@ -58,6 +58,7 @@ function TryPOSTData($key, $default = "", $data = []) {
 $playerToBan = trim(TryPOSTData("playerToBan", "", $postData));
 $ipToBan = trim(TryPOSTData("ipToBan", "", $postData));
 $playerNumberToBan = trim(TryPOSTData("playerNumberToBan", "", $postData));
+$usernameToDelete = trim(TryPOSTData("usernameToDelete", "", $postData));
 
 $result = ["status" => "success"];
 
@@ -81,6 +82,37 @@ if ($ipToBan != "") {
     $result["message"] = "Failed to write banned IP to file";
   } else {
     $result["message"] = "IP $ipToBan has been banned.";
+  }
+}
+
+if ($usernameToDelete != "") {
+  try {
+    // Prepare the delete statement
+    $sql = "DELETE FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    
+    if ($stmt === false) {
+      $result["status"] = "error";
+      $result["message"] = "Database prepare error: " . $conn->error;
+    } else {
+      $stmt->bind_param("s", $usernameToDelete);
+      
+      if ($stmt->execute()) {
+        if ($stmt->affected_rows > 0) {
+          $result["message"] = "User '$usernameToDelete' has been deleted from the database.";
+        } else {
+          $result["status"] = "error";
+          $result["message"] = "No user found with username '$usernameToDelete'.";
+        }
+        $stmt->close();
+      } else {
+        $result["status"] = "error";
+        $result["message"] = "Database execution error: " . $stmt->error;
+      }
+    }
+  } catch (Exception $e) {
+    $result["status"] = "error";
+    $result["message"] = "Failed to delete user: " . $e->getMessage();
   }
 }
 
