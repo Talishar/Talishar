@@ -1054,10 +1054,6 @@ function SendEmailAPI($userEmail, $url)
 {
 	include "../APIKeys/APIKeys.php";
 	
-	// For development/testing: Log the reset link to file
-	$logMessage = "[" . date('Y-m-d H:i:s') . "] Password reset link for $userEmail: $url\n";
-	file_put_contents("../password_reset_test.log", $logMessage, FILE_APPEND);
-	
 	// Check if SendGrid API key is configured
 	if (empty($sendgridKey)) {
 		error_log("Password reset link for $userEmail: $url");
