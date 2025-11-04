@@ -401,11 +401,19 @@ function logCompletedGameStats()
 	}
 	else WriteLog("No results sent to <b>Fabrary</b> as both players disabled stats", highlight:true);
 	// Sends data to FabInsights DB
-	if (!AreStatsDisabled(1) && !AreStatsDisabled(2) && !AreGlobalStatsDisabled(1) && !AreGlobalStatsDisabled(2)) {
-		WriteLog("📊Sending game result to <b>FaBInsights</b>📊", highlight:true, highlightColor:"green");
-		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+	$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
+	$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
+	if (!$p1StatsDisabled && !$p2StatsDisabled) {
+		WriteLog("📊Sending game stats to <b>FaBInsights</b>📊", highlight:true, highlightColor:"green");
 	}
-	else WriteLog("No results sent to <b>FaBInsights</b> as a player disabled stats", highlight:true);
+	elseif ($p1StatsDisabled && !$p2StatsDisabled) {
+		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 2📊", highlight:true, highlightColor:"green");
+	}
+	elseif (!$p1StatsDisabled && $p2StatsDisabled) {
+		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1📊", highlight:true, highlightColor:"green");
+	}
+	else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
+	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled);
 	mysqli_close($conn);
 }
 
@@ -501,7 +509,7 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID)
+function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false)
 {
 	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
     // Skip AI games
@@ -522,8 +530,8 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr['gameName'] = $gameName;
     $payloadArr['player1Name'] = $hashedP1Name;
     $payloadArr['player2Name'] = $hashedP2Name;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
+    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 
     // Initialize cURL
@@ -728,7 +736,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	return json_encode($deck);
 }
 
-function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "")
+function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "", $excludePrivateFields = false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
@@ -880,6 +888,25 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
 	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
 	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
+
+	// Exclude private fields if stats are disabled
+	if ($excludePrivateFields) {
+		unset($deck["deckbuilderID"]);
+		unset($deck["cardResults"]);
+		unset($deck["character"]);
+		unset($deck["turnResults"]);
+		unset($deck["totalDamageThreatened"]);
+		unset($deck["totalDamageDealt"]);
+		unset($deck["totalLifeGained"]);
+		unset($deck["totalDamagePrevented"]);
+		unset($deck["averageDamageThreatenedPerTurn"]);
+		unset($deck["averageDamageDealtPerTurn"]);
+		unset($deck["averageDamageThreatenedPerCard"]);
+		unset($deck["averageResourcesUsedPerTurn"]);
+		unset($deck["averageCardsLeftOverPerTurn"]);
+		unset($deck["averageCombatValuePerTurn"]);
+		unset($deck["averageValuePerTurn"]);
+	}
 
 	return json_encode($deck);
 }
