@@ -88,76 +88,33 @@ if ($ipToBan != "") {
 if ($usernameToDelete != "") {
   try {
     $conn = GetDBConnection();
+    // Prepare the delete statement
+    $sql = "DELETE FROM users WHERE usersUid = ?";
+    $stmt = mysqli_stmt_init($conn);
     
-    // First, verify the user exists
-    $checkSql = "SELECT usersId, usersUid FROM users WHERE usersUid = ?";
-    $checkStmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($checkStmt, $checkSql)) {
-      mysqli_stmt_bind_param($checkStmt, "s", $usernameToDelete);
-      mysqli_stmt_execute($checkStmt);
-      $result_check = mysqli_stmt_get_result($checkStmt);
-      $userRow = mysqli_fetch_assoc($result_check);
-      $userExists = $userRow !== null;
-      mysqli_stmt_close($checkStmt);
-    } else {
-      $userExists = false;
-    }
-    
-    error_log("DELETE START: Username=$usernameToDelete, Exists=$userExists");
-    
-    if (!$userExists) {
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
       $result["status"] = "error";
-      $result["message"] = "No user found with username '$usernameToDelete'.";
-      error_log("DELETE FAILED: User not found - $usernameToDelete");
+      $result["message"] = "Database prepare error: " . mysqli_error($conn);
     } else {
-      // Prepare the delete statement
-      $sql = "DELETE FROM users WHERE usersUid = ?";
-      $stmt = mysqli_stmt_init($conn);
+      mysqli_stmt_bind_param($stmt, "s", $usernameToDelete);
       
-      if (!mysqli_stmt_prepare($stmt, $sql)) {
-        $result["status"] = "error";
-        $result["message"] = "Database prepare error: " . mysqli_error($conn);
-        error_log("DELETE ERROR: Prepare failed - " . mysqli_error($conn));
-      } else {
-        mysqli_stmt_bind_param($stmt, "s", $usernameToDelete);
-        error_log("DELETE QUERY: About to execute DELETE FROM users WHERE usersUid = '$usernameToDelete'");
-        
-        if (mysqli_stmt_execute($stmt)) {
-          $affectedRows = mysqli_stmt_affected_rows($stmt);
-          error_log("DELETE EXECUTED: Affected rows = $affectedRows");
-          
-          if ($affectedRows > 0) {
-            $result["message"] = "User '$usernameToDelete' has been deleted from the database.";
-            error_log("DELETE SUCCESS: $usernameToDelete deleted successfully");
-            
-            // Verify deletion
-            $verifySql = "SELECT COUNT(*) as count FROM users WHERE usersUid = ?";
-            $verifyStmt = mysqli_stmt_init($conn);
-            if (mysqli_stmt_prepare($verifyStmt, $verifySql)) {
-              mysqli_stmt_bind_param($verifyStmt, "s", $usernameToDelete);
-              mysqli_stmt_execute($verifyStmt);
-              $verifyResult = mysqli_stmt_get_result($verifyStmt);
-              $countRow = mysqli_fetch_assoc($verifyResult);
-              error_log("DELETE VERIFICATION: User count after delete = " . $countRow['count']);
-              mysqli_stmt_close($verifyStmt);
-            }
-          } else {
-            $result["status"] = "error";
-            $result["message"] = "Failed to delete user '$usernameToDelete' (no rows affected).";
-            error_log("DELETE FAILED: $usernameToDelete - No rows affected");
-          }
+      if (mysqli_stmt_execute($stmt)) {
+        $affectedRows = mysqli_stmt_affected_rows($stmt);
+        if ($affectedRows > 0) {
+          $result["message"] = "User '$usernameToDelete' has been deleted from the database.";
         } else {
           $result["status"] = "error";
-          $result["message"] = "Database execution error: " . mysqli_stmt_error($stmt);
-          error_log("DELETE ERROR: Execution failed - " . mysqli_stmt_error($stmt));
+          $result["message"] = "No user found with username '$usernameToDelete'.";
         }
-        mysqli_stmt_close($stmt);
+      } else {
+        $result["status"] = "error";
+        $result["message"] = "Database execution error: " . mysqli_stmt_error($stmt);
       }
+      mysqli_stmt_close($stmt);
     }
   } catch (Exception $e) {
     $result["status"] = "error";
     $result["message"] = "Failed to delete user: " . $e->getMessage();
-    error_log("DELETE EXCEPTION: $usernameToDelete - " . $e->getMessage());
   }
 }
 
