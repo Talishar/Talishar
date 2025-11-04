@@ -27,13 +27,25 @@ try {
     $channelId = getenv('DISCORD_CONTENT_CHANNEL_ID') ?: ($_ENV['DISCORD_CONTENT_CHANNEL_ID'] ?? null);
     
     if (!$botToken || !$channelId) {
-        $envFile = __DIR__ . '/.env';
-        if (file_exists($envFile)) {
-            foreach (file($envFile, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES) as $line) {
-                if (strpos($line, 'DISCORD_BOT_TOKEN=') === 0) {
-                    $botToken = trim(str_replace('DISCORD_BOT_TOKEN=', '', $line), '"\'');
-                } elseif (strpos($line, 'DISCORD_CONTENT_CHANNEL_ID=') === 0) {
-                    $channelId = trim(str_replace('DISCORD_CONTENT_CHANNEL_ID=', '', $line), '"\'');
+        // Try multiple .env file locations
+        $envPaths = [
+            __DIR__ . '/.env',
+            dirname(__DIR__) . '/.env',
+            '/opt/lampp/htdocs/game/.env',
+            '/opt/lampp/htdocs/.env',
+        ];
+        
+        foreach ($envPaths as $envFile) {
+            if (file_exists($envFile) && is_readable($envFile)) {
+                foreach (file($envFile, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES) as $line) {
+                    if (strpos($line, 'DISCORD_BOT_TOKEN=') === 0) {
+                        $botToken = trim(str_replace('DISCORD_BOT_TOKEN=', '', $line), '"\'');
+                    } elseif (strpos($line, 'DISCORD_CONTENT_CHANNEL_ID=') === 0) {
+                        $channelId = trim(str_replace('DISCORD_CONTENT_CHANNEL_ID=', '', $line), '"\'');
+                    }
+                }
+                if ($botToken && $channelId) {
+                    break; // Found both values, stop searching
                 }
             }
         }
