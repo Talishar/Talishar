@@ -87,28 +87,30 @@ if ($ipToBan != "") {
 
 if ($usernameToDelete != "") {
   try {
+    $conn = GetDBConnection();
     // Prepare the delete statement
-    $sql = "DELETE FROM users WHERE username = ?";
-    $stmt = $conn->prepare($sql);
+    $sql = "DELETE FROM users WHERE usersUid = ?";
+    $stmt = mysqli_stmt_init($conn);
     
-    if ($stmt === false) {
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
       $result["status"] = "error";
-      $result["message"] = "Database prepare error: " . $conn->error;
+      $result["message"] = "Database prepare error: " . mysqli_error($conn);
     } else {
-      $stmt->bind_param("s", $usernameToDelete);
+      mysqli_stmt_bind_param($stmt, "s", $usernameToDelete);
       
-      if ($stmt->execute()) {
-        if ($stmt->affected_rows > 0) {
+      if (mysqli_stmt_execute($stmt)) {
+        $affectedRows = mysqli_stmt_affected_rows($stmt);
+        if ($affectedRows > 0) {
           $result["message"] = "User '$usernameToDelete' has been deleted from the database.";
         } else {
           $result["status"] = "error";
           $result["message"] = "No user found with username '$usernameToDelete'.";
         }
-        $stmt->close();
       } else {
         $result["status"] = "error";
-        $result["message"] = "Database execution error: " . $stmt->error;
+        $result["message"] = "Database execution error: " . mysqli_stmt_error($stmt);
       }
+      mysqli_stmt_close($stmt);
     }
   } catch (Exception $e) {
     $result["status"] = "error";
