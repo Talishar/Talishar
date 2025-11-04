@@ -607,8 +607,7 @@ function isTeamCupofTCG($userName)
 function isTeamScowlingFleshBag($userName)
 {
   switch($userName) {
-    case "ScowlingFleshBag":
-    case "SmilingFleshBag":
+    case "Scowling":
     case "PvtVoid":
       return true;
     default: break;
@@ -619,7 +618,7 @@ function isTeamScowlingFleshBag($userName)
 function IsTeamThaiCardsShop($userName)
 {
   switch($userName) {
-    case "terrythai03":
+    case "thaicards":
     case "PvtVoid":
       return true;
     default: break;
