@@ -894,6 +894,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["deckbuilderID"]);
 		unset($deck["cardResults"]);
 		unset($deck["character"]);
+		unset($deck["yourTime"]);
 		unset($deck["turnResults"]);
 		unset($deck["totalDamageThreatened"]);
 		unset($deck["totalDamageDealt"]);
