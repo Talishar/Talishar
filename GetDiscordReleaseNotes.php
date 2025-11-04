@@ -65,6 +65,26 @@ try {
         exit;
     }
     
+    // Fetch channel info to get the channel name
+    $channelInfo = null;
+    $channelUrl = "https://discord.com/api/v10/channels/{$channelId}";
+    
+    $ch = curl_init($channelUrl);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bot {$botToken}",
+        "User-Agent: Talishar-Discord-Bot"
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    
+    $channelResponse = curl_exec($ch);
+    $channelHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    if ($channelHttpCode === 200) {
+        $channelInfo = json_decode($channelResponse, true);
+    }
+    
     // Fetch messages from Discord API
     $url = "https://discord.com/api/v10/channels/{$channelId}/messages?limit={$maxMessages}";
     
@@ -110,9 +130,16 @@ try {
             // Get reactions
             $reactions = isset($msg['reactions']) ? $msg['reactions'] : [];
             
+            // Replace channel mentions in content
+            $content = $msg['content'] ?? '';
+            $content = str_replace('<#868488473378684938>', '#release-notes', $content);
+            $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
+            // Preserve line breaks
+            $content = nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'), false);
+            
             $data[] = [
                 'id' => $msg['id'],
-                'content' => $msg['content'] ?? '',
+                'content' => $content,
                 'author' => $authorName,
                 'timestamp' => $msg['timestamp'],
                 'embeds' => $msg['embeds'] ?? [],
@@ -128,10 +155,13 @@ try {
     });
     
     http_response_code(200);
-    echo json_encode(['messages' => array_slice($data, 0, $maxMessages)]);
+    echo json_encode([
+        'messages' => array_slice($data, 0, $maxMessages),
+        'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#release-notes'
+    ]);
     
 } catch (Exception $e) {
     error_log("Discord fetch error: " . $e->getMessage());
     http_response_code(200);
-    echo json_encode(['messages' => []]);
+    echo json_encode(['messages' => [], 'channelName' => '#release-notes']);
 }

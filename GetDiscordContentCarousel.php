@@ -52,8 +52,25 @@ try {
     }
     
     if (!$botToken || !$channelId) {
-        echo json_encode(['success' => true, 'count' => 0, 'videos' => []]);
+        echo json_encode(['success' => true, 'count' => 0, 'videos' => [], 'channelName' => '#talishar-content']);
         exit;
+    }
+    
+    // Fetch channel info to get the channel name
+    $channelInfo = null;
+    $channelUrl = "https://discord.com/api/v10/channels/{$channelId}";
+    
+    $ch = curl_init($channelUrl);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bot {$botToken}", "User-Agent: Talishar"]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    
+    $channelResponse = curl_exec($ch);
+    $channelHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    if ($channelHttpCode === 200) {
+        $channelInfo = json_decode($channelResponse, true);
     }
     
     // Fetch from Discord with pagination to get more messages
@@ -91,7 +108,7 @@ try {
     }
     
     if (!is_array($messages)) {
-        echo json_encode(['success' => true, 'count' => 0, 'videos' => []]);
+        echo json_encode(['success' => true, 'count' => 0, 'videos' => [], 'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#talishar-content']);
         exit;
     }
     
@@ -103,6 +120,12 @@ try {
     foreach ($messages as $msg) {
         if (!is_array($msg)) continue;
         $content = $msg['content'] ?? '';
+        // Replace channel mentions in content
+        $content = str_replace('<#868488473378684938>', '#release-notes', $content);
+        $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
+        // Preserve line breaks
+        $content = nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'), false);
+        
         $author = $msg['author']['username'] ?? 'Unknown';
         $timestamp = $msg['timestamp'] ?? date('c');
         
@@ -125,10 +148,15 @@ try {
     $final = array_values($byAuthor);
     usort($final, fn($a, $b) => strtotime($b['timestamp'] ?? '0') - strtotime($a['timestamp'] ?? '0'));
     
-    echo json_encode(['success' => true, 'count' => count($final), 'videos' => array_slice($final, 0, 12)]);
+    echo json_encode([
+        'success' => true,
+        'count' => count($final),
+        'videos' => array_slice($final, 0, 12),
+        'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#talishar-content'
+    ]);
     
 } catch (Exception $e) {
     error_log('GetDiscordContentCarousel: ' . $e->getMessage());
-    echo json_encode(['success' => true, 'count' => 0, 'videos' => []]);
+    echo json_encode(['success' => true, 'count' => 0, 'videos' => [], 'channelName' => '#talishar-content']);
 }
 ?>
