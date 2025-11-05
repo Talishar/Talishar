@@ -3691,6 +3691,8 @@ function HasBattleworn($cardID)
     case "head_stone":
     case "glidewell_fins":
     case "graven_justaucorpse":
+    case "torc_of_vim":
+    case "echo_casque":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
@@ -3749,6 +3751,7 @@ function HasTemper($cardID)
     case "helm_of_the_arknight":
     case "breaker_helm_protos":
     case "puffer_jacket":
+    case "trampling_trackers":
       return true;
     default:
       return GeneratedHasTemper($cardID) == "true";
