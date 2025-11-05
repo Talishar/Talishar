@@ -4774,10 +4774,12 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
     case "vaporize__shock_yellow":
       $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:minCost=0;maxCost=" . $arcaneDamageDealt . "&MYAURAS:minCost=0;maxCost=" . $arcaneDamageDealt, 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an aura with cost $arcaneDamageDealt or less to destroy, or pass (tokens are chosen next)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       for($i=0; $i<$arcaneDamageDealt; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:type=T&MYAURAS:type=T");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a token aura to destroy, or pass", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
       }
