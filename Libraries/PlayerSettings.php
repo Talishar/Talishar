@@ -506,7 +506,7 @@ function IsTeamSonicDoom($userName)
 {
   switch($userName) {
     case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
-    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
+    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "Ocean":
     case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
       return true;
     default: break;
