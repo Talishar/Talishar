@@ -3318,9 +3318,18 @@ function PitchAbility($cardID, $from="HAND")
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources($currentPlayer, 2);
     }
-    if (ColorContains($cardID, 1, $currentPlayer) && SearchCharacterActive($currentPlayer, "dromai_ash_artist") || SearchCharacterActive($currentPlayer, "dromai") || SearchCurrentTurnEffects("dromai_ash_artist-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("dromai-SHIYANA", $currentPlayer)) {
-      WriteLog("Dromai creates an " . CardLink("ash", "ash"));
-      PutPermanentIntoPlay($currentPlayer, "ash");
+    if (ColorContains($cardID, 1, $currentPlayer)) {
+      $char = GetPlayerCharacter($currentPlayer);
+      if ($char[2] < 3) {
+        switch ($char[0]) {
+          case "dromai_ash_artist":
+          case "dromai":
+            AddLayer("TRIGGER", $currentPlayer, $char[0]);
+            break;
+          default:
+            break;
+        }
+      } 
     }
   }
   if (SubtypeContains($cardID, "Chi", $currentPlayer)

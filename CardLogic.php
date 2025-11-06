@@ -2530,6 +2530,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($card, $card) . " on the bottom of your deck");
         }
         break;
+      case "dromai":
+      case "dromai_ash_artist":
+        WriteLog(CardLink($parameter, $parameter) . " creates an " . CardLink("ash", "ash"));
+        PutPermanentIntoPlay($player, "ash");
+        break;
       case "burn_them_all_red":
         DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
         break;
