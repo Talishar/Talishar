@@ -793,6 +793,9 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
     case "MYAURAS":
       $source = &GetAuras($player);
       break;
+    default:
+      $source = [];
+      break;
   }
   if ($zone == "MYCHAR" && $source[$index + 1] == 0) return;
   if (!isset($source[$index])) WriteLog("Please report this bug to the developers. " . $zone . " " . $index, highlight:true);
