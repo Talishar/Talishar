@@ -90,7 +90,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     if ($canGainAttack || $power < 0) {
       array_push($powerModifiers, "POWERCOUNTER"); //Power Counter image ID
       array_push($powerModifiers, $power);
-      AddPower($totalPower, $power);
+      AddPower($totalPower, $power, true);
     }
   }
   $power = MainCharacterPowerModifiers($powerModifiers);
@@ -152,17 +152,17 @@ function ReEvalCombatChain() {
   }
 }
 
-function AddPower(&$totalPower, $amount): void
+function AddPower(&$totalPower, $amount, $sourceBuff=false): void
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if (PowerCantBeModified($attackID)) return;
   if ($amount > 0 && $attackID == "amplifying_arrow_yellow") $amount += 1;
-  if ($amount > 0 && SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
-    $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
-    $amount += $num_thrives_active;
-  }
-  if ($amount > 0) {
+  if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
+    if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
+      $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
+      $amount += $num_thrives_active;
+    }
     SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
     SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
   }
