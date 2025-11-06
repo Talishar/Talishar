@@ -1776,7 +1776,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase != "B" && $from == "CHAR" && isset($character[$index + 1]) && $character[$index + 1] != "2") return false;
   // I don't remember why this line was here, removing for now as it's causing problems
   // if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0 && (ManualTunicSetting($player) == 0 && $cardID != "fyendals_spring_tunic")) return false;
-  if ($from == "CHAR" && $phase != "B" && $character[$index + 8] == "1") {
+  if ($from == "CHAR" && $phase != "B" && isset($character[$index + 8]) && $character[$index + 8] == "1") {
     $restriction = "Frozen";
     return false;
   }
