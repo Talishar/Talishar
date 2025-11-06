@@ -121,4 +121,8 @@ class Deck {
     $this->deck = array_merge($this->deck, $bottomCardID);
     return true;
   }
+
+  function GetCard($index) {
+    return $this->deck[$index];
+  }
 }
