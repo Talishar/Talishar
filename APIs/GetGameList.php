@@ -87,7 +87,7 @@ if ($handle = opendir($path)) {
     if ('.' === $folder) continue;
     if ('..' === $folder) continue;
     $gameToken = $folder;
-  $folder = rtrim($path, '/\\') . '/' . rtrim($folder, '/\\');
+    $folder = $path . "/" . $folder . "/";
     $gs = $folder . "gamestate.txt";
     $currentTime = round(microtime(true) * 1000);
     if (file_exists($gs)) {
@@ -234,38 +234,28 @@ function deleteDirectory($dir)
     return true;
   }
 
-  if (is_file($dir)) {
-    // Only try to delete if file exists
-    return unlink($dir);
-  }
-
   if (!is_dir($dir)) {
-    // Not a file or directory, nothing to do
-    return true;
+    $handler = fopen($dir, "w");
+    if ($handler) {
+      fwrite($handler, "");
+      fclose($handler);
+      return unlink($dir);
+    }
   }
 
-  $items = scandir($dir);
-  if ($items === false) {
-    // Directory can't be read, treat as deleted
-    return true;
-  }
-  foreach ($items as $item) {
+  foreach (scandir($dir) as $item) {
     if ($item == '.' || $item == '..') {
       continue;
     }
-    $path = $dir . '/' . $item;
-    if (file_exists($path)) {
-      if (!deleteDirectory($path)) {
-        return false;
-      }
+    if (!deleteDirectory($dir . "/" . $item)) {
+      return false;
     }
   }
 
-  // Try to remove the directory itself
-  if (file_exists($dir) && is_dir($dir)) {
-    return rmdir($dir);
+  if (file_exists($dir)) {
+      return rmdir($dir);
   } else {
-    return true; // directory already deleted
+      return true; // directory already deleted
   }
 }
 
