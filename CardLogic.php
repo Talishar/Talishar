@@ -3118,10 +3118,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PUTPLAY", $player, "0", 1);
         break;
       case "stasis_cell_blue":
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-        AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "stasis_cell_blue-", 1);
+        $index = SearchCharacterForUniqueID($target, $otherPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $otherPlayer, $index);
+          AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "stasis_cell_blue-", 1);
+        }
         break;
       case "evo_magneto_blue_equip":
         if (IsAllyAttacking()) {

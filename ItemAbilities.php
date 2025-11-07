@@ -57,6 +57,13 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   //enters the arena triggers
   switch ($cardID) {
     case "stasis_cell_blue":
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRCHAR-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
+      break;
     case "null_time_zone_blue":
       AddLayer("TRIGGER", $player, $cardID);
       break;
@@ -244,7 +251,15 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
       unset($items[$i]);
     }
     $items = array_values($items);
-    if ($cardID == "stasis_cell_blue") AddLayer("TRIGGER", $player, $cardID);
+    if ($cardID == "stasis_cell_blue") {
+      $otherPlayer = $player == 1 ? 2 : 1;
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
+      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRCHAR-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
+    }
     return $cardID;
   }
   else return "";

@@ -2903,6 +2903,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           break;
+        case "stasis_cell_blue":
+          AddLayer("TRIGGER", $player, $params[0], GetMZUID($targetedPlayer, $target));
+          break;
         case "blast_to_oblivion_red":
         case "blast_to_oblivion_yellow":
         case "blast_to_oblivion_blue":
