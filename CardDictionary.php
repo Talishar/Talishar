@@ -701,7 +701,7 @@ function AbilityCost($cardID)
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
   if ($cardID == "restless_coalescence_yellow") {
-    $abilityType = GetResolvedAbilityType($cardID);
+    $abilityType = GetResolvedAbilityType($cardID, "PLAY");
     if ($abilityType == "I") return 0;
   }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
@@ -1713,6 +1713,7 @@ function GetResolvedAbilityType($cardID, $from = "-", $player = -1)
   $player = $player ==  -1 ? $currentPlayer : $player;
   $abilityIndex = GetClassState($player, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
+  WriteLog("HERE: $abilityTypes");
   if ($abilityTypes == "" || $abilityIndex == "-" || !str_contains($abilityTypes, ",")) return GetAbilityType($cardID, -1, $from, $player);
   $abilityTypes = explode(",", $abilityTypes);
   if (isset($abilityTypes[$abilityIndex])) {
