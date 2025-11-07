@@ -366,7 +366,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "envelop_in_darkness_red": case "envelop_in_darkness_yellow": case "envelop_in_darkness_blue":
       PlayAura("runechant", $currentPlayer);
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
     case "putrid_stirrings_red": case "putrid_stirrings_yellow": case "putrid_stirrings_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
