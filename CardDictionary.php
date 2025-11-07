@@ -1713,7 +1713,6 @@ function GetResolvedAbilityType($cardID, $from = "-", $player = -1)
   $player = $player ==  -1 ? $currentPlayer : $player;
   $abilityIndex = GetClassState($player, $CS_AbilityIndex);
   $abilityTypes = GetAbilityTypes($cardID, from: $from);
-  WriteLog("HERE: $abilityTypes");
   if ($abilityTypes == "" || $abilityIndex == "-" || !str_contains($abilityTypes, ",")) return GetAbilityType($cardID, -1, $from, $player);
   $abilityTypes = explode(",", $abilityTypes);
   if (isset($abilityTypes[$abilityIndex])) {

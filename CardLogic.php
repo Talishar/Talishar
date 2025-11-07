@@ -3299,7 +3299,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "essence_of_ancestry_soul_yellow":
       case "essence_of_ancestry_mind_blue":
         $numAuras = CountControlledAuras($player);
-        WriteLog("HERE: $numAuras");
         if ($numAuras == 0) {
           AddCurrentTurnEffect($parameter, $player, "PLAY");
         }
