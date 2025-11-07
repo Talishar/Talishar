@@ -235,27 +235,33 @@ function deleteDirectory($dir)
   }
 
   if (!is_dir($dir)) {
-    $handler = fopen($dir, "w");
-    if ($handler) {
-      fwrite($handler, "");
-      fclose($handler);
-      return unlink($dir);
+    // Only attempt to delete if file exists
+    if (file_exists($dir)) {
+      return @unlink($dir);
+    } else {
+      return true;
     }
   }
 
-  foreach (scandir($dir) as $item) {
+  $items = @scandir($dir);
+  if ($items === false) {
+    // Directory cannot be read, treat as deleted or inaccessible
+    return true;
+  }
+  foreach ($items as $item) {
     if ($item == '.' || $item == '..') {
       continue;
     }
     if (!deleteDirectory($dir . "/" . $item)) {
-      return false;
+      // Optionally log error here
+      continue;
     }
   }
 
   if (file_exists($dir)) {
-      return rmdir($dir);
+    return @rmdir($dir);
   } else {
-      return true; // directory already deleted
+    return true; // directory already deleted
   }
 }
 
