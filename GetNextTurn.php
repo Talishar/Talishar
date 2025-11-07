@@ -231,6 +231,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
+    $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
     $initialLoad->altArts = [];
 
@@ -1856,6 +1857,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   
   $response->spectatorCount = $spectatorCount;
+  
+  // Get visibility from cache (piece 9 in cache: "0" = private, "1" = public, "2" = friends-only)
+  $cacheVisibility = GetCachePiece($gameName, 9);
+  $response->isPrivate = ($cacheVisibility !== "1"); // Not public = private or friends-only
 
   // encode and send it out
   echo json_encode($response);
@@ -1889,4 +1894,10 @@ function GetPhaseHelptext()
 
 function skipEffectUIStacking($cardID) {
   return $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
+}
+
+function isPlayerAI($playerID) {
+  global $p2IsAI;
+  if($playerID == 2 && $p2IsAI == "1") return true;
+  return false;
 }
