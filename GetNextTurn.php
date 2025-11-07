@@ -1856,6 +1856,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   
   $response->spectatorCount = $spectatorCount;
+  
+  // Get visibility from cache (piece 9 in cache: "0" = private, "1" = public, "2" = friends-only)
+  $cacheVisibility = GetCachePiece($gameName, 9);
+  $response->isPrivate = ($cacheVisibility !== "1"); // Not public = private or friends-only
 
   // encode and send it out
   echo json_encode($response);
