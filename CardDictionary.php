@@ -2619,7 +2619,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "blade_runner_red":
     case "blade_runner_yellow":
     case "blade_runner_blue":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || !Is1H($CombatChain->AttackCard()->ID());
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (SearchCombatChainAttacks($mainPlayer, type:"W", is1h:true) != "") return false;
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && Is1H($CombatChain->AttackCard()->ID())) return false;
+      return true;
     case "in_the_swing_red":
     case "in_the_swing_yellow":
     case "in_the_swing_blue":
