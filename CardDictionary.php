@@ -868,100 +868,110 @@ function PitchValue($cardID)
   }
 }
 
-function BlockValue($cardID)
+function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 {
   global $defPlayer, $combatChain;
+
+  if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
+    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
+  }
+  else $lyathActive = false;
+  $block = -2;
   $cardID = BlindCard($cardID, true);
   switch ($cardID) { //cards with a mistake in GeneratedBlockValue
-    case "crash_and_bash_red":
-      return 4;
-    case "crash_and_bash_yellow":
-      return 3;
-    case "crash_and_bash_blue":
-      return 2;
-    case "shock_frock":
-    case "starlight_striders":
-      return 1;
-    case "zap_clappers":
-      return 2;
-    case "okana_scar_wraps":
-    case "iris_of_the_blossom":
-      return 2;
     case "the_librarian":
-      return 2;
+      $block = 2;
+      break;
     case "gallow_end_of_the_line_yellow":
-      return -1;
+      $block = -1;
+      break;
     default:
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialBlock() != -1) return $card->SpecialBlock();
+  if ($card != "-" && $card->SpecialBlock() != -1) $block = $card->SpecialBlock();
   if (!$cardID) return "";
   $set = CardSet($cardID);
   switch ($cardID) {
     case "mutated_mass_blue":
-      return SearchPitchForNumCosts($defPlayer) * 2;
+      $block = SearchPitchForNumCosts($defPlayer) * 2;
     case "fractal_replication_red":
-      return FractalReplicationStats("Block");
+      $bloock = FractalReplicationStats("Block");
     case "arcanite_fortress":
-      return SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
+      $block = SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
     case "base_of_the_mountain":
       $blockVal = 0;
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if ((TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA")) && $combatChain[$i + 1] == $defPlayer) ++$blockVal;
       }
-      return $blockVal;
+      $block = $blockVal;
     default:
       break;
   }
-  if ($set != "DUM") {
-    $setID = SetID($cardID);
-    $number = intval(substr($setID, 3));
-    if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")) return GeneratedBlockValue($cardID);
+  if ($block == -2) { //it hasn't been set yet
+    if ($set != "DUM") {
+      $setID = SetID($cardID);
+      $number = intval(substr($setID, 3));
+      if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")) $block = GeneratedBlockValue($cardID);
+    }
   }
-  switch ($cardID) {
-    case "MON400":
-    case "MON401":
-    case "MON402":
-      return 0;
-    case "the_librarian":
-    case "minerva_themis":
-    case "lady_barthimont":
-    case "lord_sutcliffe":
-      return 3;
-    case "nitro_mechanoida":
-      return -1;
-    case "nitro_mechanoidb":
-      return 5;
-    case "teklovossen_the_mechropotent":
-      return -1;
-    case "teklovossen_the_mechropotentb":
-      return 6;
-    case "DUMMYDISHONORED":
-      return -1;
-    case "MST000_inner_chi_blue":
-    case "MST010_inner_chi_blue":
-    case "MST032_inner_chi_blue":
-    case "MST053_inner_chi_blue":
-    case "MST095_inner_chi_blue":
-    case "MST096_inner_chi_blue":
-    case "MST097_inner_chi_blue":
-    case "MST098_inner_chi_blue":
-    case "MST099_inner_chi_blue":
-    case "MST100_inner_chi_blue":
-    case "MST101_inner_chi_blue":
-    case "MST102_inner_chi_blue":
-      return -1;
-    case "evo_recall_blue_equip":
-    case "evo_heartdrive_blue_equip":
-    case "evo_shortcircuit_blue_equip":
-    case "evo_speedslip_blue_equip":
-      return 0;
-    case "the_hand_that_pulls_the_strings":
-      return 4;
-    default:
-      return 3;
+  if ($block == -2) { //it hasn't been set yet
+    switch ($cardID) {
+      case "MON400":
+      case "MON401":
+      case "MON402":
+        $block = 0;
+        break;
+      case "minerva_themis":
+      case "lady_barthimont":
+      case "lord_sutcliffe":
+        $block = 3;
+        break;
+      case "nitro_mechanoida":
+        $block = -1;
+        break;
+      case "nitro_mechanoidb":
+        $block = 5;
+        break;
+      case "teklovossen_the_mechropotent":
+        $block = -1;
+        break;
+      case "teklovossen_the_mechropotentb":
+        $block = 6;
+        break;
+      case "DUMMYDISHONORED":
+        $block = -1;
+        break;
+      case "MST000_inner_chi_blue":
+      case "MST010_inner_chi_blue":
+      case "MST032_inner_chi_blue":
+      case "MST053_inner_chi_blue":
+      case "MST095_inner_chi_blue":
+      case "MST096_inner_chi_blue":
+      case "MST097_inner_chi_blue":
+      case "MST098_inner_chi_blue":
+      case "MST099_inner_chi_blue":
+      case "MST100_inner_chi_blue":
+      case "MST101_inner_chi_blue":
+      case "MST102_inner_chi_blue":
+        $block = -1;
+        break;
+      case "evo_recall_blue_equip":
+      case "evo_heartdrive_blue_equip":
+      case "evo_shortcircuit_blue_equip":
+      case "evo_speedslip_blue_equip":
+        $block = 0;
+        break;
+      case "the_hand_that_pulls_the_strings":
+        $block = 4;
+        break;
+      default:
+        return 3;
+    }
   }
+  if ($block == -1 || $block == -2) return -1; //it should never be -2, but being careful
+  elseif ($lyathActive && !$blocking) return $block = ceil($block / 2); // lyath debuff handled elsewhere when a card is defending
+  else return $block;
 }
 
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
