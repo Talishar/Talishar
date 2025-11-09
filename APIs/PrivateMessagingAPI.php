@@ -308,14 +308,18 @@ function GetOnlineFriends($userId) {
     
     if ($row = $result->fetch_assoc()) {
       $lastActivity = $row['lastActivity'] ? strtotime($row['lastActivity']) : 0;
-      $isOnline = (time() - $lastActivity) < 300; // Online if active in last 5 minutes
+      $timeSinceActivity = time() - $lastActivity;
+      $isOnline = $timeSinceActivity < 60; // Online if active in last 1 minute
+      $isAway = $timeSinceActivity >= 60 && $timeSinceActivity < 600; // Away if inactive 1-10 minutes
       
       $onlineFriends[] = [
         'userId' => $friend['friendUserId'],
         'username' => $friend['username'],
         'nickname' => $friend['nickname'] ?? null,
         'isOnline' => $isOnline,
-        'lastSeen' => $row['lastActivity']
+        'isAway' => $isAway,
+        'lastSeen' => $row['lastActivity'],
+        'timeSinceActivity' => $timeSinceActivity
       ];
     }
     
