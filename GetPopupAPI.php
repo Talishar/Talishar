@@ -163,7 +163,7 @@ switch ($popupType) {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
     global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode;
-    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights;
+    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro;
     
     $response->Settings = array();
     
@@ -203,6 +203,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "AlwaysAllowUndo", 25, $dbSettings);
       AddSettingFromDB($response->Settings, "ManualTunic", 27, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableFabInsights", 28, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableHeroIntro", 29, $dbSettings);
     } else {
       // Normal game settings
       AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
@@ -226,6 +227,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo);
       AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic);
       AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights);
+      AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
