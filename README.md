@@ -14,8 +14,15 @@ Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your
 
 This is the back end client for Talishar.net - completely separate from the front end. In order to test Talishar locally, you will need to install the front end project.
 
-Learn more about the Talishar-FE project here: [Talishar-FE](https://github.com/Talishar/Talishar-FE)
-Learn more about the CardImages project here: [Talishar-FE](https://github.com/Talishar/CardImages)
+### Related Repositories
+- [Talishar-FE](https://github.com/Talishar/Talishar-FE) - Frontend client built with TypeScript and React
+- [CardImages](https://github.com/Talishar/CardImages) - Card image processing and management
+
+### Quick Links
+- **Players**: Visit [Talishar.net](https://talishar.net/) to start playing
+- **Developers**: See Docker setup instructions below
+- **Contributors/Bug Reports**: Join our [Discord](https://discord.gg/ErmtqQQEFm) community
+- **Documentation**: [Quickstart Guide](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0/edit) and [Full Docs](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
 
 ## New docker way to run Talishar.
 
@@ -98,12 +105,21 @@ docker compose down
 4. Set a breakpoint in the code
 5. Start the debugger by selecting the `Listen for XDebug` configuration and clicking the green play button
 
-## Developer / Contributor Resources / XAMPP dev env
+## Project Architecture
 
+Talishar consists of three main components working together:
+- **Talishar** (PHP) - Game engine, logic, and API
+- **Talishar-FE** (TypeScript/React) - User interface and state management
+- **CardImages** - Card definition and image processing
+
+## Developer / Contributor Resources
+
+### XAMPP Development
 - [Webserver Dev Quickstart Guide](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0/edit)
-- [Docs](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
+- [Full Documentation](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
 
-If you would like to contribute, be sure to join the [discord](https://discord.gg/ErmtqQQEFm) to chat with fellow contributors.
+### Contributing
+If you would like to contribute, be sure to join the [Discord](https://discord.gg/ErmtqQQEFm) community to chat with fellow contributors.
 
 ## Disclaimer
 
