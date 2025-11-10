@@ -4022,17 +4022,23 @@ class attention_grabbers extends Card {
   }
 
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, $i);
+    global $CombatChain;
+    $uid = $CombatChain->Card($i)->UniqueID();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $uid);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $blockingCard = $CombatChain->FindCardUID($target);
+    if ($blockingCard == "") return;
+    $index = $blockingCard->Index();
     $suspAuras = implode(",", GetSuspenseAuras($this->controller, true));
     if ($suspAuras != "") {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $suspAuras);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a suspense counter from or pass", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SUSPENSE", $this->controller, "REMOVE", 1);
-      AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $index, 1);
       AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, 2, 1);
     }
   }
