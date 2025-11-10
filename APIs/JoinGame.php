@@ -722,7 +722,7 @@ function isBannedInFormat($cardID, $format) {
         "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
         "fate_foreseen_red", "fate_foreseen_yellow", "fate_foreseen_blue",
         "flic_flak_red", "flic_flak_yellow", "flic_flak_blue",
-        "goliath_gauntlet", "heartened_crosswrap", "mask_of_three_tails",
+        "goliath_gauntlet", "heartened_cross_strap", "mask_of_three_tails",
         "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
         "rake_the_embers_red", "rake_the_embers_yellow", "rake_the_embers_blue",
         "ragamuffins_hat", "rootbound_carapace_red", "rootbound_carapace_yellow", "rootbound_carapace_blue",
