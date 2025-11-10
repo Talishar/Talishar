@@ -112,6 +112,65 @@ Talishar consists of three main components working together:
 - **Talishar-FE** (TypeScript/React) - User interface and state management
 - **CardImages** - Card definition and image processing
 
+## Key Backend Files
+
+### Core Game Logic
+- **`GetNextTurn.php`** - Main API endpoint that serializes and returns the current game state to the frontend
+- **`ProcessInput.php`** - Handles all user input and triggers appropriate game logic
+- **`GameLogic.php`** - Core game mechanics and turn flow
+- **`CoreLogic.php`** - Essential game engine functions
+- **`Constants.php`** - Game constants, zones (HAND, BANISH, GRAVEYARD, PLAY, DECK), and player IDs
+
+### Card System
+- **`CardDictionary.php`** - Card data lookup and utilities
+- **`CardDictionaries/`** - Card definitions organized by set
+  - Each set folder/files (e.g., `WelcomeToRathe/`, `WTRShared.php`) contains card abilities
+  - Card logic uses switch statements keyed by `cardNumber` (lowercase with underscores)
+  - Example: `"fyendals_spring_tunic"`, `"command_and_conquer_red"`, `"energy_potion_blue"`
+
+### Ability System
+- **`CardLogic.php`** - Card-specific ability implementations
+- **`CharacterAbilities.php`** - Hero character abilities
+- **`ItemAbilities.php`** - Item card abilities
+- **`AuraAbilities.php`** - Aura card abilities
+- **`AllyAbilities.php`** - Ally card abilities
+- **`PermanentAbilities.php`** - Permanent card abilities
+- **`LandmarkAbilities.php`** - Landmark card abilities
+- **`WeaponLogic.php`** - Weapon card logic
+
+### Game State Management
+- **`ParseGamestate.php`** - Parses persisted game state files
+- **`WriteGamestate.php`** - Persists game state to files
+- **`WriteLog.php`** - Writes game event logs for debugging
+
+### Frontend Communication
+- **`GetNextTurn.php`** - Main response to frontend with current game state
+- **`ProcessInputAPI.php`** - API version of ProcessInput for frontend requests
+
+## Game State Flow
+
+```
+Frontend Component
+    ↓ (User Action)
+ProcessInput.php (validates & processes)
+    ↓ (Triggers logic)
+GameLogic.php / CardLogic.php / Ability Files (executes game rules)
+    ↓ (Updates state)
+WriteGamestate.php (persists to file)
+    ↓ (Frontend polls)
+GetNextTurn.php (serializes current state)
+    ↓ (Returns JSON)
+ParseGameState.ts (transforms backend data)
+    ↓ (Updates Redux)
+GameSlice.ts (Redux store)
+    ↓ (Components subscribe)
+React Components (render UI)
+```
+
+### Key State Variables
+- **`$currentPlayer`** - Indicates who has priority (1 or 2)
+- **`$turn[0]`** - Current phase (M=Main, A=Action, D=Defense, etc.)
+
 ## Developer / Contributor Resources
 
 ### XAMPP Development
