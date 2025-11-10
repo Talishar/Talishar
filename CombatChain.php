@@ -2036,6 +2036,7 @@ function LinkBasePower()
     if ($attackCard != "-") $basePower = ceil($basePower / $attackCard->DivideBasePower());
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+      if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
       switch ($currentTurnEffects[$i]) {
         case "kayo_berserker_runt-HALF":
