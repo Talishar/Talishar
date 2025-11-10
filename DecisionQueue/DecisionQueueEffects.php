@@ -291,15 +291,24 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "ADAPTIVEPLATING":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
-      if($lastResult != "None") EquipEquipment($player, "adaptive_plating", $lastResult);
+      if (SearchCharacterAliveSubtype($player, $lastResult)) {
+        WriteLog("You already have something in your $lastResult slot!", highlight:true);
+      }
+      elseif($lastResult != "None") EquipEquipment($player, "adaptive_plating", $lastResult);
       return $lastResult;
     case "ADAPTIVEDISSOLVER":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
-      if($lastResult != "None") EquipEquipment($player, "adaptive_dissolver", $lastResult);
+      if (SearchCharacterAliveSubtype($player, $lastResult)) {
+        WriteLog("You already have something in your $lastResult slot!", highlight:true);
+      }
+      elseif($lastResult != "None") EquipEquipment($player, "adaptive_dissolver", $lastResult);
       return $lastResult;
     case "ADAPTIVEALPHAMOLD":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
-      if($lastResult != "None") EquipEquipment($player, "adaptive_alpha_mold", $lastResult);
+      if (SearchCharacterAliveSubtype($player, $lastResult)) {
+        WriteLog("You already have something in your $lastResult slot!", highlight:true);
+      }
+      elseif($lastResult != "None") EquipEquipment($player, "adaptive_alpha_mold", $lastResult);
       return $lastResult;
     case "UPTHEANTE":
       $numNewWagers = 0;

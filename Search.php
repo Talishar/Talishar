@@ -470,7 +470,7 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
   $count = count($character);
   $pieces = CharacterPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
+    if ($character[$i + 1] != 0 && SubtypeContains($character[$i], $subtype, $player, $character[$i + 11])) {
       if (!$notActiveLink) return true;
       else if ($combatChain[8] != $character[$i + 11]) return true;
     }
