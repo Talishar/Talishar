@@ -192,6 +192,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
     }
+    // Generate a new gameGUID for the rematch to ensure unique identification
+    $gameGUID = GenerateGameGUID();
     $format = is_numeric($format) ? FormatName($format) : $format; // the frontend expects the name of the format
     WriteGameFile();
     $currentTime = round(microtime(true) * 1000);
