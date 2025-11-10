@@ -926,14 +926,9 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 function GetNormalCardID($cardID)
 {
 	switch ($cardID) {
-		case "minerva_themis": return "minerva_themis";
 		case "MON400": return "spell_fray_cloak";
-		case "lord_sutcliffe": return "lord_sutcliffe";
 		case "MON401": return "spell_fray_gloves";
-		case "lady_barthimont": return "lady_barthimont";
-		case "the_librarian": return "the_librarian";
 		case "MON402": return "spell_fray_leggings";
-		case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
 	}
 	return $cardID;
 }
