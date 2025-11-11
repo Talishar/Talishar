@@ -399,7 +399,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
 
   for ($i = 0; $i < count($theirHand); ++$i) {
-    if($playerID == 3 && IsCasterMode() || IsGameOver()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
+    if($playerID == 3 && IsCasterMode() || IsGameOver() || IsReplay()) array_push($theirHandContents, JSONRenderedCard($theirHand[$i]));
     else array_push($theirHandContents, JSONRenderedCard($TheirCardBack));
   }
 
