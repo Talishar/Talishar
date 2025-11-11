@@ -225,6 +225,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($lastUpdate == 0) {
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
+    $initialLoad->gameGUID = $gameGUID;
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
     $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
