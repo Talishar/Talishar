@@ -895,16 +895,20 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   switch ($cardID) {
     case "mutated_mass_blue":
       $block = SearchPitchForNumCosts($defPlayer) * 2;
+      break;
     case "fractal_replication_red":
-      $bloock = FractalReplicationStats("Block");
+      $block = FractalReplicationStats("Block");
+      break;
     case "arcanite_fortress":
       $block = SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
+      break;
     case "base_of_the_mountain":
       $blockVal = 0;
       for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
         if ((TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA")) && $combatChain[$i + 1] == $defPlayer) ++$blockVal;
       }
       $block = $blockVal;
+      break;
     default:
       break;
   }
