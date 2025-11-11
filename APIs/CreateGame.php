@@ -120,6 +120,7 @@ else $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
 $hostIP = $_SERVER['REMOTE_ADDR'];
+$gameGUID = GenerateGameGUID();
 
 $filename = "../Games/" . $gameName . "/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");
