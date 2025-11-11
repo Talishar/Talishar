@@ -5622,6 +5622,7 @@ function canBeAddedToChainDuringDR($cardID){
 }
 
 function ExtractCardID($cardID) {
+  if ($cardID === null) return "";
   $cardID = explode(",", $cardID)[0];
   $cardID = explode("-", $cardID)[0];
   $cardID = explode("|", $cardID)[0];
@@ -5688,7 +5689,7 @@ function IsGold($cardID) {
 }
 
 function GetClass($cardID, $player) {
-  if (str_contains($cardID, "BLIND")) return "-";
+  if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
   $cardID = ExtractCardID($cardID);
   $className = match($cardID) {
     "1000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
