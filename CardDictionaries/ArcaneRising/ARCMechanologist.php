@@ -335,5 +335,6 @@ function AddSubcardToChar(&$chars, $index, $cardID) {
 
 function isSubcardEmpty($chars, $index)
 {
+  if (!isset($chars[$index+10])) return true;
   return $chars[$index+10] == '-' || $chars[$index + 10] == "";
 }

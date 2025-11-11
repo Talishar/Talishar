@@ -2053,7 +2053,7 @@ function LinkBasePower()
     }
     $char = GetPlayerCharacter($mainPlayer);
     for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-      if ($char[$i + 1] == 2) {
+      if (isset($char[$i + 1]) && $char[$i + 1] == 2) {
         $card = GetClass($char[$i], $mainPlayer);
         if ($card != "-") $basePower = ceil($basePower / $card->CharDivideBasePower());
         switch ($char[$i]) {

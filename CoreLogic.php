@@ -1566,8 +1566,8 @@ function IsCharacterAbilityActive($player, $index, $checkGem = false)
 {
   $character = &GetPlayerCharacter($player);
   if (!isset($character[$index])) return false;
-  if ($checkGem && $character[$index + 9] == 0) return false;
-  if ($character[$index + 12] == "DOWN") return false;
+  if ($checkGem && ($character[$index + 9] ?? 0) == 0) return false;
+  if (($character[$index + 12] ?? "DOWN") == "DOWN") return false;
   return $character[$index + 1] == 2;
 }
 

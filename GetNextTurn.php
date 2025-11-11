@@ -671,10 +671,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $gem = 0;
     $label = "";
     $border = 0;
-    $myChar = $myCharacter[$i];
-    if ($myCharacter[$i + 1] == 4) $myChar = "DUMMYDISHONORED";
-    if ($myCharacter[$i + 2] > 0) $counters = $myCharacter[$i + 2];
-    $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
+    $myChar = $myCharacter[$i] ?? "-";
+    if (($myCharacter[$i + 1] ?? 0) == 4) $myChar = "DUMMYDISHONORED";
+    if (($myCharacter[$i + 2] ?? 0) > 0) $counters = $myCharacter[$i + 2];
+    $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] ?? 0 > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
@@ -686,7 +686,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         break;
       }
     }
-    if (TypeContains($myCharacter[$i], "W", $playerID)) {
+    if (TypeContains($myChar, "W", $playerID)) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
@@ -696,23 +696,23 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $weaponPowerModifiers = [];
     if (!$playable) {
         if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
-            SearchCurrentTurnEffectsForPartielID($myCharacter[$i + 11])) {
+            SearchCurrentTurnEffectsForPartielID($myCharacter[$i + 11] ?? "-")) {
             $border = 5;
         }
     }
       $powerCounters = $myCharacter[$i + 3];
     }
-    if ($myCharacter[$i + 9] != 2 && $myCharacter[$i + 1] != 0 && $playerID != 3 && $myCharacter[$i + 12] != "DOWN") {
+    if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3 && ($myCharacter[$i + 12] ?? "-") != "DOWN") {
       $gem = $myCharacter[$i + 9] == 1 ? 1 : 2;
     }
     $restriction = implode("_", explode(" ", $restriction));
-    if(IsGameOver()) $myCharacter[$i + 12] = "UP";
-    if($playerID == 3 && $myCharacter[$i + 12] == "DOWN" && !IsGameOver()) {
+    if(IsGameOver()) ($myCharacter[$i + 12] ?? "-") == "UP";
+    if($playerID == 3 &&( $myCharacter[$i + 12] ?? "-") == "DOWN" && !IsGameOver()) {
       array_push($myCharData, JSONRenderedCard(
         $MyCardBack)); //CardID
     }
     else{
-      if($myCharacter[$i + 1] > 0) { //Don't show broken equipment cards as they are in the graveyard
+      if(($myCharacter[$i + 1] ?? 0) > 0) { //Don't show broken equipment cards as they are in the graveyard
         array_push($myCharData, JSONRenderedCard(
           $myChar, //CardID
           $currentPlayer == $playerID && $playable ? 3 : 0,
