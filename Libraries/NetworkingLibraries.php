@@ -766,6 +766,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = RemoveArsenal($playerID, 0);
       AddGraveyard($cardID, $playerID, "ARS");
       break;
+    case 10018:
+      WriteLog("HERE moving to turn # $cardID");
+      break;
     case 100000: //Quick Rematch
       if ($isSimulation) return;
       if ($turn[0] != "OVER") break;
