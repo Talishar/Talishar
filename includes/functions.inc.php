@@ -1062,7 +1062,6 @@ function SendEmailAPI($userEmail, $url)
 	
 	// Check if SendGrid API key is configured
 	if (empty($sendgridKey)) {
-		error_log("Password reset link for $userEmail: $url");
 		return;
 	}
 	

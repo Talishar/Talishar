@@ -9,6 +9,7 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
+include_once "../includes/MatchupHelpers.php";
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -211,8 +212,11 @@ if ($decklink != "") {
   }
   $deckName = $deckObj->{'name'};
   if (isset($deckObj->{'matchups'})) {
-    if ($playerID == 1) $p1Matchups = $deckObj->{'matchups'};
-    else if ($playerID == 2) $p2Matchups = $deckObj->{'matchups'};
+    $matchups = $deckObj->{'matchups'};
+    // Transform matchups to standardize turn order preferences
+    $matchups = TransformMatchupsWithTurnOrder($matchups);
+    if ($playerID == 1) $p1Matchups = $matchups;
+    else if ($playerID == 2) $p2Matchups = $matchups;
   }
   $deckFormat = (isset($deckObj->{'format'}) ? $deckObj->{'format'} : "");
   $cards = $deckObj->{'cards'};

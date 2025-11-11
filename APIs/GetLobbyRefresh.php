@@ -8,6 +8,7 @@ include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
+include_once "../includes/MatchupHelpers.php";
 
 SetHeaders();
 
@@ -180,6 +181,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
   $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
+  // Transform matchups to ensure turn order preferences are standardized
+  $matchups = TransformMatchupsWithTurnOrder($matchups);
   $response->myDeckLink = $decklink;
   $response->matchups = $matchups;
 
