@@ -1042,6 +1042,7 @@ function PlayerWon($playerID)
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   SetCachePiece($gameName, 14, 99);//$MGS_GameOver
+  if (isPlayerAI(2)) return;
   try {
     logCompletedGameStats();
   } catch (Exception $e) {
