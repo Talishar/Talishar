@@ -1,4 +1,17 @@
 version: "3.7"
+
+# Production SSL Configuration Notes:
+# For production deployments with SSL, ensure your Apache/Nginx reverse proxy has:
+# 1. Valid SSL certificate matching all server names (talishar.net, www.talishar.net, api.talishar.net, fe.talishar.net, legacy.talishar.net)
+# 2. Use Let's Encrypt or your certificate provider to generate a certificate covering all domains
+# 3. Update your reverse proxy (not this container) with the certificate paths
+# 4. This Docker container handles HTTP only - SSL termination happens at the reverse proxy
+# 
+# To fix SSL certificate mismatch warnings (AH01909):
+# - Check your Apache/Nginx vhost configuration
+# - Verify the certificate includes Subject Alternative Names (SANs) for all domains
+# - Command to check cert: openssl x509 -in cert.pem -text -noout | grep -A1 "Subject Alternative Name"
+
 services:
   web-server:
     build:

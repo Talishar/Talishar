@@ -182,6 +182,16 @@ React Components (render UI)
 ### Contributing
 If you would like to contribute, be sure to join the [Discord](https://discord.gg/ErmtqQQEFm) community to chat with fellow contributors.
 
+## Production Deployment
+
+For information on deploying Talishar to production, including SSL/TLS certificate configuration, reverse proxy setup, and security best practices, see [PRODUCTION_SSL_SETUP.md](./PRODUCTION_SSL_SETUP.md).
+
+**Key Production Considerations:**
+- SSL certificate must cover all domains: `talishar.net`, `www.talishar.net`, `api.talishar.net`, `fe.talishar.net`, `legacy.talishar.net`
+- Use Let's Encrypt for free, auto-renewable certificates
+- Configure Apache/Nginx reverse proxy for SSL termination
+- Docker containers handle HTTP only - SSL handled by host machine
+
 ## Disclaimer
 
 All artwork and card images © Legend Story Studios.
