@@ -674,7 +674,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $myChar = $myCharacter[$i] ?? "-";
     if (($myCharacter[$i + 1] ?? 0) == 4) $myChar = "DUMMYDISHONORED";
     if (($myCharacter[$i + 2] ?? 0) > 0) $counters = $myCharacter[$i + 2];
-    $playable = $playerID == $currentPlayer && $myCharacter[$i + 1] ?? 0 > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
+    $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0 && IsPlayable($myChar, $turn[0], "CHAR", $i, $restriction);
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
