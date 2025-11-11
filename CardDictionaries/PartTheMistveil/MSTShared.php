@@ -567,18 +567,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID . "-BLUE", $currentPlayer);
       break;
     case "emissary_of_moon_red":
-      if ($additionalCosts != "-") Draw($currentPlayer);
-      break;
     case "emissary_of_tides_red":
-      if ($additionalCosts != "-") AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
     case "emissary_of_wind_red":
-      if ($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
-      break;
+      AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
+      break;    
     case "gravekeeping_red":
     case "gravekeeping_yellow":
     case "gravekeeping_blue":
-
       if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH,DISCARD,-,$mainPlayer", true, DQContext: "Choose a card to banish from their graveyard.");
       return "";
     case "water_the_seeds_red":
@@ -789,4 +784,23 @@ function MSTHitEffect($cardID, $from): void
     default:
       break;
   }
+}
+
+function CountControlledAuras($player, $class="ILLUSIONIST") {
+  global $chainLinks, $combatChain;
+  $illusionistAuras = SearchAura($player, class: $class);
+  $count = SearchCount($illusionistAuras);
+  foreach ($chainLinks as $link) {
+    for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+      if ($link[$i + 1] == $player && ClassContains($link[$i], $class, $player) && SubtypeContains($link[$i], "Aura")) {
+        ++$count;
+      }
+    }
+  }
+  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+    if ($combatChain[$i + 1] == $player && ClassContains($combatChain[$i], $class, $player) & SubtypeContains($combatChain[$i], "Aura")) {
+      ++$count;
+    }
+  }
+  return $count;
 }

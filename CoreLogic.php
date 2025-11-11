@@ -66,6 +66,19 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     if ($attackType == "W") {
       $char = &GetPlayerCharacter($mainPlayer);
       $power = $char[$combatChainState[$CCS_WeaponIndex] + 3];
+      // check buffs from subcards
+      if ($char[$combatChainState[$CCS_WeaponIndex] + 10] != "-") {
+        $subcards = explode(",", $char[$combatChainState[$CCS_WeaponIndex] + 10]);
+        foreach($subcards as $subcard) {
+          switch ($subcard) {
+            case "galvanic_bender":
+              ++$power;
+              break;
+            default:
+              break;
+          }
+        }
+      }
       if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
     } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
       $auras = &GetAuras($mainPlayer);
@@ -77,7 +90,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     if ($canGainAttack || $power < 0) {
       array_push($powerModifiers, "POWERCOUNTER"); //Power Counter image ID
       array_push($powerModifiers, $power);
-      AddPower($totalPower, $power);
+      AddPower($totalPower, $power, true);
     }
   }
   $power = MainCharacterPowerModifiers($powerModifiers);
@@ -139,17 +152,17 @@ function ReEvalCombatChain() {
   }
 }
 
-function AddPower(&$totalPower, $amount): void
+function AddPower(&$totalPower, $amount, $sourceBuff=false): void
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if (PowerCantBeModified($attackID)) return;
   if ($amount > 0 && $attackID == "amplifying_arrow_yellow") $amount += 1;
-  if ($amount > 0 && SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
-    $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
-    $amount += $num_thrives_active;
-  }
-  if ($amount > 0) {
+  if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
+    if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
+      $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
+      $amount += $num_thrives_active;
+    }
     SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
     SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
   }
@@ -684,7 +697,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       $characterID = ShiyanaCharacter($otherCharacter[0]);
       DamageDealtAbilities($player, $damage, $type, $source);
       if ($source == "dread_scythe" && !SearchNextTurnEffects("dread_scythe", $player)) AddNextTurnEffect("dread_scythe", $player);
-      if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $type == "ARCANE" && $otherCharacter[1] == "2" && CardType($source) == "AA") {
+      if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $otherCharacter[1] == "2" && CardType($source) == "AA") {
         $otherCharacter[1] = 1;
         PlayAura("embodiment_of_earth", $otherPlayer);
       }
@@ -779,6 +792,9 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
       break;
     case "MYAURAS":
       $source = &GetAuras($player);
+      break;
+    default:
+      $source = [];
       break;
   }
   if ($zone == "MYCHAR" && $source[$index + 1] == 0) return;
@@ -1014,7 +1030,7 @@ function PlayerWon($playerID)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
   global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $conceded, $currentTurn;
-  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants;
+  global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
   if ($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
   $winner = $playerID;
@@ -3302,9 +3318,18 @@ function PitchAbility($cardID, $from="HAND")
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources($currentPlayer, 2);
     }
-    if (ColorContains($cardID, 1, $currentPlayer) && SearchCharacterActive($currentPlayer, "dromai_ash_artist") || SearchCharacterActive($currentPlayer, "dromai") || SearchCurrentTurnEffects("dromai_ash_artist-SHIYANA", $currentPlayer) || SearchCurrentTurnEffects("dromai-SHIYANA", $currentPlayer)) {
-      WriteLog("Dromai creates an " . CardLink("ash", "ash"));
-      PutPermanentIntoPlay($currentPlayer, "ash");
+    if (ColorContains($cardID, 1, $currentPlayer)) {
+      $char = GetPlayerCharacter($currentPlayer);
+      if ($char[2] < 3) {
+        switch ($char[0]) {
+          case "dromai_ash_artist":
+          case "dromai":
+            AddLayer("TRIGGER", $currentPlayer, $char[0]);
+            break;
+          default:
+            break;
+        }
+      } 
     }
   }
   if (SubtypeContains($cardID, "Chi", $currentPlayer)
@@ -3607,7 +3632,7 @@ function CharacterAddSubcard($player, $index, $card)
   else $char[$index + 10] = $char[$index + 10] . "," . $card;
 }
 
-function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true)
+function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish")
 {
   $character = &GetPlayerCharacter($player);
   $subcards = explode(",", $character[$index + 10]);
@@ -3619,14 +3644,14 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
   }
   if ($chooseMultizoneData != "") {
     if ($count == 1) {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to banish from " . CardName($character[$index]));
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to $actionName from " . CardName($character[$index]));
       if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData);
       else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData);
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index, 1);
       AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     } else {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to banish from " . CardName($character[$index]));
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to $actionName from " . CardName($character[$index]));
       AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index);
       AddDecisionQueue("REMOVESUBCARD", $player, $index);

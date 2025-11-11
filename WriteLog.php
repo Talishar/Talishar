@@ -1,12 +1,12 @@
 <?php
 
-function WriteLog($text, $playerColor = 0, $highlight=false, $path="./")
+function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highlightColor="brown")
 {
   global $gameName;
   $filename = "{$path}Games/$gameName/gamelog.txt";
   if(file_exists($filename)) $handler = fopen($filename, "a");
   else return; //File does not exist
-  if($highlight) $output = ($playerColor != 0 ? "<span style='color:<PLAYER{$playerColor}COLOR>;'>" : "") . "<p style='background: brown;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>" . $text . "</span></p>" . ($playerColor != 0 ? "</span>" : "");
+  if($highlight) $output = ($playerColor != 0 ? "<span style='color:<PLAYER{$playerColor}COLOR>;'>" : "") . "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>" . $text . "</span></p>" . ($playerColor != 0 ? "</span>" : "");
   else $output = ($playerColor != 0 ? "<span style='color:<PLAYER{$playerColor}COLOR>;'>" : "") . $text . ($playerColor != 0 ? "</span>" : "");
   fwrite($handler, "$output\r\n");
   fclose($handler);
@@ -43,6 +43,22 @@ function ClearLog($n=25)
 function WriteError($text)
 {
   WriteLog("ERROR: $text");
+}
+
+function WriteSystemMessage($text, $path="./")
+{
+  global $gameName;
+  $filename = "{$path}Games/$gameName/gamelog.txt";
+  if(file_exists($filename)) $handler = fopen($filename, "a");
+  else return; //File does not exist
+  fwrite($handler, "$text\r\n");
+  fclose($handler);
+  if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
+    $filename = "{$path}Games/$gameName/fullGamelog.txt";
+    $handler = fopen($filename, "a");
+    fwrite($handler, "$text\r\n");
+    fclose($handler);
+  }
 }
 
 function EchoLog($gameName, $playerID)

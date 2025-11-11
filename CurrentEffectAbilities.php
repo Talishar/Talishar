@@ -2210,7 +2210,6 @@ function IsCombatEffectPersistent($cardID)
     case "visit_the_imperial_forge_red":
     case "visit_the_imperial_forge_yellow":
     case "visit_the_imperial_forge_blue":
-    case "galvanic_bender-UNDER":
     case "immobilizing_shot_red":
     case "head_leads_the_tail_red":
     case "mask_of_shifting_perspectives":

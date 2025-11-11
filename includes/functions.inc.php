@@ -48,10 +48,23 @@ function pwdMatch($pwd, $pwdrepeat)
 	return $result;
 }
 
+// Generate a UUID V4 for unique game identification
+function GenerateGameGUID()
+{
+	$data = random_bytes(16);
+	$data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+	$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+	return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+}
+
 // Check if username is in database, if so then return data
 function uidExists($conn, $username)
 {
 	$conn = GetDBConnection();
+	if (!$conn) {
+		header("location: ../Signup.php?error=db_unavailable");
+		exit();
+	}
 	$sql = "SELECT * FROM users WHERE usersUid = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -77,6 +90,10 @@ function uidExists($conn, $username)
 function emailExists($conn, $email)
 {
 	$conn = GetDBConnection();
+	if (!$conn) {
+		header("location: ../Signup.php?error=db_unavailable");
+		exit();
+	}
 	$sql = "SELECT * FROM users WHERE usersEmail = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -103,6 +120,10 @@ function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 {
 	if ($reportingServer) $conn = GetReportingDBConnection();
 	else $conn = GetDBConnection();
+	if (!$conn) {
+		header("location: ../Signup.php?error=db_unavailable");
+		exit();
+	}
 	$sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -124,6 +145,9 @@ function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 function CreateUserAPI($conn, $username, $email, $pwd)
 {
 	$conn = GetDBConnection();
+	if (!$conn) {
+		return false;
+	}
 	$sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
 
 	$stmt = mysqli_stmt_init($conn);
@@ -144,6 +168,9 @@ function loginFromCookie()
     if (isset($_COOKIE["rememberMeToken"])) {
         $token = $_COOKIE["rememberMeToken"];
         $conn = GetDBConnection();
+        if (!$conn) {
+            return; // Silently fail if database unavailable
+        }
         $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
@@ -280,6 +307,7 @@ function LoadFavoriteDecks($userID)
 {
 	if ($userID == "") return [];
 	$conn = GetDBConnection();
+	if (!$conn) return [];
 	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
@@ -316,7 +344,7 @@ function logCompletedGameStats()
 {
 	global $winner, $currentTurn, $gameName; //gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
-	global $p1deckbuilderID, $p2deckbuilderID;
+	global $p1deckbuilderID, $p2deckbuilderID, $gameGUID;
 	$loser = ($winner == 1 ? 2 : 1);
 	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
 	$values = "?, ?, ?, ?, ?, ?, ?";
@@ -351,6 +379,7 @@ function logCompletedGameStats()
 
 	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
 	$stmt = mysqli_stmt_init($conn);
+	
 	$gameResultID = 0;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
@@ -367,19 +396,33 @@ function logCompletedGameStats()
 	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
 	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
 
-	if (!AreStatsDisabled(1)) SendFabDBResults(1, $p1DeckLink, $p1Deck, $gameResultID, $p2Hero);
-	if (!AreStatsDisabled(2)) SendFabDBResults(2, $p2DeckLink, $p2Deck, $gameResultID, $p1Hero);
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
-		WriteLog("Sending game result to Fabrary", highlight:true);
-		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+		WriteLog("📊Sending game result to <b>Fabrary</b>📊", highlight:true, highlightColor:"green");
+		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID);
 	}
-	else WriteLog("No results sent to Fabrary as a player disabled stats", highlight:true);
+	elseif (AreStatsDisabled(1) && !AreStatsDisabled(2)) {
+		WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 2📊", highlight:true, highlightColor:"green");
+		SendFullFabraryResults($gameResultID, "-", $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID);
+	}
+	elseif (!AreStatsDisabled(1) && AreStatsDisabled(2)) {
+		WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 1📊", highlight:true, highlightColor:"green");
+		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, "-", $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID);
+	}
+	else WriteLog("No results sent to <b>Fabrary</b> as both players disabled stats", highlight:true);
 	// Sends data to FabInsights DB
-	if (!AreStatsDisabled(1) && !AreStatsDisabled(2) && !AreGlobalStatsDisabled(1) && !AreGlobalStatsDisabled(2)) {
-		WriteLog("Sending game result to FaBInsights", highlight:true);
-		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID);
+	$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
+	$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
+	if (!$p1StatsDisabled && !$p2StatsDisabled) {
+		WriteLog("📊Sending game stats to <b>FaBInsights</b>📊", highlight:true, highlightColor:"green");
 	}
-	else WriteLog("No results sent to FaBInsights as a player disabled stats", highlight:true);
+	elseif ($p1StatsDisabled && !$p2StatsDisabled) {
+		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 2📊", highlight:true, highlightColor:"green");
+	}
+	elseif (!$p1StatsDisabled && $p2StatsDisabled) {
+		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1📊", highlight:true, highlightColor:"green");
+	}
+	else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
+	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID);
 	mysqli_close($conn);
 }
 
@@ -429,7 +472,7 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	curl_close($ch);
 }
 
-function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID)
+function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID = "")
 {
 	global $FaBraryKey, $gameName, $p2IsAI;
 	if($p2IsAI == "1") return;//Don't file results for AI games
@@ -441,6 +484,7 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	$payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
 	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
 	$payloadArr["format"] = GetCachePiece(intval($gameName), 13);
+	$payloadArr['gameGUID'] = $gameGUID;
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -475,7 +519,7 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID)
+function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "")
 {
 	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
     // Skip AI games
@@ -496,9 +540,10 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr['gameName'] = $gameName;
     $payloadArr['player1Name'] = $hashedP1Name;
     $payloadArr['player2Name'] = $hashedP2Name;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero));
+    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled));
+    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
+	$payloadArr['gameGUID'] = $gameGUID;
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -549,9 +594,26 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	if($winner == "1" || $winner == "2") {
+		$deck["winner"] = intval($winner);
+	}
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
+	
+	// Add hero information for display
+	// Get the player's own hero from the character array (first card in character section)
+	$characterCards = explode(" ", $character);
+	if(count($characterCards) > 0) {
+		$yourHeroCardID = GetNormalCardID($characterCards[0]);
+		$deck["yourHero"] = $yourHeroCardID;
+	}
+	
+	// Add opponent's hero if provided
+	if($opposingHero != "") {
+		$deck["opponentHero"] = GetNormalCardID($opposingHero);
+	}
+	
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
 
@@ -685,7 +747,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	return json_encode($deck);
 }
 
-function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "")
+function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "", $excludePrivateFields = false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
@@ -705,6 +767,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = intval($currentTurn);
 	$deck["result"] = ($player == $winner ? 1 : 0);
+	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($playerHero != "") $deck["playerHero"] = $playerHero;
@@ -837,20 +900,35 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
 	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
 
+	// Exclude private fields if stats are disabled
+	if ($excludePrivateFields) {
+		unset($deck["deckbuilderID"]);
+		unset($deck["cardResults"]);
+		unset($deck["character"]);
+		unset($deck["yourTime"]);
+		unset($deck["turnResults"]);
+		unset($deck["totalDamageThreatened"]);
+		unset($deck["totalDamageDealt"]);
+		unset($deck["totalLifeGained"]);
+		unset($deck["totalDamagePrevented"]);
+		unset($deck["averageDamageThreatenedPerTurn"]);
+		unset($deck["averageDamageDealtPerTurn"]);
+		unset($deck["averageDamageThreatenedPerCard"]);
+		unset($deck["averageResourcesUsedPerTurn"]);
+		unset($deck["averageCardsLeftOverPerTurn"]);
+		unset($deck["averageCombatValuePerTurn"]);
+		unset($deck["averageValuePerTurn"]);
+	}
+
 	return json_encode($deck);
 }
 
 function GetNormalCardID($cardID)
 {
 	switch ($cardID) {
-		case "minerva_themis": return "minerva_themis";
 		case "MON400": return "spell_fray_cloak";
-		case "lord_sutcliffe": return "lord_sutcliffe";
 		case "MON401": return "spell_fray_gloves";
-		case "lady_barthimont": return "lady_barthimont";
-		case "the_librarian": return "the_librarian";
 		case "MON402": return "spell_fray_leggings";
-		case "the_hand_that_pulls_the_strings": return "the_hand_that_pulls_the_strings";
 	}
 	return $cardID;
 }
@@ -909,6 +987,9 @@ function SaveSetting($playerId, $settingNumber, $value)
 {
 	if($playerId == "") return;
 	$conn = GetDBConnection();
+	if (!$conn) {
+		return;
+	}
 	$sql = "insert into savedsettings (playerId, settingNumber, settingValue) values (?, ?, ?) ON DUPLICATE KEY UPDATE settingValue = VALUES(settingValue);";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
@@ -921,9 +1002,12 @@ function SaveSetting($playerId, $settingNumber, $value)
 
 function LoadSavedSettings($playerId)
 {
-	if($playerId == "") return [];
+	if($playerId == "") {
+		return [];
+	}
 	$output = [];
 	$conn = GetDBConnection();
+	if (!$conn) return [];
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
@@ -975,10 +1059,6 @@ function SendEmail($userEmail, $url)
 function SendEmailAPI($userEmail, $url)
 {
 	include "../APIKeys/APIKeys.php";
-	
-	// For development/testing: Log the reset link to file
-	$logMessage = "[" . date('Y-m-d H:i:s') . "] Password reset link for $userEmail: $url\n";
-	file_put_contents("../password_reset_test.log", $logMessage, FILE_APPEND);
 	
 	// Check if SendGrid API key is configured
 	if (empty($sendgridKey)) {

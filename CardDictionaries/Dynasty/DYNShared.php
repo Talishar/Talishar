@@ -96,7 +96,6 @@ function DYNEffectPowerModifier($cardID)
     case "visit_the_imperial_forge_red": return (NumEquipBlock() > 0 ? 3 : 0);
     case "visit_the_imperial_forge_yellow": return (NumEquipBlock() > 0 ? 2 : 0);
     case "visit_the_imperial_forge_blue": return (NumEquipBlock() > 0 ? 1 : 0);
-    case "galvanic_bender-UNDER": return 1;
     case "bios_update_red-1": return 3;
     case "cut_to_the_chase_red": return 3;
     case "cut_to_the_chase_yellow": return 2;
@@ -138,11 +137,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       return ($subtype == "Sword") || ($subtype == "Dagger");
     case "felling_swing_red": case "felling_swing_yellow": case "felling_swing_blue": return CardSubType($attackID) == "Axe";
     case "visit_the_imperial_forge_red": case "visit_the_imperial_forge_yellow": case "visit_the_imperial_forge_blue": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
-    case "galvanic_bender-UNDER":
-      $character = &GetPlayerCharacter($mainPlayer);
-      $index = FindCharacterIndex($mainPlayer, "nitro_mechanoida");
-      return $attackID == "nitro_mechanoida" && $character[$index + 2] >= 1;
-      case "bios_update_red-1": return $combatChainState[$CCS_IsBoosted];
+    case "bios_update_red-1": return $combatChainState[$CCS_IsBoosted];
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue": return true;
     case "immobilizing_shot_red": return true;
     case "dead_eye_yellow": return CardSubType($attackID) == "Arrow";
@@ -297,7 +292,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
         if(CardType($char[$i]) != "C" && CardType($char[$i]) != "Companion" && $char[$i] != "nitro_mechanoida") {
-          if($char[$i] == "galvanic_bender") AddCurrentTurnEffect($char[$i] . "-UNDER", $currentPlayer);
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechanoidIndex);
         }
       }

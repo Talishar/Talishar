@@ -16,7 +16,7 @@ $response->cardBacks = [];
 $response->playmats = [];
 
 // Define default playmat IDs (kept in sync with frontend PLAYER_PLAYMATS)
-$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32];
+$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32, 33, 34];
 
 //Add default card back
 $cardBack = new stdClass();
@@ -130,6 +130,10 @@ function GetPlaymatName($id)
       return "Isenloft";
     case 32:
       return "Volthaven";
+    case 33:
+      return "High Seas";
+    case 34:
+      return "High Seas Necro";
     default:
       return "N/A";
   }

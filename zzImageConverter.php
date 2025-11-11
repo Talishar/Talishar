@@ -21,7 +21,9 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     // else $imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/$setID.width-450.format-webp.webp"; // SUP seems to use both these URL formats?
     // else $imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/$setID" . "_BYfTULR.width-450.format-webp.webp";
     //$imageURL = "https://dhhim4ltzu1pj.cloudfront.net/media/images/" . $setID . "_yajPa8R.width-450.format-webp.webp";
-    else $imageURL = "https://d2wlb52bya4y8z.cloudfront.net/media/cards/large/$setID.webp";
+    // else $imageURL = "https://d2wlb52bya4y8z.cloudfront.net/media/cards/large/$setID.webp";
+    // else $imageURL = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID-RF.webp";
+      else $imageURL = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID.webp";
     // else $imageURL = "https://d2wlb52bya4y8z.cloudfront.net/media/cards/large/$setID-RF.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");
     echo("Downloading image from $imageURL <BR>");

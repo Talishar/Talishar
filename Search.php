@@ -54,11 +54,11 @@ function SearchActiveAttack($player, $type = "", $subtype = "", $maxCost = -1, $
   return SearchInner($activeAttack, $player, "CC", CombatChainPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
 }
 
-function SearchCombatChainAttacks($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "")
+function SearchCombatChainAttacks($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nameIncludes = "", $is1h = false)
 {
   global $chainLinks;
   $attacks = GetCombatChainAttacks();
-  return SearchInner($attacks, $player, "CC", ChainLinksPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, nameIncludes:$nameIncludes);
+  return SearchInner($attacks, $player, "CC", ChainLinksPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, nameIncludes:$nameIncludes, is1h:$is1h);
 }
 
 function SearchArsenal($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $faceUp = false, $faceDown = false)
@@ -470,7 +470,7 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
   $count = count($character);
   $pieces = CharacterPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($character[$i + 1] != 0 && subtypecontains($character[$i], $subtype, $player)) {
+    if ($character[$i + 1] != 0 && SubtypeContains($character[$i], $subtype, $player, $character[$i + 11])) {
       if (!$notActiveLink) return true;
       else if ($combatChain[8] != $character[$i + 11]) return true;
     }
@@ -845,8 +845,11 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
   $pieces = CharacterPieces();
   $indices = "";
   for ($i = 0; $i < $count; $i += $pieces) {
-    $block = BlockValue($character[$i]) + $character[$i + 4] + BlockModifier($character[$i], "EQUIP", "-", $i);
-    $block = $block < 0 ? 0 : $block;
+    $block = BlockValue($character[$i]);
+    if ($block != -1) {
+      $block = $block + $character[$i + 4] + BlockModifier($character[$i], "EQUIP", "-", $i);
+      $block = $block < 0 ? 0 : $block;
+    }
     if ($character[$i + 1] != 0
       && CardType($character[$i]) == "E"
       && (($minBlock == -1 && $maxBlock == -1) || ($block <= $maxBlock && $block >= $minBlock))

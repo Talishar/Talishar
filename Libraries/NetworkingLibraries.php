@@ -680,7 +680,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       else $num = 1;
       if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
       $cardID = str_replace(" ", "_", $cardID);
-      $color = end(explode("_", $cardID));
+      $splitCard = explode("_", $cardID);
+      $color = end($splitCard);
       switch ($color) {
         case "r":
           $cardID .= "ed";
@@ -2951,7 +2952,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       case "evo_battery_pack_yellow_equip":
       case "evo_cogspitter_yellow_equip":
       case "evo_charging_rods_yellow_equip":
-        CharacterChooseSubcard($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), fromDQ: true);
+        CharacterChooseSubcard($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex), fromDQ: true, actionName:"destroy");
         AddDecisionQueue("ADDDISCARD", $currentPlayer, "-", 1);
         break;
       default:
@@ -3589,16 +3590,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
         AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       }
-      break;
-    case "emissary_of_moon_red":
-    case "emissary_of_tides_red":
-    case "emissary_of_wind_red":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which cards to put on the bottom of your deck (or pass)", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
-      AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
     case "longdraw_half_glove":
       $myHand = &GetHand($currentPlayer);

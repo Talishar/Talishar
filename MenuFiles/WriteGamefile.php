@@ -12,7 +12,7 @@
       global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink;
       global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP, $p1deckbuilderID, $p2deckbuilderID, $roguelikeGameID;
       global $p1Matchups, $p2Matchups, $p1StartingHealth, $p1ContentCreatorID, $p2ContentCreatorID;
-      global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1IsAI, $p2IsAI;
+      global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1IsAI, $p2IsAI, $gameGUID;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -49,6 +49,7 @@
       fwrite($gameFileHandler, $p2SideboardSubmitted . "\r\n");
       fwrite($gameFileHandler, $p1IsAI . "\r\n");
       fwrite($gameFileHandler, $p2IsAI . "\r\n");
+      fwrite($gameFileHandler, $gameGUID . "\r\n");
       fclose($gameFileHandler);
     }
   }

@@ -59,7 +59,7 @@ function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $con
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $combatChain, $layers;
-  if (count($layers) > 0 && (CardType($layers[0]) == "AA" || SubtypeContains($layers[0], "Ally"))) {
+  if (IsLayerStep()) {
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   } else if (count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
@@ -1964,7 +1964,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
           return;
         }
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to add to hand");
-        AddDecisionQueue("CHOOSECARD", $player, implode(",", $choices), 1);
+        AddDecisionQueue("MAYCHOOSECARD", $player, implode(",", $choices), 1);
         AddDecisionQueue("APPENDLASTRESULT", $player, "-INVENTORY", 1);
         AddDecisionQueue("ADDHANDINVENTORY", $player, "<-", 1);
         AddDecisionQueue("REVEALCARDS", $player, "<-", 1);
@@ -2529,6 +2529,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
           WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($card, $card) . " on the bottom of your deck");
         }
+        break;
+      case "dromai":
+      case "dromai_ash_artist":
+        WriteLog(CardLink($parameter, $parameter) . " creates an " . CardLink("ash", "ash"));
+        PutPermanentIntoPlay($player, "ash");
         break;
       case "burn_them_all_red":
         DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
@@ -3113,10 +3118,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PUTPLAY", $player, "0", 1);
         break;
       case "stasis_cell_blue":
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-        AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "stasis_cell_blue-", 1);
+        $index = SearchCharacterForUniqueID($target, $otherPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $otherPlayer, $index);
+          AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "stasis_cell_blue-", 1);
+        }
         break;
       case "evo_magneto_blue_equip":
         if (IsAllyAttacking()) {
@@ -3293,7 +3299,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "essence_of_ancestry_body_red":
       case "essence_of_ancestry_soul_yellow":
       case "essence_of_ancestry_mind_blue":
-        AddCurrentTurnEffect($parameter, $player, "PLAY");
+        $numAuras = CountControlledAuras($player);
+        if ($numAuras == 0) {
+          AddCurrentTurnEffect($parameter, $player, "PLAY");
+        }
         break;
       case "haunting_specter_red":
       case "haunting_specter_yellow":
@@ -4160,6 +4169,18 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         AddDecisionQueue("DRAW", $defPlayer, "-");
         }
       break;
+    case "emissary_of_moon_red":
+    case "emissary_of_tides_red":
+    case "emissary_of_wind_red":
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which cards to put on the bottom of your deck (or pass)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZADDZONE", $player, "MYBOTDECK", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      if ($cardID == "emissary_of_moon_red") AddDecisionQueue("DRAW", $player, "-", 1);
+      elseif ($cardID == "emissary_of_tides_red") AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
+      elseif ($cardID == "emissary_of_wind_red") AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
+      break;
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":
@@ -4457,8 +4478,23 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
       }
     }
   }
-
-  else if ($cardID == "nitro_mechanoidb") $power = SearchCurrentTurnEffects("galvanic_bender-UNDER", $player) > 0 ? 6 : 5;
+  else if ($cardID == "nitro_mechanoidb") {
+    $ind = SearchCharacterForCards($player, "nitro_mechanoida");
+    $power = 5;
+    if ($ind != "") {
+      $char = GetPlayerCharacter($player);
+      $subcards = $char[$ind+10];
+      foreach($subcards as $subcard) {
+        switch ($subcard) {
+          case "galvanic_bender":
+            ++$power;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
   if ($from != "CC") {
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
@@ -4743,10 +4779,12 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
     case "vaporize__shock_yellow":
       $arcaneDamageDealt = GetClassState($player, $CS_ArcaneDamageDealt);
       AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:minCost=0;maxCost=" . $arcaneDamageDealt . "&MYAURAS:minCost=0;maxCost=" . $arcaneDamageDealt, 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose an aura with cost $arcaneDamageDealt or less to destroy, or pass (tokens are chosen next)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       for($i=0; $i<$arcaneDamageDealt; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRAURAS:type=T&MYAURAS:type=T");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a token aura to destroy, or pass", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
       }

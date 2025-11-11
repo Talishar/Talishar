@@ -231,9 +231,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
     case "essence_of_ancestry_body_red":
     case "essence_of_ancestry_soul_yellow":
     case "essence_of_ancestry_mind_blue":
-      $illusionistAuras = SearchAura($player, class: "ILLUSIONIST");
-      $aurasArray = explode(",", $illusionistAuras);
-      if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
+      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "haunting_specter_red":
     case "haunting_specter_yellow":
@@ -1641,7 +1639,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       Charge(may: false);
       break;
     case "restless_coalescence_yellow":
-      $abilityType = GetResolvedAbilityType($cardID);
+      $abilityType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
       if ($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1) {
         --$auras[$index + 3];
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]));
@@ -1652,6 +1650,7 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       break;
     case "fealty":
       DestroyAura($currentPlayer, $index);
+      break;
     default:
       break;
   }

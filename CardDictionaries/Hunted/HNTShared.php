@@ -806,6 +806,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "sound_the_alarm_red";
       if(IsHeroAttackTarget()){
+        $deck = new Deck($currentPlayer);
+        $count = $deck->RemainingCards();
+        $foundDreact = false;
+        for ($i = 0; $i < $count; ++$i) {
+          if (TypeContains($deck->GetCard($i), "DR")) $foundDreact = true;
+        }
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
         AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
@@ -815,6 +821,13 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+        if (!$foundDreact) {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
+          AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You have no defense reactions to search for.", 1);
+          AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        }
       }
       break;
     case "imperial_seal_of_command_red":

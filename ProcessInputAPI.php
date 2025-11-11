@@ -2,6 +2,8 @@
 
 error_reporting(E_ALL);
 
+session_start();
+
 include "WriteLog.php";
 include "GameLogic.php";
 include "GameTerms.php";
@@ -19,26 +21,42 @@ include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
 
 SetHeaders();
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+
+// Start output buffering to catch any accidental output
+ob_start();
 
 //We should always have a player ID as a URL parameter
 // Check if the "gameName" key exists in the $_POST array
 $gameName = $_POST["gameName"] ?? null;
-if (!IsGameNameValid($gameName)) {
-  echo "Invalid game name.";
+$playerID = $_POST["playerID"] ?? null;
+
+// For profile settings (playerID == 0), allow gameName to be 0
+if ($playerID != 0 && !IsGameNameValid($gameName)) {
+  http_response_code(400);
+  echo json_encode(['error' => 'Invalid game name.']);
   exit;
 }
-$playerID = $_POST["playerID"];
-$authKey = $_POST["authKey"];
+$authKey = $_POST["authKey"] ?? "";
 
 //We should also have some information on the type of command
-$mode = $_POST["mode"];
-$submission = $_POST["submission"];
+$mode = $_POST["mode"] ?? null;
+$submission = $_POST["submission"] ?? [];
 $submission = json_encode($submission);
 $submission = json_decode($submission); //I don't know why it's not correctly parsing as objects all the way down here
 
 //First we need to parse the game state from the file
-include "ParseGamestate.php";
+// For profile settings updates (playerID == 0), skip gamestate parsing
+if ($playerID != 0) {
+  include "ParseGamestate.php";
+} else {
+  // Initialize minimal state for profile-only operations
+  $currentPlayer = 0;
+  $p1id = "";
+  $p2id = "";
+  $p1Key = "";
+  $p2Key = "";
+}
 
 $otherPlayer = $currentPlayer == 1 ? 2 : 1;
 $skipWriteGamestate = false;
@@ -51,16 +69,26 @@ $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
-if (!IsReplay()) {
-  if (($playerID == 1 || $playerID == 2) && $authKey == "") {
-    if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+// Skip auth and game checks for profile operations (playerID == 0)
+try {
+  if (!IsReplay() && $playerID != 0) {
+    if (($playerID == 1 || $playerID == 2) && $authKey == "") {
+      if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+    }
+    if ($playerID != 3 && $authKey != $targetAuth) exit;
+    if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
+    if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
+      $currentTime = round(microtime(true) * 1000);
+      SetCachePiece($gameName, 2, $currentTime);
+      SetCachePiece($gameName, 3, $currentTime);
+      exit;
+    }
   }
-  if ($playerID != 3 && $authKey != $targetAuth) exit;
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
-  if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
+} catch (Exception $e) {
+  // If there's an issue with auth checks, only exit if it's a real game
+  if ($playerID != 0) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Auth check failed']);
     exit;
   }
 }
@@ -74,23 +102,32 @@ $isSimulation = false;
 $response = new stdClass();
 
 //Now we can process the command
-switch ($mode) {
-  case 26: //Change setting
-    $userID = "";
-    if (!$isSimulation) {
-      include "MenuFiles/ParseGamefile.php";
-      include_once "./includes/dbh.inc.php";
-      include_once "./includes/functions.inc.php";
-      if ($playerID == 1) $userID = $p1id;
-      else $userID = $p2id;
-    }
-    for ($i = 0; $i < count($submission->settings); ++$i) {
-      $setting = $submission->settings[$i];
-      $setting->id = ParseSettingsStringValueToIdInt($setting->name) ?? $setting->id;
-      ChangeSetting($playerID, $setting->id, $setting->value, $userID);
-    }
-    $response->message = "Settings changed successfully.";
-    break;
+try {
+  switch ($mode) {
+    case 26: //Change setting
+      $userID = "";
+      if (!$isSimulation) {
+        include_once "./includes/dbh.inc.php";
+        include_once "./includes/functions.inc.php";
+        if ($playerID == 0) {
+          // Profile settings update - get userID from session
+          if (isset($_SESSION["userid"])) {
+            $userID = $_SESSION["userid"];
+          }
+        } else {
+          // In-game settings update - get userID from game file
+          include "MenuFiles/ParseGamefile.php";
+          if ($playerID == 1) $userID = $p1id;
+          else $userID = $p2id;
+        }
+      }
+      for ($i = 0; $i < count($submission->settings); ++$i) {
+        $setting = $submission->settings[$i];
+        $setting->id = ParseSettingsStringValueToIdInt($setting->name) ?? $setting->id;
+        ChangeSetting($playerID, $setting->id, $setting->value, $userID);
+      }
+      $response->message = "Settings changed successfully.";
+      break;
   case 33: //Fully re-order layers
     //First validate
     $isValid = true;
@@ -215,8 +252,20 @@ switch ($mode) {
     break;
   default:
     break;
+  }
+} catch (Exception $e) {
+  // Log the exception and return error response
+  error_log("ProcessInputAPI error: " . $e->getMessage());
+  $response->error = "An error occurred processing your request";
 }
+// Clean any accidental output before sending JSON
+ob_clean();
 echo (json_encode($response));
+
+// For profile settings updates, exit here to avoid further processing
+if ($playerID == 0) {
+  exit;
+}
 
 ProcessMacros();
 if ($inGameStatus == $GameStatus_Rematch) {

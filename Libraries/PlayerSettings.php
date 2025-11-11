@@ -36,6 +36,7 @@ $SET_AlwaysAllowUndo = 25;//Do you want to always allow undo
 $SET_DisableAltArts = 26;//Do you want to disable alt arts
 $SET_ManualTunic = 27;//Do you want to manually tick up tunic each turn
 $SET_DisableFabInsights = 28; //Did the player disable global stat tracking
+$SET_DisableHeroIntro = 29; //Did the player disable hero intro animation
 
 function HoldPrioritySetting($player)
 {
@@ -220,6 +221,7 @@ function GetCardBack($player)
     case 119: return "CBFatAndFurious";
     case 120: return "CBRighteousGaming3";
     case 121: return "CBFreshAndBuds2";
+    case 122: return "CBNull";
     default: return "CardBack";
   };
 }
@@ -311,6 +313,14 @@ function AreGlobalStatsDisabled($player)
   return $settings[$SET_DisableFabInsights] == "1";
 }
 
+function IsHeroIntroDisabled($player)
+{
+  global $SET_DisableHeroIntro;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return $settings[$SET_DisableHeroIntro] == "1";
+}
+
 function IsCasterMode()
 {
   global $SET_CasterMode;
@@ -369,6 +379,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "DisableAltArts" => 26,
     "ManualTunic" => 27,
     "DisableFabInsights" => 28,
+    "DisableHeroIntro" => 29,
   ];
   return $settingsToId[$value];
 }
@@ -376,7 +387,8 @@ function ParseSettingsStringValueToIdInt(string $value)
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
   global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_CasterMode, $layerPriority, $gameName;
-  if($player != "") {
+  // Only update game state if not in profile context
+  if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
     $settings[$setting] = $value;
     if($setting == $SET_MuteChat) {
@@ -392,7 +404,9 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
       if(IsCasterMode()) SetCachePiece($gameName, 9, "1");
     }
   }
-  if($playerId != "" && SaveSettingInDatabase($setting)) SaveSetting($playerId, $setting, $value);
+  if($playerId != "" && SaveSettingInDatabase($setting)) {
+    SaveSetting($playerId, $setting, $value);
+  }
 }
 
 function SaveSettingInDatabase($setting)
@@ -400,7 +414,7 @@ function SaveSettingInDatabase($setting)
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
-  global $SET_ManualTunic, $SET_DisableFabInsights;
+  global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -420,6 +434,7 @@ function SaveSettingInDatabase($setting)
     case $SET_DisableAltArts:
     case $SET_ManualTunic:
     case $SET_DisableFabInsights:
+    case $SET_DisableHeroIntro:
       return true;
     default: return false;
   }
@@ -503,7 +518,7 @@ function IsTeamSonicDoom($userName)
 {
   switch($userName) {
     case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
-    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "OceansForce":
+    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "Ocean":
     case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
       return true;
     default: break;
@@ -604,8 +619,7 @@ function isTeamCupofTCG($userName)
 function isTeamScowlingFleshBag($userName)
 {
   switch($userName) {
-    case "ScowlingFleshBag":
-    case "SmilingFleshBag":
+    case "Scowling":
     case "PvtVoid":
       return true;
     default: break;
@@ -616,7 +630,7 @@ function isTeamScowlingFleshBag($userName)
 function IsTeamThaiCardsShop($userName)
 {
   switch($userName) {
-    case "terrythai03":
+    case "thaicards":
     case "PvtVoid":
       return true;
     default: break;

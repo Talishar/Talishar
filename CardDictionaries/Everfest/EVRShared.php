@@ -282,7 +282,12 @@
         AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
         return "";
       case "blade_runner_red": case "blade_runner_yellow": case "blade_runner_blue":
-        GiveAttackGoAgain();
+        if (TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && Is1H($CombatChain->AttackCard()->ID())) {
+          GiveAttackGoAgain();
+        }
+        else {
+          WriteLog("A previous chain link was targeted by " . CardLink($cardID, $cardID));
+        }
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         return "";
       case "outland_skirmish_red": case "outland_skirmish_yellow": case "outland_skirmish_blue":

@@ -582,7 +582,9 @@ function ClearNextCardArcaneBuffs($player, $playedCard = "", $from = "")
         case "blessing_of_aether_red":
         case "blessing_of_aether_yellow":
         case "blessing_of_aether_blue":
-          if (!IsStaticType(CardType($playedCard), $from, $playedCard) && GetResolvedAbilityType($playedCard, $from) != "I") $remove = 1;
+          if ($currentTurnEffects[$i + 2] == -1) {
+            if (!IsStaticType(CardType($playedCard), $from, $playedCard) && GetResolvedAbilityType($playedCard, $from) != "I") $remove = 1;
+          }
           break;
         default:
           break;

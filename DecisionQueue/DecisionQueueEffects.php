@@ -291,15 +291,24 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "ADAPTIVEPLATING":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
-      if($lastResult != "None") EquipEquipment($player, "adaptive_plating", $lastResult);
+      if (SearchCharacterAliveSubtype($player, $lastResult)) {
+        WriteLog("You already have something in your $lastResult slot!", highlight:true);
+      }
+      elseif($lastResult != "None") EquipEquipment($player, "adaptive_plating", $lastResult);
       return $lastResult;
     case "ADAPTIVEDISSOLVER":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
-      if($lastResult != "None") EquipEquipment($player, "adaptive_dissolver", $lastResult);
+      if (SearchCharacterAliveSubtype($player, $lastResult)) {
+        WriteLog("You already have something in your $lastResult slot!", highlight:true);
+      }
+      elseif($lastResult != "None") EquipEquipment($player, "adaptive_dissolver", $lastResult);
       return $lastResult;
     case "ADAPTIVEALPHAMOLD":
       if(is_array($lastResult) && count($lastResult) > 0) $lastResult = $lastResult[0];
-      if($lastResult != "None") EquipEquipment($player, "adaptive_alpha_mold", $lastResult);
+      if (SearchCharacterAliveSubtype($player, $lastResult)) {
+        WriteLog("You already have something in your $lastResult slot!", highlight:true);
+      }
+      elseif($lastResult != "None") EquipEquipment($player, "adaptive_alpha_mold", $lastResult);
       return $lastResult;
     case "UPTHEANTE":
       $numNewWagers = 0;
@@ -748,7 +757,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         BanishCardForPlayer($cardID, $player, "DISCARD", banishedBy: "hyper_scrapper_blue");
         if (CardName($cardID) == "Hyper Driver") $scrappedHyperDriverAmount++;
       }
-      AddCurrentTurnEffect("hyper_scrapper_blue-$scrappedHyperDriverAmount", $player);
+      AddCurrentTurnEffect("hyper_scrapper_blue,$scrappedHyperDriverAmount", $player);
       return $scrappedAmount;
     case "MEGANETICLOCKWAVE":
       $cardID = GetMZCard($player, $lastResult);
@@ -1106,9 +1115,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CREMATION":
       $discard = GetDiscard($otherPlayer);
       for ($i = count($discard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
-        if (ShareName(CardName($discard[$i]), GamestateUnsanitize($lastResult))) {
-          BanishCardForPlayer($discard[$i], $otherPlayer, "DISCARD", banishedBy:"talisman_of_cremation_blue", banisher: $player);
-          RemoveDiscard($otherPlayer, $i);
+        if (!isFaceDownMod($discard[$i+2])) {
+          if (ShareName(CardName($discard[$i]), GamestateUnsanitize($lastResult))) {
+            BanishCardForPlayer($discard[$i], $otherPlayer, "DISCARD", banishedBy:"talisman_of_cremation_blue", banisher: $player);
+            RemoveDiscard($otherPlayer, $i);
+          }
         }
       }
       return $lastResult;

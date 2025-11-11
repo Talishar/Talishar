@@ -595,7 +595,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DESTROYEQUIPDEF0":
       $character = &GetPlayerCharacter($defPlayer);
       $cardID = $character[$lastResult];
-      if (BlockValue($cardID) + $character[$lastResult + 4] + BlockModifier($cardID, "EQUIP", 0, $lastResult)<= 0 && BlockValue($character[$lastResult]) != -1) {
+      $baseBlock = BlockValue($cardID, $defPlayer, "EQUIP", false);
+      if ($baseBlock + $character[$lastResult + 4] + BlockModifier($cardID, "EQUIP", 0, $lastResult)<= 0 && $baseBlock != -1) {
         WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed");
         DestroyCharacter($defPlayer, $lastResult);
       }
@@ -2902,6 +2903,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional);
             }
           }
+          break;
+        case "stasis_cell_blue":
+          AddLayer("TRIGGER", $player, $params[0], GetMZUID($targetedPlayer, $target));
           break;
         case "blast_to_oblivion_red":
         case "blast_to_oblivion_yellow":

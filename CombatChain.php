@@ -1958,7 +1958,7 @@ function IsLayerStep()
   global $layers, $CombatChain, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) return false;
   $layerInd = count($layers) - LayerPieces();
-  $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY"];
+  $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN"];
   if (!isset($layers[$layerInd])) return false;
   if (in_array($layers[$layerInd], $nonCardLayers)) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
@@ -2036,6 +2036,7 @@ function LinkBasePower()
     if ($attackCard != "-") $basePower = ceil($basePower / $attackCard->DivideBasePower());
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+      if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
       switch ($currentTurnEffects[$i]) {
         case "kayo_berserker_runt-HALF":

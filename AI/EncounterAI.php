@@ -281,10 +281,19 @@ function ShouldBlock($found, $storedPriorityNode)
   global $currentPlayer;
   $health = &GetHealth($currentPlayer);
   $threatened = CachedTotalPower() - CachedTotalBlock();
+  
   if(!$found || $threatened == 0) return false;
-  if(IsFirstTurn() && ($threatened > 1 || !DoesAttackHaveGoAgain())) return true;//Make AI more likely to block on turn 0
-  //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
-  //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalPower().",cachedblock->".CachedTotalBlock().",health->".$health.",powervalue->".PowerValue("brand_with_cinderclaw_yellow"));
+  
+  // Check if equipment block is REQUIRED by the current chain link
+  // If so, force the block with equipment
+  if($storedPriorityNode[1] == "Character" && NumEquipBlock() == 0 && HaveUnblockedEquip($currentPlayer)) {
+    // Equipment is required to block, and this is an equipment - force it
+    return true;
+  }
+  
+  // Normal block logic
+  if(IsFirstTurn() && ($threatened > 1 || !DoesAttackHaveGoAgain())) return true;
+  
   if($storedPriorityNode[3] != 0 &&
 ((CachedTotalPower() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalPower() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
   {

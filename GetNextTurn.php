@@ -89,7 +89,9 @@ if ($isGamePlayer) {
   }
   
   // Write updated spectator data
-  file_put_contents($spectatorFile, json_encode($spectatorData));
+  if (file_exists($spectatorFile)) {
+    file_put_contents($spectatorFile, json_encode($spectatorData));
+  }
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -162,7 +164,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include "WriteGamestate.php";
   } else if ($currentPlayerActivity != 2 && $opponentInactive && !IsGameOver() ) {
     $currentPlayerActivity = 2;
-    WriteLog("⌛Player $currentPlayer is inactive.");
+    //WriteLog("⌛Player $currentPlayer is inactive.");
     include "WriteGamestate.php";
     GamestateUpdated($gameName);
   }
@@ -192,6 +194,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
       WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
     }
+    // Generate a new gameGUID for the rematch to ensure unique identification
+    $gameGUID = GenerateGameGUID();
     $format = is_numeric($format) ? FormatName($format) : $format; // the frontend expects the name of the format
     WriteGameFile();
     $currentTime = round(microtime(true) * 1000);
@@ -221,6 +225,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($lastUpdate == 0) {
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
+    $initialLoad->gameGUID = $gameGUID;
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
     $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
@@ -231,6 +236,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
+    $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
     $initialLoad->altArts = [];
 
@@ -1856,6 +1862,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   
   $response->spectatorCount = $spectatorCount;
+  
+  // Get visibility from cache (piece 9 in cache: "0" = private, "1" = public, "2" = friends-only)
+  $cacheVisibility = GetCachePiece($gameName, 9);
+  $response->isPrivate = ($cacheVisibility !== "1"); // Not public = private or friends-only
 
   // encode and send it out
   echo json_encode($response);
@@ -1889,4 +1899,19 @@ function GetPhaseHelptext()
 
 function skipEffectUIStacking($cardID) {
   return $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
+}
+
+function isPlayerAI($playerID) {
+  global $p2IsAI;
+  if($playerID == 2 && $p2IsAI == "1") return true;
+  return false;
+}
+
+// Generate a UUID V4 for unique game identification
+function GenerateGameGUID()
+{
+	$data = random_bytes(16);
+	$data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+	$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+	return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }

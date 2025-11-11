@@ -255,6 +255,7 @@ class echo_casque extends Card {
     AddDecisionQueue("NOPASS", $this->controller, "-");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $index, 1);
     AddDecisionQueue("DESTROYCHARACTER", $this->controller, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, 1, 1);
     AddDecisionQueue("PAYRESOURCES", $this->controller, 1, 1);
     AddDecisionQueue("DRAW", $this->controller, "-", 1);
   }

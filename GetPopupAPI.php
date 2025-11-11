@@ -1,20 +1,35 @@
 <?php
 
+session_start();
+
 include "./Libraries/HTTPLibraries.php";
 
 $gameName = $_GET["gameName"];
-if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
-  exit;
-}
 $playerID = $_GET["playerID"];
+
+// For profile settings (playerID == 0), allow gameName == 0
+if ($playerID == 0) {
+  // Profile settings request - skip game name validation
+} else {
+  // Normal game request - validate game name
+  if (!IsGameNameValid($gameName)) {
+    echo ("Invalid game name.");
+    exit;
+  }
+}
+
 $authKey = TryGet("authKey", "");
 $popupType = $_GET["popupType"];
 $chainLinkIndex = TryGet("index", "");
 
 ob_start();
 include "./Libraries/SHMOPLibraries.php";
-include "./ParseGamestate.php";
+
+// For profile settings, skip ParseGamestate
+if ($playerID != 0) {
+  include "./ParseGamestate.php";
+}
+
 include "./GameLogic.php";
 include "./Libraries/UILibraries.php";
 include "./Libraries/StatFunctions.php";
@@ -25,8 +40,6 @@ include "./HostFiles/Redirector.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 ob_end_clean();
-
-session_start();
 
 if ($playerID == 3) {
   include_once "./AccountFiles/AccountSessionAPI.php";
@@ -47,7 +60,7 @@ if ($playerID == 3) {
   $userID = LoggedInUser();
   $conn = GetDBConnection();
   if ($conn->connect_error) {
-    $response->error = "Database connection failed: " . $conn->connect_error;
+    $response->error = "Database connection failed: " . ($conn && $conn->connect_error ? $conn->connect_error : "unknown");
     echo (json_encode($response));
     exit;
   }
@@ -105,7 +118,21 @@ switch ($popupType) {
     break;
   case "myStatsPopup":
     if($turn[0] == "OVER") SetCachePiece($gameName, 14, 99);//$MGS_GameOver
-    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, includeFullLog:true));
+    // Get opponent's hero for export display
+    $opponentPlayerID = ($playerID == 1 ? 2 : 1);
+    $opponentDeckFile = "./Games/" . $gameName . "/p" . $opponentPlayerID . "Deck.txt";
+    $opponentHero = "";
+    if(file_exists($opponentDeckFile)) {
+      $opponentDeckContent = file_get_contents($opponentDeckFile);
+      $opponentDeckLines = explode("\r\n", $opponentDeckContent);
+      if(count($opponentDeckLines) > 0) {
+        $opponentHeroLine = explode(" ", trim($opponentDeckLines[0]));
+        if(count($opponentHeroLine) > 0) {
+          $opponentHero = $opponentHeroLine[0];
+        }
+      }
+    }
+    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, $opponentHero, "", "", includeFullLog:true));
     exit;
   case "mySoulPopup":
     JSONPopup($response, $mySoul, SoulPieces());
@@ -136,36 +163,87 @@ switch ($popupType) {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
     global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode;
-    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights;
+    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro;
+    
     $response->Settings = array();
-    AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
-    AddSetting($response->Settings, "TryReactUI", $SET_TryUI2);
-    AddSetting($response->Settings, "DarkMode", $SET_DarkMode);
-    AddSetting($response->Settings, "ManualMode", $SET_ManualMode);
-    AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs);
-    AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs);
-    AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane);
-    AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode);
-    AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold);
-    AddSetting($response->Settings, "MuteSound", $SET_Mute);
-    AddSetting($response->Settings, "CardBack", $SET_Cardback);
-    AddSetting($response->Settings, "IsPatron", $SET_IsPatron);
-    AddSetting($response->Settings, "MuteChat", $SET_MuteChat);
-    AddSetting($response->Settings, "DisableStats", $SET_DisableStats);
-    AddSetting($response->Settings, "DisableAltArts", $SET_DisableAltArts);
-    AddSetting($response->Settings, "IsCasterMode", $SET_CasterMode);
-    AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode);
-    AddSetting($response->Settings, "Playmat", $SET_Playmat);
-    AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo);
-    AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic);
-    AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights);
-    $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
+    
+    // For profile settings (playerID == 0), load from database
+    if ($playerID == 0) {
+      include_once "./includes/functions.inc.php";
+      $userID = $_SESSION["userid"] ?? "";
+      $dbSettingsFlat = LoadSavedSettings($userID);
+      
+      // Convert flat array to associative array: [settingID => settingValue]
+      $dbSettings = [];
+      for ($i = 0; $i < count($dbSettingsFlat); $i += 2) {
+        $settingNumber = $dbSettingsFlat[$i];
+        $settingValue = $dbSettingsFlat[$i + 1];
+        $dbSettings[$settingNumber] = $settingValue;
+      }
+      
+      // Using numeric IDs from ParseSettingsStringValueToIdInt
+      AddSettingFromDB($response->Settings, "HoldPrioritySetting", 0, $dbSettings);
+      AddSettingFromDB($response->Settings, "TryReactUI", 1, $dbSettings);
+      AddSettingFromDB($response->Settings, "DarkMode", 2, $dbSettings);
+      AddSettingFromDB($response->Settings, "ManualMode", 3, $dbSettings);
+      AddSettingFromDB($response->Settings, "SkipARWindow", 4, $dbSettings);
+      AddSettingFromDB($response->Settings, "SkipDRWindow", 5, $dbSettings);
+      AddSettingFromDB($response->Settings, "AutoTargetOpponent", 7, $dbSettings);
+      AddSettingFromDB($response->Settings, "ColorblindMode", 8, $dbSettings);
+      AddSettingFromDB($response->Settings, "ShortcutAttackThreshold", 9, $dbSettings);
+      AddSettingFromDB($response->Settings, "MuteSound", 11, $dbSettings);
+      AddSettingFromDB($response->Settings, "CardBack", 12, $dbSettings);
+      AddSettingFromDB($response->Settings, "IsPatron", 13, $dbSettings);
+      AddSettingFromDB($response->Settings, "MuteChat", 14, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableStats", 15, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableAltArts", 26, $dbSettings);
+      AddSettingFromDB($response->Settings, "IsCasterMode", 16, $dbSettings);
+      AddSettingFromDB($response->Settings, "IsStreamerMode", 23, $dbSettings);
+      AddSettingFromDB($response->Settings, "Playmat", 24, $dbSettings);
+      AddSettingFromDB($response->Settings, "AlwaysAllowUndo", 25, $dbSettings);
+      AddSettingFromDB($response->Settings, "ManualTunic", 27, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableFabInsights", 28, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableHeroIntro", 29, $dbSettings);
+    } else {
+      // Normal game settings
+      AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
+      AddSetting($response->Settings, "TryReactUI", $SET_TryUI2);
+      AddSetting($response->Settings, "DarkMode", $SET_DarkMode);
+      AddSetting($response->Settings, "ManualMode", $SET_ManualMode);
+      AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs);
+      AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs);
+      AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane);
+      AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode);
+      AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold);
+      AddSetting($response->Settings, "MuteSound", $SET_Mute);
+      AddSetting($response->Settings, "CardBack", $SET_Cardback);
+      AddSetting($response->Settings, "IsPatron", $SET_IsPatron);
+      AddSetting($response->Settings, "MuteChat", $SET_MuteChat);
+      AddSetting($response->Settings, "DisableStats", $SET_DisableStats);
+      AddSetting($response->Settings, "DisableAltArts", $SET_DisableAltArts);
+      AddSetting($response->Settings, "IsCasterMode", $SET_CasterMode);
+      AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode);
+      AddSetting($response->Settings, "Playmat", $SET_Playmat);
+      AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo);
+      AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic);
+      AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights);
+      AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro);
+      $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
+    }
     break;
   default:
     break;
 }
 
 echo json_encode($response);
+
+function AddSettingFromDB(&$response, $name, $settingID, $dbSettings)
+{
+  $thisSetting = new stdClass();
+  $thisSetting->name = $name;
+  $thisSetting->value = isset($dbSettings[$settingID]) ? $dbSettings[$settingID] : null;
+  array_push($response, $thisSetting);
+}
 
 function AddSetting(&$response, $name, $setting)
 {

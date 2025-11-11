@@ -348,17 +348,6 @@ function CharacterDestroyEffect($cardID, $player)
 function CharacterBanishEffect($cardID, $player)
 {
   switch ($cardID) {
-    case "galvanic_bender":
-      global $currentTurnEffects;
-      $effectsCount = count($currentTurnEffects);
-      $effectPieces = CurrentTurnEffectsPieces();
-      for ($i = 0; $i < $effectsCount; $i += $effectPieces) {
-        if ($currentTurnEffects[$i] == "galvanic_bender-UNDER") {
-          RemoveCurrentTurnEffect($i);
-          break;
-        }
-      }
-      break;
     default:
       break;
   }
@@ -408,7 +397,7 @@ function MainCharacterBeginEndPhaseTriggers()
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch ($characterID) {
       case "terra":
-        if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
+        if ($mainCharacter[$i + 1] != 2) break; //Do not process ability if it is disabled (e.g. Humble)
         AddLayer("TRIGGER", $mainPlayer, $characterID);
         break;
       default:
@@ -1234,6 +1223,8 @@ function EquipPayAdditionalCosts($cardIndex)
       SetArcaneTarget($currentPlayer, $cardID, 3);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      --$character[$cardIndex + 5];
+      if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;
     case "grimoire_of_the_haunt":
       BanishCardForPlayer("grimoire_of_the_haunt", $currentPlayer, "EQUIP", "NA");
@@ -1644,7 +1635,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "hard_knuckle":
         $abilityType = GetResolvedAbilityType($cardID, $from);
-        if (CardType($cardID) == "AA" && $abilityType != "I") {
+        if (CardType($cardID) == "AA" && $abilityType != "I" && IsCharacterActive($mainPlayer, $i)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;

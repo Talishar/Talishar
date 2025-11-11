@@ -32,7 +32,7 @@ ob_end_clean();
 session_start();
 if($playerID == 1 && isset($_SESSION["p1AuthKey"])) { $targetKey = $p1Key; $authKey = $_SESSION["p1AuthKey"]; }
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; $authKey = $_SESSION["p2AuthKey"]; }
-if ($authKey != $targetKey) { echo("Invalid auth key"); exit; }
+if (!isset($authKey) || !isset($targetKey) || $authKey != $targetKey) { echo("Invalid auth key"); exit; }
 
 //Initialize global variables
 $p1Inventory = "";

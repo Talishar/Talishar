@@ -86,7 +86,7 @@ ADD PRIMARY KEY (`GameID`),
 -- Indexes for table `favoritedeck`
 --
 ALTER TABLE `favoritedeck`
-ADD PRIMARY KEY (`decklink`),
+ADD PRIMARY KEY (`decklink`, `usersId`),
   ADD KEY `usersId` (`usersId`);
 --
 -- Indexes for table `pwdreset`

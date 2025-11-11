@@ -29,7 +29,7 @@ enum ContentCreators : string
   {
     switch($this->value)
     {
-      case "0": return "https://www.youtube.com/playlist?list=PLIo1KFShm1L3e91QrlPG6ZdwfmqKk0NIP";
+      case "0": return "";
       case "731": return "https://www.youtube.com/@ManSantFaB";
       default: return "";
     }
@@ -94,6 +94,7 @@ enum PatreonCampaign : string
   case PotatoSquad = "20";
   case FabledBrazil = "21";
   case AggroBlaze = "22";
+  case Null = "23";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -233,6 +234,7 @@ enum PatreonCampaign : string
       case "20": return "Potato Squad";
       case "21": return "Team Fabled Brazil";
       case "22": return "Aggro Blaze";
+      case "23": return "Null";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -316,6 +318,7 @@ enum PatreonCampaign : string
       case "20": return IsTeamPotatoSquad($userName);
       case "21": return IsTeamFabledBrazil($userName);
       case "22": return ($userName == "AggroBlaze96" || $userName == "PvtVoid");
+      case "23": return ($userName == "Null" || $userName == "PvtVoid");
       case "7198186": return ($userName == "OotTheMonk" || $userName == "Aegisworn");
       case "7579026": return ($userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp");
       case "7329070": return ($userName == "GoAgainGamingAz");
@@ -327,7 +330,7 @@ enum PatreonCampaign : string
       case "8635931": return ($userName == "TheTekloFoundry");
       case "8736344": return ($userName == "Smithel");
       case "7593240": return ($userName == "SinOnStream");
-      case "8458487": return ($userName == "FreshLord" || $userName == "PvtVoid");
+      case "8458487": return ($userName == "Freshlord" || $userName == "PvtVoid");
       case "6996822": return ($userName == "Sloopdoop");
       case "1919413": return ($userName == "DMArmada");
       case "7733166": return ($userName == "NamVoTCGz" || $userName == "AlexTheCardGuy" || $userName == "RegularDegular" || $userName == "joshlau7" || $userName == "WillyB" || $userName == "Spoofy" || $userName == "ItsSebBruh" || $userName == "Knight");
@@ -365,7 +368,7 @@ enum PatreonCampaign : string
       case "13905903": return ($userName == "PvtVoid" || $userName == "Towelie" || $userName == "Abyssion" || $userName == "Siege" || $userName == "Alithos");
       case "11527692": return ($userName == "PvtVoid" || $userName == "Bones503" || $userName == "kwasneski" || $userName == "Hymoshi");
       case "7330270": return ($userName == "PvtVoid" || $userName == "Steelfur");
-      case "13518995": return ($userName == "PvtVoid" || $userName == "Tegunn" || $userName == "AurOraOraOraOraORa");
+      case "13518995": return ($userName == "PvtVoid" || $userName == "Tegunn" || $userName == "AurOraOraOraOraORA");
       case "14460977": return ($userName == "PvtVoid" || $userName == "AlpacaSciatrice");
       case "14951942": return IsTeamFatAndFurious($userName);
       default: return "";
@@ -586,6 +589,7 @@ enum PatreonCampaign : string
       case "20": return "106";
       case "21": return "112";
       case "22": return "118";
+      case "23": return "122";
       case "7198186": return "1,2,3,4,5,6,7,8,82,83";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";

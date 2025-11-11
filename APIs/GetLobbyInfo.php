@@ -189,12 +189,22 @@ if($handler) {
 
   $cardIndex = [];
   $response->deck->cardDictionary = [];
-  foreach($response->deck->cards as $card) {
+  
+  // Include both main deck and sideboard cards in the dictionary
+  $allCards = array_merge($response->deck->cards, $response->deck->cardsSB);
+  
+  foreach($allCards as $card) {
     if(!array_key_exists($card, $cardIndex)) {
       $cardIndex[$card] = "1";
       $dictionaryCard = new stdClass();
       $dictionaryCard->id = $card;
       $dictionaryCard->pitch = PitchValue($card);
+      $dictionaryCard->power = GeneratedPowerValue($card);
+      $dictionaryCard->blockValue = GeneratedBlockValue($card);
+      $dictionaryCard->class = CardClass($card);
+      $dictionaryCard->talent = CardTalent($card);
+      $dictionaryCard->subtype = CardSubtype($card);
+      $dictionaryCard->cost = GeneratedCardCost($card);
       array_push($response->deck->cardDictionary, $dictionaryCard);
     }
   }

@@ -6,7 +6,9 @@
 
 [![license](https://flat.badgen.net/github/license/talishar/talishar)](./LICENSE)
 [![discord](https://flat.badgen.net/discord/online-members/JykuRkdd5S?icon=discord)](https://discord.gg/JykuRkdd5S)
-[![patreon](https://flat.badgen.net/badge/become/a%20patreon/F96854?icon=patreon)](https://www.patreon.com/talishar_online/)
+[![twitter](https://flat.badgen.net/badge/twitter/@talishar_online/1DA1F2?icon=twitter)](https://twitter.com/talishar_online)
+[![bluesky](https://flat.badgen.net/badge/bluesky/pvtvoid/1185FE?icon=bluesky)](https://bsky.app/profile/pvtvoid.bsky.social)
+[![patreon](https://flat.badgen.net/badge/become/a%20patreon/F96854?icon=patreon)](https://linktr.ee/Talishar)
 
 Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your browser right now!
 
@@ -14,8 +16,15 @@ Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your
 
 This is the back end client for Talishar.net - completely separate from the front end. In order to test Talishar locally, you will need to install the front end project.
 
-Learn more about the Talishar-FE project here: [Talishar-FE](https://github.com/Talishar/Talishar-FE)
-Learn more about the CardImages project here: [Talishar-FE](https://github.com/Talishar/CardImages)
+### Related Repositories
+- [Talishar-FE](https://github.com/Talishar/Talishar-FE) - Frontend client built with TypeScript and React
+- [CardImages](https://github.com/Talishar/CardImages) - Card image processing and management
+
+### Quick Links
+- **Players**: Visit [Talishar.net](https://talishar.net/) to start playing
+- **Developers**: See Docker setup instructions below
+- **Contributors/Bug Reports**: Join our [Discord](https://discord.gg/ErmtqQQEFm) community
+- **Documentation**: [Quickstart Guide](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0/edit) and [Full Docs](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
 
 ## New docker way to run Talishar.
 
@@ -98,12 +107,80 @@ docker compose down
 4. Set a breakpoint in the code
 5. Start the debugger by selecting the `Listen for XDebug` configuration and clicking the green play button
 
-## Developer / Contributor Resources / XAMPP dev env
+## Project Architecture
 
+Talishar consists of three main components working together:
+- **Talishar** (PHP) - Game engine, logic, and API
+- **Talishar-FE** (TypeScript/React) - User interface and state management
+- **CardImages** - Card definition and image processing
+
+## Key Backend Files
+
+### Core Game Logic
+- **`GetNextTurn.php`** - Main API endpoint that serializes and returns the current game state to the frontend
+- **`ProcessInput.php`** - Handles all user input and triggers appropriate game logic
+- **`GameLogic.php`** - Core game mechanics and turn flow
+- **`CoreLogic.php`** - Essential game engine functions
+- **`Constants.php`** - Game constants, zones (HAND, BANISH, GRAVEYARD, PLAY, DECK), and player IDs
+
+### Card System
+- **`CardDictionary.php`** - Card data lookup and utilities
+- **`CardDictionaries/`** - Card definitions organized by set
+  - Each set folder/files (e.g., `WelcomeToRathe/`, `WTRShared.php`) contains card abilities
+  - Card logic uses switch statements keyed by `cardNumber` (lowercase with underscores)
+  - Example: `"fyendals_spring_tunic"`, `"command_and_conquer_red"`, `"energy_potion_blue"`
+
+### Ability System
+- **`CardLogic.php`** - Card-specific ability implementations
+- **`CharacterAbilities.php`** - Hero character abilities
+- **`ItemAbilities.php`** - Item card abilities
+- **`AuraAbilities.php`** - Aura card abilities
+- **`AllyAbilities.php`** - Ally card abilities
+- **`PermanentAbilities.php`** - Permanent card abilities
+- **`LandmarkAbilities.php`** - Landmark card abilities
+- **`WeaponLogic.php`** - Weapon card logic
+
+### Game State Management
+- **`ParseGamestate.php`** - Parses persisted game state files
+- **`WriteGamestate.php`** - Persists game state to files
+- **`WriteLog.php`** - Writes game event logs for debugging
+
+### Frontend Communication
+- **`GetNextTurn.php`** - Main response to frontend with current game state
+- **`ProcessInputAPI.php`** - API version of ProcessInput for frontend requests
+
+## Game State Flow
+
+```
+Frontend Component
+    ↓ (User Action)
+ProcessInput.php (validates & processes)
+    ↓ (Triggers logic)
+GameLogic.php / CardLogic.php / Ability Files (executes game rules)
+    ↓ (Updates state)
+WriteGamestate.php (persists to file)
+    ↓ (Frontend polls)
+GetNextTurn.php (serializes current state)
+    ↓ (Returns JSON)
+ParseGameState.ts (transforms backend data)
+    ↓ (Updates Redux)
+GameSlice.ts (Redux store)
+    ↓ (Components subscribe)
+React Components (render UI)
+```
+
+### Key State Variables
+- **`$currentPlayer`** - Indicates who has priority (1 or 2)
+- **`$turn[0]`** - Current phase (M=Main, A=Action, D=Defense, etc.)
+
+## Developer / Contributor Resources
+
+### XAMPP Development
 - [Webserver Dev Quickstart Guide](https://docs.google.com/document/d/1qVlTrst58iZ_6xD9PkxIgZUiSKzV-S4eTJmK32qzaP0/edit)
-- [Docs](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
+- [Full Documentation](https://docs.google.com/document/d/15zRJvMOYnwrFtf-pLW3jwpYEMaUrdnNhlhmfgyE4Rs0)
 
-If you would like to contribute, be sure to join the [discord](https://discord.gg/ErmtqQQEFm) to chat with fellow contributors.
+### Contributing
+If you would like to contribute, be sure to join the [Discord](https://discord.gg/ErmtqQQEFm) community to chat with fellow contributors.
 
 ## Disclaimer
 
