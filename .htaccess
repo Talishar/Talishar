@@ -1,3 +1,34 @@
+# Case-insensitive routing for game API files
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Handle case-insensitive requests for game API endpoints
+  # processinput.php -> ProcessInput.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(?i)processinput\.php$ ProcessInput.php [L,QSA]
+  
+  # getnextturn.php -> GetNextTurn.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(?i)getnextturn\.php$ GetNextTurn.php [L,QSA]
+  
+  # getpopupapi.php -> GetPopupAPI.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(?i)getpopupapi\.php$ GetPopupAPI.php [L,QSA]
+  
+  # joingame.php -> JoinGame.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(?i)joingame\.php$ JoinGame.php [L,QSA]
+  
+  # joingameinput.php -> JoinGame.php (if it's an alias)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(?i)joingameinput\.php$ JoinGame.php [L,QSA]
+</IfModule>
+
 # compress text, html, javascript, css, xml:
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/plain
