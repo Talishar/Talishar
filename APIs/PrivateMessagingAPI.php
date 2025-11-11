@@ -45,9 +45,15 @@ $userId = LoggedInUser();
 global $conn; // Make connection global for use throughout
 $conn = GetDBConnection();
 
-if ($conn->connect_error) {
+if (!$conn || $conn === false) {
   http_response_code(500);
   echo json_encode(["error" => "Database connection failed"]);
+  exit;
+}
+
+if ($conn->connect_error) {
+  http_response_code(500);
+  echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
   exit;
 }
 
@@ -181,7 +187,9 @@ switch ($action) {
     break;
 }
 
-$conn->close();
+if ($conn && $conn !== false) {
+  $conn->close();
+}
 echo json_encode($response);
 
 // Helper functions
