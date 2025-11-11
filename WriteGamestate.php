@@ -3,6 +3,11 @@
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $handler = fopen($filename, "w");
 
+if ($handler === false) {
+  error_log("ERROR: Failed to open gamestate file: " . $filename . " (from game: " . $gameName . ")");
+  exit;
+}
+
 $lockTries = 0;
 while (!flock($handler, LOCK_EX) && $lockTries < 10) {
   usleep(100000); //50ms
