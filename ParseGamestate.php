@@ -470,7 +470,7 @@ function MakeStartTurnBackup()
     copy($filepath . "gamestate.txt", $startGameFN);
   }
   if (SaveReplay()) {
-    $numberedTurnFN = $filepath . "turn_$currentTurn" . "_Gamestate.txt";
+    $numberedTurnFN = $filepath . "turn_$mainPlayer-$currentTurn" . "_Gamestate.txt";
     copy($filepath . "gamestate.txt", $numberedTurnFN);
     $commandFile = fopen("$filepath/commandfile.txt", "a");
     fwrite($commandFile, "$mainPlayer StartTurn $currentTurn 0\r\n");

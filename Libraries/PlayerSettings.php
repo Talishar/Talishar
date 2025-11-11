@@ -300,6 +300,7 @@ function IsChatMuted()
 function AreStatsDisabled($player)
 {
   global $SET_DisableStats;
+  if (IsReplay()) return true;
   $settings = GetSettings($player);
   if ($settings == null) return false;
   return $settings[$SET_DisableStats] == "1";
@@ -308,6 +309,7 @@ function AreStatsDisabled($player)
 function AreGlobalStatsDisabled($player)
 {
   global $SET_DisableFabInsights;
+  if (IsReplay()) return true;
   $settings = GetSettings($player);
   if ($settings == null) return false;
   return $settings[$SET_DisableFabInsights] == "1";

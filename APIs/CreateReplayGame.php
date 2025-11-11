@@ -10,12 +10,12 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
-// $userId = "";
-// if (isset($_SESSION["userid"])) $userId = $_SESSION["userid"];
-// if ($userId == "") {
-//   echo ("You must be logged in to use this feature.");
-//   exit;
-// }
+$userId = "";
+if (isset($_SESSION["userid"])) $userId = $_SESSION["userid"];
+if ($userId == "") {
+  echo ("You must be logged in to use this feature.");
+  exit;
+}
 $response = new stdClass();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
@@ -39,7 +39,7 @@ if (!is_numeric($replayNumber)) {
   exit;
 }
 
-$replayPath = "../Replays/$replayNumber/";
+$replayPath = "../Replays/$userId/$replayNumber/";
 
 // Validation: Replay directory exists
 if (!file_exists($replayPath)) {
@@ -193,6 +193,25 @@ if (!@copy($origGamestateSource, $origGamestateDest)) {
 
 if (!@copy($commandFileSource, $commandFileDest)) {
   $copyErrors[] = "Failed to copy command file from $commandFileSource to $commandFileDest";
+}
+
+for ($player = 1; $player < 3; ++$player) {
+  $turn = 1;
+  $turnBackupFileSource = $replayPath . "turn_$player-$turn" . "_Gamestate.txt";
+  $turnBackupFileDest = "../Games/$gameName/turn_$player-$turn" . "_Gamestate.txt";
+  if (!file_exists($turnBackupFileSource)) { //player who goes second doesn't get a "turn 1"
+    ++$turn;
+    $turnBackupFileSource = $replayPath . "turn_$player-$turn" . "_Gamestate.txt";
+    $turnBackupFileDest = "../Games/$gameName/turn_$player-$turn" . "_Gamestate.txt";
+  }
+  while (file_exists($turnBackupFileSource)) {
+    if (!@copy($turnBackupFileSource, $turnBackupFileDest)) {
+      $copyErrors[] = "Failed to copy command file from $turnBackupFileSource to $turnBackupFileDest";
+    }
+    ++$turn;
+    $turnBackupFileSource = $replayPath . "turn_$player-$turn" . "_Gamestate.txt";
+    $turnBackupFileDest = "../Games/$gameName/turn_$player-$turn" . "_Gamestate.txt";
+  }
 }
 
 if (!empty($copyErrors)) {

@@ -1,5 +1,25 @@
 <?php
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
+const MAX_REPLAYS_SAVED = 3;
+
+function deleteDir(string $dirPath): void {
+  //https://stackoverflow.com/questions/3349753/delete-directory-with-files-in-it
+  if (! is_dir($dirPath)) {
+    throw new InvalidArgumentException("$dirPath must be a directory");
+  }
+  if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+    $dirPath .= '/';
+  }
+  $files = glob($dirPath . '*', GLOB_MARK);
+  foreach ($files as $file) {
+    if (is_dir($file)) {
+      deleteDir($file);
+    } else {
+      unlink($file);
+    }
+  }
+  rmdir($dirPath);
+}
 
 function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, $isSimulation = false, $inputText = "")
 {
@@ -767,7 +787,55 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       AddGraveyard($cardID, $playerID, "ARS");
       break;
     case 10018:
-      WriteLog("HERE moving to turn # $cardID");
+      if (!IsReplay()) {
+        WriteLog("Turn hopping only works in replays");
+      }
+      else {
+        global $filepath;
+        if (str_contains($cardID, "-")) {
+          $turnPlayer = explode("-", $cardID)[0];
+          $turnNumber = explode("-", $cardID)[1];
+        }
+        else {
+          $turnPlayer = $playerID;
+          $turnNumber = $cardID;
+        }
+        if (!is_numeric($turnPlayer) || !is_numeric($turnNumber)) {
+          WriteLog("$cardID cannot be parsed as a turn number", highlight:true);
+          break;
+        }
+        $backupFname = "turn_$turnPlayer-$turnNumber" . "_Gamestate.txt";
+        $backupLoc = $filepath . $backupFname;
+        if (!file_exists($backupLoc)) {
+          WriteLog("Cannot find turn backup for player $turnPlayer's turn $turnNumber", highlight:true);
+          break;
+        }
+        //update the command pointer
+        $filename = $filepath . "replayCommands.txt";
+        $commands = file($filename);
+        $pointer = -1;
+        for ($i = 0; $i < count($commands); $i += 1) {
+          $line = $commands[$i];
+          $params = explode(" ", $line);
+          $loadedPlayer = $params[0];
+          $loadedMode = $params[1];
+          $loadedTurn = $params[2];
+          if ($loadedMode == "StartTurn" && $loadedPlayer == $turnPlayer && $loadedTurn == $turnNumber) {
+            $pointer = $i;
+          }
+        }
+        if ($point != -1) {
+          $commands[0] = "$pointer\r\n";
+          file_put_contents($filename, $commands);
+        }
+        else {
+          WriteLog("Could not find the turn in the command file!", highlight:true);
+          break;
+        }
+        //load the gamestate
+        RevertGamestate($backupFname);
+        WriteLog("Moving to player $turnPlayer's turn $turnNumber", highlight: true);
+      }
       break;
     case 100000: //Quick Rematch
       if ($isSimulation) return;
@@ -839,10 +907,19 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog("Failed to create replay; original gamestate file failed to create.");
         return true;
       }
-      include "MenuFiles/ParseGamefile.php";
-      WriteLog("Player " . $playerID . " saved this game as a replay.");
+      //getting player ids
+      $filename = "./Games/" . $gameName . "/GameFile.txt";
+      if(!file_exists($filename)) break;
+      $gameFile = file($filename);
+      $p1id = trim($gameFile[9]);
+      $p2id = trim($gameFile[10]);
+      // end getting player IDs
       $pid = ($playerID == 1 ? $p1id : $p2id);
       $path = "./Replays/" . $pid . "/";
+      if ($pid == "") {
+        WriteLog("You cannot save replays while not logged in!", highlight:true);
+        break;
+      }
       if (!file_exists($path)) {
         mkdir($path, 0777, true);
       }
@@ -852,12 +929,45 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $counter = fgets($counterFile);
         fclose($counterFile);
       }
-      mkdir($path . $counter . "/", 0777, true);
-      copy("./Games/" . $gameName . "/origGamestate.txt", "./Replays/" . $pid . "/" . $counter . "/origGamestate.txt");
-      copy("./Games/" . $gameName . "/commandfile.txt", "./Replays/" . $pid . "/" . $counter . "/replayCommands.txt");
+      $replayPath = $path . $counter;
+      $gamePath = "./Games/" . $gameName;
+      mkdir($replayPath, 0777, true);
+      copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt");
+      copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt");
+
+      for ($player = 1; $player < 3; ++$player) {
+        $turnNum = 1;
+        $turnBackupFileSource = "$gamePath/turn_$player-$turnNum" . "_Gamestate.txt";
+        $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
+        if (!file_exists($turnBackupFileSource)) { //player who goes second doesn't get a "turn 1"
+          ++$turnNum;
+          $turnBackupFileSource = "$gamePath/turn_$player-$turnNum" . "_Gamestate.txt";
+          $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
+        }
+        while (file_exists($turnBackupFileSource)) {
+          copy($turnBackupFileSource, $turnBackupFileDest);
+          ++$turnNum;
+          $turnBackupFileSource = "$gamePath/turn_$player-$turnNum" . "_Gamestate.txt";
+          $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
+        }
+      }
+      WriteLog("Player " . $playerID . " saved this game as their replay # $counter.");
       $counterFile = fopen($path . "counter.txt", "w");
       fwrite($counterFile, $counter + 1);
       fclose($counterFile);
+      $filecount = count(glob($path . "*"));
+      if ($filecount > MAX_REPLAYS_SAVED+1) {
+        $minCounter = INF;
+        foreach (glob($path . "*") as $dirName) {
+          $dirArr = explode("/", $dirName);
+          $dirNum = end($dirArr);
+          if (is_numeric($dirNum) && intval($dirNum) < $minCounter) $minCounter = intval($dirNum);
+        }
+        if (!is_infinite($minCounter)) {
+          WriteLog("You've reached the maximum number of saved replays, deleting your oldest ($minCounter)", highlight:true);
+          deleteDir($path . $minCounter . "/");
+        }
+      }
       break;
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
