@@ -6,6 +6,7 @@ include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
+include_once "Libraries/CacheLibraries.php"; // OPTIMIZATION: Add caching layer
 
 // array holding allowed Origin domains
 SetHeaders();
@@ -55,50 +56,23 @@ if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 3, "0");
   }
 } else if ($playerID == 3) {
-  // Spectator tracking - record when spectators are viewing
-  // Use a temporary file to track spectator sessions since the cache only supports numeric indices 1-16
-  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
-  
+  // OPTIMIZATION: Track spectators in memory instead of writing to file
   // Generate a unique spectator ID based on IP and User-Agent
   $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
   $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
   $sessionKey = md5($clientIp . '|' . $userAgent);
   
-  $spectatorData = [];
-  
-  // Read existing spectator data
-  if (file_exists($spectatorFile)) {
-    $content = file_get_contents($spectatorFile);
-    if (!empty($content)) {
-      $spectatorData = json_decode($content, true);
-      if (!is_array($spectatorData)) {
-        $spectatorData = [];
-      }
-    }
-  }
-  
-  // Update current spectator's timestamp
-  $spectatorData[$sessionKey] = $currentTime;
-  
-  // Remove inactive spectators (older than 30 seconds)
-  $timeout = 30000; // 30 seconds
-  foreach ($spectatorData as $key => $timestamp) {
-    if (($currentTime - intval($timestamp)) > $timeout) {
-      unset($spectatorData[$key]);
-    }
-  }
-  
-  // Write updated spectator data
-  if (file_exists($spectatorFile)) {
-    file_put_contents($spectatorFile, json_encode($spectatorData));
-  }
+  // Use memory-based tracking (falls back to no-op if APCu unavailable)
+  TrackSpectator($gameName, $sessionKey);
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
 $otherPlayer = $playerID == 1 ? 2 : 1;
 
+// This reduces CPU spinning and returns faster on updates
+$sleepMs = 50; // Start with 50ms (faster response)
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
-  usleep(100000); //100 milliseconds
+  usleep(intval($sleepMs * 1000)); // Convert ms to microseconds
   if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
@@ -128,6 +102,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   ++$count;
   if ($count == 100) break;
+  // Increase sleep time exponentially, capped at 500ms
+  $sleepMs = min($sleepMs * 1.5, 500);
 }
 
 if($count == 100) $lastUpdate = 0; //If we waited the full 10 seconds with nothing happening, send back an update in case it got stuck
