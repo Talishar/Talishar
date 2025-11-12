@@ -3,6 +3,7 @@
 include 'Libraries/HTTPLibraries.php';
 include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
+include "Libraries/CacheLibraries.php";
 include "WriteLog.php";
 
 ob_implicit_flush(true);
@@ -65,6 +66,7 @@ while (true) {
     ob_flush();
     flush();
     set_time_limit(120); //Reset script time limit
+    $sleepMs = 50; // Reset sleep on update
   }
   if (connection_aborted()) break;
 
@@ -104,8 +106,10 @@ while (true) {
     }
   }
 
-  // Wait 100ms to check again
-  usleep(100000); //100 milliseconds
+  // Wait with exponential backoff (50ms → 500ms cap)
+  if (!isset($sleepMs)) $sleepMs = 50;
+  usleep(intval($sleepMs * 1000));
+  $sleepMs = min($sleepMs * 1.5, 500); // Exponential backoff capped at 500ms
 }
 
 echo ("data: SOMETHING WRONG " . json_encode($response) . " " . str_pad("", 4096) . "\n\n");

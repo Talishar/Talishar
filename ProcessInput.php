@@ -11,6 +11,7 @@ include "Libraries/StatFunctions.php";
 include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
+include "Libraries/CacheLibraries.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
 require_once("Libraries/CoreLibraries.php");
@@ -181,6 +182,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   WriteGameFile();
   $turn[0] = "REMATCH";
   include "WriteGamestate.php";
+  InvalidateGamestateCache($gameName); // Clear cached gamestate
   $currentTime = round(microtime(true) * 1000);
   SetCachePiece($gameName, 2, $currentTime);
   SetCachePiece($gameName, 3, $currentTime);
@@ -211,6 +213,7 @@ if (!$skipWriteGamestate) {
   }
   DoGamestateUpdate();
   include "WriteGamestate.php";
+  InvalidateGamestateCache($gameName); // Clear cached gamestate after updates
 }
 
 if ($makeCheckpoint) MakeGamestateBackup();

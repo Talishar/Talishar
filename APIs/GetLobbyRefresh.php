@@ -4,6 +4,7 @@
 include "../CardDictionary.php";
 include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
+include_once "../Libraries/CacheLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
@@ -58,8 +59,10 @@ if ($cacheVal > 10000000) {
   $lastUpdate = 0;
 }
 $kickPlayerTwo = false;
+$sleepMs = 50; // Exponential backoff start
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
-  usleep(100000); //100 milliseconds
+  usleep(intval($sleepMs * 1000));
+  $sleepMs = min($sleepMs * 1.5, 500); // Exponential backoff capped at 500ms
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
   SetCachePiece($gameName, $playerID + 1, $currentTime);

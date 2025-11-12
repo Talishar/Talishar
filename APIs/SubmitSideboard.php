@@ -4,6 +4,7 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include "../Libraries/SHMOPLibraries.php";
 include "../Libraries/NetworkingLibraries.php";
+include "../Libraries/CacheLibraries.php";
 include "../GameLogic.php";
 include "../GameTerms.php";
 include "../Libraries/StatFunctions.php";
@@ -196,6 +197,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
 $response->status = "OK";
 
 WriteGameFile();
+InvalidateGamestateCache($gameName); // Clear cached gamestate after sideboard submission
 GamestateUpdated($gameName);
 
 echo json_encode($response);
