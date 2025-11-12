@@ -36,10 +36,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 28:
       break;
     case 3: //Play equipment/hero ability
-      $index = $cardID;
+      $index = intval($cardID);
       $character = &GetPlayerCharacter($playerID);
       $zone = -1;
-      if ($index != -1 && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
+      if ($index >= 0 && $index < count($character) && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
         $character = &GetPlayerCharacter($playerID);
