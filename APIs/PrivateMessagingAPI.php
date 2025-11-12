@@ -42,18 +42,13 @@ if (!$_POST) {
 }
 
 $userId = LoggedInUser();
-global $conn; // Make connection global for use throughout
+global $conn;
 $conn = GetDBConnection();
 
-if (!$conn || $conn === false) {
+// Single, comprehensive connection check
+if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error) && $conn->connect_error)) {
   http_response_code(500);
   echo json_encode(["error" => "Database connection failed"]);
-  exit;
-}
-
-if ($conn->connect_error) {
-  http_response_code(500);
-  echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
   exit;
 }
 
@@ -187,10 +182,14 @@ switch ($action) {
     break;
 }
 
+// Always close connection and return response
 if ($conn && $conn !== false) {
   $conn->close();
 }
+
+header('Content-Type: application/json');
 echo json_encode($response);
+exit;
 
 // Helper functions
 
@@ -217,6 +216,10 @@ function SendPrivateMessage($fromUserId, $toUserId, $message, $gameLink = null) 
 function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
   global $conn;
   
+  // Validate limit to prevent abuse
+  $limit = min($limit, 200);
+  $limit = max($limit, 1);
+  
   $stmt = $conn->prepare("
     SELECT 
       pm.messageId, 
@@ -226,11 +229,11 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
       pm.gameLink, 
       pm.createdAt, 
       pm.isRead,
-      fu.usersUid as fromUsername,
-      tu.usersUid as toUsername
+      COALESCE(fu.usersUid, 'Unknown') as fromUsername,
+      COALESCE(tu.usersUid, 'Unknown') as toUsername
     FROM private_messages pm
-    JOIN users fu ON pm.fromUserId = fu.usersId
-    JOIN users tu ON pm.toUserId = tu.usersId
+    LEFT JOIN users fu ON pm.fromUserId = fu.usersId
+    LEFT JOIN users tu ON pm.toUserId = tu.usersId
     WHERE (pm.fromUserId = ? AND pm.toUserId = ?) 
        OR (pm.fromUserId = ? AND pm.toUserId = ?)
     ORDER BY pm.createdAt DESC
@@ -242,10 +245,14 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
   }
   
   $stmt->bind_param("iiiii", $userId, $friendUserId, $friendUserId, $userId, $limit);
-  $stmt->execute();
-  $result = $stmt->get_result();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
   
+  $result = $stmt->get_result();
   $messages = [];
+  
   while ($row = $result->fetch_assoc()) {
     $messages[] = [
       'messageId' => (int)$row['messageId'],
@@ -295,7 +302,6 @@ function MarkMessagesAsRead($userId, $messageIds) {
 }
 
 function GetOnlineFriends($userId) {
-  // Use the global connection that FriendLibraries expects
   global $conn;
   $friends = GetUserFriends($userId);
   
@@ -303,35 +309,56 @@ function GetOnlineFriends($userId) {
     return [];
   }
   
+  // Get all friend IDs at once instead of querying individually
+  $friendIds = array_column($friends, 'friendUserId');
+  
+  if (empty($friendIds)) {
+    return [];
+  }
+  
+  // Batch query instead of N+1 queries
+  $placeholders = implode(',', array_fill(0, count($friendIds), '?'));
+  $types = str_repeat('i', count($friendIds));
+  
+  $stmt = $conn->prepare("
+    SELECT usersId, lastActivity 
+    FROM users 
+    WHERE usersId IN ($placeholders)
+  ");
+  
+  if (!$stmt) {
+    return [];
+  }
+  
+  $stmt->bind_param($types, ...$friendIds);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  
+  // Map activity data by user ID for quick lookup
+  $activityMap = [];
+  while ($row = $result->fetch_assoc()) {
+    $activityMap[$row['usersId']] = $row['lastActivity'];
+  }
+  $stmt->close();
+  
+  // Build response with activity data
+  $currentTime = time();
   $onlineFriends = [];
   foreach ($friends as $friend) {
-    $stmt = $conn->prepare("SELECT lastActivity FROM users WHERE usersId = ?");
-    if (!$stmt) {
-      continue;
-    }
+    $friendId = $friend['friendUserId'];
+    $lastActivity = isset($activityMap[$friendId]) ? $activityMap[$friendId] : null;
+    $lastActivityTime = $lastActivity ? strtotime($lastActivity) : 0;
+    $timeSinceActivity = $currentTime - $lastActivityTime;
     
-    $stmt->bind_param("i", $friend['friendUserId']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($row = $result->fetch_assoc()) {
-      $lastActivity = $row['lastActivity'] ? strtotime($row['lastActivity']) : 0;
-      $timeSinceActivity = time() - $lastActivity;
-      $isOnline = $timeSinceActivity < 60; // Online if active in last 1 minute
-      $isAway = $timeSinceActivity >= 60 && $timeSinceActivity < 600; // Away if inactive 1-10 minutes
-      
-      $onlineFriends[] = [
-        'userId' => $friend['friendUserId'],
-        'username' => $friend['username'],
-        'nickname' => $friend['nickname'] ?? null,
-        'isOnline' => $isOnline,
-        'isAway' => $isAway,
-        'lastSeen' => $row['lastActivity'],
-        'timeSinceActivity' => $timeSinceActivity
-      ];
-    }
-    
-    $stmt->close();
+    $onlineFriends[] = [
+      'userId' => $friendId,
+      'username' => $friend['username'],
+      'nickname' => $friend['nickname'] ?? null,
+      'isOnline' => $timeSinceActivity < 60,
+      'isAway' => $timeSinceActivity >= 60 && $timeSinceActivity < 600,
+      'lastSeen' => $lastActivity,
+      'timeSinceActivity' => $timeSinceActivity
+    ];
   }
   
   return $onlineFriends;

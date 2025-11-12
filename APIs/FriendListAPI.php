@@ -38,7 +38,8 @@ if (!$_POST) {
 $userId = LoggedInUser();
 $conn = GetDBConnection();
 
-if ($conn->connect_error) {
+// Single, comprehensive connection check
+if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error) && $conn->connect_error)) {
   http_response_code(500);
   echo json_encode(["error" => "Database connection failed"]);
   exit;
@@ -119,14 +120,19 @@ switch ($action) {
       break;
     }
     
+    // Validate and sanitize limit
+    $limit = min((int)$limit, 50);
+    $limit = max($limit, 1);
+    
     $users = SearchUsers($searchTerm, $limit);
     
-    // Filter out current user and already-friends
+    // Get friends list ONCE instead of per-user filtering
     $userFriends = GetUserFriends($userId);
     $friendIds = array_map(fn($f) => $f['friendUserId'], $userFriends);
     
+    // Filter out current user and already-friends
     $filteredUsers = array_filter($users, fn($user) => 
-      $user['usersId'] != $userId && !in_array($user['usersId'], $friendIds)
+      (int)$user['usersId'] !== (int)$userId && !in_array((int)$user['usersId'], array_map('intval', $friendIds))
     );
     
     $response->users = array_values($filteredUsers);
@@ -227,5 +233,11 @@ switch ($action) {
     $response->error = "Invalid action";
 }
 
+// Always close connection and return response
+if ($conn && $conn !== false) {
+  $conn->close();
+}
+
+header('Content-Type: application/json');
 echo json_encode($response);
 exit;

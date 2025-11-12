@@ -74,6 +74,8 @@ function GetUserFriends($userId) {
     return [];
   }
   
+  $userId = (int)$userId;
+  
   $query = "
     SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname
     FROM friends f
@@ -88,13 +90,17 @@ function GetUserFriends($userId) {
   }
   
   $stmt->bind_param("i", $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
+  
   $result = $stmt->get_result();
   
   $friends = [];
   while ($row = $result->fetch_assoc()) {
     $friends[] = [
-      'friendUserId' => $row['usersId'],
+      'friendUserId' => (int)$row['usersId'],
       'username' => $row['usersUid'],
       'nickname' => $row['nickname'] ?: null
     ];
@@ -117,6 +123,9 @@ function AreFriends($userId, $friendUserId) {
     return false;
   }
   
+  $userId = (int)$userId;
+  $friendUserId = (int)$friendUserId;
+  
   $query = "SELECT 1 FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'accepted' LIMIT 1";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
@@ -124,7 +133,11 @@ function AreFriends($userId, $friendUserId) {
   }
   
   $stmt->bind_param("ii", $userId, $friendUserId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return false;
+  }
+  
   $result = $stmt->get_result();
   $isFriend = $result->num_rows > 0;
   $stmt->close();
@@ -141,6 +154,8 @@ function AreFriends($userId, $friendUserId) {
 function AddFriend($userId, $friendUserId) {
   global $conn;
   
+  $userId = (int)$userId;
+  $friendUserId = (int)$friendUserId;
   if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
@@ -152,8 +167,14 @@ function AddFriend($userId, $friendUserId) {
   // Check if friend exists
   $checkQuery = "SELECT usersId FROM users WHERE usersId = ? LIMIT 1";
   $stmt = $conn->prepare($checkQuery);
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->bind_param("i", $friendUserId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $result = $stmt->get_result();
   $userExists = $result->num_rows > 0;
   $stmt->close();
@@ -170,8 +191,14 @@ function AddFriend($userId, $friendUserId) {
   // Check if pending request already exists in either direction
   $checkPendingQuery = "SELECT 1 FROM friends WHERE (userId = ? AND friendUserId = ?) OR (userId = ? AND friendUserId = ?) LIMIT 1";
   $stmt = $conn->prepare($checkPendingQuery);
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->bind_param("iiii", $userId, $friendUserId, $friendUserId, $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $result = $stmt->get_result();
   $hasPendingRequest = $result->num_rows > 0;
   $stmt->close();
@@ -189,7 +216,10 @@ function AddFriend($userId, $friendUserId) {
   }
   
   $stmt->bind_param("ii", $userId, $friendUserId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->close();
   
   return ['success' => true, 'message' => 'Friend request sent successfully'];
@@ -204,6 +234,8 @@ function AddFriend($userId, $friendUserId) {
 function RemoveFriend($userId, $friendUserId) {
   global $conn;
   
+  $userId = (int)$userId;
+  $friendUserId = (int)$friendUserId;
   if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
@@ -216,7 +248,10 @@ function RemoveFriend($userId, $friendUserId) {
   }
   
   $stmt->bind_param("iiii", $userId, $friendUserId, $friendUserId, $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $affectedRows = $stmt->affected_rows;
   $stmt->close();
   
@@ -236,6 +271,8 @@ function RemoveFriend($userId, $friendUserId) {
 function AcceptFriendRequest($userId, $requesterUserId) {
   global $conn;
   
+  $userId = (int)$userId;
+  $requesterUserId = (int)$requesterUserId;
   if (!$conn || !is_numeric($userId) || !is_numeric($requesterUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
@@ -247,8 +284,14 @@ function AcceptFriendRequest($userId, $requesterUserId) {
   // Check if pending request exists (requester sent request to user)
   $checkQuery = "SELECT friendshipId FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'pending' LIMIT 1";
   $stmt = $conn->prepare($checkQuery);
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->bind_param("ii", $requesterUserId, $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $result = $stmt->get_result();
   
   if ($result->num_rows === 0) {
@@ -257,21 +300,33 @@ function AcceptFriendRequest($userId, $requesterUserId) {
   }
   
   $row = $result->fetch_assoc();
-  $friendshipId = $row['friendshipId'];
+  $friendshipId = (int)$row['friendshipId'];
   $stmt->close();
   
   // Update the pending request to accepted
   $updateQuery = "UPDATE friends SET status = 'accepted' WHERE friendshipId = ?";
   $stmt = $conn->prepare($updateQuery);
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->bind_param("i", $friendshipId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->close();
   
   // Add reverse direction as accepted
   $insertQuery = "INSERT INTO friends (userId, friendUserId, status) VALUES (?, ?, 'accepted')";
   $stmt = $conn->prepare($insertQuery);
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->bind_param("ii", $userId, $requesterUserId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->close();
   
   return ['success' => true, 'message' => 'Friend request accepted'];
@@ -289,6 +344,8 @@ function GetPendingRequests($userId) {
     return [];
   }
   
+  $userId = (int)$userId;
+  
   $query = "
     SELECT f.friendshipId, f.userId as requesterUserId, u.usersUid as requesterUsername, f.createdAt
     FROM friends f
@@ -303,14 +360,18 @@ function GetPendingRequests($userId) {
   }
   
   $stmt->bind_param("i", $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
+  
   $result = $stmt->get_result();
   
   $requests = [];
   while ($row = $result->fetch_assoc()) {
     $requests[] = [
-      'friendshipId' => $row['friendshipId'],
-      'requesterUserId' => $row['requesterUserId'],
+      'friendshipId' => (int)$row['friendshipId'],
+      'requesterUserId' => (int)$row['requesterUserId'],
       'requesterUsername' => $row['requesterUsername'],
       'createdAt' => $row['createdAt']
     ];
@@ -329,6 +390,8 @@ function GetPendingRequests($userId) {
 function RejectFriendRequest($userId, $requesterUserId) {
   global $conn;
   
+  $userId = (int)$userId;
+  $requesterUserId = (int)$requesterUserId;
   if (!$conn || !is_numeric($userId) || !is_numeric($requesterUserId)) {
     return ['success' => false, 'message' => 'Invalid user ID'];
   }
@@ -336,8 +399,14 @@ function RejectFriendRequest($userId, $requesterUserId) {
   // Delete the pending request
   $deleteQuery = "DELETE FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'pending'";
   $stmt = $conn->prepare($deleteQuery);
+  if (!$stmt) {
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $stmt->bind_param("ii", $requesterUserId, $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $affectedRows = $stmt->affected_rows;
   $stmt->close();
   
@@ -373,7 +442,11 @@ function FindUserByUsername($username) {
   }
   
   $stmt->bind_param("s", $username);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return null;
+  }
+  
   $result = $stmt->get_result();
   
   if ($result->num_rows === 0) {
@@ -385,7 +458,7 @@ function FindUserByUsername($username) {
   $stmt->close();
   
   return [
-    'usersId' => $user['usersId'],
+    'usersId' => (int)$user['usersId'],
     'username' => $user['usersUid']
   ];
 }
@@ -398,6 +471,7 @@ function FindUserByUsername($username) {
 function GetSentRequests($userId) {
   global $conn;
   
+  $userId = (int)$userId;
   if (!$conn || !is_numeric($userId)) {
     return [];
   }
@@ -416,14 +490,17 @@ function GetSentRequests($userId) {
   }
   
   $stmt->bind_param("i", $userId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
   $result = $stmt->get_result();
   
   $requests = [];
   while ($row = $result->fetch_assoc()) {
     $requests[] = [
-      'friendshipId' => $row['friendshipId'],
-      'recipientUserId' => $row['friendUserId'],
+      'friendshipId' => (int)$row['friendshipId'],
+      'recipientUserId' => (int)$row['friendUserId'],
       'recipientUsername' => $row['recipientUsername'],
       'createdAt' => $row['createdAt']
     ];
@@ -442,11 +519,13 @@ function GetSentRequests($userId) {
 function CancelFriendRequest($userId, $recipientUserId) {
   global $conn;
   
+  $userId = (int)$userId;
+  $recipientUserId = (int)$recipientUserId;
   if (!$conn || !is_numeric($userId) || !is_numeric($recipientUserId)) {
     return ['success' => false, 'message' => 'Invalid user IDs'];
   }
   
-  if ($userId == $recipientUserId) {
+  if ($userId === $recipientUserId) {
     return ['success' => false, 'message' => 'Cannot cancel request to yourself'];
   }
   
@@ -458,7 +537,10 @@ function CancelFriendRequest($userId, $recipientUserId) {
   }
   
   $stmt->bind_param("ii", $userId, $recipientUserId);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $result = $stmt->get_result();
   
   if ($result->num_rows === 0) {
@@ -476,7 +558,10 @@ function CancelFriendRequest($userId, $recipientUserId) {
   }
   
   $deleteStmt->bind_param("ii", $userId, $recipientUserId);
-  $deleteStmt->execute();
+  if (!$deleteStmt->execute()) {
+    $deleteStmt->close();
+    return ['success' => false, 'message' => 'Database error'];
+  }
   $deleteStmt->close();
   
   return ['success' => true, 'message' => 'Friend request cancelled'];
@@ -500,6 +585,10 @@ function SearchUsers($searchTerm, $limit = 10) {
     return [];
   }
   
+  // Validate and limit results
+  $limit = min((int)$limit, 100);
+  $limit = max($limit, 1);
+  
   $searchPattern = '%' . $searchTerm . '%';
   $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? LIMIT ?";
   $stmt = $conn->prepare($query);
@@ -508,15 +597,22 @@ function SearchUsers($searchTerm, $limit = 10) {
   }
   
   $stmt->bind_param("si", $searchPattern, $limit);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
+  
   $result = $stmt->get_result();
+  
+  // Pre-load banned players once instead of checking per result
+  $bannedPlayers = GetBannedPlayers();
   
   $users = [];
   while ($row = $result->fetch_assoc()) {
-    // Filter out banned players
-    if (!IsBannedPlayer($row['usersUid'])) {
+    // Check against pre-loaded banned list (O(1) lookup)
+    if (!isset($bannedPlayers[strtolower($row['usersUid'])])) {
       $users[] = [
-        'usersId' => $row['usersId'],
+        'usersId' => (int)$row['usersId'],
         'username' => $row['usersUid']
       ];
     }
@@ -536,6 +632,8 @@ function SearchUsers($searchTerm, $limit = 10) {
 function UpdateFriendNickname($userId, $friendUserId, $nickname) {
   global $conn;
   
+  $userId = (int)$userId;
+  $friendUserId = (int)$friendUserId;
   if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
     return ['success' => false, 'message' => 'Invalid user IDs'];
   }
@@ -556,18 +654,18 @@ function UpdateFriendNickname($userId, $friendUserId, $nickname) {
   $stmt = $conn->prepare($query);
   
   if (!$stmt) {
-    return ['success' => false, 'message' => 'Database error: ' . $conn->error];
+    return ['success' => false, 'message' => 'Database error'];
   }
   
   $stmt->bind_param("sii", $nickname, $userId, $friendUserId);
   
-  if ($stmt->execute()) {
-    $stmt->close();
-    return ['success' => true, 'message' => 'Nickname updated successfully'];
-  } else {
+  if (!$stmt->execute()) {
     $error = $stmt->error;
     $stmt->close();
-    return ['success' => false, 'message' => 'Failed to update nickname: ' . $error];
+    return ['success' => false, 'message' => 'Failed to update nickname'];
   }
+  
+  $stmt->close();
+  return ['success' => true, 'message' => 'Nickname updated successfully'];
 }
 
