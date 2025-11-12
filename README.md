@@ -2,7 +2,11 @@
   <img src="https://github.com/Talishar/Talishar/blob/main/Images/TalisharLogo.webp?raw=true" width="623" height="278" alt="Talishar" />
 </p>
 
-<h3 align="center">Talishar is a browser-based platform to play Flesh and Blood. It is a fan-made FABTCG project not associated with Legend Story Studios.</h3>
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=F75C7E&center=true&vCenter=true&width=435&lines=Play+Flesh+and+Blood;Browser-Based+Platform;Community+Driven" alt="Typing SVG" />
+</p>
+
+<h3 align="center">Talishar is a fan-made Flesh and Blood project, and is not associated with Legend Story Studios.</h3>
 
 [![license](https://flat.badgen.net/github/license/talishar/talishar)](./LICENSE)
 [![discord](https://flat.badgen.net/discord/online-members/JykuRkdd5S?icon=discord)](https://discord.gg/JykuRkdd5S)
@@ -10,11 +14,9 @@
 [![bluesky](https://flat.badgen.net/badge/bluesky/pvtvoid/1185FE?icon=bluesky)](https://bsky.app/profile/pvtvoid.bsky.social)
 [![patreon](https://flat.badgen.net/badge/become/a%20patreon/F96854?icon=patreon)](https://linktr.ee/Talishar)
 
-Visit [Talishar.net](https://talishar.net/) to get playing Flesh & Blood in your browser right now!
-
 ## Getting started with Talishar
 
-This is the back end client for Talishar.net - completely separate from the front end. In order to test Talishar locally, you will need to install the front end project.
+This is the backend client for Talishar.net - completely separate from the frontend. In order to test Talishar locally, you will need to install both the frontend and backend projects.
 
 ### Related Repositories
 - [Talishar-FE](https://github.com/Talishar/Talishar-FE) - Frontend client built with TypeScript and React
