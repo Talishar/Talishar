@@ -10,25 +10,12 @@ include_once "CardDictionary.php";
 include_once "./Libraries/UILibraries.php";
 include_once "./APIKeys/APIKeys.php";
 
-// if (isset($_SESSION['userid'])) {
-//   $badges = LoadBadges($_SESSION['userid']);
-//   echo ("<div class='ContentWindow' style='position:relative; width:50%; left:20px; top:20px; height:200px;'>");
-//   echo ("<h1>Your Badges</h1>");
-//   for ($i = 0; $i < count($badges); $i += 7) {
-//     $bottomText = str_replace("{0}", $badges[$i + 2], $badges[$i + 4]);
-//     $fullText = $badges[$i + 3] . "<br><br>" . $bottomText;
-//     if ($badges[$i + 6] != "") echo ("<a href='" . $badges[$i + 6] . "'>");
-//     echo ("<img style='margin:3px; width:120px; height:120px; object-fit: cover;' src='" . $badges[$i + 5] . "'></img>");
-//     if ($badges[$i + 6] != "") echo ("</a>");
-//   }
-//   echo ("</div>");
-// }
+
 
 if (isset($_SESSION["isPatron"])) {
   echo ("<div class='ContentWindow' style='width: 50%; left:20px; height: calc(90% - 220px); bottom:20px; overflow-y: scroll;'>");
   echo ("<h1>Your Record</h1>");
   $forIndividual = true;
-  include_once "zzGameStats.php";
   echo ("</div>");
 }
 
