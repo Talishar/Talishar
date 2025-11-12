@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://github.com/Talishar/Talishar/blob/main/Images/TalisharLogo.webp?raw=true" width="623" height="278" alt="Talishar" />
+  <img src="https://github.com/Talishar/Talishar/blob/main/Images/TalisharLogo.webp?raw=true" width="605" height="270" alt="Talishar" />
 </p>
 
 <p align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=F75C7E&center=true&vCenter=true&width=435&lines=Play+Flesh+and+Blood;Browser-Based+Platform;Community+Driven" alt="Typing SVG" />
 </p>
 
-<h3 align="center">Talishar is a fan-made Flesh and Blood project, and is not associated with Legend Story Studios.</h3>
+<h2 align="center">Talishar is a fan-made Flesh and Blood project, and is not associated with Legend Story Studios.</h2>
 
 [![license](https://flat.badgen.net/github/license/talishar/talishar)](./LICENSE)
 [![discord](https://flat.badgen.net/discord/online-members/JykuRkdd5S?icon=discord)](https://discord.gg/JykuRkdd5S)
