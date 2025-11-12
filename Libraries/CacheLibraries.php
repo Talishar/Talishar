@@ -1,5 +1,14 @@
 <?php
 
+// APCu function stubs for IDE/linter support (actual functions provided by APCu extension)
+if (!function_exists('apcu_fetch')) {
+  function apcu_fetch($key) { return false; }
+  function apcu_store($key, $var, $ttl = 0) { return false; }
+  function apcu_delete($key) { return false; }
+  function apcu_exists($key) { return false; }
+  function apcu_cache_info() { return []; }
+}
+
 /**
  * CacheLibraries.php - In-memory caching using APCu
  * 

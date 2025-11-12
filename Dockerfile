@@ -31,6 +31,9 @@ RUN apt-get update && apt-get install -y vim # Text Editor for manual edits
 RUN pecl install ssh2-1.4 \
     && docker-php-ext-enable ssh2
 
+RUN pecl install apcu \
+    && docker-php-ext-enable apcu # APCu caching for performance
+
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug # Debugger
 
