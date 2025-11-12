@@ -336,6 +336,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 21: //Combat chain ability
       $index = $cardID; //Overridden to be index instead
+      if ($index >= count($combatChain)) break; //Combat chain index doesn't exist
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
