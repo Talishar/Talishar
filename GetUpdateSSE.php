@@ -89,7 +89,7 @@ while (true) {
   if($isGamePlayer) {
     $currentTime = round(microtime(true) * 1000);
     
-    // OPTIMIZATION: Batch cache operations - read all pieces once
+    //  Batch cache operations - read all pieces once
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
     $lastUpdateTime = GetCachePiece($gameName, 6);

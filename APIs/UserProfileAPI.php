@@ -16,17 +16,6 @@ if (!IsUserLoggedIn()) {
 }
 
 $response = new stdClass();
-// $response->badges = [];
-
-// $badges = LoadBadges(LoggedInUser());
-// for ($i = 0; $i < count($badges); $i += 7) {
-//   $badge = new stdClass();
-//   $badge->topText = $badges[$i + 3];
-//   $badge->bottomText = str_replace("{0}", $badges[$i + 2], $badges[$i + 4]);
-//   if ($badges[$i + 6] != "") $badge->link = $badges[$i + 6];
-//   $badge->image = $badges[$i + 5];
-//   array_push($response->badges, $badge);
-// }
 
 $response->userName = LoggedInUserName();
 
@@ -35,14 +24,6 @@ $response->isPatreonLinked = isset($_SESSION["patreonAuthenticated"]);
 
 echo json_encode($response);
 exit;
-
-// if (isset($_SESSION["isPatron"])) {
-//   echo ("<div class='ContentWindow' style='width: 50%; left:20px; height: calc(90% - 220px); bottom:20px; overflow-y: scroll;'>");
-//   echo ("<h1>Your Record</h1>");
-//   $forIndividual = true;
-//   include_once "zzGameStats.php";
-//   echo ("</div>");
-// }
 
 function PatreonLink()
 {

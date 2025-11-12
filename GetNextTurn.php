@@ -6,7 +6,7 @@ include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
-include_once "Libraries/CacheLibraries.php"; // OPTIMIZATION: Add caching layer
+include_once "Libraries/CacheLibraries.php"; //  Add caching layer
 
 // array holding allowed Origin domains
 SetHeaders();
@@ -56,7 +56,7 @@ if ($isGamePlayer) {
     SetCachePiece($gameName, $playerID + 3, "0");
   }
 } else if ($playerID == 3) {
-  // OPTIMIZATION: Track spectators in memory instead of writing to file
+  //  Track spectators in memory instead of writing to file
   // Generate a unique spectator ID based on IP and User-Agent
   $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
   $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
@@ -77,7 +77,7 @@ $fileCheckInterval = 2.0; // Check file every 2 seconds (conservative, safe inte
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(intval($sleepMs * 1000)); // Convert ms to microseconds
   
-  // OPTIMIZATION: Check file existence less frequently (every 2 seconds, conservative)
+  //  Check file existence less frequently (every 2 seconds, conservative)
   $currentRealTime = microtime(true);
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
@@ -88,7 +88,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cacheVal = GetCachePiece($gameName, 1);
   
   if ($isGamePlayer) {
-    // OPTIMIZATION: Batch cache reads to reduce SHMOP calls
+    //  Batch cache reads to reduce SHMOP calls
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $oppLastTime = intval(GetCachePiece($gameName, $otherPlayer + 1));
     $oppStatus = GetCachePiece($gameName, $otherPlayer + 3);
