@@ -44,8 +44,9 @@ $replayPath = "../Replays/$userId/$replayNumber/";
 // Validation: Replay directory exists
 if (!file_exists($replayPath)) {
   $replayPath_display = htmlspecialchars($replayPath);
-  $availableReplays = array_filter(scandir("../Replays/") ?? [], function($item) {
-    return $item !== '.' && $item !== '..' && is_dir("../Replays/$item");
+  $availableReplays = array_filter(scandir("../Replays/$userID") ?? [], function($item) {
+    global $userID;
+    return $item !== '.' && $item !== '..' && is_dir("../Replays/$userID/$item");
   });
   
   $availableList = !empty($availableReplays) ? "\n\nAvailable replays: " . implode(", ", array_values($availableReplays)) : "\n\nNo replay directories found yet.";
@@ -54,7 +55,7 @@ if (!file_exists($replayPath)) {
   $response->debug = array(
     "requestedReplayNumber" => $replayNumber,
     "availableReplays" => array_values($availableReplays),
-    "replaysDirectory" => realpath("../Replays/") ?: "../Replays/"
+    "replaysDirectory" => realpath("../Replays/$userID") ?: "../Replays/$userID"
   );
   http_response_code(404);
   echo json_encode($response);
