@@ -10,8 +10,10 @@ include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 ob_end_clean();
 
+SetHeaders();
+
 $userId = "";
-if (isset($_SESSION["userid"])) $userId = $_SESSION["userid"];
+if (isset($_SESSION["userid"])) $userId = $_SESSION["useruid"];
 if ($userId == "") {
   echo ("You must be logged in to use this feature.");
   exit;
@@ -44,9 +46,8 @@ $replayPath = "../Replays/$userId/$replayNumber/";
 // Validation: Replay directory exists
 if (!file_exists($replayPath)) {
   $replayPath_display = htmlspecialchars($replayPath);
-  $availableReplays = array_filter(scandir("../Replays/$userID") ?? [], function($item) {
-    global $userID;
-    return $item !== '.' && $item !== '..' && is_dir("../Replays/$userID/$item");
+  $availableReplays = array_filter(scandir("../Replays/") ?? [], function($item) {
+    return $item !== '.' && $item !== '..' && is_dir("../Replays/$item");
   });
   
   $availableList = !empty($availableReplays) ? "\n\nAvailable replays: " . implode(", ", array_values($availableReplays)) : "\n\nNo replay directories found yet.";
@@ -55,7 +56,7 @@ if (!file_exists($replayPath)) {
   $response->debug = array(
     "requestedReplayNumber" => $replayNumber,
     "availableReplays" => array_values($availableReplays),
-    "replaysDirectory" => realpath("../Replays/$userID") ?: "../Replays/$userID"
+    "replaysDirectory" => realpath("../Replays/") ?: "../Replays/"
   );
   http_response_code(404);
   echo json_encode($response);
