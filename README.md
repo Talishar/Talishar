@@ -6,7 +6,7 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=F75C7E&center=true&vCenter=true&width=435&lines=Play+Flesh+and+Blood;Browser-Based+Platform;Community+Driven" alt="Typing SVG" />
 </p>
 
-<h2 align="center">Talishar is a fan-made Flesh and Blood project, and is not associated with Legend Story Studios.</h2>
+<h4 align="center">Talishar is a fan-made Flesh and Blood project, and is not associated with Legend Story Studios.</h4>
 
 [![license](https://flat.badgen.net/github/license/talishar/talishar)](./LICENSE)
 [![discord](https://flat.badgen.net/discord/online-members/JykuRkdd5S?icon=discord)](https://discord.gg/JykuRkdd5S)
