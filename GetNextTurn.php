@@ -1891,17 +1891,21 @@ function skipEffectUIStacking($cardID) {
   return $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
 }
 
-function isPlayerAI($playerID) {
-  global $p2IsAI;
-  if($playerID == 2 && $p2IsAI == "1") return true;
-  return false;
+if (!function_exists('IsPlayerAI')) {
+  function IsPlayerAI($playerID) {
+    global $p2IsAI;
+    if($playerID == 2 && $p2IsAI == "1") return true;
+    return false;
+  }
 }
 
 // Generate a UUID V4 for unique game identification
-function GenerateGameGUID()
-{
-	$data = random_bytes(16);
-	$data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-	$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-	return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+if (!function_exists('GenerateGameGUID')) {
+  function GenerateGameGUID()
+  {
+    $data = random_bytes(16);
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+  }
 }

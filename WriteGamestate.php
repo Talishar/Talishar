@@ -10,98 +10,106 @@ if ($handler === false) {
 
 $lockTries = 0;
 while (!flock($handler, LOCK_EX) && $lockTries < 10) {
-  usleep(100000); //50ms
+  usleep(100000); //100ms
   ++$lockTries;
 }
 
 if ($lockTries == 10) { fclose($handler); exit; }
 
-$gamestateContent = "";
+$gamestateLines = [
+  implode(" ", $playerHealths),
+  
+  // Player 1
+  implode(" ", $p1Hand),
+  implode(" ", $p1Deck),
+  implode(" ", $p1CharEquip),
+  implode(" ", $p1Resources),
+  implode(" ", $p1Arsenal),
+  implode(" ", $p1Items),
+  implode(" ", $p1Auras),
+  implode(" ", $p1Discard),
+  implode(" ", $p1Pitch),
+  implode(" ", $p1Banish),
+  implode(" ", $p1ClassState),
+  implode(" ", $p1CharacterEffects),
+  implode(" ", $p1Soul),
+  implode(" ", $p1CardStats),
+  implode(" ", $p1TurnStats),
+  implode(" ", $p1Allies),
+  implode(" ", $p1Permanents),
+  implode(" ", $p1Settings),
+  
+  // Player 2
+  implode(" ", $p2Hand),
+  implode(" ", $p2Deck),
+  implode(" ", $p2CharEquip),
+  implode(" ", $p2Resources),
+  implode(" ", $p2Arsenal),
+  implode(" ", $p2Items),
+  implode(" ", $p2Auras),
+  implode(" ", $p2Discard),
+  implode(" ", $p2Pitch),
+  implode(" ", $p2Banish),
+  implode(" ", $p2ClassState),
+  implode(" ", $p2CharacterEffects),
+  implode(" ", $p2Soul),
+  implode(" ", $p2CardStats),
+  implode(" ", $p2TurnStats),
+  implode(" ", $p2Allies),
+  implode(" ", $p2Permanents),
+  implode(" ", $p2Settings),
+  
+  implode(" ", $landmarks),
+  $winner,
+  $firstPlayer,
+  $currentPlayer,
+  $currentTurn,
+  implode(" ", $turn),
+  $actionPoints,
+  implode(" ", $combatChain),
+  implode(" ", $combatChainState),
+  implode(" ", $currentTurnEffects),
+  implode(" ", $currentTurnEffectsFromCombat),
+  implode(" ", $nextTurnEffects),
+  implode(" ", $decisionQueue),
+  implode(" ", $dqVars),
+  implode(" ", $dqState),
+  implode(" ", $layers),
+  implode(" ", $layerPriority),
+  $mainPlayer,
+  implode(" ", $lastPlayed),
+  count($chainLinks),
+];
 
-$gamestateContent .= implode(" ", $playerHealths) . "\r\n";
-
-//Player 1
-$gamestateContent .= implode(" ", $p1Hand) . "\r\n";
-$gamestateContent .= implode(" ", $p1Deck) . "\r\n";
-$gamestateContent .= implode(" ", $p1CharEquip) . "\r\n";
-$gamestateContent .= implode(" ", $p1Resources) . "\r\n";
-$gamestateContent .= implode(" ", $p1Arsenal) . "\r\n";
-$gamestateContent .= implode(" ", $p1Items) . "\r\n";
-$gamestateContent .= implode(" ", $p1Auras) . "\r\n";
-$gamestateContent .= implode(" ", $p1Discard) . "\r\n";
-$gamestateContent .= implode(" ", $p1Pitch) . "\r\n";
-$gamestateContent .= implode(" ", $p1Banish) . "\r\n";
-$gamestateContent .= implode(" ", $p1ClassState) . "\r\n";
-$gamestateContent .= implode(" ", $p1CharacterEffects) . "\r\n";
-$gamestateContent .= implode(" ", $p1Soul) . "\r\n";
-$gamestateContent .= implode(" ", $p1CardStats) . "\r\n";
-$gamestateContent .= implode(" ", $p1TurnStats) . "\r\n";
-$gamestateContent .= implode(" ", $p1Allies) . "\r\n";
-$gamestateContent .= implode(" ", $p1Permanents) . "\r\n";
-$gamestateContent .= implode(" ", $p1Settings) . "\r\n";
-
-//Player 2
-$gamestateContent .= implode(" ", $p2Hand) . "\r\n";
-$gamestateContent .= implode(" ", $p2Deck) . "\r\n";
-$gamestateContent .= implode(" ", $p2CharEquip) . "\r\n";
-$gamestateContent .= implode(" ", $p2Resources) . "\r\n";
-$gamestateContent .= implode(" ", $p2Arsenal) . "\r\n";
-$gamestateContent .= implode(" ", $p2Items) . "\r\n";
-$gamestateContent .= implode(" ", $p2Auras) . "\r\n";
-$gamestateContent .= implode(" ", $p2Discard) . "\r\n";
-$gamestateContent .= implode(" ", $p2Pitch) . "\r\n";
-$gamestateContent .= implode(" ", $p2Banish) . "\r\n";
-$gamestateContent .= implode(" ", $p2ClassState) . "\r\n";
-$gamestateContent .= implode(" ", $p2CharacterEffects) . "\r\n";
-$gamestateContent .= implode(" ", $p2Soul) . "\r\n";
-$gamestateContent .= implode(" ", $p2CardStats) . "\r\n";
-$gamestateContent .= implode(" ", $p2TurnStats) . "\r\n";
-$gamestateContent .= implode(" ", $p2Allies) . "\r\n";
-$gamestateContent .= implode(" ", $p2Permanents) . "\r\n";
-$gamestateContent .= implode(" ", $p2Settings) . "\r\n";
-
-$gamestateContent .= implode(" ", $landmarks) . "\r\n";
-$gamestateContent .= $winner . "\r\n";
-$gamestateContent .= $firstPlayer . "\r\n";
-$gamestateContent .= $currentPlayer . "\r\n";
-$gamestateContent .= $currentTurn . "\r\n";
-$gamestateContent .= implode(" ", $turn) . "\r\n";
-$gamestateContent .= $actionPoints . "\r\n";
-$gamestateContent .= implode(" ", $combatChain) . "\r\n";
-$gamestateContent .= implode(" ", $combatChainState) . "\r\n";
-$gamestateContent .= implode(" ", $currentTurnEffects) . "\r\n";
-$gamestateContent .= implode(" ", $currentTurnEffectsFromCombat) . "\r\n";
-$gamestateContent .= implode(" ", $nextTurnEffects) . "\r\n";
-$gamestateContent .= implode(" ", $decisionQueue) . "\r\n";
-$gamestateContent .= implode(" ", $dqVars) . "\r\n";
-$gamestateContent .= implode(" ", $dqState) . "\r\n";
-$gamestateContent .= implode(" ", $layers) . "\r\n";
-$gamestateContent .= implode(" ", $layerPriority) . "\r\n";
-$gamestateContent .= $mainPlayer . "\r\n";
-$gamestateContent .= implode(" ", $lastPlayed) . "\r\n";
-$gamestateContent .= count($chainLinks) . "\r\n";
-for ($i = 0; $i < count($chainLinks); ++$i) {
-  $gamestateContent .= implode(" ", $chainLinks[$i]) . "\r\n";
+// Add chain links
+$chainLinksCount = count($chainLinks);
+for ($i = 0; $i < $chainLinksCount; ++$i) {
+  $gamestateLines[] = implode(" ", $chainLinks[$i]);
 }
-$gamestateContent .= implode(" ", $chainLinkSummary) . "\r\n";
-$gamestateContent .= $p1Key . "\r\n";
-$gamestateContent .= $p2Key . "\r\n";
-$gamestateContent .= $permanentUniqueIDCounter . "\r\n";
-$gamestateContent .= $inGameStatus . "\r\n"; //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-$gamestateContent .= "\r\n"; //Animations - Deprecated
-$gamestateContent .= $currentPlayerActivity . "\r\n"; //Current Player activity status -- 0 = active, 2 = inactive
-$gamestateContent .= "\r\n"; //Unused
-$gamestateContent .= "\r\n"; //Unused
-$gamestateContent .= $p1TotalTime . "\r\n"; //Player 1 total time
-$gamestateContent .= $p2TotalTime . "\r\n"; //Player 2 total time
-$gamestateContent .= $lastUpdateTime . "\r\n"; //Last update time
-$gamestateContent .= $roguelikeGameID . "\r\n"; //Last update time
-$gamestateContent .= implode(" ", $events) . "\r\n";//Events
-$gamestateContent .= $EffectContext . "\r\n";//Update number the gamestate is for
-$gamestateContent .= implode(" ", $p1Inventory) . "\r\n";
-$gamestateContent .= implode(" ", $p2Inventory) . "\r\n";
-$gamestateContent .= $p1IsAI . "\r\n";
-$gamestateContent .= $p2IsAI . "\r\n";
+
+$gamestateLines = array_merge($gamestateLines, [
+  implode(" ", $chainLinkSummary),
+  $p1Key,
+  $p2Key,
+  $permanentUniqueIDCounter,
+  $inGameStatus, // Game status -- 0 = START, 1 = PLAY, 2 = OVER
+  "", // Animations - Deprecated
+  $currentPlayerActivity, // Current Player activity status -- 0 = active, 2 = inactive
+  "", // Unused
+  "", // Unused
+  $p1TotalTime, // Player 1 total time
+  $p2TotalTime, // Player 2 total time
+  $lastUpdateTime, // Last update time
+  $roguelikeGameID, // Roguelike game ID
+  implode(" ", $events), // Events
+  $EffectContext, // Update number the gamestate is for
+  implode(" ", $p1Inventory),
+  implode(" ", $p2Inventory),
+  $p1IsAI,
+  $p2IsAI,
+]);
+
+$gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
 
 fwrite($handler, $gamestateContent);
 

@@ -48,15 +48,6 @@ function pwdMatch($pwd, $pwdrepeat)
 	return $result;
 }
 
-// Generate a UUID V4 for unique game identification
-function GenerateGameGUID()
-{
-	$data = random_bytes(16);
-	$data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-	$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-	return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-}
-
 // Check if username is in database, if so then return data
 function uidExists($conn, $username)
 {
@@ -1193,5 +1184,15 @@ function BanPlayer($uid)
 		mysqli_stmt_bind_param($stmt, "s", $uid);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
+	}
+}
+
+if (!function_exists('GenerateGameGUID')) {
+	function GenerateGameGUID()
+	{
+		$data = random_bytes(16);
+		$data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+		$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 	}
 }

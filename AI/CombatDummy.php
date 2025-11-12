@@ -48,10 +48,10 @@ function CombatDummyAI()
   }
 }
 
-function IsPlayerAI($playerID)
-{
-  global $p2IsAI;
-  if($playerID == 2 && $p2IsAI == "1") return true;
-  return false;
+if (!function_exists('IsPlayerAI')) {
+	function IsPlayerAI($playerID) {
+		global $p2IsAI;
+		if($playerID == 2 && $p2IsAI == "1") return true;
+		return false;
+	}
 }
-?>

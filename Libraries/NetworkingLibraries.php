@@ -4213,12 +4213,13 @@ function WriteGamestate()
   global $layers, $layerPriority, $mainPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime;
+  
   $filename = "./Games/" . $gameName . "/gamestate.txt";
   $handler = fopen($filename, "w");
 
   $lockTries = 0;
   while (!flock($handler, LOCK_EX) && $lockTries < 10) {
-    usleep(100000); //50ms
+    usleep(100000); //100ms
     ++$lockTries;
   }
 
@@ -4227,83 +4228,90 @@ function WriteGamestate()
     exit;
   }
 
-  fwrite($handler, implode(" ", $playerHealths) . "\r\n");
+  // Build entire output string before writing (reduces I/O operations)
+  $output = [];
+
+  $output[] = implode(" ", $playerHealths);
 
   //Player 1
-  fwrite($handler, implode(" ", $p1Hand) . "\r\n");
-  fwrite($handler, implode(" ", $p1Deck) . "\r\n");
-  fwrite($handler, implode(" ", $p1CharEquip) . "\r\n");
-  fwrite($handler, implode(" ", $p1Resources) . "\r\n");
-  fwrite($handler, implode(" ", $p1Arsenal) . "\r\n");
-  fwrite($handler, implode(" ", $p1Items) . "\r\n");
-  fwrite($handler, implode(" ", $p1Auras) . "\r\n");
-  fwrite($handler, implode(" ", $p1Discard) . "\r\n");
-  fwrite($handler, implode(" ", $p1Pitch) . "\r\n");
-  fwrite($handler, implode(" ", $p1Banish) . "\r\n");
-  fwrite($handler, implode(" ", $p1ClassState) . "\r\n");
-  fwrite($handler, implode(" ", $p1CharacterEffects) . "\r\n");
-  fwrite($handler, implode(" ", $p1Soul) . "\r\n");
-  fwrite($handler, implode(" ", $p1CardStats) . "\r\n");
-  fwrite($handler, implode(" ", $p1TurnStats) . "\r\n");
-  fwrite($handler, implode(" ", $p1Allies) . "\r\n");
-  fwrite($handler, implode(" ", $p1Permanents) . "\r\n");
-  fwrite($handler, implode(" ", $p1Settings) . "\r\n");
+  $output[] = implode(" ", $p1Hand);
+  $output[] = implode(" ", $p1Deck);
+  $output[] = implode(" ", $p1CharEquip);
+  $output[] = implode(" ", $p1Resources);
+  $output[] = implode(" ", $p1Arsenal);
+  $output[] = implode(" ", $p1Items);
+  $output[] = implode(" ", $p1Auras);
+  $output[] = implode(" ", $p1Discard);
+  $output[] = implode(" ", $p1Pitch);
+  $output[] = implode(" ", $p1Banish);
+  $output[] = implode(" ", $p1ClassState);
+  $output[] = implode(" ", $p1CharacterEffects);
+  $output[] = implode(" ", $p1Soul);
+  $output[] = implode(" ", $p1CardStats);
+  $output[] = implode(" ", $p1TurnStats);
+  $output[] = implode(" ", $p1Allies);
+  $output[] = implode(" ", $p1Permanents);
+  $output[] = implode(" ", $p1Settings);
 
   //Player 2
-  fwrite($handler, implode(" ", $p2Hand) . "\r\n");
-  fwrite($handler, implode(" ", $p2Deck) . "\r\n");
-  fwrite($handler, implode(" ", $p2CharEquip) . "\r\n");
-  fwrite($handler, implode(" ", $p2Resources) . "\r\n");
-  fwrite($handler, implode(" ", $p2Arsenal) . "\r\n");
-  fwrite($handler, implode(" ", $p2Items) . "\r\n");
-  fwrite($handler, implode(" ", $p2Auras) . "\r\n");
-  fwrite($handler, implode(" ", $p2Discard) . "\r\n");
-  fwrite($handler, implode(" ", $p2Pitch) . "\r\n");
-  fwrite($handler, implode(" ", $p2Banish) . "\r\n");
-  fwrite($handler, implode(" ", $p2ClassState) . "\r\n");
-  fwrite($handler, implode(" ", $p2CharacterEffects) . "\r\n");
-  fwrite($handler, implode(" ", $p2Soul) . "\r\n");
-  fwrite($handler, implode(" ", $p2CardStats) . "\r\n");
-  fwrite($handler, implode(" ", $p2TurnStats) . "\r\n");
-  fwrite($handler, implode(" ", $p2Allies) . "\r\n");
-  fwrite($handler, implode(" ", $p2Permanents) . "\r\n");
-  fwrite($handler, implode(" ", $p2Settings) . "\r\n");
+  $output[] = implode(" ", $p2Hand);
+  $output[] = implode(" ", $p2Deck);
+  $output[] = implode(" ", $p2CharEquip);
+  $output[] = implode(" ", $p2Resources);
+  $output[] = implode(" ", $p2Arsenal);
+  $output[] = implode(" ", $p2Items);
+  $output[] = implode(" ", $p2Auras);
+  $output[] = implode(" ", $p2Discard);
+  $output[] = implode(" ", $p2Pitch);
+  $output[] = implode(" ", $p2Banish);
+  $output[] = implode(" ", $p2ClassState);
+  $output[] = implode(" ", $p2CharacterEffects);
+  $output[] = implode(" ", $p2Soul);
+  $output[] = implode(" ", $p2CardStats);
+  $output[] = implode(" ", $p2TurnStats);
+  $output[] = implode(" ", $p2Allies);
+  $output[] = implode(" ", $p2Permanents);
+  $output[] = implode(" ", $p2Settings);
 
-  fwrite($handler, implode(" ", $landmarks) . "\r\n");
-  fwrite($handler, $winner . "\r\n");
-  fwrite($handler, $firstPlayer . "\r\n");
-  fwrite($handler, $currentPlayer . "\r\n");
-  fwrite($handler, $currentTurn . "\r\n");
-  fwrite($handler, implode(" ", $turn) . "\r\n");
-  fwrite($handler, $actionPoints . "\r\n");
-  fwrite($handler, implode(" ", $combatChain) . "\r\n");
-  fwrite($handler, implode(" ", $combatChainState) . "\r\n");
-  fwrite($handler, implode(" ", $currentTurnEffects) . "\r\n");
-  fwrite($handler, implode(" ", $currentTurnEffectsFromCombat) . "\r\n");
-  fwrite($handler, implode(" ", $nextTurnEffects) . "\r\n");
-  fwrite($handler, implode(" ", $decisionQueue) . "\r\n");
-  fwrite($handler, implode(" ", $dqVars) . "\r\n");
-  fwrite($handler, implode(" ", $dqState) . "\r\n");
-  fwrite($handler, implode(" ", $layers) . "\r\n");
-  fwrite($handler, implode(" ", $layerPriority) . "\r\n");
-  fwrite($handler, $mainPlayer . "\r\n");
-  fwrite($handler, implode(" ", $lastPlayed) . "\r\n");
-  fwrite($handler, count($chainLinks) . "\r\n");
+  //Game State
+  $output[] = implode(" ", $landmarks);
+  $output[] = $winner;
+  $output[] = $firstPlayer;
+  $output[] = $currentPlayer;
+  $output[] = $currentTurn;
+  $output[] = implode(" ", $turn);
+  $output[] = $actionPoints;
+  $output[] = implode(" ", $combatChain);
+  $output[] = implode(" ", $combatChainState);
+  $output[] = implode(" ", $currentTurnEffects);
+  $output[] = implode(" ", $currentTurnEffectsFromCombat);
+  $output[] = implode(" ", $nextTurnEffects);
+  $output[] = implode(" ", $decisionQueue);
+  $output[] = implode(" ", $dqVars);
+  $output[] = implode(" ", $dqState);
+  $output[] = implode(" ", $layers);
+  $output[] = implode(" ", $layerPriority);
+  $output[] = $mainPlayer;
+  $output[] = implode(" ", $lastPlayed);
+  $output[] = count($chainLinks);
   for ($i = 0; $i < count($chainLinks); ++$i) {
-    fwrite($handler, implode(" ", $chainLinks[$i]) . "\r\n");
+    $output[] = implode(" ", $chainLinks[$i]);
   }
-  fwrite($handler, implode(" ", $chainLinkSummary) . "\r\n");
-  fwrite($handler, $p1Key . "\r\n");
-  fwrite($handler, $p2Key . "\r\n");
-  fwrite($handler, $permanentUniqueIDCounter . "\r\n");
-  fwrite($handler, $inGameStatus . "\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-  fwrite($handler, implode(" ", $animations) . "\r\n"); //Animations
-  fwrite($handler, $currentPlayerActivity . "\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
-  fwrite($handler, "\r\n"); //Unused
-  fwrite($handler, "\r\n"); //Unused
-  fwrite($handler, $p1TotalTime . "\r\n"); //Player 1 total time
-  fwrite($handler, $p2TotalTime . "\r\n"); //Player 2 total time
-  fwrite($handler, $lastUpdateTime . "\r\n"); //Last update time
+  $output[] = implode(" ", $chainLinkSummary);
+  $output[] = $p1Key;
+  $output[] = $p2Key;
+  $output[] = $permanentUniqueIDCounter;
+  $output[] = $inGameStatus; //Game status
+  $output[] = implode(" ", $animations); //Animations
+  $output[] = $currentPlayerActivity; //Current Player activity status
+  $output[] = ""; //Unused
+  $output[] = ""; //Unused
+  $output[] = $p1TotalTime; //Player 1 total time
+  $output[] = $p2TotalTime; //Player 2 total time
+  $output[] = $lastUpdateTime; //Last update time
+  
+  // Single write operation with all data at once
+  fwrite($handler, implode("\r\n", $output) . "\r\n");
   fclose($handler);
 }
 
