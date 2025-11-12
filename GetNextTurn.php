@@ -71,15 +71,30 @@ $otherPlayer = $playerID == 1 ? 2 : 1;
 
 // This reduces CPU spinning and returns faster on updates
 $sleepMs = 50; // Start with 50ms (faster response)
+$lastFileCheckTime = microtime(true);
+$fileCheckInterval = 2.0; // Check file every 2 seconds (conservative, safe interval)
+
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(intval($sleepMs * 1000)); // Convert ms to microseconds
-  if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
+  
+  // OPTIMIZATION: Check file existence less frequently (every 2 seconds, conservative)
+  $currentRealTime = microtime(true);
+  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
+    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
+    $lastFileCheckTime = $currentRealTime;
+  }
+  
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
+  
   if ($isGamePlayer) {
+    // OPTIMIZATION: Batch cache reads to reduce SHMOP calls
     SetCachePiece($gameName, $playerID + 1, $currentTime);
     $oppLastTime = intval(GetCachePiece($gameName, $otherPlayer + 1));
     $oppStatus = GetCachePiece($gameName, $otherPlayer + 3);
+    $lastUpdateTime = GetCachePiece($gameName, 6);
+    $playerInactiveStatus = GetCachePiece($gameName, 12);
+    
     if (($currentTime - $oppLastTime) > 3000 && (intval($oppStatus) == 0)) {
       WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
       GamestateUpdated($gameName);
@@ -92,9 +107,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $opponentDisconnected = true;
     }
     
-    //Handle server timeout
-    $lastUpdateTime = GetCachePiece($gameName, 6);
-    if ($currentTime - $lastUpdateTime > 60000 && GetCachePiece($gameName, 12) != "1") { // 60 seconds
+    // Handle server timeout (60 seconds of no game updates)
+    if ($currentTime - $lastUpdateTime > 60000 && $playerInactiveStatus != "1") {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
       $lastUpdate = 0;

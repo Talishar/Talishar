@@ -54,10 +54,27 @@ ob_flush();
 flush();
 
 $count = 0;
+$sleepMs = 50; // Initialize outside loop to avoid isset() check each iteration
+$otherP = $playerID == 1 ? 2 : 1;
+$lastOppStatus = 0;
+$lastFileCheckTime = microtime(true);
+$fileCheckInterval = 1.0; // Check file existence every 1 second (conservative, safe interval)
+$gameFileExists = true;
 
 while (true) {
-  if(($count % 100 == 0) && !file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
+  // Check client connection and game file existence (early exit)
+  if (connection_aborted()) exit;
+  
+  // File existence check throttled to every 1 second (conservative, safe interval)
+  $currentRealTime = microtime(true);
+  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
+    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
+    $lastFileCheckTime = $currentRealTime;
+  }
+  
   ++$count;
+  
+  // Reduce cache reads by batching: read once instead of multiple times
   $cacheVal = intval(GetCachePiece($gameName, 1));
   if ($cacheVal > $lastUpdate) {
     $lastUpdate = $cacheVal;
@@ -65,54 +82,62 @@ while (true) {
     echo("data: " . json_encode($response) . "\n\n");
     ob_flush();
     flush();
-    set_time_limit(120); //Reset script time limit
+    set_time_limit(120);
     $sleepMs = 50; // Reset sleep on update
   }
-  if (connection_aborted()) break;
 
-  $currentTime = round(microtime(true) * 1000);
-  $lastOppStatus = 0;
   if($isGamePlayer) {
-    SetCachePiece($gameName, $playerID + 1, $currentTime);
-    $otherP = $playerID == 1 ? 2 : 1;
+    $currentTime = round(microtime(true) * 1000);
+    
+    // OPTIMIZATION: Batch cache operations - read all pieces once
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
-    if (($currentTime - $oppLastTime) > 3000 && $oppStatus == 0 && $oppStatus != $lastOppStatus) {
+    $lastUpdateTime = GetCachePiece($gameName, 6);
+    $playerInactiveStatus = GetCachePiece($gameName, 12);
+    
+    // Early exit if game no longer exists
+    if ($lastUpdateTime == "") {
+      echo("The game no longer exists on the server.");
+      exit;
+    }
+    
+    // Write current player status (required for opponent disconnect detection)
+    SetCachePiece($gameName, $playerID + 1, $currentTime);
+    
+    // Handle opponent status changes (only write if status actually changes)
+    $timeSinceOppLastConnection = $currentTime - $oppLastTime;
+    
+    if ($timeSinceOppLastConnection > 3000 && $oppStatus == 0) {
+      // Opponent disconnected (not yet marked as disconnected)
       WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "1");
-    } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == 1 && $oppStatus != $lastOppStatus) {
+    } else if ($timeSinceOppLastConnection > 60000 && $oppStatus == 1) {
+      // Opponent confirmed left (more than 60 seconds since last activity)
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");
-      //$lastUpdate = 0;
       $opponentDisconnected = true;
-    } else if (($currentTime - $oppLastTime) < 3000 && $oppStatus > 0) {
+    } else if ($timeSinceOppLastConnection < 3000 && $oppStatus > 0) {
+      // Opponent reconnected
       SetCachePiece($gameName, $otherP + 3, "0");
     }
-    $lastOppStatus = intval($oppStatus);
-    //Handle server timeout
-    $lastUpdateTime = GetCachePiece($gameName, 6);
-    if($lastUpdateTime == "") { echo("The game no longer exists on the server."); exit; }
-    if($currentTime - $lastUpdateTime > 60000 && GetCachePiece($gameName, 12) != "1") //60 seconds
-    {
+    
+    // Handle server timeout (60 seconds of no game updates)
+    if ($currentTime - $lastUpdateTime > 60000 && $playerInactiveStatus != "1") {
       SetCachePiece($gameName, 12, "1");
       $opponentInactive = true;
       $response->cacheVal = $cacheVal;
-      echo ("data: " . json_encode($response) . "\n\n");
+      echo("data: " . json_encode($response) . "\n\n");
       ob_flush();
       flush();
-      //$lastUpdate = 0;
     }
   }
 
   // Wait with exponential backoff (50ms → 500ms cap)
-  if (!isset($sleepMs)) $sleepMs = 50;
   usleep(intval($sleepMs * 1000));
   $sleepMs = min($sleepMs * 1.5, 500); // Exponential backoff capped at 500ms
 }
-
-echo ("data: SOMETHING WRONG " . json_encode($response) . " " . str_pad("", 4096) . "\n\n");
 
 ob_end_flush();
 
