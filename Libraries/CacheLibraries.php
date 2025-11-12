@@ -77,31 +77,32 @@ function InvalidateGamestateCache($gameName) {
  * Reduces I/O on every spectator update
  */
 function TrackSpectator($gameName, $sessionKey) {
-  if (!extension_loaded('apcu') || !ini_get('apc.enabled')) {
-    return; // Skip if APCu not available
+  // Track spectators in file for reliable cross-request spectator counting
+  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
+  
+  // Create directory if it doesn't exist
+  $gameDir = "./Games/" . $gameName;
+  if (!is_dir($gameDir)) {
+    @mkdir($gameDir, 0755, true);
   }
   
-  if (!function_exists('apcu_fetch') || !function_exists('apcu_store')) {
-    return;
-  }
-  
-  $cacheKey = "spectators_" . md5($gameName);
-  $spectators = @apcu_fetch($cacheKey) ?? [];
-  
-  // Add/update spectator session
-  $spectators[$sessionKey] = [
-    'timestamp' => time(),
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-  ];
-  
-  // Remove old sessions (older than 5 minutes)
-  foreach ($spectators as $key => $data) {
-    if (time() - $data['timestamp'] > 300) {
-      unset($spectators[$key]);
+  // Read existing spectators
+  $spectators = [];
+  if (file_exists($spectatorFile)) {
+    $content = file_get_contents($spectatorFile);
+    if (!empty($content)) {
+      $spectators = json_decode($content, true) ?? [];
     }
   }
   
-  @apcu_store($cacheKey, $spectators, 300); // 5 min TTL
+  // Current timestamp in milliseconds (matching GetNextTurn.php format)
+  $currentTime = round(microtime(true) * 1000);
+  
+  // Add/update this spectator session
+  $spectators[$sessionKey] = $currentTime;
+  
+  // Write back to file
+  @file_put_contents($spectatorFile, json_encode($spectators));
 }
 
 /**
