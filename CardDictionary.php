@@ -3295,7 +3295,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
       if (GetUntapped($player, "MYITEMS", "subtype=Cog") == "") return true;
       if ($from == "PLAY" && $combatChain[11] >= 2) return true;
-      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 3) return true;
+      if ($from == "COMBATCHAINATTACKS" && $chainLinks[$index][9] >= 2) return true;
       return false;
     case "palantir_aeronought_red":
     case "jolly_bludger_yellow":
