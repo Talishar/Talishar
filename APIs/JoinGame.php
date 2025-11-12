@@ -348,7 +348,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if ($totalCards < 60  && ($format == "cc" || $format == "compcc")) {
+  if ($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc")) {
     $response->error = "⚠️ The deck link you have entered has too few cards (" . $totalCards . ") and is likely for the blitz/commoner format. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
@@ -366,7 +366,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if ($totalCards > 80  && ($format == "cc" || $format == "compcc")) {
+  if ($totalCards > 80  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc")) {
     $response->error = "⚠️ The deck link you have entered has too many cards (" . $totalCards . "). Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
