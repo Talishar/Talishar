@@ -203,6 +203,7 @@ if($handler) {
       $dictionaryCard->blockValue = GeneratedBlockValue($card);
       $dictionaryCard->class = CardClass($card);
       $dictionaryCard->talent = CardTalent($card);
+      $dictionaryCard->type = CardType($card);
       $dictionaryCard->subtype = CardSubtype($card);
       $dictionaryCard->cost = GeneratedCardCost($card);
       array_push($response->deck->cardDictionary, $dictionaryCard);
