@@ -73,13 +73,19 @@ include "./APIParseGamefile.php";
 ob_end_clean();
 
 // Check if game is still in progress
-// Game is in progress if status is between game started and game over
-$MGS_GameStarted = 5;
+// Cache piece 14 is set to 99 (MGS_GameOver) when game ends
+// If cache piece 14 is 99, the game is definitely over
+$cacheStatus = GetCachePiece($gameName, 14);
 $MGS_GameOver = 99;
 
 $response->gameInProgress = false;
 
-if ($gameStatus >= $MGS_GameStarted && $gameStatus != $MGS_GameOver) {
+// If cache piece 14 is set to 99, game is over
+if ($cacheStatus == $MGS_GameOver) {
+    $response->gameInProgress = false;
+} else if ($gameStatus == 5) {
+    // Game status is 5 (GameStarted) and cache piece 14 is not 99 (GameOver)
+    // So game is in progress
     $response->gameInProgress = true;
 }
 
