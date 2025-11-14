@@ -646,7 +646,7 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["ARR", "AAC"];
+  $unreleasedSets = ["AAC"];
   // promos that are made legal ahead of thier set
   $specialReleases = ["batter_to_a_pulp_red"];
   if (in_array($cardID, $specialReleases)) return false;
@@ -656,10 +656,6 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "ARR":
-      return match($cardID) {
-        default => false
-      };
     case "AAC":
       return match($cardID) {
         "meet_madness_red" => false,
