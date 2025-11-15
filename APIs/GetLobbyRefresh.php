@@ -62,19 +62,19 @@ $kickPlayerTwo = false;
 $sleepMs = 50; // Exponential backoff start
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(intval($sleepMs * 1000));
-  $sleepMs = min($sleepMs * 1.5, 500); // Exponential backoff capped at 500ms
+  $sleepMs = min($sleepMs * 1.5, 200); // Exponential backoff capped at 200ms
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
   SetCachePiece($gameName, $playerID + 1, $currentTime);
   ++$count;
-  if ($count == 100) break;
+  if ($count == 20) break;
   $otherP = $playerID == 1 ? 2 : 1;
   $oppLastTime = GetCachePiece($gameName, $otherP + 1);
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
   if($oppStatus != "-1" && $oppLastTime != "") {
     if(($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
-      WriteLog("🔌Player $otherP has disconnected.", path: "../");
+      WriteLog("🔌 Your opponent has disconnected.", path: "../");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
       if ($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
