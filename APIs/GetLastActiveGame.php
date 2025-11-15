@@ -24,12 +24,6 @@ SetHeaders();
 
 session_start();
 
-// Try to login from cookie first
-if (!isset($_SESSION["userid"]) && isset($_COOKIE["rememberMeToken"])) {
-    include_once "../includes/functions.inc.php";
-    loginFromCookie();
-}
-
 session_write_close();
 
 $response = new stdClass();
