@@ -438,6 +438,11 @@ if ($matchup == "") {
     $p1roll = 0;
     $p2roll = 0;
     $tries = 10;
+    
+    // Create a fresh gamelog file to clear old messages
+    $gamelogPath = "../Games/" . $gameName . "/gamelog.txt";
+    file_put_contents($gamelogPath, "");
+    
     while ($p1roll == $p2roll && $tries > 0) {
       $p1roll = rand(1, 6) + rand(1, 6);
       $p2roll = rand(1, 6) + rand(1, 6);
