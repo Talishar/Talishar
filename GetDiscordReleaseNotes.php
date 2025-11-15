@@ -134,6 +134,7 @@ try {
             $content = $msg['content'] ?? '';
             $content = str_replace('<#868488473378684938>', '#release-notes', $content);
             $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
+            $content = str_replace('<#865423689976774656>', '#bug-reports', $content);
             // Preserve line breaks
             $content = nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'), false);
             
