@@ -60912,7 +60912,7 @@ return match($cardID) {
 "sworn_vengeance_red" => true,
 "sworn_vengeance_yellow" => true,
 "sworn_vengeance_blue" => true,
-"synapse_sparkcap" => ""
+"synapse_sparkcap" => false,
 "tag_the_target_red" => true,
 "tag_the_target_yellow" => true,
 "tag_the_target_blue" => true,
