@@ -1857,6 +1857,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cacheVisibility = GetCachePiece($gameName, 9);
   $response->isPrivate = ($cacheVisibility !== "1"); // Not public = private or friends-only
 
+  // Get replay flag from cache (piece 10)
+  $isReplay = GetCachePiece($gameName, 10);
+  $response->isReplay = ($isReplay === "1");
+
   // encode and send it out
   echo json_encode($response);
   exit;
