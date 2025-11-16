@@ -20,7 +20,7 @@ class grimoire_of_fellingsong extends Card
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
-    PlayAura("runechant", $this->controller);
+    PlayAura("runechant", $this->controller, 1, true);
   }
 }
 ?>
