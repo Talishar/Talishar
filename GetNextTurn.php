@@ -1872,6 +1872,26 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $isReplay = GetCachePiece($gameName, 10);
   $response->isReplay = ($isReplay === "1");
 
+  // Check if opponent is typing (for players only)
+  if ($isGamePlayer && ($playerID == 1 || $playerID == 2)) {
+    $opponentID = ($playerID == 1) ? 2 : 1;
+    $opponentTypingFile = "./Games/" . $gameName . "/typing_" . $opponentID . ".txt";
+    $response->opponentTyping = false;
+    
+    if (file_exists($opponentTypingFile)) {
+      $typingTimeSeconds = intval(file_get_contents($opponentTypingFile));
+      $currentTimeSeconds = time();
+      $timeSinceTyping = $currentTimeSeconds - $typingTimeSeconds;
+      
+      // Check if typing status is still valid (within 5 seconds)
+      if ($timeSinceTyping < 5 && $timeSinceTyping >= 0) {
+        $response->opponentTyping = true;
+      }
+    }
+  } else {
+    $response->opponentTyping = false;
+  }
+
   // encode and send it out
   echo json_encode($response);
   exit;
