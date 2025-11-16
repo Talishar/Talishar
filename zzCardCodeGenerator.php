@@ -1,7 +1,7 @@
 <?php
 
-  include './zzImageConverter.php';
-  include './Libraries/Trie.php';
+  include __DIR__ . '/zzImageConverter.php';
+  include __DIR__ . '/Libraries/Trie.php';
 
   $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
@@ -26,9 +26,9 @@
 
   $cardArray = json_decode($cardData);
 
-  if(!is_dir("./GeneratedCode")) mkdir("./GeneratedCode", 777, true);
+  if(!is_dir(__DIR__ . "/GeneratedCode")) mkdir(__DIR__ . "/GeneratedCode", 777, true);
 
-  $filename = "./GeneratedCode/GeneratedCardDictionaries.php";
+  $filename = __DIR__ . "/GeneratedCode/GeneratedCardDictionaries.php";
   $handler = fopen($filename, "w");
 
   fwrite($handler, "<?php\r\n");

@@ -4,10 +4,10 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
 {
   $set = substr($setID, 0, 3);
   $number = substr($setID, 3);
-  $filename = "./WebpImages/en/" . $cardID . ".webp";
-  $filenameNew = "./New Cards/" . $cardID . ".webp";
-  $cardImagesUploadedFolder = "../CardImages/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  $cardImagesMissingFolder = "../CardImages/media/missing/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $filename = __DIR__ . "/WebpImages/en/" . $cardID . ".webp";
+  $filenameNew = __DIR__ . "/New Cards/" . $cardID . ".webp";
+  $cardImagesUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardImagesMissingFolder = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($filename) || !file_exists($cardImagesUploadedFolder))
   // if (!file_exists($cardImagesUploadedFolder))
   {
@@ -47,9 +47,9 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       imagedestroy($image);
     }
   }
-  $concatFilename = "./concat/en/" . $cardID . ".webp";
-  $cardSquaresUploadedFolder = "../CardImages/media/uploaded/public/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
-  $cardSquaresMissingFolder = "../CardImages/media/missing/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $concatFilename = __DIR__ . "/concat/en/" . $cardID . ".webp";
+  $cardSquaresUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
+  $cardSquaresMissingFolder = __DIR__ . "/../CardImages/media/missing/cardsquares/english/" . $cardID . ".webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($concatFilename) || !file_exists($cardSquaresUploadedFolder))
   // if (!file_exists($cardSquaresUploadedFolder))
   {
@@ -75,9 +75,9 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       if(file_exists($concatFilename)) echo("Image for " . $cardID . " successfully converted to concat.<BR>");
     }
   }
-  $cropFilename = "./crops/" . $cardID . "_cropped.png";
-  $cardCropsUploadedFolder = "../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
-  $cardCropsMissingFolder = "../CardImages/media/missing/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
+  $cropFilename = __DIR__ . "/crops/" . $cardID . "_cropped.png";
+  $cardCropsUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
+  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($cropFilename) || !file_exists($cardCropsUploadedFolder))
   // if (!file_exists($cardCropsUploadedFolder))
   {
