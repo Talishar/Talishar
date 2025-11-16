@@ -1,34 +1,26 @@
 <?php
 
-class synapse_sparkcap extends Card
+class grimoire_of_fellingsong extends Card
 {
   function __construct($controller)
   {
-    $this->cardID = "synapse_sparkcap";
+    $this->cardID = "grimoire_of_fellingsong";
     $this->controller = $controller;
   }
 
   function AbilityType($index = -1, $from = '-')
   {
-    return "A";
+    return "I";
   }
 
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false)
+  function AbilityCost()
   {
-    if (CheckTapped("MYCHAR-$index", $this->controller) && SearchMultizone($this->controller, "MYHAND:subtype=Evo") != "")
-      return true;
-    return false;
-  }
-
-  function PayAdditionalCosts($from, $index = '-')
-  {
-    Tap("MYCHAR-$index", $this->controller);
-    MZChooseAndBanish($this->controller, "MYHAND:subtype=Evo", "HAND,-");
+    return 1;
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
-    PlayAura("ponder", $this->controller);
+    PlayAura("runechant", $this->controller);
   }
 }
 ?>
