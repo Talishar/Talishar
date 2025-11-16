@@ -302,7 +302,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       continue;
     }
     // hide the blocking cards from the attacking player until they are locked in
-    $cardID = $turn[0] == "B" && $playerID == $mainPlayer ? "CardBack" : $combatChain[$i];
+    $cardID = $turn[0] == "B" && $playerID == $mainPlayer ? $TheirCardBack : $combatChain[$i];
     array_push($combatChainReactions, JSONRenderedCard(
       cardNumber: $cardID,
       controller: $combatChain[$i + 1] ?? NULL,
@@ -415,7 +415,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $opponentDiscardArray = [];
   for ($i = 0; $i < count($theirDiscard); $i += DiscardPieces()) {
     $mod = $theirDiscard[$i + 2];
-    $cardID = isFaceDownMod($mod) ? "CardBack" : $theirDiscard[$i];
+    $cardID = isFaceDownMod($mod) ? $TheirCardBack : $theirDiscard[$i];
     array_push($opponentDiscardArray, JSONRenderedCard($cardID));
   }
   $response->opponentDiscard = $opponentDiscardArray;
@@ -455,7 +455,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turn[0], "THEIRBANISH", $i) ? 15 : 0;
     $label = "";
     if (isFaceDownMod($mod) && !IsGameOver()) {
-      $cardID = "CardBack";
+      $cardID = $TheirCardBack;
     }
     else if ($mod == "INT") {
         $overlay = 1;
@@ -590,7 +590,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = "CardBack";
+    elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = $MyCardBack;
     array_push($playerDiscardArr, JSONRenderedCard($myDiscard[$i], action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i)));
   }
   $myBlessingsCount = SearchCount(SearchDiscardForCard($playerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
@@ -646,7 +646,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    elseif (isFaceDownMod($mod) && $playerID == 3 && !IsGameOver()) $cardID = "CardBack";
+    elseif (isFaceDownMod($mod) && $playerID == 3 && !IsGameOver()) $cardID = $MyCardBack;
     if ($mod == "INT") {
       $overlay = 1;
       $label = "Intimidated";
@@ -1518,7 +1518,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
           $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
           if($borderColor == 7) $label = "Playable";
-          if (isFaceDownMod($source[$index + 1])) $card = "CardBack";
+          if (isFaceDownMod($source[$index + 1])) $card = $TheirCardBack;
         }
         else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
         else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
