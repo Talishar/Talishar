@@ -302,7 +302,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       continue;
     }
     // hide the blocking cards from the attacking player until they are locked in
-    $cardID = $turn[0] == "B" && $playerID == $mainPlayer ? $TheirCardBack : $combatChain[$i];
+    $cardID = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? $TheirCardBack : $combatChain[$i];
     array_push($combatChainReactions, JSONRenderedCard(
       cardNumber: $cardID,
       controller: $combatChain[$i + 1] ?? NULL,
