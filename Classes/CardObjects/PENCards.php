@@ -28,7 +28,7 @@ class synapse_sparkcap extends Card
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
-    PlayAura("ponder", $this->controller);
+    PlayAura("ponder", $this->controller, 1, true);
   }
 }
 ?>
