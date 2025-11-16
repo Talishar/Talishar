@@ -49,24 +49,6 @@ ob_start();
 $cacheVal = intval(GetCachePiece($gameName, 1));
 $lastUpdate = $cacheVal;
 $response->cacheVal = $cacheVal;
-
-// Initialize opponent typing on first response
-$response->opponentTyping = false;
-if ($isGamePlayer && ($playerID == 1 || $playerID == 2)) {
-  $opponentID = ($playerID == 1) ? 2 : 1;
-  $opponentTypingFile = "./Games/" . $gameName . "/typing_" . $opponentID . ".txt";
-  
-  if (file_exists($opponentTypingFile)) {
-    $typingTimeSeconds = intval(file_get_contents($opponentTypingFile));
-    $currentTimeSeconds = time();
-    $timeSinceTyping = $currentTimeSeconds - $typingTimeSeconds;
-    
-    if ($timeSinceTyping < 5 && $timeSinceTyping >= 0) {
-      $response->opponentTyping = true;
-    }
-  }
-}
-
 echo ("data: " . json_encode($response) . "\n\n");
 ob_flush();
 flush();
@@ -102,28 +84,6 @@ while (true) {
     flush();
     set_time_limit(120);
     $sleepMs = 50; // Reset sleep on update
-  }
-
-  // Check opponent typing status for all game players on every iteration
-  if ($isGamePlayer && ($playerID == 1 || $playerID == 2)) {
-    $opponentID = ($playerID == 1) ? 2 : 1;
-    $opponentTypingFile = "./Games/" . $gameName . "/typing_" . $opponentID . ".txt";
-    $response->opponentTyping = false;
-    
-    if (file_exists($opponentTypingFile)) {
-      $typingTimeSeconds = intval(file_get_contents($opponentTypingFile));
-      $currentTimeSeconds = time();
-      $timeSinceTyping = $currentTimeSeconds - $typingTimeSeconds;
-      
-      // Check if typing status is still valid (within 5 seconds)
-      if ($timeSinceTyping < 5 && $timeSinceTyping >= 0) {
-        $response->opponentTyping = true;
-      }
-    }
-    // Always include opponentTyping in response
-    echo("data: " . json_encode($response) . "\n\n");
-    ob_flush();
-    flush();
   }
 
   if($isGamePlayer) {

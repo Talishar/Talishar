@@ -213,22 +213,6 @@ if($handler) {
   fclose($handler);
 }
 
-// Check if opponent is typing
-$opponentID = ($playerID == 1) ? 2 : 1;
-$opponentTypingFile = "../Games/" . $gameName . "/typing_" . $opponentID . ".txt";
-$response->opponentTyping = false;
-
-if (file_exists($opponentTypingFile)) {
-  $typingTimeSeconds = intval(file_get_contents($opponentTypingFile));
-  $currentTimeSeconds = time();
-  $timeSinceTyping = $currentTimeSeconds - $typingTimeSeconds;
-  
-  // Check if typing status is still valid (within 5 seconds)
-  if ($timeSinceTyping < 5 && $timeSinceTyping >= 0) {
-    $response->opponentTyping = true;
-  }
-}
-
 echo json_encode($response);
 
 exit;
