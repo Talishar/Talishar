@@ -50,6 +50,7 @@ include "CardDictionaries/ArmoryDecks/AGBShared.php";
 include "CardDictionaries/ArmoryDecks/ASRShared.php";
 include "GeneratedCode/GeneratedCardDictionaries.php";
 include "CardDictionaries/SuperSlam/SUPShared.php";
+include "CardDictionaries/CompendiumOfRathe/PENShared.php";
 include "CardDictionaries/ArmoryDecks/APSShared.php";
 include "CardDictionaries/ArmoryDecks/AACShared.php";
 include "CardDictionaries/ArmoryDecks/ARRShared.php";
@@ -747,6 +748,7 @@ function AbilityCost($cardID)
   else if ($set == "APS") return APSAbilityCost($cardID);
   else if ($set == "ARR") return ARRAbilityCost($cardID);
   else if ($set == "AAC") return AACAbilityCost($cardID);
+  else if ($set == "PEN") return PENAbilityCost($cardID);
   else switch ($cardID) {
     case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
@@ -1335,6 +1337,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   else if ($set == "APS") return APSAbilityType($cardID);
   else if ($set == "ARR") return ARRAbilityType($cardID);
   else if ($set == "AAC") return AACAbilityType($cardID);
+  else if ($set == "PEN") return PENAbilityType($cardID);
   else switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
@@ -4030,6 +4033,7 @@ function AbilityHasGoAgain($cardID, $from)
   else if ($set == "APS") return APSAbilityHasGoAgain($cardID);
   else if ($set == "AAC") return AACAbilityHasGoAgain($cardID);
   else if ($set == "ARR") return ARRAbilityHasGoAgain($cardID);
+  else if ($set == "PEN") return PENAbilityHasGoAgain($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "bravo_flattering_showman":
