@@ -772,8 +772,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "bunker_beard":
-      $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
-      if (!$overpowerRestricted) {
+      $canBlock = CanBlock("fry_red", "ARS"); //a little hacky for now, just checking, "can you block with an AA from arsenal"
+      if ($canBlock) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
