@@ -241,6 +241,10 @@ class trampling_trackers extends Card {
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
     }
   }
+
+  function HasTemper() {
+    return true;
+  }
 }
 
 class echo_casque extends Card {
