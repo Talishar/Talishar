@@ -493,20 +493,31 @@ function ResetCombatChainState()
   $combatChainState[$CCS_SoulBanishedThisChain] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
   
+  $aGoodCleanFight = false;
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
-      $cardType = CardType($chainLinks[$i][$j]);
+      if ($chainLinks[$i][$j] == "a_good_clean_fight_red" && $chainLinks[$i][$j+1] == $mainPlayer) $aGoodCleanFight = true;
+    }
+  }
+
+  for($i = 0; $i < count($chainLinks); ++$i) {
+    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      if($chainLinks[$i][$j + 2] != "1") continue;
+      $linkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j], true, true) : $chainLinks[$i][$j];
+      $cardType = CardType($linkID);
       if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && $cardType != "M" && !DelimStringContains($cardType, "I")) {
-        if(!SubtypeContains($chainLinks[$i][$j], "Evo")) continue;
-        if($chainLinks[$i][$j+3] != "HAND" && BlockValue($chainLinks[$i][$j]) >= 0) continue;
-      }      if(CardType($chainLinks[$i][$j]) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
+        if(!SubtypeContains($linkID, "Evo")) continue;
+        if($chainLinks[$i][$j+3] != "HAND" && BlockValue($linkID) >= 0) continue;
+      }
+      if(CardType($linkID) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
-        if(CardType($chainLinks[$i][$j]) == "T" || CardType($chainLinks[$i][$j]) == "Macro") continue;//Don't need to add to anywhere if it's a token
+        if(CardType($linkID) == "T" || CardType($linkID) == "Macro") continue;//Don't need to add to anywhere if it's a token
         // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
-        $goesWhere = GoesWhereAfterResolving($chainLinks[$i][$j+7], "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
-        ResolveGoesWhere($goesWhere, $chainLinks[$i][$j+7], $chainLinks[$i][$j + 1], "CHAINCLOSING");
+        $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
+        $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
+        ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING");
       }
     }
   }
