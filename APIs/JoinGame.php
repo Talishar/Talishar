@@ -669,6 +669,8 @@ function isUnimplemented($cardID) {
     case "AHA":
       return true;
     case "PEN":
+      // $card = GetClass($cardID, 0);
+      // return $card == "-";
       return match($cardID) {
         "magmatic_carapace" => false,
         "synapse_sparkcap" => false,
