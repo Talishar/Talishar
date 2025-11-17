@@ -1585,6 +1585,8 @@ function MainCharacterPlayCardAbilities($cardID, $from)
       elseif ($character[$i] != "hanabi_blaster") continue;
     }
     $characterID = ShiyanaCharacter($character[$i]);
+    $card = GetClass($character[$i], $currentPlayer);
+    if ($card != "-") $card->CardPlayTrigger($cardID, $from, $i);
     switch ($characterID) {
       case "viserai_rune_blood":
       case "viserai":

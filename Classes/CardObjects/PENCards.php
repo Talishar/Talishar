@@ -136,4 +136,36 @@ class boltn_boots extends Card
     return !$CombatChain->HasCurrentLink() || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $this->controller, "CC") || !CardSubType($CombatChain->AttackCard()->ID()) == "Arrow";
   }
 }
+
+class magmatic_carapace extends Card {
+
+  function __construct($controller)
+  {
+    $this->cardID = "magmatic_carapace";
+    $this->controller = $controller;
+  }
+
+  function CardPlayTrigger($cardID, $from, $index) {
+    $char = GetPlayerCharacter($this->controller);
+    if (!CheckTapped("MYCHAR-$index", $this->controller)) {
+      if (SubtypeContains($cardID, "Aura", $this->controller)) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "-", $char[$index + 11]);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $index = SearchCharacterForUniqueID($uniqueID, $this->controller);
+    $char = GetPlayerCharacter($this->controller);
+    if ($index == -1) return;
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return;
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "if you want to tap " . CardLink("magmatic_carapace", "magmatic_carapace") . " and pay 1 to create a " . CardLink("seismic_surge", "seismic_surge"));
+    AddDecisionQueue("YESNO", $this->controller, "-", 1);
+    AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "MYCHAR-$index", 1);
+    AddDecisionQueue("MZTAP", $this->controller, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "1", 1);
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, CardLink("magmatic_carapace", "magmatic_carapace") . " created a " . CardLink("seismic_surge", "seismic_surge"), 1);
+    AddDecisionQueue("PLAYAURA", $this->controller, "seismic_surge", 1);
+  }
+}
 ?>

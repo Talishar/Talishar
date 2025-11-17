@@ -421,6 +421,10 @@ class Card {
   function WhenBeatChest($index) {
     return;
   }
+
+  function CardPlayTrigger($cardID, $from, $index) {
+    return;
+  }
 }
 
 ?>
