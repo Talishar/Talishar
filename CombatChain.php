@@ -84,6 +84,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   else if ($set == "APS") return APSHitEffect($cardID);
   else if ($set == "ARR") return ARRHitEffect($cardID);
   else if ($set == "AAC") return AACHitEffect($cardID, $target);
+  else if ($set == "PEN") return PENHitEffect($cardID);
   else return -1;
 }
 
