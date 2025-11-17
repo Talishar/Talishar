@@ -32,8 +32,15 @@ class savage_claw extends Card
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
-    $basePower = PowerValue($this->cardID, $this->controller);
-    SearchCardList($additionalCosts, $this->controller, minAttack: 6) != "" ? $basePower + 1 : $basePower;
+    if (SearchCardList($additionalCosts, $this->controller, minAttack: 6) != "") AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
   }
 }
 

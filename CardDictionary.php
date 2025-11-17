@@ -5024,7 +5024,8 @@ function CardCaresAboutPitch($cardID): bool
   return match ($cardID) {
     "oldhim_grandfather_of_eternity", "oldhim", "winters_wail", "annals_of_sutcliffe", "cryptic_crossing_yellow", "diabolic_ultimatum_red", "deathly_duet_red", "deathly_duet_yellow", "deathly_duet_blue", "aether_slash_red", "aether_slash_yellow",
     "aether_slash_blue", "runic_reaping_red", "runic_reaping_yellow", "runic_reaping_blue", "gorgons_gaze_yellow", "manifestation_of_miragai_blue", "shifting_winds_of_the_mystic_beast_blue", "cosmic_awakening_blue", "unravel_aggression_blue", "dense_blue_mist_blue", "orihon_of_mystic_tenets_blue",
-    "redwood_hammer", "bracken_rap_red", "bracken_rap_yellow", "strong_wood_red", "strong_wood_yellow", "seeds_of_strength_yellow", "seeds_of_strength_blue", "log_fall_red", "log_fall_yellow", "staff_of_verdant_shoots", "gauntlets_of_the_boreal_domain" => true,
+    "redwood_hammer", "bracken_rap_red", "bracken_rap_yellow", "strong_wood_red", "strong_wood_yellow", "seeds_of_strength_yellow", "seeds_of_strength_blue", "log_fall_red", "log_fall_yellow", "staff_of_verdant_shoots", "gauntlets_of_the_boreal_domain",
+    "savage_claw" => true,
     default => false
   };
 }
