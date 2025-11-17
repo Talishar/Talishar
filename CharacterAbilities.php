@@ -1191,6 +1191,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "richter_scale":
     case "gauntlet_of_boulderhold":
     case "craterhoof":
+    case "boltn_boots":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
@@ -1651,15 +1652,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
-      case "magmatic_carapace":
-        $char = &GetPlayerCharacter($currentPlayer);
-        for ($ci = CharacterPieces(); $ci < count($char); $ci += CharacterPieces()) {
-          if (isset($char[$ci]) && $char[$ci] == "magmatic_carapace") {
-            if (!isset($char[$ci + 14]) || $char[$ci + 14] == 0) {
-              AddLayer("TRIGGER", $currentPlayer, "magmatic_carapace", "-", "-", $char[$ci + 11]);
-            }
-          }
-        }
       default:
         break;
     }
