@@ -1651,6 +1651,15 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
+      case "magmatic_carapace":
+        $char = &GetPlayerCharacter($currentPlayer);
+        for ($ci = CharacterPieces(); $ci < count($char); $ci += CharacterPieces()) {
+          if (isset($char[$ci]) && $char[$ci] == "magmatic_carapace") {
+            if (!isset($char[$ci + 14]) || $char[$ci + 14] == 0) {
+              AddLayer("TRIGGER", $currentPlayer, "magmatic_carapace", "-", "-", $char[$ci + 11]);
+            }
+          }
+        }
       default:
         break;
     }
