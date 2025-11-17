@@ -669,7 +669,14 @@ function isUnimplemented($cardID) {
     case "AHA":
       return true;
     case "PEN":
-      return true;
+      return match($cardID) {
+        "magmatic_carapace" => false,
+        "synapse_sparkcap" => false,
+        "savage_claw" => false,
+        "grimoire_of_fellingsong" => false,
+        "boltn_boots" => false,
+        default => true
+      };
     default:
       break;
   }
