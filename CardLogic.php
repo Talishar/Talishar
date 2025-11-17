@@ -3614,6 +3614,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "jarl_vetreidi":
         FrostBiteExposed($otherPlayer, $player);
         break;
+      case "magmatic_carapace":
+        $index = SearchCharacterForUniqueID($uniqueID, $player);
+        if ($index == -1) return;
+        if (CheckTapped("MYCHAR-$index", $player)) return;
+        AddDecisionQueue("SETDQCONTEXT", $player, "if you want to tap " . CardLink("magmatic_carapace", "magmatic_carapace") . " and pay 1 to create a " . CardLink("seismic_surge", "seismic_surge"));
+        AddDecisionQueue("YESNO", $player, "-", 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("MZTAP", $player, "MYCHAR-$index", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("WRITELOG", $player, CardLink("magmatic_carapace", "magmatic_carapace") . " created a " . CardLink("seismic_surge", "seismic_surge"), 1);
+        AddDecisionQueue("PASSPARAMETER", $player, "seismic_surge", 1);
+        AddDecisionQueue("PUTPLAY", $player, "-", 1);
+        break;
       case "unforgetting_unforgiving_red":
         if(!IsAllyAttacking() && SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
           $search = "MYDECK:cardID=mangle_red";
