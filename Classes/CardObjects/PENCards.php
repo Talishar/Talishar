@@ -22,5 +22,9 @@ class grimoire_of_fellingsong extends Card
   {
     PlayAura("ponder", $this->controller, 1, true);
   }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
 }
 ?>
