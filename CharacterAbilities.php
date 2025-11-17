@@ -1191,6 +1191,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "richter_scale":
     case "gauntlet_of_boulderhold":
     case "craterhoof":
+    case "grimoire_of_fellingsong":
       DestroyCharacter($currentPlayer, $cardIndex);
       break;
     case "prism_awakener_of_sol":
