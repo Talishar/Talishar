@@ -5701,7 +5701,7 @@ function GetClass($cardID, $player) {
   if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
   $cardID = ExtractCardID($cardID);
   $className = match($cardID) {
-    "1000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
+    "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
     default => $cardID
   };
   if (class_exists($className)) return new $className($player);

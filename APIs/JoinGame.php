@@ -11,6 +11,10 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
 include_once "../includes/MatchupHelpers.php";
 
+include_once "../Classes/Card.php";
+// we only need to include unreleased sets, these includes can be removed whenever a set releases
+include_once "../Classes/CardObjects/PENCards.php";
+
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
   {
@@ -669,16 +673,8 @@ function isUnimplemented($cardID) {
     case "AHA":
       return true;
     case "PEN":
-      // $card = GetClass($cardID, 0);
-      // return $card == "-";
-      return match($cardID) {
-        "magmatic_carapace" => false,
-        "synapse_sparkcap" => false,
-        "savage_claw" => false,
-        "grimoire_of_fellingsong" => false,
-        "boltn_boots" => false,
-        default => true
-      };
+      $card = GetClass($cardID, 0);
+      return $card == "-";
     default:
       break;
   }
