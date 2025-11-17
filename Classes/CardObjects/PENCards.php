@@ -94,5 +94,14 @@ class boltn_boots extends Card
   {
     GiveAttackGoAgain();
   }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $this->controller, "CC") || !CardSubType($CombatChain->AttackCard()->ID()) == "Arrow";
+  }
 }
 ?>
