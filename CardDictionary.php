@@ -1713,6 +1713,15 @@ function CanBlock($cardID, $from)
   return true;
 }
 
+function CanPitch($cardID, $from)
+{
+  global $mainPlayer, $defPlayer;
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  if ($foundNullTime) return false;
+  return true;
+}
+
 function GetAbilityIndex($cardID, $index, $abilityName)
 {
   $names = explode(",", GetAbilityNames($cardID, $index));

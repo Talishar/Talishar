@@ -168,4 +168,25 @@ class magmatic_carapace extends Card {
     AddDecisionQueue("PLAYAURA", $this->controller, "seismic_surge", 1);
   }
 }
+
+class trench_of_watery_depths extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "trench_of_watery_depths";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $search = "MYDISCARD:pitch=3";
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a blue card in your graveyard to pitch");
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("PITCHCARD", $this->controller, "DISCARD", 1);
+  }
+}
 ?>

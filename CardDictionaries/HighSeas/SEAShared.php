@@ -1379,9 +1379,8 @@ function PitchTopCard($player)
   $deck = new Deck($player);
   $top = $deck->Top(true);
   if ($top != "") {
-    $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($top)), $mainPlayer, "null_time_zone_blue") != -1;
-    $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($top)), $defPlayer, "null_time_zone_blue") != -1;
-    if (!$foundNullTime) {
+    $canPitch = CanPitch($top, "DECK");
+    if ($canPitch) {
       Pitch($top, $player);
       return $top;
       if (ModifiedPowerValue($top, $player, "DECK") >= 6) {
@@ -1390,7 +1389,7 @@ function PitchTopCard($player)
     }
     else {
       RevealCards($top);
-      WriteLog("Pitching " . CardLink($top, $top) . " prevented by " . CardLink("null_time_zone_blue", "null_time_zone_blue"));
+      WriteLog("Pitching " . CardLink($top, $top) . " prevented");
       $deck->AddTop($top);
     }
   }
