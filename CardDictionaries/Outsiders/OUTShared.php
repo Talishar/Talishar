@@ -156,7 +156,7 @@ function OUTAbilityCost($cardID)
       case "short_and_sharp_red": case "short_and_sharp_yellow": case "short_and_sharp_blue": return true;
       case "toxic_tips": return CardType($attackID) == "AA";
       case "toxicity_red": case "toxicity_yellow": case "toxicity_blue": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
-      case "silken_gi-2":
+      case "silken_gi":
         return isset($dashArr[1]) && $dashArr[1] == "2" && CardType($attackID) == "AA";
       case "gore_belching_red": return true;
       case "premeditate_red":
