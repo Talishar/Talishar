@@ -182,9 +182,14 @@ function BlindPlayer($player, $unblind=false, $excludeEquips=false)
     $allies[$i] = BlindCard($allies[$i], $unblind, $excludeEquips);
   }
 
-  foreach ($chainLinks as $link) {
+  $j = 0;
+  foreach ($chainLinks as &$link) {
     for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
-      if ($link[$i + 1] == $player) $link[$i] = BlindCard($link[$i], $unblind, $excludeEquips);
+      if ($link[$i + 1] == $player) {
+        $link[$i] = BlindCard($link[$i], $unblind, $excludeEquips);
+      }
     }
+    unset($link);
+    ++$j;
   }
 }

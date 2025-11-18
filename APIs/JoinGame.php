@@ -14,6 +14,7 @@ include_once "../includes/MatchupHelpers.php";
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 include_once "../Classes/CardObjects/PENCards.php";
+include_once "../Classes/CardObjects/AACCards.php";
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -101,6 +102,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01JVYZ0NCHP49HAP40C23P14E3", //gravy
   "https://fabrary.net/decks/01JZ97KZ5TQV8E0FYMAM0XVNX7", //ira
   "https://fabrary.net/decks/01K4XX1ERKXRYW8XHWE9BTAS4W", //pleiades
+  "https://fabrary.net/decks/01K74RSFG9RTVPVN534DZPJJNQ", //rhinar
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
@@ -666,10 +668,8 @@ function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
     case "AAC":
-      return match($cardID) {
-        "meet_madness_red" => false,
-        default => true
-      };
+      $card = GetClass($cardID, 0);
+      return $card == "-";
     case "AHA":
       return true;
     case "PEN":

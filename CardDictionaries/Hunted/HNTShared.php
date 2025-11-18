@@ -664,7 +664,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $daggerUID = explode(",", $target)[1] ?? "-";
       if ($daggerUID != "-") {
         if (str_contains($target, "COMBATCHAINATTACKS")) {
-          if ($chainLinks[$daggerUID][2] == 0) return "FAILED";
+          if ($chainLinks[intdiv($daggerUID,ChainLinksPieces())][2] == 0) return "FAILED";
         }
         else {
           $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
@@ -772,8 +772,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "bunker_beard":
-      $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
-      if (!$overpowerRestricted) {
+      $canBlock = CanBlock("fry_red", "ARS"); //a little hacky for now, just checking, "can you block with an AA from arsenal"
+      if ($canBlock) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:type=A&MYARS:type=AA");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to add as a defending card", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);

@@ -8,10 +8,7 @@ include "WriteLog.php";
 
 ob_implicit_flush(true);
 ob_end_flush();
-
-// array holding allowed Origin domains
 SetHeaders();
-
 
 $response = new stdClass();
 
@@ -54,18 +51,17 @@ ob_flush();
 flush();
 
 $count = 0;
-$sleepMs = 50; // Initialize outside loop to avoid isset() check each iteration
+$sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
 $lastOppStatus = 0;
 $lastFileCheckTime = microtime(true);
-$fileCheckInterval = 1.0; // Check file existence every 1 second (conservative, safe interval)
+$fileCheckInterval = 1.0;
 $gameFileExists = true;
 
 while (true) {
   // Check client connection and game file existence (early exit)
   if (connection_aborted()) exit;
   
-  // File existence check throttled to every 1 second (conservative, safe interval)
   $currentRealTime = microtime(true);
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
@@ -74,7 +70,7 @@ while (true) {
   
   ++$count;
   
-  // Reduce cache reads by batching: read once instead of multiple times
+  // Single cache read instead of multiple GetCachePiece calls
   $cacheVal = intval(GetCachePiece($gameName, 1));
   if ($cacheVal > $lastUpdate) {
     $lastUpdate = $cacheVal;
@@ -83,13 +79,13 @@ while (true) {
     ob_flush();
     flush();
     set_time_limit(120);
-    $sleepMs = 50; // Reset sleep on update
+    $sleepMs = 50;
   }
 
   if($isGamePlayer) {
     $currentTime = round(microtime(true) * 1000);
     
-    //  Batch cache operations - read all pieces once
+    // Batch cache operations - read all pieces once
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
     $lastUpdateTime = GetCachePiece($gameName, 6);
@@ -136,26 +132,5 @@ while (true) {
 
   // Wait with exponential backoff (50ms → 500ms cap)
   usleep(intval($sleepMs * 1000));
-  $sleepMs = min($sleepMs * 1.5, 500); // Exponential backoff capped at 500ms
+  $sleepMs = min($sleepMs * 1.5, 500);
 }
-
-ob_end_flush();
-
-// Set file mime type event-stream
-// header('Content-Type: text/event-stream');
-// header('Cache-Control: no-cache');
-
-// // Loop until the client close the stream
-// while (true) {
-
-//   // Echo time
-//   $time = date('r');
-//   $padding = str_pad("", 4096);
-//   echo "data: The server time is: {$time}\n{$padding}\n\n";
-
-//   // Flush buffer (force sending data to client)
-//   flush();
-
-//   // Wait 2 seconds for the next message / event
-//   sleep(2);
-// }

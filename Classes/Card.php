@@ -425,6 +425,10 @@ class Card {
   function CardPlayTrigger($cardID, $from, $index) {
     return;
   }
+
+  function HasStealth() {
+    return false;
+  }
 }
 
 ?>

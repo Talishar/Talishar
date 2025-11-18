@@ -26,28 +26,6 @@ function AACHitEffect($cardID, $target): void
 {
   global $mainPlayer, $defPlayer;
   switch ($cardID) {
-    case "meet_madness_red":
-      $roll = $target;
-      switch ($roll) {
-        case 1:
-          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
-          AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-          AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-          //including $cardID as the third param makes it count for contracts
-          AddDecisionQueue("BANISHCARD", $defPlayer, "THEIRHAND,-,$cardID", 1);
-          break;
-        case 2:
-          //including $cardID as the third param makes it count for contracts
-          MZMoveCard($defPlayer, "MYARS", "MYBANISH,ARS,$cardID," . $defPlayer, false);
-          break;
-        case 3:
-          $deck = new Deck($defPlayer);
-          if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-          $deck->BanishTop(banishedBy:$cardID);
-          break;
-      }
-      break;
     default:
       break;
   }

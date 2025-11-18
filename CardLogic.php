@@ -91,6 +91,12 @@ function AddEffectToCurrentAttack($cardID) {
   else $combatChain[10] .= "," . ConvertToSetID($cardID);
 }
 
+function AddEffectToPastAttack($index, $cardID) {
+  global $chainLinks;
+  if ($chainLinks[$index][6] == "-") $chainLinks[$index][6] = ConvertToSetID($cardID);
+  else $chainLinks[$index][6] .= ConvertToSetID($cardID);
+}
+
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $afterResolveEffects, $combatChain;
@@ -646,6 +652,10 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   // Can this check be generalized to use a function to check for all hit prevention effects?
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   if (CardType($cardID) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $cardID = $foundHorrors;
+  }
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
   switch ($cardID) {
@@ -1280,28 +1290,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "standing_ovation_blue":
       if (GetClassState($mainPlayer, $CS_SuspensePoppedThisTurn) >= 3) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return true;
-      }
-      break;
-    case "meet_madness_red":
-      if(IsHeroAttackTarget()) {
-        if (!$check) {
-          $roll = GetRandom(1,3);
-          switch ($roll) {
-            case 1:
-              WriteLog("<b>The madness says \"Banish a card from hand!\"</b>");
-              break;
-            case 2:
-              WriteLog("<b>The madness says \"banish a card from arsenal!\"</b>");
-              break;
-            case 3:
-              WriteLog("<b>The madness says \"banish a card from the top of your deck!\"</b>");
-              break;
-            default:
-              break;
-          }
-          AddLayer("TRIGGER", $mainPlayer, $cardID, $roll, "ONHITEFFECT");
-        }
         return true;
       }
       break;

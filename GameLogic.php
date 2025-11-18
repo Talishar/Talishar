@@ -24,6 +24,7 @@ include "Classes/CardObjects/SUPCards.php";
 include "Classes/CardObjects/APSCards.php";
 include "Classes/CardObjects/ARRCards.php";
 include "Classes/CardObjects/PENCards.php";
+include "Classes/CardObjects/AACCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
@@ -3555,6 +3556,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (!in_array($option, $ret)) array_push($ret, $option);
       }
       return implode(",", $ret);
+    case "PITCHCARD":
+      if (CanPitch($lastResult, $parameter)) {
+        Pitch($lastResult, $player);
+      }
+      else {
+        RevealCards($lastResult);
+        WriteLog("Pitching " . CardLink($lastResult, $lastResult) . " prevented");
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

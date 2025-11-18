@@ -241,7 +241,6 @@ function SetID($cardID)
     "valda_seismic_impact" => "HER135",
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
-    "meet_madness_red" => "AAC014", //temporary
     "UPR551" => "UPR551", //ghostly touch
     "alpha_instinct_blue" => "ARR022", //temporary
   ];
@@ -1710,6 +1709,15 @@ function CanBlock($cardID, $from)
   if ($from == "HAND" && $dominateRestricted) return false;
   if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && $overpowerRestricted) return false;
   if (!TypeContains($cardID, "B") && $confidenceRestricted) return false;
+  return true;
+}
+
+function CanPitch($cardID, $from)
+{
+  global $mainPlayer, $defPlayer;
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  if ($foundNullTime) return false;
   return true;
 }
 
@@ -3398,7 +3406,12 @@ function CountBoatActivations($cardID, $player)
 function IsDefenseReactionPlayable($cardID, $from)
 {
   global $CombatChain, $mainPlayer;
-  if (($CombatChain->AttackCard()->ID() == "command_and_conquer_red" || $CombatChain->AttackCard()->ID() == "back_stab_red" || $CombatChain->AttackCard()->ID() == "back_stab_yellow" || $CombatChain->AttackCard()->ID() == "back_stab_blue" || $CombatChain->AttackCard()->ID() == "widowmaker_red" || $CombatChain->AttackCard()->ID() == "widowmaker_yellow" || $CombatChain->AttackCard()->ID() == "widowmaker_blue" || $CombatChain->AttackCard()->ID() == "wreck_havoc_red" || $CombatChain->AttackCard()->ID() == "wreck_havoc_yellow" || $CombatChain->AttackCard()->ID() == "wreck_havoc_blue") && CardType($cardID) == "DR") return false;
+  $attackCard = $CombatChain->AttackCard()->ID();
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($attackCard == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $attackCard = $foundHorrors;
+  }
+  if (($attackCard == "command_and_conquer_red" || $attackCard == "back_stab_red" || $attackCard == "back_stab_yellow" || $attackCard == "back_stab_blue" || $CombatChain->AttackCard()->ID() == "widowmaker_red" || $CombatChain->AttackCard()->ID() == "widowmaker_yellow" || $CombatChain->AttackCard()->ID() == "widowmaker_blue" || $CombatChain->AttackCard()->ID() == "wreck_havoc_red" || $CombatChain->AttackCard()->ID() == "wreck_havoc_yellow" || $CombatChain->AttackCard()->ID() == "wreck_havoc_blue") && CardType($cardID) == "DR") return false;
   if ($CombatChain->AttackCard()->ID() == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
   if ($from == "HAND" && CardSubType($CombatChain->AttackCard()->ID()) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
@@ -4272,6 +4285,17 @@ function CharacterDefaultActiveState($cardID)
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
     case "trench_of_sunken_treasure":
+    case "well_grounded":
+    case "tiara_of_suspense":
+    case "aether_bindings_of_the_third_age":
+    case "mask_of_many_faces":
+    case "ornate_tessen":
+    case "radiant_flow":
+    case "radiant_raiment":
+    case "radiant_touch":
+    case "radiant_view":
+    case "tremorshield_sabatons":
+    case "grimoire_of_fellingsong":
       return 1;
     default:
       return 2;
@@ -5011,7 +5035,7 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
 function AbilityPlayableFromGraveyard($cardID, $index) {
   global $currentPlayer;
   $discard = GetDiscard($currentPlayer);
-  if (isFaceDownMod($discard[$index + 2])) return false;
+  if (!isset($discard[$index + 2]) || isFaceDownMod($discard[$index + 2])) return false;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->AbilityPlayableFromGraveyard($index);
 }
@@ -5237,6 +5261,10 @@ function HasDominate($cardID)
 {
   global $mainPlayer, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $cardID = $foundHorrors;
+  }
   switch ($cardID) {
     case "open_the_center_red":
     case "open_the_center_yellow":

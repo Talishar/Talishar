@@ -113,6 +113,10 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         return 0;
     }
   }
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $cardID = $foundHorrors;
+  }
   if (class_exists($cardID)) {
     $card = new $cardID($mainPlayer);
     return $card->PowerModifier($from, $resourcesPaid, $repriseActive, $attackID);
