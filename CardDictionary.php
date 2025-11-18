@@ -4295,7 +4295,7 @@ function CharacterDefaultActiveState($cardID)
     case "radiant_touch":
     case "radiant_view":
     case "tremorshield_sabatons":
-    case "grimoire_of_fellingsong"È
+    case "grimoire_of_fellingsong":
       return 1;
     default:
       return 2;
