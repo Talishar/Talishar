@@ -63,11 +63,11 @@ class meet_madness_red extends Card {
 	}
 }
 
-class rage_baiters extends Card {
-	function __construct($controller) {
-    $this->cardID = "rage_baiters";
-    $this->controller = $controller;
-	}
+// class rage_baiters extends Card {
+// 	function __construct($controller) {
+//     $this->cardID = "rage_baiters";
+//     $this->controller = $controller;
+// 	}
 
-	
-}
+
+// }
