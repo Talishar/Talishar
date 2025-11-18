@@ -188,15 +188,9 @@ class frosthaven_sheath_red extends Card
     $this->cardID = "frosthaven_sheath_red";
     $this->controller = $controller;
   }
-
-  function AbilityType($index = -1, $from = '-')
+  function SpecialType($from = '', $additionalCosts = '-')
   {
     return "DR";
-  }
-
-  function AbilityCost()
-  {
-    return 1;
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
@@ -215,14 +209,9 @@ class leaven_sheath_red extends Card
     $this->controller = $controller;
   }
 
-  function AbilityType($index = -1, $from = '-')
+  function SpecialType($from = '', $additionalCosts = '-')
   {
     return "DR";
-  }
-
-  function AbilityCost()
-  {
-    return 1;
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
@@ -241,14 +230,9 @@ class stormwind_sheath_red extends Card
     $this->controller = $controller;
   }
 
-  function AbilityType($index = -1, $from = '-')
+  function SpecialType($from = '', $additionalCosts = '-')
   {
     return "DR";
-  }
-
-  function AbilityCost()
-  {
-    return 1;
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
