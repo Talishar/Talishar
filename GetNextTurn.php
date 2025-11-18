@@ -1933,6 +1933,27 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $isReplay = GetCachePiece($gameName, 10);
   $response->isReplay = ($isReplay === "1");
 
+  // Check if opponent is typing
+  if ($playerID >= 1 && $playerID <= 2) {
+    $opponentID = ($playerID == 1) ? 2 : 1;
+    $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $opponentID;
+    
+    $isOpponentTyping = false;
+    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+      if (function_exists('apcu_fetch')) {
+        $isOpponentTyping = @apcu_fetch($typingCacheKey) !== false;
+      }
+    } else {
+      // Fallback: check file-based cache
+      $typingFile = "./Games/" . $gameName . "/typing_p" . $opponentID . ".txt";
+      if (file_exists($typingFile)) {
+        $expiryTime = intval(file_get_contents($typingFile));
+        $isOpponentTyping = $expiryTime > time();
+      }
+    }
+    $response->opponentIsTyping = $isOpponentTyping;
+  }
+
   // encode and send it out
   echo json_encode($response);
   exit;
