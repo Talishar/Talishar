@@ -181,11 +181,11 @@ class magmatic_carapace extends Card
   }
 }
 
-class frosthaven_sheath extends Card
+class frosthaven_sheath_red extends Card
 {
   function __construct($controller)
   {
-    $this->cardID = "frosthaven_sheath";
+    $this->cardID = "frosthaven_sheath_red";
     $this->controller = $controller;
   }
 
@@ -207,11 +207,11 @@ class frosthaven_sheath extends Card
   }
 }
 
-class leaven_sheath extends Card
+class leaven_sheath_red extends Card
 {
   function __construct($controller)
   {
-    $this->cardID = "leaven_sheath";
+    $this->cardID = "leaven_sheath_red";
     $this->controller = $controller;
   }
 
@@ -233,11 +233,11 @@ class leaven_sheath extends Card
   }
 }
 
-class stormwind_sheath extends Card
+class stormwind_sheath_red extends Card
 {
   function __construct($controller)
   {
-    $this->cardID = "stormwind_sheath";
+    $this->cardID = "stormwind_sheath_red";
     $this->controller = $controller;
   }
 
