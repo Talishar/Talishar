@@ -208,6 +208,7 @@ function IsCombatEffectLimited($index)
 {
   global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID;
   if (count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
+  if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
   $attackSubType = CardSubType($combatChain[0]);
   if (DelimStringContains($attackSubType, "Ally")) {
     $allies = &GetAllies($mainPlayer);
