@@ -113,10 +113,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         return 0;
     }
   }
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $cardID = $foundHorrors;
-  }
   if (class_exists($cardID)) {
     $card = new $cardID($mainPlayer);
     return $card->PowerModifier($from, $resourcesPaid, $repriseActive, $attackID);
@@ -1556,64 +1552,69 @@ function IsDominateActive()
       }
     }
   }
-  switch ($combatChain[0]) {
-    case "open_the_center_red":
-    case "open_the_center_yellow":
-    case "open_the_center_blue":
-      return (ComboActive() ? true : false);
-    case "demolition_crew_red":
-    case "demolition_crew_yellow":
-    case "demolition_crew_blue":
-      return true;
-    case "arknight_ascendancy_red":
-      return true;
-    case "herald_of_erudition_yellow":
-      return true;
-    case "herald_of_tenacity_red":
-    case "herald_of_tenacity_yellow":
-    case "herald_of_tenacity_blue":
-      return true;
-    case "nourishing_emptiness_red":
-      return SearchDiscard($mainPlayer, "AA") == "";
-    case "overload_red":
-    case "overload_yellow":
-    case "overload_blue":
-      return true;
-    case "thump_red":
-    case "thump_yellow":
-    case "thump_blue":
-      return HasIncreasedAttack();
-    case "macho_grande_red":
-    case "macho_grande_yellow":
-    case "macho_grande_blue":
-      return true;
-    case "break_tide_yellow":
-      return (ComboActive() ? true : false);
-    case "payload_red":
-    case "payload_yellow":
-    case "payload_blue":
-      return $combatChainState[$CCS_NumBoosted] > 0;
-    case "drowning_dire_red":
-    case "drowning_dire_yellow":
-    case "drowning_dire_blue":
-      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-    case "fractal_replication_red":
-      $hasDominate = false;
-      for ($i = 0; $i < count($chainLinks); ++$i) {
-        for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-          $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
-          if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "fractal_replication_red" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA") {
-            if (!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  $textBoxes = [$combatChain[0], $extraText];
+  foreach ($textBoxes as $box) {
+    switch ($box) {
+      case "open_the_center_red":
+      case "open_the_center_yellow":
+      case "open_the_center_blue":
+        return (ComboActive() ? true : false);
+      case "demolition_crew_red":
+      case "demolition_crew_yellow":
+      case "demolition_crew_blue":
+        return true;
+      case "arknight_ascendancy_red":
+        return true;
+      case "herald_of_erudition_yellow":
+        return true;
+      case "herald_of_tenacity_red":
+      case "herald_of_tenacity_yellow":
+      case "herald_of_tenacity_blue":
+        return true;
+      case "nourishing_emptiness_red":
+        return SearchDiscard($mainPlayer, "AA") == "";
+      case "overload_red":
+      case "overload_yellow":
+      case "overload_blue":
+        return true;
+      case "thump_red":
+      case "thump_yellow":
+      case "thump_blue":
+        return HasIncreasedAttack();
+      case "macho_grande_red":
+      case "macho_grande_yellow":
+      case "macho_grande_blue":
+        return true;
+      case "break_tide_yellow":
+        return (ComboActive() ? true : false);
+      case "payload_red":
+      case "payload_yellow":
+      case "payload_blue":
+        return $combatChainState[$CCS_NumBoosted] > 0;
+      case "drowning_dire_red":
+      case "drowning_dire_yellow":
+      case "drowning_dire_blue":
+        return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+      case "fractal_replication_red":
+        $hasDominate = false;
+        for ($i = 0; $i < count($chainLinks); ++$i) {
+          for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+            $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
+            if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "fractal_replication_red" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA") {
+              if (!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
+            }
           }
         }
-      }
-      return $hasDominate;
-    case "isolate_red":
-    case "isolate_yellow":
-    case "isolate_blue":
-      return true;
-    default:
-      break;
+        return $hasDominate;
+      case "isolate_red":
+      case "isolate_yellow":
+      case "isolate_blue":
+        return true;
+      default:
+        break;
+    }
   }
   return false;
 }

@@ -181,4 +181,15 @@ class horrors_of_the_past_yellow extends Card {
 	function HasStealth() {
 		return true;
 	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+		$copiedText = SearchCurrentTurnEffects($this->cardID, $this->controller, returnUniqueID:true);
+		AddOnHitTrigger($copiedText, $this->cardID, $target);
+		return false;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		$copiedText = SearchCurrentTurnEffects($this->cardID, $this->controller, returnUniqueID:true);
+		return PowerModifier($copiedText, "CC");
+	}
 }

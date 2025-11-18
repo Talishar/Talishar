@@ -82,71 +82,75 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     } else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($banishedBy == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $banishedBy = $foundHorrors;
-  }
+  
   if ($banishedBy != "") CheckContracts($banisher, $cardID);
-  if ($banishedBy == "nasreth_the_soul_harrower" && TalentContains($cardID, "LIGHT", $player)) {
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if ($banishedBy == "persuasive_prognosis_blue" && (DelimStringContains(CardType($cardID), "A") || CardType($cardID) == "AA")) {
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if ($banishedBy == "art_of_desire_body_red" && ColorContains($cardID, 1, $player)) {
-    Draw($otherPlayer);
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if ($banishedBy == "art_of_desire_soul_yellow" && ColorContains($cardID, 2, $player)) {
-    Draw($otherPlayer);
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if ($banishedBy == "art_of_desire_mind_blue" && ColorContains($cardID, 3, $player)) {
-    Draw($otherPlayer);
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if ($banishedBy == "bonds_of_attraction_red" || $banishedBy == "bonds_of_attraction_yellow" || $banishedBy == "bonds_of_attraction_blue" && count($banish) / BanishPieces() >= 2) {
-    $count = count($banish) - BanishPieces();
-    $pitchValues = [];
-    for ($i = $count-1; $i >= 0; $i--) {
-      if ($banish[$i + 1] == "Source-" . $banishedBy) {
-        array_push($pitchValues, ColorOverride($banish[$i], $player));
-      }
-    }
-    if (in_array(ColorOverride($cardID, $player), $pitchValues)) {
+  $rv = BanishByEffect($cardID, $player, $banishedBy, $rv);
+  return $rv;
+}
+
+function BanishByEffect($cardID, $player, $banisher, &$rv) {
+  global $mainPlayer, $CombatChain;
+
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $banish = GetBanish($player);
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  $attackCard = $CombatChain->AttackCard()->ID();
+  $banishEffects = [$banisher];
+  if ($banisher == $attackCard) array_push($banishEffects, $extraText);
+
+  foreach ($banishEffects as $banishedBy) {
+    if ($banishedBy == "nasreth_the_soul_harrower" && TalentContains($cardID, "LIGHT", $player)) {
       GainHealth(1, $otherPlayer);
     }
-    return $rv;
-  }
-  if (($banishedBy == "bonds_of_memory_red" || $banishedBy == "bonds_of_memory_yellow" || $banishedBy == "bonds_of_memory_blue") && count($banish) / BanishPieces() >= 2) {
-    $count = count($banish) - BanishPieces();
-    $cardNames = [];
-    for ($i = $count; $i >= 0; $i--) {
-      if ($banish[$i + 1] == "Source-" . $banishedBy) {
-        array_push($cardNames, CardName($banish[$i]));
-      }
-    }
-    if (count($cardNames) !== count(array_unique($cardNames))) {
+    if (($banishedBy == "persuasive_prognosis_blue") && (DelimStringContains(CardType($cardID), "A") || CardType($cardID) == "AA")) {
       GainHealth(1, $otherPlayer);
     }
-    return $rv;
-  }
-  if (($banishedBy == "desires_of_flesh_red" || $banishedBy == "desires_of_flesh_yellow" || $banishedBy == "desires_of_flesh_blue") && TypeContains($cardID, "AA", $player)) {
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if (($banishedBy == "impulsive_desire_red" || $banishedBy == "impulsive_desire_yellow" || $banishedBy == "impulsive_desire_blue") && (TypeContains($cardID, "AR", $player) || TypeContains($cardID, "DR", $player) || TypeContains($cardID, "I", $player))) {
-    GainHealth(1, $otherPlayer);
-    return $rv;
-  }
-  if (($banishedBy == "minds_desire_red" || $banishedBy == "minds_desire_yellow" || $banishedBy == "minds_desire_blue") && TypeContains($cardID, "A", $player)) {
-    GainHealth(1, $otherPlayer);
-    return $rv;
+    if (($banishedBy == "art_of_desire_body_red") && ColorContains($cardID, 1, $player)) {
+      Draw($otherPlayer);
+      GainHealth(1, $otherPlayer);
+    }
+    if (($banishedBy == "art_of_desire_soul_yellow") && ColorContains($cardID, 2, $player)) {
+      Draw($otherPlayer);
+      GainHealth(1, $otherPlayer);
+    }
+    if (($banishedBy == "art_of_desire_mind_blue") && ColorContains($cardID, 3, $player)) {
+      Draw($otherPlayer);
+      GainHealth(1, $otherPlayer);
+    }
+    if ($banishedBy == "bonds_of_attraction_red" || $banishedBy == "bonds_of_attraction_yellow" || $banishedBy == "bonds_of_attraction_blue" && count($banish) / BanishPieces() >= 2) {
+      $count = count($banish) - BanishPieces();
+      $pitchValues = [];
+      for ($i = $count-1; $i >= 0; $i--) {
+        if ($banish[$i + 1] == "Source-" . $banishedBy) {
+          array_push($pitchValues, ColorOverride($banish[$i], $player));
+        }
+      }
+      if (in_array(ColorOverride($cardID, $player), $pitchValues)) {
+        GainHealth(1, $otherPlayer);
+      }
+    }
+    if (($banishedBy == "bonds_of_memory_red" || $banishedBy == "bonds_of_memory_yellow" || $banishedBy == "bonds_of_memory_blue") && count($banish) / BanishPieces() >= 2) {
+      $count = count($banish) - BanishPieces();
+      $cardNames = [];
+      for ($i = $count; $i >= 0; $i--) {
+        if ($banish[$i + 1] == "Source-" . $banishedBy) {
+          array_push($cardNames, CardName($banish[$i]));
+        }
+      }
+      if (count($cardNames) !== count(array_unique($cardNames))) {
+        GainHealth(1, $otherPlayer);
+      }
+    }
+    if (($banishedBy == "desires_of_flesh_red" || $banishedBy == "desires_of_flesh_yellow" || $banishedBy == "desires_of_flesh_blue") && TypeContains($cardID, "AA", $player)) {
+      GainHealth(1, $otherPlayer);
+    }
+    if (($banishedBy == "impulsive_desire_red" || $banishedBy == "impulsive_desire_yellow" || $banishedBy == "impulsive_desire_blue") && (TypeContains($cardID, "AR", $player) || TypeContains($cardID, "DR", $player) || TypeContains($cardID, "I", $player))) {
+      GainHealth(1, $otherPlayer);
+    }
+    if (($banishedBy == "minds_desire_red" || $banishedBy == "minds_desire_yellow" || $banishedBy == "minds_desire_blue") && TypeContains($cardID, "A", $player)) {
+      GainHealth(1, $otherPlayer);
+    }
   }
   return $rv;
 }

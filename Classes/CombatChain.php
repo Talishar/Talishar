@@ -141,4 +141,9 @@ class ChainCard {
       }
       else return BlockValue($this->ID());
     }
+
+    function OriginalID() {
+      if(count($this->chain) == 0) return "";
+      return $this->chain[$this->index + 9];
+    }
 }

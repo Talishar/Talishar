@@ -637,15 +637,9 @@ function HasSurge($cardID)
 
 function ContractType($cardID, $chosenName="-")
 {
-  global $mainPlayer;
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $cardID = $foundHorrors;
-  }
-  if (class_exists($cardID)) {
-    $card = new $cardID(1);
-    return $card->ContractType($chosenName);
-  }
+  global $mainPlayer, $CombatChain;
+  $card = GetClass($cardID, 1);
+  if ($card != "-") return $card->ContractType($chosenName);
   switch($cardID)
   {
     case "eradicate_yellow": return "YELLOWPITCH";
@@ -702,6 +696,12 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     $contractType = ContractType($chainCard->ID());
     if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
+    if ($i == 0) {
+      $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+      $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+      $contractType = ContractType($extraText);
+      if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);
+    }
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {

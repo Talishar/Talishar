@@ -549,9 +549,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   global $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($source == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $source = $foundHorrors;
-  }
+  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
@@ -559,8 +557,9 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
-  if ($source == "rok" || $source == "malign_red" || $source == "malign_yellow" || $source == "malign_blue" || $source == "murkmire_grapnel_red" || $source == "murkmire_grapnel_yellow" || $source == "murkmire_grapnel_blue") return false;
-  if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
+  $sourceUnpreventable = ["rock", "malign_red", "malign_yellow", "malign_blue", "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue"];
+  if (in_array($source, $sourceUnpreventable) || in_array($extraText, $sourceUnpreventable)) return false;
+  if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
   if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
   return true;

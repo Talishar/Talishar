@@ -652,10 +652,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   // Can this check be generalized to use a function to check for all hit prevention effects?
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   if (CardType($cardID) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $cardID = $foundHorrors;
-  }
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
   switch ($cardID) {

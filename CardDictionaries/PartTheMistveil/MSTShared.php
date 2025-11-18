@@ -643,9 +643,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function MSTHitEffect($cardID, $from): void
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
+  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CombatChain;
   $deck = new Deck($defPlayer);
   $discard = new Discard($defPlayer);
+  $attackCard = $CombatChain->AttackCard()->ID();
   switch ($cardID) {
     case "beckoning_mistblade":
       AddCurrentTurnEffectNextAttack($cardID, $mainPlayer);
@@ -674,11 +675,11 @@ function MSTHitEffect($cardID, $from): void
       if (IsHeroAttackTarget()) {
         LookAtHand($defPlayer);
         $pitchValue = PitchValue($deck->Top());
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
+        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:pitch=" . $pitchValue);
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,Source-" . $cardID . "," . $cardID, 1);
+        AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,Source-" . $attackCard . "," . $attackCard, 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
@@ -686,23 +687,23 @@ function MSTHitEffect($cardID, $from): void
     case "art_of_desire_soul_yellow":
     case "art_of_desire_mind_blue":
       if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
+        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
       }
       break;
     case "bonds_of_attraction_red":
     case "bonds_of_attraction_yellow":
     case "bonds_of_attraction_blue":
       if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, silent: true);
+        $deck->BanishTop("Source-" . $CombatChain->AttackCard()->ID(), banishedBy: $attackCard);
+        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $attackCard . "," . $attackCard, silent: true);
       }
       break;
     case "double_trouble_red":
     case "double_trouble_yellow":
     case "double_trouble_blue":
       if (IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
+        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
+        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
       }
       break;
     case "bonds_of_memory_red":
@@ -710,8 +711,8 @@ function MSTHitEffect($cardID, $from): void
     case "bonds_of_memory_blue":
       if (IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
-        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $cardID . "," . $cardID, silent: true);
+        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
+        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $attackCard . "," . $attackCard, silent: true);
       }
       break;
     case "desires_of_flesh_red":
@@ -724,7 +725,7 @@ function MSTHitEffect($cardID, $from): void
     case "minds_desire_yellow":
     case "minds_desire_blue":
       if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $cardID, banishedBy: $cardID);
+        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
       }
       break;
     case "biting_breeze_red":

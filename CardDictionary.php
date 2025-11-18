@@ -3408,10 +3408,10 @@ function IsDefenseReactionPlayable($cardID, $from)
   global $CombatChain, $mainPlayer;
   $attackCard = $CombatChain->AttackCard()->ID();
   $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($attackCard == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $attackCard = $foundHorrors;
-  }
-  if (($attackCard == "command_and_conquer_red" || $attackCard == "back_stab_red" || $attackCard == "back_stab_yellow" || $attackCard == "back_stab_blue" || $CombatChain->AttackCard()->ID() == "widowmaker_red" || $CombatChain->AttackCard()->ID() == "widowmaker_yellow" || $CombatChain->AttackCard()->ID() == "widowmaker_blue" || $CombatChain->AttackCard()->ID() == "wreck_havoc_red" || $CombatChain->AttackCard()->ID() == "wreck_havoc_yellow" || $CombatChain->AttackCard()->ID() == "wreck_havoc_blue") && CardType($cardID) == "DR") return false;
+  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  $blocksDreacts = ["command_and_conquer_red", "back_stab_red", "back_stab_yellow", "back_stab_blue",
+                    "widowmaker_red", "widowmaker_yellow", "widowmaker_blue", "wreck_havoc_red", "wreck_havoc_yellow", "wreck_havoc_blue"];
+  if ((in_array($attackCard, $blocksDreacts) || in_array($extraText, $blocksDreacts)) && CardType($cardID) == "DR") return false;
   if ($CombatChain->AttackCard()->ID() == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
   if ($from == "HAND" && CardSubType($CombatChain->AttackCard()->ID()) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
@@ -5047,7 +5047,7 @@ function CardCaresAboutPitch($cardID): bool
     "oldhim_grandfather_of_eternity", "oldhim", "winters_wail", "annals_of_sutcliffe", "cryptic_crossing_yellow", "diabolic_ultimatum_red", "deathly_duet_red", "deathly_duet_yellow", "deathly_duet_blue", "aether_slash_red", "aether_slash_yellow",
     "aether_slash_blue", "runic_reaping_red", "runic_reaping_yellow", "runic_reaping_blue", "gorgons_gaze_yellow", "manifestation_of_miragai_blue", "shifting_winds_of_the_mystic_beast_blue", "cosmic_awakening_blue", "unravel_aggression_blue", "dense_blue_mist_blue", "orihon_of_mystic_tenets_blue",
     "redwood_hammer", "bracken_rap_red", "bracken_rap_yellow", "strong_wood_red", "strong_wood_yellow", "seeds_of_strength_yellow", "seeds_of_strength_blue", "log_fall_red", "log_fall_yellow", "staff_of_verdant_shoots", "gauntlets_of_the_boreal_domain",
-    "savage_claw", "frosthaven_sheath_red", "leaven_sheath_red", "stormwind_sheath_red" => true,
+    "savage_claw" => true,
     default => false
   };
 }
@@ -5261,10 +5261,6 @@ function HasDominate($cardID)
 {
   global $mainPlayer, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
-    $cardID = $foundHorrors;
-  }
   switch ($cardID) {
     case "open_the_center_red":
     case "open_the_center_yellow":
