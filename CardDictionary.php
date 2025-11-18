@@ -4285,6 +4285,17 @@ function CharacterDefaultActiveState($cardID)
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
     case "trench_of_sunken_treasure":
+    case "well_grounded":
+    case "tiara_of_suspense":
+    case "aether_bindings_of_the_third_age":
+    case "mask_of_many_faces":
+    case "ornate_tessen":
+    case "radiant_flow":
+    case "radiant_raiment":
+    case "radiant_touch":
+    case "radiant_view":
+    case "tremorshield_sabatons":
+    case "grimoire_of_fellingsong"È
       return 1;
     default:
       return 2;
