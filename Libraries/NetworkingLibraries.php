@@ -4034,6 +4034,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "shred_blue":
         case "tarantula_toxin_red":
         case "platinum_amulet_blue":
+        case "rage_baiters":
           break;
         default:
           $target = ($combatChainState[$CCS_AttackTarget] == "") ? "" : GetMZCards($currentPlayer, GetAttackTarget());

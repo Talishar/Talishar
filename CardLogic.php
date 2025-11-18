@@ -91,6 +91,12 @@ function AddEffectToCurrentAttack($cardID) {
   else $combatChain[10] .= "," . ConvertToSetID($cardID);
 }
 
+function AddEffectToPastAttack($index, $cardID) {
+  global $chainLinks;
+  if ($chainLinks[$index][6] == "-") $chainLinks[$index][6] = ConvertToSetID($cardID);
+  else $chainLinks[$index][6] .= ConvertToSetID($cardID);
+}
+
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $afterResolveEffects, $combatChain;
