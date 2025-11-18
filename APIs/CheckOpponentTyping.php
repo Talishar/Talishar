@@ -25,6 +25,17 @@ if (!is_numeric($playerID) || ($playerID != 1 && $playerID != 2)) {
   exit;
 }
 
+// Check if chat is enabled for this player
+$chatEnabledCacheKey = ($playerID == 1) ? 15 : 16; // Cache piece 15 = P1 chat enabled, 16 = P2 chat enabled
+$chatEnabled = GetCachePiece($gameName, $chatEnabledCacheKey);
+
+if (!$chatEnabled || $chatEnabled === "0") {
+  // Chat is disabled, no need to check typing status
+  $response->opponentIsTyping = false;
+  echo json_encode($response);
+  exit;
+}
+
 // Check if opponent is typing
 $opponentID = ($playerID == 1) ? 2 : 1;
 $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $opponentID;
@@ -45,3 +56,4 @@ if (extension_loaded('apcu') && ini_get('apc.enabled')) {
 
 $response->opponentIsTyping = $isOpponentTyping;
 echo json_encode($response);
+
