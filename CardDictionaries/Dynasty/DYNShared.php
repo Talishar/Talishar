@@ -637,6 +637,11 @@ function HasSurge($cardID)
 
 function ContractType($cardID, $chosenName="-")
 {
+  global $mainPlayer;
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $cardID = $foundHorrors;
+  }
   if (class_exists($cardID)) {
     $card = new $cardID(1);
     return $card->ContractType($chosenName);

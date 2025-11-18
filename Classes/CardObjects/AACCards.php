@@ -154,3 +154,27 @@ class creep_red extends Card {
 		return HasStealth($CombatChain->AttackCard()->ID());
 	}
 }
+
+class horrors_of_the_past_yellow extends Card {
+	function __construct($controller) {
+    $this->cardID = "horrors_of_the_past_yellow";
+    $this->controller = $controller;
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+	}
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		global $chainLinks, $combatChain;
+		for ($i = count($chainLinks) - 1; $i >=0; --$i) {
+			if (HasStealth($chainLinks[$i][0])) {
+				AddCurrentTurnEffect($this->cardID, $this->controller, "-", $chainLinks[$i][0]);
+			}
+		}
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}

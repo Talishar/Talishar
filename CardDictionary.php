@@ -3406,7 +3406,12 @@ function CountBoatActivations($cardID, $player)
 function IsDefenseReactionPlayable($cardID, $from)
 {
   global $CombatChain, $mainPlayer;
-  if (($CombatChain->AttackCard()->ID() == "command_and_conquer_red" || $CombatChain->AttackCard()->ID() == "back_stab_red" || $CombatChain->AttackCard()->ID() == "back_stab_yellow" || $CombatChain->AttackCard()->ID() == "back_stab_blue" || $CombatChain->AttackCard()->ID() == "widowmaker_red" || $CombatChain->AttackCard()->ID() == "widowmaker_yellow" || $CombatChain->AttackCard()->ID() == "widowmaker_blue" || $CombatChain->AttackCard()->ID() == "wreck_havoc_red" || $CombatChain->AttackCard()->ID() == "wreck_havoc_yellow" || $CombatChain->AttackCard()->ID() == "wreck_havoc_blue") && CardType($cardID) == "DR") return false;
+  $attackCard = $CombatChain->AttackCard()->ID();
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($attackCard == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $attackCard = $foundHorrors;
+  }
+  if (($attackCard == "command_and_conquer_red" || $attackCard == "back_stab_red" || $attackCard == "back_stab_yellow" || $attackCard == "back_stab_blue" || $CombatChain->AttackCard()->ID() == "widowmaker_red" || $CombatChain->AttackCard()->ID() == "widowmaker_yellow" || $CombatChain->AttackCard()->ID() == "widowmaker_blue" || $CombatChain->AttackCard()->ID() == "wreck_havoc_red" || $CombatChain->AttackCard()->ID() == "wreck_havoc_yellow" || $CombatChain->AttackCard()->ID() == "wreck_havoc_blue") && CardType($cardID) == "DR") return false;
   if ($CombatChain->AttackCard()->ID() == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
   if ($from == "HAND" && CardSubType($CombatChain->AttackCard()->ID()) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
@@ -5245,6 +5250,10 @@ function HasDominate($cardID)
 {
   global $mainPlayer, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($cardID == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $cardID = $foundHorrors;
+  }
   switch ($cardID) {
     case "open_the_center_red":
     case "open_the_center_yellow":

@@ -82,6 +82,10 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     } else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
+  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  if ($banishedBy == "horrors_of_the_past_yellow" && $foundHorrors != -1) {
+    $banishedBy = $foundHorrors;
+  }
   if ($banishedBy != "") CheckContracts($banisher, $cardID);
   if ($banishedBy == "nasreth_the_soul_harrower" && TalentContains($cardID, "LIGHT", $player)) {
     GainHealth(1, $otherPlayer);
