@@ -97,12 +97,23 @@ function GetUserFriends($userId) {
   
   $result = $stmt->get_result();
   
+  // List of contributors
+  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
+  
+  // Get patron and session information for each friend
+  // This would typically require database lookup or session data
+  // For now, we include basic status fields that can be populated
+  
   $friends = [];
   while ($row = $result->fetch_assoc()) {
+    $username = $row['usersUid'];
     $friends[] = [
       'friendUserId' => (int)$row['usersId'],
-      'username' => $row['usersUid'],
-      'nickname' => $row['nickname'] ?: null
+      'username' => $username,
+      'nickname' => $row['nickname'] ?: null,
+      'isContributor' => in_array($username, $contributors),
+      'isPatron' => false, // Would need database lookup of patron status
+      'isPvtVoidPatron' => $username === "PvtVoid" // PvtVoid is special patron
     ];
   }
   
