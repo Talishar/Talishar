@@ -5035,7 +5035,7 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
 function AbilityPlayableFromGraveyard($cardID, $index) {
   global $currentPlayer;
   $discard = GetDiscard($currentPlayer);
-  if (isFaceDownMod($discard[$index + 2])) return false;
+  if (!isset($discard[$index + 2]) || isFaceDownMod($discard[$index + 2])) return false;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->AbilityPlayableFromGraveyard($index);
 }
