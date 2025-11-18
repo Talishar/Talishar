@@ -24,6 +24,7 @@ include "Classes/CardObjects/SUPCards.php";
 include "Classes/CardObjects/APSCards.php";
 include "Classes/CardObjects/ARRCards.php";
 include "Classes/CardObjects/PENCards.php";
+include "Classes/CardObjects/AACCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";

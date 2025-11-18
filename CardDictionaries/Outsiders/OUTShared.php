@@ -721,6 +721,8 @@ function OUTAbilityCost($cardID)
 
   function HasStealth($cardID)
   {
+    $card = GetClass($cardID, 0);
+    if ($card != "-") return $card->HasStealth();
     switch($cardID)
     {
       case "infiltrate_red":
@@ -752,7 +754,6 @@ function OUTAbilityCost($cardID)
       case "scuttle_the_canal_red": case "scuttle_the_canal_yellow": case "scuttle_the_canal_blue":
       case "graphene_chelicera":
       case "undercover_acquisition_red":
-      case "meet_madness_red":
         return true;
       default:
         return false;

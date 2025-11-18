@@ -241,7 +241,6 @@ function SetID($cardID)
     "valda_seismic_impact" => "HER135",
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
-    "meet_madness_red" => "AAC014", //temporary
     "UPR551" => "UPR551", //ghostly touch
     "alpha_instinct_blue" => "ARR022", //temporary
   ];

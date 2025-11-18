@@ -14,6 +14,7 @@ include_once "../includes/MatchupHelpers.php";
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 include_once "../Classes/CardObjects/PENCards.php";
+include_once "../Classes/CardObjects/AACCards.php";
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -666,10 +667,8 @@ function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
     case "AAC":
-      return match($cardID) {
-        "meet_madness_red" => false,
-        default => true
-      };
+      $card = GetClass($cardID, 0);
+      return $card == "-";
     case "AHA":
       return true;
     case "PEN":
