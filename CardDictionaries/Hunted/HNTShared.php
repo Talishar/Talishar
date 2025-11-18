@@ -520,6 +520,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("REVEALCARDS", $otherPlayer, "<-", 1);
         AddDecisionQueue("PROVOKE", $otherPlayer, "-", 1);
       }
       break;
