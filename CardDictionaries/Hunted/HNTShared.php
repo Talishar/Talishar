@@ -664,7 +664,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $daggerUID = explode(",", $target)[1] ?? "-";
       if ($daggerUID != "-") {
         if (str_contains($target, "COMBATCHAINATTACKS")) {
-          if ($chainLinks[$daggerUID][2] == 0) return "FAILED";
+          if ($chainLinks[intdiv($daggerUID,ChainLinksPieces())][2] == 0) return "FAILED";
         }
         else {
           $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
