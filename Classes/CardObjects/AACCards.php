@@ -177,4 +177,8 @@ class horrors_of_the_past_yellow extends Card {
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		return true;
 	}
+
+	function HasStealth() {
+		return true;
+	}
 }
