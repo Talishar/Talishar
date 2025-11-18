@@ -807,6 +807,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "sound_the_alarm_red";
       if(IsHeroAttackTarget()){
+        $hand = GetHand($otherPlayer);
+        $foundAreact = false;
+        for ($i = 0; $i < count($hand); $i += HandPieces()) {
+          if (TypeContains($hand[$i], "AR", $otherPlayer)) $foundAreact = true;
+        }
         $deck = new Deck($currentPlayer);
         $count = $deck->RemainingCards();
         $foundDreact = false;
@@ -815,20 +820,22 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
-        AddDecisionQueue("IFTYPEREVEALED", $otherPlayer, "AR", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-        if (!$foundDreact) {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
-          AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You have no defense reactions to search for.", 1);
-          AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+        if ($foundAreact) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+          if (!$foundDreact) {
+            AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
+            AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You have no defense reactions to search for.", 1);
+            AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
+          }
         }
+        else WriteLog("The opponent has no Attack Reactions");
       }
       break;
     case "imperial_seal_of_command_red":
