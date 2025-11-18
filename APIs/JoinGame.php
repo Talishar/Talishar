@@ -102,6 +102,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01JVYZ0NCHP49HAP40C23P14E3", //gravy
   "https://fabrary.net/decks/01JZ97KZ5TQV8E0FYMAM0XVNX7", //ira
   "https://fabrary.net/decks/01K4XX1ERKXRYW8XHWE9BTAS4W", //pleiades
+  "https://fabrary.net/decks/01K74RSFG9RTVPVN534DZPJJNQ", //rhinar
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
