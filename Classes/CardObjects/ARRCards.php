@@ -30,8 +30,9 @@ class bare_destruction_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    $attackCard = $CombatChain->AttackCard()->ID();
-    return TypeContains($attackCard, "AA") && ClassContains($attackCard, "BRUTE", $this->controller);
+    if ($defendingCard == "") $cardToCheck = $CombatChain->AttackCard()->ID();
+    else $cardToCheck = $defendingCard;
+    return TypeContains($cardToCheck, "AA") && ClassContains($cardToCheck, "BRUTE", $this->controller);
   }
 }
 
