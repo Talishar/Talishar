@@ -42,7 +42,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($index >= 0 && $index < count($character) && IsPlayable($character[$index], $turn[0], "CHAR", $index)) {
         SetClassState($playerID, $CS_CharacterIndex, $index);
         SetClassState($playerID, $CS_PlayIndex, $index);
-        $character = &GetPlayerCharacter($playerID);
         $cardID = $character[$index];
         if ($turn[0] == "B") $character[$index + 6] = 1;
         elseif ($turn[0] == "D" && canBeAddedToChainDuringDR($cardID)) {
@@ -77,11 +76,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $cardToPlay = $arsenal[$index];
         if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;
         $uniqueID = $arsenal[$index + 5];
-        if (SubtypeContains($arsenal[$index], "Arrow")) SetClassState($playerID, $CS_ArsenalFacing, $arsenal[$index + 1]);
+        $facing = $arsenal[$index + 1];
+        if (SubtypeContains($cardToPlay, "Arrow")) SetClassState($playerID, $CS_ArsenalFacing, $facing);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
         if ($arsenal[$index + 6] > 0) $combatChainState[$CCS_NumPowerCounters] = $arsenal[$index + 6];
-        $facing = $arsenal[$index+1];
-        if(!IsStaticType(CardType($arsenal[$index], "ARS"), "ARS", $arsenal[$index])) RemoveArsenal($playerID, $index);
+        if(!IsStaticType(CardType($cardToPlay, "ARS"), "ARS", $cardToPlay)) RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$facing);
       } else {
         echo("Play from arsenal " . $turn[0] . " Invalid Input<BR>");
@@ -121,12 +120,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         if ($found == -1) break; //Invalid input
         $deck = new Deck($playerID);
-        if ($mode == 8) {
-          $deck->AddTop($buttonInput);
-          WriteLog("Player " . $playerID . " put a card on top of the deck");
-        } else if ($mode == 9) {
-          $deck->AddBottom($buttonInput);
-          WriteLog("Player " . $playerID . " put a card on the bottom of the deck");
+        switch ($mode) {
+          case 8:
+            $deck->AddTop($buttonInput);
+            WriteLog("Player " . $playerID . " put a card on top of the deck");
+            break;
+          case 9:
+            $deck->AddBottom($buttonInput);
+            WriteLog("Player " . $playerID . " put a card on the bottom of the deck");
+            break;
         }
         unset($options[$found]);
         $options = array_values($options);
@@ -192,20 +194,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return false;
       }
       $cardID = $banish[$index];
+      $mod = $banish[$index + 1];
       if (!IsPlayable($cardID, $turn[0], "BANISH", $index)) break;
-      if ($banish[$index + 1] == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
-      if ($banish[$index + 1] == "spew_shadow_red" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("spew_shadow_red", $currentPlayer);
+      if ($mod == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      if ($mod == "spew_shadow_red" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("spew_shadow_red", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      if (!PlayableFromBanish($cardID, $banish[$index + 1], true)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
-      if (str_contains($banish[$index + 1], "shadowrealm_horror_red")) {
+      if (!PlayableFromBanish($cardID, $mod, true)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
+      if (str_contains($mod, "shadowrealm_horror_red")) {
         $currentPlayerBanish = new Banish($currentPlayer);
-        $currentPlayerBanish->UnsetBanishModifier($banish[$index + 1]);
-        $effectIndex = SearchCurrentTurnEffectsForUniqueID($banish[$index + 1]);
+        $currentPlayerBanish->UnsetBanishModifier($mod);
+        $effectIndex = SearchCurrentTurnEffectsForUniqueID($mod);
         if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
       }
-      if($banish[$index + 1] == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
-      PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$banish[$index + 1]);
+      if($mod == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
+      PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$mod);
       break;
     case 15: // Their Banish
       $index = $cardID;
