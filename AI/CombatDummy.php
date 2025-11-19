@@ -4,14 +4,11 @@ include_once "EncounterAI.php";
 
 function CombatDummyAI()
 {
-  global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer, $p2IsAI;
+  global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer;
   $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
   $canceled = false;
   if($p2CharEquip[0] != "DUMMY") {
-    // Only call EncounterAI if P2 is actually AI
-    if ($p2IsAI == "1") {
-      EncounterAI();
-    }
+    EncounterAI();
     return;
   }
   if(!IsGameOver() && $currentPlayerIsAI)
