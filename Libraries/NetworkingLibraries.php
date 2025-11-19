@@ -112,7 +112,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
         $options = explode(",", $turn[2]);
         $found = -1;
-        for ($i = 0; $i < count($options); ++$i) {
+        $optionsCount = count($options);
+        for ($i = 0; $i < $optionsCount; ++$i) {
           if ($options[$i] == $buttonInput) {
             $found = $i;
             break;
@@ -185,8 +186,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 14: //Banish
       $index = $cardID;
       $banish = &GetBanish($playerID);
-      $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $theirChar = &GetPlayerCharacter($otherPlayer);
       if ($index < 0 || $index >= count($banish)) {
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
@@ -209,7 +209,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 15: // Their Banish
       $index = $cardID;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
       $theirBanish = &GetBanish($otherPlayer);
       $theirChar = &GetPlayerCharacter($otherPlayer);
       if ($index < 0 || $index >= count($theirBanish)) {
@@ -226,14 +225,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $index = $cardID;
         $isValid = false;
         $validInputs = explode(",", $turn[2]);
-        for ($i = 0; $i < count($validInputs); ++$i) {
+        $validInputsCount = count($validInputs);
+        for ($i = 0; $i < $validInputsCount; ++$i) {
           if ($validInputs[$i] == $index) $isValid = true;
         }
         if ($isValid) ContinueDecisionQueue($index);
       }
       break;
     case 17: //BUTTONINPUT
-      if (($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER")) {
+      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER") {
         ContinueDecisionQueue($buttonInput);
       }
       break;
@@ -284,9 +284,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
 
         $input = "";
-        for ($i = 0; $i < count($chkInput); ++$i) {
+        $chkInputCount = count($chkInput);
+        $optionsCount = count($options);
+        for ($i = 0; $i < $chkInputCount; ++$i) {
           $index = intval($chkInput[$i]);
-          if ($index < 0 || $index >= count($options)) {
+          if ($index < 0 || $index >= $optionsCount) {
             WriteLog($selectionCount);
             WriteLog("An unvalid option was selected. Please try selecting the items again, if you feel experienced a bug please report it.", highlight: true);
             $skipWriteGamestate = true;
@@ -317,8 +319,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       }
       $input = [];
-      for ($i = 0; $i < count($chkInput); ++$i) {
-        if ($chkInput[$i] < 0 || $chkInput[$i] >= count($options)) {
+      $chkInputCount = count($chkInput);
+      $optionsCount = count($options);
+      for ($i = 0; $i < $chkInputCount; ++$i) {
+        if ($chkInput[$i] < 0 || $chkInput[$i] >= $optionsCount) {
           WriteLog("You selected option " . $chkInput[$i] . " but that was not one of the original options. Reverting gamestate prior to that effect.", highlight: true);
           RevertGamestate();
           $skipWriteGamestate = true;
@@ -361,7 +365,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") {
         $options = explode(",", $turn[2]);
         $found = -1;
-        for ($i = 0; $i < count($options); ++$i) {
+        $optionsCount = count($options);
+        for ($i = 0; $i < $optionsCount; ++$i) {
           if ($options[$i] == $buttonInput) {
             $found = $i;
             break;
@@ -418,10 +423,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 29: //CHOOSETOPOPPONENT
       if ($turn[0] == "CHOOSETOPOPPONENT") {
-        $otherPlayer = $playerID == 1 ? 2 : 1;
         $options = explode(",", $turn[2]);
         $found = -1;
-        for ($i = 0; $i < count($options); ++$i) {
+        $optionsCount = count($options);
+        for ($i = 0; $i < $optionsCount; ++$i) {
           if ($options[$i] == $buttonInput) {
             $found = $i;
             break;
@@ -512,8 +517,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 37: // Their Arsenal
       $index = $cardID;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
-      $theirArs = &GetArsenal($otherPlayer);
+       $theirArs = &GetArsenal($otherPlayer);
       if ($index < 0 || $index >= count($theirArs)) {
         echo("Arsenal Index " . $index . " Invalid Input<BR>");
         return false;
@@ -995,13 +999,17 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100015: //Request to enable chat
       include "MenuFiles/ParseGamefile.php";
       $myName = ($playerID == 1 ? $p1uid : $p2uid);
-      if ($playerID == 1) SetCachePiece($gameName, 15, 1);
-      else if ($playerID == 2) SetCachePiece($gameName, 16, 1);
+      switch ($playerID) {
+        case 1:
+          SetCachePiece($gameName, 15, 1);
+          break;
+        case 2:
+          SetCachePiece($gameName, 16, 1);
+          break;
+      }
       if (GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1) {
-        if (!str_contains($myName, "Omegaeclipse") && !str_contains($myName, "OmegaEclipse")) {
-          AddEvent("REQUESTCHAT", $playerID);
-        }
-        if (IsPlayerAI($playerID == 1 ? 2 : 1)) WriteLog("🤖 The dummy beeps at you");
+        AddEvent("REQUESTCHAT", $playerID);
+        if (IsPlayerAI(2)) WriteLog("🤖 The dummy beeps at you");
         else WriteLog("🗣️ Player " . $playerID . " wants to enable chat");
       }
       break;
