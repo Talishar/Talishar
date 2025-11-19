@@ -68,7 +68,7 @@ if ($chkCount < 0 || $chkCount > 100) {
 $chkInput = [];
 for ($i = 0; $i < $chkCount; ++$i) {
   $chk = isset($_GET[("chk" . $i)]) ? sanitizeString($_GET[("chk" . $i)]) : "";
-  if ($chk != "") array_push($chkInput, $chk);
+  if ($chk != "") $chkInput[] = $chk;
 }
 $inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : "";
 
@@ -183,10 +183,10 @@ if ($inGameStatus == $GameStatus_Rematch) {
   WriteGameFile();
   $turn[0] = "REMATCH";
   include "WriteGamestate.php";
-  InvalidateGamestateCache($gameName); // Clear cached gamestate
   $currentTime = round(microtime(true) * 1000);
   SetCachePiece($gameName, 2, $currentTime);
   SetCachePiece($gameName, 3, $currentTime);
+  InvalidateGamestateCache($gameName); // Clear cached gamestate once at end
   GamestateUpdated($gameName);
   exit;
 } else if ($winner != 0 && $turn[0] != "YESNO") {
@@ -211,19 +211,23 @@ if (!IsGameOver()) {
 if (!$skipWriteGamestate) {
   if(!IsModeAsync($mode))
   {
+    $currentTime = round(microtime(true) * 1000);
     SetCachePiece($gameName, 12, "0");
+    SetCachePiece($gameName, 2, $currentTime);
+    SetCachePiece($gameName, 3, $currentTime);
     $currentPlayerActivity = 0;
   }
   DoGamestateUpdate();
   include "WriteGamestate.php";
-  InvalidateGamestateCache($gameName); // Clear cached gamestate after updates
 }
 
+// Consolidate backup operations
 if ($makeCheckpoint) MakeGamestateBackup();
 if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
 if ($MakeStartTurnBackup) MakeStartTurnBackup();
 if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
+InvalidateGamestateCache($gameName); // Clear cached gamestate once after all updates
 GamestateUpdated($gameName);
 
 exit;
