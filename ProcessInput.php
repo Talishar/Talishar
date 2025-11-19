@@ -172,12 +172,13 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $origDeck = "./Games/{$gameName}/p2DeckOrig.txt";
   if (file_exists($origDeck)) copy($origDeck, "./Games/{$gameName}/p2Deck.txt");
   include "MenuFiles/WriteGamefile.php";
-  $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  $p2IsAILocal = ($p2IsAI == "1");
+  $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";
-  $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
+  $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";
@@ -195,7 +196,9 @@ if ($inGameStatus == $GameStatus_Rematch) {
 }
 
 CombatDummyAI(); //Only does anything if applicable
-EncounterAI();
+if ($p2IsAI == "1") {
+  EncounterAI();
+}
 CacheCombatResult();
 
 if (!IsGameOver()) {
