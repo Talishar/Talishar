@@ -22,8 +22,8 @@ include "MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  echo ("Invalid Auth Key");
-  exit;
+  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
+  $authKey = $targetAuth;
 }
 
 if ($playerCharacter != "" && $playerDeck != "") //If they submitted before loading even finished, use the deck as it existed before

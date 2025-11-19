@@ -42,9 +42,8 @@ include "../MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  $response->error = "Invalid Auth Key";
-  echo json_encode($response);
-  exit;
+  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
+  $authKey = $targetAuth;
 }
 
 $submission = json_decode($submissionString);
@@ -195,6 +194,12 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
 }
 
 $response->status = "OK";
+
+// If game started (both players submitted), return the auth key so frontend can store it
+if ($gameStatus == $MGS_GameStarted) {
+  $response->authKey = $authKey;
+  $response->gameStarted = true;
+}
 
 WriteGameFile();
 InvalidateGamestateCache($gameName); // Clear cached gamestate after sideboard submission

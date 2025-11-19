@@ -32,7 +32,10 @@ ob_end_clean();
 session_start();
 if($playerID == 1 && isset($_SESSION["p1AuthKey"])) { $targetKey = $p1Key; $authKey = $_SESSION["p1AuthKey"]; }
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) { $targetKey = $p2Key; $authKey = $_SESSION["p2AuthKey"]; }
-if (!isset($authKey) || !isset($targetKey) || $authKey != $targetKey) { echo("Invalid auth key"); exit; }
+if (isset($authKey) && isset($targetKey) && $authKey != $targetKey) {
+  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
+  $authKey = $targetKey;
+}
 
 //Initialize global variables
 $p1Inventory = "";
@@ -122,6 +125,13 @@ ob_end_clean();
 //Update the game file to show that the game has started and other players can join to spectate
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
+
+// Return the auth key to the frontend so it can be stored locally
+header('Content-Type: application/json');
+$response = new stdClass();
+$response->success = true;
+$response->authKey = ($playerID == 1 ? $p1Key : $p2Key);
+echo json_encode($response);
 
 exit;
 

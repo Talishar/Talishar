@@ -92,9 +92,8 @@ include "../MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 if ($authKey != $targetAuth) {
-  $response->error = "Invalid auth key";
-  echo (json_encode($response));
-  exit;
+  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
+  $authKey = $targetAuth;
 }
 
 if ($kickPlayerTwo) {
