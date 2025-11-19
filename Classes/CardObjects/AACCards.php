@@ -32,6 +32,7 @@ class meet_madness_red extends Card {
 			}
 			return true;
 		}
+		return false;
   }
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
