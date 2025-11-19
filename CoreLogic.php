@@ -557,7 +557,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
-  $sourceUnpreventable = ["rock", "malign_red", "malign_yellow", "malign_blue", "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue"];
+  $sourceUnpreventable = ["rok", "malign_red", "malign_yellow", "malign_blue", "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue"];
   if (in_array($source, $sourceUnpreventable) || in_array($extraText, $sourceUnpreventable)) return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
