@@ -2022,6 +2022,20 @@ function CurrentEffectIntellectModifier($remove = false)
   return $intellectModifier;
 }
 
+function CurrentEffectStartTurnAbilities() {
+  global $mainPlayer, $currentTurnEffects;
+  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
+    switch ($currentTurnEffects[$i]) {
+      case "blinding_of_the_old_ones_red":
+        BlindPlayer($mainPlayer);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 function CurrentEffectEndTurnAbilities()
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;

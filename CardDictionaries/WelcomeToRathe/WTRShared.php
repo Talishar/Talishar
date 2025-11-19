@@ -648,7 +648,6 @@
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
         break;
       case "blinding_of_the_old_ones_red":
-        BlindPlayer($defPlayer);
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "smelting_of_the_old_ones_red": 

@@ -276,6 +276,7 @@ function StartTurnAbilities()
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
+  CurrentEffectStartTurnAbilities();
 
   $mainItems = &GetItems($mainPlayer);
   for ($i = count($mainItems) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
