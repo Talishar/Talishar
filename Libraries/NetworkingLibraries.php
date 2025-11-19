@@ -2075,6 +2075,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         }
       }
     }
+
+    // Cache card cost
+    $cardCost = CardCost($cardID, $from);
+
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
@@ -2116,7 +2120,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       // Cache values for Illusionist checks
       $classContainsIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
       $subTypeContainsAura = DelimStringContains(CardSubType($cardID), "Aura");
-      $cardCost = CardCost($cardID, $from);
 
       if ($classContainsIllusionist && $subTypeContainsAura && $cardCost <= 2 && SearchCurrentTurnEffects("vengeful_apparition_red-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("vengeful_apparition_red", $currentPlayer);
