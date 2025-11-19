@@ -1822,10 +1822,20 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
   $cardType = CardType($cardID);
-  $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);  
+  $layersCount = count($layers);
+  $playingCard = $turn[0] != "P" && ($turn[0] != "B" || $layersCount > 0);  
   $mod = "";
+  
+  // OPTIMIZATION: Cache frequently accessed class state values to reduce GetClassState() calls
+  $cachedPlayIndex = GetClassState($currentPlayer, $CS_PlayIndex);
+  $cachedAbilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
+  $cachedLastDynCost = GetClassState($currentPlayer, $CS_LastDynCost);
+  $cachedPlayUniqueID = GetClassState($currentPlayer, $CS_PlayUniqueID);
+  $cachedAdditionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
+  $cachedLayerPlayIndex = GetClassState($currentPlayer, $CS_LayerPlayIndex);
+  
   //manual tunic ticking
-  if ($playingCard && $cardID == "fyendals_spring_tunic" && ManualTunicSetting($currentPlayer) && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
+  if (ManualTunicSetting($currentPlayer) && $playingCard && $cardID == "fyendals_spring_tunic" && GetClassState($currentPlayer, $CS_TunicTicks) == 0) {
     $character = &GetPlayerCharacter($currentPlayer);
     $cardIndex = FindCharacterIndex($currentPlayer, $cardID);
     if ($character[$cardIndex + 2] < 3) {
@@ -1835,7 +1845,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
   }
   if ($playingCard) {
-    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
+    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from) || DelimStringContains($cardType, "I") && $turn[0] != "M";
     $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
     if ($resolutionIndex != -1 && !$canPlayAsInstant) {
       //cards with more complicated logic to figure out whether they can be used with an open chain
@@ -1845,8 +1855,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         default => false,
       };
       if ($from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && (GetAbilityTypes($cardID, $index, $from) == "" || GetAbilityNames($cardID, $index, $from) == "-,Action") && !HasMeld($cardID)) {
-        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
-        elseif ($from == "ARS") AddArsenal($cardID, $currentPlayer, "ARS", $facing);
+        switch ($from) {
+          case "HAND":
+            AddPlayerHand($cardID, $currentPlayer, "HAND");
+            break;
+          case "ARS":
+            AddArsenal($cardID, $currentPlayer, "ARS", $facing);
+            break;
+        }
         $layerPriority[$currentPlayer - 1] = "0";
         ProcessInput($currentPlayer, 99, "", $cardID, 0, "");
         return "";
@@ -1876,7 +1892,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($playingCard) {
       // handle modal elsewhere
       if (GetAbilityTypes($cardID, $index, $from) == "") {
-        if ((CardType($cardID, $from) == "AA" && $abilityType == "-") || $abilityType == "AA") EndResolutionStep();
+        if (CardType($cardID, $from) == "AA" && $abilityType == "-" || $abilityType == "AA") EndResolutionStep();
       }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
@@ -1893,7 +1909,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from the top of their deck", $turn[0] != "P" ? $currentPlayer : 0);
     }
     else if ($turn[0] != "B") WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
-    if ($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
+    if ($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) {
+      SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
+      $cachedPlayUniqueID = $uniqueID;
+    }
 
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
@@ -1906,20 +1925,28 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed[2] = $cardType;
       $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
+      $cachedPlayUniqueID = $uniqueID;
     }
-    if (count($layers) > 0 && $layers[count($layers) - LayerPieces()] == "ENDTURN") $layers[count($layers) - LayerPieces()] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
+    if ($layersCount > 0) {
+      $lastLayerIndex = $layersCount - LayerPieces();
+      if ($layers[$lastLayerIndex] == "ENDTURN") $layers[$lastLayerIndex] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
+    }
   }
   if ($turn[0] == "A" || $turn[0] == "D" && $currentPlayer == $mainPlayer) {
     ++$combatChainState[$CCS_NumUsedInReactions];
   }
   if ($turn[0] != "P") {
     if ($dynCostResolved >= 0) {
-      if ($playingCard && SearchCurrentTurnEffects("fealty", $currentPlayer) && TypeContains($cardID, "AA") && !SearchCurrentTurnEffects("fealty-ATTACK", $currentPlayer) && GetResolvedAbilityName($cardID, $from) != "Ability") {
-        AddCurrentTurnEffect("fealty-ATTACK", $currentPlayer);
+      // OPTIMIZATION: Cache fealty searches to avoid searching twice in same condition
+      if ($playingCard && TypeContains($cardID, "AA") && GetResolvedAbilityName($cardID, $from) != "Ability") {
+        $hasFealty = SearchCurrentTurnEffects("fealty", $currentPlayer);
+        if ($hasFealty && !SearchCurrentTurnEffects("fealty-ATTACK", $currentPlayer)) {
+          AddCurrentTurnEffect("fealty-ATTACK", $currentPlayer);
+        }
       }
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = $from == "PLAY" || $from == "EQUIP" || $from == "COMBATCHAINATTACKS" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from));
-      if(HasMeld($cardID) && GetClassState($currentPlayer, $CS_AdditionalCosts) == "Both") $baseCost += $baseCost;
+      if(HasMeld($cardID) && $cachedAdditionalCosts == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
         $isAlternativeCostPaid = IsAlternativeCostPaid($cardID, $from);
@@ -1938,10 +1965,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
       $dynCost = "";
-      $nuuActive = (SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer)) && ColorContains($cardID, 3, $otherPlayer);
+      $isNuu = SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer);
+      $nuuActive = $isNuu && ColorContains($cardID, 3, $otherPlayer);
       if ($playingCard && substr($from, 0, 5) == "THEIR" && $nuuActive) {
         $dynCost = ($cardID == "staunch_response_red" || $cardID == "staunch_response_yellow" || $cardID == "staunch_response_blue") ? "0,4" : 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
         SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
+        $cachedLastDynCost = $dynCost;
       }
       elseif ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index, $facing); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
@@ -1952,7 +1981,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       //CR 5.1.4. Declare Modes and Targets
       //CR 5.1.4a Declare targets for resolution abilities
-      if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
+      if ($turn[0] != "B" || ($layersCount > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
       //CR 5.1.4b Declare target of attack
       if ($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
@@ -1972,7 +2001,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     PitchAbility($cardID);
   }
   //CR 2.0 5.1.7. Pay Asset-Costs
-  if ($resources[0] < $resources[1] || (CardCareAboutChiPitch($cardID) && ($turn[0] != "B" || count($layers) > 0))) {
+  if ($resources[0] < $resources[1] || (CardCareAboutChiPitch($cardID) && ($turn[0] != "B" || $layersCount > 0))) {
     if ($turn[0] != "P") {
       $turn[2] = $turn[0];
       $turn[3] = $cardID;
@@ -1996,7 +2025,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $zone = $turn[7] ?? -1;    
     $playingCard = $turn[0] != "P" && ($turn[0] != "B" || count($layers) > 0);
   }
-  if (GetClassState($currentPlayer, $CS_LastDynCost) != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . GetClassState($currentPlayer, $CS_LastDynCost) . ".");
+  if ($cachedLastDynCost != 0 && DynamicCost($cardID) != "") WriteLog(CardLink($cardID, $cardID) . " was played with a cost of " . $cachedLastDynCost . ".");
   $cardType = CardType($cardID);
   $abilityType = "";
   $playType = $cardType;
@@ -2008,7 +2037,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if ($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from, true) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
-      if(!HasMeld($cardID) && (GetResolvedAbilityType($cardID, $from) == "A" || GetResolvedAbilityType($cardID, $from) == "") || (HasMeld($cardID) && (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Life" && GetClassState($currentPlayer, $CS_AdditionalCosts) != "Null")))
+      if(!HasMeld($cardID) && (GetResolvedAbilityType($cardID, $from) == "A" || GetResolvedAbilityType($cardID, $from) == "") || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
       {
         
         AssignArcaneBonus($currentPlayer);
@@ -2035,23 +2064,26 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($currentPlayer, 0)) {
       AddLayer("TRIGGER", $currentPlayer, $hero);
     }
-    $isFireVein = ($CombatChain->AttackCard()->ID() == "obsidian_fire_vein" || $CombatChain->AttackCard()->ID() == "obsidian_fire_vein_r");
-    if($CombatChain->HasCurrentLink() && $isFireVein && $currentPlayer == $mainPlayer && !SearchCurrentTurnEffects("obsidian_fire_vein", $currentPlayer) && !SearchCurrentTurnEffects("obsidian_fire_vein_r", $currentPlayer)) {
-      if (!IsStaticType($cardType, $from, $cardID) && (TalentContains($cardID, "DRACONIC", $currentPlayer)) && GetResolvedAbilityType($cardID, $from) != "I") {
-        AddCurrentTurnEffect($CombatChain->AttackCard()->ID(), $currentPlayer);
-        GiveAttackGoAgain();
+    $activeAttackID = $CombatChain->HasCurrentLink() ? $CombatChain->AttackCard()->ID() : "";
+    $isFireVein = ($activeAttackID == "obsidian_fire_vein" || $activeAttackID == "obsidian_fire_vein_r");
+    if($activeAttackID && $isFireVein && $currentPlayer == $mainPlayer) {
+      $hasFireVeinEffect = SearchCurrentTurnEffects("obsidian_fire_vein", $currentPlayer) || SearchCurrentTurnEffects("obsidian_fire_vein_r", $currentPlayer);
+      if (!$hasFireVeinEffect) {
+        if (!IsStaticType($cardType, $from, $cardID) && (TalentContains($cardID, "DRACONIC", $currentPlayer)) && GetResolvedAbilityType($cardID, $from) != "I") {
+          AddCurrentTurnEffect($activeAttackID, $currentPlayer);
+          GiveAttackGoAgain();
+        }
       }
     }
     if (IsStaticType($cardType, $from, $cardID)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
-      PayAbilityAdditionalCosts($cardID, GetClassState($currentPlayer, $CS_AbilityIndex), $from, $index);
+      PayAbilityAdditionalCosts($cardID, $cachedAbilityIndex, $from, $index);
       ActivateAbilityEffects();
       //modal activated attacks wrapping up resolution step
       if (GetAbilityTypes($cardID, $index, $from) != "" && $abilityType == "AA") {
-        $layerIndex = GetClassState($currentPlayer, $CS_LayerPlayIndex);
-        $layerIndex -= EndResolutionStep();
-        SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+        $cachedLayerPlayIndex -= EndResolutionStep();
+        SetClassState($currentPlayer, $CS_LayerPlayIndex, $cachedLayerPlayIndex);
       }
     } else {
       if (GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) == "-") SetClassState($currentPlayer, $CS_NamesOfCardsPlayed, $cardID);
@@ -2064,45 +2096,58 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (GetAbilityTypes($cardID, $index, $from) != "") {
         $playType = GetResolvedAbilityType($cardID, $from);
         if ($playType == "AA") {
-          $layerIndex = GetClassState($currentPlayer, $CS_LayerPlayIndex);
-          $layerIndex -= EndResolutionStep();
-          SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+          $cachedLayerPlayIndex -= EndResolutionStep();
+          SetClassState($currentPlayer, $CS_LayerPlayIndex, $cachedLayerPlayIndex);
         }
       }
       $remorselessCount = CountCurrentTurnEffects("remorseless_red-DMG", $playerID);
       if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
         WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
         LoseHealth($remorselessCount, $playerID);
-      } elseif ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0 && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
-        WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
-        LoseHealth($remorselessCount, $playerID);
+      } elseif ((DelimStringContains($cardType, "A") || $cardType == "AA") && $remorselessCount > 0) {
+        $remorselessAbilityType = GetResolvedAbilityType($cardID, $from); // Cache to avoid calling 3 times
+        if ($remorselessAbilityType == "" || $remorselessAbilityType == "AA" || $remorselessAbilityType == "A") {
+          WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
+          LoseHealth($remorselessCount, $playerID);
+        }
       }
       if (CardNameContains($cardID, "Moon Wish", $currentPlayer)) AddCurrentTurnEffect("moon_wish_red-GA", $currentPlayer);
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID, $from) <= 2 && SearchCurrentTurnEffects("vengeful_apparition_red-INST", $currentPlayer, true)) {
+
+      // Cache values for Illusionist checks
+      $classContainsIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
+      $subTypeContainsAura = DelimStringContains(CardSubType($cardID), "Aura");
+      $cardCost = CardCost($cardID, $from);
+
+      if ($classContainsIllusionist && $subTypeContainsAura && $cardCost <= 2 && SearchCurrentTurnEffects("vengeful_apparition_red-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("vengeful_apparition_red", $currentPlayer);
       }
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID, $from) <= 1 && SearchCurrentTurnEffects("vengeful_apparition_yellow-INST", $currentPlayer, true)) {
+      if ($classContainsIllusionist && $subTypeContainsAura && $cardCost <= 1 && SearchCurrentTurnEffects("vengeful_apparition_yellow-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("vengeful_apparition_yellow", $currentPlayer);
       }
-      if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains(CardSubType($cardID), "Aura") && CardCost($cardID, $from) <= 0 && SearchCurrentTurnEffects("vengeful_apparition_blue-INST", $currentPlayer, true)) {
+      if ($classContainsIllusionist && $subTypeContainsAura && $cardCost <= 0 && SearchCurrentTurnEffects("vengeful_apparition_blue-INST", $currentPlayer, true)) {
         AddCurrentTurnEffect("vengeful_apparition_blue", $currentPlayer);
       }
-      if (DelimStringContains(CardSubType($cardID), "Aura")) {
+      if ($subTypeContainsAura) {
         SearchCurrentTurnEffects("fluttersteps", $currentPlayer, true);
       }
+
       CombatChainPlayAbility($cardID);
       ItemPlayAbilities($cardID, $from);
     }
     if (EffectPlayCardRestricted($cardID, $playType, $from, true)) return;
-    if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityName($cardID, $from) != "Ability") {
+    $resolvedAbilityName = GetResolvedAbilityName($cardID, $from); // Cache to avoid calling twice
+    if (TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && $resolvedAbilityName != "Ability") {
       IncrementClassState($currentPlayer, $CS_NumDraconicPlayed);
       SearchCurrentTurnEffects("fealty", $currentPlayer, remove:true);
     }
-    if (CardCost($cardID, $from) > 0 && $from != "EQUIP" && $from != "PLAY" && GetResolvedAbilityName($cardID, $from) != "Ability") {
+    if ($cardCost > 0 && $from != "EQUIP" && $from != "PLAY" && $resolvedAbilityName != "Ability") {
       IncrementClassState($currentPlayer, $CS_NumCostedCardsPlayed);
     }
-    if (HasStealth($cardID) && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
-      IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
+    if (HasStealth($cardID)) {
+      $stealthAbilityType = GetResolvedAbilityType($cardID, $from); // Cache to avoid calling twice
+      if ($stealthAbilityType == "AA" || $stealthAbilityType == "") {
+        IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
+      }
     }
     if (SubtypeContains($cardID, "Cannon", $currentPlayer) && IsStaticType($cardType, $from, $cardID)) {
       IncrementClassState($currentPlayer, piece: $CS_NumCannonsActivated);
@@ -2112,12 +2157,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (DelimStringContains($playType, "A") || DelimStringContains($playType, "AA")) {
       // there's a bug here where the $index is getting reset if you need to pitch, and I can't figure out why
-      if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
+      if($index == -1) $index = $cachedPlayIndex;
       if($from == "BANISH") $mod = GetBanishModifier($index);
       if ($actionPoints > 0) {
         if(!$canPlayAsInstant) --$actionPoints;
         elseif(GetResolvedAbilityType($cardID, $from) == "AA") --$actionPoints;
-        elseif(!$canPlayAsInstant && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) 
+        elseif(!$canPlayAsInstant && !IsMeldInstantName($cachedAdditionalCosts) 
         && (GetResolvedAbilityType($cardID, $from) == "A" && !InstantMod($mod))) {
           --$actionPoints;
         }
@@ -2181,14 +2226,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($from == "BANISH") {
     $banish = new Banish($currentPlayer);
-    $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
+    $banish->Remove($cachedPlayIndex);
   } else if ($from == "THEIRBANISH") {
     $banish = new Banish($otherPlayer);
-    $banish->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
+    $banish->Remove($cachedPlayIndex);
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "THEIRDISCARD";
   } else if ($from == "GY" && !ActivatedFromGraveyard($cardID)) {
     $discard = new Discard($currentPlayer);
-    $discard->Remove(GetClassState($currentPlayer, $CS_PlayIndex));
+    $discard->Remove($cachedPlayIndex);
   }
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if ($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
@@ -2198,7 +2243,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
     
   }
-  AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . GetClassState($currentPlayer, $CS_AbilityIndex) . "|" . GetClassState($currentPlayer, $CS_PlayUniqueID) . "|" . $zone);
+  AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . $cachedAbilityIndex . "|" . $cachedPlayUniqueID . "|" . $zone);
   ProcessDecisionQueue();
 }
 
