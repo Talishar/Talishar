@@ -94,12 +94,6 @@ if ($apiDeck === FALSE) {
 
 $deckObj = json_decode($apiDeck);
 
-// Debug: Log the full API response
-error_log("=== FABRARY API RESPONSE ===");
-error_log("Raw Response: " . $apiDeck);
-error_log("Decoded Object: " . json_encode($deckObj, JSON_PRETTY_PRINT));
-error_log("===========================");
-
 // Check for API errors
 if ($apiInfo['http_code'] == 403) {
   $response->success = false;
