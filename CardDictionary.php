@@ -54,6 +54,7 @@ include "CardDictionaries/CompendiumOfRathe/PENShared.php";
 include "CardDictionaries/ArmoryDecks/APSShared.php";
 include "CardDictionaries/ArmoryDecks/AACShared.php";
 include "CardDictionaries/ArmoryDecks/ARRShared.php";
+include "CardDictionaries/ArmoryDecks/AHAShared.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";

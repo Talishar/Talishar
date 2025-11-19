@@ -15,6 +15,7 @@ include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 include_once "../Classes/CardObjects/PENCards.php";
 include_once "../Classes/CardObjects/AACCards.php";
+include_once "../Classes/CardObjects/AHACards.php";
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -671,7 +672,8 @@ function isUnimplemented($cardID) {
       $card = GetClass($cardID, 0);
       return $card == "-";
     case "AHA":
-      return true;
+      $card = GetClass($cardID, 0);
+      return $card == "-";
     case "PEN":
       $card = GetClass($cardID, 0);
       return $card == "-";

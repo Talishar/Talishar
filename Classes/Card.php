@@ -429,6 +429,10 @@ class Card {
   function HasStealth() {
     return false;
   }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    return;
+  }
 }
 
 ?>

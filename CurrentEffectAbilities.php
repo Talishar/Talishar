@@ -2031,6 +2031,8 @@ function CurrentEffectEndTurnAbilities()
     if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
     }
+    $card = GetClass($cardID, $currentTurnEffects[$i + 1]);
+    if ($card != -1) $card->CurrentEffectEndTurnAbilities($i, $remove);
     switch ($cardID) {
       case "glisten_red":
       case "glisten_yellow":
