@@ -122,7 +122,6 @@ $deckFormat = "";
 if (isset($deckObj->{'format'})) {
   $deckFormat = $deckObj->{'format'};
   if (is_string($deckFormat)) {
-    error_log("Found format in API: " . $deckFormat);
   } else {
     $deckFormat = ""; // Format might be an object, reset to empty
   }
@@ -165,19 +164,12 @@ if (is_array($cards) && count($cards) > 0) {
       // Verify it looks like a hero card ID (uppercase set code + numbers)
       if (preg_match('/^[A-Z]{2,4}\d{1,3}$/', $cardIdentifier)) {
         $heroID = $cardIdentifier;
-        error_log("Found hero card: " . $heroID . " (" . $cardIdentifier . ")");
         $foundHero = true;
         break;
       }
     }
   }
 }
-
-if (empty($heroID)) {
-  error_log("No hero card found in deck");
-}
-
-error_log("Final values - heroID: " . $heroID . ", format: " . $deckFormat);
 
 // Add the deck to favorites without validation
 // If we couldn't extract hero, pass empty string - database will handle it
