@@ -1519,7 +1519,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if ($layerCheckCount > 0 && $layers[0] != "") {
           $searchType = $option[0] == "THEIRALLY" || $option[0] == "MYALLY" ? "Ally" : "Aura";
           $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
-          if ($index != "") {
+          if ($index != "" && (DelimStringContains($option[0], "ALLY", true) || DelimStringContains($option[0], "AURAS", true))) {
               $params = explode("|", $layers[intval($index[0]) + 2]);              
               if (isset($params[2]) && $option[1] == $params[2]) {
                 $label = "Attacking";
