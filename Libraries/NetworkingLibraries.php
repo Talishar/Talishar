@@ -89,7 +89,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 6: //Pitch Deck
       if ($turn[0] != "PDECK") break;
-      $found = PitchHasCard($cardID);
+      $found = SearchPitchForCard($currentPlayer, $cardID);
       if ($found >= 0) {
         PitchDeck($currentPlayer, $found);
         PassTurn(); //Resume passing the turn
@@ -1100,12 +1100,6 @@ function IsModeAllowedForSpectators($mode)
   return isset($spectatorModes[$mode]);
 }
 
-function PitchHasCard($cardID)
-{
-  global $currentPlayer;
-  return SearchPitchForCard($currentPlayer, $cardID);
-}
-
 function HasCard($cardID)
 {
   global $currentPlayer;
@@ -1177,12 +1171,23 @@ function PassInput($autopass = true, $doublePass=false)
     ContinueDecisionQueue();
   }
   else {
-    if ($autopass == true) WriteLog("Player " . $currentPlayer . " auto-passed");
-    else WriteLog("Player " . $currentPlayer . " passed");
+    switch ($autopass) {
+      case true:
+        WriteLog("Player " . $currentPlayer . " auto-passed");
+        break;
+      default:
+        WriteLog("Player " . $currentPlayer . " passed");
+        break;
+    }
     if (Pass($turn, $currentPlayer)) {
-      if ($turn[0] == "M") {
-        BeginTurnPass();
-      } else PassTurn();
+      switch ($turn[0]) {
+        case "M":
+          BeginTurnPass();
+          break;
+        default:
+          PassTurn();
+          break;
+      }
     }
     if (HoldPrioritySetting($currentPlayer) != 4 || $doublePass) {
       // without this line the turn player needs to pass twice to break the chain
