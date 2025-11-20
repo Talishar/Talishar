@@ -179,9 +179,11 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $p2Hero = GetCachePiece($gameName, 8);
   $visibility = GetCachePiece($gameName, 9);
   $format = GetCachePiece($gameName, 13);
+  $p1chatEnabled = GetCachePiece($gameName, 15);
+  $p2chatEnabled = GetCachePiece($gameName, 16);
   $currentPlayer = 0;
   $isReplay = 0;
-  WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!0!0"); //Initialize SHMOP cache for this game
+  WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
 
   ob_start();
   $filename = "../Games/" . $gameName . "/gamestate.txt";
