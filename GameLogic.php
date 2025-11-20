@@ -2418,6 +2418,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $inGameStatus = $GameStatus_Rematch;
         ClearGameFiles($gameName, true);
       }
+      else {
+        WriteLog("Player $player declined a rematch.", highlight: true);
+      }
       return 0;
     case "PLAYERTARGETEDABILITY":
       PlayerTargetedAbility($player, $parameter, $lastResult);

@@ -879,8 +879,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($isSimulation) return;
       if ($turn[0] != "OVER") break;
       $otherPlayer = $playerID == 1 ? 2 : 1;
+      WriteLog("Player $playerID sent a rematch invitation.", highlight: true, highlightColor: "darkblue");
       AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Rematch</b>?");
-      AddDecisionQueue("REMATCH", $otherPlayer, "-", 1);
+      AddDecisionQueue("REMATCH", $otherPlayer, "-");
       ProcessDecisionQueue();
       break;
     case 100007: //Claim Victory when opponent is inactive
