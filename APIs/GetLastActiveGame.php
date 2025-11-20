@@ -40,6 +40,14 @@ $gameName = $_SESSION["lastGameName"];
 $playerID = $_SESSION["lastPlayerId"];
 $authKey = $_SESSION["lastAuthKey"];
 
+// Spectators cannot use session recovery - only players 1 and 2
+if ($playerID == 3) {
+    $response->gameExists = false;
+    $response->gameInProgress = false;
+    echo json_encode($response);
+    exit;
+}
+
 // Validate game name
 if (!IsGameNameValid($gameName)) {
     $response->gameExists = false;
@@ -59,7 +67,12 @@ if (!file_exists("../Games/" . $gameName . "/")) {
 $response->gameExists = true;
 $response->gameName = $gameName;
 $response->playerID = $playerID;
-$response->authKey = $authKey;
+
+if ($playerID != 3) {
+    $response->authKey = $authKey;
+} else {
+    $response->authKey = ''; // Never return authKey to spectators
+}
 
 // Parse game file to check status and opponent info
 ob_start();
@@ -93,12 +106,13 @@ $response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1uid : "Player 
 $opponentStatus = GetCachePiece($gameName, $opponentID + 3);
 $response->opponentDisconnected = ($opponentStatus == "-1" || $opponentStatus == "");
 
-// Verify auth key matches
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey != $targetAuth) {
-    // Auth key mismatch - don't allow recovery
-    $response->gameInProgress = false;
-    $response->authKeyMismatch = true;
+if ($playerID != 3) {
+    $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+    if ($authKey != $targetAuth) {
+        // Auth key mismatch - don't allow recovery
+        $response->gameInProgress = false;
+        $response->authKeyMismatch = true;
+    }
 }
 
 echo json_encode($response);
