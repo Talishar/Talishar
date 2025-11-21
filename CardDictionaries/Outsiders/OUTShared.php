@@ -821,7 +821,7 @@ function OUTAbilityCost($cardID)
     AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
-    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE", 1);
+    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE-$currentPlayer", 1);
     AddDecisionQueue("DEALDAMAGE", $currentPlayer, "{2}", 1);
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
