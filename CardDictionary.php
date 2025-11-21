@@ -609,6 +609,8 @@ function CardTalent($cardID, $from="-")
     default:
       break;
   }
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->SpecialTalent() != "-") return $card->SpecialTalent();
   return GeneratedCardTalent($cardID);
 }
 
