@@ -85,12 +85,13 @@ function initializePlayerState($handler, $deckHandler, $player)
 
 function SettingDefaultValue($setting, $hero)
 {
-  global $SET_TryUI2, $SET_AutotargetArcane, $SET_Playmat;
+  global $SET_TryUI2, $SET_AutotargetArcane, $SET_Playmat, $SET_MirroredBoardLayout;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
     case $SET_AutotargetArcane: return "1";
     case $SET_Playmat: return ($hero == "DUMMY" ? 8 : 0);
+    case $SET_MirroredBoardLayout: return "1";
     default: return "0";
   }
 }
