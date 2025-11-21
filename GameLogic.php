@@ -3514,13 +3514,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       break;
     case "CONVERTLAYERTOABILITY":
       $layerIndex = -1;
-      for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+      $layersCount = count($layers);
+      for ($i = $layersCount - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
         if ($layers[$i] == $parameter) $layerIndex = $i;
       }
       if ($layerIndex != -1) {
         $layers[$layerIndex] = "ABILITY";
         $layers[$layerIndex + 2] = $parameter;
       }
+      $lastLayerIndex = $layersCount - LayerPieces();
+      if ($layers[$lastLayerIndex] == "ENDTURN") $layers[$lastLayerIndex] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
       return $parameter;
     case "BACKUP":
       $discard = GetDiscard($player);

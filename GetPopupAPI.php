@@ -163,7 +163,7 @@ switch ($popupType) {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
     global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode;
-    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro;
+    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout;
     
     $response->Settings = array();
     
@@ -204,6 +204,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "ManualTunic", 27, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableFabInsights", 28, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableHeroIntro", 29, $dbSettings);
+      AddSettingFromDB($response->Settings, "MirroredBoardLayout", 30, $dbSettings);
     } else {
       // Normal game settings
       AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
@@ -228,6 +229,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic);
       AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights);
       AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro);
+      AddSetting($response->Settings, "MirroredBoardLayout", $SET_MirroredBoardLayout);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
@@ -252,7 +254,7 @@ function AddSetting(&$response, $name, $setting)
   $thisSetting = new stdClass();
   $thisSetting->name = $name;
   // Use isset to handle new settings that may not exist for existing players
-  $thisSetting->value = isset($mySettings[$setting]) ? $mySettings[$setting] : null;
+  $thisSetting->value = isset($mySettings[$setting]) ? $mySettings[$setting] : "0";
   array_push($response, $thisSetting);
 }
 

@@ -37,6 +37,7 @@ $SET_DisableAltArts = 26;//Do you want to disable alt arts
 $SET_ManualTunic = 27;//Do you want to manually tick up tunic each turn
 $SET_DisableFabInsights = 28; //Did the player disable global stat tracking
 $SET_DisableHeroIntro = 29; //Did the player disable hero intro animation
+$SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout
 
 function HoldPrioritySetting($player)
 {
@@ -382,6 +383,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "ManualTunic" => 27,
     "DisableFabInsights" => 28,
     "DisableHeroIntro" => 29,
+    "MirroredBoardLayout" => 30,
   ];
   return $settingsToId[$value];
 }
@@ -416,7 +418,7 @@ function SaveSettingInDatabase($setting)
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
-  global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro;
+  global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -437,6 +439,7 @@ function SaveSettingInDatabase($setting)
     case $SET_ManualTunic:
     case $SET_DisableFabInsights:
     case $SET_DisableHeroIntro:
+    case $SET_MirroredBoardLayout:
       return true;
     default: return false;
   }
