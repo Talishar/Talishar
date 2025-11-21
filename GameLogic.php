@@ -781,7 +781,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
-        case "LOSEHEALTH":
+        case "PLAYERLOSEHEALTH": //Doesn't count in endgame stats as damage dealt
+          PlayerLoseHealth($lastResult, $player);
+          return $lastResult;
+        case "LOSEHEALTH": // Count in endgame stats as damage dealt
           LoseHealth($lastResult, $player);
           return $lastResult;
         case "BANISHHAND":
@@ -2839,7 +2842,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherChar = GetPlayerCharacter($otherPlayer);
       if ($lastResult != "shiyana_diamond_gemini" && !IsPlayerAI($player)) {
         $lifeDifference = GeneratedCharacterHealth("shiyana_diamond_gemini") - GeneratedCharacterHealth($otherChar[0]);
-        if ($lifeDifference > 0) LoseHealth($lifeDifference, $player);
+        if ($lifeDifference > 0) PlayerLoseHealth($lifeDifference, $player);
         elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $player, true, false);
       }
       if ($otherChar[0] == "victor_goldmane_high_and_mighty" || $otherChar[0] == "victor_goldmane") {
@@ -3353,7 +3356,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("🎲 Nothing Happened");
       }
       elseif($lastResult == $player) {
-        LoseHealth($dqVars[0], $player);
+        PlayerLoseHealth($dqVars[0], $player);
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:maxCost=$dqVars[0]", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZADDZONE", $player, "MYHAND,DECK", 1);

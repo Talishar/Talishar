@@ -351,7 +351,7 @@
           $roll = GetDieRoll($currentPlayer);
           $rv = "Crazy Brew rolled " . $roll;
           if($roll <= 2) {
-            LoseHealth(2, $currentPlayer);
+            PlayerLoseHealth(2, $currentPlayer);
             GainActionPoints(1, $currentPlayer);
             $rv .= " and lost you 2 life.";
           }

@@ -557,7 +557,7 @@ function DYNHitEffect($cardID, $from, $attackID)
     case "regicide_blue": if(IsHeroAttackTarget() && IsRoyal($defPlayer))
       {
         Writelog("💀 The emperor is dead, long live the emperor");
-        PlayerLoseHealth($defPlayer, GetHealth($defPlayer));
+        LoseHealth($defPlayer, GetHealth($defPlayer));
       }
       break;
     case "surgical_extraction_blue":

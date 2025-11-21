@@ -671,7 +671,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10005:
       WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true);
-      LoseHealth(1, $playerID);
+      PlayerLoseHealth(1, $playerID);
       break;
     case 10006:
       WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true);
@@ -1627,7 +1627,7 @@ function UndoShiyanaBaseLife() // Technically not a End Step Trigger but it's th
   $defChar = GetPlayerCharacter($defPlayer);
   if ($defChar[0] == "shiyana_diamond_gemini" && SearchCurrentTurnEffects($mainChar[0] . "-SHIYANA", $defPlayer)) {
     $lifeDifference = GeneratedCharacterHealth($mainChar[0]) - GeneratedCharacterHealth("shiyana_diamond_gemini");
-    if ($lifeDifference > 0) LoseHealth($lifeDifference, $defPlayer);
+    if ($lifeDifference > 0) PlayerLoseHealth($lifeDifference, $defPlayer);
     elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false);
   }
 }

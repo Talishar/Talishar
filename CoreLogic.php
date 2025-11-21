@@ -946,6 +946,7 @@ function AttackDamageAbilitiesTrigger($damageDone)
 
 function LoseHealth($amount, $player)
 {
+  LogDamageStats($player, $amount, $amount);
   PlayerLoseHealth($player, $amount);
 }
 

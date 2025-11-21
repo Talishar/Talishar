@@ -103,7 +103,7 @@
         else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
           break;
       case "searing_shot_red": case "searing_shot_yellow": case "searing_shot_blue":
-        if(IsHeroAttackTarget()) PlayerLoseHealth($defPlayer, 1);
+        if(IsHeroAttackTarget()) LoseHealth($defPlayer, 1);
         break;
       default: break;
     }

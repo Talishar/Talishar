@@ -642,12 +642,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "BEASTWITHIN":
       $deck = new Deck($player);
       if($deck->Empty()) {
-        LoseHealth(9999, $player);
-        WriteLog("💀 Your deck has no cards, so " . CardLink("beast_within_yellow", "beast_within_yellow") . " continues damaging you until you die.");
+        PlayerLoseHealth(9999, $player);
+        WriteLog("👹 Your deck has no cards, so " . CardLink("beast_within_yellow", "beast_within_yellow") . " continues damaging you until you die.");
         return 1;
       }
       $card = $deck->BanishTop("-", $player);
-      LoseHealth(1, $player);
+      PlayerLoseHealth(1, $player);
       if(ModifiedPowerValue($card, $player, "DECK", source:"beast_within_yellow") >= 6) {
         $banish = new Banish($player);
         RemoveBanish($player, ($banish->NumCards()-1)*BanishPieces());

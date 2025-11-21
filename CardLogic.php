@@ -1754,7 +1754,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "arakni_tarantula":
       WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $defPlayer);
-      PlayerLoseHealth($defPlayer, 1);
+      LoseHealth($defPlayer, 1);
       break;
     case "cindra_dracai_of_retribution":
     case "cindra":
@@ -3875,7 +3875,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PummelHit($player, true, context:"Choose a card to discard (or pass and lose 2 health)");
         AddDecisionQueue("NOTEQUALPASS", $player, "PASS");
         AddDecisionQueue("PASSPARAMETER", $player, "2", 1);
-        AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
+        AddDecisionQueue("OP", $mainPlayer, "PLAYERLOSEHEALTH", 1);
         break;
       case "riddle_with_regret_red":
         WriteLog("You are riddled with the regret of $additionalCosts auras");
