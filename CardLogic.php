@@ -4311,6 +4311,12 @@ function GiveAttackGoAgain()
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
 }
 
+function GiveAttackDominate()
+{
+  global $combatChainState, $CCS_CurrentAttackGainedDominate;
+  $combatChainState[$CCS_CurrentAttackGainedDominate] = 1;
+}
+
 function TopDeckToArsenal($player)
 {
   $deck = new Deck($player);

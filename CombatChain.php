@@ -1533,7 +1533,7 @@ function CombatChainPlayAbility($cardID)
 
 function IsDominateActive()
 {
-  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $combatChainState;
+  global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_CurrentAttackGainedDominate, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary;
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
@@ -1615,6 +1615,9 @@ function IsDominateActive()
       default:
         break;
     }
+  }
+  if ($combatChainState[$CCS_CurrentAttackGainedDominate] == 1) {
+    return true;
   }
   return false;
 }

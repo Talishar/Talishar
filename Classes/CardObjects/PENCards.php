@@ -266,3 +266,57 @@ class trench_of_watery_depths extends Card
     AddDecisionQueue("PITCHCARD", $this->controller, "DISCARD", 1);
   }
 }
+
+class elemental_strike_red extends Card
+{
+  function __construct($controller)
+  {
+    $this->cardID = "elemental_strike_red";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false)
+  {
+    $myHand = &GetHand(player: $this->controller);
+    if ($from == "HAND" && count($myHand) < 2)
+      return true;
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-')
+  {
+    MZChooseAndBanish($this->controller, "MYHAND", "HAND,-");
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
+  {
+    $isEarth = SearchCardList($additionalCosts, $this->controller, talent: "EARTH");
+    $isLightning = SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING");
+    $isIce = SearchCardList($additionalCosts, $this->controller, talent: "ICE");
+    WriteLog("isEarth $isEarth isLightning $isLightning isIce $isIce");
+
+    if ($isEarth != '') {
+      AddDecisionQueue("POWERMODIFIER", $this->controller, "2", 1);
+    }
+    if ($isLightning != '') {
+      GiveAttackGoAgain();
+    }
+    if ($isIce != '') {
+      GiveAttackDominate();
+    }
+  }
+}
+
+class colors_of_aria_red extends Card
+{
+  function __construct($controller)
+  {
+    $this->cardID = "colors_of_aria_red";
+    $this->controller = $controller;
+  }
+
+  function SpecialTalent($from = "", $index = "")
+  {
+    return "ELEMENTAL,ICE,EARTH,LIGHTNING";
+  }
+}
