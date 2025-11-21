@@ -7,44 +7,28 @@ use SendGrid\Mail\Mail;
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat)
 {
-	if (empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat)) {
-		$result = true;
-	} else {
-		$result = false;
-	}
+	$result = (empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat)) ? true : false;
 	return $result;
 }
 
 // Check invalid username
 function invalidUid($username)
 {
-	if (!ctype_alnum($username)) {
-		$result = true;
-	} else {
-		$result = false;
-	}
+	$result = (!ctype_alnum($username)) ? true : false;
 	return $result;
 }
 
 // Check invalid email
 function invalidEmail($email)
 {
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		$result = true;
-	} else {
-		$result = false;
-	}
+	$result = (!filter_var($email, FILTER_VALIDATE_EMAIL)) ? true : false;
 	return $result;
 }
 
 // Check if passwords matches
 function pwdMatch($pwd, $pwdrepeat)
 {
-	if ($pwd !== $pwdrepeat) {
-		$result = true;
-	} else {
-		$result = false;
-	}
+	$result = ($pwd !== $pwdrepeat) ? true : false;
 	return $result;
 }
 
@@ -71,7 +55,8 @@ function uidExists($conn, $username)
 
 	if ($row = mysqli_fetch_assoc($resultData)) {
 		return $row;
-	} else {
+	}
+	else {
 		$result = false;
 		return $result;
 	}
@@ -100,7 +85,8 @@ function emailExists($conn, $email)
 
 	if ($row = mysqli_fetch_assoc($resultData)) {
 		return $row;
-	} else {
+	}
+	else {
 		$result = false;
 		return $result;
 	}
@@ -109,8 +95,7 @@ function emailExists($conn, $email)
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 {
-	if ($reportingServer) $conn = GetReportingDBConnection();
-	else $conn = GetDBConnection();
+	$conn = ($reportingServer) ? GetReportingDBConnection() : GetDBConnection();
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
@@ -379,8 +364,8 @@ function logCompletedGameStats()
 		mysqli_stmt_close($stmt);
 	}
 
-	if ($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, ($winner == 1 ? 1 : 0));
-	if ($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, ($winner == 2 ? 1 : 0));
+	if ($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, $winner == 1 ? 1 : 0);
+	if ($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, $winner == 2 ? 1 : 0);
 
 	$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
 	$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
@@ -672,9 +657,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		}
 	}
 	$turnStats = &GetTurnStats($player);
-	$otherPlayerTurnStats = &GetTurnStats(($player == 1 ? 2 : 1));
+	$otherPlayerTurnStats = &GetTurnStats($player == 1 ? 2 : 1);
 	for($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
-		$deck["turnResults"][$i]["cardsUsed"] = ($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
+		$deck["turnResults"][$i]["cardsUsed"] = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
 		$deck["turnResults"][$i]["cardsBlocked"] = $turnStats[$i + $TurnStats_CardsBlocked];
 		$deck["turnResults"][$i]["cardsPitched"] = $turnStats[$i + $TurnStats_CardsPitched];
 		$deck["turnResults"][$i]["resourcesUsed"] = $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -710,7 +695,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
 		$totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-		$totalDefensiveCards += ($turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]); //TODO: Separate out pitch for offense and defense
+		$totalDefensiveCards += $turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]; //TODO: Separate out pitch for offense and defense
 		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
 		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
@@ -830,7 +815,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		}
 	}
 	$turnStats = &GetTurnStats($player);
-	$otherPlayerTurnStats = &GetTurnStats(($player == 1 ? 2 : 1));
+	$otherPlayerTurnStats = &GetTurnStats($player == 1 ? 2 : 1);
 	for($i = 0; $i < count($turnStats); $i += TurnStatPieces()) {
 		$deck["turnResults"][$i]["cardsUsed"] = intval($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
 		$deck["turnResults"][$i]["cardsBlocked"] = intval($turnStats[$i + $TurnStats_CardsBlocked]);
@@ -868,7 +853,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
 		$totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-		$totalDefensiveCards += ($turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]); //TODO: Separate out pitch for offense and defense
+		$totalDefensiveCards += $turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked]; //TODO: Separate out pitch for offense and defense
 		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
 		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
@@ -916,11 +901,11 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 
 function GetNormalCardID($cardID)
 {
-	switch ($cardID) {
-		case "MON400": return "spell_fray_cloak";
-		case "MON401": return "spell_fray_gloves";
-		case "MON402": return "spell_fray_leggings";
-	}
+	return match ($cardID) {
+		"MON400" => "spell_fray_cloak",
+		"MON401" => "spell_fray_gloves",
+		"MON402" => "spell_fray_leggings",
+	};
 	return $cardID;
 }
 
