@@ -327,8 +327,8 @@ function CharacterDestroyEffect($cardID, $player)
       if (intval($weaponIndex) != -1) DestroyCharacter($player, $weaponIndex, true);
       break;
     case "teklovossen_the_mechropotentb":
-      # Add easter egg here when Teklovessen lore drops
-      #WriteLog("Teklovessen lost his humanity for the greater good however as the machine shuts down he can no longer breathe.");
+      #Easter egg here when Teklovessen lore drops
+      WriteLog("🕳️ Teklovessen lost his humanity for the greater good however as the machine shuts down he can no longer breathe.");
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
