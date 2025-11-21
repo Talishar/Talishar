@@ -359,7 +359,7 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
         $pitchText = " (3)";
         break;
       case 2:
-        $color = "#fdd141";
+        $color = "GoldenRod";
         $pitchText = " (2)";
         break;
       case 1:
