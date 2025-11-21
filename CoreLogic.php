@@ -944,6 +944,8 @@ function AttackDamageAbilitiesTrigger($damageDone)
   }
 }
 
+// The only difference between LoseHealth and PlayerLoseHealth is that LoseHealth logs the life lost as damage for the end games stats. 
+// For effects like Toxicity, Remorseless, Arakni Tarantula, etc
 function LoseHealth($amount, $player)
 {
   LogDamageStats($player, $amount, $amount);
@@ -1016,6 +1018,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   return true;
 }
 
+// The only difference between LoseHealth and PlayerLoseHealth is that LoseHealth logs the life lost as damage for the end games stats.
 function PlayerLoseHealth($player, $amount)
 {
   global $CS_HealthLost;
