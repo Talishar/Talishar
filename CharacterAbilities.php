@@ -332,7 +332,7 @@ function CharacterDestroyEffect($cardID, $player)
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
-      if (!IsGameOver()) PlayerLoseHealth($player, GetHealth($player));
+      if (!IsGameOver()) PlayerLoseHealth(GetHealth($player), $player);
       break;
     case "meridian_pathway":
       SearchCurrentTurnEffects("MERIDIANWARD", $player, true);
