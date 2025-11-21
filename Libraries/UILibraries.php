@@ -355,15 +355,15 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
   } else {
     switch ($pitchValue) {
       case 3:
-        $color = "#009DDF";
+        $color = "#009ddf";
         $pitchText = " (3)";
         break;
       case 2:
-        $color = "GoldenRod";
+        $color = "#fdd141";
         $pitchText = " (2)";
         break;
       case 1:
-        $color = "#AF1518";
+        $color = "#af1518";
         $pitchText = " (1)";
         break;
       default:
