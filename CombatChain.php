@@ -1486,7 +1486,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
       }
       break;
     case "regicide_blue":
-      if ($player == $mainPlayer) LoseHealth($mainPlayer, GetHealth($mainPlayer));
+      if ($player == $mainPlayer) LoseHealth(GetHealth($mainPlayer), $mainPlayer);
       break;
     default:
       break;

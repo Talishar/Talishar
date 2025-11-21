@@ -736,7 +736,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
   }
   LogDamageStats($player, $damageThreatened, $damage);
-  PlayerLoseHealth($player, $damage);
+  PlayerLoseHealth($damage, $player);
   return $damage;
 }
 
@@ -949,7 +949,7 @@ function AttackDamageAbilitiesTrigger($damageDone)
 function LoseHealth($amount, $player)
 {
   LogDamageStats($player, $amount, $amount);
-  PlayerLoseHealth($player, $amount);
+  PlayerLoseHealth($amount, $player);
 }
 
 function GainHealth($amount, $player, $silent = false, $preventable = true)
@@ -1019,7 +1019,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
 }
 
 // The only difference between LoseHealth and PlayerLoseHealth is that LoseHealth logs the life lost as damage for the end games stats.
-function PlayerLoseHealth($player, $amount)
+function PlayerLoseHealth($amount, $player)
 {
   global $CS_HealthLost;
   $health = &GetHealth($player);

@@ -1216,7 +1216,7 @@ function EquipPayAdditionalCosts($cardIndex)
       BanishCardForPlayer($char->cardID, $currentPlayer, "EQUIP", "NA");
       break;
     case "flail_of_agony":
-      PlayerLoseHealth(1, $currentPlayer);
+      PlayerLoseHealth($currentPlayer, 1);
       --$character[$cardIndex + 5];
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;

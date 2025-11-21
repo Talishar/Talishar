@@ -1754,7 +1754,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "arakni_tarantula":
       WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $defPlayer);
-      LoseHealth($defPlayer, 1);
+      LoseHealth(1, $defPlayer);
       break;
     case "cindra_dracai_of_retribution":
     case "cindra":
