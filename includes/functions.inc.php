@@ -906,7 +906,6 @@ function GetNormalCardID($cardID)
 		"MON401" => "spell_fray_gloves",
 		"MON402" => "spell_fray_leggings",
 	};
-	return $cardID;
 }
 
 function SavePatreonTokens($accessToken, $refreshToken)

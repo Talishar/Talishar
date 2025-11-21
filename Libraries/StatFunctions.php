@@ -16,9 +16,9 @@ $CardStats_TimesBlocked = 2;
 $CardStats_TimesPitched = 3;
 $CardStats_TimesHit = 4;
 $CardStats_TimesCharged = 5;
-$CardStats_Dynamic1 = 6;
-$CardStats_Dynamic2 = 7;
-$CardStats_Dynamic3 = 8;
+$CardStats_Dynamic1 = 6; //Reserved for future use
+$CardStats_Dynamic2 = 7; //Reserved for future use
+$CardStats_Dynamic3 = 8; //Reserved for future use
 $CardStats_TimesKatsuDiscard = 9;
 
 $TurnStats_DamageThreatened = 0;
@@ -65,8 +65,14 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
       }
       if($from != "PLAY" && $from != "EQUIP")
       {
-        if($player == $mainPlayer) ++$turnStats[$baseIndex + $TurnStats_CardsPlayedOffense];
-        else ++$turnStats[$baseIndex + $TurnStats_CardsPlayedDefense];
+        switch ($player) {
+          case $mainPlayer:
+            ++$turnStats[$baseIndex + $TurnStats_CardsPlayedOffense];
+            break;
+          default:
+            ++$turnStats[$baseIndex + $TurnStats_CardsPlayedDefense];
+            break;
+        }
       }
       break;
   }
