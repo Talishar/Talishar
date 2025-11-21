@@ -76,9 +76,7 @@
     {
       $element = $elementArray[$i];
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
-      // Colors of Aria should never satisfy Fuse requirements. Exclude it from the search.
-      $search = "MYHAND:talent=" . $element . ";cardID!=colors_of_aria_red";
-      AddDecisionQueue("MULTIZONEINDICES", $player, $search, $subsequent);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=" . $element, $subsequent);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose which ". ucfirst(strtolower($element))." card to reveal for Fusion", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
