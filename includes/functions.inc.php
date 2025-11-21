@@ -581,13 +581,13 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	// Get the player's own hero from the character array (first card in character section)
 	$characterCards = explode(" ", $character);
 	if(count($characterCards) > 0) {
-		$yourHeroCardID = GetNormalCardID($characterCards[0]);
+		$yourHeroCardID = $characterCards[0];
 		$deck["yourHero"] = $yourHeroCardID;
 	}
 	
 	// Add opponent's hero if provided
 	if($opposingHero != "") {
-		$deck["opponentHero"] = GetNormalCardID($opposingHero);
+		$deck["opponentHero"] = $opposingHero;
 	}
 	
 	$deck["cardResults"] = [];
@@ -608,7 +608,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	foreach ($deduplicatedCharacter as $card => $numCopies) {
 		$cardResult = [
-			"cardId" => GetNormalCardID($card),
+			"cardId" => $card,
 			"cardName" => CardName($card),
 			"numCopies" => $numCopies,
 		];
@@ -629,7 +629,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	foreach ($deduplicatedDeck as $card => $numCopies) {
 		$cardResult = [
-			"cardId" => GetNormalCardID($card),
+			"cardId" => $card,
 			"played" => 0,
 			"blocked" => 0,
 			"pitched" => 0,
@@ -645,7 +645,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$cardStats = &GetCardStats($player);
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if($deck["cardResults"][$j]["cardId"] == GetNormalCardID($cardStats[$i])) {
+			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
 				$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
 				$deck["cardResults"][$j]["blocked"] = $cardStats[$i + $CardStats_TimesBlocked];
 				$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
@@ -766,7 +766,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 
 	foreach ($deduplicatedCharacter as $card => $numCopies) {
 		$cardResult = [
-			"cardId" => GetNormalCardID($card),
+			"cardId" => $card,
 			"cardName" => CardName($card),
 			"numCopies" => $numCopies,
 		];
@@ -787,7 +787,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 
 	foreach ($deduplicatedDeck as $card => $numCopies) {
 		$cardResult = [
-			"cardId" => GetNormalCardID($card),
+			"cardId" => $card,
 			"played" => 0,
 			"blocked" => 0,
 			"pitched" => 0,
@@ -803,7 +803,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$cardStats = &GetCardStats($player);
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if($deck["cardResults"][$j]["cardId"] == GetNormalCardID($cardStats[$i])) {
+			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
 				$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
 				$deck["cardResults"][$j]["blocked"] = intval($cardStats[$i + $CardStats_TimesBlocked]);
 				$deck["cardResults"][$j]["pitched"] = intval($cardStats[$i + $CardStats_TimesPitched]);
@@ -897,16 +897,6 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	}
 
 	return json_encode($deck);
-}
-
-function GetNormalCardID($cardID)
-{
-	switch ($cardID) {
-		case "MON400": return "spell_fray_cloak";
-		case "MON401": return "spell_fray_gloves";
-		case "MON402": return "spell_fray_leggings";
-	}
-	return $cardID;
 }
 
 function SavePatreonTokens($accessToken, $refreshToken)
