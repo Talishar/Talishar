@@ -9,6 +9,12 @@ if (!IsGameNameValid($gameName)) {
   exit;
 }
 $playerID = $_GET["playerID"];
+
+if ($playerID == 3) {
+  echo ("Spectators cannot submit sideboard.");
+  exit;
+}
+
 $playerCharacter = $_GET["playerCharacter"];
 $playerDeck = $_GET["playerDeck"];
 $authKey = $_GET["authKey"];

@@ -18,6 +18,13 @@ if($_POST == NULL) {
 
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
+
+if ($playerID == 3) {
+  $response->error = "Spectators cannot choose first player";
+  echo json_encode($response);
+  exit;
+}
+
 $authKey = $_POST["authKey"] ?? null;
 if (!$authKey) {
   if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];

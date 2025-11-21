@@ -23,6 +23,11 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = $_GET["playerID"];
 
+if ($playerID == 3) {
+  echo ("Spectators cannot start a game.");
+  exit;
+}
+
 if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
 
 ob_start();

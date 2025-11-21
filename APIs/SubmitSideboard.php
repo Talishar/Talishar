@@ -27,6 +27,13 @@ if($_POST == NULL) {
 
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
+
+if ($playerID == 3) {
+  $response->error = "Spectators cannot submit sideboard";
+  echo json_encode($response);
+  exit;
+}
+
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
