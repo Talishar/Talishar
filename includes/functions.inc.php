@@ -901,11 +901,12 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 
 function GetNormalCardID($cardID)
 {
-	return match ($cardID) {
-		"MON400" => "spell_fray_cloak",
-		"MON401" => "spell_fray_gloves",
-		"MON402" => "spell_fray_leggings",
-	};
+	switch ($cardID) {
+		case "MON400": return "spell_fray_cloak";
+		case "MON401": return "spell_fray_gloves";
+		case "MON402": return "spell_fray_leggings";
+	}
+	return $cardID;
 }
 
 function SavePatreonTokens($accessToken, $refreshToken)
