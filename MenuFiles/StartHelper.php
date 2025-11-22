@@ -65,7 +65,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $userId = ($player == 1 ? $p1id : $p2id);
   $savedSettings = LoadSavedSettings($userId);
   $settingArray = [];
-  for($i=0; $i<=30; ++$i) // Settings: This need to go up when we put a new settings
+  for($i=0; $i<=31; ++$i) // Settings: This need to go up when we put a new settings
   {
     $value = "";
     switch($i)
