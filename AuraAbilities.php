@@ -1,5 +1,30 @@
 <?php
 
+function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-") {
+  global $EffectContext, $currentTurnEffects;
+  if ($effectController == "-") $effectController = $player;
+  if (TypeContains($cardID, "T", $player)) $isToken = true;
+  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+    if ($isToken) {//this is a band-aid fix for cases where EffectContext isn't updated properly
+      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+      return;
+    }
+  }
+  if ($isToken) {
+    $ind = SearchCurrentTurnEffectsForIndex("break_stature_yellow", $effectController);
+    if ($ind != -1 && $currentTurnEffects[$ind + 2] != "") {
+      if (NameOverride($cardID, $player) == NameOverride($currentTurnEffects[$ind + 2], $player)) {
+        return false;
+      }
+    }
+    $ind = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $effectController);
+    if ($ind != -1) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated;
@@ -20,20 +45,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     }
   }
-  if ($isToken) {
-    $ind = SearchCurrentTurnEffectsForIndex("break_stature_yellow", $effectController);
-    if ($ind != -1 && $currentTurnEffects[$ind + 2] != "") {
-      if (NameOverride($cardID, $player) == NameOverride($currentTurnEffects[$ind + 2], $player)) {
-        WriteLog("Your stature has been broken, you cannot create " . $currentTurnEffects[$ind + 2] . " this turn!");
-        return;
-      }
-    }
-    $ind = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $effectController);
-    if ($ind != -1) {
-      WriteLog("Grandeur has been renounced, you cannot create token auras this turn!");
-      return;
-    }
-  }
+  if (!CanPlayAura($cardID, $player, $EffectContext, $effectController)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
   if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
