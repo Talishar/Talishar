@@ -405,6 +405,10 @@ class Card {
   function SpecialClass() {
     return "-";
   }
+
+  function SpecialTalent() {
+    return "-";
+  }
   
   function SpecialCost() {
     return -1;

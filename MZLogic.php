@@ -607,12 +607,16 @@ function MZChooseAndDestroy($player, $search, $may = false, $context = "Choose a
 
 function MZChooseAndBanish($player, $search, $fromMod, $may = false, $context = "Choose a card to banish")
 {
+  global $CS_AdditionalCosts;
   AddDecisionQueue("MULTIZONEINDICES", $player, $search);
   AddDecisionQueue("SETDQCONTEXT", $player, $context);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("SETCLASSSTATE", $player, "<-", 1);
+  $persistCard = $CS_AdditionalCosts;
   AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
+  AddDecisionQueue("SETCLASSSTATE", $player, $persistCard, 1);
 }
 
 function MZChooseAndBounce($player, $search, $may = false, $context = "Choose a card to bounce")

@@ -1955,6 +1955,9 @@ function TalentOverride($cardID, $player = "", $zone="-")
     if ($cardTalent != "") $cardTalent .= ",";
     $cardTalent .= CardTalent($cardID, $zone);
   }
+  if ($cardID == "colors_of_aria_red" && ($zone == "HAND"|| $zone == "DECK")) {
+    return "ELEMENTAL";
+  }
   if ($cardTalent == "") return "NONE";
   return $cardTalent;
 }
