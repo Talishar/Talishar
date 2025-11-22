@@ -319,4 +319,9 @@ class colors_of_aria_red extends Card
   {
     return "ELEMENTAL,ICE,EARTH,LIGHTNING";
   }
+
+  function PitchAbility($from = "", $index = "")
+  {
+    TalentOverride("colors_of_aria_red", $this->controller);
+  }
 }
