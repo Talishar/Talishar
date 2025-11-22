@@ -39,6 +39,7 @@ $SET_DisableFabInsights = 28; //Did the player disable global stat tracking
 $SET_DisableHeroIntro = 29; //Did the player disable hero intro animation
 $SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout (opponent)
 $SET_MirroredPlayerBoardLayout = 31; //Did the player enable mirrored board layout (player)
+$SET_AlwaysShowCounters = 32; //Always show counters on cards
 
 function HoldPrioritySetting($player)
 {
@@ -420,7 +421,7 @@ function SaveSettingInDatabase($setting)
 {
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
-  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts;
+  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
   global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout;
   switch($setting) {
     case $SET_DarkMode:
@@ -444,6 +445,7 @@ function SaveSettingInDatabase($setting)
     case $SET_DisableHeroIntro:
     case $SET_MirroredBoardLayout:
     case $SET_MirroredPlayerBoardLayout:
+    case $SET_AlwaysShowCounters:
       return true;
     default: return false;
   }
