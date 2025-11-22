@@ -308,7 +308,7 @@ function BOO($player)
 
 function Cheer($player)
 {
-  global $CS_CheeredThisTurn;
+  global $CS_CheeredThisTurn, $mainPlayer;
   SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
   WriteLog("Let's go! The crowd cheers for " . CardLink($char[0], $char[0]) . "!");
@@ -323,6 +323,14 @@ function Cheer($player)
       default:
         break;
     }
+  }
+  if ($player == $mainPlayer && SearchCharacterForCard($player, "comeback_kicks")) {
+    $index = FindCharacterIndex($player, "comeback_kicks");
+    AddDecisionQueue("YESNO", $player, "if you want to destroy " . Cardlink("comeback_kicks", "comeback_kicks"));
+    AddDecisionQueue("NOPASS", $player, "-");
+    AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+    AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+    AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
   }
 }
 

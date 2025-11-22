@@ -324,3 +324,21 @@ class colors_of_aria_red extends Card
     TalentOverride("colors_of_aria_red", $this->controller);
   }
 }
+
+class unyielding_grip extends Card
+{
+  function __construct($controller)
+  {
+    $this->cardID = "unyielding_grip";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index)
+  {
+    $myHand = &GetHand($this->controller);
+    if (count($myHand) === 0) {
+      return 3;
+    }
+    return 0;
+  }
+}
