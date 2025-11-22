@@ -273,7 +273,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $borderColor = 0;
 
   $response->MyPlaymat = IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID);
-  $response->TheirPlaymat = IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer);
+  if($initialLoad->isOpponentAI) $response->TheirPlaymat = IsColorblindMode($playerID) ? 0 : 2;
+  else $response->TheirPlaymat = IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer);
   if ($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
 
   //Display active chain link
@@ -1229,8 +1230,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
   // who's turn it is
   $response->turnPlayer = $mainPlayer;
+  
   //Turn number
-  $response->turnNo = $currentTurn;
+  switch ($firstPlayer) {
+    case $playerID:
+      $response->turnNo = $currentTurn - 1; //First player turn number start at 0
+      break;
+    default:
+      $response->turnNo = $currentTurn;
+      break;
+  }
+
   //Clock
   $response->clock = $p1TotalTime + $p2TotalTime;
 

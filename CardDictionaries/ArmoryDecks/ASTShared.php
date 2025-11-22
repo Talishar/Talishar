@@ -55,6 +55,7 @@ function DoCapQuickThinking($targetPlayer, $damage)
     PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard to " . CardLink("cap_of_quick_thinking", "cap_of_quick_thinking"), 1);
     PrependDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I", 1);
     PrependDecisionQueue("SETDQVAR", $targetPlayer, "0", 1); // current damage prevention
+    LogDamagePreventedStats($targetPlayer, 1);
   }
 }
 

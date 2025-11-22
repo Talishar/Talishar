@@ -65,7 +65,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $userId = ($player == 1 ? $p1id : $p2id);
   $savedSettings = LoadSavedSettings($userId);
   $settingArray = [];
-  for($i=0; $i<=30; ++$i) // Settings: This need to go up when we put a new settings
+  for($i=0; $i<=32; ++$i) // Settings: This need to go up when we put a new settings
   {
     $value = "";
     switch($i)
@@ -90,7 +90,7 @@ function SettingDefaultValue($setting, $hero)
   {
     case $SET_TryUI2: return "1";
     case $SET_AutotargetArcane: return "1";
-    case $SET_Playmat: return ($hero == "DUMMY" ? 8 : 0);
+    case $SET_Playmat: return $hero == "DUMMY" ? 2 : 0;
     case $SET_MirroredBoardLayout: return "1";
     default: return "0";
   }

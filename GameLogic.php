@@ -1370,6 +1370,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameter;
       if ($lastResult != "PASS") {
         $prevented = ArcaneDamagePrevented($player, $lastResult);
+        LogDamagePreventedStats($player, min($damage, $prevented));
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
         $dqVars[0] = $damage;

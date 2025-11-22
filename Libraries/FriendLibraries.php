@@ -112,8 +112,8 @@ function GetUserFriends($userId) {
       'username' => $username,
       'nickname' => $row['nickname'] ?: null,
       'isContributor' => in_array($username, $contributors),
-      'isPatron' => false, // Would need database lookup of patron status
-      'isPvtVoidPatron' => $username === "PvtVoid" // PvtVoid is special patron
+      'isPatron' => isset($_SESSION["isPatron"]) ? $_SESSION["isPatron"] : false, // Would need database lookup of patron status
+      'isPvtVoidPatron' => isset($_SESSION['isPvtVoidPatron']) ? $_SESSION['isPvtVoidPatron'] : false, 
     ];
   }
   
