@@ -293,7 +293,6 @@ class elemental_strike_red extends Card
     $isEarth = SearchCardList($additionalCosts, $this->controller, talent: "EARTH");
     $isLightning = SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING");
     $isIce = SearchCardList($additionalCosts, $this->controller, talent: "ICE");
-    WriteLog("isEarth $isEarth isLightning $isLightning isIce $isIce");
 
     if ($isEarth != '') {
       AddDecisionQueue("POWERMODIFIER", $this->controller, "2", 1);
