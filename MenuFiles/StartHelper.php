@@ -90,7 +90,7 @@ function SettingDefaultValue($setting, $hero)
   {
     case $SET_TryUI2: return "1";
     case $SET_AutotargetArcane: return "1";
-    case $SET_Playmat: return ($hero == "DUMMY" ? 8 : 0);
+    case $SET_Playmat: return $hero == "DUMMY" ? 2 : 0;
     case $SET_MirroredBoardLayout: return "1";
     default: return "0";
   }
