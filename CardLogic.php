@@ -4313,8 +4313,8 @@ function GiveAttackGoAgain()
 
 function GiveAttackDominate()
 {
-  global $combatChainState, $CCS_CurrentAttackGainedDominate;
-  $combatChainState[$CCS_CurrentAttackGainedDominate] = 1;
+  global $combatChainState, $CCS_CachedDominateActive;
+  $combatChainState[$CCS_CachedDominateActive] = 1;
 }
 
 function TopDeckToArsenal($player)
