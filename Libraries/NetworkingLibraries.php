@@ -1925,6 +1925,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
+      if ($layersCount > 0) {
+        $lastLayerIndex = count($layers) - LayerPieces();
+        if ($layers[$lastLayerIndex] == "ENDTURN") $layers[$lastLayerIndex] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
+      }
     }
     //CR 5.1.2 Announce (CR 2.0)
     if ($from == "ARS") {
@@ -1954,10 +1958,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $lastPlayed[3] = "-";
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
       $cachedPlayUniqueID = $uniqueID;
-    }
-    if ($layersCount > 0) {
-      $lastLayerIndex = $layersCount - LayerPieces();
-      if ($layers[$lastLayerIndex] == "ENDTURN") $layers[$lastLayerIndex] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
     }
   }
   if ($turn[0] == "A" || $turn[0] == "D" && $currentPlayer == $mainPlayer) {

@@ -3523,8 +3523,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $layers[$layerIndex] = "ABILITY";
         $layers[$layerIndex + 2] = $parameter;
       }
-      $lastLayerIndex = $layersCount - LayerPieces();
-      if ($layers[$lastLayerIndex] == "ENDTURN") $layers[$lastLayerIndex] = "RESUMETURN"; //Means the defending player played something, so the end turn attempt failed
       return $parameter;
     case "BACKUP":
       $discard = GetDiscard($player);
