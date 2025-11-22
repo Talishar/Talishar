@@ -224,6 +224,7 @@ function GetCardBack($player)
     case 120: return "CBRighteousGaming3";
     case 121: return "CBFreshAndBuds2";
     case 122: return "CBNull";
+    case 123: return "CBPitchDevils";
     default: return "CardBack";
   };
 }
@@ -804,6 +805,29 @@ function IsTeamFatAndFurious($userName)
     case "Jorin":
     case "anastaso73":
     case "z4risu":
+      return true;
+    default:
+      break;
+  }
+  return false;
+}
+
+function IsTeamPitchDevils($userName)
+{
+  switch ($userName) {
+    case "PvtVoid":
+    case "Lestat":
+    case "elnino":
+    case "RTZ":
+    case "Schmax":
+    case "Belphegor":
+    case "FloJo":
+    case "MikeDwyer":
+    case "Dionysos":
+    case "Sosa":
+    case "TaddelDown":
+    case "inama":
+    case "Kanopterix":
       return true;
     default:
       break;
