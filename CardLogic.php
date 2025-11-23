@@ -4159,6 +4159,23 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         AddDecisionQueue("DRAW", $defPlayer, "-");
         }
       break;
+    case "bonds_of_ancestry_red":
+    case "bonds_of_ancestry_yellow":
+    case "bonds_of_ancestry_blue":
+      GiveAttackGoAgain();
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:comboOnly=true");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Combo to banish from your graveyard");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "MYDECK:isSameName=", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $player, "<-", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZBANISH", $player, "DECK,TCC," . $player, 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      AddDecisionQueue("ELSE", $player, "-");
+      AddDecisionQueue("WRITELOG", $player, "No card was banished from deck!", 1);
+      break;
     case "emissary_of_moon_red":
     case "emissary_of_tides_red":
     case "emissary_of_wind_red":

@@ -249,19 +249,7 @@ function OUTAbilityCost($cardID)
       case "bonds_of_ancestry_red": case "bonds_of_ancestry_yellow": case "bonds_of_ancestry_blue":
         if(ComboActive())
         {
-          GiveAttackGoAgain();
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Combo to banish from your graveyard");
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MYDECK:isSameName=", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $currentPlayer, "DECK,TCC," . $currentPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-          AddDecisionQueue("ELSE", $currentPlayer, "-");
-          AddDecisionQueue("WRITELOG", $currentPlayer, "No card was banished from deck!", 1);
+          AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         }
         return "";
       case "barbed_castaway":
