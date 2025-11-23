@@ -75,9 +75,7 @@ if ($playerID != 3) {
 }
 
 // Parse game file to check status and opponent info
-ob_start();
 include "./APIParseGamefile.php";
-ob_end_clean();
 
 // Check if game is still in progress
 // Cache piece 14 is set to 99 (MGS_GameOver) when game ends

@@ -1,6 +1,5 @@
 <?php
 
-ob_start();
 include "../HostFiles/Redirector.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
@@ -8,7 +7,9 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
-ob_end_clean();
+
+// Set headers immediately after includes
+SetHeaders();
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -30,10 +31,6 @@ if (!function_exists("SubtypeContains")) {
     return DelimStringContains($cardSubtype, $subtype);
   }
 }
-
-
-SetHeaders();
-
 
 $_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);

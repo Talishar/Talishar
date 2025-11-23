@@ -1,6 +1,5 @@
 <?php
 
-ob_start();
 include "../HostFiles/Redirector.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
@@ -8,8 +7,8 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
-ob_end_clean();
 
+// Set headers immediately after includes
 SetHeaders();
 
 
@@ -25,9 +24,7 @@ if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
   exit;
 }
 
-ob_start();
 include "./APIParseGamefile.php";
-ob_end_clean();
 
 $response->p1Name = $p1uid;
 $response->p2Name = $p2uid;

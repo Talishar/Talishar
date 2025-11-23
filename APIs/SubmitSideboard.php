@@ -192,11 +192,9 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $isReplay = 0;
   WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
 
-  ob_start();
   $filename = "../Games/" . $gameName . "/gamestate.txt";
   include "../ParseGamestate.php";
   include "../StartEffects.php";
-  ob_end_clean();
 
   //Update the game file to show that the game has started and other players can join to spectate
   $gameStatus = $MGS_GameStarted;

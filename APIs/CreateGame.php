@@ -1,6 +1,5 @@
 <?php
 
-ob_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include "../Libraries/SHMOPLibraries.php";
@@ -12,7 +11,6 @@ include_once "../AccountFiles/AccountDatabaseAPI.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Database/ConnectionManager.php';
-ob_end_clean();
 SetHeaders();
 
 $response = new stdClass();

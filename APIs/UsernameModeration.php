@@ -1,9 +1,7 @@
 <?php
 
-ob_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-ob_end_clean();
 SetHeaders();
 
 // Handle CORS preflight requests

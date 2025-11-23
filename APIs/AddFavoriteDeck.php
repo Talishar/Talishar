@@ -1,13 +1,11 @@
 <?php
 
-ob_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once "../AccountFiles/AccountDatabaseAPI.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
-ob_end_clean();
 SetHeaders();
 
 $response = new stdClass();

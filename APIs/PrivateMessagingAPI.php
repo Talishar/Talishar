@@ -10,10 +10,8 @@ ini_set('error_log', '/var/www/html/game/private_messaging_errors.log');
 set_time_limit(10);
 ini_set('memory_limit', '32M');
 
-ob_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-ob_end_clean();
 SetHeaders();
 
 // Handle CORS preflight requests - exit early to avoid unnecessary processing
