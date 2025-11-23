@@ -1501,6 +1501,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $playerSource = $parameters[2];
+      if($playerSource != $player) LogDamageStats($player, $damage, 0); //Log arcane damageThreatened before it's prevented
+
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source, $playerSource);
       if ($damage < 0) $damage = 0;
@@ -2053,15 +2055,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
       $damage = $dqVars[0];
-      $damageThreatened = $CombatChain->Card(0)->TotalPower() ?? 0;
+      $type = $params[1];
+      $source = $params[2];
+      $playerSource = $params[3] ?? "-";
+
+      if($type != "ARCANE") $damageThreatened = $CombatChain->Card(0)->TotalPower() ?? $damage;
+      else $damageThreatened = 0; //arcane damage had to be calculated earlier before all the prevention happens
+
       if ($damage > $params[0])//Means there was excess damage prevention prevention
       {
         $damage = $params[0];
         $dqVars[0] = $damage;
         $dqState[6] = $damage;
       }
-      $playerSource = $params[3] ?? "-";
-      return FinalizeDamage($player, $damage, $damageThreatened, $params[1], $params[2], $playerSource);
+      return FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $playerSource);
     case "SETSCOURDQVAR":
       $targetType = 0;
       $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0));

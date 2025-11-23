@@ -656,19 +656,34 @@ function ArcaneDamage($cardID): int
   //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
   return match ($cardID) {
     "burn_bare", "light_up_the_leaves_red" => 6,
-    "voltic_bolt_red", "timekeepers_whim_red", "freezing_point_red", "ice_bolt_red", "succumb_to_winter_red", "aether_icevein_red", "swell_tidings_red" => 5,
-    "aether_spindle_red", "scalding_rain_red", "voltic_bolt_yellow", "rousing_aether_red", "emeritus_scolding_red", "aether_wildfire_red", "timekeepers_whim_yellow", "dampen_red", "ice_bolt_yellow", "aether_hail_red", "polar_cap_red",
-    "succumb_to_winter_yellow", "aether_icevein_yellow", "aether_quickening_red", "eternal_inferno_red", "chorus_of_the_amphitheater_red", "photon_splicing_red" => 4,
-    "sonic_boom_yellow", "lesson_in_lava_yellow", "aether_spindle_yellow", "aether_flare_red", "reverberate_red", "scalding_rain_yellow", "zap_red", "voltic_bolt_blue", "emeritus_scolding_yellow", "timekeepers_whim_blue", "aether_quickening_yellow",
-    "prognosticate_red", "sap_red", "chain_lightning_yellow", "foreboding_bolt_red", "rousing_aether_yellow", "snapback_red", "aether_dart_red", "dampen_yellow", "ice_bolt_blue", "frosting_red", "aether_hail_yellow",
-    "polar_cap_yellow", "succumb_to_winter_blue", "aether_icevein_blue", "encase_red", "icebind_red", "chorus_of_the_amphitheater_yellow", "pop_the_bubble_red", "arcane_twining_red", "etchings_of_arcana_red", "open_the_flood_gates_red", "overflow_the_aetherwell_red", "perennial_aetherbloom_red", "trailblazing_aether_red", "glyph_overlay_red",
+
+    "voltic_bolt_red", "timekeepers_whim_red", "freezing_point_red", "ice_bolt_red", "succumb_to_winter_red", "aether_icevein_red", 
+    "swell_tidings_red" => 5,
+
+    "aether_spindle_red", "scalding_rain_red", "voltic_bolt_yellow", "rousing_aether_red", "emeritus_scolding_red", "aether_wildfire_red", "timekeepers_whim_yellow", 
+    "dampen_red", "ice_bolt_yellow", "aether_hail_red", "polar_cap_red", "succumb_to_winter_yellow", "aether_icevein_yellow", "aether_quickening_red", "eternal_inferno_red", 
+    "chorus_of_the_amphitheater_red", "photon_splicing_red" => 4,
+
+    "sonic_boom_yellow", "lesson_in_lava_yellow", "aether_spindle_yellow", "aether_flare_red", "reverberate_red", "scalding_rain_yellow", "zap_red", "voltic_bolt_blue", 
+    "emeritus_scolding_yellow", "timekeepers_whim_blue", "aether_quickening_yellow", "prognosticate_red", "sap_red", "chain_lightning_yellow", "foreboding_bolt_red", 
+    "rousing_aether_yellow", "snapback_red", "aether_dart_red", "dampen_yellow", "ice_bolt_blue", "frosting_red", "aether_hail_yellow", "polar_cap_yellow", "succumb_to_winter_blue", 
+    "aether_icevein_blue", "encase_red", "icebind_red", "chorus_of_the_amphitheater_yellow", "pop_the_bubble_red", "arcane_twining_red", "etchings_of_arcana_red", 
+    "open_the_flood_gates_red", "overflow_the_aetherwell_red", "perennial_aetherbloom_red", "trailblazing_aether_red", "glyph_overlay_red", 
     "photon_splicing_yellow" => 3,
-    "forked_lightning_red", "foreboding_bolt_yellow", "rousing_aether_blue", "snapback_yellow", "emeritus_scolding_blue", "aether_dart_yellow", "dampen_blue", "frosting_yellow", "aether_hail_blue", "polar_cap_blue", "icebind_yellow",
-    "mind_warp_yellow", "aether_quickening_blue", "prognosticate_yellow", "sap_yellow", "chorus_of_the_amphitheater_blue", "pop_the_bubble_yellow", "arcane_twining_yellow", "etchings_of_arcana_yellow", "open_the_flood_gates_yellow", "overflow_the_aetherwell_yellow", "perennial_aetherbloom_yellow", "trailblazing_aether_yellow", "glyph_overlay_yellow", "aether_spindle_blue",
-    "aether_flare_yellow", "reverberate_yellow", "scalding_rain_blue", "zap_yellow", "photon_splicing_blue" => 2,
-    "aether_flare_blue", "reverberate_blue", "zap_blue", "foreboding_bolt_blue", "snapback_blue", "aether_dart_blue", "singe_red", "singe_yellow", "singe_blue", "frosting_blue", "icebind_blue",
-    "prognosticate_blue", "sap_blue", "aether_arc_blue", "destructive_aethertide_blue", "pop_the_bubble_blue", "arcane_twining_blue", "etchings_of_arcana_blue", "open_the_flood_gates_blue", "overflow_the_aetherwell_blue", "perennial_aetherbloom_blue", "trailblazing_aether_blue", "glyph_overlay_blue" => 1,
+
+    "forked_lightning_red", "foreboding_bolt_yellow", "rousing_aether_blue", "snapback_yellow", "emeritus_scolding_blue", "aether_dart_yellow", "dampen_blue", "frosting_yellow", 
+    "aether_hail_blue", "polar_cap_blue", "icebind_yellow", "mind_warp_yellow", "aether_quickening_blue", "prognosticate_yellow", "sap_yellow", "chorus_of_the_amphitheater_blue", 
+    "pop_the_bubble_yellow", "arcane_twining_yellow", "etchings_of_arcana_yellow", "open_the_flood_gates_yellow", "overflow_the_aetherwell_yellow", "perennial_aetherbloom_yellow", 
+    "trailblazing_aether_yellow", "glyph_overlay_yellow", "aether_spindle_blue","aether_flare_yellow", "reverberate_yellow", "scalding_rain_blue", "zap_yellow", 
+    "photon_splicing_blue" => 2,
+
+    "aether_flare_blue", "reverberate_blue", "zap_blue", "foreboding_bolt_blue", "snapback_blue", "aether_dart_blue", "singe_red", "singe_yellow", "singe_blue", 
+    "frosting_blue", "icebind_blue", "prognosticate_blue", "sap_blue", "aether_arc_blue", "destructive_aethertide_blue", "pop_the_bubble_blue", "arcane_twining_blue", 
+    "etchings_of_arcana_blue", "open_the_flood_gates_blue", "overflow_the_aetherwell_blue", "perennial_aetherbloom_blue", "trailblazing_aether_blue", 
+    "glyph_overlay_blue" => 1,
+
     "scour_blue" => 0,
+
     default => -1,
   };
 }
