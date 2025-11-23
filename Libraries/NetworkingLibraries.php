@@ -869,7 +869,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $conceded = true;
-      if (!IsGameOver()) PlayerWon($playerID == 1 ? 2 : 1);
+      if (!IsGameOver()) {
+        WriteLog("Player $playerID conceded the game.");
+        PlayerWon($playerID == 1 ? 2 : 1, true);
+      }
       break;
     case 100003: //Report Bug
       if ($isSimulation) return;
@@ -1739,10 +1742,10 @@ function FinalizeTurn()
     }
   }
   for ($i = count($defCharacter) - CharacterPieces() + 1; $i >= 1; $i -= CharacterPieces()) {
-    if ($defCharacter[$i + 6] == 1) {
+    if (isset($defCharacter[$i + 6]) && $defCharacter[$i + 6] == 1) {
       DestroyCharacter($defPlayer, $i-1); //Destroy if it was flagged for destruction
     }
-    elseif ($defCharacter[$i] == 1 || $defCharacter[$i] == 2) {
+    elseif (isset($defCharacter[$i]) && ($defCharacter[$i] == 1 || $defCharacter[$i] == 2)) {
       if ($defCharacter[$i] != 4) $defCharacter[$i] = 2;
       $defCharacter[$i + 4] = CharacterNumUsesPerTurn($defCharacter[$i - 1]);
     }

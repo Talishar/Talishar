@@ -123,8 +123,11 @@ try {
       }
       for ($i = 0; $i < count($submission->settings); ++$i) {
         $setting = $submission->settings[$i];
-        $setting->id = ParseSettingsStringValueToIdInt($setting->name) ?? $setting->id;
-        ChangeSetting($playerID, $setting->id, $setting->value, $userID);
+        $parsedId = ParseSettingsStringValueToIdInt($setting->name);
+        $setting->id = $parsedId ?? (isset($setting->id) ? $setting->id : null);
+        if ($setting->id !== null) {
+          ChangeSetting($playerID, $setting->id, $setting->value, $userID);
+        }
       }
       $response->message = "Settings changed successfully.";
       break;

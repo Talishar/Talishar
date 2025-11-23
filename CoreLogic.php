@@ -1036,10 +1036,10 @@ function IsGameOver()
   return $inGameStatus == $GameStatus_Over;
 }
 
-function PlayerWon($playerID)
+function PlayerWon($playerID, $conceded = false)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
-  global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $conceded, $currentTurn;
+  global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
   if ($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
@@ -1054,7 +1054,7 @@ function PlayerWon($playerID)
   SetCachePiece($gameName, 14, 99);//$MGS_GameOver
   if (isPlayerAI(2)) return;
   try {
-    logCompletedGameStats();
+    logCompletedGameStats($conceded);
   } catch (Exception $e) {
   }
 }

@@ -1804,7 +1804,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   $otherPlayer = $player == 1 ? 2 : 1;
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $player, count($layers) <= LayerPieces())) {
     WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-    return true;
+    return false;
   }
   switch ($cardID) {
     case "powder_keg_blue":
@@ -1814,7 +1814,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending equipment to destroy", 1);
       AddDecisionQueue("CHOOSECARDID", $player, "<-", 1);
       AddDecisionQueue("POWDERKEG", $player, "-", 1);
-      break;
+      return true;
     case "tick_tock_clock_red":
       $index = SearchItemsForUniqueID($uniqueID, $player);
       DestroyItemForPlayer($player, $index);
@@ -1828,7 +1828,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
         AddDecisionQueue("INCDQVARIFNOTPASS", $player, "0");
       }
       AddDecisionQueue("SPECIFICCARD", $otherPlayer, "TICKTOCKCLOCK");
-      break;
+      return true;
     case "boom_grenade_red":
     case "boom_grenade_yellow":
     case "boom_grenade_blue":
@@ -1837,12 +1837,12 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       else $amount = 2;
       DamageTrigger($otherPlayer, $amount, "DAMAGE", $cardID);
       DestroyItemForPlayer($player, SearchItemsForUniqueID($uniqueID, $player));
-      break;
+      return true;
     case "autosave_script_blue":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-      break;
+      return true;
     default:
-      break;
+      return false;
   }
 }
 
@@ -2010,7 +2010,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     return;
   }
   elseif ($additionalCosts == "ITEMHITEFFECT") {
-    ProcessItemsEffect($parameter, $player, $target, $uniqueID);
+    if(ProcessItemsEffect($parameter, $player, $target, $uniqueID)) {
+      LogPlayCardStats($player, $parameter, "CC", "HIT");
+    }
     return;
   }
   elseif ($additionalCosts == "ATTACKTRIGGER") {

@@ -388,6 +388,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "DisableHeroIntro" => 29,
     "MirroredBoardLayout" => 30,
     "MirroredPlayerBoardLayout" => 31,
+    "AlwaysShowCounters" => 32,
   ];
   return $settingsToId[$value];
 }

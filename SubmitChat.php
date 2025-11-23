@@ -15,7 +15,7 @@ $authKey = $_GET["authKey"];
 
 session_start();
 
-if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"];
+if ($authKey == "") $authKey = isset($_COOKIE["lastAuthKey"]) ? $_COOKIE["lastAuthKey"] : "";
 
 $targetAuthKey = "";
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
