@@ -781,7 +781,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
-        case "PLAYERLOSEHEALTH": //Doesn't count in endgame stats as damage dealt, but as negative life gained
+        case "PLAYERLOSEHEALTH": //Doesn't count in endgame stats as damage dealt, but as negative life lost from effects like Blooddebt, Vynnsett, Beast Within, etc.
           PlayerLoseHealth($lastResult, $player, true);
           return $lastResult;
         case "LOSEHEALTH": // Count in endgame stats as damage dealt

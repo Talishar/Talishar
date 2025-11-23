@@ -2314,7 +2314,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             }
           }
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
-          AddDecisionQueue("OP", $mainPlayer, "LOSEHEALTH", 1);
+          AddDecisionQueue("OP", $mainPlayer, "PLAYERLOSEHEALTH", 1);
           AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $totalBloodDebt life due to Blood Debt ", 1);
         }
         break;
@@ -2735,7 +2735,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter, $parameter), 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
-        AddDecisionQueue("OP", $player, "LOSEHEALTH", 1);
+        AddDecisionQueue("OP", $player, "PLAYERLOSEHEALTH", 1);
         if (!SearchCurrentTurnEffects($parameter, $player)) { //The effect only apply to one event of damage. Anti-duplicate.
           AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
           $message = CardLink($parameter, $parameter) . "'s pain makes a runechant unpreventable!";
