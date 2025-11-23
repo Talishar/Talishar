@@ -1024,7 +1024,7 @@ function PlayerLoseHealth($amount, $player, $logStats = false)
   global $CS_HealthLost;
   $health = &GetHealth($player);
   $amount = AuraLoseHealthAbilities($player, $amount);
-  if ($logStats) LogLifeGainedStats($player, -$amount); //Log the life lost as negative life gained
+  if($logStats) LogLifeLossStats($player, $amount); //Log the life lost in stats for effects that remove your own life like Beast Within, Flail of Agony, Blooddebt, etc
   if(!IsPlayerAI($player) || $player == 1) $health -= $amount;
   IncrementClassState($player, $CS_HealthLost, $amount);
 }

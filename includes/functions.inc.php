@@ -531,7 +531,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
-	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
+	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained, $TurnStats_LifeLost;
 	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
@@ -653,6 +653,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"][$i]["damagePrevented"] = $turnStats[$i + $TurnStats_DamagePrevented];
 		$deck["turnResults"][$i]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
 		$deck["turnResults"][$i]["lifeGained"] = $turnStats[$i + $TurnStats_LifeGained];
+		$deck["turnResults"][$i]["lifeLost"] = $turnStats[$i + $TurnStats_LifeLost];
 	}
 
 	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
@@ -669,6 +670,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalDefensiveCards = 0;
 	$totalBlocked = 0;
 	$totalLifeGained = 0;
+	$totalLifeLost = 0;
 	$totalDamagePrevented = 0;
 	$numTurns = 0;
 	
@@ -687,6 +689,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
 		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
+		$totalLifeLost += $turnStats[$i + $TurnStats_LifeLost];
 		++$numTurns;
 	}
 
@@ -698,13 +701,14 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["totalDamageDealt"] = $totalDamageDealt;
 	$deck["totalLifeGained"] = $totalLifeGained;
 	$deck["totalDamagePrevented"] = $totalDamagePrevented;
+	$deck["totalLifeLost"] = $totalLifeLost;
 	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $numTurns, 2);
 	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $numTurns, 2);
 	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
 	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
 	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalLifeLost + $totalDamagePrevented) / $numTurns, 2);
 
 	// Damage stats - Excluding last turn
 	$totalDamageThreatened_NoLast = 0;
@@ -715,6 +719,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalBlocked_NoLast = 0;
 	$totalLifeGained_NoLast = 0;
 	$totalDamagePrevented_NoLast = 0;
+	$totalLifeLost_NoLast = 0;
 	$numTurns_NoLast = 0;
 	
 	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
@@ -726,6 +731,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$totalBlocked_NoLast += $turnStats[$i + $TurnStats_DamageBlocked];
 		$totalLifeGained_NoLast += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented_NoLast += $turnStats[$i + $TurnStats_DamagePrevented];
+		$totalLifeLost_NoLast += $turnStats[$i + $TurnStats_LifeLost];
 		++$numTurns_NoLast;
 	}
 
@@ -738,13 +744,14 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["totalDamageDealt_NoLast"] = $totalDamageDealt_NoLast;
 	$deck["totalLifeGained_NoLast"] = $totalLifeGained_NoLast;
 	$deck["totalDamagePrevented_NoLast"] = $totalDamagePrevented_NoLast;
+	$deck["totalLifeLost_NoLast"] = $totalLifeLost_NoLast;
 	$deck["averageDamageThreatenedPerTurn_NoLast"] = round($totalDamageThreatened_NoLast / $numTurns_NoLast, 2);
 	$deck["averageDamageDealtPerTurn_NoLast"] = round($totalDamageDealt_NoLast / $numTurns_NoLast, 2);
 	$deck["averageDamageThreatenedPerCard_NoLast"] = round($totalDamageThreatened_NoLast / $totalOffensiveCards_NoLast, 2);
 	$deck["averageResourcesUsedPerTurn_NoLast"] = round($totalResourcesUsed_NoLast / $numTurns_NoLast, 2);
 	$deck["averageCardsLeftOverPerTurn_NoLast"] = round($totalCardsLeft_NoLast / $numTurns_NoLast, 2);
 	$deck["averageCombatValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast + $totalBlocked_NoLast) / $numTurns_NoLast, 2);
-	$deck["averageValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast + $totalBlocked_NoLast + $totalLifeGained_NoLast + $totalDamagePrevented_NoLast) / $numTurns_NoLast, 2);
+	$deck["averageValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast + $totalBlocked_NoLast + $totalLifeGained_NoLast + $totalLifeLost_NoLast + $totalDamagePrevented_NoLast) / $numTurns_NoLast, 2);
 
 	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
 	
@@ -755,7 +762,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
-	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
+	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained, $TurnStats_LifeLost;
 	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
@@ -862,6 +869,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$deck["turnResults"][$i]["damagePrevented"] = intval($turnStats[$i + $TurnStats_DamagePrevented]);
 		$deck["turnResults"][$i]["damageTaken"] = intval($otherPlayerTurnStats[$i + $TurnStats_DamageDealt]);
 		$deck["turnResults"][$i]["lifeGained"] = intval($turnStats[$i + $TurnStats_LifeGained]);
+		$deck["turnResults"][$i]["lifeLost"] = intval($turnStats[$i + $TurnStats_LifeLost]);
 	}
 
 	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
@@ -879,6 +887,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$totalBlocked = 0;
 	$totalLifeGained = 0;
 	$totalDamagePrevented = 0;
+	$totalLifeLost = 0;
 	$numTurns = 0;
 
 	// Skip turn 0 for both players average stats
@@ -896,6 +905,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$totalBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
 		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
+		$totalLifeLost += $turnStats[$i + $TurnStats_LifeLost];
 		++$numTurns;
 	}
 
@@ -907,13 +917,14 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["totalDamageDealt"] = $totalDamageDealt;
 	$deck["totalLifeGained"] = $totalLifeGained;
 	$deck["totalDamagePrevented"] = $totalDamagePrevented;
+	$deck["totalLifeLost"] = $totalLifeLost;
 	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $numTurns, 2);
 	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $numTurns, 2);
 	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
 	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurns, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurns, 2);
 	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurns, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalDamagePrevented) / $numTurns, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalLifeLost + $totalDamagePrevented) / $numTurns, 2);
 
 	// Damage stats - Excluding last turn
 	$totalDamageThreatened_NoLast = 0;
@@ -924,6 +935,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$totalBlocked_NoLast = 0;
 	$totalLifeGained_NoLast = 0;
 	$totalDamagePrevented_NoLast = 0;
+	$totalLifeLost_NoLast = 0;
 	$numTurns_NoLast = 0;
 	
 	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
@@ -935,6 +947,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$totalBlocked_NoLast += $turnStats[$i + $TurnStats_DamageBlocked];
 		$totalLifeGained_NoLast += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented_NoLast += $turnStats[$i + $TurnStats_DamagePrevented];
+		$totalLifeLost_NoLast += $turnStats[$i + $TurnStats_LifeLost];
 		++$numTurns_NoLast;
 	}
 
@@ -947,13 +960,14 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["totalDamageDealt_NoLast"] = $totalDamageDealt_NoLast;
 	$deck["totalLifeGained_NoLast"] = $totalLifeGained_NoLast;
 	$deck["totalDamagePrevented_NoLast"] = $totalDamagePrevented_NoLast;
+	$deck["totalLifeLost_NoLast"] = $totalLifeLost_NoLast;
 	$deck["averageDamageThreatenedPerTurn_NoLast"] = round($totalDamageThreatened_NoLast / $numTurns_NoLast, 2);
 	$deck["averageDamageDealtPerTurn_NoLast"] = round($totalDamageDealt_NoLast / $numTurns_NoLast, 2);
 	$deck["averageDamageThreatenedPerCard_NoLast"] = round($totalDamageThreatened_NoLast / $totalOffensiveCards_NoLast, 2);
 	$deck["averageResourcesUsedPerTurn_NoLast"] = round($totalResourcesUsed_NoLast / $numTurns_NoLast, 2);
 	$deck["averageCardsLeftOverPerTurn_NoLast"] = round($totalCardsLeft_NoLast / $numTurns_NoLast, 2);
 	$deck["averageCombatValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast + $totalBlocked_NoLast) / $numTurns_NoLast, 2);
-	$deck["averageValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast + $totalBlocked_NoLast + $totalLifeGained_NoLast + $totalDamagePrevented_NoLast) / $numTurns_NoLast, 2);
+	$deck["averageValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast + $totalBlocked_NoLast + $totalLifeGained_NoLast + $totalLifeLost_NoLast + $totalDamagePrevented_NoLast) / $numTurns_NoLast, 2);
 
 	// Exclude private fields if stats are disabled
 	if ($excludePrivateFields) {
@@ -966,6 +980,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["totalDamageDealt"]);
 		unset($deck["totalLifeGained"]);
 		unset($deck["totalDamagePrevented"]);
+		unset($deck["totalLifeLost"]);
 		unset($deck["averageDamageThreatenedPerTurn"]);
 		unset($deck["averageDamageDealtPerTurn"]);
 		unset($deck["averageDamageThreatenedPerCard"]);
@@ -973,6 +988,18 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["averageCardsLeftOverPerTurn"]);
 		unset($deck["averageCombatValuePerTurn"]);
 		unset($deck["averageValuePerTurn"]);
+		unset($deck["totalDamageThreatened_NoLast"]);
+		unset($deck["totalDamageDealt_NoLast"]);
+		unset($deck["totalLifeGained_NoLast"]);
+		unset($deck["totalDamagePrevented_NoLast"]);
+		unset($deck["totalLifeLost_NoLast"]);
+		unset($deck["averageDamageThreatenedPerTurn_NoLast"]);
+		unset($deck["averageDamageDealtPerTurn_NoLast"]);
+		unset($deck["averageDamageThreatenedPerCard_NoLast"]);
+		unset($deck["averageResourcesUsedPerTurn_NoLast"]);
+		unset($deck["averageCardsLeftOverPerTurn_NoLast"]);
+		unset($deck["averageCombatValuePerTurn_NoLast"]);
+		unset($deck["averageValuePerTurn_NoLast"]);
 	}
 
 	return json_encode($deck);
