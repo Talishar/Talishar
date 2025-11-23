@@ -1,6 +1,6 @@
 <?php
 
-function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-") {
+function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-", $isToken=false) {
   global $EffectContext, $currentTurnEffects;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -45,7 +45,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     }
   }
-  if (!CanPlayAura($cardID, $player, $EffectContext, $effectController)) return;
+  if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
   if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
