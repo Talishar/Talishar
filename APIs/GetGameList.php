@@ -201,6 +201,7 @@ if ($handle = opendir($path)) {
         if($format == "commoner") $formatName = "Commoner";
         else if($format == "openformatcc") $formatName = "Open CC";
         else if($format == "openformatblitz") $formatName = "Open Blitz";
+        else if($format == "openformatsage") $formatName = "Open Silver Age";
         else if($format == "clash") $formatName = "Clash";
         else if($format == "llcc") $formatName = "Living Legend CC";
         else if($format == "llblitz") $formatName = "Living Legend Blitz";

@@ -471,6 +471,7 @@ function FormatCode($format)
     case "compllcc": return 13;
     case "sage": return 14;
     case "compsage": return 15;
+    case "openformatsage": return 16;
     case "precon": return -2;
     default: return -1;
   }
