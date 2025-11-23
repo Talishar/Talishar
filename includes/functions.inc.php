@@ -316,7 +316,7 @@ function ConvertDeck($deck) {
 //Challenge ID 1 = sigil of solace blue
 //Challenge ID 2 = Talishar no dash
 //Challenge ID 3 = Moon Wish
-function logCompletedGameStats()
+function logCompletedGameStats($conceded = false)
 {
 	global $winner, $currentTurn, $gameName; //gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
@@ -374,15 +374,15 @@ function logCompletedGameStats()
 
 	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
 		WriteLog("📊Sending game result to <b>Fabrary</b>", highlight:true, highlightColor:"green");
-		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID);
+		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
 	}
 	elseif (AreStatsDisabled(1) && !AreStatsDisabled(2)) {
 		WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 2", highlight:true, highlightColor:"green");
-		SendFullFabraryResults($gameResultID, "-", $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID);
+		SendFullFabraryResults($gameResultID, "-", $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
 	}
 	elseif (!AreStatsDisabled(1) && AreStatsDisabled(2)) {
 		WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 1", highlight:true, highlightColor:"green");
-		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, "-", $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID);
+		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, "-", $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
 	}
 	else WriteLog("No results sent to <b>Fabrary</b> as both players disabled stats", highlight:true);
 	// Sends data to FabInsights DB
@@ -398,7 +398,7 @@ function logCompletedGameStats()
 		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1", highlight:true, highlightColor:"green");
 	}
 	else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
-	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID);
+	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded);
 	mysqli_close($conn);
 }
 
@@ -448,7 +448,7 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	curl_close($ch);
 }
 
-function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID = "")
+function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID = "", $conceded = false)
 {
 	global $FaBraryKey, $gameName, $p2IsAI;
 	if($p2IsAI == "1") return;//Don't file results for AI games
@@ -461,6 +461,8 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
 	$payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 	$payloadArr['gameGUID'] = $gameGUID;
+	$payloadArr['conceded'] = $conceded;
+
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -484,7 +486,7 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "")
+function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false)
 {
 	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
     // Skip AI games
@@ -509,6 +511,7 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled));
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 	$payloadArr['gameGUID'] = $gameGUID;
+	$payloadArr['conceded'] = $conceded;
 
     // Initialize cURL
     $ch = curl_init($url);
