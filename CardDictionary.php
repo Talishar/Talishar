@@ -5433,7 +5433,10 @@ function Rarity($cardID)
     case "qi_unleashed_blue": 
     case "thunder_quake_red":
     case "thunder_quake_yellow":
-    case "thunder_quake_blue": // Commoner workaround. Can be deleted later when the database is updated.
+    case "thunder_quake_blue":
+    // case "frosthaven_sheath_red":
+    // case "leaven_sheath_red":
+    // case "stormwind_sheath_red":// Commoner workaround. Can be deleted later when the database is updated.
       return "C";
     case "valda_brightaxe":
       return "T";

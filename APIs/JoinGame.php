@@ -305,7 +305,7 @@ if ($decklink != "") {
         if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
-      if(($format != "draft" && $format != "openformatcc" && $format != "openformatblitz" && $format != "openformatsage") && isLegendary($id) && $cardCounts[$id] > 1) {
+      if(($format != "draft" && $format != "openformatcc" && $format != "openformatblitz" && $format != "opensage") && isLegendary($id) && $cardCounts[$id] > 1) {
         if ($isDeckLegal != "") $isDeckLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -337,7 +337,7 @@ if ($decklink != "") {
     exit;
   }
 
-  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz" || $format == "sage" || $format == "compsage" || $format == "openformatsage")) {
+  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz" || $format == "sage" || $format == "compsage" || $format == "opensage")) {
     $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
@@ -635,7 +635,7 @@ function IsCardBanned($cardID, $format, $character)
   }
 
   //Ban spoiler cards in non-open-format
-  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatsage" && $format != "precon" && isSpecialUsePromo($cardID)) return true;
+  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "opensage" && $format != "precon" && isSpecialUsePromo($cardID)) return true;
   if(isBannedInFormat($cardID, $format)) return true;
   return false;
 }
