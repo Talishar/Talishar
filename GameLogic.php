@@ -2053,10 +2053,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
       $damage = $dqVars[0];
-      $damageThreatened = $params[0];
-      if ($damage > $damageThreatened)//Means there was excess damage prevention prevention
+      $damageThreatened = $CombatChain->Card(0)->TotalPower() ?? 0;
+      if ($damage > $params[0])//Means there was excess damage prevention prevention
       {
-        $damage = $damageThreatened;
+        $damage = $params[0];
         $dqVars[0] = $damage;
         $dqState[6] = $damage;
       }
