@@ -3648,7 +3648,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         ThrowWeapon("Dagger", $parameter, target:$target);
         break;
       case "hunted_or_hunter_red":
-        WriteLog("The Hunter has become the hunted");
+        WriteLog("👹 The Hunter has become the hunted");
         LoseHealth(1, $mainPlayer);
         if (!IsAllyAttacking()) TrapTriggered($parameter);
         break;
