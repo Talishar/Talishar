@@ -342,3 +342,37 @@ class unyielding_grip extends Card
     return 0;
   }
 }
+
+class comeback_kicks extends Card
+{
+  function __construct($controller)
+  {
+    $this->cardID = "comeback_kicks";
+    $this->controller = $controller;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    if (PlayerHasLessHealth($this->controller)) {
+      $message = "if you want to destroy " . Cardlink($this->cardID, $this->cardID);
+      if ($this->controller != $mainPlayer) $message .= " (you won't gain an action point on your opponent's turn";
+      $index = FindCharacterIndex($this->controller, $this->cardID);
+      AddDecisionQueue("YESNO", $this->controller, $message);
+      AddDecisionQueue("NOPASS", $this->controller, "-");
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $index, 1);
+      AddDecisionQueue("DESTROYCHARACTER", $this->controller, "-", 1);
+      AddDecisionQueue("GAINACTIONPOINTS", $this->controller, 1, 1);
+    }
+  }
+
+  function CheerTrigger() {
+    $index = FindCharacterIndex($this->controller, $this->cardID);
+    if (IsCharacterActive($this->controller, $index)) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}

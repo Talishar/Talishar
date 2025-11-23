@@ -312,25 +312,21 @@ function Cheer($player)
   SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
   WriteLog("Let's go! The crowd cheers for " . CardLink($char[0], $char[0]) . "!");
-  if ($char[1] < 3) {
-    switch($char[0]) {
-      case "pleiades":
-      case "pleiades_superstar":
-      case "tuffnut":
-      case "tuffnut_bumbling_hulkster":
-        AddLayer("TRIGGER", $player, $char[0]);
-        break;
-      default:
-        break;
+  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    $card = GetClass($char[$i], $player);
+    if ($card != "-") $card->CheerTrigger();
+    if ($char[$i + 1] < 3) {
+      switch($char[$i]) {
+        case "pleiades":
+        case "pleiades_superstar":
+        case "tuffnut":
+        case "tuffnut_bumbling_hulkster":
+          AddLayer("TRIGGER", $player, $char[0]);
+          break;
+        default:
+          break;
+      }
     }
-  }
-  if ($player == $mainPlayer && SearchCharacterForCard($player, "comeback_kicks")) {
-    $index = FindCharacterIndex($player, "comeback_kicks");
-    AddDecisionQueue("YESNO", $player, "if you want to destroy " . Cardlink("comeback_kicks", "comeback_kicks"));
-    AddDecisionQueue("NOPASS", $player, "-");
-    AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-    AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-    AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
   }
 }
 

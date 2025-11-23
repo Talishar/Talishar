@@ -437,6 +437,10 @@ class Card {
   function CurrentEffectEndTurnAbilities($i, &$remove) {
     return;
   }
+
+  function CheerTrigger() {
+    return;
+  }
 }
 
 ?>
