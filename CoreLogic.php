@@ -735,7 +735,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
   }
-  LogDamageStats($player, $damageThreatened, $damage);
+  if($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
+  else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives
   PlayerLoseHealth($damage, $player);
   return $damage;
 }
