@@ -781,8 +781,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           return implode(",", $cards);
-        case "PLAYERLOSEHEALTH": //Doesn't count in endgame stats as damage dealt
-          PlayerLoseHealth($lastResult, $player);
+        case "PLAYERLOSEHEALTH": //Doesn't count in endgame stats as damage dealt, but as negative life gained
+          PlayerLoseHealth($lastResult, $player, true);
           return $lastResult;
         case "LOSEHEALTH": // Count in endgame stats as damage dealt
           LoseHealth($lastResult, $player);
@@ -3357,7 +3357,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("🎲 Nothing Happened");
       }
       elseif($lastResult == $player) {
-        PlayerLoseHealth($dqVars[0], $player);
+        PlayerLoseHealth($dqVars[0], $player, true);
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:maxCost=$dqVars[0]", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZADDZONE", $player, "MYHAND,DECK", 1);

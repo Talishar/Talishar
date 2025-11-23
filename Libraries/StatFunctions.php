@@ -97,7 +97,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
   $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
 }
 
-function LogHealthGainedStats($player, $healthGained)
+function LogLifeGainedStats($player, $healthGained)
 {
   global $currentTurn, $TurnStats_LifeGained;
   $baseIndex = ($currentTurn-1) * TurnStatPieces();

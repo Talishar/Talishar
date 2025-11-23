@@ -983,7 +983,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
-  LogHealthGainedStats($player, $amount);
+  LogLifeGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {
     $char = &GetPlayerCharacter($player);
@@ -1019,11 +1019,12 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
 }
 
 // The only difference between LoseHealth and PlayerLoseHealth is that LoseHealth logs the life lost as damage for the end games stats.
-function PlayerLoseHealth($amount, $player)
+function PlayerLoseHealth($amount, $player, $logStats = false)
 {
   global $CS_HealthLost;
   $health = &GetHealth($player);
   $amount = AuraLoseHealthAbilities($player, $amount);
+  if ($logStats) LogLifeGainedStats($player, -$amount); //Log the life lost as negative life gained
   if(!IsPlayerAI($player) || $player == 1) $health -= $amount;
   IncrementClassState($player, $CS_HealthLost, $amount);
 }
@@ -3528,7 +3529,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
         if ($mainPhase) {
           //TODO rework this to be a respondable trigger
           WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
-          LoseHealth($num, $player);
+          PlayerLoseHealth($num, $player, true);
         }
         break;
       default:
