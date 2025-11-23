@@ -1370,7 +1370,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameter;
       if ($lastResult != "PASS") {
         $prevented = ArcaneDamagePrevented($player, $lastResult);
-        LogDamagePreventedStats($player, min($damage, $prevented));
+        if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
         $dqVars[0] = $damage;
@@ -1493,7 +1493,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
         }
-        LogDamagePreventedStats($player, $lastResult);
+        if($lastResult > 0) LogDamagePreventedStats($player, $lastResult);
       }
       return $lastResult;
     case "TAKEARCANE":
@@ -2624,6 +2624,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PROCESSDAMAGEPREVENTION":
       $mzIndex = explode("-", $lastResult);
       $params = explode("-", $parameter);
+      $originDamage = intval($params[0]);
       switch ($mzIndex[0]) {
         case "MYAURAS":
           $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1], $params[2]);
@@ -2644,6 +2645,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
       if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1]);
+      if ($damage < $originDamage) LogDamagePreventedStats($player, $originDamage - $damage);
       return $damage;
     case "EQUIPCARDINVENTORY":
       if (str_contains($parameter, "-")) {

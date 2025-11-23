@@ -1501,7 +1501,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
         $vambraceAvailable = false;
         $vambraceRemove = true;
       }
-      LogDamagePreventedStats($player, min($preventedDamage, $damage));
+      if($preventedDamage > 0) LogDamagePreventedStats($player, min($preventedDamage, $damage));
       $damage -= $preventedDamage;
     }
     else {
@@ -1530,7 +1530,7 @@ function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preven
         $vambraceAvailable = false;
         $vambraceRemove = true;
       }
-      LogDamagePreventedStats($player, min($preventedDamage, $damage));
+      if($preventedDamage > 0) LogDamagePreventedStats($player, min($preventedDamage, $damage));
       $damage -= $preventedDamage;
     }
   }
