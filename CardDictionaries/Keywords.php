@@ -301,7 +301,10 @@
         $index = SearchCharacterIndexSubtype($otherPlayer, $subtype);
         $otherChar = &GetPlayerCharacter($otherPlayer);
         if ($index != -1 && $otherChar[$index + 1] > 1) --$otherChar[$index + 4];
-        else LoseHealth(1, $otherPlayer);
+        else {
+          if($otherPlayer != $mainPlayer) PlayerLoseHealth(1, $otherPlayer); //Log as self damaged
+          else LoseHealth(1, $otherPlayer); //Log as damage
+        }
         break;
       default: break;
     }
