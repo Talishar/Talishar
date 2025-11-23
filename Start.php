@@ -131,11 +131,25 @@ ob_end_clean();
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 
+// Set enhanced auth key cookie for fallback recovery
+$domain = (!empty(getenv("DOMAIN")) ? getenv("DOMAIN") : "talishar.net");
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+$authKeyToReturn = ($playerID == 1 ? $p1Key : $p2Key);
+
+setcookie("lastAuthKey", $authKeyToReturn, [
+  'expires' => time() + (86400 * 7), // 7 days
+  'path' => "/",
+  'domain' => $domain,
+  'secure' => $isSecure,
+  'httponly' => true,
+  'samesite' => 'Strict'
+]);
+
 // Return the auth key to the frontend so it can be stored locally
 header('Content-Type: application/json');
 $response = new stdClass();
 $response->success = true;
-$response->authKey = ($playerID == 1 ? $p1Key : $p2Key);
+$response->authKey = $authKeyToReturn;
 echo json_encode($response);
 
 exit;

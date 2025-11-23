@@ -488,12 +488,30 @@ if ($matchup == "") {
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
   $domain = (!empty(getenv("DOMAIN")) ? getenv("DOMAIN") : "talishar.net");
+  $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+  
   if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
-    setcookie("lastAuthKey", $p1Key, time() + 86400, "/", $domain);
+    // Enhanced cookie: 7 days expiration, Secure, HttpOnly, and SameSite=Strict
+    setcookie("lastAuthKey", $p1Key, [
+      'expires' => time() + (86400 * 7), // 7 days instead of 1 day
+      'path' => "/",
+      'domain' => $domain,
+      'secure' => $isSecure,
+      'httponly' => true,
+      'samesite' => 'Strict'
+    ]);
   } else if ($playerID == 2) {
     $_SESSION["p2AuthKey"] = $p2Key;
-    setcookie("lastAuthKey", $p2Key, time() + 86400, "/", $domain);
+    // Enhanced cookie: 7 days expiration, Secure, HttpOnly, and SameSite=Strict
+    setcookie("lastAuthKey", $p2Key, [
+      'expires' => time() + (86400 * 7), // 7 days instead of 1 day
+      'path' => "/",
+      'domain' => $domain,
+      'secure' => $isSecure,
+      'httponly' => true,
+      'samesite' => 'Strict'
+    ]);
   }
 }
 
