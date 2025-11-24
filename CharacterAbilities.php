@@ -522,8 +522,9 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
       case "briar_warden_of_thorns":
       case "briar":
         if (IsHeroAttackTarget() && $isAA && $mainCharacter[$i + 1] == 2) {
+          // Is this code ever reached?
           $mainCharacter[$i + 1] = 1;
-          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
+          AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "DAMAGE");
         }
         break;
       case "mask_of_the_pouncing_lynx":

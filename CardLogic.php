@@ -1709,10 +1709,6 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $character[$index], 1);
       break;
-    case "briar_warden_of_thorns":
-    case "briar":
-      PlayAura("embodiment_of_earth", $player);
-      break;
     case "mask_of_the_pouncing_lynx":
       $index = FindCharacterIndex($player, $cardID);
       AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID, $cardID));
@@ -2402,7 +2398,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "briar_warden_of_thorns":
       case "briar":
-        PlayAura("embodiment_of_lightning", $player);
+        if ($additionalCosts == "DAMAGE") PlayAura("embodiment_of_earth", $player);
+        else PlayAura("embodiment_of_lightning", $player);
         break;
       case "bramble_spark_red":
       case "bramble_spark_yellow":
