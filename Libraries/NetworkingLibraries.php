@@ -3142,6 +3142,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
 {
   global $currentPlayer, $CS_AdditionalCosts, $CS_CharacterIndex, $CS_PlayIndex, $CombatChain, $CS_NumBluePlayed, $combatChain, $combatChainState;
   global $layers, $CS_DynCostResolved, $mainPlayer, $defPlayer, $mainPlayerGamestateStillBuilt, $myStateBuiltFor;
+  global $combatChain, $chainLinks;
   $cardSubtype = CardSubType($cardID);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
@@ -3442,7 +3443,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "rally_the_coast_guard_red":
     case "rally_the_coast_guard_yellow":
     case "rally_the_coast_guard_blue":
-      if ($from == "PLAY") {
+      if ($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
         $hand = &GetHand($currentPlayer);
         if (count($hand) == 0) {
           WriteLog("This ability requires a discard as an additional cost, but you have no cards to discard. Reverting gamestate prior to the card declaration.", highlight: true);
@@ -3450,6 +3451,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         }
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
         AddCurrentTurnEffect($cardID, $currentPlayer, "CC", $combatChain[$index + 7]);
+        if ($from == "PLAY") ++$combatChain[$index + 11];
+        else ++$chainLinks[$index][9];
         MZMoveCard($currentPlayer, "MYHAND", "MYDISCARD", silent: true);
       }
       break;

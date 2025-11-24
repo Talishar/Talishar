@@ -1794,7 +1794,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
   } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
-  elseif ($from == "COMBATCHAINATTACKS" && !AbilityPlayableFromCombatChain($cardID, "-")) return false;
+  elseif ($from == "COMBATCHAINATTACKS" && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
@@ -2576,6 +2576,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "rally_the_coast_guard_blue":
       if ($index == 0 && $from == "PLAY") return true;
       else if (isset($combatChain[$index + 7]) && $from == "PLAY") return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
+      if ($from == "COMBATCHAINATTACKS") {
+        return true; // for now block these from being activated on later chain links
+      }
       else return false;
     case "memorial_ground_red":
     case "memorial_ground_yellow":
@@ -5033,8 +5036,8 @@ function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
     "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $isAttacking,
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => $isAttacking,
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => $isAttacking,
-    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking,
-    "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking,
+    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => !$isAttacking && $currentPlayer != $mainPlayer,
+    "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue" => !$isAttacking && $currentPlayer != $mainPlayer,
     default => false
   };
 }
