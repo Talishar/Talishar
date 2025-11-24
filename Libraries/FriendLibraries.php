@@ -63,6 +63,15 @@ function IsBannedPlayer($username) {
 }
 
 /**
+ * Check if a username is PvtVoid (the creator of the PvtVoid Patreon campaign)
+ * @param string $username
+ * @return bool
+ */
+function IsPvtVoidPatron($username) {
+  return $username === "PvtVoid";
+}
+
+/**
  * Get all accepted friends for a user
  * @param int $userId
  * @return array List of friend user IDs and names
@@ -100,10 +109,6 @@ function GetUserFriends($userId) {
   // List of contributors
   $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
   
-  // Get patron and session information for each friend
-  // This would typically require database lookup or session data
-  // For now, we include basic status fields that can be populated
-  
   $friends = [];
   while ($row = $result->fetch_assoc()) {
     $username = $row['usersUid'];
@@ -112,8 +117,8 @@ function GetUserFriends($userId) {
       'username' => $username,
       'nickname' => $row['nickname'] ?: null,
       'isContributor' => in_array($username, $contributors),
-      'isPatron' => isset($_SESSION["isPatron"]) ? $_SESSION["isPatron"] : false, // Would need database lookup of patron status
-      'isPvtVoidPatron' => isset($_SESSION['isPvtVoidPatron']) ? $_SESSION['isPvtVoidPatron'] : false, 
+      'isPatron' => false, // Would need database lookup of patron status
+      'isPvtVoidPatron' => IsPvtVoidPatron($username), // Check against PvtVoid patron list
     ];
   }
   
