@@ -1232,13 +1232,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->turnPlayer = $mainPlayer;
   
   //Turn number
-  switch ($firstPlayer) {
-    case $playerID:
-      $response->turnNo = $currentTurn - 1; //First player turn number start at 0
-      break;
-    default:
-      $response->turnNo = $currentTurn;
-      break;
+  // $currentTurn increments when player 2 finishes, so:
+  // First Player: gets $currentTurn - 1 (their turns are 0, 1, 2, 3...)
+  // Second Player: gets $currentTurn (their turns are 1, 2, 3, 4...)
+  if ($mainPlayer == $firstPlayer) {
+    $response->turnNo = $currentTurn - 1;
+  } else {
+    $response->turnNo = $currentTurn;
   }
 
   //Clock
