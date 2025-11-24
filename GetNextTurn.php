@@ -809,7 +809,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
           isFrozen: $theirArsenal[$i + 4] == 1,
           actionDataOverride: strval($i),
-          powerCounters: isset($theirArsenal[$i + 6]) ? $theirArsenal[$i + 6] : 0
+          powerCounters: $theirArsenal[$i + 6] ?? 0
         ));
       } else array_push($theirArse, JSONRenderedCard(
         cardNumber: $TheirCardBack,
@@ -853,7 +853,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
           isFrozen: $myArsenal[$i + 4] == 1,
-          powerCounters: isset($myArsenal[$i + 6]) ? $myArsenal[$i + 6] : 0,
+          powerCounters: $myArsenal[$i + 6] ?? 0,
         ));
       }
     }
@@ -1231,15 +1231,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   // who's turn it is
   $response->turnPlayer = $mainPlayer;
   
+  // who is the starting player
+  $response->firstPlayer = $firstPlayer;
+
   //Turn number
   // $currentTurn increments when player 2 finishes, so:
   // First Player: gets $currentTurn - 1 (their turns are 0, 1, 2, 3...)
   // Second Player: gets $currentTurn (their turns are 1, 2, 3, 4...)
-  if ($mainPlayer == $firstPlayer) {
-    $response->turnNo = $currentTurn - 1;
-  } else {
-    $response->turnNo = $currentTurn;
-  }
+  $response->turnNo = ($mainPlayer == $firstPlayer) ? $currentTurn - 1 : $currentTurn;
 
   //Clock
   $response->clock = $p1TotalTime + $p2TotalTime;
@@ -1283,7 +1282,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
   $playerInputPopup->active = false;
-  $turnPhase = isset($turn[0]) ? $turn[0] : "";
+  $turnPhase = $turn[0] ?? "";
 
   switch ($turnPhase) {
     case "BUTTONINPUT":
@@ -1462,7 +1461,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     case "CHOOSEMULTIZONE":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $turnData = isset($turn[2]) ? $turn[2] : "";
+        $turnData = $turn[2] ?? "";
         $options = $turnData != "" ? explode(",", $turnData) : [];
         $otherPlayer = $playerID == 2 ? 1 : 2;
         $theirAllies = &GetAllies($otherPlayer);
@@ -1795,7 +1794,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cardsArray = [];
 
     $content = "";
-    $turnData2 = isset($turn[2]) ? $turn[2] : "";
+    $turnData2 = $turn[2] ?? "";
     $params = explode("-", $turnData2);
     $options = isset($params[1]) ? explode(",", $params[1]) : [];
     $maxNumber = intval($params[0]);
