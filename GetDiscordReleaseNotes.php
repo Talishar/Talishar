@@ -135,9 +135,9 @@ try {
             $content = str_replace('<#868488473378684938>', '#release-notes', $content);
             $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
             $content = str_replace('<#865423689976774656>', '#bug-reports', $content);
-            $content = str_replace('<#387720067640459275>', '@THESPIRITOFLIFE', $content);
-            $content = str_replace('<#256263154915475456>', '@Aegisworn', $content);
-            $content = str_replace('<#478621285786845196>', '@PvtVoid', $content);
+            $content = str_replace('<@387720067640459275>', '@THESPIRITOFLIFE', $content);
+            $content = str_replace('<@256263154915475456>', '@Aegisworn', $content);
+            $content = str_replace('<@478621285786845196>', '@PvtVoid', $content);
 
             // Preserve line breaks
             $content = nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'), false);
