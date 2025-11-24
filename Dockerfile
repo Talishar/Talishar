@@ -40,3 +40,7 @@ RUN pecl install xdebug \
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 
 RUN a2enmod proxy proxy_http proxy_wstunnel
+
+# Copy custom Apache logging configuration to suppress PrivateMessagingAPI polling logs
+COPY docker/apache-logging.conf /etc/apache2/conf-available/logging-filter.conf
+RUN a2enconf logging-filter
