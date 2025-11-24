@@ -2055,14 +2055,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINALIZEDAMAGE":
       $params = explode(",", $parameter);
       $damage = $dqVars[0];
-      $damageThreatened = $params[0];
       $type = $params[1];
+      $damageThreatened = ($type != "ARCANE") ? $params[0] : 0; // Arcane Threatened is already calculated before prevention
       $source = $params[2];
       $playerSource = $params[3] ?? "-";
 
       if ($damage > $damageThreatened)//Means there was excess damage prevention prevention
       {
-        $damage = $damageThreatened;
+        $damage = ($type != "ARCANE") ? $damageThreatened : $damage;
         $dqVars[0] = $damage;
         $dqState[6] = $damage;
       }

@@ -91,6 +91,7 @@ function LogResourcesUsedStats($player, $resourcesUsed)
 function LogDamageStats($player, $damageThreatened, $damageDealt)
 {
   global $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
+  //WriteLog("Logging damage stats for player $player: Threatened $damageThreatened, Dealt $damageDealt");
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
   $damagerStats = &GetTurnStats($player == 1 ? 2 : 1);
   if(count($damagerStats) <= $baseIndex) StatsStartTurn();

@@ -662,24 +662,19 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$turnStart = ($firstPlayer == $player ? 0 : TurnStatPieces());
 	
 	for($i = $turnStart; $i < $countTurnStats; $i += TurnStatPieces()) {
-		// Calculate actual turn number based on array index
-		$turnNo = intval($i / TurnStatPieces());
-		$turnKey = "turn_" . $turnNo;
-		
-		$deck["turnResults"][$turnKey]["turnNo"] = $turnNo;
-		$deck["turnResults"][$turnKey]["cardsUsed"] = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
-		$deck["turnResults"][$turnKey]["cardsBlocked"] = $turnStats[$i + $TurnStats_CardsBlocked];
-		$deck["turnResults"][$turnKey]["cardsPitched"] = $turnStats[$i + $TurnStats_CardsPitched];
-		$deck["turnResults"][$turnKey]["resourcesUsed"] = $turnStats[$i + $TurnStats_ResourcesUsed];
-		$deck["turnResults"][$turnKey]["resourcesLeft"] = $turnStats[$i + $TurnStats_ResourcesLeft];
-		$deck["turnResults"][$turnKey]["cardsLeft"] = $turnStats[$i + $TurnStats_CardsLeft];
-		$deck["turnResults"][$turnKey]["damageThreatened"] = $turnStats[$i + $TurnStats_DamageThreatened];
-		$deck["turnResults"][$turnKey]["damageDealt"] = $turnStats[$i + $TurnStats_DamageDealt];
-		$deck["turnResults"][$turnKey]["damageBlocked"] = $turnStats[$i + $TurnStats_DamageBlocked];
-		$deck["turnResults"][$turnKey]["damagePrevented"] = $turnStats[$i + $TurnStats_DamagePrevented];
-		$deck["turnResults"][$turnKey]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
-		$deck["turnResults"][$turnKey]["lifeGained"] = $turnStats[$i + $TurnStats_LifeGained];
-		$deck["turnResults"][$turnKey]["lifeLost"] = $turnStats[$i + $TurnStats_LifeLost];
+		$deck["turnResults"][$i]["cardsUsed"] = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
+		$deck["turnResults"][$i]["cardsBlocked"] = $turnStats[$i + $TurnStats_CardsBlocked];
+		$deck["turnResults"][$i]["cardsPitched"] = $turnStats[$i + $TurnStats_CardsPitched];
+		$deck["turnResults"][$i]["resourcesUsed"] = $turnStats[$i + $TurnStats_ResourcesUsed];
+		$deck["turnResults"][$i]["resourcesLeft"] = $turnStats[$i + $TurnStats_ResourcesLeft];
+		$deck["turnResults"][$i]["cardsLeft"] = $turnStats[$i + $TurnStats_CardsLeft];
+		$deck["turnResults"][$i]["damageThreatened"] = $turnStats[$i + $TurnStats_DamageThreatened];
+		$deck["turnResults"][$i]["damageDealt"] = $turnStats[$i + $TurnStats_DamageDealt];
+		$deck["turnResults"][$i]["damageBlocked"] = $turnStats[$i + $TurnStats_DamageBlocked];
+		$deck["turnResults"][$i]["damagePrevented"] = $turnStats[$i + $TurnStats_DamagePrevented];
+		$deck["turnResults"][$i]["damageTaken"] = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
+		$deck["turnResults"][$i]["lifeGained"] = $turnStats[$i + $TurnStats_LifeGained];
+		$deck["turnResults"][$i]["lifeLost"] = $turnStats[$i + $TurnStats_LifeLost];
 	}
 
 	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
@@ -901,24 +896,19 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$turnStart = ($firstPlayer == $player ? 0 : TurnStatPieces());
 
 	for($i = $turnStart; $i < $countTurnStats; $i += TurnStatPieces()) {
-		// Calculate actual turn number based on array index
-		$turnNo = intval($i / TurnStatPieces());
-		$turnKey = "turn_" . $turnNo;
-		
-		$deck["turnResults"][$turnKey]["turnNo"] = $turnNo;
-		$deck["turnResults"][$turnKey]["cardsUsed"] = intval($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
-		$deck["turnResults"][$turnKey]["cardsBlocked"] = intval($turnStats[$i + $TurnStats_CardsBlocked]);
-		$deck["turnResults"][$turnKey]["cardsPitched"] = intval($turnStats[$i + $TurnStats_CardsPitched]);
-		$deck["turnResults"][$turnKey]["resourcesUsed"] = intval($turnStats[$i + $TurnStats_ResourcesUsed]);
-		$deck["turnResults"][$turnKey]["resourcesLeft"] = intval($turnStats[$i + $TurnStats_ResourcesLeft]);
-		$deck["turnResults"][$turnKey]["cardsLeft"] = intval($turnStats[$i + $TurnStats_CardsLeft]);
-		$deck["turnResults"][$turnKey]["damageThreatened"] = intval($turnStats[$i + $TurnStats_DamageThreatened]);
-		$deck["turnResults"][$turnKey]["damageDealt"] = intval($turnStats[$i + $TurnStats_DamageDealt]);
-		$deck["turnResults"][$turnKey]["damageBlocked"] = intval($turnStats[$i + $TurnStats_DamageBlocked]);
-		$deck["turnResults"][$turnKey]["damagePrevented"] = intval($turnStats[$i + $TurnStats_DamagePrevented]);
-		$deck["turnResults"][$turnKey]["damageTaken"] = intval($otherPlayerTurnStats[$i + $TurnStats_DamageDealt]);
-		$deck["turnResults"][$turnKey]["lifeGained"] = intval($turnStats[$i + $TurnStats_LifeGained]);
-		$deck["turnResults"][$turnKey]["lifeLost"] = intval($turnStats[$i + $TurnStats_LifeLost]);
+		$deck["turnResults"][$i]["cardsUsed"] = intval($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
+		$deck["turnResults"][$i]["cardsBlocked"] = intval($turnStats[$i + $TurnStats_CardsBlocked]);
+		$deck["turnResults"][$i]["cardsPitched"] = intval($turnStats[$i + $TurnStats_CardsPitched]);
+		$deck["turnResults"][$i]["resourcesUsed"] = intval($turnStats[$i + $TurnStats_ResourcesUsed]);
+		$deck["turnResults"][$i]["resourcesLeft"] = intval($turnStats[$i + $TurnStats_ResourcesLeft]);
+		$deck["turnResults"][$i]["cardsLeft"] = intval($turnStats[$i + $TurnStats_CardsLeft]);
+		$deck["turnResults"][$i]["damageThreatened"] = intval($turnStats[$i + $TurnStats_DamageThreatened]);
+		$deck["turnResults"][$i]["damageDealt"] = intval($turnStats[$i + $TurnStats_DamageDealt]);
+		$deck["turnResults"][$i]["damageBlocked"] = intval($turnStats[$i + $TurnStats_DamageBlocked]);
+		$deck["turnResults"][$i]["damagePrevented"] = intval($turnStats[$i + $TurnStats_DamagePrevented]);
+		$deck["turnResults"][$i]["damageTaken"] = intval($otherPlayerTurnStats[$i + $TurnStats_DamageDealt]);
+		$deck["turnResults"][$i]["lifeGained"] = intval($turnStats[$i + $TurnStats_LifeGained]);
+		$deck["turnResults"][$i]["lifeLost"] = intval($turnStats[$i + $TurnStats_LifeLost]);
 	}
 
 	$time = ($player == 1 ? $p1TotalTime : $p2TotalTime);
