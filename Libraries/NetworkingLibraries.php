@@ -1977,6 +1977,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = $from == "PLAY" || $from == "EQUIP" || $from == "COMBATCHAINATTACKS" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from));
+      if ($from == "GY" && $cardID == "graven_call") $baseCost = 0; // hardcoding for now as the card is weird
       if(HasMeld($cardID) && $cachedAdditionalCosts == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
@@ -3754,7 +3755,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if ($from == "GY") {
         //mark which specific graven call was activated
         $graveyard = GetDiscard($currentPlayer);
-        $layers[3] = $graveyard[$index + 1];
+        $layerIndex = SearchLayersForPhase($cardID);
+        $layers[$layerIndex+3] = $graveyard[$index + 1];
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "silver-2", 1);
         AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
       }
