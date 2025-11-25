@@ -56,9 +56,11 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
   exit;
 }
 
-// Update user activity - Always update to ensure online status is current
-// This is critical for the online friends feature to work correctly in production
-$conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+//  Activity update sampling - only update 10% of requests to reduce database load
+// This significantly reduces write contention while still maintaining activity tracking
+if (rand(1, 10) === 1) {
+  $conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+}
 
 $action = $_POST['action'] ?? '';
 $response = new stdClass();

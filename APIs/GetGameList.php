@@ -20,14 +20,6 @@ session_start();
 SetHeaders();
 $conn = GetDBConnection();
 
-// Update user activity for online status tracking
-if(IsUserLoggedIn()) {
-  $userId = LoggedInUser();
-  if($conn && $conn !== false) {
-    $conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
-  }
-}
-
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {
     loginFromCookie();
