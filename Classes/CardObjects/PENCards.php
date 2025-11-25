@@ -376,3 +376,49 @@ class comeback_kicks extends Card
     return 1;
   }
 }
+
+// class ghost_protocol_architect_red extends Card
+// {
+//   function __construct($controller)
+//   {
+//     $this->cardID = "ghost_protocol_architect_red";
+//     $this->controller = $controller;
+//   }
+
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+//   }
+
+//   function ProcessAttackTrigger($target, $uniqueID) {
+//     $search = "MYDECK:subtype=Evo;maxCost=" . EvoUpgradeAmount($this->controller);
+//     AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+//     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Search your deck for an Evo with cost less than or equal to " . EvoUpgradeAmount($this->controller) ." to banish", 1);
+//     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+//     AddDecisionQueue("MZBANISH", $this->controller, "-", 1);
+//     AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+//     AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+//     AddDecisionQueue("ELSE", $this->controller, "-");
+//     AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+//   }
+
+//   function PlayableFromBanish($mod, $nonLimitedOnly) {
+//     return $mod == "BOOST";
+//   }
+// }
+
+// class ghost_protocol_mainframe_blue extends Card
+// {
+//   function __construct($controller)
+//   {
+//     $this->cardID = "ghost_protocol_mainframe_blue";
+//     $this->controller = $controller;
+//   }
+
+//   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+//     return EvoUpgradeAmount($this->controller);
+//   }
+
+//   function PlayableFromBanish($mod, $nonLimitedOnly) {
+//     return $mod == "BOOST";
+//   }
+// }

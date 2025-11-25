@@ -1099,6 +1099,7 @@ function UnsetTurnBanish()
   $p1Banish->UnsetBanishModifier("TTFromOtherPlayer");
   $p1Banish->UnsetBanishModifier("shadowrealm_horror_red");
   $p1Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
+  $p1Banish->UnsetBanishModifier("BOOST");
   $p2Banish = new Banish(2);
   $p2Banish->UnsetBanishModifier("TT");
   $p2Banish->UnsetBanishModifier("INST");
@@ -1107,6 +1108,7 @@ function UnsetTurnBanish()
   $p2Banish->UnsetBanishModifier("TTFromOtherPlayer");
   $p2Banish->UnsetBanishModifier("shadowrealm_horror_red");
   $p2Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
+  $p2Banish->UnsetBanishModifier("BOOST");
   UnsetCombatChainBanish();
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($defPlayer, "NTSTONERAIN", "STONERAIN");

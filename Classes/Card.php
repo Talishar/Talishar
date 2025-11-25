@@ -441,6 +441,10 @@ class Card {
   function CheerTrigger() {
     return;
   }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return false;
+  }
 }
 
 ?>
