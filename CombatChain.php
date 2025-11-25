@@ -954,7 +954,10 @@ function OnBlockResolveEffects($cardID = "")
         break;
       case "endless_winter_red":
         if (SearchCurrentTurnEffects($combatChain[0], $defPlayer)) {
-          AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+          $numBlocking = intdiv(count($combatChain) - $start, CombatChainPieces());
+          for ($i = 0; $i < $numBlocking; ++$i) {
+            AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+          }
         }
         break;
       case "give_and_take_red":
@@ -1356,7 +1359,7 @@ function OnBlockEffects($index, $from)
           $remove = true;
           break;
         case "endless_winter_red":
-          if ($cardType == "DR") PlayAura("frostbite", $currentPlayer, effectController: $otherPlayer);
+          if ($cardType == "DR") AddLayer("TRIGGER", $defPlayer, $currentTurnEffects[$i], );
           break;
         case "withstand_red":
         case "withstand_yellow":

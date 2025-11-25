@@ -2382,7 +2382,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DealArcane(1, 2, "PLAYCARD", $parameter, false, $player, resolvedTarget: $target);
         break;
       case "endless_winter_red":
-        for ($i = 1; $i < count($combatChain); $i += CombatChainPieces()) if ($combatChain[$i] == $player) PlayAura("frostbite", $player, effectController: $mainPlayer);
+        PlayAura("frostbite", $player, effectController: $mainPlayer);
         break;
       case "emerging_avalanche_red":
       case "emerging_avalanche_yellow":
