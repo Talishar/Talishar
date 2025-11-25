@@ -69,7 +69,8 @@ CREATE TABLE `users` (
   `lastGameName` int(11) NOT NULL DEFAULT 0,
   `lastPlayerId` int(11) NOT NULL DEFAULT 0,
   `lastAuthKey` varchar(128) DEFAULT NULL,
-  `numSpectates` int(11) NOT NULL DEFAULT 0
+  `numSpectates` int(11) NOT NULL DEFAULT 0,
+  `lastActivity` TIMESTAMP NULL DEFAULT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
