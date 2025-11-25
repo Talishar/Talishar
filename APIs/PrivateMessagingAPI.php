@@ -280,7 +280,8 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
     
     $stmt = $conn->prepare("SELECT usersId, usersUid FROM users WHERE usersId IN ($placeholders)");
     if ($stmt) {
-      $stmt->bind_param($types, ...$userIds);
+      $bindParams = array_merge([$types], $userIds);
+      call_user_func_array([$stmt, 'bind_param'], $bindParams);
       $stmt->execute();
       $result = $stmt->get_result();
       while ($row = $result->fetch_assoc()) {
@@ -316,6 +317,9 @@ function MarkMessagesAsRead($userId, $messageIds) {
     return ["success" => true];
   }
   
+  // Ensure all message IDs are integers
+  $messageIds = array_map('intval', $messageIds);
+  
   // Only mark messages where the user is the recipient
   $placeholders = implode(',', array_fill(0, count($messageIds), '?'));
   $types = str_repeat('i', count($messageIds));
@@ -326,7 +330,11 @@ function MarkMessagesAsRead($userId, $messageIds) {
   }
   
   $params = array_merge([$userId], $messageIds);
-  $stmt->bind_param("i" . $types, ...$params);
+  $typeString = "i" . $types;
+  
+  // Use call_user_func_array for flexible parameter binding
+  $bindParams = array_merge([$typeString], $params);
+  call_user_func_array([$stmt, 'bind_param'], $bindParams);
   
   if ($stmt->execute()) {
     $stmt->close();
@@ -353,7 +361,7 @@ function GetOnlineFriends($userId) {
   }
   
   // PERFORMANCE: Use single efficient query instead of individual queries
-  // Filter to only recently active friends (last 24 hours) at database level
+  // Fetch ALL friends - frontend will determine online/away/offline based on timeSinceActivity
   $placeholders = implode(',', array_fill(0, count($friendIds), '?'));
   $types = str_repeat('i', count($friendIds));
   
@@ -361,15 +369,14 @@ function GetOnlineFriends($userId) {
     SELECT usersId, lastActivity 
     FROM users 
     WHERE usersId IN ($placeholders)
-    AND lastActivity > DATE_SUB(NOW(), INTERVAL 24 HOUR)
-    LIMIT 100
   ");
   
   if (!$stmt) {
     return [];
   }
   
-  $stmt->bind_param($types, ...$friendIds);
+  $bindParams = array_merge([$types], $friendIds);
+  call_user_func_array([$stmt, 'bind_param'], $bindParams);
   $stmt->execute();
   $result = $stmt->get_result();
   
@@ -387,8 +394,18 @@ function GetOnlineFriends($userId) {
   foreach ($friends as $friend) {
     $friendId = $friend['friendUserId'];
     
-    // Skip friends not in activity map (inactive > 24 hours)
+    // Check if friend has activity data
     if (!isset($activityMap[$friendId])) {
+      // Friend has never been seen - mark as offline
+      $onlineFriends[] = [
+        'userId' => $friendId,
+        'username' => $friend['username'],
+        'nickname' => $friend['nickname'] ?? null,
+        'isOnline' => false,
+        'isAway' => false,
+        'lastSeen' => null,
+        'timeSinceActivity' => null
+      ];
       continue;
     }
     

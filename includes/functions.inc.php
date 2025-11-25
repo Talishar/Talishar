@@ -657,11 +657,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"]["turn_0"]["lifeGained"] = 0;
 		$deck["turnResults"]["turn_0"]["lifeLost"] = 0;
 	}
-
-	// Skip turn 0 for player who isn't first since they don't have a turn 0
-	$turnStart = ($firstPlayer == $player ? 0 : TurnStatPieces());
 	
-	for($i = $turnStart; $i < $countTurnStats; $i += TurnStatPieces()) {
+	for($i = 0; $i < $countTurnStats; $i += TurnStatPieces()) {
 		// Calculate actual turn number based on array index
 		$turnNo = intval($i / TurnStatPieces());
 		$turnKey = "turn_" . $turnNo;
@@ -897,15 +894,11 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$deck["turnResults"]["turn_0"]["lifeLost"] = 0;
 	}
 
-	// Skip turn 0 for player who isn't first since they don't have a turn 0
-	$turnStart = ($firstPlayer == $player ? 0 : TurnStatPieces());
-
-	for($i = $turnStart; $i < $countTurnStats; $i += TurnStatPieces()) {
+	for($i = 0; $i < $countTurnStats; $i += TurnStatPieces()) {
 		// Calculate actual turn number based on array index
 		$turnNo = intval($i / TurnStatPieces());
 		$turnKey = "turn_" . $turnNo;
-		
-		$deck["turnResults"][$turnKey]["turnNo"] = $turnNo;
+
 		$deck["turnResults"][$turnKey]["cardsUsed"] = intval($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
 		$deck["turnResults"][$turnKey]["cardsBlocked"] = intval($turnStats[$i + $TurnStats_CardsBlocked]);
 		$deck["turnResults"][$turnKey]["cardsPitched"] = intval($turnStats[$i + $TurnStats_CardsPitched]);

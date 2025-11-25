@@ -91,6 +91,7 @@ function LogResourcesUsedStats($player, $resourcesUsed)
 function LogDamageStats($player, $damageThreatened, $damageDealt)
 {
   global $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
+  //WriteLog("Logging damage stats for player $player: Threatened $damageThreatened, Dealt $damageDealt", highlight:true);
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
   $damagerStats = &GetTurnStats($player == 1 ? 2 : 1);
   if(count($damagerStats) <= $baseIndex) StatsStartTurn();
@@ -119,6 +120,7 @@ function LogLifeLossStats($player, $healthLost)
 function LogDamagePreventedStats($player, $damagePrevented)
 {
   global $currentTurn, $TurnStats_DamagePrevented;
+  //WriteLog("Player $player stats added: $damagePrevented damage prevented", highlight:true);
   $baseIndex = ($currentTurn-1) * TurnStatPieces();
   $preventedStats = &GetTurnStats($player);
   if(count($preventedStats) <= $baseIndex) StatsStartTurn();
