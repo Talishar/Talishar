@@ -48,6 +48,16 @@ if ($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
 $authKey = TryGet("authKey", "");
 $lastUpdate = intval(TryGet("lastUpdate", 0));
 
+// Update user activity for online status tracking
+if (IsUserLoggedIn()) {
+  $userId = LoggedInUser();
+  include_once "./includes/dbh.inc.php";
+  $gameConn = GetDBConnection();
+  if ($gameConn && $gameConn !== false) {
+    $gameConn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+  }
+}
+
 if (($playerID == 1 || $playerID == 2) && $authKey == "") {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
 }

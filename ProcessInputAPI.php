@@ -26,6 +26,15 @@ $_POST = json_decode(file_get_contents('php://input'), true) ?? [];
 // Start output buffering to catch any accidental output
 ob_start();
 
+// Update user activity for online status tracking
+if (IsUserLoggedIn()) {
+  $userId = LoggedInUser();
+  $loggedInConn = GetDBConnection();
+  if ($loggedInConn && $loggedInConn !== false) {
+    $loggedInConn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+  }
+}
+
 //We should always have a player ID as a URL parameter
 // Check if the "gameName" key exists in the $_POST array
 $gameName = $_POST["gameName"] ?? null;
