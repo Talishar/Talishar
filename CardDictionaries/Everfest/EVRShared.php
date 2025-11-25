@@ -781,6 +781,7 @@
     $attacks = GetCombatChainAttacks();
     for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
       $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
+      if ($attacks[$ind+2] == 0 || $attacks[$ind] == "-") continue;
       $attackID = $attacks[$ind];
       $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
       if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Crazy Brew")) {
