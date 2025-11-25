@@ -499,6 +499,7 @@ function FormatName($formatCode)
     case 13: return "compllcc";
     case 14: return "sage";
     case 15: return "compsage";
+    case 16: return "openformatsage";
     case -2: return "precon";
     default: return "-";
   }
