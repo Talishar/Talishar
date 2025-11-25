@@ -1378,7 +1378,8 @@ function CombatChainClosedCharacterEffects()
         }
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
-        $blockModifier = (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0) + $chainLinks[$i][$j + 5]);//Add -block value counter
+
+        $blockModifier = (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]);//Add -block value counter
         $bladeBeckoner = ["blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots"];
         if (IsWeapon($chainLinks[$i][0], "PLAY") && in_array($chainLinks[$i][$j], $bladeBeckoner)) {
           $blockModifier += 1;
