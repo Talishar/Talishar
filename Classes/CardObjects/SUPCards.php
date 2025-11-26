@@ -2655,17 +2655,36 @@ class battlefield_beacon_yellow extends Card {
     $count = isset($combatChainState[$CCS_SoulBanishedThisChain]) ? intval($combatChainState[$CCS_SoulBanishedThisChain]) : 0;
     if ($count <= 0) return;
     if ($count > 9) $count = 9;
-    $options = [
-      "Create_a_Courage_token",
-      "Create_a_Courage_token",
-      "Create_a_Courage_token",
-      "Create_a_Toughness_token",
-      "Create_a_Toughness_token",
-      "Create_a_Toughness_token",
-      "Create_a_Vigor_token",
-      "Create_a_Vigor_token",
-      "Create_a_Vigor_token",
-    ];
+    
+    if ($count == 1) { //Max 1 option of any
+      $options = [
+        "Create_a_Courage_token",
+        "Create_a_Toughness_token",
+        "Create_a_Vigor_token",
+      ];
+    } elseif ($count == 2) { //Max 2 options of any
+      $options = [
+        "Create_a_Courage_token",
+        "Create_a_Courage_token",
+        "Create_a_Toughness_token",
+        "Create_a_Toughness_token",
+        "Create_a_Vigor_token",
+        "Create_a_Vigor_token",
+      ];
+    } else {
+      $options = [
+        "Create_a_Courage_token",
+        "Create_a_Courage_token",
+        "Create_a_Courage_token",
+        "Create_a_Toughness_token",
+        "Create_a_Toughness_token",
+        "Create_a_Toughness_token",
+        "Create_a_Vigor_token",
+        "Create_a_Vigor_token",
+        "Create_a_Vigor_token",
+      ];
+    }
+    
     $modes = $count . "-" . implode(",", $options) . "-" . $count;
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose $count " . ($count == 1 ? "mode" : "modes"));
     AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $modes, 1);
