@@ -43,16 +43,23 @@ switch ($action) {
       $stmt->execute();
       $result = $stmt->get_result();
       $users = [];
+      $currentTime = time();
       while ($row = $result->fetch_assoc()) {
+        $lastActivityTime = strtotime($row['lastActivity']);
+        $timeSinceActivity = $currentTime - $lastActivityTime;
         $users[] = [
           'usersId' => $row['usersId'],
           'usersUid' => $row['usersUid'],
           'lastActivity' => $row['lastActivity'] ?? 'NULL',
-          'lastActivityIsNull' => $row['lastActivity'] === null
+          'lastActivityIsNull' => $row['lastActivity'] === null,
+          'lastActivityTime' => $lastActivityTime,
+          'timeSinceActivity' => $timeSinceActivity,
+          'isOnline' => $timeSinceActivity < 60
         ];
       }
       $stmt->close();
       $response->users = $users;
+      $response->currentTime = $currentTime;
     }
     
     // Check current user's lastActivity
