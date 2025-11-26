@@ -541,7 +541,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         type: $type,
         sType: $sType,
         isFrozen: $theirCharacter[$i + 8] == 1,
-        onChain: $theirCharacter[$i + 6] == 1,
+         // hide the blocking cards from the attacking player until they are locked in
+        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $theirCharacter[$i + 6] == 1,
         isBroken: $theirCharacter[$i + 1] == 0,
         label: $label,
         facing: $theirCharacter[$i + 12],
