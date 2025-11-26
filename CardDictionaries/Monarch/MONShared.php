@@ -30,7 +30,6 @@
 
   function MONAbilityType($cardID, $index=-1, $from="")
   {
-    global $currentPlayer, $mainPlayer, $defPlayer;
     switch($cardID)
     {
       case "great_library_of_solana": return "A";

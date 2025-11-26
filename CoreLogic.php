@@ -35,7 +35,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   }
   // check +1 counters
   if ($canGainAttack && $combatChainState[$CCS_NumPowerCounters] > 0) $totalPower += $combatChainState[$CCS_NumPowerCounters];
-  // //Now check current turn effects
+  //Now check current turn effects
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {

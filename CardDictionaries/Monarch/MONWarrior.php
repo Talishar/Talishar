@@ -4,7 +4,6 @@
   {
     global $CS_NumCharged, $currentPlayer, $CS_AttacksWithWeapon, $CS_LastAttack;
     global $combatChainState, $CCS_WeaponIndex;
-    $rv = "";
     switch($cardID)
     {
       case "ser_boltyn_breaker_of_dawn": case "boltyn":
