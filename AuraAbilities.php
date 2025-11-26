@@ -1371,7 +1371,7 @@ function AuraPlayAbilities($cardID, $from = "")
       case "quicken":
         $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
         if (($cardType == "AA" && ($resolvedAbilityType == "" ||$resolvedAbilityType == "AA"))
-          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA"))
+          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA") && IsWeapon($cardID, $from))
           || (TypeContains($cardID, "W") && $resolvedAbilityType == "AA" && $from == "EQUIP")) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
@@ -1400,7 +1400,7 @@ function AuraPlayAbilities($cardID, $from = "")
         break;
       case "courage":
         if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")
-          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY")
+          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from))
           || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "A") && GetResolvedAbilityType($cardID) != "I") {
           AddCurrentTurnEffect("courage", $currentPlayer);
           $remove = 1;
