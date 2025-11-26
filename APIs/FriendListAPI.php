@@ -43,6 +43,9 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
   exit;
 }
 
+// Update user activity for online status tracking
+$conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+
 $action = $_POST['action'] ?? '';
 $response = new stdClass();
 

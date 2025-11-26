@@ -47,6 +47,9 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$_SESSION["isBanned"] = $userData["isBanned"];
 
+		// Update user activity on login for online status tracking
+		$conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userData["usersId"]) . " LIMIT 1");
+
 		try {
 			PatreonLogin($patreonAccessToken);
 		} catch (\Exception $e) { }
@@ -103,6 +106,9 @@ function AttemptPasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$rememberMeToken = $userData["rememberMeToken"];
 		$_SESSION["isBanned"] = $userData["isBanned"];
+
+		// Update user activity on login for online status tracking
+		$conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userData["usersId"]) . " LIMIT 1");
 
 		try {
 			PatreonLogin($patreonAccessToken);
