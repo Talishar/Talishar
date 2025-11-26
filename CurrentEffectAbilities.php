@@ -848,7 +848,7 @@ function OnAttackEffects($power)
           AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK!PLAY", 1);
           break;
         case "warband_of_bellona":
-          Charge(may: true, player: $mainPlayer);
+          Charge(may: true, player: $mainPlayer, mod: "NOTCOST");
           AddDecisionQueue("ALLCARDPITCHORPASS", $mainPlayer, "2", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           $remove = true;

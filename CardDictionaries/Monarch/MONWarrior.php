@@ -79,7 +79,7 @@
     ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
   }
 
-  function Charge($may=true, $player="")
+  function Charge($may=true, $player="", $mod="-")
   {
     global $currentPlayer;
     if($player == "") $player = $currentPlayer;
@@ -91,7 +91,7 @@
     else AddDecisionQueue("CHOOSEHAND", $player, "<-");
     AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
     AddDecisionQueue("ADDSOUL", $player, "HAND", 1);
-    AddDecisionQueue("FINISHCHARGE", $player, "-", 1);
+    AddDecisionQueue("FINISHCHARGE", $player, $mod, 1);
   }
 
   function DQCharge()

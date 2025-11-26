@@ -1313,8 +1313,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
       if (SearchCharacterActive($player, "soulbond_resolve") && GetClassState($otherPlayer, $CS_DamageDealt) <= 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) <= 0) AddCurrentTurnEffect("soulbond_resolve", $player);
-      
-      if (CardType($EffectContext) == "AA" || (isset($layers[0]) && CardType($layers[0]) == "AA")) ++$combatChainState[$CCS_AttackNumCharged];
+      if ((CardType($EffectContext) == "AA" || (isset($layers[0]) && CardType($layers[0]) == "AA")) && $parameter != "NOTCOST") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
       $target = is_array($parameter) ? $parameter : explode("-", $parameter);
