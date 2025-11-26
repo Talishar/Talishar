@@ -391,25 +391,21 @@ function GetOnlineFriends($userId) {
   // Build response with activity data - avoid repeated strtotime() calls
   $currentTime = time();
   $onlineFriends = [];
-  $userIdsToUpdate = []; // Track users with NULL lastActivity to populate them
   
   foreach ($friends as $friend) {
     $friendId = $friend['friendUserId'];
     
     // Check if friend has activity data
     if (!isset($activityMap[$friendId]) || $activityMap[$friendId] === null) {
-      // Friend has never been seen or has NULL activity
-      // Mark for batch update to NOW() to populate NULL values
-      $userIdsToUpdate[] = $friendId;
-      
+      // Friend has never been seen or has NULL activity - mark as offline
       $onlineFriends[] = [
         'userId' => $friendId,
         'username' => $friend['username'],
         'nickname' => $friend['nickname'] ?? null,
-        'isOnline' => true,  // Treat NULL as recently active (give them benefit of the doubt)
+        'isOnline' => false,
         'isAway' => false,
         'lastSeen' => null,
-        'timeSinceActivity' => 0  // Assume just now active
+        'timeSinceActivity' => null
       ];
       continue;
     }
@@ -420,15 +416,14 @@ function GetOnlineFriends($userId) {
     // Handle invalid timestamp
     if ($lastActivityTime === false) {
       error_log("Invalid lastActivity timestamp for user $friendId: $lastActivity");
-      $userIdsToUpdate[] = $friendId;  // Also update invalid timestamps
       $onlineFriends[] = [
         'userId' => $friendId,
         'username' => $friend['username'],
         'nickname' => $friend['nickname'] ?? null,
-        'isOnline' => true,  // Treat invalid as recently active
+        'isOnline' => false,
         'isAway' => false,
         'lastSeen' => $lastActivity,
-        'timeSinceActivity' => 0
+        'timeSinceActivity' => null
       ];
       continue;
     }
@@ -444,19 +439,6 @@ function GetOnlineFriends($userId) {
       'lastSeen' => $lastActivity,
       'timeSinceActivity' => $timeSinceActivity
     ];
-  }
-  
-  // Batch update users with NULL lastActivity to NOW()
-  if (!empty($userIdsToUpdate)) {
-    $placeholders = implode(',', array_fill(0, count($userIdsToUpdate), '?'));
-    $types = str_repeat('i', count($userIdsToUpdate));
-    $updateStmt = $conn->prepare("UPDATE users SET lastActivity = NOW() WHERE usersId IN ($placeholders)");
-    if ($updateStmt) {
-      $bindParams = array_merge([$types], $userIdsToUpdate);
-      call_user_func_array([$updateStmt, 'bind_param'], $bindParams);
-      $updateStmt->execute();
-      $updateStmt->close();
-    }
   }
   
   return $onlineFriends;
