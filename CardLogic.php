@@ -2251,6 +2251,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
         }
         else { //if there is no attacking hero, the trap just goes off
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 0);
           AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
         }
         break;

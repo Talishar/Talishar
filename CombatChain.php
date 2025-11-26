@@ -826,7 +826,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   switch ($cardID) {
     case "tripwire_trap_red":
       AddLayer("TRIGGER", $defPlayer, $cardID);
-      AddDecisionQueue("TRIPWIRETRAP", $defPlayer, "-", 1);
       break;
     case "pitfall_trap_yellow":
       if (!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
