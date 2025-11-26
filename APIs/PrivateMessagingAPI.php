@@ -413,14 +413,12 @@ function GetOnlineFriends($userId) {
     $lastActivityTime = strtotime($lastActivity);
     $timeSinceActivity = $currentTime - $lastActivityTime;
     
-    error_log("DEBUG: Friend $friendId - lastActivity=$lastActivity, lastActivityTime=$lastActivityTime, currentTime=$currentTime, timeSinceActivity=$timeSinceActivity, isOnline=" . ($timeSinceActivity < 60 ? "true" : "false"));
-    
     $onlineFriends[] = [
       'userId' => $friendId,
       'username' => $friend['username'],
       'nickname' => $friend['nickname'] ?? null,
-      'isOnline' => $timeSinceActivity < 300,  // Online if active in last 5 minutes
-      'isAway' => $timeSinceActivity >= 300 && $timeSinceActivity < 600,  // Away if 5-10 minutes
+      'isOnline' => $timeSinceActivity < 60,
+      'isAway' => $timeSinceActivity >= 60 && $timeSinceActivity < 600,
       'lastSeen' => $lastActivity,
       'timeSinceActivity' => $timeSinceActivity
     ];
