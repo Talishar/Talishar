@@ -56,11 +56,10 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
   exit;
 }
 
-// Update user activity - Always update to ensure online status is current
-// This is critical for the online friends feature to work correctly in production
-$updateResult = $conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
-if (!$updateResult && $conn->error) {
-  error_log("Activity update failed for user $userId: " . $conn->error);
+//  Activity update sampling - only update 10% of requests to reduce database load
+// This significantly reduces write contention while still maintaining activity tracking
+if (rand(1, 10) === 1) {
+  $conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
 }
 
 $action = $_POST['action'] ?? '';
@@ -396,8 +395,8 @@ function GetOnlineFriends($userId) {
     $friendId = $friend['friendUserId'];
     
     // Check if friend has activity data
-    if (!isset($activityMap[$friendId]) || $activityMap[$friendId] === null) {
-      // Friend has never been seen or has NULL activity - mark as offline
+    if (!isset($activityMap[$friendId])) {
+      // Friend has never been seen - mark as offline
       $onlineFriends[] = [
         'userId' => $friendId,
         'username' => $friend['username'],
@@ -412,22 +411,6 @@ function GetOnlineFriends($userId) {
     
     $lastActivity = $activityMap[$friendId];
     $lastActivityTime = strtotime($lastActivity);
-    
-    // Handle invalid timestamp
-    if ($lastActivityTime === false) {
-      error_log("Invalid lastActivity timestamp for user $friendId: $lastActivity");
-      $onlineFriends[] = [
-        'userId' => $friendId,
-        'username' => $friend['username'],
-        'nickname' => $friend['nickname'] ?? null,
-        'isOnline' => false,
-        'isAway' => false,
-        'lastSeen' => $lastActivity,
-        'timeSinceActivity' => null
-      ];
-      continue;
-    }
-    
     $timeSinceActivity = $currentTime - $lastActivityTime;
     
     $onlineFriends[] = [
