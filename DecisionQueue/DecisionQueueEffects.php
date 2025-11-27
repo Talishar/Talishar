@@ -1165,7 +1165,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "ALPHA":
       if (ModifiedPowerValue($lastResult, $player, "HAND") >= 6) {
-        AddDecisionQueue("PLAYERLOSEHEALTH", $otherPlayer, 2);
+        LoseHealth(2, $otherPlayer);
       }
       return $lastResult;
     case "IRONFIST":
