@@ -92,6 +92,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $found = SearchPitchForCard($currentPlayer, $cardID);
       if ($found >= 0) {
         PitchDeck($currentPlayer, $found);
+        AddEvent("ADDBOTDECK", $currentPlayer);
         PassTurn(); //Resume passing the turn
       } else {
         echo("Pitch deck " . $turn[0] . " Invalid Input<BR>");
