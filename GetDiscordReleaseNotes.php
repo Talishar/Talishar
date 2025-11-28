@@ -139,8 +139,10 @@ try {
             $content = str_replace('<@256263154915475456>', '@Aegisworn', $content);
             $content = str_replace('<@478621285786845196>', '@PvtVoid', $content);
 
-            // Preserve line breaks
-            $content = nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'), false);
+            // Preserve line breaks - normalize to \n first, then convert to HTML
+            $content = preg_replace('/\r\n|\r/', "\n", $content);
+            $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+            $content = nl2br($content, false);
             
             $data[] = [
                 'id' => $msg['id'],
