@@ -2864,7 +2864,7 @@ function GetDamagePreventionTargetIndices()
 function SelfCostModifier($cardID, $from)
 {
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
-  global $CS_CheeredThisTurn;
+  global $CS_CheeredThisTurn, $mainPlayer;
   $otherPlayer = ($currentPlayer == 1) ? 2 : 1;
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
@@ -2961,7 +2961,7 @@ function SelfCostModifier($cardID, $from)
     case "compounding_anger_red":
     case "bubble_to_the_surface_red":
     case "drop_of_dragon_blood_red":
-      return (-1 * NumDraconicChainLinks());
+      return $currentPlayer == $mainPlayer ? (-1 * NumDraconicChainLinks()) : 0;
     case "solid_ground_blue":
       return (-1 * NumSeismicSurge($currentPlayer));
     case "gold_hunter_ketch_yellow":
