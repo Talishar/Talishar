@@ -1196,15 +1196,22 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   }
 
 }
-function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3", $skipGain=false)
+// set "forCost" to false for effects asking for pitch during the resolution of a layer for clearer UI
+function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3", $skipGain=false, $forCost=true)
 {
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
   PrependDecisionQueue("PITCHABILITY", $player, "-", 1);
   PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
-  PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-  PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
+  if ($forCost) {
+    PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
+    PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
+  }
+  else {
+    PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+    PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  }
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
-  PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
+  if ($forCost) PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
 }
 

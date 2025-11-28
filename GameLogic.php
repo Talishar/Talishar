@@ -1552,6 +1552,28 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PitchCard($player, skipGain: true);
       }
       return $parameter;
+    case "PAYRESOURCESEFFECT": //Use this for costs imposed by resolution of a layer for clearer UI
+      $resources = &GetResources($player);
+      $lastResult = intval($lastResult);
+      if ($lastResult < 0) $resources[0] += -1 * $lastResult;
+      else if ($resources[0] > 0) {
+        $res = $resources[0];
+        $resources[0] -= $lastResult;
+        $lastResult -= $res;
+        if ($resources[0] < 0) $resources[0] = 0;
+      }
+      if ($lastResult > 0) {
+        $hand = &GetHand($player);
+        $char = &GetPlayerCharacter($player);
+        if (count($hand) == 0 && !IsPlayerAI($player)) {
+          WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
+          RevertGamestate();
+        }
+        PrependDecisionQueue("PAYRESOURCESEFFECT", $player, $parameter, 1);
+        PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
+        PitchCard($player, skipGain: true, forCost: false);
+      }
+      return $parameter;
     case "ADDCLASSSTATE":
       $parameters = explode("-", $parameter);
       IncrementClassState($player, $parameters[0], $parameters[1]);
