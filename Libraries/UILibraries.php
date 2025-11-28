@@ -59,6 +59,7 @@ function JSONRenderedCard(
   $goldCounters = NULL,
   $bindCounters = NULL,
   $stainCounters = NULL,
+  $suspenseCounters = NULL,
   $lightningPlayed = NULL,
   $showAmpAmount = false,
   $marked = NULL,
@@ -121,6 +122,9 @@ function JSONRenderedCard(
   $goldCounters = property_exists($countersMap, 'gold') ? $goldCounters->gold : $goldCounters;
   if($goldCounters != NULL) $countersMap->gold = $goldCounters;
 
+  $suspenseCounters = property_exists($countersMap, 'suspense') ? $suspenseCounters->suspense : $suspenseCounters;
+  if($suspenseCounters != NULL) $countersMap->suspense = $suspenseCounters;
+
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $type = CardType($cardNumber);
@@ -175,6 +179,10 @@ function JSONRenderedCard(
     }
     else if(HasGoldCounters($cardNumber)) {
       $countersMap->gold = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasSuspense($cardNumber)) {
+      $countersMap->suspense = $countersMap->counters;
       $countersMap->counters = 0;
     }
     else if ($type == "E") {
