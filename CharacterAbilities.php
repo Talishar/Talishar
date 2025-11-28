@@ -1706,34 +1706,10 @@ function CharacterBoostAbilities($player)
     if (intval($char[$i + 1]) < 2) continue;
     switch ($char[$i]) {
       case "evo_circuit_breaker_red_equip":
-        if ($char[$i + 9] == 1 && EvoHasUnderCard($player, $i)) {
-          MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may: false);
-          MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may: false);
-          AddDecisionQueue("SHUFFLEDECK", $player, "-");
-          CharacterChooseSubcard($player, $i, fromDQ: false);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
       case "evo_atom_breaker_red_equip":
-        if ($char[$i + 9] == 1 && EvoHasUnderCard($player, $i)) {
-          GainResources($player, 2);
-          CharacterChooseSubcard($player, $i, fromDQ: false);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
       case "evo_face_breaker_red_equip":
-        if ($char[$i + 9] == 1 && EvoHasUnderCard($player, $i)) {
-          AddCurrentTurnEffect($char[$i] . "-BUFF", $player);
-          CharacterChooseSubcard($player, $i, fromDQ: false);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
       case "evo_mach_breaker_red_equip":
-        if ($char[$i + 9] == 1 && EvoHasUnderCard($player, $i)) {
-          PlayAura("quicken", $player);
-          CharacterChooseSubcard($player, $i, fromDQ: false);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
+        if ($char[$i + 9] == 1) AddLayer("TRIGGER", $player, $char[$i], $char[$i+11]);
         break;
       default:
         break;
