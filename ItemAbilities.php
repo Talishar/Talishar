@@ -50,8 +50,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     UndestroyHook($player);
     if ($number > 0 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && SearchCurrentTurnEffects($hero . "-1", $player, true) && $effectController == $player && $char[1] < 3) {
       $EffectContext = $hero;
-      WriteLog("Player $player drew a card from Victor");
-      Draw($player);
+      AddLayer("TRIGGER", $player, $hero);
     }
   }
   //enters the arena triggers

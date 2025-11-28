@@ -3170,6 +3170,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PutItemIntoPlayForPlayer("gold", $player, effectController: $player);
         WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("gold", "gold")." token for Player " . $player);
         break;
+      case "victor_goldmane":
+      case "victor_goldmane_high_and_mighty":
+        WriteLog("Player $player drew a card from Victor");
+        Draw($player);
+        break;
       case "trounce_red":
         Clash($parameter, effectController: $player);
         break;
