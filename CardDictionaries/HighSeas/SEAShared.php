@@ -548,7 +548,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "paddle_faster_red":
       $inds = GetUntapped($currentPlayer, "MYALLY");
       if(empty($inds)) break;
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "choose an ally to tap (or pass)");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an ally to tap (or pass)");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
@@ -557,7 +557,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "board_the_ship_red":
       $inds = GetUntapped($currentPlayer, "MYALLY");
       if(empty($inds)) break;
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "choose an ally to tap (or pass)");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an ally to tap (or pass)");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds, 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);

@@ -1218,7 +1218,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
           $subtype = "Dagger";
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
           AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "choose_a_dagger_to_poke_with", 1);
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_a_dagger_to_poke_with", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
           AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
           AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
@@ -3769,7 +3769,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hoist_em_up_red":
         $inds = GetUntapped($defPlayer, "MYALLY");
         if (strlen($inds) > 0) {
-          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "choose an ally to tap (or pass)");
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose an ally to tap (or pass)");
           AddDecisionQueue("PASSPARAMETER", $defPlayer, $inds, 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $defPlayer, "<-", 1);
           AddDecisionQueue("MZTAP", $defPlayer, "<-", 1);
