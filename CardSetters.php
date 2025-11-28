@@ -419,7 +419,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
   global $CS_NumAddedToSoul, $CS_NumYellowPutSoul;
   global $myStateBuiltFor;
   if ($cardID == "spirit_of_eirina_yellow") {
-    WriteLog("The spirit of Eirina is inside you, always.");
+    WriteLog("📿The spirit of Eirina is inside you, always.");
     PutItemIntoPlayForPlayer($cardID, $player);
   } else {
     if ($mainPlayerGamestateStillBuilt) {

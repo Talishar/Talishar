@@ -1222,7 +1222,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $number;
     case "VOFTHEVANGUARD":
       if ($parameter == "1" && TalentContains($lastResult, "LIGHT", $player)) {
-        WriteLog(CardLink("v_of_the_vanguard_yellow", "v_of_the_vanguard_yellow") . " gives all attacks on this combat chain +1");
         AddCurrentTurnEffect("v_of_the_vanguard_yellow", $player);
       }
       $hand = &GetHand($player);
