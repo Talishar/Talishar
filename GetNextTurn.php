@@ -871,9 +871,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $chainLinkSummaryPieces = ChainLinkSummaryPieces();
   for ($i = 0; $i < $chainLinksCount; ++$i) {
     $damage = $chainLinkSummary[$i * $chainLinkSummaryPieces];
+    $hasHit = $damage > 0 || $chainLinkSummary[$i * $chainLinkSummaryPieces + 5] == 1;
     $isDraconic = DelimStringContains($chainLinkSummary[$i * $chainLinkSummaryPieces + 2], "DRACONIC", $playerID);
     array_push($chainLinkOutput, [
-      'result' => $damage > 0 ? "hit" : "no-hit",
+      'result' => $hasHit ? "hit" : "no-hit",
       'isDraconic' => $isDraconic
     ]);
   }

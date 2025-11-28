@@ -480,12 +480,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
         }
         break;
       case "mask_of_momentum":
-        $count = CountCurrentTurnEffects($characterID, $mainPlayer);
-        if($mainCharacter[$i + 1] == 2 && $count <= HitsInRow() && $count <= count($chainLinks) && $count <= 3) {
-          AddCurrentTurnEffect("mask_of_momentum", $mainPlayer); 
-        } 
         if ($isAA && HitsInRow() >= 2) {
-          while (SearchCurrentTurnEffects($characterID, $mainPlayer, true));
           AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
           $mainCharacter[$i + 1] = 1;
         }
