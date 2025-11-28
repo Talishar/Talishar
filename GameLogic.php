@@ -859,6 +859,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDBOTDECK":
       $deck = new Deck($player);
       $deck->AddBottom($lastResult);
+      AddEvent("ADDBOTDECK", $player);
       if($parameter != "Skip") WriteLog("⤵️ A card was put on the bottom of the deck.");
       return $lastResult;
     case "ADDTOPDECK":
@@ -869,8 +870,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $deck = new Deck($player);
       $card = explode(",", $lastResult)[0];
       $loc = explode(",", $lastResult)[1];
-      if ($loc == "Top") $deck->AddTop($card);
-      else $deck->AddBOTTOM($card);
+      if ($loc == "Top") {
+        $deck->AddTop($card);
+      }
+      else {
+        $deck->AddBottom($card);
+        AddEvent("ADDBOTDECK", $player);
+      }
       return $card;
     case "REMOVEDECK":
       $deck = new Deck($player);
@@ -885,6 +891,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           else WriteLog("There was an error adding a card to your deck, please submit a bug report", highlight: true);
         }
       }
+      AddEvent("ADDBOTDECK", $player);
+      WriteLog("⤵️ A card was put on the bottom of the deck.");
       return $lastResult;
     case "MULTIADDTOPDECK":
       $deck = new Deck($player);
