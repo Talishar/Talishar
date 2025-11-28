@@ -1990,11 +1990,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   elseif ($additionalCosts == "EFFECTHITEFFECT") {
     if(isset($combatChain) && count($combatChain) > 2) {
       $index = FindCurrentTurnEffectIndex($player, $target);
-      // Remove "-string" and "string-" suffixes from the effect ID
-      $effectID = preg_replace('/-[^-]*$/', '', $currentTurnEffects[$index]);
-      LogPlayCardStats($player, $effectID, "CC", "HIT");
-      if (EffectHitEffect($target, $combatChain[2], $uniqueID, effectSource:$combatChain[0])) {
-        if ($index != -1) {
+      if ($index != -1) {
+        // Remove "-string" and "string-" suffixes from the effect ID
+        $effectID = preg_replace('/-[^-]*$/', '', $currentTurnEffects[$index]);
+        LogPlayCardStats($player, $effectID, "CC", "HIT");
+        if (EffectHitEffect($target, $combatChain[2], $uniqueID, effectSource:$combatChain[0])) {
           RemoveCurrentTurnEffect($index);
         }
       }
