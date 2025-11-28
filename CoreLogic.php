@@ -3287,7 +3287,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       case "blaze_firemind":
         $index = SearchCurrentTurnEffectsForIndex("blaze_firemind", $currentPlayer);
         $dynCost = explode("-", $currentTurnEffects[$index]);
-        MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID);
+        MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID . "," . $currentPlayer);
         return "";
       case "magrar";
           PlayAura("zen_state", $currentPlayer);
