@@ -3955,40 +3955,40 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("ADDITIONALATTACKTARGET", $currentPlayer, $cardID, 1);
       break;
     case "thespian_charm_yellow":
-      $modes = "3-destroy_a_might_or_vigor,cheer,bounce_an_aura";
+      $modes = "3-Destroy_a_Might_or_Vigor,Cheer,Bounce_an_aura";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of options");
       AddDecisionQueue("MAYMULTICHOOSETEXT", $currentPlayer, $modes);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       break;
     case "liars_charm_yellow":
-      $modes = "3-steal_a_toughness_or_vigor,boo,remove_hero_abilities";
+      $modes = "3-Steal_a_Toughness_or_Vigor,Boo,Remove_hero_abilities";
       $targets = "MYCHAR-0,THEIRCHAR-0";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of options");
       AddDecisionQueue("MAYMULTICHOOSETEXT", $currentPlayer, $modes, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "remove_hero_abilities", 1);
+      AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "Remove_hero_abilities", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Target a hero to lose abilities", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $targets, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "numbskull_charm_yellow":
-      $modes = "3-destroy_a_confidence_or_might,cheer,pitch_top_card";
+      $modes = "3-Destroy_a_Confidence_or_Might,Cheer,Pitch_top_card";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of options");
       AddDecisionQueue("MAYMULTICHOOSETEXT", $currentPlayer, $modes);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       break;
     case "cheaters_charm_yellow":
-      $modes = "3-steal_a_confidence_or_toughness,boo,deal_2_damage";
+      $modes = "3-Steal_a_Confidence_or_Toughness,Boo,Deal_2_damage";
       $targets = ShouldAutotargetOpponent($currentPlayer) ? "THEIRCHAR-0" : "MYCHAR-0,THEIRCHAR-0";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of options");
       AddDecisionQueue("MAYMULTICHOOSETEXT", $currentPlayer, $modes);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
-      AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "deal_2_damage", 1);
+      AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "Deal_2_damage", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Target a deal 2 damage 2", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $targets, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);

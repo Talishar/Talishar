@@ -117,17 +117,17 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $params = explode(",", $additionalCosts);
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
-          case "destroy_a_might_or_vigor":
+          case "Destroy_a_Might_or_Vigor":
             $search = "THEIRAURAS:cardID=might;cardID=vigor";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search, 1);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
             break;
-          case "cheer":
+          case "Cheer":
             Cheer($currentPlayer);
             break;
-          case "bounce_an_aura":
+          case "Bounce_an_aura":
             $search = "MYAURAS";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to return to hand", 1);
@@ -142,17 +142,17 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $params = explode(",", $additionalCosts);
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
-          case "steal_a_toughness_or_vigor":
+          case "Steal_a_Toughness_or_Vigor":
             $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
             break;
-          case "boo":
+          case "Boo":
             Boo($currentPlayer);
             break;
-          case "remove_hero_abilities":
+          case "Remove_hero_abilities":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
             $hand = GetHand($targetPlayer);
             if (count($hand) > 0) {
@@ -173,17 +173,17 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $params = explode(",", $additionalCosts);
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
-          case "destroy_a_confidence_or_might":
+          case "Destroy_a_Confidence_or_Might":
             $search = "THEIRAURAS:cardID=confidence;cardID=might";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
             break;
-          case "cheer":
+          case "Cheer":
             Cheer($currentPlayer);
             break;
-          case "pitch_top_card":
+          case "Pitch_top_card":
             $deck = new Deck($currentPlayer);
             $top = $deck->Top(true);
             Pitch($top, $currentPlayer);
@@ -199,18 +199,18 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $params = explode(",", $additionalCosts);
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
-          case "steal_a_confidence_or_toughness":
+          case "Steal_a_Confidence_or_Toughness":
             $search = "THEIRAURAS:cardID=confidence;cardID=toughness";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
             AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
             break;
-          case "boo":
+          case "Boo":
             Boo($currentPlayer);
             CacheCombatResult();
             break;
-          case "deal_2_damage":
+          case "Deal_2_damage":
             $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
             $condition = false;
             if ($currentPlayer == $mainPlayer) {
