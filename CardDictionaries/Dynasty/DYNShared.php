@@ -551,7 +551,8 @@ function DYNHitEffect($cardID, $from, $attackID)
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$cardID);
-        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, true);
+        // where: to,from,mod,banishSource,banisher
+        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-,$cardID,$mainPlayer", true);
       }
       break;
     case "regicide_blue": if(IsHeroAttackTarget() && IsRoyal($defPlayer))
