@@ -4755,6 +4755,7 @@ function HasFlowCounters($cardID)
     case "channel_the_millennium_tree_red":
     case "channel_lightning_valley_yellow":
     case "channel_mount_isen_blue":
+    case "channel_the_tranquil_domain_yellow":
       return true;
     default:
       return false;
@@ -4806,6 +4807,16 @@ function HasGoldCounters($cardID)
 {
   switch ($cardID) {
     case "treasure_island":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function HasSandCounters($cardID)
+{
+  switch ($cardID) {
+    case "parched_terrain_red":
       return true;
     default:
       return false;
