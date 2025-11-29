@@ -146,7 +146,8 @@ switch ($action) {
 
   case 'getOnlineFriends':
     // Get all friends with their online status
-    $onlineFriends = GetOnlineFriends($userId);
+    // $onlineFriends = GetOnlineFriends($userId);
+    $onlineFriends = []; //temporary
     $response->onlineFriends = $onlineFriends;
     $response->success = true;
     break;
