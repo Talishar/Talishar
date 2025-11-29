@@ -4943,33 +4943,7 @@ class parched_terrain_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $auraIndex = SearchAurasForUniqueID($uniqueID, $this->controller);
-    $auras = &GetAuras($this->controller);
-    ++$auras[$auraIndex + 2];
-    $sandCounters = $auras[$auraIndex + 2];
-    $graveyard = &GetDiscard($this->controller);
-    $redCardsInGraveyard = 0;
-    for ($j = 0; $j < count($graveyard); $j += DiscardPieces()) {
-      if (ColorContains($graveyard[$j], 1, $this->controller)) $redCardsInGraveyard++;
-    }
-    if ($redCardsInGraveyard < $sandCounters) {
-      WriteLog("Not enough red cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
-      DestroyAuraUniqueID($this->controller, $uniqueID);
-    } else {
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish $sandCounters cards to keep " . CardLink($this->cardID, $this->cardID) . "?");
-      AddDecisionQueue("YESNO", $this->controller, "<-", 1);
-      AddDecisionQueue("NOPASS", $this->controller, "<-", 1);
-      for ($j = 0; $j < $sandCounters; $j++) {
-        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:pitch=1", 1);
-        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a red card to banish from your graveyard", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-        AddDecisionQueue("MZBANISH", $this->controller, "GY,-", 1);
-        AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
-      }
-      AddDecisionQueue("ELSE", $this->controller, "-");
-      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYAURAS-$auraIndex", 1);
-      AddDecisionQueue("MZDESTROY", $this->controller, "", 1);
-    }
+    ChannelPitchColor($uniqueID, 1);
   }
 }
 

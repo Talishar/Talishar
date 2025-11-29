@@ -1075,6 +1075,7 @@ function AuraBeginEndPhaseAbilities()
   $mainCharacter = array_values($mainCharacter);
 }
 
+// From Pitch -> Bottom of the deck
 function ChannelTalent($uniqueID, $talent)
 {
   global $mainPlayer;
@@ -1086,15 +1087,43 @@ function ChannelTalent($uniqueID, $talent)
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
     for ($j = $toBottom; $j > 0; --$j) {
-      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose a " . ucwords(strtolower($talent)) . " card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
+      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose " . ucwords(strtolower($talent)) . " card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    DestroyAura($mainPlayer, $index);
+    WriteLog("Not enough " . ucwords(strtolower($talent)) . " cards in your pitch to satisfy " . CardLink($auras[$index], $auras[$index]) . ". Aura destroyed.");
+    DestroyAuraUniqueID($mainPlayer, $uniqueID);
   }
 }
+
+// Similar to ChannelTalent but for Parched Terrain
+// From Discard -> Banish
+function ChannelPitchColor($uniqueID, $pitch)
+{
+  global $mainPlayer;
+  $auras = &GetAuras($mainPlayer);
+  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if ($auras[$i + 6] == $uniqueID) $index = $i;
+  }
+  ++$auras[$index + 2];
+  $toBottom = $auras[$index + 2];
+  $numPitch = SearchCount(SearchDiscard($mainPlayer, pitch: $pitch));
+  $colorToBanish = ($pitch == 1) ? "red" : (($pitch == 2) ? "yellow" : "blue");
+  if ($toBottom <= $numPitch) {
+    for ($j = $toBottom; $j > 0; --$j) {
+      MZMoveCard($mainPlayer, "MYDISCARD:pitch=" . $pitch, "MYBANISH", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose " . $colorToBanish . " card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " sand counter" . ($toBottom > 1 ? "s" : "") . " on it:");
+    }
+    AddDecisionQueue("ELSE", $mainPlayer, "-");
+    AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
+    AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+  } else {
+    WriteLog("Not enough " . $colorToBanish . " cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
+    DestroyAuraUniqueID($mainPlayer, $uniqueID);
+  }
+}
+
 
 function AuraEndTurnAbilities()
 {
