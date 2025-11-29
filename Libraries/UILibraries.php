@@ -189,6 +189,10 @@ function JSONRenderedCard(
       $countersMap->suspense = $countersMap->counters;
       $countersMap->counters = 0;
     }
+    else if(HasSandCounters($cardNumber)) {
+      $countersMap->sand = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
     else if ($type == "E") {
       if (EquipmentsUsingSteamCounter($cardNumber)) {
         $countersMap->steam = $countersMap->counters;
