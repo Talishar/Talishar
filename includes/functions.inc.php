@@ -489,7 +489,7 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false, $countWinnerDeck, $countLoserDeck)
+function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
 {
 	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
     // Skip AI games
