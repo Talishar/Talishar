@@ -96,14 +96,17 @@ if ($handle = opendir($path)) {
         $visibility = GetCachePiece($gameToken, 9);
         $gameInProgressCount += 1;
         
-        // Get the game creator (p1uid) from the GameFile.txt
+        // Get both player usernames from the GameFile.txt
         $gameFilePath = $folder . "GameFile.txt";
         $gameCreator = "";
+        $p2Username = "";
         if (file_exists($gameFilePath)) {
           $lines = file($gameFilePath);
-          if (count($lines) >= 10) {
+          if (count($lines) >= 11) {
             // p1uid is on line 10 (0-indexed line 9)
             $gameCreator = trim($lines[9]);
+            // p2uid is on line 11 (0-indexed line 10)
+            $p2Username = trim($lines[10]);
           }
         }
         
@@ -113,8 +116,8 @@ if ($handle = opendir($path)) {
           // Public game
           $showGame = true;
         } else if($visibility == "2") {
-          // Friends-only game - show if user is a friend of the creator
-          $showGame = IsUserLoggedIn() && in_array($gameCreator, $friendUserNames);
+          // Friends-only game - show if user is a friend of either player
+          $showGame = IsUserLoggedIn() && (in_array($gameCreator, $friendUserNames) || in_array($p2Username, $friendUserNames));
         }
         
         // Don't show if not visible
@@ -123,12 +126,12 @@ if ($handle = opendir($path)) {
         }
         
         // Don't show games from blocked users
-        if(in_array($gameCreator, $blockedUserNames)) {
+        if(in_array($gameCreator, $blockedUserNames) || in_array($p2Username, $blockedUserNames)) {
           continue;
         }
         
         // Don't show games from users who have blocked me
-        if(in_array($gameCreator, $usersWhoBlockedMe)) {
+        if(in_array($gameCreator, $usersWhoBlockedMe) || in_array($p2Username, $usersWhoBlockedMe)) {
           continue;
         }
         
@@ -139,6 +142,7 @@ if ($handle = opendir($path)) {
         $gameInProgress->gameName = $gameToken;
         $gameInProgress->format = GetCachePiece($gameToken, 13);
         $gameInProgress->gameCreator = $gameCreator;
+        $gameInProgress->p2Username = $p2Username;
         
         if($gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") array_push($response->gamesInProgress, $gameInProgress);
       }
