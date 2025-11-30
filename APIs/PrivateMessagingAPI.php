@@ -283,7 +283,14 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
     
     $stmt = $conn->prepare("SELECT usersId, usersUid FROM users WHERE usersId IN ($placeholders)");
     if ($stmt) {
-      $bindParams = array_merge([$types], $userIds);
+      // Convert to references for bind_param
+      $userIdsRef = [];
+      foreach ($userIds as &$id) {
+        $userIdsRef[] = &$id;
+      }
+      unset($id);
+      
+      $bindParams = array_merge([$types], $userIdsRef);
       call_user_func_array([$stmt, 'bind_param'], $bindParams);
       $stmt->execute();
       $result = $stmt->get_result();
@@ -335,8 +342,14 @@ function MarkMessagesAsRead($userId, $messageIds) {
   $params = array_merge([$userId], $messageIds);
   $typeString = "i" . $types;
   
-  // Use call_user_func_array for flexible parameter binding
-  $bindParams = array_merge([$typeString], $params);
+  // Convert to references for bind_param
+  $paramsRef = [];
+  foreach ($params as &$param) {
+    $paramsRef[] = &$param;
+  }
+  unset($param);
+  
+  $bindParams = array_merge([$typeString], $paramsRef);
   call_user_func_array([$stmt, 'bind_param'], $bindParams);
   
   if ($stmt->execute()) {
@@ -383,7 +396,14 @@ function GetOnlineFriends($userId) {
     return [];
   }
   
-  $bindParams = array_merge([$types], $friendIds);
+  // Convert to references for bind_param
+  $friendIdsRef = [];
+  foreach ($friendIds as &$id) {
+    $friendIdsRef[] = &$id;
+  }
+  unset($id);
+  
+  $bindParams = array_merge([$types], $friendIdsRef);
   call_user_func_array([$stmt, 'bind_param'], $bindParams);
   if (!$stmt->execute()) {
     $stmt->close();
