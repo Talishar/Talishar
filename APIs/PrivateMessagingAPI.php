@@ -9,6 +9,9 @@ ini_set('log_errors', 1);
 set_time_limit(10);
 ini_set('memory_limit', '32M');
 
+// Set timezone to UTC - ensures consistent time calculations across all servers
+date_default_timezone_set('UTC');
+
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 SetHeaders();
@@ -58,7 +61,8 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
 //  Activity update sampling - only update 10% of requests to reduce database load
 // This significantly reduces write contention while still maintaining activity tracking
 if (rand(1, 10) === 1) {
-  $conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+  // Use UTC_TIMESTAMP to ensure timezone consistency across all servers
+  $conn->query("UPDATE users SET lastActivity = UTC_TIMESTAMP() WHERE usersId = " . intval($userId) . " LIMIT 1");
 }
 
 $action = $_POST['action'] ?? '';
@@ -417,7 +421,8 @@ function GetOnlineFriends($userId) {
     }
     
     $lastActivity = $activityMap[$friendId];
-    $lastActivityTime = strtotime($lastActivity);
+    // Parse timestamp as UTC to match database storage
+    $lastActivityTime = strtotime($lastActivity . ' UTC');
     $timeSinceActivity = $currentTime - $lastActivityTime;
     
     $onlineFriends[] = [
