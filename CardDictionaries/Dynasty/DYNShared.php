@@ -566,7 +566,7 @@ function DYNHitEffect($cardID, $from, $attackID)
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$cardID);
-        MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,-," . $mainPlayer);
+        MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,-,$cardID,$mainPlayer");
       }
       break;
     case "plunder_the_poor_red": case "plunder_the_poor_yellow": case "plunder_the_poor_blue": case "rob_the_rich_red": case "rob_the_rich_yellow": case "rob_the_rich_blue":
