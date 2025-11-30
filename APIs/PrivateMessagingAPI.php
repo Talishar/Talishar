@@ -66,11 +66,11 @@ $response = new stdClass();
 
 switch ($action) {
   case 'sendMessage':
-    $toUserId = $_POST['toUserId'] ?? '';
+    $toUserId = isset($_POST['toUserId']) ? (int)$_POST['toUserId'] : 0;
     $message = $_POST['message'] ?? '';
     $gameLink = $_POST['gameLink'] ?? null;
     
-    if (empty($toUserId) || !is_numeric($toUserId)) {
+    if ($toUserId <= 0) {
       http_response_code(400);
       $response->error = "Invalid recipient user ID";
       break;
@@ -102,10 +102,10 @@ switch ($action) {
     break;
 
   case 'getMessages':
-    $friendUserId = $_POST['friendUserId'] ?? '';
-    $limit = $_POST['limit'] ?? 50;
+    $friendUserId = isset($_POST['friendUserId']) ? (int)$_POST['friendUserId'] : 0;
+    $limit = isset($_POST['limit']) ? max(1, min((int)$_POST['limit'], 50)) : 50;
     
-    if (empty($friendUserId) || !is_numeric($friendUserId)) {
+    if ($friendUserId <= 0) {
       http_response_code(400);
       $response->error = "Invalid friend user ID";
       break;
@@ -145,8 +145,8 @@ switch ($action) {
 
   case 'getOnlineFriends':
     // Get all friends with their online status
-    // $onlineFriends = GetOnlineFriends($userId);
-    $onlineFriends = []; //temporary
+    $onlineFriends = GetOnlineFriends($userId);
+    //$onlineFriends = []; //temporary
     $response->onlineFriends = $onlineFriends;
     $response->success = true;
     break;
@@ -203,6 +203,8 @@ function SendPrivateMessage($fromUserId, $toUserId, $message, $gameLink = null) 
     return ["success" => false, "message" => "Failed to prepare statement"];
   }
   
+  // Ensure all parameters are variables (not literals) for bind_param
+  $gameLink = $gameLink ?? null;
   $stmt->bind_param("iiss", $fromUserId, $toUserId, $message, $gameLink);
   
   if ($stmt->execute()) {
@@ -226,9 +228,6 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
   $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
   $offset = max($offset, 0);
   $offset = min($offset, 10000);  // Prevent huge offsets
-  
-  //  Cache key for frequently accessed conversations
-  $cacheKey = "pm_conv_{$userId}_{$friendUserId}_{$limit}_{$offset}";
   
   //  Optimized query - split JOINs into batch queries for performance
   // Usernames fetched separately to avoid expensive user table JOINs
@@ -347,6 +346,11 @@ function MarkMessagesAsRead($userId, $messageIds) {
 
 function GetOnlineFriends($userId) {
   global $conn;
+  
+  if ($userId <= 0) {
+    return [];
+  }
+  
   $friends = GetUserFriends($userId);
   
   if (!$friends || !is_array($friends)) {
@@ -377,7 +381,10 @@ function GetOnlineFriends($userId) {
   
   $bindParams = array_merge([$types], $friendIds);
   call_user_func_array([$stmt, 'bind_param'], $bindParams);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
   $result = $stmt->get_result();
   
   // Map activity data by user ID for quick lookup
@@ -520,23 +527,16 @@ function GetUserGamePreferences($userId) {
   }
   
   $stmt->bind_param("i", $userId);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  
-  $format = 'cc'; // Default format
-  $visibility = 'friends-only'; // Default visibility
-  
-  // These constants come from includes/dbh.inc.php:
-  // $SET_Format and $SET_GameVisibility
-  // We'll check common setting numbers (typically 1-100 range)
-  while ($row = $result->fetch_assoc()) {
-    // Try to match based on typical setting numbers
-    // Format is usually stored with setting number related to format
-    // Visibility is usually stored with setting number related to visibility
-    // For now, we'll use the first two results if they exist
-    // This is a safe default that returns the default values if not found
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [
+      'success' => true,
+      'format' => 'cc',
+      'visibility' => 'friends-only'
+    ];
   }
   
+  $result = $stmt->get_result();
   $stmt->close();
   
   // Return defaults since we're not certain of the exact setting numbers
