@@ -9,6 +9,9 @@ ini_set('log_errors', 1);
 set_time_limit(10);
 ini_set('memory_limit', '32M');
 
+// Set timezone to UTC - ensures consistent time calculations across all servers
+date_default_timezone_set('UTC');
+
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 SetHeaders();
@@ -58,7 +61,8 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
 //  Activity update sampling - only update 10% of requests to reduce database load
 // This significantly reduces write contention while still maintaining activity tracking
 if (rand(1, 10) === 1) {
-  $conn->query("UPDATE users SET lastActivity = NOW() WHERE usersId = " . intval($userId) . " LIMIT 1");
+  // Use UTC_TIMESTAMP to ensure timezone consistency across all servers
+  $conn->query("UPDATE users SET lastActivity = UTC_TIMESTAMP() WHERE usersId = " . intval($userId) . " LIMIT 1");
 }
 
 $action = $_POST['action'] ?? '';
@@ -66,11 +70,11 @@ $response = new stdClass();
 
 switch ($action) {
   case 'sendMessage':
-    $toUserId = $_POST['toUserId'] ?? '';
+    $toUserId = isset($_POST['toUserId']) ? (int)$_POST['toUserId'] : 0;
     $message = $_POST['message'] ?? '';
     $gameLink = $_POST['gameLink'] ?? null;
     
-    if (empty($toUserId) || !is_numeric($toUserId)) {
+    if ($toUserId <= 0) {
       http_response_code(400);
       $response->error = "Invalid recipient user ID";
       break;
@@ -102,10 +106,10 @@ switch ($action) {
     break;
 
   case 'getMessages':
-    $friendUserId = $_POST['friendUserId'] ?? '';
-    $limit = $_POST['limit'] ?? 50;
+    $friendUserId = isset($_POST['friendUserId']) ? (int)$_POST['friendUserId'] : 0;
+    $limit = isset($_POST['limit']) ? max(1, min((int)$_POST['limit'], 50)) : 50;
     
-    if (empty($friendUserId) || !is_numeric($friendUserId)) {
+    if ($friendUserId <= 0) {
       http_response_code(400);
       $response->error = "Invalid friend user ID";
       break;
@@ -145,8 +149,8 @@ switch ($action) {
 
   case 'getOnlineFriends':
     // Get all friends with their online status
-    // $onlineFriends = GetOnlineFriends($userId);
-    $onlineFriends = []; //temporary
+    $onlineFriends = GetOnlineFriends($userId);
+    //$onlineFriends = []; //temporary
     $response->onlineFriends = $onlineFriends;
     $response->success = true;
     break;
@@ -203,6 +207,8 @@ function SendPrivateMessage($fromUserId, $toUserId, $message, $gameLink = null) 
     return ["success" => false, "message" => "Failed to prepare statement"];
   }
   
+  // Ensure all parameters are variables (not literals) for bind_param
+  $gameLink = $gameLink ?? null;
   $stmt->bind_param("iiss", $fromUserId, $toUserId, $message, $gameLink);
   
   if ($stmt->execute()) {
@@ -226,9 +232,6 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
   $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
   $offset = max($offset, 0);
   $offset = min($offset, 10000);  // Prevent huge offsets
-  
-  //  Cache key for frequently accessed conversations
-  $cacheKey = "pm_conv_{$userId}_{$friendUserId}_{$limit}_{$offset}";
   
   //  Optimized query - split JOINs into batch queries for performance
   // Usernames fetched separately to avoid expensive user table JOINs
@@ -280,7 +283,14 @@ function GetPrivateMessages($userId, $friendUserId, $limit = 50) {
     
     $stmt = $conn->prepare("SELECT usersId, usersUid FROM users WHERE usersId IN ($placeholders)");
     if ($stmt) {
-      $bindParams = array_merge([$types], $userIds);
+      // Convert to references for bind_param
+      $userIdsRef = [];
+      foreach ($userIds as &$id) {
+        $userIdsRef[] = &$id;
+      }
+      unset($id);
+      
+      $bindParams = array_merge([$types], $userIdsRef);
       call_user_func_array([$stmt, 'bind_param'], $bindParams);
       $stmt->execute();
       $result = $stmt->get_result();
@@ -332,8 +342,14 @@ function MarkMessagesAsRead($userId, $messageIds) {
   $params = array_merge([$userId], $messageIds);
   $typeString = "i" . $types;
   
-  // Use call_user_func_array for flexible parameter binding
-  $bindParams = array_merge([$typeString], $params);
+  // Convert to references for bind_param
+  $paramsRef = [];
+  foreach ($params as &$param) {
+    $paramsRef[] = &$param;
+  }
+  unset($param);
+  
+  $bindParams = array_merge([$typeString], $paramsRef);
   call_user_func_array([$stmt, 'bind_param'], $bindParams);
   
   if ($stmt->execute()) {
@@ -347,6 +363,11 @@ function MarkMessagesAsRead($userId, $messageIds) {
 
 function GetOnlineFriends($userId) {
   global $conn;
+  
+  if ($userId <= 0) {
+    return [];
+  }
+  
   $friends = GetUserFriends($userId);
   
   if (!$friends || !is_array($friends)) {
@@ -375,9 +396,19 @@ function GetOnlineFriends($userId) {
     return [];
   }
   
-  $bindParams = array_merge([$types], $friendIds);
+  // Convert to references for bind_param
+  $friendIdsRef = [];
+  foreach ($friendIds as &$id) {
+    $friendIdsRef[] = &$id;
+  }
+  unset($id);
+  
+  $bindParams = array_merge([$types], $friendIdsRef);
   call_user_func_array([$stmt, 'bind_param'], $bindParams);
-  $stmt->execute();
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [];
+  }
   $result = $stmt->get_result();
   
   // Map activity data by user ID for quick lookup
@@ -410,7 +441,8 @@ function GetOnlineFriends($userId) {
     }
     
     $lastActivity = $activityMap[$friendId];
-    $lastActivityTime = strtotime($lastActivity);
+    // Parse timestamp as UTC to match database storage
+    $lastActivityTime = strtotime($lastActivity . ' UTC');
     $timeSinceActivity = $currentTime - $lastActivityTime;
     
     $onlineFriends[] = [
@@ -520,23 +552,16 @@ function GetUserGamePreferences($userId) {
   }
   
   $stmt->bind_param("i", $userId);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  
-  $format = 'cc'; // Default format
-  $visibility = 'friends-only'; // Default visibility
-  
-  // These constants come from includes/dbh.inc.php:
-  // $SET_Format and $SET_GameVisibility
-  // We'll check common setting numbers (typically 1-100 range)
-  while ($row = $result->fetch_assoc()) {
-    // Try to match based on typical setting numbers
-    // Format is usually stored with setting number related to format
-    // Visibility is usually stored with setting number related to visibility
-    // For now, we'll use the first two results if they exist
-    // This is a safe default that returns the default values if not found
+  if (!$stmt->execute()) {
+    $stmt->close();
+    return [
+      'success' => true,
+      'format' => 'cc',
+      'visibility' => 'friends-only'
+    ];
   }
   
+  $result = $stmt->get_result();
   $stmt->close();
   
   // Return defaults since we're not certain of the exact setting numbers
