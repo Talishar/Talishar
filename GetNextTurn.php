@@ -1236,6 +1236,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
   // who's turn it is
   $response->turnPlayer = $mainPlayer;
+
+  // who is the other playerID
+  $response->otherPlayer = $playerID == 1 ? 2 : 1;
   
   // who is the starting player
   $response->firstPlayer = $firstPlayer;
