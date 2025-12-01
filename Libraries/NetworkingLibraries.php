@@ -3498,21 +3498,27 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "blood_on_her_hands_yellow":
       $numCopper = CountItemByName("Copper", $currentPlayer);
-      if ($numCopper == 0) return "No copper.";
+      if ($numCopper == 0) {
+        WriteLog("🥉 No copper.");
+        return "";
+      }
       if ($numCopper > 6) $numCopper = 6;
       $buttons = "";
       for ($i = 0; $i <= $numCopper; ++$i) {
         if ($buttons != "") $buttons .= ",";
         $buttons .= $i;
       }
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Copper to destroy");
+      $numCopper > 1 ? $modes = "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Attack_Twice,Attack_Twice" : $modes = "-Buff_Weapon,Go_Again,Attack_Twice";
+      $numCopper > 1 ? $text = "modes" : $text = "mode";
+
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many " . CardLink("copper", "copper") . " to destroy");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $buttons);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "copper-", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "<-", 1);
       AddDecisionQueue("LASTRESULTPIECE", $currentPlayer, "1", 1);
-      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Attack_Twice,Attack_Twice", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} modes");
+      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, $modes, 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {0} " . $text);
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);

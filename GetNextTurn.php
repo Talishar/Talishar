@@ -290,6 +290,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       IsPlayable($combatChain[$i], $turnPhase, "PLAY", $i) ? 21 : 0;
 
     $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
+    if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
+
     $countersMap = new stdClass();
     if (HasAimCounter() && $i == 0) $countersMap->aim = 1;
 
@@ -542,7 +544,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         sType: $sType,
         isFrozen: $theirCharacter[$i + 8] == 1,
          // hide the blocking cards from the attacking player until they are locked in
-        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $theirCharacter[$i + 6] == 1,
+        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($theirCharacter[$i], $otherPlayer) != -1 ? 0 : $theirCharacter[$i + 6] == 1,
         isBroken: $theirCharacter[$i + 1] == 0,
         label: $label,
         facing: $theirCharacter[$i + 12],
@@ -1236,6 +1238,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
   // who's turn it is
   $response->turnPlayer = $mainPlayer;
+
+  // who is the other playerID
+  $response->otherPlayer = $playerID == 1 ? 2 : 1;
   
   // who is the starting player
   $response->firstPlayer = $firstPlayer;
@@ -1825,10 +1830,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->choiceOptions = $choiceOptions;
 
     if ($turnPhase == "MULTICHOOSETEXT" || $turnPhase == "MAYMULTICHOOSETEXT") {
+      $defaultChecked = CheckboxDefaultState($options, $minNumber, $maxNumber);
       $multiChooseText = [];
-
       for ($i = 0; $i < $optionsCount; ++$i) {
-        array_push($multiChooseText, CreateCheckboxAPI($i, $i, -1, false, GamestateUnsanitize(strval($options[$i]))));
+        array_push($multiChooseText, CreateCheckboxAPI($i, $i, -1, $defaultChecked, GamestateUnsanitize(strval($options[$i]))));
       }
       $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
       $playerInputPopup->multiChooseText = $multiChooseText;
@@ -2010,4 +2015,25 @@ if (!function_exists('IsPlayerAI')) {
     if($playerID == 2 && $p2IsAI == "1") return true;
     return false;
   }
+}
+function CheckboxDefaultState($options, $minNumber = 0, $maxNumber = 0) {
+  // Define preset configurations for different cards
+  $presets = [
+    "blood_on_her_hands" => [
+      "min" => 0,
+      "max" => 6,
+      "options" => ["Buff_Weapon", "Buff_Weapon", "Go_Again", "Go_Again", "Attack_Twice", "Attack_Twice"]
+    ],
+    // Add more presets here as needed
+  ];
+  
+  foreach ($presets as $cardName => $preset) {
+    if ($maxNumber === $preset["max"] && $minNumber === $preset["min"]) {
+      if (count($options) === count($preset["options"])) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
 }

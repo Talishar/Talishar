@@ -291,7 +291,7 @@ function BOO($player)
   global $CS_BooedThisTurn;
   SetClassState($player, $CS_BooedThisTurn, 1);
   $char = GetPlayerCharacter($player);
-  WriteLog("BOOOOO! The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
+  WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
   if ($char[1] < 3) {
     switch($char[0]) {
       case "lyath_goldmane":
@@ -311,7 +311,7 @@ function Cheer($player)
   global $CS_CheeredThisTurn, $mainPlayer;
   SetClassState($player, $CS_CheeredThisTurn, 1);
   $char = GetPlayerCharacter($player);
-  WriteLog("Let's go! The crowd cheers for " . CardLink($char[0], $char[0]) . "!");
+  WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0], $char[0]) . "!");
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     $card = GetClass($char[$i], $player);
     if ($card != "-") $card->CheerTrigger();
