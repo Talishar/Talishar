@@ -290,6 +290,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       IsPlayable($combatChain[$i], $turnPhase, "PLAY", $i) ? 21 : 0;
 
     $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
+    if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
+
     $countersMap = new stdClass();
     if (HasAimCounter() && $i == 0) $countersMap->aim = 1;
 
