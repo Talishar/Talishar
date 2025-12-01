@@ -334,6 +334,9 @@ function logCompletedGameStats($conceded = false)
 	$winIDDeck = ConvertDeck($winnerDeck);
 	$loseIDDeck = ConvertDeck($loserDeck);
 
+	$countWinnerDeck = count(GetDeck($winner));
+	$countLoserDeck = count(GetDeck($loser));
+
 	$conn = GetDBConnection();
 
 	// Build parameterized query safely
@@ -398,7 +401,7 @@ function logCompletedGameStats($conceded = false)
 		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1", highlight:true, highlightColor:"green");
 	}
 	else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
-	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded);
+	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
 	mysqli_close($conn);
 }
 
@@ -486,7 +489,7 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false)
+function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
 {
 	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
     // Skip AI games
@@ -512,6 +515,8 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
     $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
+	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
+	$payloadArr['countLoserDeck'] = $countLoserDeck;
 
     // Initialize cURL
     $ch = curl_init($url);
