@@ -467,7 +467,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID") != -1) {
         PlayAura("spectral_shield", $currentPlayer);
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
-      } elseif (SearchCurrentTurnEffectsForPartialId("PAID")) //It needs to check if the auras was destroy, but it's already paid for
+      } elseif (SearchCurrentTurnEffectsForPartielID("PAID")) //It needs to check if the auras was destroy, but it's already paid for
       {
         PlayAura("spectral_shield", $currentPlayer);
         RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));

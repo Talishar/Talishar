@@ -52,19 +52,6 @@ if ($p2Char[0] == "DUMMY") {
 // Handle character-specific start game abilities
 handleCharacterStartAbilities();
 
-$p1StartingEquipment = $_SESSION['p1StartingEquipment'] ?? new stdClass();
-$p2StartingEquipment = $_SESSION['p2StartingEquipment'] ?? new stdClass();
-
-EquipEquipment(1,$p1StartingEquipment->head, 'Head');
-EquipEquipment(1,$p1StartingEquipment->chest, 'Chest');
-EquipEquipment(1,$p1StartingEquipment->arms, 'Arms');
-EquipEquipment(1,$p1StartingEquipment->legs, 'Legs');
-  
-EquipEquipment(2,$p2StartingEquipment->head, 'Head');
-EquipEquipment(2,$p2StartingEquipment->chest, 'Chest');
-EquipEquipment(2,$p2StartingEquipment->arms, 'Arms');
-EquipEquipment(2,$p2StartingEquipment->legs, 'Legs');
-
 // Handle inventory start game abilities
 InventoryStartGameAbilities(1);
 InventoryStartGameAbilities(2);

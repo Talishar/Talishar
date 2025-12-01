@@ -1040,7 +1040,7 @@ function SearchPermanentsForUniqueID($uniqueID, $player)
   return -1;
 }
 
-function SearchCurrentTurnEffectsForPartialId($partial)
+function SearchCurrentTurnEffectsForPartielID($partial)
 {
   global $currentTurnEffects;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
