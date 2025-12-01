@@ -1825,10 +1825,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $playerInputPopup->choiceOptions = $choiceOptions;
 
     if ($turnPhase == "MULTICHOOSETEXT" || $turnPhase == "MAYMULTICHOOSETEXT") {
+      $defaultChecked = CheckboxDefaultState($options, $minNumber, $maxNumber);
       $multiChooseText = [];
-
       for ($i = 0; $i < $optionsCount; ++$i) {
-        array_push($multiChooseText, CreateCheckboxAPI($i, $i, -1, false, GamestateUnsanitize(strval($options[$i]))));
+        array_push($multiChooseText, CreateCheckboxAPI($i, $i, -1, $defaultChecked, GamestateUnsanitize(strval($options[$i]))));
       }
       $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
       $playerInputPopup->multiChooseText = $multiChooseText;
@@ -2010,4 +2010,25 @@ if (!function_exists('IsPlayerAI')) {
     if($playerID == 2 && $p2IsAI == "1") return true;
     return false;
   }
+}
+function CheckboxDefaultState($options, $minNumber = 0, $maxNumber = 0) {
+  // Define preset configurations for different cards
+  $presets = [
+    "blood_on_her_hands" => [
+      "min" => 0,
+      "max" => 6,
+      "options" => ["Buff_Weapon", "Buff_Weapon", "Go_Again", "Go_Again", "Attack_Twice", "Attack_Twice"]
+    ],
+    // Add more presets here as needed
+  ];
+  
+  foreach ($presets as $cardName => $preset) {
+    if ($maxNumber === $preset["max"] && $minNumber === $preset["min"]) {
+      if (count($options) === count($preset["options"])) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
 }
