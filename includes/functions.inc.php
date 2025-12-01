@@ -750,7 +750,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalLifeLost_NoLast = 0;
 	$numTurns_NoLast = 0;
 	
-	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
+	for($i = $start; $i < $endIndex - TurnStatPieces(); $i += TurnStatPieces()) {
 		$totalDamageThreatened_NoLast += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt_NoLast += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed_NoLast += $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -763,7 +763,6 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		++$numTurns_NoLast;
 	}
 
-	--$numTurns_NoLast; // Exclude last turn
 	if($numTurns_NoLast < 1) $numTurns_NoLast = 1;
 	$totalOffensiveCards_NoLast = 4 * $numTurns_NoLast - $totalDefensiveCards_NoLast;
 	if($totalOffensiveCards_NoLast == 0) $totalOffensiveCards_NoLast = 1;
@@ -985,7 +984,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$totalLifeLost_NoLast = 0;
 	$numTurns_NoLast = 0;
 	
-	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
+	for($i = $start; $i < $endIndex - TurnStatPieces(); $i += TurnStatPieces()) {
 		$totalDamageThreatened_NoLast += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt_NoLast += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed_NoLast += $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -998,7 +997,6 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		++$numTurns_NoLast;
 	}
 
-	--$numTurns_NoLast; // Exclude last turn
 	if($numTurns_NoLast < 1) $numTurns_NoLast = 1;
 	$totalOffensiveCards_NoLast = 4 * $numTurns_NoLast - $totalDefensiveCards_NoLast;
 	if($totalOffensiveCards_NoLast == 0) $totalOffensiveCards_NoLast = 1;
