@@ -701,6 +701,10 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       GainActionPoints(1);
     }
   }
+  if(str_contains($from, "HAND")) {
+    LogPlayCardStats($player, $cardID, $from, "DISCARD");
+    WriteLog(CardLink($cardID, $cardID) . " is being discarded from hand.");
+  }
   if (SubtypeContains($cardID, "Ally", $player)) {
     IncrementClassState($player, $CS_NumAllyPutInGraveyard);
   }

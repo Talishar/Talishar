@@ -1246,7 +1246,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->firstPlayer = $firstPlayer;
 
   //Turn number
-  // $currentTurn increments when player 2 finishes, so:
+  // $currentTurn increments when the 2nd player finishes their turn, so:
   // First Player: gets $currentTurn - 1 (their turns are 0, 1, 2, 3...)
   // Second Player: gets $currentTurn (their turns are 1, 2, 3, 4...)
   $response->turnNo = ($mainPlayer == $firstPlayer) ? $currentTurn - 1 : $currentTurn;

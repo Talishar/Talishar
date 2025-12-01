@@ -4480,10 +4480,10 @@ function DiscardedAtRandomEffects($player, $discarded, $source)
 function DiscardCard($player, $index, $source = "", $effectController = "", $mainPhase = true)
 {
   $hand = &GetHand($player);
-  $discarded = RemoveHand($player, $index);
-  CardDiscarded($player, $discarded, $source, mainPhase: $mainPhase);
-  AddGraveyard($discarded, $player, "HAND", $effectController);
-  return $discarded;
+  $cardID = RemoveHand($player, $index);
+  CardDiscarded($player, $cardID, $source, mainPhase: $mainPhase);
+  AddGraveyard($cardID, $player, "HAND", $effectController);
+  return $cardID;
 }
 
 function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)

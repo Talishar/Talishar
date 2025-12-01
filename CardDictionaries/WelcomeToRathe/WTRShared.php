@@ -495,7 +495,7 @@
       AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,DECK,TT", 1);
       AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
-      if($context == "to_use_Katsu's_ability")AddDecisionQueue("LOGPLAYCARDSTATS", $mainPlayer, $char[0].",HAND,KATSUDISCARD", 1);
+      if($context == "to_use_Katsu's_ability") AddDecisionQueue("LOGPLAYCARDSTATS", $mainPlayer, $char[0].",HAND,KATSUDISCARD", 1);
     }
   }
 

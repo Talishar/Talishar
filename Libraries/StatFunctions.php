@@ -16,7 +16,7 @@ $CardStats_TimesBlocked = 2;
 $CardStats_TimesPitched = 3;
 $CardStats_TimesHit = 4;
 $CardStats_TimesCharged = 5;
-$CardStats_Dynamic1 = 6; //Reserved for future use
+$CardStats_TimesDiscarded = 6; 
 $CardStats_Dynamic2 = 7; //Reserved for future use
 $CardStats_Dynamic3 = 8; //Reserved for future use
 $CardStats_TimesKatsuDiscard = 9;
@@ -35,11 +35,12 @@ $TurnStats_Overblock = 10;
 $TurnStats_LifeGained = 11;
 $TurnStats_DamagePrevented = 12;
 $TurnStats_LifeLost = 13;
+$TurnStats_CardsDiscarded = 14;
 
 function LogPlayCardStats($player, $cardID, $from, $type="")
 {
   global $turn, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense;
-  global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer, $CardStats_TimesKatsuDiscard;
+  global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer, $CardStats_TimesKatsuDiscard, $TurnStats_CardsDiscarded, $CardStats_TimesDiscarded;
   if($type == "") $type = $turn[0];
   $cardStats = &GetCardStats($player);
   $turnStats = &GetTurnStats($player);
@@ -58,6 +59,7 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
     case "HIT": ++$cardStats[$i + $CardStats_TimesHit]; break;
     case "CHARGE": ++$cardStats[$i + $CardStats_TimesCharged]; break;
     case "KATSUDISCARD":  ++$cardStats[$i + $CardStats_TimesKatsuDiscard]; break;
+    case "DISCARD": ++$cardStats[$i + $CardStats_TimesDiscarded]; ++$turnStats[$baseIndex + $TurnStats_CardsDiscarded]; break;
     default:
       if ($from != "PLAY")
       {
