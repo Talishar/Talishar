@@ -55,15 +55,22 @@ handleCharacterStartAbilities();
 $p1StartingEquipment = $_SESSION['p1StartingEquipment'] ?? new stdClass();
 $p2StartingEquipment = $_SESSION['p2StartingEquipment'] ?? new stdClass();
 
-EquipEquipment(1,$p1StartingEquipment->head, 'Head');
-EquipEquipment(1,$p1StartingEquipment->chest, 'Chest');
-EquipEquipment(1,$p1StartingEquipment->arms, 'Arms');
-EquipEquipment(1,$p1StartingEquipment->legs, 'Legs');
-  
-EquipEquipment(2,$p2StartingEquipment->head, 'Head');
-EquipEquipment(2,$p2StartingEquipment->chest, 'Chest');
-EquipEquipment(2,$p2StartingEquipment->arms, 'Arms');
-EquipEquipment(2,$p2StartingEquipment->legs, 'Legs');
+$zones = ['head' => 'Head', 'chest' => 'Chest', 'arms' => 'Arms', 'legs' => 'Legs'];
+
+function equipModularForPlayer($playerID, $equipmentObj, $zones) {
+    foreach ($zones as $zoneKey => $zoneName) {
+        if (!isset($equipmentObj->$zoneKey)) continue;
+
+        $card = $equipmentObj->$zoneKey;
+
+        if (IsModular($card)) {
+            EquipEquipment($playerID, $card, $zoneName);
+        }
+    }
+}
+
+equipModularForPlayer(1, $p1StartingEquipment, $zones);
+equipModularForPlayer(2, $p2StartingEquipment, $zones);
 
 // Handle inventory start game abilities
 InventoryStartGameAbilities(1);
