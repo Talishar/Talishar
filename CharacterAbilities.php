@@ -465,12 +465,14 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
     $targetPlayer = $targetPlayer == -1 ? ($mainPlayer == 1 ? 2 : 1) : $targetPlayer;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  $Character = new PlayerCharacter($mainPlayer);
   $isAA = ($cardID == "-" && CardType($attackID) == "AA") || (CardType($cardID) == "AA");
   $damageSource = $cardID != "-" ? $cardID : $attackID;
   for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
     $characterID = ShiyanaCharacter($mainCharacter[$i], $mainPlayer);
     //tarantula and cindra should still have active triggers after using their abilities
     if (($characterID != "arakni_tarantula" && $characterID != "cindra_dracai_of_retribution" && $characterID != "cindra") && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || ($mainCharacter[$i + 1] != "2"))) continue;
+    $character = $Character->Card($i);
     switch ($characterID) {
       case "katsu_the_wanderer":
       case "katsu":
@@ -487,10 +489,11 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
         break;
       case "dorinthea_ironsong":
       case "dorinthea":
-        if ($mainCharacter[$i + 1] == 2 && TypeContains($attackID, "W", $mainPlayer) && $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] != 0) {
-          $mainCharacter[$i + 1] = 1;
-          $mainCharacter[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-          ++$mainCharacter[$combatChainState[$CCS_WeaponIndex] + 5];
+        $weapon = $Character->Card($combatChainState[$CCS_WeaponIndex]);
+        if ($character->Status() == 2 && TypeContains($attackID, "W", $mainPlayer) && $weapon->Status() != 0) {
+          $character->SetUsed();
+          $weapon->SetUsed(2);
+          $weapon->AddUse();
         }
         break;
       case "refraction_bolters":

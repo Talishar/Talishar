@@ -15,6 +15,7 @@ include "Classes/Card.php";
 include "Classes/CombatChain.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
+include "Classes/Character.php";
 include "Classes/CardObjects/DBGCards.php"; //debug cards
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/HVYCards.php";
