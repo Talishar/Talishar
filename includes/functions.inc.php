@@ -540,7 +540,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained, $TurnStats_LifeLost;
-	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
+	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $CardStats_TimesDiscarded;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -619,6 +619,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 			"blocked" => 0,
 			"pitched" => 0,
 			"hits" => 0,
+			"discarded" => 0,
 			"charged" => 0,
 			"cardName" => CardName($card),
 			"pitchValue" => PitchValue($card),
@@ -637,6 +638,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
+				$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
 				break;
 			}
 		}
@@ -651,6 +653,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"]["turn_0"]["cardsUsed"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsBlocked"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsPitched"] = 0;
+		$deck["turnResults"]["turn_0"]["cardsDiscarded"] = 0;
 		$deck["turnResults"]["turn_0"]["resourcesUsed"] = 0;
 		$deck["turnResults"]["turn_0"]["resourcesLeft"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsLeft"] = 0;
@@ -672,6 +675,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"][$turnKey]["cardsUsed"] = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
 		$deck["turnResults"][$turnKey]["cardsBlocked"] = $turnStats[$i + $TurnStats_CardsBlocked];
 		$deck["turnResults"][$turnKey]["cardsPitched"] = $turnStats[$i + $TurnStats_CardsPitched];
+		$deck["turnResults"][$turnKey]["cardsDiscarded"] = $turnStats[$i + $TurnStats_CardsDiscarded];
 		$deck["turnResults"][$turnKey]["resourcesUsed"] = $turnStats[$i + $TurnStats_ResourcesUsed];
 		$deck["turnResults"][$turnKey]["resourcesLeft"] = $turnStats[$i + $TurnStats_ResourcesLeft];
 		$deck["turnResults"][$turnKey]["cardsLeft"] = $turnStats[$i + $TurnStats_CardsLeft];
@@ -790,7 +794,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer, $CardStats_TimesKatsuDiscard;
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_DamageBlocked, $TurnStats_ResourcesLeft, $TurnStats_LifeGained, $TurnStats_LifeLost;
-	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented;
+	global $p1TotalTime, $p2TotalTime, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $CardStats_TimesDiscarded;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -854,6 +858,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 			"blocked" => 0,
 			"pitched" => 0,
 			"hits" => 0,
+			"discarded" => 0,
 			"charged" => 0,
 			"cardName" => CardName($card),
 			"pitchValue" => PitchValue($card),
@@ -872,6 +877,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				$deck["cardResults"][$j]["hits"] = intval($cardStats[$i + $CardStats_TimesHit]);
 				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
 				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
+				$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
 				break;
 			}
 		}
@@ -886,6 +892,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$deck["turnResults"]["turn_0"]["cardsUsed"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsBlocked"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsPitched"] = 0;
+		$deck["turnResults"]["turn_0"]["cardsDiscarded"] = 0;
 		$deck["turnResults"]["turn_0"]["resourcesUsed"] = 0;
 		$deck["turnResults"]["turn_0"]["resourcesLeft"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsLeft"] = 0;
@@ -906,6 +913,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$deck["turnResults"][$turnKey]["cardsUsed"] = intval($turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense]);
 		$deck["turnResults"][$turnKey]["cardsBlocked"] = intval($turnStats[$i + $TurnStats_CardsBlocked]);
 		$deck["turnResults"][$turnKey]["cardsPitched"] = intval($turnStats[$i + $TurnStats_CardsPitched]);
+		$deck["turnResults"][$turnKey]["cardsDiscarded"] = intval($turnStats[$i + $TurnStats_CardsDiscarded]);
 		$deck["turnResults"][$turnKey]["resourcesUsed"] = intval($turnStats[$i + $TurnStats_ResourcesUsed]);
 		$deck["turnResults"][$turnKey]["resourcesLeft"] = intval($turnStats[$i + $TurnStats_ResourcesLeft]);
 		$deck["turnResults"][$turnKey]["cardsLeft"] = intval($turnStats[$i + $TurnStats_CardsLeft]);
