@@ -1441,14 +1441,6 @@ function AuraPlayAbilities($cardID, $from = "")
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
-      case "malefic_incantation_red":
-      case "malefic_incantation_yellow":
-      case "malefic_incantation_blue":
-        if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA") && $auras[$i + 5] > 0) {
-          --$auras[$i + 5];
-          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
-        }
-        break;
       case "runechant":
         $abilityType = GetResolvedAbilityType($cardID, $from);
         if (($cardType == "AA" && $abilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from)) || (TypeContains($cardID, "W", $currentPlayer) && $abilityType == "AA") && $abilityType != "I") {
@@ -1472,6 +1464,22 @@ function AuraPlayAbilities($cardID, $from = "")
   elseif ($runechantCount > 0) {
     for ($i = 0; $i < $runechantCount; $i++) {
       AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
+    }
+  }
+  //handle auras to always resolve after runechants
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    $remove = 0;
+    switch ($auras[$i]) {
+      case "malefic_incantation_red":
+      case "malefic_incantation_yellow":
+      case "malefic_incantation_blue":
+        if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA") && $auras[$i + 5] > 0) {
+          --$auras[$i + 5];
+          AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
+        }
+        break;
+      default:
+        break;
     }
   }
 }
