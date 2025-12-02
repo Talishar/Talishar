@@ -725,7 +725,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $weaponPowerModifiers = [];
     if (!$playable) {
         if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
-            SearchCurrentTurnEffectsForPartielID($myCharacter[$i + 11] ?? "-")) {
+            SearchCurrentTurnEffectsForPartialId($myCharacter[$i + 11] ?? "-")) {
             $border = 5;
         }
     }
