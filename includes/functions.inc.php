@@ -666,7 +666,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 		$deck["turnResults"]["turn_0"]["lifeLost"] = 0;
 	}
 	
-	for($i = 0; $i < $countTurnStats; $i += TurnStatPieces()) {
+	for($i = 0; $i < $countTurnStats - TurnStatPieces(); $i += TurnStatPieces()) {
 		// Calculate actual turn number based on array index
 		$turnNo = intval($i / TurnStatPieces());
 		$turnKey = "turn_" . $turnNo;
@@ -707,7 +707,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$numTurns = 0;
 	
 	// Skip turn 0 for both players average stats
-	$start =  TurnStatPieces();
+	$start = TurnStatPieces();
 	// Calculate end index)
 	$endIndex = count($turnStats);
 	if($endIndex < $start) $endIndex = $start;
@@ -754,7 +754,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$totalLifeLost_NoLast = 0;
 	$numTurns_NoLast = 0;
 	
-	for($i = $start; $i < $endIndex - TurnStatPieces(); $i += TurnStatPieces()) {
+	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
 		$totalDamageThreatened_NoLast += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt_NoLast += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed_NoLast += $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -905,7 +905,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		$deck["turnResults"]["turn_0"]["lifeLost"] = 0;
 	}
 
-	for($i = 0; $i < $countTurnStats; $i += TurnStatPieces()) {
+	for($i = 0; $i < $countTurnStats - TurnStatPieces(); $i += TurnStatPieces()) {
 		// Calculate actual turn number based on array index
 		$turnNo = intval($i / TurnStatPieces());
 		$turnKey = "turn_" . $turnNo;
@@ -992,7 +992,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$totalLifeLost_NoLast = 0;
 	$numTurns_NoLast = 0;
 	
-	for($i = $start; $i < $endIndex - TurnStatPieces(); $i += TurnStatPieces()) {
+	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
 		$totalDamageThreatened_NoLast += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt_NoLast += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed_NoLast += $turnStats[$i + $TurnStats_ResourcesUsed];

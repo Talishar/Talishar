@@ -8,7 +8,7 @@ function CardStatPieces()
 
 function TurnStatPieces()
 {
-  return 15;
+  return 16;
 }
 
 $CardStats_TimesPlayed = 1;
@@ -44,7 +44,7 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
   if($type == "") $type = $turn[0];
   $cardStats = &GetCardStats($player);
   $turnStats = &GetTurnStats($player);
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   $found = 0;
   $i = 0;
   for($i = 0; $i<count($cardStats) && !$found; $i += CardStatPieces())
@@ -85,7 +85,7 @@ function LogResourcesUsedStats($player, $resourcesUsed)
 {
   global $currentTurn, $TurnStats_ResourcesUsed;
   $turnStats = &GetTurnStats($player);
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   if(count($turnStats) <= $baseIndex) StatsStartTurn();
   $turnStats[$baseIndex + $TurnStats_ResourcesUsed] += $resourcesUsed;
 }
@@ -94,7 +94,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
 {
   global $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
   //WriteLog("Logging damage stats for player $player: Threatened $damageThreatened, Dealt $damageDealt", highlight:true);
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   $damagerStats = &GetTurnStats($player == 1 ? 2 : 1);
   if(count($damagerStats) <= $baseIndex) StatsStartTurn();
   $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
@@ -104,7 +104,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
 function LogLifeGainedStats($player, $healthGained)
 {
   global $currentTurn, $TurnStats_LifeGained;
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   $healerStats = &GetTurnStats($player);
   if(count($healerStats) <= $baseIndex) StatsStartTurn();
   $healerStats[$baseIndex + $TurnStats_LifeGained] += $healthGained;
@@ -113,7 +113,7 @@ function LogLifeGainedStats($player, $healthGained)
 function LogLifeLossStats($player, $healthLost)
 {
   global $currentTurn, $TurnStats_LifeLost;
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   $healerStats = &GetTurnStats($player);
   if(count($healerStats) <= $baseIndex) StatsStartTurn();
   $healerStats[$baseIndex + $TurnStats_LifeLost] -= $healthLost;
@@ -123,7 +123,7 @@ function LogDamagePreventedStats($player, $damagePrevented)
 {
   global $currentTurn, $TurnStats_DamagePrevented;
   //WriteLog("Player $player stats added: $damagePrevented damage prevented", highlight:true);
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   $preventedStats = &GetTurnStats($player);
   if(count($preventedStats) <= $baseIndex) StatsStartTurn();
   $preventedStats[$baseIndex + $TurnStats_DamagePrevented] += $damagePrevented;
@@ -132,7 +132,7 @@ function LogDamagePreventedStats($player, $damagePrevented)
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)
 {
   global $currentTurn, $mainPlayer, $defPlayer, $TurnStats_DamageThreatened, $TurnStats_DamageBlocked, $TurnStats_Overblock;
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   $mainStats = &GetTurnStats($mainPlayer);
   $defStats = &GetTurnStats($defPlayer);
   if(count($mainStats) <= $baseIndex) StatsStartTurn();
@@ -146,7 +146,7 @@ function LogEndTurnStats($player)
 {
   global $currentTurn, $TurnStats_ResourcesLeft, $TurnStats_CardsLeft;
   $turnStats = &GetTurnStats($player);
-  $baseIndex = ($currentTurn-1) * TurnStatPieces();
+  $baseIndex = $currentTurn * TurnStatPieces();
   if(count($turnStats) <= $baseIndex) StatsStartTurn();
   $resources = &GetResources($player);
   $turnStats[$baseIndex + $TurnStats_ResourcesLeft] = $resources[0];

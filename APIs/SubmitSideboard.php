@@ -133,7 +133,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "0\r\n"); //Game winner (0=none, else player ID)
   fwrite($handler, "$firstPlayer\r\n"); //First Player
   fwrite($handler, "1\r\n"); //Current Player
-  fwrite($handler, "1\r\n"); //Current Turn
+  fwrite($handler, "0\r\n"); //Current Turn
   fwrite($handler, "M 1\r\n"); //What phase/player is active
   fwrite($handler, "1\r\n"); //Action points
   fwrite($handler, "\r\n"); //Combat Chain

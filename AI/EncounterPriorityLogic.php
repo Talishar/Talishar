@@ -244,7 +244,7 @@ function FirstTurnResolution($priorityArray, $character)
 {
   global $currentTurn;
   
-  if($currentTurn == 1 && EncounterBlocksFirstTurn($character[0])) {
+  if($currentTurn == 0 && EncounterBlocksFirstTurn($character[0])) {
     for($i = 0; $i < count($priorityArray); ++$i) {
       // Boost hand cards but not equipment
       if($priorityArray[$i][3] != 0 && $priorityArray[$i][1] != "Character") {

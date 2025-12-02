@@ -1762,7 +1762,7 @@ function FinalizeTurn()
   $defResources[1] = 0;
   $lastPlayed = [];
   // 4.4.3e The turn player draws cards until the number of cards in their hand is equal to their hero's intellect
-  if (($mainPlayer == $firstPlayer && $currentTurn == 1) || $extraTurn)//Defender draws up on turn 1
+  if ($mainPlayer == $firstPlayer && $currentTurn == 0 || $extraTurn)//Defender draws up on turn 1
   {
     $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
     for ($i = 0; $i < $toDraw; ++$i) {
@@ -1779,7 +1779,7 @@ function FinalizeTurn()
   AuraEndTurnCleanup();
   DoGamestateUpdate();
   //Update all the player neutral stuff
-  if ($mainPlayer == 2 && !$extraTurn) $currentTurn += 1;
+  if ($mainPlayer == $firstPlayer && !$extraTurn) $currentTurn += 1;
   $turn[0] = "M";
   $turn[2] = "";
   $turn[3] = "";
@@ -1820,7 +1820,7 @@ function FinalizeTurn()
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
   if (!$extraTurn) WriteLog("Player $mainPlayer's turn $currentTurn has begun.");
-  else WriteLog("Player $mainPlayer's  extra turn $currentTurn has begun.");
+  else WriteLog("Player $mainPlayer's extra turn $currentTurn has begun.");
   DoGamestateUpdate();
   ProcessDecisionQueue();
 }

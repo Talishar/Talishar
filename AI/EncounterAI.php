@@ -308,5 +308,5 @@ function ShouldBlock($found, $storedPriorityNode)
 function IsFirstTurn()
 {
   global $mainPlayer, $firstPlayer, $currentTurn;
-  return $mainPlayer == $firstPlayer && $currentTurn == 1;
+  return $mainPlayer == $firstPlayer && $currentTurn == 0;
 }
