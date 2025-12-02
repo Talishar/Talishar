@@ -640,7 +640,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$totalLifeGained = 0;
 	$totalLifeLost = 0;
 	$totalDamagePrevented = 0;
-
+	$numTurnsCount = 0; 
+	
 	// Skip turn 0 for both players average stats
 	$start = TurnStatPieces();
 	$endIndex = count($turnStats);
@@ -656,9 +657,11 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
 		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
 		$totalLifeLost += $turnStats[$i + $TurnStats_LifeLost];
+		$numTurnsCount++;
 	}
 
-	$totalOffensiveCards = 4 * $currentTurn - $totalDefensiveCards;
+	if($numTurnsCount == 0) $numTurnsCount = 1;
+	$totalOffensiveCards = 4 * $numTurnsCount - $totalDefensiveCards;
 	if($totalOffensiveCards == 0) $totalOffensiveCards = 1;
 
 	$deck["totalDamageThreatened"] = $totalDamageThreatened;
@@ -666,13 +669,13 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$deck["totalLifeGained"] = $totalLifeGained;
 	$deck["totalDamagePrevented"] = $totalDamagePrevented;
 	$deck["totalLifeLost"] = $totalLifeLost;
-	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $currentTurn, 2);
-	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $currentTurn, 2);
+	$deck["averageDamageThreatenedPerTurn"] = round($totalDamageThreatened / $numTurnsCount, 2);
+	$deck["averageDamageDealtPerTurn"] = round($totalDamageDealt / $numTurnsCount, 2);
 	$deck["averageDamageThreatenedPerCard"] = round($totalDamageThreatened / $totalOffensiveCards, 2);
-	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $currentTurn, 2);
-	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $currentTurn, 2);
-	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $currentTurn, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalLifeLost + $totalDamagePrevented) / $currentTurn, 2);
+	$deck["averageResourcesUsedPerTurn"] = round($totalResourcesUsed / $numTurnsCount, 2);
+	$deck["averageCardsLeftOverPerTurn"] = round($totalCardsLeft / $numTurnsCount, 2);
+	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked) / $numTurnsCount, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened + $totalBlocked + $totalLifeGained + $totalLifeLost + $totalDamagePrevented) / $numTurnsCount, 2);
 
 	// Calculate stats excluding last turn
 	$totalDamageThreatened_NoLast = 0;
@@ -684,7 +687,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$totalLifeGained_NoLast = 0;
 	$totalDamagePrevented_NoLast = 0;
 	$totalLifeLost_NoLast = 0;
-	$numTurns_NoLast = $currentTurn - 1;
+	$numTurns_NoLast = $numTurnsCount - 1;
 
 	for($i = $start; $i < $endIndex - TurnStatPieces(); $i += TurnStatPieces()) {
 		$totalDamageThreatened_NoLast += $turnStats[$i + $TurnStats_DamageThreatened];
