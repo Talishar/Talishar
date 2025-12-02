@@ -14,26 +14,6 @@ function initializePlayerState($handler, $deckHandler, $player)
   if($player == 1) $p1IsChallengeActive = "0";
   else if($player == 2) $p2IsChallengeActive = "0";
 
-  //Equipment challenge
-  /*
-  if($charEquip[0] != "dash_inventor_extraordinaire" && $charEquip[0] != "dash" && $charEquip[1] == "talishar_the_lost_prince")
-  {
-    if($player == 1) $p1IsChallengeActive = "1";
-    else if($player == 2) $p2IsChallengeActive = "1";
-  }
-  */
-/*
-  $challengeThreshold = (CharacterHealth($charEquip[0]) > 25 ? 6 : 4);
-  $numChallengeCard = 0;
-  for($i=0; $i<count($deckCards); ++$i)
-  {
-    if($deckCards[$i] == "moon_wish_red") ++$numChallengeCard;
-    if($deckCards[$i] == "moon_wish_yellow") ++$numChallengeCard;
-    if($deckCards[$i] == "moon_wish_blue") ++$numChallengeCard;
-  }
-  if($player == 1 && $numChallengeCard >= $challengeThreshold) $p1IsChallengeActive = "1";
-  else if($player == 2 && $numChallengeCard >= $challengeThreshold) $p2IsChallengeActive = "1";
-*/
   fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
   $hero = "";
