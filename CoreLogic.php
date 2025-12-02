@@ -1667,7 +1667,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
   if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
-  if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
+  if (!IsStaticType($cardType, $from, $cardID) && DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
   if (DelimStringContains($cardType, "A") && $currentPlayer == $mainPlayer && $combatChainState[$CCS_EclecticMag]) return true;
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
