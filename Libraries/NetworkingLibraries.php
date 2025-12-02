@@ -1179,6 +1179,14 @@ function PassInput($autopass = true, $doublePass=false)
     switch ($autopass) {
       case true:
         WriteLog("Player " . $currentPlayer . " auto-passed");
+        if (!IsReplay() && SaveReplay()) {
+          $gameName = $_POST["gameName"] ?? null;
+          if (isset($gameName)) {
+            $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
+            fwrite($commandFile, "$currentPlayer 99 undefined undefined 0 \r\n");
+            fclose($commandFile);
+          }
+        }
         break;
       default:
         WriteLog("Player " . $currentPlayer . " passed");

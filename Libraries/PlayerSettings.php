@@ -45,7 +45,7 @@ function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
-  return $settings[$SET_AlwaysHoldPriority];
+  return IsReplay() ? 1 : $settings[$SET_AlwaysHoldPriority];
 }
 
 function ManualTunicSetting($player)
