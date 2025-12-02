@@ -641,10 +641,10 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$totalLifeLost = 0;
 	$totalDamagePrevented = 0;
 	$numTurnsCount = 0; 
-	
+
 	// Skip turn 0 for both players average stats
 	$start = TurnStatPieces();
-	$endIndex = count($turnStats);
+	$endIndex = count($turnStats) - TurnStatPieces();
 	if($endIndex < $start) $endIndex = $start;
 
 	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {

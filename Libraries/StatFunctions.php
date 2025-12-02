@@ -8,7 +8,7 @@ function CardStatPieces()
 
 function TurnStatPieces()
 {
-  return 16;
+  return 15;
 }
 
 $CardStats_TimesPlayed = 1;
