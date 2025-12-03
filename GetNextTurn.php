@@ -576,6 +576,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->opponentEquipment = $characterContents;
 
+  $myDiscardCount = count($myDiscard);
+  $bottomPlayer = $otherPlayer == 1 ? 2 : 1;
   // my hand contents
   $restriction = "";
   $actionType = $turnPhase == "ARS" ? 4 : 27;
@@ -588,6 +590,16 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($playerID == 3) {
       if(IsCasterMode() || IsGameOver()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
+        for ($i=0; $i < $myBanishCount; $i += $banishPieces) {
+          if(PlayableFromBanish($myBanish[$i], $myBanish[$i+1], $bottomPlayer)) {
+            array_push($myHandContents, JSONRenderedCard($myBanish[$i], borderColor:7));
+          }
+        }
+        for ($i=0; $i < $myDiscardCount; $i += $discardPieces) {
+          if (isset($myDiscard[$i+2]) && PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2], $bottomPlayer, $i)) {
+            array_push($myHandContents, JSONRenderedCard($myDiscard[$i], borderColor:7));
+          }
+        }
     } else {
       $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || ($actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "") : false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
@@ -606,7 +618,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //My discard
   $playerDiscardArr = [];
-  $myDiscardCount = count($myDiscard);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
@@ -683,7 +694,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   $response->playerBanish = $playerBanishArr;
 
-  $myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+  $myBloodDebtCount = SearchCount(SearchBanish($playerID == 3 ? $bottomPlayer : $playerID, "", "", -1, -1, "", "", true));
   if ($myBloodDebtCount > 0) {
     $response->myBloodDebtCount = $myBloodDebtCount;
     $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
