@@ -485,8 +485,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($opponentBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->opponentBanish = $opponentBanishArr;
-  if (TalentContains($theirCharacter[0], "SHADOW")) {
-    $response->opponentBloodDebtCount = SearchCount(SearchBanish($otherPlayer, "", "", -1, -1, "", "", true));
+
+  $theirCountBloodDebt = SearchCount(SearchBanish($otherPlayer, "", "", -1, -1, "", "", true));
+  if ($theirCountBloodDebt > 0) {
+    $response->opponentBloodDebtCount = $theirCountBloodDebt;
     $response->isOpponentBloodDebtImmune = IsImmuneToBloodDebt($otherPlayer);
   }
   if (HasEssenceOfEarth($theirCharacter[0])) {
@@ -680,8 +682,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($playerBanishArr, JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label));
   }
   $response->playerBanish = $playerBanishArr;
-  if (TalentContains($myCharacter[0], "SHADOW")) {
-    $response->myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+
+  $myBloodDebtCount = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+  if ($myBloodDebtCount > 0) {
+    $response->myBloodDebtCount = $myBloodDebtCount;
     $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
   }
   if (HasEssenceOfEarth($myCharacter[0])) {
