@@ -84,91 +84,10 @@ if ($ipToBan != "") {
 }
 
 if ($usernameToDelete != "") {
-  try {
-    $conn = GetDBConnection();
-    error_log("DEBUG: Attempting to delete user: " . $usernameToDelete);
-    
-    // First, get the usersId for this username
-    $userIdSql = "SELECT usersId FROM users WHERE usersUid = ?";
-    $userIdStmt = mysqli_stmt_init($conn);
-    $userId = null;
-    
-    if (mysqli_stmt_prepare($userIdStmt, $userIdSql)) {
-      mysqli_stmt_bind_param($userIdStmt, "s", $usernameToDelete);
-      mysqli_stmt_execute($userIdStmt);
-      $result_ids = mysqli_stmt_get_result($userIdStmt);
-      if ($row = mysqli_fetch_assoc($result_ids)) {
-        $userId = $row['usersId'];
-      }
-      mysqli_stmt_close($userIdStmt);
-    }
-    
-    if ($userId === null) {
-      $result["status"] = "error";
-      $result["message"] = "No user found with username '$usernameToDelete'.";
-      error_log("ERROR: No user found with username: " . $usernameToDelete);
-    } else {
-      // Disable foreign key checks to allow cascade deletes
-      mysqli_query($conn, "SET FOREIGN_KEY_CHECKS=0");
-      
-      // Delete related records
-      $tables_to_clean = array(
-        "completedgame" => array("WinningPID", "LosingPID"),
-        "blocked_users" => array("userId", "blockedUserId"),
-        "friends" => array("userId", "friendUserId"),
-        "private_messages" => array("fromUserId", "toUserId"),
-        "user_messages" => array("senderUserId", "recipientUserId")
-      );
-      
-      foreach ($tables_to_clean as $table => $columns) {
-        $deleteCondition = "";
-        foreach ($columns as $index => $column) {
-          if ($index > 0) $deleteCondition .= " OR ";
-          $deleteCondition .= "$column = $userId";
-        }
-        $deleteSql = "DELETE FROM $table WHERE " . $deleteCondition;
-        error_log("DEBUG: Executing cleanup query: " . $deleteSql);
-        mysqli_query($conn, $deleteSql);
-      }
-      
-      // Now delete the user
-      $sql = "DELETE FROM users WHERE usersId = ?";
-      $stmt = mysqli_stmt_init($conn);
-      
-      if (!mysqli_stmt_prepare($stmt, $sql)) {
-        $result["status"] = "error";
-        $result["message"] = "Database prepare error: " . mysqli_error($conn);
-        error_log("ERROR: Database prepare failed: " . mysqli_error($conn));
-      } else {
-        mysqli_stmt_bind_param($stmt, "i", $userId);
-        
-        if (mysqli_stmt_execute($stmt)) {
-          $affectedRows = mysqli_stmt_affected_rows($stmt);
-          error_log("DEBUG: Affected rows: " . $affectedRows);
-          if ($affectedRows > 0) {
-            $result["message"] = "User '$usernameToDelete' and all related data has been deleted from the database.";
-            error_log("SUCCESS: User deleted: " . $usernameToDelete);
-          } else {
-            $result["status"] = "error";
-            $result["message"] = "Failed to delete user account.";
-            error_log("ERROR: Failed to delete user with ID: " . $userId);
-          }
-        } else {
-          $result["status"] = "error";
-          $result["message"] = "Database execution error: " . mysqli_stmt_error($stmt);
-          error_log("ERROR: Database execution failed: " . mysqli_stmt_error($stmt));
-        }
-        mysqli_stmt_close($stmt);
-      }
-      
-      // Re-enable foreign key checks
-      mysqli_query($conn, "SET FOREIGN_KEY_CHECKS=1");
-    }
-  } catch (Exception $e) {
-    $result["status"] = "error";
-    $result["message"] = "Failed to delete user: " . $e->getMessage();
-    error_log("EXCEPTION: " . $e->getMessage());
-  }
+  // Username deletion is now handled by DeleteAccountAPI.php
+  // This endpoint should not receive usernameToDelete
+  $result["status"] = "error";
+  $result["message"] = "Please use the proper delete account endpoint.";
 }
 
 // Return JSON response for API calls
