@@ -42,6 +42,32 @@ try {
   // Start transaction
   mysqli_begin_transaction($conn);
   
+  // Delete from completedgame table (has foreign key constraints referencing users)
+  $sql = "DELETE FROM completedgame WHERE WinningPID=? OR LosingPID=?";
+  $stmt = mysqli_stmt_init($conn);
+  
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    throw new Exception("Error preparing completedgame delete statement: " . mysqli_error($conn));
+  }
+  
+  mysqli_stmt_bind_param($stmt, "ss", $userID, $userID);
+  
+  if (!mysqli_stmt_execute($stmt)) {
+    throw new Exception("Error deleting completed games: " . mysqli_stmt_error($stmt));
+  }
+  
+  mysqli_stmt_close($stmt);
+  
+  // Delete from favoritedeck table
+  $sql = "DELETE FROM favoritedeck WHERE usersId=?";
+  $stmt = mysqli_stmt_init($conn);
+  
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "s", $userID);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+  }
+  
   // Delete from users table using the correct column name 'usersId'
   $sql = "DELETE FROM users WHERE usersId=?";
   $stmt = mysqli_stmt_init($conn);
@@ -61,16 +87,6 @@ try {
   
   if ($affectedRows === 0) {
     throw new Exception("User account not found in database.");
-  }
-  
-  // Delete from favoritedeck table
-  $sql = "DELETE FROM favoritedeck WHERE usersId=?";
-  $stmt = mysqli_stmt_init($conn);
-  
-  if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, "s", $userID);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
   }
   
   // Commit transaction
