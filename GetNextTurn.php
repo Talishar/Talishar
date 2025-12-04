@@ -590,14 +590,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($playerID == 3) {
       if(IsCasterMode() || IsGameOver()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
-        for ($i=0; $i < $myBanishCount; $i += $banishPieces) {
-          if(PlayableFromBanish($myBanish[$i], $myBanish[$i+1], $bottomPlayer)) {
-            array_push($myHandContents, JSONRenderedCard($myBanish[$i], borderColor:7));
+        for ($j=0; $j < $myBanishCount; $j += $banishPieces) {
+          if(PlayableFromBanish($myBanish[$j], $myBanish[$j+1], $bottomPlayer)) {
+            array_push($myHandContents, JSONRenderedCard($myBanish[$j], borderColor:7));
           }
         }
-        for ($i=0; $i < $myDiscardCount; $i += $discardPieces) {
-          if (isset($myDiscard[$i+2]) && PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2], $bottomPlayer, $i)) {
-            array_push($myHandContents, JSONRenderedCard($myDiscard[$i], borderColor:7));
+        for ($j=0; $j < $myDiscardCount; $j += $discardPieces) {
+          if (isset($myDiscard[$j+2]) && PlayableFromGraveyard($myDiscard[$j], $myDiscard[$j+2], $bottomPlayer, $j)) {
+            array_push($myHandContents, JSONRenderedCard($myDiscard[$j], borderColor:7));
           }
         }
     } else {
