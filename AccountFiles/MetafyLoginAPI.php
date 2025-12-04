@@ -97,8 +97,9 @@ function FetchAndSaveMetafyCommunities($access_token)
   $userID = $_SESSION['userid'];
   $conn = GetDBConnection();
   
-  // Fetch the authenticated user's community from Metafy API
-  // This gets the community owned by the user (if they are a coach/creator)
+  $all_communities = array();
+  
+  // 1. Fetch the authenticated user's owned community (if they are a coach/creator)
   $community_url = 'https://metafy.gg/irk/api/v1/me/community';
   
   $ch = curl_init();
@@ -114,10 +115,9 @@ function FetchAndSaveMetafyCommunities($access_token)
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
   
-  
   $community_data = json_decode($community_response, true);
   
-  // Check if user has a community (only coaches/creators have one)
+  // Add owned community if user has one
   if ($http_code === 200 && isset($community_data['community'])) {
     $community_info = array(
       'id' => $community_data['community']['id'] ?? null,
@@ -126,18 +126,68 @@ function FetchAndSaveMetafyCommunities($access_token)
       'logo_url' => $community_data['community']['logo_url'] ?? null,
       'cover_url' => $community_data['community']['cover_url'] ?? null,
       'url' => $community_data['community']['url'] ?? null,
-      'tiers' => $community_data['community']['tiers'] ?? []
+      'tiers' => $community_data['community']['tiers'] ?? [],
+      'type' => 'owned'
     );
-    $community_json = json_encode(array($community_info));
-    
+    $all_communities[] = $community_info;
+    error_log('[MetafyLoginAPI] Found owned community: ' . ($community_info['title'] ?? 'Unknown'));
+  }
+  
+  // 2. Fetch supported communities (subscriptions)
+  $subscriptions_url = 'https://metafy.gg/irk/api/v1/me/subscriptions?per_page=100';
+  
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $subscriptions_url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Authorization: Bearer ' . $access_token,
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+  
+  $subscriptions_response = curl_exec($ch);
+  $sub_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  error_log('[MetafyLoginAPI] Subscriptions fetch HTTP Code: ' . $sub_http_code);
+  
+  $subscriptions_data = json_decode($subscriptions_response, true);
+  
+  // Process subscriptions
+  if ($sub_http_code === 200 && isset($subscriptions_data['data'])) {
+    foreach ($subscriptions_data['data'] as $subscription) {
+      if (isset($subscription['community'])) {
+        $community_info = array(
+          'id' => $subscription['community']['id'] ?? null,
+          'title' => $subscription['community']['title'] ?? null,
+          'description' => $subscription['community']['description'] ?? null,
+          'logo_url' => $subscription['community']['logo_url'] ?? null,
+          'cover_url' => $subscription['community']['cover_url'] ?? null,
+          'url' => $subscription['community']['url'] ?? null,
+          'tiers' => $subscription['community']['tiers'] ?? [],
+          'type' => 'supported'
+        );
+        $all_communities[] = $community_info;
+        error_log('[MetafyLoginAPI] Found supported community: ' . ($community_info['title'] ?? 'Unknown'));
+      }
+    }
+  } else {
+    error_log('[MetafyLoginAPI] No subscriptions found or API error');
+  }
+  
+  // Save all communities to database
+  if (count($all_communities) > 0) {
+    $communities_json = json_encode($all_communities);
     $sql = 'UPDATE users SET metafyCommunities=? WHERE usersid=?';
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, 'ss', $community_json, $userID);
+      mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
       $result = mysqli_stmt_execute($stmt);
+      error_log('[MetafyLoginAPI] Communities save result: ' . ($result ? 'SUCCESS' : 'FAILED') . ' (' . count($all_communities) . ' communities)');
       mysqli_stmt_close($stmt);
     }
   } else {
+    error_log('[MetafyLoginAPI] No communities found (owned or supported)');
   }
   
   mysqli_close($conn);
