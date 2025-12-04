@@ -2398,7 +2398,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TRANSFORMPERMANENT":
       $params = explode(",", $parameter);
       $materialIndex = is_numeric($lastResult) ? $lastResult : SearchPermanentsForUniqueID($lastResult, $player);
-      return "PERMANENT-" . ResolveTransformPermanent($player, $materialIndex, $parameter);
+      $permanents = GetPermanents($player);
+      if ($permanents[$materialIndex] != "") return "PERMANENT-" . ResolveTransformPermanent($player, $materialIndex, $parameter);
+      else {
+        WriteLog("The chosen ash has already been transformed!");
+        return "PASS";
+      }
     case "TRANSFORMAURA":
       return "AURA-" . ResolveTransformAura($player, $lastResult, $parameter);
     case "TRANSFORMHERO":
