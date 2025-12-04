@@ -18,7 +18,6 @@ function SUPAbilityType($cardID, $index=-1, $from="-"): string
 
 function SUPAbilityCost($cardID): int
 {
-  global $currentPlayer;
   return match ($cardID) {
     "lyath_goldmane" => 2,
     "lyath_goldmane_vile_savant" => 2,
@@ -58,7 +57,7 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 
 function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks, $defPlayer;
+  global $currentPlayer, $mainPlayer, $chainLinkSummary;
   global $CombatChain;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
@@ -291,9 +290,10 @@ function BOO($player)
   global $CS_BooedThisTurn;
   SetClassState($player, $CS_BooedThisTurn, 1);
   $char = GetPlayerCharacter($player);
+  $heroID = ShiyanaCharacter($char[0], $player);
   WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
   if ($char[1] < 3) {
-    switch($char[0]) {
+    switch($heroID) {
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":
       case "kayo_underhanded_cheat":
@@ -316,7 +316,8 @@ function Cheer($player)
     $card = GetClass($char[$i], $player);
     if ($card != "-") $card->CheerTrigger();
     if ($char[$i + 1] < 3) {
-      switch($char[$i]) {
+      $heroID = ShiyanaCharacter($char[$i], $player);
+      switch($heroID) {
         case "pleiades":
         case "pleiades_superstar":
         case "tuffnut":

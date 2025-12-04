@@ -875,9 +875,10 @@ function PitchValue($cardID)
 function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 {
   global $defPlayer, $combatChain;
-
+  $char = GetPlayerCharacter($player);
   if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
+    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
   }
   else $lyathActive = false;
   $block = -2;
@@ -984,18 +985,20 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
 {
-  global $mainPlayer, $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
-  global $currentTurnEffects;
+  global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
   if (!$cardID) return "";
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $player = $player == "-" ? $mainPlayer : $player;
+  $char = GetPlayerCharacter($player);
   if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
+    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
   }
   else $lyathActive = false;
+
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
     $basePower = PowerValue($cardID, $player, $from, $index, true);

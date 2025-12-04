@@ -2067,6 +2067,7 @@ function LinkBasePower()
       if (isset($char[$i + 1]) && $char[$i + 1] == 2) {
         $card = GetClass($char[$i], $mainPlayer);
         if ($card != "-") $basePower = ceil($basePower / $card->CharDivideBasePower());
+        $char[$i] = ShiyanaCharacter($char[$i], $mainPlayer);
         switch ($char[$i]) {
           case "lyath_goldmane_vile_savant":
           case "lyath_goldmane":

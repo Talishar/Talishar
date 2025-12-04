@@ -4574,8 +4574,9 @@ function ModifiedBlockValue($cardID, $player, $from, $source="", $uniqueID=-1)
   if ($from == "CC") {
     if ($cardID == "quickdodge_flexors" && SearchCurrentTurnEffects("quickdodge_flexors", $player)) $block = 2;
     $char = GetPlayerCharacter($player);
+    $heroID = ShiyanaCharacter($char[0], $player);
     if ($char[1] < 3) {
-      switch ($char[0]) {
+      switch ($heroID) {
         case "lyath_goldmane":
         case "lyath_goldmane_vile_savant":
           $block = ceil($block / 2);
