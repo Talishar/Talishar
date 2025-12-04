@@ -1482,10 +1482,10 @@ class show_of_strength_red extends Card {
   }
 
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    global $combatChain, $defPlayer;
+    global $combatChain, $defPlayer, $CombatChain;
     $modifier = 0;
     for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-      if ($combatChain[$i + 1] == $defPlayer && PowerValue($combatChain[$i], $defPlayer, index:$i) + $combatChain[$i + 5]  >= 6) $modifier -= 1;
+      if ($combatChain[$i + 1] == $defPlayer && $CombatChain->Card($i)->TotalPower() >= 6) $modifier -= 1;
     }
     return $modifier;
   }
