@@ -18,7 +18,7 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highli
   }
 }
 
-function ClearLog($n=25)
+function ClearLog($n=30)
 {
   global $gameName;
 
