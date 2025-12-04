@@ -80,19 +80,27 @@ function MetafyLink()
     $use_dev = $is_local;
   }
   
-  // Use dev endpoint for local development, production for deployed
-  $oauth_host = $use_dev ? 'https://dev.metafy.gg' : 'https://auth.metafy.gg';
+  // Use new Metafy OAuth endpoint
+  $oauth_host = 'https://metafy.gg/auth/authorize';
   
   // Set appropriate redirect URI based on environment
   $redirect_uri = $use_dev ? 'http://localhost:5173/user/profile/linkmetafy' : 'https://talishar.net/user/profile/linkmetafy';
   $response_type = 'code';
-  $scope = 'read:communities read:user';
+  $scope = 'profile community products purchases';
   
-  $href = $oauth_host . '/oauth/authorize?' .
+  // Create state parameter with redirect URL
+  $state = array(
+    'redirect_uri' => $redirect_uri
+  );
+  $state_json = json_encode($state);
+  $state_encoded = base64_encode($state_json);
+  
+  $href = $oauth_host . '?' .
     'response_type=' . urlencode($response_type) .
     '&client_id=' . urlencode($client_id) .
     '&redirect_uri=' . urlencode($redirect_uri) .
-    '&scope=' . urlencode($scope);
+    '&scope=' . urlencode($scope) .
+    '&state=' . urlencode($state_encoded);
   
   return $href;
 }

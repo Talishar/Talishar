@@ -49,21 +49,29 @@ function MetafyLink()
   global $metafyClientID;
   $client_id = $metafyClientID;
   
-  // Always use production Metafy OAuth endpoint
-  $oauth_host = 'https://auth.metafy.gg';
+  // Use new Metafy OAuth endpoint
+  $oauth_host = 'https://metafy.gg/auth/authorize';
   
   // Determine redirect URI based on environment
   $is_local = $_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === 'localhost:8000' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false;
   $redirect_uri = $is_local ? 'http://localhost:5173/user/profile/linkmetafy' : 'https://talishar.net/user/profile/linkmetafy';
   
   $response_type = 'code';
-  $scope = 'read:communities read:user';
+  $scope = 'profile community products purchases';
   
-  $href = $oauth_host . '/oauth/authorize?' .
+  // Create state parameter with redirect URL
+  $state = array(
+    'redirect_uri' => $redirect_uri
+  );
+  $state_json = json_encode($state);
+  $state_encoded = base64_encode($state_json);
+  
+  $href = $oauth_host . '?' .
     'response_type=' . urlencode($response_type) .
     '&client_id=' . urlencode($client_id) .
     '&redirect_uri=' . urlencode($redirect_uri) .
-    '&scope=' . urlencode($scope);
+    '&scope=' . urlencode($scope) .
+    '&state=' . urlencode($state_encoded);
   
   return $href;
 }

@@ -21,7 +21,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   $code = $_GET['code'];
   
   // Exchange the code for tokens
-  $token_url = 'https://api.metafy.gg/oauth2/token';
+  $token_url = 'https://api.metafy.gg/auth/token';
   
   $post_fields = array(
     'grant_type' => 'authorization_code',
@@ -90,7 +90,7 @@ function FetchAndSaveMetafyCommunities($access_token)
   $conn = GetDBConnection();
   
   // Fetch communities from Metafy API
-  $communities_url = 'https://api.metafy.gg/v1/user/communities';
+  $communities_url = 'https://api.metafy.gg/api/user/communities';
   
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $communities_url);
