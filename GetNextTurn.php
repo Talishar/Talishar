@@ -589,8 +589,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $response->opponentEquipment = $filteredContents;
 
 
-  $myDiscardCount = count($myDiscard);
-  $bottomPlayer = $otherPlayer == 1 ? 2 : 1;
   // my hand contents
   $restriction = "";
   $actionType = $turnPhase == "ARS" ? 4 : 27;
@@ -603,16 +601,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($playerID == 3) {
       if(IsCasterMode() || IsGameOver()) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
-        for ($j=0; $j < $myBanishCount; $j += $banishPieces) {
-          if(PlayableFromBanish($myBanish[$j], $myBanish[$j+1], $bottomPlayer)) {
-            array_push($myHandContents, JSONRenderedCard($myBanish[$j], borderColor:7));
-          }
-        }
-        for ($j=0; $j < $myDiscardCount; $j += $discardPieces) {
-          if (isset($myDiscard[$j+2]) && PlayableFromGraveyard($myDiscard[$j], $myDiscard[$j+2], $bottomPlayer, $j)) {
-            array_push($myHandContents, JSONRenderedCard($myDiscard[$j], borderColor:7));
-          }
-        }
     } else {
       $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || ($actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "") : false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
@@ -631,6 +619,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   //My discard
   $playerDiscardArr = [];
+  $myDiscardCount = count($myDiscard);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
