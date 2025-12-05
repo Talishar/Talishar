@@ -5,8 +5,7 @@ include "CardGetters.php";
 
 function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
-  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CCS_NumPowerCounters;
-  global $CCS_WeaponIndex, $combatChain, $defPlayer;
+  global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CCS_NumPowerCounters, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
   $attackType = CardType($CombatChain->AttackCard()->ID());
   $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());
@@ -18,15 +17,15 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       if ($i == 0 && $attackType != "W") $power = LinkBasePower();
       else $power = $canGainAttack ? PowerValue($chainCard->ID(), $mainPlayer, "CC") : PowerValue($chainCard->ID(), $mainPlayer, "CC", base: true);
       if ($canGainAttack || $i == 0 || $power < 0) {
-        array_push($powerModifiers, $chainCard->ID());
-        array_push($powerModifiers, $power);
+        $powerModifiers[] = $chainCard->ID();
+        $powerModifiers[] = $power;
         if ($i == 0) $totalPower += $power;
         else AddPower($totalPower, $power);
       }
       $power = PowerModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->PowerValue();
       if (($canGainAttack && !$snagActive) || $power < 0) {
-        array_push($powerModifiers, $chainCard->ID());
-        array_push($powerModifiers, $power);
+        $powerModifiers[] = $chainCard->ID();
+        $powerModifiers[] = $power;
         AddPower($totalPower, $power);
       }
     } else {
@@ -36,14 +35,15 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   // check +1 counters
   if ($canGainAttack && $combatChainState[$CCS_NumPowerCounters] > 0) $totalPower += $combatChainState[$CCS_NumPowerCounters];
   //Now check current turn effects
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
         $power = EffectPowerModifier($currentTurnEffects[$i]);
         $fromCurrentAttack = $currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || IsGrantedBuff($currentTurnEffects[$i]);
         if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
-          array_push($powerModifiers, $currentTurnEffects[$i]);
-          array_push($powerModifiers, $power);
+          $powerModifiers[] = $currentTurnEffects[$i];
+          $powerModifiers[] = $power;
           AddPower($totalPower, $power);
         }
       }
@@ -51,12 +51,13 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   }
   // check layer continuous buffs
   if(isset($combatChain[10])) {
-    foreach (explode(",", $combatChain[10]) as $buffSetID) {
+    $buffs = explode(",", $combatChain[10]);
+    foreach ($buffs as $buffSetID) {
       $buff = ConvertToCardID($buffSetID);
       $power = EffectPowerModifier($buff, attached: true);
       if (($canGainAttack || $power < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
-        array_push($powerModifiers, $buff);
-        array_push($powerModifiers, $power);
+        $powerModifiers[] = $buff;
+        $powerModifiers[] = $power;
         AddPower($totalPower, $power);
       }
     }
@@ -69,7 +70,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       // check buffs from subcards
       if ($char[$combatChainState[$CCS_WeaponIndex] + 10] != "-") {
         $subcards = explode(",", $char[$combatChainState[$CCS_WeaponIndex] + 10]);
-        foreach($subcards as $subcard) {
+        foreach ($subcards as $subcard) {
           switch ($subcard) {
             case "galvanic_bender":
               ++$power;
@@ -88,8 +89,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       if (isset($allies[$combatChainState[$CCS_WeaponIndex]])) $power = $allies[$combatChainState[$CCS_WeaponIndex] + 9];
     }
     if ($canGainAttack || $power < 0) {
-      array_push($powerModifiers, "POWERCOUNTER"); //Power Counter image ID
-      array_push($powerModifiers, $power);
+      $powerModifiers[] = "POWERCOUNTER"; //Power Counter image ID
+      $powerModifiers[] = $power;
       AddPower($totalPower, $power, true);
     }
   }
@@ -114,7 +115,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":
-        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        $combatChainCount = count($combatChain);
+        for ($i = CombatChainPieces(); $i < $combatChainCount; $i += CombatChainPieces()) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
           $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
@@ -174,8 +176,8 @@ function BlockingCardDefense($index)
 {
   global $combatChain, $defPlayer, $currentTurnEffects;
   $canGainBlock = CanGainBlock($combatChain[$index]);
-  $from = isset($combatChain[$index + 2]) ? $combatChain[$index + 2] : "-";
-  $cardID = isset($combatChain[$index]) ? $combatChain[$index] : "-";
+  $from = $combatChain[$index + 2] ?? "-";
+  $cardID = $combatChain[$index] ?? "-";
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = (isset($combatChain[$index + 3]) ? intval($combatChain[$index + 3]) : 0) + intval($baseCost);
   $uid = $combatChain[$index + 2] == "EQUIP" ? $combatChain[$index + 8] : $combatChain[$index + 7];
@@ -191,7 +193,8 @@ function BlockingCardDefense($index)
     $counters = $defCharacter[$charIndex + 4];
     if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $defPlayer) {
         $defense += EffectBlockModifier($currentTurnEffects[$i], $index, $from);
@@ -206,18 +209,18 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
 {
   global $combatChain, $turn;
   $index = count($combatChain);
-  array_push($combatChain, $cardID);
-  array_push($combatChain, $player);
-  array_push($combatChain, $from);
-  array_push($combatChain, $resourcesPaid);
-  array_push($combatChain, RepriseActive());
-  array_push($combatChain, 0);//Power Modifier
-  array_push($combatChain, 0);//Defense modifier
-  array_push($combatChain, GetUniqueId($cardID, $player));
-  array_push($combatChain, $OriginUniqueID);
-  array_push($combatChain, $cardID); //original cardID in case it becomes a copy
-  array_push($combatChain, "-"); //Added static buffs (comma separated list of SetIDs, see ConvertToSetID/ConvertToCardID)
-  array_push($combatChain, 0); //Number of times used
+  $combatChain[] = $cardID;
+  $combatChain[] = $player;
+  $combatChain[] = $from;
+  $combatChain[] = $resourcesPaid;
+  $combatChain[] = RepriseActive();
+  $combatChain[] = 0;//Power Modifier
+  $combatChain[] = 0;//Defense modifier
+  $combatChain[] = GetUniqueId($cardID, $player);
+  $combatChain[] = $OriginUniqueID;
+  $combatChain[] = $cardID; //original cardID in case it becomes a copy
+  $combatChain[] = "-"; //Added static buffs (comma separated list of SetIDs, see ConvertToSetID/ConvertToCardID)
+  $combatChain[] = 0; //Number of times used
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0]) || $defending) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility(count($combatChain) - CombatChainPieces());
   return $index;
@@ -272,7 +275,6 @@ function StartTurnAbilities()
   }
   ArsenalStartTurnAbilities();
   DefCharacterStartTurnAbilities();
-  ArsenalStartTurnAbilities();
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
@@ -299,21 +301,25 @@ function StartTurnAbilities()
     }
   }
   $defItems = &GetItems($defPlayer);
-  for ($i = 0; $i < count($defItems); $i += ItemPieces()) {
+  $defItemsCount = count($defItems);
+  for ($i = 0; $i < $defItemsCount; $i += ItemPieces()) {
     $defItems[$i + 2] = "2";
     $defItems[$i + 3] = ItemUses($defItems[$i]);
     $defItems[$i + 7] = "0";//Reset Frozen
   }
   $defCharacter = &GetPlayerCharacter($defPlayer);
-  for ($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
+  $defCharacterCount = count($defCharacter);
+  for ($i = 0; $i < $defCharacterCount; $i += CharacterPieces()) {
     $defCharacter[$i + 8] = "0";//Reset Frozen
   }
   $defAllies = &GetAllies($defPlayer);
-  for ($i = 0; $i < count($defAllies); $i += AllyPieces()) {
+  $defAlliesCount = count($defAllies);
+  for ($i = 0; $i < $defAlliesCount; $i += AllyPieces()) {
     $defAllies[$i + 3] = "0";//Reset Frozen
   }
   $defArsenal = &GetArsenal($defPlayer);
-  for ($i = 0; $i < count($defArsenal); $i += ArsenalPieces()) {
+  $defArsenalCount = count($defArsenal);
+  for ($i = 0; $i < $defArsenalCount; $i += ArsenalPieces()) {
     $defArsenal[$i + 4] = "0";//Reset Frozen
   }
   MZStartTurnMayAbilities();
@@ -469,12 +475,13 @@ function ArsenalPowerModifier(&$powerModifiers)
   $attackType = CardType($attackID);
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  for ($i = 0; $i < $arsenalCount; $i += ArsenalPieces()) {
     switch ($arsenal[$i]) {
       case "minerva_themis":
         $modifier += ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID) ? 1 : 0);
-        array_push($powerModifiers, $arsenal[$i]);
-        array_push($powerModifiers, $modifier);
+        $powerModifiers[] = $arsenal[$i];
+        $powerModifiers[] = $modifier;
         break;
       default:
         break;
@@ -1135,7 +1142,7 @@ function UnsetItemModifier($player, $modifier, $newMod = "-") {
           $mods = explode(",", $cardModifier);
           $newMods = [];
           foreach ($mods as $mod) {
-            if ($mod != $modifier) array_push($newMods, $mod);
+            if ($mod != $modifier) $newMods[] = $mod;
           }
           $items[$i+8] = implode(",", $newMods);
         }
@@ -1203,8 +1210,8 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
         if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
       }
       if ($excluded) continue;
-      if (!$asMZInd) array_push($ret, "$j-$i");
-      else array_push($ret, "PASTCHAINLINK-$j-$i");
+      if (!$asMZInd) $ret[] = "$j-$i";
+      else $ret[] = "PASTCHAINLINK-$j-$i";
       }
     }
   }
@@ -2019,7 +2026,7 @@ function DoesAttackHaveGoAgain()
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
   $attackID = $CombatChain->AttackCard()->ID();
-  $from = isset($combatChain[2]) ? $combatChain[2] : "CC";
+  $from = $combatChain[2] ?? "CC";
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
@@ -3050,13 +3057,14 @@ function GetCurrentAttackNames()
   global $combatChain, $currentTurnEffects, $mainPlayer;
   $names = [];
   if (count($combatChain) == 0) return $names;
-  array_push($names, CardName($combatChain[0]));
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $names[] = CardName($combatChain[0]);
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $mainPlayer);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
-      array_push($names, $name);
+      $names[] = $name;
     }
   }
   return $names;
@@ -3184,7 +3192,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       }
       elseif (isset($targetArr[1])) $cleanedTarget = $targetArr[0] . "-" . $targetArr[1];
       else $cleanedTarget = $targetArr[0];
-      array_push($cleanedTargets, $cleanedTarget);
+      $cleanedTargets[] = $cleanedTarget;
     }
     $target = implode(",", $cleanedTargets);
   }
@@ -3478,7 +3486,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       //thinks it does due do specific wording of the effect
     } 
     else {
-      array_push($hand, $cardID);
+      $hand[] = $cardID;
       IncrementClassState($player, $CS_NumCardsDrawn, $num);
     }
     $hand = array_values($hand);
@@ -3964,7 +3972,7 @@ function Pitch($cardID, $player)
 {
   $pitch = &GetPitch($player);
   WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
-  array_push($pitch, $cardID);
+  $pitch[] = $cardID;
   PitchAbility($cardID, "DECK");
   $resources = &GetResources($player);
   $resources[0] += PitchValue($cardID);
