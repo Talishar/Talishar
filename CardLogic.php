@@ -14,9 +14,9 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false, $context = 
     if ($passable) PrependDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else PrependDecisionQueue("CHOOSEHAND", $player, "<-", 1);
     PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
-    PrependDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
+    PrependDecisionQueue("FINDINDICES", $player, "HAND", $passable ? 1 : 0);
   } else {
-    AddDecisionQueue("FINDINDICES", $player, "HAND", ($passable ? 1 : 0));
+    AddDecisionQueue("FINDINDICES", $player, "HAND", $passable ? 1 : 0);
     AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
     if ($passable) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
     else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
@@ -79,10 +79,10 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
     return;
   }
-  array_push($currentTurnEffects, $cardID);
-  array_push($currentTurnEffects, $player);
-  array_push($currentTurnEffects, $uniqueID);
-  array_push($currentTurnEffects, CurrentTurnEffectUses($cardID));
+  $currentTurnEffects[] = $cardID;
+  $currentTurnEffects[] = $player;
+  $currentTurnEffects[] = $uniqueID;
+  $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
 }
 
 function AddEffectToCurrentAttack($cardID) {
@@ -105,20 +105,21 @@ function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
     return;
   }
-  array_push($afterResolveEffects, $cardID);
-  array_push($afterResolveEffects, $player);
-  array_push($afterResolveEffects, $uniqueID);
-  array_push($afterResolveEffects, CurrentTurnEffectUses($cardID));
+  $afterResolveEffects[] = $cardID;
+  $afterResolveEffects[] = $player;
+  $afterResolveEffects[] = $uniqueID;
+  $afterResolveEffects[] = CurrentTurnEffectUses($cardID);
 }
 
 function CopyCurrentTurnEffectsFromAfterResolveEffects()
 {
   global $currentTurnEffects, $afterResolveEffects;
-  for ($i = 0; $i < count($afterResolveEffects); $i += CurrentTurnEffectPieces()) {
-    array_push($currentTurnEffects, $afterResolveEffects[$i]);
-    array_push($currentTurnEffects, $afterResolveEffects[$i + 1]);
-    array_push($currentTurnEffects, $afterResolveEffects[$i + 2]);
-    array_push($currentTurnEffects, $afterResolveEffects[$i + 3]);
+  $afterResolveEffectsCount = count($afterResolveEffects);
+  for ($i = 0; $i < $afterResolveEffectsCount; $i += CurrentTurnEffectPieces()) {
+    $currentTurnEffects[] = $afterResolveEffects[$i];
+    $currentTurnEffects[] = $afterResolveEffects[$i + 1];
+    $currentTurnEffects[] = $afterResolveEffects[$i + 2];
+    $currentTurnEffects[] = $afterResolveEffects[$i + 3];
   }
   $afterResolveEffects = [];
 }
@@ -127,20 +128,21 @@ function CopyCurrentTurnEffectsFromAfterResolveEffects()
 function AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID = -1)
 {
   global $currentTurnEffectsFromCombat;
-  array_push($currentTurnEffectsFromCombat, $cardID);
-  array_push($currentTurnEffectsFromCombat, $player);
-  array_push($currentTurnEffectsFromCombat, $uniqueID);
-  array_push($currentTurnEffectsFromCombat, CurrentTurnEffectUses($cardID));
+  $currentTurnEffectsFromCombat[] = $cardID;
+  $currentTurnEffectsFromCombat[] = $player;
+  $currentTurnEffectsFromCombat[] = $uniqueID;
+  $currentTurnEffectsFromCombat[] = CurrentTurnEffectUses($cardID);
 }
 
 function CopyCurrentTurnEffectsFromCombat()
 {
   global $currentTurnEffects, $currentTurnEffectsFromCombat;
-  for ($i = 0; $i < count($currentTurnEffectsFromCombat); $i += CurrentTurnEffectPieces()) {
-    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i]);
-    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i + 1]);
-    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i + 2]);
-    array_push($currentTurnEffects, $currentTurnEffectsFromCombat[$i + 3]);
+  $currentTurnEffectsFromCombatCount = count($currentTurnEffectsFromCombat);
+  for ($i = 0; $i < $currentTurnEffectsFromCombatCount; $i += CurrentTurnEffectPieces()) {
+    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i];
+    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 1];
+    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 2];
+    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 3];
   }
   $currentTurnEffectsFromCombat = [];
 }
@@ -197,11 +199,11 @@ function CurrentTurnEffectUses($cardID)
 function AddNextTurnEffect($cardID, $player, $uniqueID = -1, $numTurns = 1)
 {
   global $nextTurnEffects;
-  array_push($nextTurnEffects, $cardID);
-  array_push($nextTurnEffects, $player);
-  array_push($nextTurnEffects, $uniqueID);
-  array_push($nextTurnEffects, CurrentTurnEffectUses($cardID));
-  array_push($nextTurnEffects, $numTurns);
+  $nextTurnEffects[] = $cardID;
+  $nextTurnEffects[] = $player;
+  $nextTurnEffects[] = $uniqueID;
+  $nextTurnEffects[] = CurrentTurnEffectUses($cardID);
+  $nextTurnEffects[] = $numTurns;
 }
 
 function IsCombatEffectLimited($index)
@@ -223,13 +225,13 @@ function IsCombatEffectLimited($index)
 function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-")
 {
   global $layers;
-  array_push($layers, $cardID);
-  array_push($layers, $player);
-  array_push($layers, $parameter);
-  array_push($layers, $target);
-  array_push($layers, $additionalCosts);
-  array_push($layers, $uniqueID);
-  array_push($layers, GetUniqueId($cardID, $player));
+  $layers[] = $cardID;
+  $layers[] = $player;
+  $layers[] = $parameter;
+  $layers[] = $target;
+  $layers[] = $additionalCosts;
+  $layers[] = $uniqueID;
+  $layers[] = GetUniqueId($cardID, $player);
   return count($layers);//How far it is from the end
 }
 
@@ -1612,13 +1614,13 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
       break;  
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || (IsHeroAttackTarget() && $fromCombat)) {
+      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || IsHeroAttackTarget() && $fromCombat) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
     case "arakni_funnel_web-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || (IsHeroAttackTarget() && $fromCombat)) {
+      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || IsHeroAttackTarget() && $fromCombat) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
@@ -1645,14 +1647,16 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
   global $mainPlayer;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $mainChar = GetPlayerCharacter($mainPlayer);
-  for ($i = 0; $i < count($mainChar); $i += CharacterPieces()) {
+  $mainCharCount = count($mainChar);
+  for ($i = 0; $i < $mainCharCount; $i += CharacterPieces()) {
     switch ($mainChar[$i]) {
       default:
         break;
     }
   }
   $otherChar = GetPlayerCharacter($otherPlayer);
-  for ($i = 0; $i < count($otherChar); $i += CharacterPieces()) {
+  $otherCharCount = count($otherChar);
+  for ($i = 0; $i < $otherCharCount; $i += CharacterPieces()) {
     switch ($otherChar[$i]) {
       case "leap_frog_vocal_sac":
       case "leap_frog_slime_skin":
@@ -2181,8 +2185,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
         for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
-          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
-          if ($totalBlock > 0 && ($blockVal > $totalPower) && $combatChain[$i + 1] == $defPlayer) {
+          $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
+          if ($totalBlock > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
             DestroyCurrentWeapon();
           }
         }
@@ -2302,7 +2306,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $health = &GetHealth($mainPlayer);
         if ($numBloodDebt > 0) {
           if ($health > 13 && $health - $numBloodDebt <= 13) {
-            $numBloodDebt -= ($health - 13);
+            $numBloodDebt -= $health - 13;
             $health = 13;
             if (SearchInventoryForCard($mainPlayer, "levia_redeemed") != "") {
               AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("blasmophet_levia_consumed", "blasmophet_levia_consumed"));
@@ -2644,7 +2648,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             $otherPlayer = $player == 1 ? 2 : 1;
             AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
             AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-            AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, (-1 * $numRed), 1);
+            AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, -1 * $numRed, 1);
             AddDecisionQueue("DESTROYEQUIPDEF0", $player, "-", 1);
           }
         }
@@ -2798,15 +2802,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura($auraCreated, $otherPlayer, effectController: $player);
         break;
       case "cyclone_roundhouse_yellow":
-        $cardsToBanish = array();
-        for ($i = 0; $i < count($chainLinks); $i++) {
+        $cardsToBanish = [];
+        $chainLinksCount = count($chainLinks);
+        for ($i = 0; $i < $chainLinksCount; $i++) {
           if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
           $defendingCardIndices = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
           if (count($defendingCardIndices) > 0) {
             $randKeys = array_rand($defendingCardIndices, 1);
             $index = $defendingCardIndices[$randKeys];
             $chainLinks[$i][$index + 2] = "0";
-            array_push($cardsToBanish, $chainLinks[$i][$index]);
+            $cardsToBanish[] = $chainLinks[$i][$index];
           }
         }
         $defendingCards = GetChainLinkCards($defPlayer);
@@ -2815,11 +2820,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $randomIndex = GetRandom(0, count($defendingCards) - 1);
           AddDecisionQueue("PASSPARAMETER", $defPlayer, $defendingCards[$randomIndex]);
           AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
-          array_push($cardsToBanish, $combatChain[$defendingCards[$randomIndex]]);
+          $cardsToBanish[] = $combatChain[$defendingCards[$randomIndex]];
         }
-        for ($i = 0; $i < count($cardsToBanish); $i++)
+        $cardsToBanishCount = count($cardsToBanish);
+        for ($i = 0; $i < $cardsToBanishCount; $i++)
           BanishCardForPlayer($cardsToBanish[$i], $defPlayer, "CC");
-        for ($i = 0; $i < count($cardsToBanish); $i++) {
+        for ($i = 0; $i < $cardsToBanishCount; $i++) {
           AddDecisionQueue("PASSPARAMETER", $defPlayer, $cardsToBanish[$i]);
           AddDecisionQueue("REMOVECOMBATCHAIN", $defPlayer, "-", 1);
           AddDecisionQueue("MULTIBANISH", $defPlayer, "CC,-", 1);
@@ -2990,7 +2996,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
           BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
         }
-        AddDecisionQueue("WRITELOG", $player, ("The cards and arsenal of Player " . $player . " was put on the bottom of their deck."));
+        AddDecisionQueue("WRITELOG", $player, "The cards and arsenal of Player " . $player . " was put on the bottom of their deck.");
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case $CID_Frailty:
@@ -3525,11 +3531,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "electromagnetic_somersault_blue":
         if (count($chainLinks) > 0) { //only do this if the chain wasn't forced closed
           $prevLink = $chainLinks[count($chainLinks) - 1];
-          $indices = array();
+          $indices = [];
           $index = -1;
-          for ($i = 0; $i < count($prevLink); $i += ChainLinksPieces()) {
+          $prevLinkCount = count($prevLink);
+          for ($i = 0; $i < $prevLinkCount; $i += ChainLinksPieces()) {
             if ($target == $prevLink[$i+7] && $prevLink[$i+2] == 1) {
-              array_push($indices, $i);
+              $indices[] = $i;
             }
           }
           if (count($indices) == 1) {
@@ -4238,7 +4245,7 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":
-      if ((GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt)) > 0) {
+      if (GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
         AddCurrentTurnEffect($cardID, $player);
       }
       if (GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt) > 0) GiveAttackGoAgain();
@@ -4656,7 +4663,7 @@ function IsWeaponGreaterThanTwiceBasePower()
 {
   global $combatChain, $mainPlayer, $CS_NumCharged, $CS_NumYellowPutSoul;
   if (count($combatChain) == 0) return false;
-  if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalPower() > (PowerValue($combatChain[0], $mainPlayer, "CC") * 2)) return true;
+  if (TypeContains($combatChain[0], "W", $mainPlayer) && CachedTotalPower() > PowerValue($combatChain[0], $mainPlayer, "CC") * 2) return true;
   $char = &GetPlayerCharacter($mainPlayer);
   if (isset($char[CharacterPieces()]) && $char[CharacterPieces()] == "raydn_duskbane" && GetClassState($mainPlayer, $CS_NumCharged) > 0) return true;
   if (isset($char[CharacterPieces()]) && $char[CharacterPieces()] == "beaming_blade" && GetClassState($mainPlayer, $CS_NumYellowPutSoul) > 0) return true;
