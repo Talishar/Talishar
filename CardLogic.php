@@ -399,7 +399,7 @@ function ContinueDecisionQueue($lastResult = "")
   for ($player = 1; $player < 3; ++$player) {
     $health = &GetHealth($player);
     if ($health <= 0 && !IsGameOver()) {
-      PlayerWon(($player == 1 ? 2 : 1));
+      PlayerWon($player == 1 ? 2 : 1);
     }
   }
 

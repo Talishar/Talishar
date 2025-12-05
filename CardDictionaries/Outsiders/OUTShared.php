@@ -860,7 +860,7 @@ function OUTAbilityCost($cardID)
       AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
     }
     else AddDecisionQueue("PASSPARAMETER", $player, $setPlayer);
-    AddDecisionQueue("WRITELOG", $player, "Shows your top deck", 1);
+    AddDecisionQueue("WRITELOG", $player, CardLink($source, $source) . " shows your top deck", 1);
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, CardLink($source, $source) . " shows the top of your deck is <1>", 1);
