@@ -2400,6 +2400,11 @@ function GetLayerTarget($cardID, $from)
         // targetting attack layer
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       }
+      elseif(!ShouldHoldPriority($currentPlayer) && ShouldAutotargetOpponent($currentPlayer)) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      }
       else {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:maxCost=1;type=AA&COMBATCHAINLINK:maxCost=1;type=AA");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
