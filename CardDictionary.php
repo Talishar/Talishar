@@ -5705,6 +5705,19 @@ function HasEssenceOfLightning($cardID){
   }
 }
 
+function HasEssenceOfIce($cardID){
+  switch ($cardID) {
+    case "oldhim_grandfather_of_eternity":
+    case "oldhim":
+    case "lexi":
+    case "lexi_livewire":
+    case "iyslander":
+    case "iyslander_stormbind":
+    case "bravo_star_of_the_show":
+    case "jarl_vetreidi": 
+  }
+}
+
 function canBeAddedToChainDuringDR($cardID){
   switch ($cardID) {
     case "leap_frog_vocal_sac":

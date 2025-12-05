@@ -200,6 +200,9 @@ if($handler) {
     $heroCard->type = CardType($heroId);
     $heroCard->subtype = CardSubtype($heroId);
     $heroCard->cost = GeneratedCardCost($heroId);
+    $heroCard->hasEssenceOfIce = HasEssenceOfIce($heroId);
+    $heroCard->hasEssenceOfEarth = HasEssenceOfEarth($heroId);
+    $heroCard->hasEssenceOfLightning = HasEssenceOfLightning($heroId);
     array_push($response->deck->cardDictionary, $heroCard);
     $cardIndex[$heroId] = "1";
   }
