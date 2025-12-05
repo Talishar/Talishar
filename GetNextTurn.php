@@ -1609,15 +1609,33 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $combatChainCount = count($combatChain);
         if($combatChainCount > 0) {
           if($combatChain[0] == "bonds_of_agony_blue" && $turnPhase == "MAYCHOOSEMULTIZONE") {
-            if($option[0] == "THEIRHAND") $label = "Hand"; 
-            elseif ($option[0] == "THEIRDECK") $label = "Deck";
-            elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
+            switch ($option[0]) {
+                case "THEIRHAND":
+                    $label = "Hand";
+                    break;
+                case "THEIRDECK":
+                    $label = "Deck";
+                    break;
+                case "THEIRDISCARD":
+                    $label = "Graveyard";
+                    break;
+            }  
           }
           if($combatChain[$combatChainCount - CombatChainPieces()] == "hunter_or_hunted_blue" && $turnPhase == "MAYCHOOSEMULTIZONE") {
-            if($option[0] == "THEIRHAND") $label = "Hand"; 
-            elseif ($option[0] == "THEIRDECK") $label = "Deck";
-            elseif ($option[0] == "THEIRDISCARD") $label = "Graveyard";  
-            elseif ($option[0] == "THEIRARSENAL") $label = "Arsenal";  
+            switch ($option[0]) {
+                case "THEIRHAND":
+                    $label = "Hand";
+                    break;
+                case "THEIRDECK":
+                    $label = "Deck";
+                    break;
+                case "THEIRDISCARD":
+                    $label = "Graveyard";
+                    break;
+                case "THEIRARSENAL":
+                    $label = "Arsenal";
+                    break;
+            }  
           }
         }
 
