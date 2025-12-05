@@ -1043,15 +1043,15 @@ function PlayerWon($playerID, $conceded = false)
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
   if ($turn[0] == "OVER") return;
   include_once "./MenuFiles/ParseGamefile.php";
+  SetClassState(1, $CS_SkipAllRunechants, 0);
+  SetClassState(2, $CS_SkipAllRunechants, 0);
+  SetCachePiece($gameName, 14, 99);//$MGS_GameOver
+  $inGameStatus = $GameStatus_Over;
+  $turn[0] = "OVER";
   $winner = $playerID;
   if ($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . $p1uid . ") won! 🎉", $playerID);
   else if ($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . $p2uid . ") won! 🎉", $playerID);
   else WriteLog("Player " . $winner . " won! 🎉");
-  SetClassState(1, $CS_SkipAllRunechants, 0);
-  SetClassState(2, $CS_SkipAllRunechants, 0);
-  $inGameStatus = $GameStatus_Over;
-  $turn[0] = "OVER";
-  SetCachePiece($gameName, 14, 99);//$MGS_GameOver
   if (isPlayerAI(2)) return;
   try {
     logCompletedGameStats($conceded);
