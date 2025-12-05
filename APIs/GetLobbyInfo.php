@@ -187,6 +187,23 @@ if($handler) {
   $cardIndex = [];
   $response->deck->cardDictionary = [];
   
+  // Include hero in the dictionary
+  $heroId = $response->deck->hero;
+  if ($heroId && $heroId !== '-') {
+    $heroCard = new stdClass();
+    $heroCard->id = $heroId;
+    $heroCard->pitch = PitchValue($heroId);
+    $heroCard->power = GeneratedPowerValue($heroId);
+    $heroCard->blockValue = GeneratedBlockValue($heroId);
+    $heroCard->class = CardClass($heroId);
+    $heroCard->talent = CardTalent($heroId);
+    $heroCard->type = CardType($heroId);
+    $heroCard->subtype = CardSubtype($heroId);
+    $heroCard->cost = GeneratedCardCost($heroId);
+    array_push($response->deck->cardDictionary, $heroCard);
+    $cardIndex[$heroId] = "1";
+  }
+  
   // Include both main deck and sideboard cards in the dictionary
   $allCards = array_merge($response->deck->cards, $response->deck->cardsSB);
   
@@ -203,6 +220,9 @@ if($handler) {
       $dictionaryCard->type = CardType($card);
       $dictionaryCard->subtype = CardSubtype($card);
       $dictionaryCard->cost = GeneratedCardCost($card);
+      $dictionaryCard->hasStealth = HasStealth($card);
+      $dictionaryCard->hasBloodDebt = HasBloodDebt($card, true);
+      $dictionaryCard->hasBoost = HasBoost($card, $playerID, true);
       array_push($response->deck->cardDictionary, $dictionaryCard);
     }
   }

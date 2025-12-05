@@ -4650,36 +4650,39 @@ function ComboActive($cardID = "")
   return false;
 }
 
-function HasBloodDebt($cardID)
+function HasBloodDebt($cardID, $skip = false)
 {
-  global $currentPlayer;
-  $char = GetPlayerCharacter($currentPlayer);
-  if ($char[0] == "levia_redeemed") return false;
+  if (!$skip) //Don't check for hero in the lobby for the calculators.tsx
+  {
+    global $currentPlayer;
+    $char = GetPlayerCharacter($currentPlayer);
+    if ($char[0] == "levia_redeemed") return false;
+  }
   switch ($cardID) {
-    case "deep_rooted_evil_yellow";
-    case "mark_of_the_beast_yellow";
-    case "shadow_of_blasmophet_red";
+    case "deep_rooted_evil_yellow":
+    case "mark_of_the_beast_yellow":
+    case "shadow_of_blasmophet_red":
     case "endless_maw_red":
     case "endless_maw_yellow":
-    case "endless_maw_blue";
+    case "endless_maw_blue":
     case "writhing_beast_hulk_red":
     case "writhing_beast_hulk_yellow":
-    case "writhing_beast_hulk_blue";
+    case "writhing_beast_hulk_blue":
     case "boneyard_marauder_red":
     case "boneyard_marauder_yellow":
-    case "boneyard_marauder_blue";
+    case "boneyard_marauder_blue":
     case "deadwood_rumbler_red":
     case "deadwood_rumbler_yellow":
-    case "deadwood_rumbler_blue";
+    case "deadwood_rumbler_blue":
     case "dread_screamer_red":
     case "dread_screamer_yellow":
-    case "dread_screamer_blue";
+    case "dread_screamer_blue":
     case "graveling_growl_red":
     case "graveling_growl_yellow":
-    case "graveling_growl_blue";
+    case "graveling_growl_blue":
     case "hungering_slaughterbeast_red":
     case "hungering_slaughterbeast_yellow":
-    case "hungering_slaughterbeast_blue";
+    case "hungering_slaughterbeast_blue":
     case "shadow_of_ursur_blue":
     case "invert_existence_blue":
     case "unhallowed_rites_red":
@@ -5401,6 +5404,48 @@ function HasGalvanize($cardID)
       return false;
   }
 }
+
+function HasStealth($cardID)
+{
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasStealth();
+  switch($cardID)
+  {
+    case "infiltrate_red":
+    case "back_stab_red": case "back_stab_yellow": case "back_stab_blue":
+    case "infect_red": case "infect_yellow": case "infect_blue":
+    case "isolate_red": case "isolate_yellow": case "isolate_blue":
+    case "malign_red": case "malign_yellow": case "malign_blue":
+    case "prowl_red": case "prowl_yellow": case "prowl_blue":
+    case "sedate_red": case "sedate_yellow": case "sedate_blue":
+    case "wither_red": case "wither_yellow": case "wither_blue":
+    case "bonds_of_agony_blue": case "persuasive_prognosis_blue":
+    case "art_of_desire_body_red": case "art_of_desire_soul_yellow": case "art_of_desire_mind_blue": 
+    case "bonds_of_attraction_red": case "bonds_of_attraction_yellow": case "bonds_of_attraction_blue": 
+    case "double_trouble_red": case "double_trouble_yellow": case "double_trouble_blue": 
+    case "bonds_of_memory_red": case "bonds_of_memory_yellow": case "bonds_of_memory_blue": 
+    case "desires_of_flesh_red": case "desires_of_flesh_yellow": case "desires_of_flesh_blue": 
+    case "impulsive_desire_red": case "impulsive_desire_yellow": case "impulsive_desire_blue": 
+    case "minds_desire_red": case "minds_desire_yellow": case "minds_desire_blue":
+    case "pick_to_pieces_red": case "pick_to_pieces_yellow": case "pick_to_pieces_blue":
+    case "kiss_of_death_red": case "under_the_trap_door_blue":
+    case "bite_red": case "bite_yellow": case "bite_blue":
+    case "whittle_from_bone_red": case "whittle_from_bone_yellow": case "whittle_from_bone_blue":
+    case "defang_the_dragon_red": case "extinguish_the_flames_red":
+    case "mark_of_the_black_widow_red": case "mark_of_the_black_widow_yellow": case "mark_of_the_black_widow_blue":
+    case "mark_of_the_funnel_web_red": case "mark_of_the_funnel_web_yellow": case "mark_of_the_funnel_web_blue":
+    case "mark_the_prey_red": case "mark_the_prey_yellow": case "mark_the_prey_blue":
+    case "plunge_the_prospect_red": case "plunge_the_prospect_yellow": case "plunge_the_prospect_blue":
+    case "reapers_call_red": case "reapers_call_yellow": case "reapers_call_blue":
+    case "scuttle_the_canal_red": case "scuttle_the_canal_yellow": case "scuttle_the_canal_blue":
+    case "graphene_chelicera":
+    case "undercover_acquisition_red":
+      return true;
+    default:
+      return false;
+  }
+}
+
 
 function PowerCantBeModified($cardID)
 {
