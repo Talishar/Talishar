@@ -25,6 +25,7 @@ function TypeToPlay($phase)
     case "P":
       return "a card to pitch";
     case "ARS":
+    case "MAYCHOOSEHANDHEAVE":
       return "a card to add to arsenal";
     case "PDECK":
       return "a card from the pitch zone";
