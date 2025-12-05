@@ -358,7 +358,7 @@ function MainCharacterBeginEndPhaseAbilities()
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
-  for ($i = $mainCharCount - $characterPieces; $i > 0; $i -= $characterPieces) {
+  for ($i = $mainCharCount - $characterPieces; $i >= 0; $i -= $characterPieces) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch ($characterID) {
       case "arakni_marionette":
