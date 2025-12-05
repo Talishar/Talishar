@@ -131,8 +131,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             WriteLog("Player " . $playerID . " put a card on the bottom of the deck");
             break;
         }
-        unset($options[$found]);
-        $options = array_values($options);
+        array_splice($options, $found, 1);
         if (count($options) > 0) PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
         ContinueDecisionQueue($buttonInput);
       } else {
@@ -167,8 +166,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $deck->AddTop($buttonInput);
         $index = SearchHandForCard($playerID, $buttonInput);
         if (str_contains($index, ",")) $index = intval(explode(",", $index)[0]);
-        unset($hand[$index]);
-        $hand = array_values($hand);
+        array_splice($hand, $index, 1);
         ContinueDecisionQueue($buttonInput);
         WriteLog("Player " . $playerID . " put a card on the top of the deck.");
       }
@@ -180,8 +178,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $deck->AddBottom($buttonInput);
         $index = SearchHandForCard($playerID, $buttonInput);
         if (str_contains($index, ",")) $index = intval(explode(",", $index)[0]);
-        unset($hand[$index]);
-        $hand = array_values($hand);
+        array_splice($hand, $index, 1);
         ContinueDecisionQueue($buttonInput);
         WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
       }
@@ -316,8 +313,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $skipWriteGamestate = true;
         break;
       }
-      if ($minSelect != -1 && count($chkInput) < $minSelect && count($chkInput) < count($options)) {
-        WriteLog("You selected " . count($chkInput) . " items, but a minimum of " . $minSelect . " is requested. Reverting gamestate prior to that effect.", highlight: true);
+      $chkInputCount = count($chkInput);
+      if ($minSelect != -1 && $chkInputCount < $minSelect && $chkInputCount < count($options)) {
+        WriteLog("You selected " . $chkInputCount . " items, but a minimum of " . $minSelect . " is requested. Reverting gamestate prior to that effect.", highlight: true);
         RevertGamestate();
         $skipWriteGamestate = true;
         break;
@@ -377,8 +375,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           }
         }
         if ($found == -1) break; //Invalid input
-        unset($options[$found]);
-        $options = array_values($options);
+        array_splice($options, $found, 1);
         ContinueDecisionQueue($buttonInput);
       }
       break;
@@ -420,8 +417,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if ($found >= count($hand)) break;
         $cardID = $hand[$found];
         if (!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
-        unset($hand[$found]);
-        $hand = array_values($hand);
+        array_splice($hand, $found, 1);
         PlayCard($cardID, "HAND", zone: "MYHAND", index: $found);
       }
       break;
@@ -439,8 +435,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if ($found == -1) break; //Invalid input
         $deck = new Deck($otherPlayer);
         $deck->AddTop($buttonInput);
-        unset($options[$found]);
-        $options = array_values($options);
+        array_splice($options, $found, 1);
         if (count($options) > 0) {
           PrependDecisionQueue($turn[0], $currentPlayer, implode(",", $options));
         }
@@ -464,10 +459,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $buttonInput;
       if ($index >= $dqState[8]) break;
       $layer = [];
-      for ($i = $index; $i < $index + LayerPieces(); ++$i) array_push($layer, $layers[$i]);
+      $layerPieces = LayerPieces();
+      for ($i = $index; $i < $index + $layerPieces; ++$i) array_push($layer, $layers[$i]);
       $counter = 0;
-      for ($i = $index + LayerPieces(); $i < ($index + LayerPieces() * 2); ++$i) {
-        $layers[$i - LayerPieces()] = $layers[$i];
+      for ($i = $index + $layerPieces; $i < $index + $layerPieces * 2; ++$i) {
+        $layers[$i - $layerPieces] = $layers[$i];
         $layers[$i] = $layer[$counter++];
       }
       break;
@@ -475,10 +471,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $buttonInput;
       if ($index == 0) break;
       $layer = [];
-      for ($i = $index; $i < $index + LayerPieces(); ++$i) array_push($layer, $layers[$i]);
+      $layerPieces = LayerPieces();
+      for ($i = $index; $i < $index + $layerPieces; ++$i) array_push($layer, $layers[$i]);
       $counter = 0;
-      for ($i = $index - LayerPieces(); $i < $index; ++$i) {
-        $layers[$i + LayerPieces()] = $layers[$i];
+      for ($i = $index - $layerPieces; $i < $index; ++$i) {
+        $layers[$i + $layerPieces] = $layers[$i];
         $layers[$i] = $layer[$counter++];
       }
       break;
@@ -703,8 +700,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10011:
       if (str_contains($cardID, "|")) {
-        $num = explode("|", $cardID)[1];
-        $cardID =  explode("|", $cardID)[0];
+        $cardIDParts = explode("|", $cardID);
+        $num = $cardIDParts[1];
+        $cardID = $cardIDParts[0];
       }
       else $num = 1;
       if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
@@ -1068,9 +1066,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if ($index != -1) {
           $pretrigger = array_slice($layers, $index, LayerPieces());
           $pretrigger[0] = "TRIGGER";
-          for ($j = $index + LayerPieces() - 1; $j >= $index; --$j) {
-            unset($layers[$j]);
-          }
+          array_splice($layers, $index, LayerPieces());
           $layers = array_merge($pretrigger, $layers);
         }
       }
@@ -1111,12 +1107,15 @@ function HasCard($cardID)
   $cardType = CardType($cardID);
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     $character = &GetPlayerCharacter($currentPlayer);
-    for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    $charCount = count($character);
+    $characterPieces = CharacterPieces();
+    for ($i = 0; $i < $charCount; $i += $characterPieces) {
       if ($character[$i] == $cardID) return $i;
     }
   } else {
     $hand = &GetHand($currentPlayer);
-    for ($i = 0; $i < count($hand); ++$i) {
+    $handCount = count($hand);
+    for ($i = 0; $i < $handCount; ++$i) {
       if ($hand[$i] == $cardID) return $i;
     }
   }
@@ -1126,21 +1125,22 @@ function HasCard($cardID)
 function PassInput($autopass = true, $doublePass=false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
+    $layerPieces = LayerPieces();
   // WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
   if (isset($turn[2]) && str_contains($turn[2], "PRELAYER")) {
     $currPreLayers = 0;
     $preLayers = GetPreLayers();
-    for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+    $preLayersCount = count($preLayers);
+    $layersCount = count($layers);
+    for ($i = 0; $i < $preLayersCount; $i += $layerPieces) {
       if ($preLayers[$i+1] == $currentPlayer) ++$currPreLayers;
     }
     $addedTriggers = [];
-    for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+    for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $currentPlayer) {
-        $pretrigger = array_slice($layers, $i, LayerPieces());
+        $pretrigger = array_slice($layers, $i, $layerPieces);
         $pretrigger[0] = "TRIGGER";
-        for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
-          unset($layers[$j]);
-        }
+        array_splice($layers, $i, $layerPieces);
         $addedTriggers = array_merge($pretrigger, $addedTriggers);
       }
     }
@@ -1170,7 +1170,8 @@ function PassInput($autopass = true, $doublePass=false)
     ContinueDecisionQueue("0");
   }
   elseif($turn[0] == "ORDERTRIGGERS") {
-    for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    $layersCount = count($layers);
+    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $currentPlayer) $layers[$i] = "TRIGGER";
     }
     ContinueDecisionQueue();
@@ -1206,7 +1207,7 @@ function PassInput($autopass = true, $doublePass=false)
       // without this line the turn player needs to pass twice to break the chain
       // but including the line makes auto-passers automatically pass through the resolution step
       // for now only turn enable this line if you aren't on always pass
-      if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer) PassInput($autopass);
+      if (count($layers) == $layerPieces && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer) PassInput($autopass);
     }
   }
 }
@@ -1251,10 +1252,12 @@ function BeginChainLinkResolution()
 
 function NuuStaticAbility($banishedBy)
 {
-  global $combatChain, $mainPlayer, $defPlayer, $CombatChain, $chainLinks;
+  global $mainPlayer, $defPlayer, $chainLinks;
   $prevLink = $chainLinks[count($chainLinks) - 1];
-  if (count($prevLink) > 0) {
-    for ($i = 0; $i < count($prevLink); $i += ChainLinksPieces()) {
+  $prevLinkCount = count($prevLink);
+  $chainLinksPieces = ChainLinksPieces();
+  if ($prevLinkCount > 0) {
+    for ($i = 0; $i < $prevLinkCount; $i += $chainLinksPieces) {
       if ($defPlayer == $prevLink[$i+1]) {
         $originalID = GetCardIDBeforeTransform($prevLink[$i]);
         $cardType = CardType($prevLink[$i]);
@@ -1280,7 +1283,9 @@ function ChainLinkBeginResolutionEffects()
   if (TypeContains($combatChain[0], "W", $mainPlayer)) {
     $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
     $index = $combatChainState[$CCS_WeaponIndex];
-    for ($i = 0; $i < count($mainCharacterEffects); $i += CharacterEffectPieces()) {
+    $mainCharacterEffectsCount = count($mainCharacterEffects);
+    $characterEffectPieces = CharacterEffectPieces();
+    for ($i = 0; $i < $mainCharacterEffectsCount; $i += $characterEffectPieces) {
       if ($mainCharacterEffects[$i] == $index) {
         switch ($mainCharacterEffects[$i + 1]) {
           //CR 2.1 - 6.5.4. Standard-replacement: Third, each player applies any active standard-replacement effects they control
@@ -1566,7 +1571,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $effectsToRemove = [];
   $CLIndex = count($chainLinks) - 1;
   isset($combatChain[10]) ? $addedEffects = $combatChain[10] : $addedEffects = "-";
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectArr = explode(",", $currentTurnEffects[$i]);
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
@@ -1601,7 +1608,8 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   if (isset($chainLinks[$CLIndex])) {
     if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedEffects;
   }
-  for ($i = 0; $i < count($effectsToRemove); ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
+  $countEffectsToRemove = count($effectsToRemove);
+  for ($i = 0; $i < $countEffectsToRemove; ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
 }
 
 function BeginTurnPass()
@@ -1649,7 +1657,9 @@ function UndoIntimidate($player)
   global $defPlayer;
   $banish = &GetBanish($player);
   $hand = &GetHand($player);
-  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+  $banishCount = count($banish);
+  $banishPieces = BanishPieces();
+  for ($i = $banishCount - $banishPieces; $i >= 0; $i -= $banishPieces) {
     if ($banish[$i + 1] == "INT") {
       array_push($hand, $banish[$i]);
       RemoveBanish($player, $i);
@@ -1668,7 +1678,9 @@ function RemoveBanishedCardFromGraveyard() //Already Dead code
 {
   global $defPlayer;
   $banish = &GetBanish($defPlayer);
-  for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+  $banishCount = count($banish);
+  $banishPieces = BanishPieces();
+  for ($i = $banishCount - $banishPieces; $i >= 0; $i -= $banishPieces) {
     if ($banish[$i + 1] == "REMOVEGRAVEYARD") {
       $index = SearchGetFirstIndex(SearchMultizone($defPlayer, "MYDISCARD:cardID=" . $banish[$i]));
       RemoveGraveyard($defPlayer, $index);
@@ -1740,7 +1752,10 @@ function FinalizeTurn()
   ArsenalEndTurn($defPlayer);
   //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information
   //Reset characters/equipment
-  for ($i = count($mainCharacter) - CharacterPieces() + 1; $i >= 1; $i -= CharacterPieces()) {
+  $countMainChar = count($mainCharacter);
+  $countDefChar = count($defCharacter);
+  $charPieces = CharacterPieces();
+  for ($i = $countMainChar - $charPieces + 1; $i >= 1; $i -= $charPieces) {
     if ($mainCharacter[$i - 1] == "talishar_the_lost_prince" && $mainCharacter[$i + 1] >= 3) $mainCharacter[$i] = 0; //Destroy Talishar if >= 3 rust counters
     if ($mainCharacter[$i + 6] == 1) {
       DestroyCharacter($mainPlayer, $i-1); //Destroy if it was flagged for destruction
@@ -1750,7 +1765,7 @@ function FinalizeTurn()
       $mainCharacter[$i + 4] = CharacterNumUsesPerTurn($mainCharacter[$i - 1]);
     }
   }
-  for ($i = count($defCharacter) - CharacterPieces() + 1; $i >= 1; $i -= CharacterPieces()) {
+  for ($i = $countDefChar - $charPieces + 1; $i >= 1; $i -= $charPieces) {
     if (isset($defCharacter[$i + 6]) && $defCharacter[$i + 6] == 1) {
       DestroyCharacter($defPlayer, $i-1); //Destroy if it was flagged for destruction
     }
@@ -1760,7 +1775,9 @@ function FinalizeTurn()
     }
   }
   //Reset Auras
-  for ($i = 0; $i < count($mainAuras); $i += AuraPieces()) {
+  $countAuras = count($mainAuras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $auraPieces) {
     $mainAuras[$i + 1] = 2;
   }
   //4.4.3d All players lose all action points and resources.
@@ -1798,13 +1815,21 @@ function FinalizeTurn()
   $combatChain = [];
   $currentTurnEffectsFromCombat = [];
   $currentTurnEffects = [];
-  for ($i = count($nextTurnEffects) - NextTurnPieces(); $i >= 0; $i -= NextTurnPieces()) {
-    if ($nextTurnEffects[$i + 4] == 1) {
-      for ($j = 0; $j < NextTurnPieces(); ++$j) {
-        if ($j < CurrentTurnEffectsPieces()) array_push($currentTurnEffects, $nextTurnEffects[$i + $j]);
-        unset($nextTurnEffects[$i + $j]);
-      }
-    } else --$nextTurnEffects[$i + 4];
+  $nextTurnEffectsCount = count($nextTurnEffects);
+  $nextTurnPieces = NextTurnPieces();
+  for ($i = $nextTurnEffectsCount - $nextTurnPieces; $i >= 0; $i -= $nextTurnPieces) {
+    switch ($nextTurnEffects[$i + 4]) {
+      case 1:
+        for ($j = 0; $j < $nextTurnPieces; ++$j) {
+          if ($j < CurrentTurnEffectsPieces())
+            array_push($currentTurnEffects, $nextTurnEffects[$i + $j]);
+          unset($nextTurnEffects[$i + $j]);
+        }
+        break;
+      default:
+        --$nextTurnEffects[$i + 4];
+        break;
+    }
   }
   $nextTurnEffects = array_values($nextTurnEffects);
   // this is needed to reset the defending player's class state even if their turn is getting skipped
@@ -2273,7 +2298,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (class_exists($cardID)) {
       $card = new $cardID($currentPlayer);
       $card->PayAdditionalCosts($from, $index);
-      unset($card);
     }
     PayAdditionalCosts($cardID, $from, index: $index);
     if (!IsStaticType($cardType, $from, $cardID)) ResetCardPlayed($cardID, $from);
@@ -2669,7 +2693,9 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
   if ($card != "-") return $card->AddPrePitchDecisionQueue($from, $index, $facing);
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
-    for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+    $countCurrentTurnEffects = count($currentTurnEffects);
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
       if ($currentTurnEffects[$i + 1] == $currentPlayer) {
         $effectArr = explode(",", $currentTurnEffects[$i]);
         $effectID = $effectArr[0];
@@ -3038,7 +3064,9 @@ function GetTargetOfAttack($cardID = "")
   } else {
     $auras = &GetAuras($defPlayer);
     $mandatoryTargets = [];
-    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    $countAuras = count($auras);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $countAuras; $i += $auraPieces) {
       $targIndex = "THEIRAURAS-$i";
       if (HasSpectra($auras[$i]) && !str_contains($currentTargets, $targIndex)) {
         $targets = $targets == "" ? $targIndex : "$targets,$targIndex";
@@ -3047,13 +3075,17 @@ function GetTargetOfAttack($cardID = "")
       }
     }
     $allies = &GetAllies($defPlayer);
-    for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+    $countAllies = count($allies);
+    $allyPieces = AllyPieces();
+    for ($i = 0; $i < $countAllies; $i += $allyPieces) {
       $targIndex = "THEIRALLY-$i";
       if (!str_contains($currentTargets, $targIndex)) {
         $targets = $targets == "" ? $targIndex : "$targets,$targIndex";
         ++$numTargets;
         if ($allies[$i] == "chum_friendly_first_mate_yellow") {
-          for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
+          $countCurrentTurnEffects = count($currentTurnEffects);
+          $currentTurnEffectPieces = CurrentTurnEffectPieces();
+          for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectPieces) {
             if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
               if ($currentTurnEffects[$j+2] == $allies[$i+5]) {
                 array_push($mandatoryTargets, "THEIRALLY-$i");
@@ -3086,7 +3118,6 @@ function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
   if (class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
     $ret = $card->PayAbilityAdditionalCosts($index, $from, $zoneIndex);
-    unset($card);
     return $ret;
   }
   switch ($cardID) {
@@ -4069,10 +4100,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           $MZTarget = "THEIRAURAS-$ind";
           if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
             array_push($spectraTargets, $uidArr[$i]);
-            unset($targetArr[$i]);
-            unset($uidArr[$i]);
-            $targetArr = array_values($targetArr);
-            $uidArr = array_values($uidArr);
+            array_splice($targetArr, $i, 1);
+            array_splice($uidArr, $i, 1);
             $isSpectraTarget = true;
           }
           $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
@@ -4438,8 +4467,8 @@ function WriteGamestate()
 function AddEvent($type, $value)
 {
   global $events;
-  array_push($events, $type);
-  array_push($events, $value);
+  $events[] = $type;
+  $events[] = $value;
 }
 
 function ReportBug()
