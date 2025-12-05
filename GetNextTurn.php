@@ -869,11 +869,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $myArsenalCount = 0;
   if ($myArsenal != "") {
     $myArsenalCount = count($myArsenal);
-    $isSpectatorNotCasterMode = $playerID == 3 && !$isCasterMode;
-    $isGameOverOrNotCaster = $isGameOver || $playerID != 3;
     for ($i = 0; $i < $myArsenalCount; $i += $arsenalPieces) {
-      if ($isGameOverOrNotCaster) $myArsenal[$i + 1] = "UP";
-      if ($isSpectatorNotCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver) {
+      if ($isGameOver) $myArsenal[$i + 1] = "UP";
+      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver) {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
