@@ -66,27 +66,23 @@ if(isset($submission->legs) && $submission->legs != "") $character .= " " . $sub
 if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
-global $p1StartingEquipment, $p2StartingEquipment;
-
-if (!$p1StartingEquipment) $p1StartingEquipment = new stdClass();
-if (!$p2StartingEquipment) $p2StartingEquipment = new stdClass();
-
-if ($playerID == 1) { 
-  $p1StartingEquipment->head  = $submission->head;
-  $p1StartingEquipment->chest = $submission->chest;
-  $p1StartingEquipment->arms  = $submission->arms;
-  $p1StartingEquipment->legs  = $submission->legs;
-  $_SESSION['p1StartingEquipment'] = $p1StartingEquipment;
+if ($playerID == 1) {
+  $_SESSION['p1StartingEquipment'] = (object)[
+    'head'  => $submission->head,
+    'chest' => $submission->chest,
+    'arms'  => $submission->arms,
+    'legs'  => $submission->legs,
+  ];
 }
 
-if ($playerID == 2) { 
-  $p2StartingEquipment->head  = $submission->head;
-  $p2StartingEquipment->chest = $submission->chest;
-  $p2StartingEquipment->arms  = $submission->arms;
-  $p2StartingEquipment->legs  = $submission->legs;
-  $_SESSION['p2StartingEquipment'] = $p2StartingEquipment;
-} 
-
+if ($playerID == 2) {
+  $_SESSION['p2StartingEquipment'] = (object)[
+    'head'  => $submission->head,
+    'chest' => $submission->chest,
+    'arms'  => $submission->arms,
+    'legs'  => $submission->legs,
+  ];
+}
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);

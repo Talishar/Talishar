@@ -574,7 +574,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           ));
     } 
   }
-  $response->opponentEquipment = $characterContents;
+
+  $validSlots = ["Head", "Chest", "Arms", "Legs"];
+
+  $filteredContents = [];
+  foreach ($characterContents as $card) {
+      $cardNumber = $card->cardNumber ?? "";
+      $sType = $card->sType ?? "";
+      if (($cardNumber == "NONE00" || (IsModular($cardNumber) && $sType === "" ))) {
+          continue;
+      }
+      $filteredContents[] = $card;
+  }
+  $response->opponentEquipment = $filteredContents;
+
 
   $myDiscardCount = count($myDiscard);
   $bottomPlayer = $otherPlayer == 1 ? 2 : 1;
@@ -784,7 +797,19 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
     }
   }
-  $response->playerEquipment = $myCharData;
+  $validSlots = ["Head", "Chest", "Arms", "Legs"];
+
+  $filteredContents = [];
+  foreach ($myCharData as $card) {
+      $cardNumber = $card->cardNumber ?? "";
+      $sType = $card->sType ?? "";
+      if (($cardNumber == "NONE00" || (IsModular($cardNumber) && $sType === "" ))) {
+          continue;
+      }
+      $filteredContents[] = $card;
+  }
+  $response->playerEquipment = $filteredContents;
+
 
   // Now display any previous chain links that can be activated
   $playablePastLinks = [];
