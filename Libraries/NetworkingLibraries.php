@@ -1472,6 +1472,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
   $charID = ShiyanaCharacter($charID);
   $currentPlayer = $mainPlayer;
   ProcessDecisionQueue(); //Any combat related decision queue logic should be main player gamestate
+  MakeGamestateBackup();
 }
 
 function FinalizeChainLink($chainClosed = false)
@@ -1561,7 +1562,6 @@ function FinalizeChainLink($chainClosed = false)
   //in that case just skip the resolution step?
   if (!$chainClosed && SearchLayersForPhase("ENDTURN") == -1) {
     PrependLayer("RESOLUTIONSTEP", $mainPlayer, "-");
-    MakeGamestateBackup();
   }
 }
 
