@@ -335,6 +335,7 @@ function HasSuspense($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasSuspense();
+  return GeneratedHasSuspense($cardID);
 }
 
 function GetSuspenseAuras($player, $hasCounter = false)

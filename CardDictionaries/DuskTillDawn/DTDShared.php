@@ -611,11 +611,7 @@ function IsMirageActive($index)
 
 function HasMirage($cardID)
 {
-  switch($cardID)
-  {
-    case "flicker_trick_red": return true;
-    default: return false;
-  }
+  return GeneratedHasMirage($cardID);
 }
 
 function MirageLayer()

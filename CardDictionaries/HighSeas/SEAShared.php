@@ -1300,38 +1300,12 @@ function HasWateryGrave($cardID): bool
 {
   $card = GetClass($cardID, 0);
   if ($card != "-")  return $card->HasWateryGrave();
-  return match($cardID) {
-    "chum_friendly_first_mate_yellow" => true,
-    "anka_drag_under_yellow" => true,
-    "riggermortis_yellow" => true,
-    "swabbie_yellow" => true,
-    "limpit_hop_a_long_yellow" => true,
-    "barnacle_yellow" => true,
-    "oysten_heart_of_gold_yellow" => true,
-    "diamond_amulet_blue" => true,
-    "sawbones_dock_hand_yellow" => true,
-    "chowder_hearty_cook_yellow" => true,
-    "wailer_humperdinck_yellow" => true,
-    "moray_le_fay_yellow" => true,
-    "shelly_hardened_traveler_yellow" => true,
-    "kelpie_tangled_mess_yellow" => true,
-    "scooba_salty_sea_dog_yellow" => true,
-    "cutty_shark_quick_clip_yellow" => true,
-    "amethyst_amulet_blue", "onyx_amulet_blue", "opal_amulet_blue", "pearl_amulet_blue", "platinum_amulet_blue",
-    "pounamu_amulet_blue", "ruby_amulet_blue", "sapphire_amulet_blue" => true,
-    default => false
-  };
+  return GeneratedHasWateryGrave($cardID);
 }
 
 function HasHighTide($cardID): bool
 {
-  return match($cardID) {
-    "conqueror_of_the_high_seas_red" => true,
-    "hms_barracuda_yellow", "hms_kraken_yellow", "hms_marlin_yellow" => true,
-    "battalion_barque_red", "battalion_barque_yellow", "battalion_barque_blue" => true,
-    "swiftwater_sloop_red", "swiftwater_sloop_yellow", "swiftwater_sloop_blue" => true,
-    default => false
-  };
+  return GeneratedHasHighTide($cardID);
 }
 
 function HighTideConditionMet($player) 
@@ -1346,11 +1320,7 @@ function HighTideConditionMet($player)
 
 function HasPerched($cardID): bool
 {
-  return match($cardID) {
-    "polly_cranka" => true,
-    "sticky_fingers" => true,
-    default => false
-  };
+  return GeneratedHasPerched($cardID);
 }
 
 function UndestroyHook($player)
@@ -1365,12 +1335,7 @@ function UndestroyHook($player)
 
 function hasUnlimited($cardID)
 {
-switch ($cardID) {
-  case "copper_cog_blue":
-    return true;
-  default:
-    return false;
-  }
+  return GeneratedHasUnlimited($cardID);
 }
 
 function PitchTopCard($player)

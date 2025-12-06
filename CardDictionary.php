@@ -4475,10 +4475,7 @@ function SpellVoidAmount($cardID, $player): int
   if ($cardID == "runechant" && SearchCurrentTurnEffects("amethyst_tiara", $player)) return 1;
   return match ($cardID) {
     "arcanite_fortress" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
-    "shock_charmers", "ebon_fold", "halo_of_illumination", "halo_of_lumina_light" => 2,
-    "dream_weavers", "talisman_of_dousing_yellow", "MON400", "MON401", "MON402", "spellbane_aegis", "spell_fray_tiara", "spell_fray_cloak", "spell_fray_gloves", "spell_fray_leggings" => 1,
-    "widow_veil_respirator", "widow_back_abdomen", "widow_claw_tarsus", "widow_web_crawler", "claw_of_vynserakai" => 1,
-    default => 0
+    default => GeneratedSpellVoidAmount($cardID),
   };
 }
 
@@ -4562,63 +4559,6 @@ function WardAmount($cardID, $player, $index = -1)
   global $mainPlayer;
   $auras = &GetAuras($player);
   switch ($cardID) {
-    case "tome_of_aeo_blue":
-    case "wave_of_reality":
-    case "celestial_kimono":
-    case "blessing_of_spirits_blue":
-    case "blessing_of_spirits_yellow":
-    case "blessing_of_spirits_red":
-    case "tranquil_passing_blue":
-    case "tranquil_passing_yellow":
-    case "tranquil_passing_red":
-    case "phantom_tidemaw_blue":
-    case "uphold_tradition":
-    case "truths_retold":
-    case "waning_vengeance_blue":
-    case "waxing_specter_blue":
-    case "solitary_companion_blue":
-    case "vengeful_apparition_blue":
-    case "vengeful_apparition_yellow":
-    case "vengeful_apparition_red":
-    case "spectral_shield":
-    case "fluttersteps":
-      return 1;
-    case "diadem_of_dreamstate":
-    case "waning_vengeance_yellow":
-    case "waxing_specter_yellow":
-    case "restless_coalescence_yellow":
-    case "essence_of_ancestry_mind_blue":
-    case "essence_of_ancestry_soul_yellow":
-    case "essence_of_ancestry_body_red":
-    case "haunting_specter_blue":
-    case "sigil_of_solitude_blue":
-    case "single_minded_determination_blue":
-    case "single_minded_determination_yellow":
-    case "single_minded_determination_red":
-    case "solitary_companion_yellow":
-    case "sigil_of_protection_blue":
-      return 2;
-    case "waning_vengeance_red":
-    case "waxing_specter_red":
-    case "haunting_specter_yellow":
-    case "sigil_of_solitude_yellow":
-    case "solitary_companion_red":
-    case "sigil_of_protection_yellow":
-      return 3;
-    case "suraya_archangel_of_knowledge":
-    case "bellona_archangel_of_war":
-    case "victoria_archangel_of_triumph":
-    case "metis_archangel_of_tenacity":
-    case "avalon_archangel_of_rebirth":
-    case "sekem_archangel_of_ravages":
-    case "aegis_archangel_of_protection":
-    case "themis_archangel_of_judgment":
-    case "suraya_archangel_of_erudition":
-    case "heirloom_of_rabbit_hide":
-    case "haunting_specter_red":
-    case "sigil_of_solitude_red":
-    case "sigil_of_protection_red":
-      return 4;
     case "empyrean_rapture":
       if (SearchCurrentTurnEffects("empyrean_rapture-1", $player)) return 1;
       else return 0;
@@ -4637,54 +4577,18 @@ function WardAmount($cardID, $player, $index = -1)
     case "haze_shelter_blue":
       if (SearchPitchForColor($player, 3) > 0) return 2;
       else return 1;
-    case "10000_year_reunion_red":
-      return 10;
     case "rage_specter_blue":
       return $player == $mainPlayer ? 6 : 1;
     default:
-      return 0;
+      return GeneratedWardAmount($cardID);
   }
 }
 
 function HasWard($cardID, $player)
 {
   switch ($cardID) {
-    case "spectral_shield":
-    case "sand_cover_red":
-    case "sand_cover_yellow":
-    case "sand_cover_blue":
-    case "sigil_of_protection_red":
-    case "sigil_of_protection_yellow":
-    case "sigil_of_protection_blue":
-    case "celestial_kimono":
-    case "wave_of_reality":
-    case "tome_of_aeo_blue":
-    case "blessing_of_spirits_red":
-    case "blessing_of_spirits_yellow":
-    case "blessing_of_spirits_blue":
-    case "tranquil_passing_red":
-    case "tranquil_passing_yellow":
-    case "tranquil_passing_blue":
-    case "suraya_archangel_of_knowledge":
-      return true;
     case "empyrean_rapture":
       return SearchCurrentTurnEffects("empyrean_rapture-1", $player);
-    case "diadem_of_dreamstate":
-    case "suraya_archangel_of_erudition":
-    case "themis_archangel_of_judgment":
-    case "aegis_archangel_of_protection":
-    case "sekem_archangel_of_ravages"://Angels
-    case "avalon_archangel_of_rebirth":
-    case "metis_archangel_of_tenacity":
-    case "victoria_archangel_of_triumph":
-    case "bellona_archangel_of_war":
-    case "fluttersteps":
-      return true;
-    case "mini_forcefield_red":
-    case "mini_forcefield_yellow":
-    case "mini_forcefield_blue":
-    case "phantom_tidemaw_blue":
-      return true;
     case "meridian_pathway":
       return SearchCurrentTurnEffects("MERIDIANWARD", $player);
     case "heirloom_of_rabbit_hide":
@@ -4693,43 +4597,6 @@ function HasWard($cardID, $player)
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index + 12] != "DOWN";
-    case "manifestation_of_miragai_blue":
-    case "three_visits_red":
-      return true;
-    case "haze_shelter_red":
-    case "haze_shelter_yellow":
-    case "haze_shelter_blue":
-    case "waning_vengeance_red":
-    case "waning_vengeance_yellow":
-    case "waning_vengeance_blue":
-    case "waxing_specter_red":
-    case "waxing_specter_yellow":
-    case "waxing_specter_blue":
-      return true;
-    case "10000_year_reunion_red":
-    case "rage_specter_blue":
-    case "restless_coalescence_yellow":
-      return true;
-    case "essence_of_ancestry_body_red":
-    case "essence_of_ancestry_soul_yellow":
-    case "essence_of_ancestry_mind_blue":
-      return true;
-    case "haunting_specter_red":
-    case "haunting_specter_yellow":
-    case "haunting_specter_blue":
-    case "sigil_of_solitude_red":
-    case "sigil_of_solitude_yellow":
-    case "sigil_of_solitude_blue":
-    case "single_minded_determination_red":
-    case "single_minded_determination_yellow":
-    case "single_minded_determination_blue":
-    case "solitary_companion_red":
-    case "solitary_companion_yellow":
-    case "solitary_companion_blue":
-    case "vengeful_apparition_red":
-    case "vengeful_apparition_yellow":
-    case "vengeful_apparition_blue":
-      return true;
     default:
       return GeneratedHasWard($cardID);
   }
@@ -4915,36 +4782,15 @@ function HasCloaked($cardID, $player = "", $hero = "")
 {
   $char = GetPlayerCharacter($player);
   if (TypeContains($cardID, "E", $player) && $hero == "enigma_new_moon") return "DOWN";
-  switch ($cardID) {
-    case "heirloom_of_snake_hide":
-    case "heirloom_of_rabbit_hide":
-    case "truths_retold":
-    case "uphold_tradition":
-    case "heirloom_of_tiger_hide":
-    case "aqua_seeing_shell":
-    case "koi_blessed_kimono":
-    case "waves_of_aqua_marine":
-    case "aqua_laps":
-    case "skycrest_keikoi":
-    case "skybody_keikoi":
-    case "skyhold_keikoi":
-    case "skywalker_keikoi":
-      return "DOWN";
-    default:
-      return "UP";
+  if (GeneratedHasCloaked($cardID)) {
+    return "DOWN";
   }
+  return "UP";
 }
 
 function HasEphemeral($cardID)
 {
-  switch ($cardID) {
-    case "crouching_tiger":
-    case "fang_strike":
-    case "slither":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasEphemeral($cardID);
 }
 
 //Deprecated, use IsLayerStep() instead
@@ -4970,22 +4816,7 @@ function HasAttackLayer()
 }
 
 function HasMeld($cardID){
-  switch ($cardID) {
-    case "thistle_bloom__life_yellow":
-    case "arcane_seeds__life_red":
-    case "vaporize__shock_yellow":
-    case "burn_up__shock_red":
-    case "rampant_growth__life_yellow":
-    case "pulsing_aether__life_red":
-    case "null__shock_yellow":
-    case "comet_storm__shock_red":
-    case "regrowth__shock_blue":
-    case "consign_to_cosmos__shock_yellow":
-    case "everbloom__life_blue":
-      return true;
-    default:
-      return false;
-  }  
+  return GeneratedHasMeld($cardID); 
 }
 
 Function IsMeldInstantName($term){

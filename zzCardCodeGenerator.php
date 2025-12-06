@@ -57,7 +57,7 @@
     "Essence of Earth", "Essence of Ice", "Essence of Lightning", "Evo Upgrade", "Lightning Flow",
     "Freeze", "Earth Fusion", "Ice Fusion", "Lightning Fusion", "Galvanize", "Go Fish", "Guardwell",
     "Heave", "Heavy", "High Tide", "Intimidate", "Legendary", "Mark", "Material",
-    "Meld", "Mirage", "Modular", "Negate", "Opt", "Overpower", "Pairs",
+    "Meld", "Mirage", "Modular", "Negate", "Opt", "Overpower", "Pairs", "Perched",
     "Phantasm", "Piercing", "Protect", "Quell", "Reload", "Reprise", "Retrieve",
     "Rune Gate", "Rupture", "Scrap", "Sharpen", "Solflare", "Specialization",
     "Spectra", "Spellvoid", "Steal", "Stealth", "Surge", "Suspense", "Temper",

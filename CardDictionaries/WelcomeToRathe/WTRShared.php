@@ -530,29 +530,7 @@
     if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
     $card = GetClass($cardID, $mainPlayer);
     if ($card != "-") return $card->HasCrush();
-    switch($cardID) {
-      case "crippling_crush_red": case "spinal_crush_red": case "cranial_crush_blue": case "buckling_blow_red": case "buckling_blow_yellow": case "buckling_blow_blue":
-      case "cartilage_crush_red": case "cartilage_crush_yellow": case "cartilage_crush_blue": case "crush_confidence_red": case "crush_confidence_yellow": case "crush_confidence_blue":
-      case "debilitate_red": case "debilitate_yellow": case "debilitate_blue": case "disable_blue": case "disable_yellow": case "disable_red":
-      case "mangle_red": case "righteous_cleansing_yellow": case "crush_the_weak_red": case "crush_the_weak_yellow": case "crush_the_weak_blue": case "chokeslam_red":
-      case "chokeslam_yellow": case "chokeslam_blue": case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red": 
-      case "star_struck_yellow": 
-      case "put_em_in_their_place_red":
-      case "batter_to_a_pulp_red":
-      case "blinding_of_the_old_ones_red": 
-      case "smelting_of_the_old_ones_red": 
-      case "disenchantment_of_the_old_ones_red":
-      case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
-      case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
-      case "knock_em_off_their_feet_red":
-      case "break_stature_yellow": case "headbutt_blue": case "fault_line_red":
-      case "hostile_encroachment_red": case "renounce_grandeur_red":
-      case "annexation_of_grandeur_yellow": case "annexation_of_the_forge_yellow":
-      case "annexation_of_all_things_known_yellow":
-        return true;
-      default:
-        return false;
-    }
+    return GeneratedHasCrush($cardID);
   }
 
   function Mangle()

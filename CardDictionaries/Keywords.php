@@ -4,23 +4,7 @@
   {
     $char = &GetPlayerCharacter($player);
     if(CardNameContains($cardID, "Hyper Driver", $player) && (SearchCharacterForCard($player, "maxx_the_hype_nitro") || SearchCharacterForCard($player, "maxx_nitro")) && $char[1] < 3) return true;
-    switch($cardID) {
-      case "grinding_gears_blue": case "prismatic_lens_yellow": case "quantum_processor_yellow":
-      case "tick_tock_clock_red":
-      case "polarity_reversal_script_red": case "penetration_script_yellow": case "security_script_blue":
-      case "backup_protocol_red_red": case "backup_protocol_yel_yellow": case "backup_protocol_blu_blue":
-      case "boom_grenade_red": case "boom_grenade_yellow": case "boom_grenade_blue":
-      case "dissolving_shield_red": case "dissolving_shield_yellow": case "dissolving_shield_blue":
-      case "hadron_collider_red": case "hadron_collider_yellow": case "hadron_collider_blue":
-      case "mini_forcefield_red": case "mini_forcefield_yellow": case "mini_forcefield_blue":
-      case "overload_script_red": case "mhz_script_yellow": case "autosave_script_blue":
-      case "cerebellum_processor_blue":
-      case "null_time_zone_blue":
-      case "clamp_press_blue":
-      case "polly_cranka_ally": case "golden_cog": case "copper_cog_blue":
-        return true;
-      default: return false;
-    }
+    return GeneratedHasCrank($cardID);
   }
 
   function Crank($player, $index, $mainPhase="True", $zone="MYITEMS")
@@ -506,11 +490,7 @@
 
   function HasUniversal($cardID)
   {
-    switch($cardID) {
-      case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue": return true;
-      default: break;
-    }
-    return false;
+    return GeneratedHasUniversal($cardID);
   }
 
   function Transcend($player, $cardID, $from)

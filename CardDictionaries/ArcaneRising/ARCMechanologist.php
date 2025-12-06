@@ -130,44 +130,7 @@ function ARCMechanologistHitEffect($cardID, $from)
 function HasBoost($cardID, $player)
 {
   if(SearchCurrentTurnEffects("evo_speedslip_blue", $player) && TypeContains($cardID, "AA", $player)) return true;
-  switch ($cardID) {
-    case "pedal_to_the_metal_red": case "pedal_to_the_metal_yellow": case "pedal_to_the_metal_blue":
-    case "over_loop_red": case "over_loop_yellow": case "over_loop_blue":
-    case "throttle_red": case "throttle_yellow": case "throttle_blue":
-    case "zero_to_sixty_red": case "zero_to_sixty_yellow": case "zero_to_sixty_blue":
-    case "zipper_hit_red": case "zipper_hit_yellow": case "zipper_hit_blue":
-    case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue":
-    case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue":
-    case "t_bone_red": case "t_bone_yellow": case "t_bone_blue":
-    case "zoom_in_red": case "zoom_in_yellow": case "zoom_in_blue":
-    case "pulsewave_harpoon_red":
-    case "scramble_pulse_red": case "scramble_pulse_yellow": case "scramble_pulse_blue":
-		case "crankshaft_red": case "crankshaft_yellow": case "crankshaft_blue":
-		case "jump_start_red": case "jump_start_yellow": case "jump_start_blue":
-    case "heist_red": case "steel_street_hoons_blue": case "twin_drive_red":
-    case "bull_bar_red": case "bull_bar_yellow": case "bull_bar_blue":
-    case "spring_a_leak_red": case "spring_a_leak_yellow": case "spring_a_leak_blue":
-    case "zero_to_fifty_red": case "zero_to_fifty_yellow": case "zero_to_fifty_blue":
-    case "razzle_dazzle_red": case "razzle_dazzle_yellow": case "razzle_dazzle_blue":
-    case "full_tilt_red": case "full_tilt_yellow": case "full_tilt_blue":
-    case "gas_guzzler_red": case "gas_guzzler_yellow": case "gas_guzzler_blue":
-    case "big_bertha_red": case "big_bertha_yellow": case "big_bertha_blue":
-    case "rev_up_red": case "rev_up_yellow": case "rev_up_blue":
-    case "data_link_red": case "data_link_yellow": case "data_link_blue":
-    case "dive_through_data_red": case "dive_through_data_yellow": case "dive_through_data_blue":
-    case "sprocket_rocket_red": case "sprocket_rocket_yellow": case "sprocket_rocket_blue":
-    case "dumpster_dive_red": case "dumpster_dive_yellow": case "dumpster_dive_blue":
-    case "expedite_red": case "expedite_yellow": case "expedite_blue":
-    case "metex_red": case "metex_yellow": case "metex_blue":
-    case "out_pace_red": case "out_pace_yellow": case "out_pace_blue":
-    case "lay_waste_red": case "lay_waste_yellow": case "lay_waste_blue":
-    case "fender_bender_red": case "fender_bender_yellow": case "fender_bender_blue":
-    case "panel_beater_red": case "panel_beater_yellow": case "panel_beater_blue":
-    case "under_loop_red": case "under_loop_yellow": case "under_loop_blue":
-    case "fast_and_furious_red":
-      return true;
-    default: return false;
-  }
+  return GeneratedHasBoost($cardID);
 }
 
 function Boost($cardID)

@@ -620,21 +620,7 @@ function IsRoyal($player)
 
 function HasSurge($cardID)
 {
-  switch($cardID) {
-    case "mind_warp_yellow": case "swell_tidings_red": case "aether_quickening_red": case "aether_quickening_yellow": case "aether_quickening_blue":
-    case "prognosticate_red": case "prognosticate_yellow": case "prognosticate_blue": case "sap_red": case "sap_yellow": case "sap_blue":
-    case "destructive_aethertide_blue"://destructive aethertide
-    case "eternal_inferno_red"://eternal inferno
-    case "glyph_overlay_red": case "glyph_overlay_yellow": case "glyph_overlay_blue":
-    case "pop_the_bubble_red": case "pop_the_bubble_yellow": case "pop_the_bubble_blue":
-    case "etchings_of_arcana_red": case "etchings_of_arcana_yellow": case "etchings_of_arcana_blue":
-    case "open_the_flood_gates_red": case "open_the_flood_gates_yellow": case "open_the_flood_gates_blue"://open the floodgates
-    case "overflow_the_aetherwell_red": case "overflow_the_aetherwell_yellow": case "overflow_the_aetherwell_blue":
-    case "perennial_aetherbloom_red": case "perennial_aetherbloom_yellow": case "perennial_aetherbloom_blue":
-    case "trailblazing_aether_red": case "trailblazing_aether_yellow": case "trailblazing_aether_blue":
-      return true;
-    default: return false;
-  }
+  return GeneratedHasSurge($cardID);
 }
 
 function ContractType($cardID, $chosenName="-")

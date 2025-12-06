@@ -215,12 +215,7 @@
 
   function HasRupture($cardID)
   {
-    switch($cardID)
-    {
-      case "liquefy_red": case "red_hot_red": case "rise_up_red": return true;
-      case "breaking_point_red": case "lava_burst_red": case "searing_touch_red": return true;
-      default: return false;
-    }
+    return GeneratedHasRupture($cardID);
   }
 
   function RuptureActive($beforePlay=false, $notAttack=false)
