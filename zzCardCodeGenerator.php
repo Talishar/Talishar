@@ -368,6 +368,13 @@
       return true;
     }
     
+    // Check if keyword is a suffix of cardKeyword (e.g., "Specialization" in "Bravo Specialization")
+    // This handles class-prefixed keywords like "Bravo Specialization"
+    if (strpos($keywordWithoutNumber, " " . $keyword) !== false || $keywordWithoutNumber === $keyword) {
+      $amount = 1;
+      return true;
+    }
+    
     // Special handling for Essence keywords that may be composite
     // e.g., "Essence of Earth and Ice", "Essence of Earth, Ice and Lightning"
     if (strpos($keyword, "Essence of") === 0) {
