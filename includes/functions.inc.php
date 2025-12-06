@@ -563,7 +563,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	}
 
 	// Populate turn results
-	for($i = 0; $i < $countTurnStats - TurnStatPieces(); $i += TurnStatPieces()) {
+	for($i = 0; $i < $countTurnStats; $i += TurnStatPieces()) {
 		$turnNo = intval($i / TurnStatPieces());
 		$turnKey = "turn_" . $turnNo;
 		
