@@ -210,7 +210,7 @@
     }
   }
 
-  // TODO: Optimize with GeneratedHasFusion fucntion for automation
+  // TODO: Optimize with GeneratedHasFusion function for automation
   function HasFusion($cardID)
   {
     switch($cardID)

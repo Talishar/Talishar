@@ -843,6 +843,7 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
   }
 }
 
+// TODO: Optimize with GeneratedHasArcaneBarrier and GeneratedArcaneBarrierAmount function for automation
 function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
 {
   global $currentTurnEffects;

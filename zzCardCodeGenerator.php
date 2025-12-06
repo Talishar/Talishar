@@ -65,7 +65,7 @@
     "Unfreeze", "Unity", "Universal", "Unlimited", "Wager", "Ward", "Watery Grave"
   ];
 
-  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Spellvoid", "Ward" ];
+  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Quell", "Spellvoid", "Ward" ];
 
   $essenceElements = ["Earth", "Ice", "Lightning"];
 

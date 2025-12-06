@@ -144,16 +144,7 @@ function UPRDealDamageEffect($cardID)
 
   function QuellAmount($cardID)
   {
-    switch($cardID)
-    {
-      case "silken_form": return 1;
-      case "heat_wave": return 1;
-      case "conduit_of_frostburn": return 1;
-      case "quelling_robe": return 1;
-      case "quelling_sleeves": return 1;
-      case "quelling_slippers": return 1;
-      default: return 0;
-    }
+    return GeneratedQuellAmount($cardID);
   }
 
   function QuellChoices($player, $damage)
