@@ -454,7 +454,8 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     $auras = &GetAuras($player);
     $cardID = $auras[$index];
     if (HasSuspense($cardID)) IncrementClassState($player, $CS_SuspensePoppedThisTurn);
-    for ($i = $index + AuraPieces() - 1; $i >= $index; --$i) {
+    $aurasPieces = AuraPieces();
+    for ($i = $index + $aurasPieces - 1; $i >= $index; --$i) {
       unset($auras[$i]);
     }
     $auras = array_values($auras);
@@ -480,7 +481,9 @@ function AuraCostModifier($cardID = "", $from = "-")
   $myAuras = &GetAuras($currentPlayer);
   $theirAuras = &GetAuras($otherPlayer);
   $modifier = 0;
-  for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($myAuras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $card = GetClass($myAuras[$i], $currentPlayer);
     if ($card != "-") $modifier += $card->PermCostModifier($cardID, $from);
     switch ($myAuras[$i]) {
@@ -492,8 +495,8 @@ function AuraCostModifier($cardID = "", $from = "-")
         break;
     }
   }
-
-  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countTheirAuras = count($theirAuras);
+  for ($i = $countTheirAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($theirAuras[$i]) {
       case "channel_lake_frigid_blue":
         $modifier += 1;
@@ -513,7 +516,9 @@ function AuraStartTurnAbilities()
   global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed;
   $auras = &GetAuras($mainPlayer);
   $toRemove = [];
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
     if ($card != "-") {
@@ -775,7 +780,9 @@ function AuraStartTurnAbilities()
     DestroyAuraUniqueID($mainPlayer, $uniqueId, mainPhase: false);
   }
   $defPlayerAuras = &GetAuras($defPlayer);
-  for ($i = count($defPlayerAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($defPlayerAuras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $EffectContext = $defPlayerAuras[$i];
     switch ($defPlayerAuras[$i]) {
       case "restless_coalescence_yellow":
@@ -815,14 +822,16 @@ function AuraStartTurnAbilities()
 function AuraBeginningActionPhaseAbilities(){
   global $mainPlayer, $EffectContext, $CS_NumSeismicSurgeDestroyed, $defPlayer;
   $auras = &GetAuras($mainPlayer);
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
   //check seismic surges first so by default they'll resolve last
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     if ($auras[$i] == "seismic_surge") {
       IncrementClassState($mainPlayer, $CS_NumSeismicSurgeDestroyed, 1);
       AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
     }
   }
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
     if ($card != "-") $card->BeginningActionPhaseAbility($i);
@@ -901,7 +910,8 @@ function AuraBeginningActionPhaseAbilities(){
     }
   }
   $theirAuras = &GetAuras($defPlayer);
-  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countTheirAuras = count($theirAuras);
+  for ($i = $countTheirAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($theirAuras[$i]) {
       case "escalate_bloodshed_red":
         AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $auras[$i + 6]);
@@ -916,7 +926,9 @@ function AuraBeginEndPhaseTriggers()
 {
   global $mainPlayer, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumGoldCreated, $defPlayer, $CS_AttacksWithWeapon;
   $auras = &GetAuras($mainPlayer);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $card = GetClass($auras[$i], $mainPlayer);
     if ($card != "-") $card->BeginEndTurnAbilities($i);
     switch ($auras[$i]) {
@@ -956,7 +968,7 @@ function AuraBeginEndPhaseTriggers()
         }
         break;
       case "riddle_with_regret_red":
-        $countAuras = count($auras)/AuraPieces();
+        $countAuras = count($auras)/$aurasPieces;
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $countAuras, "MYAURAS-" . $auras[$i + 6]);
         break;
       case "ley_line_of_the_old_ones_blue":
@@ -979,11 +991,12 @@ function AuraBeginEndPhaseTriggers()
   $auras = array_values($auras);
 
   $theirAuras = &GetAuras($defPlayer);
-  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countTheirAuras = count($theirAuras);
+  for ($i = $countTheirAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($theirAuras[$i]) {
         case "riddle_with_regret_red":
           $auras = &GetAuras($mainPlayer);
-          $countAuras = count($auras)/AuraPieces();
+          $countAuras = count($auras)/$aurasPieces;
           AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", $countAuras, "THEIRAURAS-" . $theirAuras[$i + 6]);
           break;
         case "escalate_bloodshed_red":
@@ -1002,7 +1015,9 @@ function OpponentsAuraBeginEndPhaseTriggers()
 {
   global $defPlayer;
   $auras = &GetAuras($defPlayer);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($auras[$i]) {
       case "truce_blue":
         AddLayer("TRIGGER", $defPlayer, $auras[$i], "truce_blue-1", uniqueID: $auras[$i + 6]);
@@ -1018,7 +1033,9 @@ function AuraBeginEndPhaseAbilities()
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "burn_them_all_red":
@@ -1057,7 +1074,9 @@ function AuraBeginEndPhaseAbilities()
   $auras = array_values($auras);
   // check auras in the equip slot
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
-  for ($i = count($mainCharacter) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
+  $countMainCharacter = count($mainCharacter);
+  $characterPieces = CharacterPieces();
+  for ($i = $countMainCharacter - $characterPieces; $i >= 0; $i -= $characterPieces) {
     $remove = 0;
     switch ($mainCharacter[$i]) {
       case "frostbite":
@@ -1080,7 +1099,9 @@ function ChannelTalent($uniqueID, $talent)
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     if ($auras[$i + 6] == $uniqueID) $index = $i;
   }
   $toBottom = ++$auras[$index + 2];
@@ -1104,7 +1125,9 @@ function ChannelPitchColor($uniqueID, $pitch)
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     if ($auras[$i + 6] == $uniqueID) $index = $i;
   }
   ++$auras[$index + 2];
@@ -1129,7 +1152,9 @@ function AuraEndTurnAbilities()
 {
   global $CS_NumNonAttackCards, $mainPlayer, $CS_HitsWithSword, $CS_NumTimesAttacked;
   $auras = &GetAuras($mainPlayer);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = false;
     switch ($auras[$i]) {
       case "enchanting_melody_red":
@@ -1159,9 +1184,13 @@ function AuraEndTurnAbilities()
 function AuraEndTurnCleanup()
 {
   $auras = &GetAuras(1);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) $auras[$i + 5] = AuraNumUses($auras[$i]);
   $auras = &GetAuras(2);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) $auras[$i + 5] = AuraNumUses($auras[$i]);
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
 function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false, $check = false)
@@ -1238,7 +1267,9 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   $preventedDamage = 0;
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     if ($preventedDamage == $damage) {
       $preventedDamage = $damage;
       break;
@@ -1299,7 +1330,9 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
 
   $auras = &GetAuras($player);
   $selfInflicted = $source == "bloodrot_pox" || $player == $playerSource;
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "bloodspill_invocation_red":
@@ -1321,7 +1354,8 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
   }
 
   $otherAuras = &GetAuras($otherPlayer);
-  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countOtherAuras = count($otherAuras);
+  for ($i = $countOtherAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($otherAuras[$i]) {
       case "channel_lightning_valley_yellow":
         if (!$selfInflicted) {
@@ -1350,7 +1384,9 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
 function AuraDamageDealtAbilities($player, $damage, $playerSource)
 {
   $auras = &GetAuras($player);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "arcane_cussing_red":
@@ -1373,7 +1409,9 @@ function AuraLoseHealthAbilities($player, $amount)
 {
   global $mainPlayer;
   $auras = &GetAuras($player);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "dimenxxional_crossroads_yellow":
@@ -1394,7 +1432,9 @@ function AuraPlayAbilities($cardID, $from = "")
   $cardType = CardType($cardID);
   $cardSubType = CardSubType($cardID);
   $runechantUIDS = [];
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "quicken":
@@ -1467,7 +1507,8 @@ function AuraPlayAbilities($cardID, $from = "")
     }
   }
   //handle auras to always resolve after runechants
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "malefic_incantation_red":
@@ -1490,7 +1531,9 @@ function AuraAttackAbilities($attackID)
   global $mainPlayer, $CS_PlayIndex, $CS_NumIllusionistAttacks, $CS_NumTimesAttacked;
   $auras = &GetAuras($mainPlayer);
   $attackType = CardType($attackID);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($auras[$i]) {
       case "sting_of_sorcery_blue":
         if ($attackType == "AA") {
@@ -1533,7 +1576,9 @@ function AuraHitEffects($attackID)
   global $mainPlayer;
   $attackType = CardType($attackID);
   $auras = &GetAuras($mainPlayer);
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     switch ($auras[$i]) {
       case "bloodspill_invocation_red":
@@ -1558,8 +1603,10 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
   $modifier = 0;
   $player = $chainCard->PlayerID();
   $myAuras = &GetAuras($player);
+  $countAuras = count($myAuras);
+  $aurasPieces = AuraPieces();
   if (!$onBlock) {//This codeblock was counting CMH twice on block
-    for ($i = 0; $i < count($myAuras); $i += AuraPieces()) {
+    for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
       $card = GetClass($myAuras[$i], $player);
       if ($card != "-") $modifier += $card->AuraPowerModifiers($index, $powerModifiers);
       switch ($myAuras[$i]) {
@@ -1590,7 +1637,8 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
     }
   }
   $theirAuras = &GetAuras($player == 1 ? 2 : 1);
-  for ($i = 0; $i < count($theirAuras); $i += AuraPieces()) {
+  $countTheirAuras = count($theirAuras);
+  for ($i = 0; $i < $countTheirAuras; $i += $aurasPieces) {
     switch ($theirAuras[$i]) {
       case "parable_of_humility_yellow":
         if (CardType($CombatChain->CurrentAttack()) == "AA") {
@@ -1610,7 +1658,9 @@ function NumNonTokenAura($player)
 {
   $count = 0;
   $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     if (CardType($auras[$i]) != "T") ++$count;
   }
   return $count;
@@ -1620,7 +1670,9 @@ function DestroyAllThisAura($player, $cardID)
 {
   $auras = &GetAuras($player);
   $count = 0;
-  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     if ($auras[$i] == $cardID) {
       DestroyAura($player, $i);
       ++$count;
@@ -1635,7 +1687,9 @@ function GetAuraGemState($player, $cardID)
   $auras = &GetAuras($player);
   $offset = $currentPlayer == $player ? 7 : 8;
   $state = 0;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     if ($auras[$i] == $cardID && $auras[$i + $offset] > $state) $state = $auras[$i + $offset];
   }
   return $state;
@@ -1647,7 +1701,9 @@ function AuraIntellectModifier()
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
   $intellectModifier = 0;
   $auras = &GetAuras($mainPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     switch ($auras[$i]) {
       case "contest_the_mindfield_blue":
         $intellectModifier -= 1;
@@ -1657,7 +1713,8 @@ function AuraIntellectModifier()
     }
   }
   $auras = &GetAuras($otherPlayer);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     switch ($auras[$i]) {
       case "contest_the_mindfield_blue":
         $intellectModifier -= 1;
@@ -1709,7 +1766,9 @@ function AurasAttackYouControlModifiers($cardID, $player)
 {
   $auras = &GetAuras($player);
   $powerModifier = 0;
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     switch ($auras[$i]) {
       case "channel_mount_heroic_red":
         if (CardType($cardID) == "AA") $powerModifier += 3;
@@ -1749,7 +1808,9 @@ function AuraBlockModifier($cardID, $from)
   $defAuras = &GetAuras($defPlayer);
   $totalBlockModifier = 0;
   $cardType = CardType($cardID, "CC");
-  for ($i = 0; $i < count($defAuras); $i += AuraPieces()) {
+  $countAuras = count($defAuras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     $blockModifier = 0;
     switch ($defAuras[$i]) {
       case "stonewall_confidence_red":

@@ -121,7 +121,8 @@ try {
           else $userID = $p2id;
         }
       }
-      for ($i = 0; $i < count($submission->settings); ++$i) {
+      $countSettings = count($submission->settings);
+      for ($i = 0; $i < $countSettings; ++$i) {
         $setting = $submission->settings[$i];
         $parsedId = ParseSettingsStringValueToIdInt($setting->name);
         $setting->id = $parsedId ?? (isset($setting->id) ? $setting->id : null);
@@ -134,14 +135,15 @@ try {
   case 33: //Fully re-order layers
     //First validate
     $isValid = true;
-    if (count($submission->layers) < $dqState[8] / LayerPieces()) {
+    $layerPieces = LayerPieces();
+    if (count($submission->layers) < $dqState[8] / $layerPieces) {
       $response->error = "Not enough layers.";
       $isValid = false;
       break;
     }
     for ($i = 0; $i < count($submission->layers); ++$i) {
       $layerID = $submission->layers[$i];
-      if ($layerID % LayerPieces() != 0) {
+      if ($layerID % $layerPieces != 0) {
         $response->error = "Not a layer ID.";
         $isValid = false;
         break;
@@ -162,12 +164,12 @@ try {
     //Now if it's valid, do the swap
     $newLayers = [];
     for($i = 0; $i < count($submission->layers); ++$i) {
-      for($j = $submission->layers[$i]; $j < $submission->layers[$i] + LayerPieces(); ++$j) {
+      for($j = $submission->layers[$i]; $j < $submission->layers[$i] + $layerPieces; ++$j) {
         if(isset($layers[$j])) array_push($newLayers, $layers[$j]);
       }
     }
     if(count($layers) > count($newLayers)) {
-      for($i = $dqState[8] + LayerPieces(); $i < $dqState[8] + LayerPieces() * count($layers); ++$i) {
+      for($i = $dqState[8] + $layerPieces; $i < $dqState[8] + $layerPieces * count($layers); ++$i) {
         if(isset($layers[$i])) array_push($newLayers, $layers[$i]);
       }
     }
@@ -215,6 +217,7 @@ try {
       break;
     case 109: // reorder triggers
       $cardList = $submission->cardListTop;
+      $layerPieces = LayerPieces();
       if (!IsReplay()) {
           $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
           $cards = implode(",", $cardList);
@@ -223,21 +226,21 @@ try {
         }
       foreach ($cardList as $card) {
         $index = -1;
-        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        for ($i = 0; $i < count($layers); $i += $layerPieces) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
             $index = $i;
           }
         }
         if ($index != -1) {
-          $pretrigger = array_slice($layers, $index, LayerPieces());
+          $pretrigger = array_slice($layers, $index, $layerPieces);
           $pretrigger[0] = "TRIGGER";
-          for ($j = $index + LayerPieces() - 1; $j >= $index; --$j) {
+          for ($j = $index + $layerPieces - 1; $j >= $index; --$j) {
             unset($layers[$j]);
           }
           $layers = array_merge($pretrigger, $layers);
         }
       }
-      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      for ($i = 0; $i < count($layers); $i += $layerPieces) {
         if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID) {
           WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
           $layers[$i] = "TRIGGER";

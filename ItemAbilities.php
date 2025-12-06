@@ -207,7 +207,9 @@ function ItemPlayAbilities($cardID, $from)
 {
   global $currentPlayer;
   $items = &GetItems($currentPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = $countItems - $itemPieces; $i >= 0; $i -= $itemPieces) {
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_cremation_blue":
@@ -240,7 +242,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
       IncrementClassState($player, $CS_NumItemsDestroyed);
     }
     $cardID = $items[$index];
-    for ($i = $index + ItemPieces() - 1; $i >= $index; --$i) {
+    $itemPieces = ItemPieces();
+    for ($i = $index + $itemPieces - 1; $i >= $index; --$i) {
       if ($items[$i] == "nitro_mechanoidc") {
         $indexWeapon = FindCharacterIndex($player, "nitro_mechanoida");
         DestroyCharacter($player, $indexWeapon);
@@ -273,7 +276,8 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
     IncrementClassState($destPlayer, $CS_NumGoldCreated);
   }
   $destItems = &GetItems($destPlayer);
-  for ($i = ItemPieces() - 1; $i >= 0; --$i) {
+  $itemPieces = ItemPieces();
+  for ($i = $itemPieces - 1; $i >= 0; --$i) {
     if ($srcItems[$i] == "nitro_mechanoidc") {
       $indexEquipment = FindCharacterIndex($srcPlayer, "nitro_mechanoidb");
       RemoveCharacter($srcPlayer, $indexEquipment);
@@ -306,7 +310,9 @@ function GetItemGemState($player, $cardID, $index=-1)
   if($index == -1) {
     $offset = $currentPlayer == $player ? 5 : 6;
     $state = 0;
-    for ($i = 0; $i < count($items); $i += ItemPieces()) {
+    $countItems = count($items);
+    $itemPieces = ItemPieces();
+    for ($i = 0; $i < $countItems; $i += $itemPieces) {
       if ($items[$i] == $cardID && $items[$i + $offset] > $state) $state = $items[$i + $offset];
     }
   }
@@ -322,7 +328,9 @@ function ItemHitTrigger($attackID)
   $attackType = CardType($attackID);
   $attackSubType = CardSubType($attackID);
   $items = &GetItems($mainPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = $countItems - $itemPieces; $i >= 0; $i -= $itemPieces) {
     switch ($items[$i]) {
       case "powder_keg_blue":
         if ($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
@@ -378,7 +386,9 @@ function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable 
     $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
   }
   $items = &GetItems($player);
-  for ($i = count($items) - ItemPieces(); $i >= 0 && $damage > 0; $i -= ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = $countItems - $itemPieces; $i >= 0 && $damage > 0; $i -= $itemPieces) {
     switch ($items[$i]) {
       case "absorption_dome_yellow":
         if ($damage > $items[$i + 1]) {
@@ -399,14 +409,16 @@ function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable 
 
 function ItemBeginningActionPhaseAbilities() {
   global $mainPlayer;
-  $mainItems = &GetItems($mainPlayer);
-  for ($i = 0; $i < count($mainItems); $i += ItemPieces()) {
-    switch($mainItems[$i]) {
+  $items = &GetItems($mainPlayer);
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $countItems; $i += $itemPieces) {
+    switch($items[$i]) {
       case "teklo_core_blue":
       case "dissipation_shield_yellow":
       case "dissolution_sphere_yellow":
       case "signal_jammer_blue":
-        AddLayer("TRIGGER", $mainPlayer, $mainItems[$i], "-", "-", $mainItems[$i + 4]);
+        AddLayer("TRIGGER", $mainPlayer, $items[$i], "-", "-", $items[$i + 4]);
         break;
       default:
         break;
@@ -484,7 +496,9 @@ function ItemEndTurnAbilities()
 {
   global $mainPlayer;
   $items = &GetItems($mainPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = $countItems - $itemPieces; $i >= 0; $i -= $itemPieces) {
     //untap
     Tap("MYITEMS-$i", $mainPlayer, 0, endStepUntap:true);
     $remove = false;
@@ -504,7 +518,9 @@ function ItemDamageTakenAbilities($player, $damage)
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   $items = &GetItems($otherPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = $countItems - $itemPieces; $i >= 0; $i -= $itemPieces) {
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_warfare_yellow":
@@ -535,7 +551,9 @@ function SteamCounterLogic($cardID, $playerID, $uniqueID)
   }
   if (ClassContains($cardID, "MECHANOLOGIST", $playerID) && CardCost($cardID) >= 0 && CardCost($cardID) <= 2) {
     $items = &GetItems($playerID);
-    for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    $countItems = count($items);
+    $itemPieces = ItemPieces();
+    for ($i = $countItems - $itemPieces; $i >= 0; $i -= $itemPieces) {
       if ($items[$i] == "plasma_mainline_red") {
         AddLayer("TRIGGER", $playerID, $items[$i], $uniqueID, "-", $items[$i + 4]);
       }
@@ -567,7 +585,9 @@ function ItemBlockModifier($cardID)
   $noGain = !CanGainBlock($cardID);
   $items = &GetItems($mainPlayer);
   $totalBlockModifier = 0;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $countItems; $i += $itemPieces) {
     $blockModifier = 0;
     switch ($items[$i]) {
       case "polarity_reversal_script_red":
@@ -585,7 +605,9 @@ function ItemBlockModifier($cardID)
     if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
   }
   $items = &GetItems($defPlayer);
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $countItems; $i += $itemPieces) {
     $blockModifier = 0;
     switch ($items[$i]) {
       case "security_script_blue":
@@ -604,7 +626,9 @@ function ItemPowerModifiers(&$powerModifiers)
   global $mainPlayer, $CombatChain;
   $items = &GetItems($mainPlayer);
   $modifier = 0;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $countItems; $i += $itemPieces) {
     switch ($items[$i]) {
       case "penetration_script_yellow":
         $attackID = $CombatChain->AttackCard()->ID();
@@ -633,7 +657,9 @@ function ItemsPowerModifiers($cardID, $player, $from)
 {
   $items = &GetItems($player);
   $powerModifier = 0;
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $countItems; $i += $itemPieces) {
     switch ($items[$i]) {
       case "penetration_script_yellow":
         if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$powerModifier;
@@ -660,7 +686,9 @@ function ItemBeginEndTurnAbilities()
 {
   global $mainPlayer;
   $items = GetItems($mainPlayer);
-  for ($i = count($items) - ItemPieces(); $i >= 0 ; $i -= ItemPieces()) {
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = $countItems - $itemPieces; $i >= 0 ; $i -= $itemPieces) {
     $card = GetClass($items[$i], $mainPlayer);
     if ($card != "-") $card->BeginEndTurnAbilities($i);
   }

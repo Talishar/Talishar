@@ -42,7 +42,9 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
 function CheckAllyDeath($player)
 {
   $allies = &GetAllies($player);
-  for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = $countAllies - $allyPieces; $i >= 0; $i -= $allyPieces) {
     if ($allies[$i + 2] <= 0) DestroyAlly($player, $i, false, true, $allies[$i + 5]);
   }
 }
@@ -50,6 +52,7 @@ function CheckAllyDeath($player)
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
 {
   $allies = &GetAllies($player);
+  $allyPieces = AllyPieces();
   $otherPlayer = $player == 1 ? 2 : 1;
   $owner = ($allies[$index+14] == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
@@ -61,7 +64,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $cardID = $allies[$index];
   AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
   AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished);
-  for ($j = $index + AllyPieces() - 1; $j >= $index; --$j) unset($allies[$j]);
+  for ($j = $index + $allyPieces - 1; $j >= $index; --$j) unset($allies[$j]);
   $allies = array_values($allies);
   return $cardID;
 }
@@ -161,7 +164,9 @@ function AllyDestroyedAbility($player, $index)
 function AllyStartTurnAbilities($player)
 {
   $allies = &GetAllies($player);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $countAllies; $i += $allyPieces) {
     switch ($allies[$i]) {
       case "ouvia":
         WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an ".CardLink("aether_ashwing", "aether_ashwing").".");
@@ -200,8 +205,10 @@ function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-
   $cardID = $allies[$index];
   $preventedDamage = 0;
   $canBePrevented = CanDamageBePrevented($player, $damage, $type, $source);
+  $countCurrentTurnEffects = count($currentTurnEffects);
+  $currentTurnEffectPieces = CurrentTurnEffectPieces();
   //checking for effects that prevent damage on allies
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+  for ($i = $countCurrentTurnEffects - $currentTurnEffectPieces; $i >= 0; $i -= $currentTurnEffectPieces) {
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "sawbones_dock_hand_yellow":
@@ -268,7 +275,9 @@ function AllyAttackAbilities($attackID)
 {
   global $mainPlayer, $CS_NumDragonAttacks;
   $allies = &GetAllies($mainPlayer);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $countAllies; $i += $allyPieces) {
     switch ($allies[$i]) {
       case "miragai":
         if ($allies[$i + 8] > 0 && DelimStringContains(CardSubType($attackID), "Dragon") && GetClassState($mainPlayer, $CS_NumDragonAttacks) <= 1) {
@@ -416,7 +425,9 @@ function AllyDamageTakenAbilities($player, $i)
   }
   $otherPlayer = $player == 1 ? 2 : 1;
   $otherAuras = &GetAuras($otherPlayer);
-  for ($i = count($otherAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  $countOtherAuras = count($otherAuras);
+  $auraPieces = AuraPieces();
+  for ($i = $countOtherAuras - $auraPieces; $i >= 0; $i -= $auraPieces) {
     $remove = 0;
     switch ($otherAuras[$i]) {
       // case "bloodspill_invocation_red": //need to check if damage was dealt by an AA card?
@@ -508,7 +519,9 @@ function AllyEndTurnAbilities()
 {
   global $mainPlayer;
   $allies = &GetAllies($mainPlayer);
-  for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = $countAllies - $allyPieces; $i >= 0; $i -= $allyPieces) {
     //untap
     Tap("MYALLY-$i", $mainPlayer, 0, endStepUntap:true);
     switch ($allies[$i]) {
@@ -573,7 +586,9 @@ function GetPerchedAllies($player)
 {
   $perchedAllies = [];
   $char = GetPlayerCharacter($player);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $countChar = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $countChar; $i += $charPieces) {
     if (HasPerched($char[$i]) && $char[$i + 1] != 0) array_push($perchedAllies, $i);
   }
   return implode(",", $perchedAllies);
@@ -583,7 +598,8 @@ function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
 {
   $srcAlly = &GetAllies($srcPlayer);
   $destAlly = &GetAllies($destPlayer);
-  for ($i = 0; $i < AllyPieces(); ++$i) {
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $allyPieces; ++$i) {
     if ($i == 11 && $tapState != "-") {
       $srcAlly[$index + $i] = $tapState;
     }

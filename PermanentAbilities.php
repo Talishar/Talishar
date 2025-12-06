@@ -27,7 +27,8 @@ function RemovePermanent($player, $index)
   $index = intval($index);
   $permanents = &GetPermanents($player);
   $cardID = $permanents[$index];
-  for($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
+  $permanentPieces = PermanentPieces();
+  for($j = $index + $permanentPieces - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
   }
   $permanents = array_values($permanents);
@@ -42,7 +43,8 @@ function DestroyPermanent($player, $index)
   $cardID = $permanents[$index];
   $isToken = isset($permanents[$index + 4]) ? ($permanents[$index + 4] == 1) : false;
   PermanentDestroyed($player, $cardID, $isToken);
-  for ($j = $index + PermanentPieces() - 1; $j >= $index; --$j) {
+  $permanentPieces = PermanentPieces();
+  for ($j = $index + $permanentPieces - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
   }
   $permanents = array_values($permanents);
@@ -51,7 +53,9 @@ function DestroyPermanent($player, $index)
 function PermanentDestroyed($player, $cardID, $isToken = false)
 {
   $permanents = &GetPermanents($player);
-  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+  $countPermanents = count($permanents);
+  $permanentPieces = PermanentPieces();
+  for ($i = 0; $i < $countPermanents; $i += $permanentPieces) {
     switch ($permanents[$i]) {
       default:
         break;
@@ -65,9 +69,10 @@ function PermanentDestroyed($player, $cardID, $isToken = false)
 function PermanentBeginEndPhaseEffects()
 {
   global $mainPlayer, $defPlayer;
-
   $permanents = &GetPermanents($mainPlayer);
-  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+  $countPermanents = count($permanents);
+  $permanentPieces = PermanentPieces();
+  for ($i = $countPermanents - $permanentPieces; $i >= 0; $i -= $permanentPieces) {
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
@@ -82,7 +87,8 @@ function PermanentBeginEndPhaseEffects()
   }
 
   $permanents = &GetPermanents($defPlayer);
-  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+  $countPermanents = count($permanents);
+  for ($i = $countPermanents - $permanentPieces; $i >= 0; $i -= $permanentPieces) {
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
@@ -105,7 +111,9 @@ function PermanentTakeDamageAbilities($player, $damage, $type, $source)
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
   $preventedDamage = 0;
-  for ($i = count($permanents) - PermanentPieces(); $i >= 0; $i -= PermanentPieces()) {
+  $countPermanents = count($permanents);
+  $permanentPieces = PermanentPieces();
+  for ($i = $countPermanents - $permanentPieces; $i >= 0; $i -= $permanentPieces) {
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439":

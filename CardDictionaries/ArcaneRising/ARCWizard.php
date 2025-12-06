@@ -534,7 +534,7 @@ function ArcaneModifierAmount($source, $player, $index)
         return $effectArr[1];
       case "will_of_arcana_blue":
       case "staff_of_verdant_shoots-AMP":
-      case "sigil_of_aether_blue"://sigil of aether
+      case "sigil_of_aether_blue":
       case "high_voltage_blue":
       case "arcane_twining_red":
       case "arcane_twining_yellow":

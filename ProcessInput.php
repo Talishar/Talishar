@@ -14,7 +14,7 @@ include "Libraries/NetworkingLibraries.php";
 include "Libraries/CacheLibraries.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
-require_once("Libraries/CoreLibraries.php");
+require_once "Libraries/CoreLibraries.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
@@ -88,7 +88,8 @@ if(IsReplay() && $mode == 99)
   $cardID = $params[3];
   $chkCount = $params[4];
   $chkInput = explode("|", $params[5]);
-  for($i=0; $i<count($chkInput); ++$i)
+  $chkInputCount = count($chkInput);
+  for($i=0; $i<$chkInputCount; ++$i)
   {
     $chkInput[$i] = trim($chkInput[$i]);
   }
@@ -102,7 +103,8 @@ if(IsReplay() && $mode == 99)
     $cardID = $params[3];
     $chkCount = $params[4];
     $chkInput = explode("|", $params[5]);
-    for($i=0; $i<count($chkInput); ++$i)
+    $chkInputCount = count($chkInput);
+    for($i=0; $i<$chkInputCount; ++$i)
     {
       $chkInput[$i] = trim($chkInput[$i]);
     }
@@ -175,7 +177,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $origDeck = "./Games/{$gameName}/p2DeckOrig.txt";
   if (file_exists($origDeck)) copy($origDeck, "./Games/{$gameName}/p2Deck.txt");
   include "MenuFiles/WriteGamefile.php";
-  $p2IsAILocal = ($p2IsAI == "1");
+  $p2IsAILocal = $p2IsAI == "1";
   $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
@@ -205,8 +207,14 @@ if ($p2IsAI == "1") {
 CacheCombatResult();
 
 if (!IsGameOver()) {
-  if ($playerID == 1) $p1TotalTime += time() - intval($lastUpdateTime);
-  else if ($playerID == 2) $p2TotalTime += time() - intval($lastUpdateTime);
+  switch ($playerID) {
+    case 1:
+      $p1TotalTime += time() - intval($lastUpdateTime);
+      break;
+    case 2:
+      $p2TotalTime += time() - intval($lastUpdateTime);
+      break;
+  }
   $lastUpdateTime = time();
 }
 

@@ -26,7 +26,8 @@ function DestroyLandmark($index, $skipDestroy=false)
   global $landmarks;
   $cardID = $landmarks[$index];
   $ownerID = $landmarks[$index + 1];
-  for($j = $index + LandmarkPieces() - 1; $j >= $index; --$j) {
+  $landmarkPieces = LandmarkPieces();
+  for($j = $index + $landmarkPieces - 1; $j >= $index; --$j) {
     unset($landmarks[$j]);
   }
   $landmarks = array_values($landmarks);

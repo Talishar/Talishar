@@ -278,7 +278,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           for($i = 0; $i < $altArtsCount; ++$i) {
             $arr = explode("=", $altArts[$i]);
             $altArt = new stdClass();
-            $altArt->name = $campaign->CampaignName() . ($altArtsCount > 1 ? " " . $i + 1 : "");
+            $altArt->name = $campaign->CampaignName() . ($altArtsCount > 1 ? " " . ($i + 1) : "");
             $altArt->cardId = $arr[0];
             $altArt->altPath = $arr[1];
             array_push($initialLoad->altArts, $altArt);

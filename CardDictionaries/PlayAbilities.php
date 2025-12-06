@@ -938,8 +938,10 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function CountBlockingCards() {
   global $chainLinks, $defPlayer;
   $buff = NumCardsBlocking();
-  for ($i = 0; $i < count($chainLinks); ++$i) {
-    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+  $countChainLinks = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
+  for ($i = 0; $i < $countChainLinks; ++$i) {
+    for ($j = 0; $j < count($chainLinks[$i]); $j += $chainLinksPieces) {
       if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
     }
   }
@@ -955,9 +957,11 @@ function PhantomTidemawDestroy($player = -1, $index = -1)
   }
 
   if ($index == -1) {
-    for ($i = 0; $i < count($auras); $i++) {
-      if (isset($auras[$i * AuraPieces()]) && $auras[$i * AuraPieces()] == "phantom_tidemaw_blue") {
-        ++$auras[$i * AuraPieces() + 3];
+    $countAuras = count($auras);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $countAuras; $i++) {
+      if (isset($auras[$i * $auraPieces]) && $auras[$i * $auraPieces] == "phantom_tidemaw_blue") {
+        ++$auras[$i * $auraPieces + 3];
       }
     }
   } else if ($index > -1) {
