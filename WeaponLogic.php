@@ -15,7 +15,7 @@ function IsWeaponAttack()
 {
   global $combatChain, $mainPlayer;
   if (count($combatChain) == 0) return false;
-  if (TypeContains($combatChain[0], "W", $mainPlayer) || (SubtypeContains($combatChain[0], "Aura") && IsWeapon($combatChain[0], "PLAY"))) return true;
+  if (TypeContains($combatChain[0], "W", $mainPlayer) || SubtypeContains($combatChain[0], "Aura") && IsWeapon($combatChain[0], "PLAY")) return true;
   return false;
 }
 
@@ -23,7 +23,8 @@ function WeaponWithNonAttack($cardID, $from)
 {
   if (!IsWeapon($cardID, $from)) return false;
   if (GetAbilityTypes($cardID, from:$from) != "") return true;
-  if (GetAbilityType($cardID, from:$from) != "AA" && GetAbilityType($cardID, from:$from) != "") return true;
+  $abilityType = GetAbilityType($cardID, from:$from);
+  if ($abilityType != "AA" && $abilityType != "") return true;
   return false;
 }
 
@@ -32,36 +33,43 @@ function WeaponIndices($chooser, $player, $subtype = "")
   global $mainPlayer;
   $whoPrefix = ($player == $chooser ? "MY" : "THEIR");
   $character = GetPlayerCharacter($player);
-  $weapons = "";
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $weaponsList = [];
+  $countCharacter = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
     if ($character[$i + 1] != 0 && TypeContains($character[$i], "W") && ($subtype == "" || CardSubType($character[$i]) == $subtype)) {
-      if ($weapons != "") $weapons .= ",";
-      $weapons .= $whoPrefix . "CHAR-" . $i;
+      $weaponsList[] = $whoPrefix . "CHAR-" . $i;
     }
   }
-  $auraWeapons = (SearchCharacterForCard($player, "luminaris") || SearchCharacterForCard($player, "iris_of_reality") || SearchCharacterForCard($player, "reality_refractor") || SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry")) && ($player == $mainPlayer);
+  $hasLuminaris = SearchCharacterForCard($player, "luminaris");
+  $hasIris = SearchCharacterForCard($player, "iris_of_reality");
+  $hasRefractor = SearchCharacterForCard($player, "reality_refractor");
+  $hasCosmo = SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry");
+  $auraWeapons = ($hasLuminaris || $hasIris || $hasRefractor || $hasCosmo) && $player == $mainPlayer;
   if ($auraWeapons) {
     $auras = GetAuras($player);
-    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-      if (SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry")) {
+    $countAuras = count($auras);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $countAuras; $i += $auraPieces) {
+      if ($hasCosmo) {
         if (HasWard($auras[$i], $player)) {
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $whoPrefix . "AURAS-" . $i;
+          $weaponsList[] = $whoPrefix . "AURAS-" . $i;
         }
       } else if (ClassContains($auras[$i], "ILLUSIONIST", $player)) {
-        if ($weapons != "") $weapons .= ",";
-        $weapons .= $whoPrefix . "AURAS-" . $i;
+        $weaponsList[] = $whoPrefix . "AURAS-" . $i;
       }
     }
   }
-  return $weapons;
+  return implode(",", $weaponsList);
 }
 
 function ApplyEffectToEachWeapon($effectID)
 {
   global $currentPlayer;
   $character = &GetPlayerCharacter($currentPlayer);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-    if (CardType($character[$i]) == "W") AddCharacterEffect($currentPlayer, $i, $effectID);
+  $countCharacter = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
+    if (TypeContains($character[$i], "W", $currentPlayer)) AddCharacterEffect($currentPlayer, $i, $effectID);
   }
 }

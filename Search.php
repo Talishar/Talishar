@@ -169,7 +169,7 @@ function SearchInner(
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       // Check cheap conditions first: type, subtype, cost, class, talent, pitch, attack, defense, arcane damage
-      if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || ($type == "C" && CardType($cardID) == "D") || ($type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone)))
+      if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || $type == "C" && CardType($cardID) == "D" || $type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))
         && ($subtype == "" || SubtypeContains($cardID, $subtype, $player))
         && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
@@ -865,7 +865,7 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
       $block = $block + $character[$i + 4] + BlockModifier($character[$i], "EQUIP", "-", $i);
       $block = $block < 0 ? 0 : $block;
     }
-    if (($minBlock == -1 && $maxBlock == -1) || ($block <= $maxBlock && $block >= $minBlock)) {
+    if ($minBlock == -1 && $maxBlock == -1 || $block <= $maxBlock && $block >= $minBlock) {
       $indices[] = $i;
     }
   }
@@ -1993,7 +1993,7 @@ function SearchLayersCardType($type, $type2="-")
   $layerPieces = LayerPieces();
   for ($i = 0; $i < $countLayers; $i += $layerPieces) {
     $cardType = CardType($layers[$i], "STACK", $layers[$i+1], $layers[$i+4]);
-    if (DelimStringContains($cardType, $type) || ($type2 != "-" && DelimStringContains($cardType, $type2))) {
+    if (DelimStringContains($cardType, $type) || $type2 != "-" && DelimStringContains($cardType, $type2)) {
       array_push($found, $i);
     }
   }
