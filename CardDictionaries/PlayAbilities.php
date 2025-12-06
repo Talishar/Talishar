@@ -29,7 +29,7 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $chainLinks, $defPlayer, $CS_NumCardsDrawn, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed, $CS_DieRoll;
+  global $currentPlayer, $defPlayer, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $rv = "";
   switch ($cardID) {
@@ -64,7 +64,8 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($deck->Reveal(6)) {
         $cards = explode(",", $deck->Top(amount: 6));
         $numSixes = 0;
-        for ($i = 0; $i < count($cards); ++$i) {
+        $cardsCount = count($cards);
+        for ($i = 0; $i < $cardsCount; ++$i) {
           if (ModifiedPowerValue($cards[$i], $currentPlayer, "DECK") >= 6) ++$numSixes;
         }
         PlayAura("might", $currentPlayer, $numSixes); 
@@ -73,7 +74,8 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $zone = &GetDeck($currentPlayer);
         $topDeck = array_slice($zone, 0, 6);
         shuffle($topDeck);
-        for ($i = 0; $i < count($topDeck); ++$i) {
+        $topDeckCount = count($topDeck);
+        for ($i = 0; $i < $topDeckCount; ++$i) {
           $zone[$i] = $topDeck[$i];
         }
       }
@@ -178,11 +180,12 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         Draw($currentPlayer);
         $hand = &GetHand($currentPlayer);
         $arsenal = GetArsenal($currentPlayer);
-        if (count($hand) + count($arsenal) == 1) {
+        $totalCards = count($hand) + count($arsenal);
+        if ($totalCards == 1) {
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that goes on the bottom of your deck.", 1);
           AddDecisionQueue("OK", $currentPlayer, "-");
         }
-        if (count($hand) + count($arsenal) > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent: true);
+        if ($totalCards > 0) MZMoveCard($currentPlayer, "MYHAND&MYARS", "MYBOTDECK", silent: true);
       }
       return "";
     case "fatal_engagement_red":
@@ -555,8 +558,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char[14] = 0; //assuming transforming untaps
       $mechropotentIndex = 0; // we pushed it, so should be the last element
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if ($char[$i] != "teklovossen_the_mechropotent" && $char[$i] != "NONE00") {
-          EvoTransformAbility("teklovossen_the_mechropotent", $char[$i], $currentPlayer);
+        $charCard = $char[$i];
+        if ($charCard != "teklovossen_the_mechropotent" && $charCard != "NONE00") {
+          EvoTransformAbility("teklovossen_the_mechropotent", $charCard, $currentPlayer);
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
         }
       }
@@ -583,7 +587,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "evo_face_breaker_red":
     case "evo_mach_breaker_red":
       // I'm assuming we'll never have multiple copies of the same evo breaker equipped
-      $index = intval(explode(",", SearchCharacterForCards($cardID . "_equip", $currentPlayer))[0]);
+      $searchResult = SearchCharacterForCards($cardID . "_equip", $currentPlayer);
+      $index = intval(explode(",", $searchResult)[0]);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $index);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       $maxRepeats = SearchCount(SearchItemsForCardName("Hyper Driver", $currentPlayer));
@@ -628,8 +633,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "meganetic_protocol_blue":
       $negCounterEquip = explode(",", SearchCharacter($otherPlayer, hasNegCounters: true));
       $numNegCounterEquip = count($negCounterEquip);
-      if ($numNegCounterEquip > EvoUpgradeAmount($currentPlayer)) $requiredEquip = EvoUpgradeAmount($currentPlayer);
-      else $requiredEquip = $numNegCounterEquip;
+      $evoUpgradeAmt = EvoUpgradeAmount($currentPlayer);
+      $requiredEquip = ($numNegCounterEquip > $evoUpgradeAmt) ? $evoUpgradeAmt : $numNegCounterEquip;
       if ($numNegCounterEquip > 0 && $requiredEquip > 0 && IsHeroAttackTarget()) {
         $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $requiredEquip;
         if ($requiredEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipments";
@@ -715,7 +720,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "scrap_trader_red":
       $numScrap = 0;
       $costAry = explode(",", $additionalCosts);
-      for ($i = 0; $i < count($costAry); ++$i) if ($costAry[$i] == "SCRAP") ++$numScrap;
+      $costAryCount = count($costAry);
+      for ($i = 0; $i < $costAryCount; ++$i) if ($costAry[$i] == "SCRAP") ++$numScrap;
       if ($numScrap > 0) GainResources($currentPlayer, $numScrap * 2);
       return "";
     case "hydraulic_press_red":
@@ -850,7 +856,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "wax_off_blue":
       $cardsPlayed = explode(",", GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));
-      for ($i = 0; $i < count($cardsPlayed); ++$i) {
+      $cardsPlayedCount = count($cardsPlayed);
+      for ($i = 0; $i < $cardsPlayedCount; ++$i) {
         if (CardName($cardsPlayed[$i]) == "Wax On") {
           PlayAura("zen_state", $currentPlayer);
           break;
@@ -941,7 +948,8 @@ function CountBlockingCards() {
   $countChainLinks = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
   for ($i = 0; $i < $countChainLinks; ++$i) {
-    for ($j = 0; $j < count($chainLinks[$i]); $j += $chainLinksPieces) {
+    $chainLinkCount = count($chainLinks[$i]);
+    for ($j = 0; $j < $chainLinkCount; $j += $chainLinksPieces) {
       if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
     }
   }
@@ -951,11 +959,10 @@ function CountBlockingCards() {
 function PhantomTidemawDestroy($player = -1, $index = -1)
 {
   global $mainPlayer;
-  $auras = &GetAuras($player);
   if ($player == -1) {
     $player = $mainPlayer;
   }
-
+  $auras = &GetAuras($player);
   if ($index == -1) {
     $countAuras = count($auras);
     $auraPieces = AuraPieces();
