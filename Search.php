@@ -482,6 +482,7 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
   $character = &GetPlayerCharacter($player);
   $count = count($character);
   $pieces = CharacterPieces();
+  $effectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
     if ($character[$i + 1] != 0 && SubtypeContains($character[$i], $subtype, $player, $character[$i + 11])) {
       if (!$notActiveLink) return true;
@@ -490,7 +491,6 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
     if ($character[$i] == "frostbite") {
       $slot = "";
       $effectCount = count($currentTurnEffects);
-      $effectPieces = CurrentTurnEffectPieces();
       for ($j = 0; $j < $effectCount; $j += $effectPieces) {
         $effect = explode(",", $currentTurnEffects[$j]);
         if ($effect[0] == "frostbite-" . $character[$i + 11]) $slot = $effect[1];
@@ -518,9 +518,7 @@ function FindCharacterIndex($player, $cardID)
   $count = count($character);
   $pieces = CharacterPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (isset($character[$i]) && $character[$i] == $cardID) {
-      if ($character[$i + 1] != 0) return $i;
-    }
+    if (isset($character[$i]) && $character[$i] == $cardID && $character[$i + 1] != 0) return $i;
   }
   return -1;
 }
@@ -643,8 +641,7 @@ function SearchCurrentTurnEffectsForIndex($cardID, $player)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (!isset($currentTurnEffects[$i + 1])) continue;
-    if (ExtractCardID($currentTurnEffects[$i]) == $cardID && $currentTurnEffects[$i + 1] == $player) {
+    if ($currentTurnEffects[$i + 1] == $player && ExtractCardID($currentTurnEffects[$i]) == $cardID) {
       return $i;
     }
   }
@@ -657,9 +654,7 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($currentTurnEffects[$i] == $card1 && $currentTurnEffects[$i + 1] == $player) return true;
-    if ($currentTurnEffects[$i] == $card2 && $currentTurnEffects[$i + 1] == $player) return true;
-    if ($currentTurnEffects[$i] == $card3 && $currentTurnEffects[$i + 1] == $player) return true;
+    if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i] == $card1 || $currentTurnEffects[$i] == $card2 || $currentTurnEffects[$i] == $card3)) return true;
   }
   return false;
 }
@@ -690,7 +685,8 @@ function SearchPitchHighestAttack(&$pitch)
 {
   global $mainPlayer;
   $highest = 0;
-  for ($i = 0; $i < count($pitch); ++$i) {
+  $pitchCount = count($pitch);
+  for ($i = 0; $i < $pitchCount; ++$i) {
     $powerValue = ModifiedPowerValue($pitch[$i], $mainPlayer, "PITCH", source: "");
     if ($powerValue > $highest) $highest = $powerValue;
   }
@@ -714,11 +710,12 @@ function SearchPitchForNumCosts($player)
 {
   $pitch = &GetPitch($player);
   $count = count($pitch);
+  if ($count == 0) return 0;
   $pieces = PitchPieces();
   $total = 0;
   $countArr = [];
   
-  for ($i = 0; $i < $count && $count > 0; $i += $pieces) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     $cost = CardCost($pitch[$i]);
     if($cost == -1) continue;
     while (count($countArr) <= $cost) array_push($countArr, 0);
@@ -732,7 +729,8 @@ function SearchPitchForCard($playerID, $cardID)
 {
   $pitch = GetPitch($playerID);
   $count = count($pitch);
-  for ($i = 0; $i < $count; ++$i) {
+  $pitchPieces = PitchPieces();
+  for ($i = 0; $i < $count; $i += $pitchPieces) {
     if ($pitch[$i] == $cardID) return $i;
   }
   return -1;
@@ -857,23 +855,21 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
   $character = &GetPlayerCharacter($player);
   $count = count($character);
   $pieces = CharacterPieces();
-  $indices = "";
+  $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
+    if ($character[$i + 1] == 0 || $character[$i + 12] == "DOWN") continue;
+    if (CardType($character[$i]) != "E") continue;
+    if ($onCombatChain && $character[$i + 6] == 0) continue;
     $block = BlockValue($character[$i]);
     if ($block != -1) {
       $block = $block + $character[$i + 4] + BlockModifier($character[$i], "EQUIP", "-", $i);
       $block = $block < 0 ? 0 : $block;
     }
-    if ($character[$i + 1] != 0
-      && CardType($character[$i]) == "E"
-      && (($minBlock == -1 && $maxBlock == -1) || ($block <= $maxBlock && $block >= $minBlock))
-      && ($onCombatChain == false || $character[$i + 6] > 0)
-      && $character[$i + 12] != "DOWN") {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
+    if (($minBlock == -1 && $maxBlock == -1) || ($block <= $maxBlock && $block >= $minBlock)) {
+      $indices[] = $i;
     }
   }
-  return $indices;
+  return implode(",", $indices);
 }
 
 function SearchAuras($cardID, $player)
@@ -1087,7 +1083,7 @@ function SearchCurrentTurnEffectsForPartialId($partial)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (isset($currentTurnEffects[$i + 2]) && strpos($currentTurnEffects[$i + 2], $partial) !== false) return true;
+    if (strpos($currentTurnEffects[$i + 2], $partial) !== false) return true;
   }
   return false;
 }
@@ -1255,9 +1251,9 @@ function CountItem($cardID, $player, $NotTokens = true)
   }
   if ($cardID == "gold" && $NotTokens) {
     $char = GetPlayerCharacter($player);
-    $count = count($char);
-    $pieces = CharacterPieces();
-    for ($i = 0; $i < $count; $i += $pieces) {
+    $charCount = count($char);
+    $charPieces = CharacterPieces();
+    for ($i = 0; $i < $charCount; $i += $charPieces) {
       if (IsGold($char[$i]) && $char[$i+1] > 1) ++$total;
     }
   }
@@ -1275,9 +1271,9 @@ function CountItemByName($cardName, $player)
   }
   if ($cardName == "Gold") {
     $char = GetPlayerCharacter($player);
-    $count = count($char);
-    $pieces = CharacterPieces();
-    for ($i = 0; $i < $count; $i += $pieces) {
+    $charCount = count($char);
+    $charPieces = CharacterPieces();
+    for ($i = 0; $i < $charCount; $i += $charPieces) {
       if (IsGold($char[$i]) && $char[$i + 1] > 1) ++$total;
     }
   }
@@ -1289,7 +1285,7 @@ function SearchArsenalReadyCard($player, $cardID)
   $arsenal = GetArsenal($player);
   $count = count($arsenal);
   $pieces = ArsenalPieces();
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($arsenal[$i] != $cardID) continue;
     if ($arsenal[$i + 1] != "UP") continue;
     if ($arsenal[$i + 2] == 0) continue;
@@ -1300,60 +1296,65 @@ function SearchArsenalReadyCard($player, $cardID)
 
 function SearchArcaneReplacement($player, $zone, $damage)
 {
-  $cardList = "";
+  $cardList = [];
+  $count = 0;
+  $pieces = 0;
   switch ($zone) {
     case "MYCHAR":
       $array = &GetPlayerCharacter($player);
-      $count = CharacterPieces();
+      $count = count($array);
+      $pieces = CharacterPieces();
       break;
     case "MYITEMS":
       $array = &GetItems($player);
-      $count = ItemPieces();
+      $count = count($array);
+      $pieces = ItemPieces();
       break;
     case "MYAURAS":
       $array = &GetAuras($player);
-      $count = AuraPieces();
+      $count = count($array);
+      $pieces = AuraPieces();
       break;
+    default:
+      return "";
   }
   $addedRunechants = 0; //tracks how many runechants are displayed, only display up to the amount of damage
-  for ($i = 0; $i < count($array); $i += $count) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
     if ($zone == "MYAURAS" && $array[$i + 7] == 0) continue;
-    if (SpellVoidAmount($cardID, $player) > 0 && $zone == "MYCHAR" && IsCharacterActive($player, $i)) {
-      if ($cardList != "") $cardList = $cardList . ",";
-      $cardList = $cardList . $i;
-    } elseif (SpellVoidAmount($cardID, $player) > 0 && $zone != "MYCHAR") {
-      if ($cardID == "runechant") {
+    if (SpellVoidAmount($cardID, $player) > 0) {
+      if ($zone == "MYCHAR" && !IsCharacterActive($player, $i)) continue;
+      if ($cardID == "runechant" && $zone != "MYCHAR") {
         if ($addedRunechants < $damage) {
-          if ($cardList != "") $cardList = $cardList . ",";
-          $cardList = $cardList . $i;
+          $cardList[] = $i;
           ++$addedRunechants;
         }
-      }
-      else {
-        if ($cardList != "") $cardList = $cardList . ",";
-        $cardList = $cardList . $i;
+      } else {
+        $cardList[] = $i;
       }
     }
   }
-  return $cardList;
+  return implode(",", $cardList);
 }
 
 function SearchChainLinks($minPower = -1, $maxPower = -1, $cardType = "")
 {
   global $chainLinks, $mainPlayer;
-  $links = "";
+  $links = [];
   $count = count($chainLinks);
   for ($i = 0; $i < $count; ++$i) {
+    if ($chainLinks[$i][2] != "1") continue;
     $power = PowerValue($chainLinks[$i][0], $mainPlayer, "CC");
-    $type = CardType($chainLinks[$i][0]);
-    if ($chainLinks[$i][2] == "1" && ($minPower == -1 || $power >= $minPower) && ($maxPower == -1 || $power <= $maxPower) && ($cardType == "" || $type == $cardType)) {
-      if ($links != "") $links .= ",";
-      $links .= $i;
+    if ($minPower != -1 && $power < $minPower) continue;
+    if ($maxPower != -1 && $power > $maxPower) continue;
+    if ($cardType != "") {
+      $type = CardType($chainLinks[$i][0]);
+      if ($type != $cardType) continue;
     }
+    $links[] = $i;
   }
-  return $links;
+  return implode(",", $links);
 }
 
 function GetRelativeMZCardLink($player, $MZ)
@@ -1910,34 +1911,32 @@ function RemoveCardSameNames($player, $stringCardsIndex, $zone)
 {
   if ($stringCardsIndex == "") return "";
   $indexToCheck = explode(',', $stringCardsIndex);
-  $newString = "";
-  $uniqueNameIndex = "";
+  $uniqueNameIndex = [];
+  $seen = [];
   for ($i = 0; $i < count($indexToCheck); $i++) {
-    if ($newString != "") $newString .= ",";
-    if (!str_contains($newString, CardName($zone[$indexToCheck[$i]]))) {
-      $newString .= CardName($zone[$indexToCheck[$i]]);
-      if ($uniqueNameIndex != "") $uniqueNameIndex .= ",";
-      $uniqueNameIndex .= $indexToCheck[$i];
+    $name = CardName($zone[$indexToCheck[$i]]);
+    if (!isset($seen[$name])) {
+      $seen[$name] = true;
+      $uniqueNameIndex[] = $indexToCheck[$i];
     }
   }
-  return $uniqueNameIndex;
+  return implode(",", $uniqueNameIndex);
 }
 
 function RemoveDuplicateCards($player, $stringCardsIndex, $zone)
 {
   if ($stringCardsIndex == "") return "";
   $indexToCheck = explode(',', $stringCardsIndex);
-  $newString = "";
-  $uniqueNameIndex = "";
+  $uniqueNameIndex = [];
+  $seen = [];
   for ($i = 0; $i < count($indexToCheck); $i++) {
-    if ($newString != "") $newString .= ",";
-    if (!str_contains($newString, $zone[$indexToCheck[$i]])) {
-      $newString .= $zone[$indexToCheck[$i]];
-      if ($uniqueNameIndex != "") $uniqueNameIndex .= ",";
-      $uniqueNameIndex .= $indexToCheck[$i];
+    $cardID = $zone[$indexToCheck[$i]];
+    if (!isset($seen[$cardID])) {
+      $seen[$cardID] = true;
+      $uniqueNameIndex[] = $indexToCheck[$i];
     }
   }
-  return $uniqueNameIndex;
+  return implode(",", $uniqueNameIndex);
 }
 
 function SearchSoulForIndex($cardID, $player)
@@ -1954,20 +1953,24 @@ function SearchSoulForIndex($cardID, $player)
 function SearchCombatChainDefendingCards($player, $cardType = "-")
 {
   global $chainLinks;
-  $cardType = $cardType == "-" ? "" : $cardType;
+  if ($cardType == "-") $cardType = "";
   $otherPlayer = $player == 1 ? 2 : 1;
-  $cardIDList = GetChainLinkCardIDs($otherPlayer, $cardType, exclCardTypes: "C");
+  $cardIDList = [];
+  $baseList = GetChainLinkCardIDs($otherPlayer, $cardType, exclCardTypes: "C");
+  if ($baseList != "") {
+    $cardIDList = explode(",", $baseList);
+  }
   $countChainLinks = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
   for ($i = 0; $i < $countChainLinks; ++$i) {
-    for ($j = 0; $j < count($chainLinks[$i]); $j += $chainLinksPieces) {
+    $innerCount = count($chainLinks[$i]);
+    for ($j = 0; $j < $innerCount; $j += $chainLinksPieces) {
       if ($chainLinks[$i][$j + 1] != $otherPlayer || $chainLinks[$i][$j + 2] != "1") continue;
       if ($cardType != "" && !TypeContains($chainLinks[$i][$j], $cardType, $player)) continue;
-      if ($cardIDList != "") $cardIDList .= ",";
-      $cardIDList .= $chainLinks[$i][$j];
+      $cardIDList[] = $chainLinks[$i][$j];
     }
   }
-  return $cardIDList;
+  return implode(",", $cardIDList);
 }
 
 function SearchCombatChainForIndex($cardID, $player)
