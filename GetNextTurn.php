@@ -716,7 +716,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $overlay = 1;
       $border = 0;
     }
-    elseif (isFaceDownMod($mod) && $playerID == 3 && !$isGameOverFlag) $cardID = $MyCardBack;
+    elseif (isFaceDownMod($mod) && $playerID == 3 && !$isGameOver) $cardID = $MyCardBack;
     if ($mod == "INT") {
       $overlay = 1;
       $label = "Intimidated";
