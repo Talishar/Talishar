@@ -3577,6 +3577,9 @@ function HasTemper($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTemper();
+  switch ($cardID) {
+    case "savage_sash": return true;
+  }
   return GeneratedHasTemper($cardID);
 }
 
