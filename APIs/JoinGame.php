@@ -305,7 +305,7 @@ if ($decklink != "") {
         if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
-      if(($format != "draft" && $format != "openformatcc" && $format != "openformatblitz" && $format != "openformatsage") && isLegendary($id) && $cardCounts[$id] > 1) {
+      if(($format != "draft" && $format != "openformatcc" && $format != "openformatblitz" && $format != "openformatsage") && hasLegendary($id) && $cardCounts[$id] > 1) {
         if ($isDeckLegal != "") $isDeckLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -542,7 +542,7 @@ function TruncateHeroName($cardID) {
 function isCardLegalinHero($cardID, $hero, $format) {
   if (str_contains($format, "open")) return true;
   if (CardClass($cardID) == "GENERIC") return true;
-  if ($hero == "shiyana_diamond_gemini" && IsSpecialization($cardID)) return true;
+  if ($hero == "shiyana_diamond_gemini" && HasSpecialization($cardID)) return true;
   if ($hero == "emperor_dracai_of_aesir" && PitchValue($cardID) > 1) return false; //missing burn bare for now
   $class = explode(",", CardClass($cardID));
   $talent = explode(",", CardTalent($cardID));
@@ -625,7 +625,7 @@ function isClashLegal($cardID, $character) {
       return true;
     default: break;
   }
-  if(IsSpecialization($cardID)) return true;
+  if(HasSpecialization($cardID)) return true;
   if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return true;
   if(($character == "emperor_dracai_of_aesir" || $character == "") && $cardID == "command_and_conquer_red") return true; //C&C is legal for Emperor in Clash
   if(($character == "prism_advent_of_thrones" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash

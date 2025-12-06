@@ -3544,125 +3544,10 @@ function HasBladeBreak($cardID)
 {
   global $defPlayer, $CID_TekloHead, $CID_TekloChest, $CID_TekloArms, $CID_TekloLegs;
   switch ($cardID) {
-    case "mask_of_momentum":
-    case "fyendals_spring_tunic":
-    case "ironrot_helm":
-    case "ironrot_plate":
-    case "ironrot_gauntlet":
-    case "ironrot_legs":
-    case "skullbone_crosswrap":
-    case "perch_grapplers":
-    case "vestige_of_sol":
-    case "heart_of_ice":
-    case "rotten_old_buckler":
-    case "new_horizon":
-    case "spellbound_creepers":
-    case "mask_of_the_pouncing_lynx":
-    case "silver_palms":
-    case "bone_vizier":
-    case "coronet_peak":
-    case "tiger_stripe_shuko":
-    case "crown_of_providence":
-    case "blazen_yoroi":
-    case "hornets_sting":
-    case "amethyst_tiara":
-    case "mask_of_many_faces":
-    case "trench_of_sunken_treasure":
-    case "wayfinders_crest":
-    case "flick_knives":
-    case "mask_of_shifting_perspectives":
-    case "blade_cuff":
-    case "mask_of_malicious_manifestations":
-    case "toxic_tips":
-    case "scowling_flesh_bag":
-    case "frontline_helm":
-    case "frontline_plating":
-    case "frontline_gauntlets":
-    case "frontline_legs":
     case $CID_TekloHead:
     case $CID_TekloChest:
     case $CID_TekloArms:
     case $CID_TekloLegs:
-    case "adaptive_plating":
-    case "teklo_base_head":
-    case "teklo_base_chest":
-    case "teklo_base_arms":
-    case "teklo_base_legs":
-    case "evo_command_center_yellow_equip":
-    case "evo_engine_room_yellow_equip":
-    case "evo_smoothbore_yellow_equip":
-    case "evo_thruster_yellow_equip":
-    case "EVO418":
-    case "EVO419":
-    case "EVO420":
-    case "EVO421":
-    case "evo_data_mine_yellow_equip":
-    case "evo_battery_pack_yellow_equip":
-    case "evo_cogspitter_yellow_equip":
-    case "evo_charging_rods_yellow_equip":
-    case "golden_glare":
-    case "parry_blade":
-    case "gauntlet_of_might":
-    case "flat_trackers":
-    case "vigor_girth":
-    case "face_adversity":
-    case "confront_adversity":
-    case "embrace_adversity":
-    case "overcome_adversity":
-    case "headliner_helm":
-    case "stadium_centerpiece":
-    case "ticket_puncher":
-    case "grandstand_legplates":
-    case "bloodied_oval":
-    case "mask_of_recurring_nightmares":
-    case "twelve_petal_kasaya":
-    case "stride_of_reprisal":
-    case "mask_of_wizened_whiskers":
-    case "traverse_the_universe":
-    case "stonewall_gauntlet":
-    case "helm_of_halos_grace":
-    case "bracers_of_bellonas_grace":
-    case "warpath_of_winged_grace":
-    case "helm_of_lignum_vitae":
-    case "flash_of_brilliance":
-    case "face_purgatory":
-    case "ollin_ice_cap":
-    case "root_bound_trunks":
-    case "mask_of_deceit":
-    case "kabuto_of_imperial_authority":
-    case "vow_of_vengeance":
-    case "heart_of_vengeance":
-    case "hand_of_vengeance":
-    case "path_of_vengeance":
-    case "blood_splattered_vest":
-    case "leap_frog_vocal_sac":
-    case "leap_frog_slime_skin":
-    case "leap_frog_gloves":
-    case "leap_frog_leggings":
-    case "red_alert_visor":
-    case "red_alert_vest":
-    case "red_alert_gloves":
-    case "red_alert_boots":
-    case "tremorshield_sabatons":
-    case "misfire_dampener":
-    case "zap_clappers":
-    case "starlight_striders":
-    case "peg_leg":
-    case "dead_threads":
-    case "sealace_sarong":
-    case "blue_sea_tricorn":
-    case "buccaneers_bounty":
-    case "fish_fingers":
-    case "cogwerx_tinker_rings":
-    case "washed_up_wave":
-    case "helmsmans_peak":
-    case "old_knocker":
-    case "quartermasters_boots":
-    case "light_fingers":
-    case "tricorn_of_saltwater_death":
-    case "breakwater_undertow":
-    case "okana_scar_wraps":
-    case "iris_of_the_blossom":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
@@ -3679,67 +3564,6 @@ function HasBattleworn($cardID)
 {
   global $defPlayer;
   switch ($cardID) {
-    case "scabskin_leathers":
-    case "barkbone_strapping":
-    case "tectonic_plating":
-    case "helm_of_isens_peak":
-    case "breaking_scales":
-    case "braveforge_bracers":
-    case "refraction_bolters":
-    case "teklo_foundry_heart":
-    case "grasp_of_the_arknight":
-    case "arcanite_skullcap":
-    case "breeze_rider_boots":
-    case "valiant_dynamo":
-    case "gallantry_gold":
-    case "hooves_of_the_shadowbeast":
-    case "aether_ironweave":
-    case "skull_crushers":
-    case "helm_of_sharp_eye":
-    case "beaten_trackers":
-    case "seasoned_saviour":
-    case "tearing_shuko":
-    case "galvanic_bender":
-    case "blacktek_whisperers":
-    case "mask_of_perdition":
-    case "redback_shroud":
-    case "blood_scent":
-    case "pouncing_paws":
-    case "evo_tekloscope_blue_equip":
-    case "evo_energy_matrix_blue_equip":
-    case "evo_scatter_shot_blue_equip":
-    case "evo_rapid_fire_blue_equip":
-    case "hyper_x3":
-    case "teklovossen_the_mechropotentb":
-    case "shriek_razors":
-    case "evo_sentry_base_head_red_equip":
-    case "evo_sentry_base_chest_red_equip":
-    case "evo_sentry_base_arms_red_equip":
-    case "evo_sentry_base_legs_red_equip":
-    case "monstrous_veil":
-    case "hood_of_red_sand":
-    case "arousing_wave":
-    case "undertow_stilettos":
-    case "longdraw_half_glove":
-    case "hide_tanner":
-    case "sharp_shooters":
-    case "flight_path":
-    case "heavy_industry_gear_shift":
-    case "lightning_greaves":
-    case "aether_bindings_of_the_third_age":
-    case "dragonscaler_flight_path":
-    case "shock_frock":
-    case "drive_brake":
-    case "fist_pump":
-    case "gold_baited_hook":
-    case "rust_belt":
-    case "unicycle":
-    case "head_stone":
-    case "glidewell_fins":
-    case "graven_justaucorpse":
-    case "torc_of_vim":
-    case "echo_casque":
-      return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
@@ -3753,71 +3577,12 @@ function HasTemper($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTemper();
-  switch ($cardID) {
-    case "crater_fist":
-    case "courage_of_bladehold":
-    case "bloodsheath_skeleta":
-    case "stalagmite_bastion_of_isenloft":
-    case "earthlore_bounty":
-    case "flamescale_furnace":
-    case "steelbraid_buckler":
-    case "nitro_mechanoidb":
-    case "soulbond_resolve":
-    case "bastion_of_unity":
-    case "ironsong_versus":
-    case "dyadic_carapace":
-    case "bastion_of_duty":
-    case "civic_peak":
-    case "civic_duty":
-    case "civic_guide":
-    case "civic_steps":
-    case "warband_of_bellona":
-    case "evo_steel_soul_memory_blue_equip":
-    case "evo_steel_soul_processor_blue_equip":
-    case "evo_steel_soul_controller_blue_equip":
-    case "evo_steel_soul_tower_blue_equip":
-    case "apex_bonebreaker":
-    case "knucklehead":
-    case "raw_meat":
-    case "aurum_aegis":
-    case "stonewall_impasse":
-    case "gauntlets_of_iron_will":
-    case "good_time_chapeau":
-    case "stand_ground":
-    case "grains_of_bloodspill":
-    case "prized_galea":
-    case "beckon_applause":
-    case "evo_magneto_blue_equip":
-    case "savage_sash":
-    case "heavy_industry_surveillance":
-    case "heavy_industry_power_plant":
-    case "heavy_industry_ram_stop":
-    case "gauntlets_of_the_boreal_domain":
-    case "tectonic_crust":
-    case "helm_of_the_arknight":
-    case "breaker_helm_protos":
-    case "puffer_jacket":
-    case "trampling_trackers":
-      return true;
-    default:
-      return GeneratedHasTemper($cardID) == "true";
-  }
+  return GeneratedHasTemper($cardID) == "true";
 }
 
 function HasGuardwell($cardID)
 {
-  switch ($cardID) {
-    case "balance_of_justice":
-    case "arcanite_fortress":
-    case "blade_beckoner_helm":
-    case "blade_beckoner_plating":
-    case "blade_beckoner_gauntlets":
-    case "blade_beckoner_boots":
-    case "testament_of_valahai":
-      return true;
-    default:
-      return GeneratedHasGuardwell($cardID) == "true";
-  }
+  return GeneratedHasGuardwell($cardID) == "true";
 }
 
 function HasPiercing($cardID, $from = "")
@@ -3851,7 +3616,7 @@ function HasPiercing($cardID, $from = "")
     case "drill_shot_blue":
       return HasAimCounter();
     default:
-      return false;
+      return GeneratedHasPiercing($cardID) == "true";
   }
 }
 
@@ -3859,14 +3624,7 @@ function HasTower($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTower();
-  switch ($cardID) {
-    case "colossal_bearing_red":
-    case "lay_down_the_law_red":
-    case "smack_of_reality_red":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasTower($cardID) == "true";
 }
 
 function RequiresDiscard($cardID)
@@ -3937,23 +3695,7 @@ function HasBeatChest($cardID)
 {
   $card = GetClass($cardID, 1);
   if ($card != "-") return $card->HasBeatChest();
-  switch ($cardID) {
-    case "rawhide_rumble_red":
-    case "rawhide_rumble_yellow":
-    case "rawhide_rumble_blue":
-    case "assault_and_battery_red":
-    case "assault_and_battery_yellow":
-    case "assault_and_battery_blue":
-    case "pound_town_red":
-    case "pound_town_yellow":
-    case "pound_town_blue":
-    case "bonebreaker_bellow_red":
-    case "bonebreaker_bellow_yellow":
-    case "bonebreaker_bellow_blue":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasBeatChest($cardID) == "true";
 }
 
 function ETASteamCounters($cardID)
@@ -4366,30 +4108,7 @@ function IsCharacterActive($player, $index)
 
 function HasReprise($cardID)
 {
-  switch ($cardID) {
-    case "glint_the_quicksilver_blue":
-    case "rout_red":
-    case "singing_steelblade_yellow":
-    case "overpower_red":
-    case "overpower_yellow":
-    case "overpower_blue":
-    case "ironsong_response_red":
-    case "ironsong_response_yellow":
-    case "ironsong_response_blue":
-    case "biting_blade_red":
-    case "biting_blade_yellow":
-    case "biting_blade_blue":
-    case "stroke_of_foresight_red":
-    case "stroke_of_foresight_yellow":
-    case "stroke_of_foresight_blue":
-    case "unified_decree_yellow":
-    case "out_for_blood_red":
-    case "out_for_blood_yellow":
-    case "out_for_blood_blue":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasReprise($cardID) == "true";
 }
 
 function RepriseActive()
@@ -4403,85 +4122,7 @@ function HasCombo($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasCombo();
-  switch ($cardID) {
-    case "lord_of_wind_blue":
-    case "mugenshi_release_yellow":
-    case "hurricane_technique_yellow":
-    case "pounding_gale_red":
-    case "fluster_fist_red":
-    case "fluster_fist_yellow":
-    case "fluster_fist_blue":
-    case "blackout_kick_red":
-    case "blackout_kick_yellow":
-    case "blackout_kick_blue":
-    case "open_the_center_red":
-    case "open_the_center_yellow":
-    case "open_the_center_blue":
-    case "rising_knee_thrust_red":
-    case "rising_knee_thrust_yellow":
-    case "rising_knee_thrust_blue":
-    case "whelming_gustwave_red":
-    case "whelming_gustwave_yellow":
-    case "whelming_gustwave_blue":
-    case "find_center_blue":
-    case "flood_of_force_yellow":
-    case "herons_flight_red":
-    case "crane_dance_red":
-    case "crane_dance_yellow":
-    case "crane_dance_blue":
-    case "rushing_river_red":
-    case "rushing_river_yellow":
-    case "rushing_river_blue":
-    case "break_tide_yellow":
-    case "winds_of_eternity_blue":
-    case "hundred_winds_red":
-    case "hundred_winds_yellow":
-    case "hundred_winds_blue":
-    case "tiger_swipe_red":
-    case "pouncing_qi_red":
-    case "pouncing_qi_yellow":
-    case "pouncing_qi_blue":
-    case "qi_unleashed_red":
-    case "qi_unleashed_yellow":
-    case "qi_unleashed_blue":
-    case "cyclone_roundhouse_yellow":
-    case "dishonor_blue":
-    case "bonds_of_ancestry_red":
-    case "bonds_of_ancestry_yellow":
-    case "bonds_of_ancestry_blue":
-    case "recoil_red":
-    case "recoil_yellow":
-    case "recoil_blue":
-    case "spinning_wheel_kick_red":
-    case "spinning_wheel_kick_yellow":
-    case "spinning_wheel_kick_blue":
-    case "back_heel_kick_red":
-    case "back_heel_kick_yellow":
-    case "back_heel_kick_blue":
-    case "descendent_gustwave_red":
-    case "descendent_gustwave_yellow":
-    case "descendent_gustwave_blue":
-    case "one_two_punch_red":
-    case "one_two_punch_yellow":
-    case "one_two_punch_blue":
-    case "mauling_qi_red":
-    case "chase_the_tail_red":
-    case "aspect_of_tiger_body_red":
-    case "aspect_of_tiger_soul_yellow":
-    case "aspect_of_tiger_mind_blue":
-    case "breed_anger_red":
-    case "breed_anger_yellow":
-    case "breed_anger_blue":
-    case "gustwave_of_the_second_wind_red":
-    case "retrace_the_past_blue":
-    case "enact_vengeance_red":
-    case "seek_vengeance_red":
-    case "seek_vengeance_blue":
-    case "vengeance_never_rests_blue":
-      return true;
-    default:
-      return false;
-  }
+  GeneratedHasCombo($cardID);
 }
 
 function ComboActive($cardID = "")
@@ -4650,182 +4291,17 @@ function ComboActive($cardID = "")
   return false;
 }
 
-function HasBloodDebt($cardID, $skip = false)
+function HasBloodDebt($cardID)
 {
-  if (!$skip) //Don't check for hero in the lobby for the calculators.tsx
-  {
-    global $currentPlayer;
-    $char = GetPlayerCharacter($currentPlayer);
-    if ($char[0] == "levia_redeemed") return false;
-  }
-  switch ($cardID) {
-    case "deep_rooted_evil_yellow":
-    case "mark_of_the_beast_yellow":
-    case "shadow_of_blasmophet_red":
-    case "endless_maw_red":
-    case "endless_maw_yellow":
-    case "endless_maw_blue":
-    case "writhing_beast_hulk_red":
-    case "writhing_beast_hulk_yellow":
-    case "writhing_beast_hulk_blue":
-    case "boneyard_marauder_red":
-    case "boneyard_marauder_yellow":
-    case "boneyard_marauder_blue":
-    case "deadwood_rumbler_red":
-    case "deadwood_rumbler_yellow":
-    case "deadwood_rumbler_blue":
-    case "dread_screamer_red":
-    case "dread_screamer_yellow":
-    case "dread_screamer_blue":
-    case "graveling_growl_red":
-    case "graveling_growl_yellow":
-    case "graveling_growl_blue":
-    case "hungering_slaughterbeast_red":
-    case "hungering_slaughterbeast_yellow":
-    case "hungering_slaughterbeast_blue":
-    case "shadow_of_ursur_blue":
-    case "invert_existence_blue":
-    case "unhallowed_rites_red":
-    case "unhallowed_rites_yellow":
-    case "unhallowed_rites_blue":
-    case "seeping_shadows_red":
-    case "seeping_shadows_yellow":
-    case "seeping_shadows_blue":
-    case "bounding_demigon_red":
-    case "bounding_demigon_yellow":
-    case "bounding_demigon_blue":
-    case "piercing_shadow_vise_red":
-    case "piercing_shadow_vise_yellow":
-    case "piercing_shadow_vise_blue":
-    case "rift_bind_red":
-    case "rift_bind_yellow":
-    case "rift_bind_blue":
-    case "rifted_torment_red":
-    case "rifted_torment_yellow":
-    case "rifted_torment_blue":
-    case "rip_through_reality_red":
-    case "rip_through_reality_yellow":
-    case "rip_through_reality_blue":
-    case "seeds_of_agony_red":
-    case "seeds_of_agony_yellow":
-    case "seeds_of_agony_blue":
-    case "carrion_husk":
-    case "mutated_mass_blue":
-    case "guardian_of_the_shadowrealm_red":
-    case "tome_of_torment_red":
-    case "howl_from_beyond_red":
-    case "howl_from_beyond_yellow":
-    case "howl_from_beyond_blue":
-    case "ghostly_visit_red":
-    case "ghostly_visit_yellow":
-    case "ghostly_visit_blue":
-    case "void_wraith_red":
-    case "void_wraith_yellow":
-    case "void_wraith_blue":
-    case "hell_hammer":
-    case "spoiled_skull":
-    case "diabolic_offering_blue":
-    case "shaden_death_hydra_yellow":
-    case "slithering_shadowpede_red":
-    case "ram_raider_red":
-    case "ram_raider_yellow":
-    case "ram_raider_blue":
-    case "wall_breaker_red":
-    case "wall_breaker_yellow":
-    case "wall_breaker_blue":
-    case "battlefield_breaker_red":
-    case "battlefield_breaker_yellow":
-    case "battlefield_breaker_blue":
-    case "shaden_swing_red":
-    case "shaden_swing_yellow":
-    case "shaden_swing_blue":
-    case "tribute_to_demolition_red":
-    case "tribute_to_demolition_yellow":
-    case "tribute_to_demolition_blue":
-    case "tribute_to_the_legions_of_doom_red":
-    case "tribute_to_the_legions_of_doom_yellow":
-    case "tribute_to_the_legions_of_doom_blue":
-    case "grimoire_of_the_haunt":
-    case "widespread_annihilation_blue":
-    case "widespread_destruction_yellow":
-    case "widespread_ruin_red":
-    case "funeral_moon_red":
-    case "requiem_for_the_damned_red":
-    case "deathly_delight_red":
-    case "deathly_delight_yellow":
-    case "deathly_delight_blue":
-    case "deathly_wail_red":
-    case "deathly_wail_yellow":
-    case "deathly_wail_blue":
-    case "rift_skitter_red":
-    case "rift_skitter_yellow":
-    case "rift_skitter_blue":
-    case "vantom_banshee_red":
-    case "vantom_banshee_yellow":
-    case "vantom_banshee_blue":
-    case "vantom_wraith_red":
-    case "vantom_wraith_yellow":
-    case "vantom_wraith_blue":
-    case "putrid_stirrings_red":
-    case "putrid_stirrings_yellow":
-    case "putrid_stirrings_blue":
-    case "shroud_of_darkness":
-    case "cloak_of_darkness":
-    case "grasp_of_darkness":
-    case "dance_of_darkness":
-    case "dabble_in_darkness_red":
-    case "chains_of_mephetis_blue":
-    case "dimenxxional_vortex":
-    case "hungering_demigon_red":
-    case "hungering_demigon_yellow":
-    case "hungering_demigon_blue":
-    case "grim_feast_red":
-    case "grim_feast_yellow":
-    case "grim_feast_blue":
-    case "vile_inquisition_red":
-    case "vile_inquisition_yellow":
-    case "vile_inquisition_blue":
-    case "soul_butcher_red":
-    case "soul_butcher_yellow":
-    case "soul_butcher_blue":
-    case "soul_cleaver_red":
-    case "soul_cleaver_yellow":
-    case "soul_cleaver_blue":
-    case "shadowrealm_horror_red":
-    case "eloquent_eulogy_red":
-    case "cull_red":
-          return true;
-    default:
-      return false;
-  }
+  global $currentPlayer;
+  $char = GetPlayerCharacter($currentPlayer);
+  if ($char[0] == "levia_redeemed") return false;
+  return GeneratedHasBloodDebt($cardID) == "true";
 }
 
 function HasRunegate($cardID)
 {
-  switch ($cardID) {
-    case "widespread_annihilation_blue":
-    case "widespread_destruction_yellow":
-    case "widespread_ruin_red":
-    case "deathly_delight_red":
-    case "deathly_delight_yellow":
-    case "deathly_delight_blue":
-    case "deathly_wail_red":
-    case "deathly_wail_yellow":
-    case "deathly_wail_blue":
-    case "rift_skitter_red":
-    case "rift_skitter_yellow":
-    case "rift_skitter_blue":
-    case "vantom_banshee_red":
-    case "vantom_banshee_yellow":
-    case "vantom_banshee_blue":
-    case "vantom_wraith_red":
-    case "vantom_wraith_yellow":
-    case "vantom_wraith_blue":
-    case "eloquent_eulogy_red":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasRunegate($cardID) == "true";
 }
 
 function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player = "")
@@ -5006,14 +4482,14 @@ function SpellVoidAmount($cardID, $player): int
   };
 }
 
-function IsSpecialization($cardID): bool
+function HasSpecialization($cardID): bool
 {
-  return GeneratedIsSpecialization($cardID) == "true";
+  return GeneratedHasSpecialization($cardID) == "true";
 }
 
-function IsLegendary($cardID): bool
+function HasLegendary($cardID): bool
 {
-  return GeneratedIsLegendary($cardID) == "true";
+  return GeneratedHasLegendary($cardID) == "true";
 }
 
 function Is1H($cardID): bool|int
@@ -5261,18 +4737,12 @@ function HasWard($cardID, $player)
 
 function ArcaneShelterAmount($cardID)
 {
-  return match ($cardID) {
-    "sigil_of_sanctuary_blue", "sigil_of_conductivity_blue" => 1,
-    default => 0
-  };
+  return GeneratedArcaneShelterAmount($cardID);
 }
 
 function HasArcaneShelter($cardID): bool
 {
-  return match ($cardID) {
-    "sigil_of_sanctuary_blue", "sigil_of_conductivity_blue" => true,
-    default => false
-  };
+  return GeneratedHasArcaneShelter($cardID) == "true";
 }
 
 function HasDominate($cardID)
@@ -5440,21 +4910,6 @@ function HasStealth($cardID)
     case "scuttle_the_canal_red": case "scuttle_the_canal_yellow": case "scuttle_the_canal_blue":
     case "graphene_chelicera":
     case "undercover_acquisition_red":
-      return true;
-    default:
-      return false;
-  }
-}
-
-function hasDecompose($cardID)
-{
-  switch ($cardID) {
-    case "cadaverous_tilling_red": case "cadaverous_tilling_yellow": case "cadaverous_tilling_blue":
-    case "blossoming_decay_red": case "blossoming_decay_yellow": case "blossoming_decay_blue":
-    case "summers_fall_red": case "summers_fall_yellow": case "summers_fall_blue":
-    case "rootbound_carapace_red": case "rootbound_carapace_yellow": case "rootbound_carapace_blue":
-    case "felling_of_the_crown_yellow":
-    case "plow_under_yellow":
       return true;
     default:
       return false;
@@ -5682,54 +5137,6 @@ Function IsMeldLeftSideName($term){
       default:
         return false;
   }  
-}
-
-function HasEssenceOfEarth($cardID){
-  switch ($cardID) {
-    case "oldhim_grandfather_of_eternity":
-    case "oldhim":
-    case "briar_warden_of_thorns":
-    case "briar":
-    case "bravo_star_of_the_show":
-    case "florian_rotwood_harbinger":
-    case "florian":
-    case "verdance_thorn_of_the_rose":
-    case "verdance":
-    case "terra":
-    case "jarl_vetreidi": 
-      return true;
-    default:
-      return false;
-  }
-}
-function HasEssenceOfLightning($cardID){
-  switch ($cardID) {
-    case "lexi":
-    case "lexi_livewire":
-    case "briar_warden_of_thorns":
-    case "briar":
-    case "bravo_star_of_the_show":
-    case "oscilio":
-    case "oscilio_constella_intelligence":
-    case "aurora":
-    case "aurora_shooting_star":
-      return true;
-    default:
-      return false;
-  }
-}
-
-function HasEssenceOfIce($cardID){
-  switch ($cardID) {
-    case "oldhim_grandfather_of_eternity":
-    case "oldhim":
-    case "lexi":
-    case "lexi_livewire":
-    case "iyslander":
-    case "iyslander_stormbind":
-    case "bravo_star_of_the_show":
-    case "jarl_vetreidi": 
-  }
 }
 
 function canBeAddedToChainDuringDR($cardID){

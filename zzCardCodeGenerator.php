@@ -45,15 +45,35 @@
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false");
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
   GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
-  GenerateFunction($cardArray, $handler, "IsSpecialization", "specialization", "");
-  GenerateFunction($cardArray, $handler, "IsLegendary", "legendary", "");
-  GenerateFunction($cardArray, $handler, "HasBladeBreak", "bladeBreak", "");
-  GenerateFunction($cardArray, $handler, "HasBattleworn", "battleworn", "");
-  GenerateFunction($cardArray, $handler, "HasGuardwell", "guardwell", "");
-  GenerateFunction($cardArray, $handler, "HasTemper", "temper", "");
   GenerateFunction($cardArray, $handler, "SetID", "setID", "");
   GenerateFunction($cardArray, $handler, "SetIDtoCardID", "SIDtoCID", "");
   GenerateFunction($cardArray, $handler, "GoAgain", "goAgain", "false");
+
+  // Generate keyword functions
+  $keywordList = [
+    "Ambush", "Amp", "Arcane Barrier", "Arcane Shelter", "Awaken", "Battleworn",
+    "Beat Chest", "Blade Break", "Blood Debt", " Earth Bond", "Ice Bond", "Lightning Bond", "Boost", "Channel",
+    "Charge", "Clash", "Cloaked", "Combo", "Contract", "Crank", "Crush", "Decompose", "Dominate", "Ephemeral", 
+    "Essence of Earth", "Essence of Ice", "Essence of Lightning", "Evo Upgrade", "Lightning Flow",
+    "Freeze", "Earth Fusion", "Ice Fusion", "Lightning Fusion", "Galvanize", "Go Fish", "Guardwell",
+    "Heave", "Heavy", "High Tide", "Intimidate", "Legendary", "Mark", "Material",
+    "Meld", "Mirage", "Modular", "Negate", "Opt", "Overpower", "Pairs",
+    "Phantasm", "Piercing", "Protect", "Quell", "Reload", "Reprise", "Retrieve",
+    "Rune Gate", "Rupture", "Scrap", "Sharpen", "Solflare", "Specialization",
+    "Spectra", "Spellvoid", "Steal", "Stealth", "Surge", "Suspense", "Temper",
+    "The Crowd Boos", "The Crowd Cheers", "Tower", "Transcend", "Transform",
+    "Unfreeze", "Unity", "Universal", "Unlimited", "Wager", "Ward", "Watery Grave"
+  ];
+
+  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Spellvoid", "Ward" ];
+
+  $essenceElements = ["Earth", "Ice", "Lightning"];
+
+  foreach ($keywordList as $keyword) {
+    $functionName = str_replace(" ", "", $keyword); // Remove spaces for function names
+    GenerateKeywordFunction($cardArray, $handler, "Has" . $functionName, $keyword, false);
+    if (in_array($keyword, $hasKeywordAmount)) GenerateKeywordFunction($cardArray, $handler, $functionName . "Amount", $keyword, true);
+  }
 
   fwrite($handler, "?>");
 
@@ -190,8 +210,224 @@
     fwrite($handler, "};\r\n}\r\n");
   }
 
+  function GenerateKeywordFunction(&$cardArray, $handler, $functionName, $keyword, $isAmountFunction)
+  {
+    global $originalSets;
+    echo("<BR>" . $functionName . "<BR>");
+    fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
+    fwrite($handler, "if(is_int(\$cardID)) return " . ($isAmountFunction ? "0" : "false") . ";\r\n");
+    fwrite($handler, "return match(\$cardID) {\r\n");
+    $associativeArray = [];
+    
+    for($i=0; $i<count($cardArray); ++$i)
+    {
+      $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      $setID = "";
+      $earliestSetIndex = count($originalSets) + 1;
+      
+      // get the earliest printing, for backwards compatability
+      for ($j = 0; $j < count($cardArray[$i]->printings); $j++) {
+        $tempSetID = $cardArray[$i]->printings[$j]->id;
+        if (!ValidSet($tempSetID)) continue;
+        $ind = array_search(substr($tempSetID, 0, 3), $originalSets);
+        if ($ind < $earliestSetIndex) {
+          $setID = $tempSetID;
+          $earliestSetIndex = $ind;
+        }
+      }
+      
+      switch ($cardID) {
+        case "minerva_themis":
+          $setID = "MON405";
+          break;
+        case "lady_barthimont":
+          $setID = "MON406";
+          break;
+        case "the_librarian":
+          $setID = "MON404";
+          break;
+        case "lord_sutcliffe":
+          $setID = "MON407";
+          break;
+        default:
+          break;
+      }
+      
+      $set = substr($setID, 0, 3);
+      $cardNumber = substr($setID, 3, 3);
+      
+      // Check if card has the keyword
+      $hasKeyword = false;
+      $keywordAmount = 0;
+      
+      if (isset($cardArray[$i]->card_keywords)) {
+        foreach ($cardArray[$i]->card_keywords as $cardKeyword) {
+          if (ExtractKeywordMatch($cardKeyword, $keyword, $keywordAmount)) {
+            $hasKeyword = true;
+            break;
+          }
+        }
+      }
+      
+/*       // Also check granted_keywords if not found in card_keywords
+      if (!$hasKeyword && isset($cardArray[$i]->granted_keywords)) {
+        foreach ($cardArray[$i]->granted_keywords as $grantedKeyword) {
+          if (ExtractKeywordMatch($grantedKeyword, $keyword, $keywordAmount)) {
+            $hasKeyword = true;
+            break;
+          }
+        }
+      } */
+      
+      if ($hasKeyword) {
+        if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") {
+          if ($cardID == "inner_chi_blue") {
+            for ($j = 0; $j < count($cardArray[$i]->printings); $j++) {
+              $setID = $cardArray[$i]->printings[$j]->id;
+              $set = substr($setID, 0, 3);
+              $cardNumber = substr($setID, 3, 3);
+              $backCardID = $setID . "_" . $cardID;
+              if (!ValidSet($setID)) continue;
+              if (!isset($associativeArray[$backCardID])) {
+                $associativeArray[$backCardID] = $isAmountFunction ? $keywordAmount : "true";
+              }
+            }
+          }
+          else {
+            $set = substr($setID, 0, 3);
+            $number = intval(substr($setID, 3)) + 400;
+            $setID = $set . $number;
+            if (!isset($associativeArray[$cardID])) {
+              $associativeArray[$cardID] = $isAmountFunction ? $keywordAmount : "true";
+            }
+          }
+        }
+        else {
+          if (!isset($associativeArray[$cardID])) {
+            $associativeArray[$cardID] = $isAmountFunction ? $keywordAmount : "true";
+          }
+          if (ShouldDuplicate($cardArray[$i])) {
+            $equippedID = $cardID . "_equip";
+            if (!isset($associativeArray[$equippedID])) {
+              $associativeArray[$equippedID] = $isAmountFunction ? $keywordAmount : "true";
+            }
+          }
+          if (PerchDuplicate($cardID)) {
+            $unperchedID = $cardID . "_ally";
+            if (!isset($associativeArray[$unperchedID])) {
+              $associativeArray[$unperchedID] = $isAmountFunction ? $keywordAmount : "true";
+            }
+          }
+          if (ReverseID($cardID) != "") {
+            $reversedID = $cardID . "_r";
+            if (!isset($associativeArray[$reversedID])) {
+              $associativeArray[$reversedID] = $isAmountFunction ? $keywordAmount : "true";
+            }
+          }
+        }
+      }
+    }
+    
+    // Output the associative array
+    if ($isAmountFunction) {
+      foreach ($associativeArray as $cID => $amount) {
+        fwrite($handler, "\"$cID\" => $amount,\r\n");
+      }
+      fwrite($handler, "default => 0\r\n");
+    }
+    else {
+      foreach ($associativeArray as $cID => $value) {
+        fwrite($handler, "\"$cID\" => true,\r\n");
+      }
+      fwrite($handler, "default => false\r\n");
+    }
+    
+    fwrite($handler, "};\r\n}\r\n");
+  }
+
+  function ExtractKeywordMatch($cardKeyword, $keyword, &$amount)
+  {
+    global $essenceElements;
+    
+    // Trim the keyword
+    $cardKeyword = trim($cardKeyword);
+    
+    // Handle keywords with numbers (e.g., "Ward 10", "Amp 2")
+    $parts = explode(" ", $cardKeyword);
+    $keywordWithoutNumber = trim(preg_replace('/\s+\d+$/', '', $cardKeyword));
+    
+    // Check for exact match
+    if ($keywordWithoutNumber === $keyword) {
+      // Extract the number if it exists
+      if (count($parts) > 0 && is_numeric(end($parts))) {
+        $amount = intval(end($parts));
+      }
+      else {
+        $amount = 1; // Default amount if keyword exists but no number
+      }
+      return true;
+    }
+    
+    // Special handling for Essence keywords that may be composite
+    // e.g., "Essence of Earth and Ice", "Essence of Earth, Ice and Lightning"
+    if (strpos($keyword, "Essence of") === 0) {
+      // Extract the element from the keyword (e.g., "Earth" from "Essence of Earth")
+      $element = substr($keyword, strlen("Essence of "));
+      
+      // Check if cardKeyword contains "Essence of" and the element
+      if (strpos($cardKeyword, "Essence of") === 0 && strpos($cardKeyword, $element) !== false) {
+        $amount = 1;
+        return true;
+      }
+    }
+    
+    // Check if keyword is part of a composite keyword (e.g., "Earth" in "Essence of Earth and Ice")
+    // Split by "and" to handle composite keywords like "Earth and Ice"
+    if (strpos($cardKeyword, " and ") !== false) {
+      $compositeKeywords = array_map('trim', explode(" and ", $cardKeyword));
+      foreach ($compositeKeywords as $compositeKeyword) {
+        // Remove any trailing numbers from composite keywords
+        $compositeKeywordClean = trim(preg_replace('/\s+\d+$/', '', $compositeKeyword));
+        if ($compositeKeywordClean === $keyword) {
+          // Extract the number if it exists
+          if (is_numeric(substr($compositeKeyword, -1))) {
+            $amount = intval(substr($compositeKeyword, -1));
+          }
+          else {
+            $amount = 1;
+          }
+          return true;
+        }
+      }
+    }
+    
+    // Also handle comma-separated keywords (e.g., "Essence of Earth, Ice and Lightning")
+    if (strpos($cardKeyword, ",") !== false || strpos($cardKeyword, " and ") !== false) {
+      // Replace commas with " and " for uniform splitting
+      $normalized = str_replace(", ", " and ", $cardKeyword);
+      $compositeKeywords = array_map('trim', explode(" and ", $normalized));
+      foreach ($compositeKeywords as $compositeKeyword) {
+        // Remove any trailing numbers from composite keywords
+        $compositeKeywordClean = trim(preg_replace('/\s+\d+$/', '', $compositeKeyword));
+        if ($compositeKeywordClean === $keyword) {
+          // Extract the number if it exists
+          if (is_numeric(substr($compositeKeyword, -1))) {
+            $amount = intval(substr($compositeKeyword, -1));
+          }
+          else {
+            $amount = 1;
+          }
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+
   function PopulateAssociativeArray($cardArray, $setID, &$AA, $propertyName, $cardID, $i, $isBool, $isString, $defaultValue, $cardRarity, $isDuplicate=false, $getImage=True) {
     if (!isset($AA[$cardID])) {
+      $data = "";
       switch ($propertyName) {
         case "type":
           $data = MapType($cardArray[$i], $setID);
@@ -243,66 +479,6 @@
           {
             $type = $cardArray[$i]->types[$k];
             if($type == "1H") $data = "true";
-          }
-          break;
-        case "specialization":
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
-          {
-            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
-            for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "Specialization") $data = "true";
-            }
-          }
-          break;
-        case "legendary":
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
-          {
-            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
-            for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "Legendary") $data = "true";
-            }
-          }
-          break;
-        case "bladeBreak":
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
-          {
-            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
-            for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "Blade" && $keywordArray[$l+1] == "Break") $data = "true";
-            }
-          }
-          break;
-        case "battleworn":
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
-          {
-            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
-            for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "Battleworn") $data = "true";
-            }
-          }
-          break;
-        case "temper":
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
-          {
-            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
-            for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "Temper") $data = "true";
-            }
-          }
-          break;
-        case "guardwell":
-          $data = "false";
-          for($k=0; $k<count($cardArray[$i]->card_keywords); ++$k)
-          {
-            $keywordArray = explode(" ", $cardArray[$i]->card_keywords[$k]);
-            for($l=0; $l<count($keywordArray); ++$l) {
-              if($keywordArray[$l] == "Guardwell") $data = "true";
-            }
           }
           break;
         case "cardClass":

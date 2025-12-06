@@ -127,11 +127,9 @@ function ARCMechanologistHitEffect($cardID, $from)
   return "";
 }
 
-function HasBoost($cardID, $player, $skip = false)
+function HasBoost($cardID, $player)
 {
-  if (!$skip) {  //Don't check in the lobby for the calculators.tsx
-    if(SearchCurrentTurnEffects("evo_speedslip_blue", $player) && TypeContains($cardID, "AA", $player)) return true;
-  }
+  if(SearchCurrentTurnEffects("evo_speedslip_blue", $player) && TypeContains($cardID, "AA", $player)) return true;
   switch ($cardID) {
     case "pedal_to_the_metal_red": case "pedal_to_the_metal_yellow": case "pedal_to_the_metal_blue":
     case "over_loop_red": case "over_loop_yellow": case "over_loop_blue":

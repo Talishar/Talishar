@@ -384,11 +384,11 @@ enum PatreonCampaign : string
     $char = getPlayerCharacter($playerID);
 
     // Add character-specific alt arts
-    if(HasEssenceOfEarth($char[0])) {
+    if(GeneratedHasEssenceOfEarth($char[0])) {
       $altArts[] = "runechant=ARC112-Earth";
       $altArts[] = "might=TER028-might";
     }
-    if(HasEssenceOfLightning($char[0])) {
+    if(GeneratedHasEssenceOfLightning($char[0])) {
       $altArts[] = "runechant=ARC112-Lightning";
     }
     if($char[0] == "enigma" || $char[0] == "enigma_ledger_of_ancestry") {

@@ -495,7 +495,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $response->opponentBloodDebtCount = $theirCountBloodDebt;
     $response->isOpponentBloodDebtImmune = IsImmuneToBloodDebt($otherPlayer);
   }
-  if (HasEssenceOfEarth($theirCharacter[0])) {
+  if (GeneratedHasEssenceOfEarth($theirCharacter[0])) {
     $response->opponentEarthCount = SearchCount(SearchBanish($otherPlayer, talent:"EARTH"));
   }
 
@@ -709,7 +709,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $response->myBloodDebtCount = $myBloodDebtCount;
     $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
   }
-  if (HasEssenceOfEarth($myCharacter[0])) {
+  if (GeneratedHasEssenceOfEarth($myCharacter[0])) {
     $response->myEarthCount = SearchCount(SearchBanish($playerID, talent:"EARTH"));
   }
 

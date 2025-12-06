@@ -200,9 +200,9 @@ if($handler) {
     $heroCard->type = CardType($heroId);
     $heroCard->subtype = CardSubtype($heroId);
     $heroCard->cost = GeneratedCardCost($heroId);
-    $heroCard->hasEssenceOfIce = HasEssenceOfIce($heroId);
-    $heroCard->hasEssenceOfEarth = HasEssenceOfEarth($heroId);
-    $heroCard->hasEssenceOfLightning = HasEssenceOfLightning($heroId);
+    $heroCard->hasEssenceOfIce = GeneratedHasEssenceOfIce($heroId);
+    $heroCard->hasEssenceOfEarth = GeneratedHasEssenceOfEarth($heroId);
+    $heroCard->hasEssenceOfLightning = GeneratedHasEssenceOfLightning($heroId);
     array_push($response->deck->cardDictionary, $heroCard);
     $cardIndex[$heroId] = "1";
   }
@@ -223,10 +223,10 @@ if($handler) {
       $dictionaryCard->type = CardType($card);
       $dictionaryCard->subtype = CardSubtype($card);
       $dictionaryCard->cost = GeneratedCardCost($card);
-      $dictionaryCard->hasStealth = HasStealth($card);
-      $dictionaryCard->hasBloodDebt = HasBloodDebt($card, true);
-      $dictionaryCard->hasBoost = HasBoost($card, $playerID, true);
-      $dictionaryCard->hasDecompose = HasDecompose($card);
+      $dictionaryCard->hasStealth = GeneratedHasStealth($card);
+      $dictionaryCard->hasBloodDebt = GeneratedHasBloodDebt($card);
+      $dictionaryCard->hasBoost = GeneratedHasBoost($card);
+      $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
       array_push($response->deck->cardDictionary, $dictionaryCard);
     }
   }
