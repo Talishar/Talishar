@@ -603,19 +603,9 @@ function DYNHitEffect($cardID, $from, $attackID)
 function IsRoyal($player)
 {
   $mainCharacter = &GetPlayerCharacter($player);
-  if(SearchCharacterForCard($player, "crown_of_dominion")) return true;//crown
-  if (SearchCurrentTurnEffects("erase_face_red", $player)) return false;//erase face
-  switch($mainCharacter[0]) {
-    case "emperor_dracai_of_aesir": return true;//emperor
-    case "cindra_dracai_of_retribution":
-    case "cindra"://cindra
-      return true;
-    case "fang_dracai_of_blades":
-    case "fang"://fang
-      return true;
-    default: break;
-  }
-  return false;
+  if(SearchCharacterForCard($player, "crown_of_dominion")) return true;
+  if (SearchCurrentTurnEffects("erase_face_red", $player)) return false;
+  return TalentContains($mainCharacter[0], "ROYAL", $player);
 }
 
 function HasSurge($cardID)

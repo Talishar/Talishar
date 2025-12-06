@@ -1822,11 +1822,11 @@ function ClassOverride($cardID, $player)
       $cardClass .= $classToAdd;
     }
   }
-  if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) { //Shiyana
+  if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
-  if (!SearchCurrentTurnEffects("erase_face_red", $player)) { //Erase Face
+  if (!SearchCurrentTurnEffects("erase_face_red", $player)) {
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($cardID);
   }
@@ -1963,7 +1963,7 @@ function TalentOverride($cardID, $player = "", $zone="-")
       $cardTalent .= $talentToAdd;
     }
   }
-  if (!SearchCurrentTurnEffects("erase_face_red", $player)) { //Erase Face
+  if (!SearchCurrentTurnEffects("erase_face_red", $player)) {
     if ($cardTalent != "") $cardTalent .= ",";
     $cardTalent .= CardTalent($cardID, $zone);
   }
