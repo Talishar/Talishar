@@ -226,6 +226,7 @@ if($handler) {
       $dictionaryCard->hasStealth = HasStealth($card);
       $dictionaryCard->hasBloodDebt = HasBloodDebt($card, true);
       $dictionaryCard->hasBoost = HasBoost($card, $playerID, true);
+      $dictionaryCard->hasDecompose = HasDecompose($card);
       array_push($response->deck->cardDictionary, $dictionaryCard);
     }
   }

@@ -5446,6 +5446,20 @@ function HasStealth($cardID)
   }
 }
 
+function hasDecompose($cardID)
+{
+  switch ($cardID) {
+    case "cadaverous_tilling_red": case "cadaverous_tilling_yellow": case "cadaverous_tilling_blue":
+    case "blossoming_decay_red": case "blossoming_decay_yellow": case "blossoming_decay_blue":
+    case "summers_fall_red": case "summers_fall_yellow": case "summers_fall_blue":
+    case "rootbound_carapace_red": case "rootbound_carapace_yellow": case "rootbound_carapace_blue":
+    case "felling_of_the_crown_yellow":
+    case "plow_under_yellow":
+      return true;
+    default:
+      return false;
+  }
+}
 
 function PowerCantBeModified($cardID)
 {
