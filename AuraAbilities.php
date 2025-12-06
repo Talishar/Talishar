@@ -100,7 +100,8 @@ function StealAura($srcPlayer, $index, $destPlayer, $from)
 {
   $srcAuras = &GetAuras($srcPlayer);
   $destAuras = &GetAuras($destPlayer);
-  for ($i = AuraPieces() - 1; $i >= 0; --$i) {
+  $auraPieces = AuraPieces();
+  for ($i = $auraPieces - 1; $i >= 0; --$i) {
     if($i == 9) //9 - Where it's played from ... Important for where it'll go when destroyed for example.
     {
       if (strpos($srcAuras[$index + $i], 'MY') === 0) {
@@ -172,7 +173,9 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   global $EffectContext;
   $auras = &GetAuras($player);
   $uid = "-";
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $countAuras = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     $EffectContext = $auras[$i];
     switch ($auras[$i]) {
       case "haze_bending_blue":
@@ -222,7 +225,9 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
   switch ($cardID) {
     case "ironsong_pride_red":
       $char = &GetPlayerCharacter($player);
-      for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+      $countChar = count($char);
+      $charPieces = CharacterPieces();
+      for ($j = 0; $j < $countChar; $j += $charPieces) {
         if (CardSubType($char[$j]) == "Sword") $char[$j + 3] = 0;
       }
       break;
@@ -708,10 +713,14 @@ function AuraStartTurnAbilities()
       case "channel_mount_isen_blue":
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
-        for ($k = 0; $k < count($character); $k += CharacterPieces()) {
+        $countCharacter = count($character);
+        $characterPieces = CharacterPieces();
+        $countCurrentTurnEffects = count($currentTurnEffects);
+        $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+        for ($k = 0; $k < $countCharacter; $k += $characterPieces) {
           if ($character[$k] == "frostbite") {
             $slot = "";
-            for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
+            for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectsPieces) {
               $effect = explode(",", $currentTurnEffects[$j]);
               if ($effect[0] == "frostbite-" . $character[$k + 11]) {
                 $slot = $effect[1];
@@ -791,10 +800,14 @@ function AuraStartTurnAbilities()
       case "channel_mount_isen_blue":
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
-        for ($k = 0; $k < count($character); $k += CharacterPieces()) {
+        $countCharacter = count($character);
+        $characterPieces = CharacterPieces();
+        $countCurrentTurnEffects = count($currentTurnEffects);
+        $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+        for ($k = 0; $k < $countCharacter; $k += $characterPieces) {
           if ($character[$k] == "frostbite") {
             $slot = "";
-            for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectsPieces()) {
+            for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectsPieces) {
               $effect = explode(",", $currentTurnEffects[$j]);
               if ($effect[0] == "frostbite-" . $character[$k + 11]) {
                 $slot = $effect[1];

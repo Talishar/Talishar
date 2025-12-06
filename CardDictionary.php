@@ -300,7 +300,9 @@ function CardSubType($cardID, $uniqueID = -1)
   $adaptive = ["adaptive_plating", "adaptive_dissolver", "adaptive_alpha_mold", "frostbite"];
   if ($uniqueID > -1 && (IsModular($cardID) || $cardID == "frostbite")) {
     global $currentTurnEffects;
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+    $countCurrentTurnEffects = count($currentTurnEffects);
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
       $effectArr = explode("-", $currentTurnEffects[$i]);
       if (!in_array($effectArr[0], $adaptive)) continue;
       $effectArr = explode(",", $effectArr[1]);
@@ -313,7 +315,6 @@ function CardSubType($cardID, $uniqueID = -1)
   $set = CardSet($cardID);
   if ($set != "DUM") {
     $setID = SetID($cardID);
-
     $number = intval(substr($setID, 3));
     if ($number < 400) return GeneratedCardSubtype($cardID);
     else if (
@@ -909,7 +910,9 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       break;
     case "base_of_the_mountain":
       $blockVal = 0;
-      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+      $countCombatChain = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = 0; $i < $countCombatChain; $i += $combatChainPieces) {
         if ((TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA")) && $combatChain[$i + 1] == $defPlayer) ++$blockVal;
       }
       $block = $blockVal;
@@ -1555,7 +1558,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if($foundNullTime && $from == "HAND") return $names;
       $hasRaydn = false;
       $char = GetPlayerCharacter($currentPlayer);
-      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+      $countCharacter = count($char);
+      $characterPieces = CharacterPieces();
+      for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
         if (CardNameContains($char[$i], "Raydn", $currentPlayer)) $hasRaydn = true;
       }
       if ($from != "HAND") $names = "-,Attack Reaction";
@@ -1910,7 +1915,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
     $exudeAttack = PowerValue("exude_confidence_red", $mainPlayer, "CC");
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    $countCombatChain = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $combatChainPieces; $i < $countCombatChain; $i += $combatChainPieces) {
       if (DelimStringContains(CardType($combatChain[$i]), "AA")) {
         $powerValue = PowerValue($combatChain[$i], $defPlayer, "CC");
         if ($powerValue + $combatChain[$i + 5] >= $exudeAttack + $combatChain[5]) {
@@ -1957,7 +1964,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $actionPoints < 1) return false;
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
-    if (($phase == "M" && $mainPlayer == $currentPlayer)) {
+    if ($phase == "M" && $mainPlayer == $currentPlayer) {
       $charIndex = FindCharacterIndex($currentPlayer, $cardID);
       switch ($cardID) {
         case "nitro_mechanoida":
@@ -2028,7 +2035,9 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
     if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
   }
   //current turn effects
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $countCurrentTurnEffects = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
@@ -2241,7 +2250,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
 function GoesWhereEffectsModifier($cardID, $from, $player)
 {
   global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $countCurrentTurnEffects = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectID = ExtractCardID($currentTurnEffects[$i]);
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($effectID) {
@@ -2284,9 +2295,10 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 {
   global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
-  $otherPlayer = $playerID == 1 ? 2 : 1;
   if(PitchValue($cardID) <= 0) return true; //Can't pitch mentors or landmarks
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $countCurrentTurnEffects = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $playerID) {
       $effectArr = explode(",", $currentTurnEffects[$i]);
       $effectID = $effectArr[0];
@@ -2622,7 +2634,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($layers) == 0 && !$CombatChain->HasCurrentLink()) return true;
       if (SearchCount(SearchCombatChainLink($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
       if (SearchCount(SearchCombatChainAttacks($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
-      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      $countLayers = count($layers);
+      $layerPieces = LayerPieces();
+      for ($i = 0; $i < $countLayers; $i += $layerPieces) {
         if (CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
       }
       return true;
@@ -2633,7 +2647,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "amulet_of_lightning_blue":
       return $from == "PLAY" && GetClassState($player, $CS_NumFusedLightning) == 0;
     case "spellbound_creepers":
-      return (GetClassState($player, $CS_NumAttackCardsAttacked) == 0 && GetClassState($player, $CS_NumAttackCardsBlocked) == 0); // Attacked with/Blocked with
+      return GetClassState($player, $CS_NumAttackCardsAttacked) == 0 && GetClassState($player, $CS_NumAttackCardsBlocked) == 0; // Attacked with/Blocked with
     case "sutcliffes_suede_hides":
       return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
     case "ragamuffins_hat":
@@ -2754,9 +2768,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":
-      for ($i = 0; $i < count($chainLinks); ++$i) {
+      $countChainLinks = count($chainLinks);
+      $chainLinkPieces = ChainLinksPieces();
+      for ($i = 0; $i < $countChainLinks; ++$i) {
         if (ClassContains($chainLinks[$i][0], "ASSASSIN", $mainPlayer)) {
-          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+          for ($j = $chainLinkPieces; $j < count($chainLinks[$i]); $j += $chainLinkPieces) {
             if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
           }
         }
@@ -2842,11 +2858,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "celestial_reprimand_red":
     case "celestial_reprimand_yellow":
     case "celestial_reprimand_blue":
-      return count($combatChain) < (CombatChainPieces() * 2) || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
+      return count($combatChain) < CombatChainPieces() * 2 || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
     case "celestial_resolve_red":
     case "celestial_resolve_yellow":
     case "celestial_resolve_blue":
-      return count($combatChain) < (CombatChainPieces() * 2) || GetChainLinkCards($defPlayer, nameContains: "Herald") == "";
+      return count($combatChain) < CombatChainPieces() * 2 || GetChainLinkCards($defPlayer, nameContains: "Herald") == "";
     case "v_for_valor_red":
     case "v_for_valor_yellow":
     case "v_for_valor_blue":
@@ -2904,7 +2920,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) return true;
       //check for blocking AAs
-      for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      $countCombatChain = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = $combatChainPieces; $i < $countCombatChain; $i += $combatChainPieces) {
         if ($combatChain[$i+1] == $defPlayer && TypeContains($combatChain[$i], "AA")) return false;
       }
       return true; 
@@ -3070,10 +3088,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "arakni_tarantula":
-      $activeDagger = ($CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer));
+      $activeDagger = $CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer);
       $prevLinks = GetCombatChainAttacks();
       $prevDagger = false;
-      for ($i = 0; $i < count($prevLinks); $i += ChainLinksPieces()) {
+      $countPrevLinks = count($prevLinks);
+      $chainLinkPieces = ChainLinksPieces();
+      for ($i = 0; $i < $countPrevLinks; $i += $chainLinkPieces) {
         if (SubtypeContains($prevLinks[$i], "Dagger", $currentPlayer)) $prevDagger = true;
       }
       if (!$activeDagger && !$prevDagger) return true;
@@ -3085,9 +3105,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "tarantula_toxin_red":
       if (!$CombatChain->HasCurrentLink()) return true;
-      for ($i = 0; $i < count($chainLinks); ++$i) {
+      $countChainLinks = count($chainLinks);
+      $chainLinkPieces = ChainLinksPieces();
+      for ($i = 0; $i < $countChainLinks; ++$i) {
         if (HasStealth($chainLinks[$i][0])) {
-          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+          for ($j = $chainLinkPieces; $j < count($chainLinks[$i]); $j += $chainLinkPieces) {
             if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
           }
         }
@@ -3122,7 +3144,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (NumDraconicChainLinks() > 0) {
         // make sure you have at least one dagger equipped
         $mainCharacter = &GetPlayerCharacter($mainPlayer);
-        for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+        $countMainCharacter = count($mainCharacter);
+        $characterPieces = CharacterPieces();
+        for ($i = 0; $i < $countMainCharacter; $i += $characterPieces) {
           if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
         }
         return true;
@@ -3200,7 +3224,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "perforate_yellow":
       // make sure you have at least one dagger equipped
       $mainCharacter = &GetPlayerCharacter($mainPlayer);
-      for ($i = 0; $i < count($mainCharacter); $i += CharacterPieces()) {
+      $countMainCharacter = count($mainCharacter);
+      $characterPieces = CharacterPieces();
+      for ($i = 0; $i < $countMainCharacter; $i += $characterPieces) {
         if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
       }
       return true;
@@ -3225,7 +3251,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Dagger");
     case "bunker_beard":
       if (!$CombatChain->HasCurrentLink()) return true;
-      return (SearchArsenal($currentPlayer, type:"A") == "") && SearchArsenal($currentPlayer, type:"AA");
+      return SearchArsenal($currentPlayer, type:"A") == "" && SearchArsenal($currentPlayer, type:"AA");
     case "outed_red":
       return CheckMarked($currentPlayer);
     case "lay_low_yellow":
@@ -3358,8 +3384,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
       $edgeThere = SearchCharacterAlive($currentPlayer, "edge_of_autumn");
       $attacks = GetCombatChainAttacks();
-      for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
-        $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
+      $countChainLinkSummary = count($chainLinkSummary);
+      $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+      $chainLinksPieces = ChainLinksPieces();
+      for ($i = 0; $i < $countChainLinkSummary; $i += $chainLinkSummaryPieces) {
+        $ind = intdiv($i, $chainLinkSummaryPieces) * $chainLinksPieces;
         $attackID = $attacks[$ind];
         $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
         if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Edge of Autumn")) {
@@ -3400,20 +3429,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     default:
       return false;
   }
-}
-
-//counts how many times puffin's attacks have been used
-//deprecated
-function CountBoatActivations($cardID, $player)
-{
-  global $layers;
-  $numResolved = CountCurrentTurnEffects($cardID, $player, partial:true);
-  if (SearchCurrentTurnEffects("jolly_bludger_yellow-OP", $player)) $numResolved -= 1;
-  $numUnresolved = 0;
-  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-    if ($layers[$i] == $cardID) $numUnresolved++;
-  }
-  return $numResolved + $numUnresolved;
 }
 
 function IsDefenseReactionPlayable($cardID, $from)
@@ -3487,7 +3502,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "bam_bam_yellow":
     case "outside_interference_blue":
     case "fearless_confrontation_blue":
-      return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($cardID, $from) == "AA";
+      return $phase == "B" && count($layers) == 0 || GetResolvedAbilityType($cardID, $from) == "AA";
     case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":
     case "anka_drag_under_yellow":
@@ -3501,7 +3516,9 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
     case "quickdodge_flexors":
       if (!CanBlockWithEquipment()) return false;
-      for ($i = 0; $i < count(value: $combatChain); $i += CombatChainPieces()) {
+      $countCombatChain = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = 0; $i < $countCombatChain; $i += $combatChainPieces) {
         if ($combatChain[$i] == $cardID) return false;
       }
       return true;
@@ -3533,8 +3550,8 @@ function IsStaticType($cardType, $from = "", $cardID = "")
     DelimStringContains($cardType, "Companion") || 
     $from == "PLAY" || 
     $from == "COMBATCHAINATTACKS" || 
-    ($from == "ARS" && DelimStringContains($cardType, "M")) || 
-    ($cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID))) {
+    $from == "ARS" && DelimStringContains($cardType, "M") || 
+    $cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) {
       return true;
   }
   return false;
@@ -4136,7 +4153,8 @@ function ComboActive($cardID = "")
   if (count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
   $card = GetClass($cardID, $mainPlayer);
   $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
-  for ($i = 0; $i < count($lastAttackNames); ++$i) {
+  $countLastAttacks = count($lastAttackNames);
+  for ($i = 0; $i < $countLastAttacks; ++$i) {
     $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
     if (SearchCurrentTurnEffects("amnesia_red", $mainPlayer)) $lastAttackName = "";
     if ($card != "-") {
@@ -4904,7 +4922,9 @@ function CountAllies($player)
   $ally = &GetAllies($player);
   $char = GetPlayerCharacter($player);
   $count = count($ally);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $countChar = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $countChar; $i += $charPieces) {
     if (HasPerched($char[$i])) $count++;
   }
   return $count;
@@ -4915,7 +4935,7 @@ function HasEffectActive($cardID) {
   global $CS_NumCardsDrawn, $playerID;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($cardID) {
-  case "hold_the_line_blue": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
+    case "hold_the_line_blue": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
   default:
     return false;
   }
