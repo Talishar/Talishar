@@ -227,6 +227,8 @@ if($handler) {
       $dictionaryCard->hasBloodDebt = GeneratedHasBloodDebt($card);
       $dictionaryCard->hasBoost = GeneratedHasBoost($card);
       $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
+      $dictionaryCard->hasMark = GeneratedHasMark($card);
+      $dictionaryCard->hasCharge = GeneratedHasCharge($card);
       array_push($response->deck->cardDictionary, $dictionaryCard);
     }
   }
