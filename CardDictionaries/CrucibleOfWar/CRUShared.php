@@ -9,7 +9,7 @@
       case "harmonized_kodachi_r": return 1;
       case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle_r": return 1;
       case "cintari_saber": case "cintari_saber_r": return 1;
-      case "plasma_barrel_shot": return (GetResolvedAbilityType($cardID) == "A" ? 2 : 0);
+      case "plasma_barrel_shot": return GetResolvedAbilityType($cardID) == "A" ? 2 : 0;
       case "plasma_purifier_red": 
         $items = &GetItems($currentPlayer); 
         if ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 2] < 2) return 1;
@@ -391,7 +391,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $numRunechants = 0;
       if($deck->Reveal($count)) {
         $cards = explode(",", $deck->Top(remove:true, amount:$count));
-        for($i=0; $i<count($cards); ++$i) if(ClassContains($cards[$i], "RUNEBLADE", $currentPlayer) && CardType($cards[$i]) == "AA") ++$numRunechants;
+        $count = count($cards);
+        for($i=0; $i<$count; ++$i) if(ClassContains($cards[$i], "RUNEBLADE", $currentPlayer) && CardType($cards[$i]) == "AA") ++$numRunechants;
         if($numRunechants > 0) PlayAura("runechant", $currentPlayer, number:$numRunechants);
         AddDecisionQueue("CHOOSETOP", $currentPlayer, implode(",", $cards));
       }

@@ -279,153 +279,153 @@ function PlayRequiresTarget($cardID, $from)
   //modal card targeting is handled elsewhere
   switch ($cardID) {
     case "blazing_aether_red":
-      return 0;//Blazing Aether
+      return 0;
     case "sonic_boom_yellow":
-      return 1;//Sonic Boom
+      return 1;
     case "forked_lightning_red":
-      return 1;//Forked Lightning
+      return 1;
     case "lesson_in_lava_yellow":
-      return 1;//Lesson in Lava
+      return 1;
     case "aether_spindle_red":
     case "aether_spindle_yellow":
     case "aether_spindle_blue":
-      return 1;//Aether Spindle
+      return 1;
     case "aether_flare_red":
     case "aether_flare_yellow":
     case "aether_flare_blue":
-      return 1;//Aether Flare
+      return 1;
     case "reverberate_red":
     case "reverberate_yellow":
     case "reverberate_blue":
-      return 1;//Reverberate
+      return 1;
     case "scalding_rain_red":
     case "scalding_rain_yellow":
     case "scalding_rain_blue":
-      return 0;//Scalding Rain
+      return 0;
     case "zap_red":
     case "zap_yellow":
     case "zap_blue":
-      return 0;//Zap
+      return 0;
     case "voltic_bolt_red":
     case "voltic_bolt_yellow":
     case "voltic_bolt_blue":
-      return 0;//Voltic Bolt
+      return 0;
     case "chain_lightning_yellow":
-      return 1;//Chain Lightning
+      return 1;
     case "foreboding_bolt_red":
     case "foreboding_bolt_yellow":
     case "foreboding_bolt_blue":
-      return 0;//Foreboding Bolt
+      return 0;
     case "rousing_aether_red":
     case "rousing_aether_yellow":
     case "rousing_aether_blue":
-      return 0;//Rousing Aether
+      return 0;
     case "snapback_red":
     case "snapback_yellow":
     case "snapback_blue":
-      return 0;//Snapback
+      return 0;
     case "aether_wildfire_red":
-      return 1;//Aether Wildfire
+      return 1;
     case "emeritus_scolding_red":
     case "emeritus_scolding_yellow":
     case "emeritus_scolding_blue":
-      return 0;//Emeritus Scolding
+      return 0;
     case "timekeepers_whim_red":
     case "timekeepers_whim_yellow":
     case "timekeepers_whim_blue":
-      return 0;//Timekeeper's Whim
+      return 0;
     case "encase_red":
-      return 2;//Encase
+      return 2;
     case "freezing_point_red":
-      return 0;//Freezing Point
+      return 0;
     case "ice_eternal_blue":
-      return 0;//Ice Eternal
+      return 0;
     case "succumb_to_winter_red":
     case "succumb_to_winter_yellow":
     case "succumb_to_winter_blue":
-      return 2;//Succumb to Winter
+      return 2;
     case "aether_icevein_red":
     case "aether_icevein_yellow":
     case "aether_icevein_blue":
-      return 2;//Aether Icevein
+      return 2;
     case "icebind_red":
     case "icebind_yellow":
     case "icebind_blue":
-      return 2;//Icebind
+      return 2;
     case "polar_cap_red":
     case "polar_cap_yellow":
     case "polar_cap_blue":
-      return 2;//Polar Cap
+      return 2;
     case "aether_hail_red":
     case "aether_hail_yellow":
     case "aether_hail_blue":
-      return 2;//Aether Hail
+      return 2;
     case "frosting_red":
     case "frosting_yellow":
     case "frosting_blue":
-      return 2;//Frosting
+      return 2;
     case "ice_bolt_red":
     case "ice_bolt_yellow":
     case "ice_bolt_blue":
-      return 2;//Ice Bolt
+      return 2;
     case "waning_moon":
-      return 0;//Waning Moon
+      return 0;
     case "dampen_red":
     case "dampen_yellow":
     case "dampen_blue":
-      return 2;//Dampen
+      return 2;
     case "aether_dart_red":
     case "aether_dart_yellow":
     case "aether_dart_blue":
-      return 2;//Aether Dart
+      return 2;
     case "singe_red":
     case "singe_yellow":
     case "singe_blue":
-      return 1;//Singe
+      return 1;
     case "mind_warp_yellow":
-      return 0;//Mind Warp
+      return 0;
     case "swell_tidings_red":
-      return 0;//Swell Tidings
+      return 0;
     case "aether_quickening_red":
     case "aether_quickening_yellow":
     case "aether_quickening_blue":
-      return 0;//Aether Quickening
+      return 0;
     case "prognosticate_red":
     case "prognosticate_yellow":
     case "prognosticate_blue":
-      return 0;//Prognosticate
+      return 0;
     case "sap_red":
     case "sap_yellow":
     case "sap_blue":
-      return 0;//Sap
+      return 0;
     case "destructive_aethertide_blue":
-      return 2;//Destructive Aethertide
-    case "eternal_inferno_red"://eternal inferno
+      return 2;
+    case "eternal_inferno_red":
       return 2;
     case "pop_the_bubble_red":
     case "pop_the_bubble_yellow":
     case "pop_the_bubble_blue":
-      return 0;//Pop the Bubble
+      return 0;
     case "etchings_of_arcana_red":
     case "etchings_of_arcana_yellow":
     case "etchings_of_arcana_blue":
-      return 0;//Etchings of Arcana
+      return 0;
     case "open_the_flood_gates_red": 
     case "open_the_flood_gates_yellow": 
     case "open_the_flood_gates_blue":
-      return 0; //Open the Flood Gates
+      return 0;
     case "overflow_the_aetherwell_red":
     case "overflow_the_aetherwell_yellow":
     case "overflow_the_aetherwell_blue":
-      return 0;//Overflow the Aetherwell
+      return 0;
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":
     case "perennial_aetherbloom_blue":
-      return 0;//Perennial Aetherbloom
+      return 0;
     case "trailblazing_aether_red":
     case "trailblazing_aether_yellow":
     case "trailblazing_aether_blue":
-      return 0;//Trailblazing Aether
+      return 0;
     case "aether_arc_blue":
       return 1;
     default:
@@ -450,33 +450,41 @@ function GetArcaneTargetIndices($player, $target): string
   if ($target != 4 && $target != 5) $rv = "THEIRCHAR-0";
   else $rv = "";
   if (($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2) $rv .= ",MYCHAR-0";
+  $allyPieces = AllyPieces();
   if ($target == 2) {
     $theirAllies = &GetAllies($otherPlayer);
-    for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) $rv .= ",THEIRALLY-" . $i;
+    $theirAlliesCount = count($theirAllies);
+    for ($i = 0; $i < $theirAlliesCount; $i += $allyPieces) $rv .= ",THEIRALLY-" . $i;
     $myAllies = &GetAllies($player);
-    for ($i = 0; $i < count($myAllies); $i += AllyPieces()) $rv .= ",MYALLY-" . $i;
-    if (GetPerchedAllies($otherPlayer) != "") {
-      $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
+    $myAlliesCount = count($myAllies);
+    for ($i = 0; $i < $myAlliesCount; $i += $allyPieces) $rv .= ",MYALLY-" . $i;
+    $theirPerchedStr = GetPerchedAllies($otherPlayer);
+    if ($theirPerchedStr !== "") {
+      $theirPerched = explode(",", $theirPerchedStr);
       foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
     }
-    if (GetPerchedAllies($player) != "") {
-      $myPerched = explode(",", GetPerchedAllies($player));
+    $myPerchedStr = GetPerchedAllies($player);
+    if ($myPerchedStr !== "") {
+      $myPerched = explode(",", $myPerchedStr);
       foreach($myPerched as $i) $rv .= ",MYCHAR-" . $i;
     }
   } else if ($target == 3 || $target == 5) {
     $theirAllies = &GetAllies($otherPlayer);
-    for ($i = 0; $i < count($theirAllies); $i += AllyPieces()) {
-      if ($rv != "") $rv .= ",";
+    $theirAlliesCount = count($theirAllies);
+    for ($i = 0; $i < $theirAlliesCount; $i += $allyPieces) {
+      if ($rv !== "") $rv .= ",";
       $rv .= "THEIRALLY-" . $i;
     }
-    if (GetPerchedAllies($otherPlayer) != "") {
-      $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
+    $theirPerchedStr = GetPerchedAllies($otherPlayer);
+    if ($theirPerchedStr !== "") {
+      $theirPerched = explode(",", $theirPerchedStr);
       foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
     }
   }
   $targets = explode(",", $rv);
   $targetsSelected = GetClassState($player, $CS_ArcaneTargetsSelected);
-  for ($i = count($targets) - 1; $i >= 0; --$i) if (DelimStringContains($targetsSelected, $targets[$i])) unset($targets[$i]);
+  $targetsCount = count($targets);
+  for ($i = $targetsCount - 1; $i >= 0; --$i) if (DelimStringContains($targetsSelected, $targets[$i])) unset($targets[$i]);
   return implode(",", $targets);
 }
 
@@ -578,7 +586,9 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
 {
   global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
   $modifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $effectArr = explode(",", $currentTurnEffects[$i]);
     switch ($effectArr[0]) {
@@ -645,7 +655,7 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
     if ($remove) RemoveCurrentTurnEffect($i);
   }
   $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i] == "arcane_compliance_blue" && $currentTurnEffects[$i+2] == $uniqueID) $modifier = 0;
   }
   return $modifier;
@@ -850,8 +860,10 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   $barrierArray = [];
   for ($i = 0; $i < 4; ++$i) $barrierArray[$i] = 0;
   $character = GetPlayerCharacter($playerID);
+  $characterCount = count($character);
+  $characterPieces = CharacterPieces();
   $total = 0;
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] == 0 || $character[$i + 12] == "DOWN") continue;
     switch ($character[$i]) {
       case "achilles_accelerator":
@@ -1012,7 +1024,9 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
     }
   }
   $items = GetItems($playerID);
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  $itemsCount = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $itemsCount; $i += $itemPieces) {
     switch ($items[$i]) {
       case "rusted_relic_blue":
         ++$barrierArray[1];
@@ -1023,7 +1037,9 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
     }
   }
   $allies = GetAllies($playerID);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  $alliesCount = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $alliesCount; $i += $allyPieces) {
     switch ($allies[$i]) {
       case "aether_ashwing":
         ++$barrierArray[1];
@@ -1033,7 +1049,9 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
         break;
     }
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     switch ($currentTurnEffects[$i]) {
       case "aether_sink_yellow":
         ++$barrierArray[2];
@@ -1044,13 +1062,12 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
     }
   }
   if($returnBarrierArray) return $barrierArray;
-  $choiceArray = [];
-  array_push($choiceArray, 0);
-  if ($barrierArray[1] > 0) array_push($choiceArray, 1);
-  if ($barrierArray[2] > 0 || ($barrierArray[1] > 1 && $max > 1 && $total >= 2)) array_push($choiceArray, 2);
-  if ($barrierArray[3] > 0 || ($max > 2 && $total >= 3)) array_push($choiceArray, 3);
+  $choiceArray = [0];
+  if ($barrierArray[1] > 0) $choiceArray[] = 1;
+  if ($barrierArray[2] > 0 || ($barrierArray[1] > 1 && $max > 1 && $total >= 2)) $choiceArray[] = 2;
+  if ($barrierArray[3] > 0 || ($max > 2 && $total >= 3)) $choiceArray[] = 3;
   for ($i = 4; $i <= $max; ++$i) {
-    if ($i <= $total) array_push($choiceArray, $i);
+    if ($i <= $total) $choiceArray[] = $i;
   }
   return implode(",", $choiceArray);
 }
@@ -1108,7 +1125,9 @@ function ArcaneHitEffect($player, $source, $target, $damage)
     AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
   }
   $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $aurasCount = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $aurasCount; $i += $auraPieces) {
     switch ($auras[$i]) {
       case "ring_of_roses_yellow":
         if ($auras[$i+5] > 0 && GetClassState($player, $CS_ArcaneDamageDealt) == 0) {
@@ -1133,10 +1152,14 @@ function ProcessSurge($cardID, $player, $target)
   switch ($cardID) {
     case "mind_warp_yellow":
       $hand = &GetHand($targetPlayer);
-      $numToDraw = count($hand) - 1;
+      $handCount = count($hand);
+      $numToDraw = $handCount - 1;
       if ($numToDraw < 0) $numToDraw = 0;
       $deck = &GetDeck($targetPlayer);
-      while (count($hand) > 0) array_push($deck, array_shift($hand));
+      while ($handCount > 0) {
+        $deck[] = array_shift($hand);
+        --$handCount;
+      }
       Draw($targetPlayer, effectSource: $cardID, num:$numToDraw);
       AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
       break;
@@ -1177,7 +1200,8 @@ function ProcessSurge($cardID, $player, $target)
     case "eternal_inferno_red"://eternal inferno
       BanishCardForPlayer("eternal_inferno_red", $player, "MYDISCARD", "TT", "eternal_inferno_red");
       $discard = &GetDiscard($player);
-      for($i = 0; $i < DiscardPieces(); $i++){
+      $discardPieces = DiscardPieces();
+      for($i = 0; $i < $discardPieces; ++$i){
         array_pop($discard);
       }
       break;
@@ -1207,11 +1231,12 @@ function ProcessSurge($cardID, $player, $target)
       break;
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":
-    case "perennial_aetherbloom_blue": //perennial aetherbloom
+    case "perennial_aetherbloom_blue":
       WriteLog("Surge active, returning on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
-      for($i = 0; $i < DiscardPieces(); $i++){
+      $discardPieces = DiscardPieces();
+      for($i = 0; $i < $discardPieces; ++$i){
         array_pop($discard);
       }
       break;
@@ -1222,7 +1247,9 @@ function ProcessSurge($cardID, $player, $target)
       GainHealth(1, $player);
       $auras = &GetAuras($player);
       $sigilFound = false;
-      for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+      $aurasCount = count($auras);
+      $auraPieces = AuraPieces();
+      for ($i = $aurasCount - $auraPieces; $i >= 0; $i -= $auraPieces) {
         $auraName = CardName($auras[$i]);
         if (DelimStringContains($auraName, "Sigil", partial: true)) {
           AddBottomDeck($auras[$i], $player, "STACK");

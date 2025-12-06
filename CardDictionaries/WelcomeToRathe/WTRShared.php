@@ -78,7 +78,7 @@
       case "emerging_power_red": return 3;
       case "emerging_power_yellow": return 2;
       case "emerging_power_blue": return 1;
-      case "lord_of_wind_blue": return (count($idArr) > 1 ? $idArr[1] : 0);
+      case "lord_of_wind_blue": return isset($idArr[1]) ? $idArr[1] : 0;
       case "braveforge_bracers": return 1;
       case "warriors_valor_red": return 3;
       case "warriors_valor_yellow": return 2;
@@ -461,15 +461,13 @@
     global $mainPlayer;
     if(!CanRevealCards($mainPlayer)) return "Blessing of Deliverance cannot reveal cards.";
     $deck = GetDeck($mainPlayer);
+    $deckCount = count($deck);
     $lifegain = 0;
     $cards = "";
-    for($i=0; $i<$amount; ++$i)
+    for($i=0; $i<$amount && $i<$deckCount; ++$i)
     {
-      if(count($deck) > $i)
-      {
-        $cards .= $deck[$i] . ($i < 2 ? "," : "");
-        if(CardCost($deck[$i]) >= 3) ++$lifegain;
-      }
+      $cards .= $deck[$i] . ($i < 2 ? "," : "");
+      if(CardCost($deck[$i]) >= 3) ++$lifegain;
     }
     RevealCards($cards, $mainPlayer);
     GainHealth($lifegain, $mainPlayer);
@@ -480,34 +478,33 @@
   {
     global $mainPlayer;
     $hand = &GetHand($mainPlayer);
+    $handCount = count($hand);
+    if($handCount == 0) return;
     $char = &GetPlayerCharacter($mainPlayer);
     if($context == "") $context = "if you want to use ".CardLink($char[0], $char[0])." ability";
-    if(count($hand) > 0)
-    {
-      AddDecisionQueue("YESNO", $mainPlayer, $context);
-      AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0;minCost=0", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,".$mainPlayer, 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:comboOnly=true", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,DECK,TT", 1);
-      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
-      if($context == "to_use_Katsu's_ability") AddDecisionQueue("LOGPLAYCARDSTATS", $mainPlayer, $char[0].",HAND,KATSUDISCARD", 1);
-    }
+    AddDecisionQueue("YESNO", $mainPlayer, $context);
+    AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0;minCost=0", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,".$mainPlayer, 1);
+    AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK:comboOnly=true", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MZADDZONE", $mainPlayer, "MYBANISH,DECK,TT", 1);
+    AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
+    if($context == "to_use_Katsu's_ability") AddDecisionQueue("LOGPLAYCARDSTATS", $mainPlayer, $char[0].",HAND,KATSUDISCARD", 1);
   }
 
   function LordOfWindIndices($player)
   {
     $array = [];
     $indices = SearchDiscardForCard($player, "surging_strike_red", "surging_strike_yellow", "surging_strike_blue");
-    if($indices != "") array_push($array, $indices);
+    if($indices !== "") $array[] = $indices;
     $indices = SearchDiscardForCard($player, "whelming_gustwave_red", "whelming_gustwave_yellow", "whelming_gustwave_blue");
-    if($indices != "") array_push($array, $indices);
+    if($indices !== "") $array[] = $indices;
     $indices = SearchDiscardForCard($player, "mugenshi_release_yellow");
-    if($indices != "") array_push($array, $indices);
+    if($indices !== "") $array[] = $indices;
     return implode(",", $array);
   }
 
@@ -615,9 +612,11 @@
       case "put_em_in_their_place_red":
         $hand = &GetHand($defPlayer);
         $numDraw = count($hand);
-        DiscardHand($defPlayer);
-        Draw($defPlayer, num:$numDraw);
-        if ($numDraw > 0) WriteLog("Player $defPlayer discarded their hand and drew $numDraw cards");
+        if ($numDraw > 0) {
+          DiscardHand($defPlayer);
+          Draw($defPlayer, num:$numDraw);
+          WriteLog("Player $defPlayer discarded their hand and drew $numDraw cards");
+        }
         break;
       case "batter_to_a_pulp_red":
         // maxDef = -2 will search for null block, -1 just gets skipped
@@ -672,8 +671,9 @@
       case "fault_line_red":
         for ($player = 1; $player < 3; ++$player) {
           $arsenal = GetArsenal($player);
-          for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
-            
+          $arsenalCount = count($arsenal);
+          $arsenalPieces = ArsenalPieces();
+          for ($i = $arsenalCount - $arsenalPieces; $i >= 0; $i -= $arsenalPieces) {
             AddBottomDeck($arsenal[$i], $player, "ARS");
             RemoveArsenal($player, $i);
           }
