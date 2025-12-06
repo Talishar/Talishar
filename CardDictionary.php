@@ -3556,7 +3556,7 @@ function HasBladeBreak($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return GeneratedHasBladeBreak($cardID) == "true";
+      return GeneratedHasBladeBreak($cardID);
   }
 }
 
@@ -3569,7 +3569,7 @@ function HasBattleworn($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return GeneratedHasBattleworn($cardID) == "true";
+      return GeneratedHasBattleworn($cardID);
   }
 }
 
@@ -3577,12 +3577,12 @@ function HasTemper($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTemper();
-  return GeneratedHasTemper($cardID) == "true";
+  return GeneratedHasTemper($cardID);
 }
 
 function HasGuardwell($cardID)
 {
-  return GeneratedHasGuardwell($cardID) == "true";
+  return GeneratedHasGuardwell($cardID);
 }
 
 function HasPiercing($cardID, $from = "")
@@ -3616,7 +3616,7 @@ function HasPiercing($cardID, $from = "")
     case "drill_shot_blue":
       return HasAimCounter();
     default:
-      return GeneratedHasPiercing($cardID) == "true";
+      return GeneratedHasPiercing($cardID);
   }
 }
 
@@ -3624,7 +3624,7 @@ function HasTower($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTower();
-  return GeneratedHasTower($cardID) == "true";
+  return GeneratedHasTower($cardID);
 }
 
 function RequiresDiscard($cardID)
@@ -3695,7 +3695,7 @@ function HasBeatChest($cardID)
 {
   $card = GetClass($cardID, 1);
   if ($card != "-") return $card->HasBeatChest();
-  return GeneratedHasBeatChest($cardID) == "true";
+  return GeneratedHasBeatChest($cardID);
 }
 
 function ETASteamCounters($cardID)
@@ -4108,7 +4108,7 @@ function IsCharacterActive($player, $index)
 
 function HasReprise($cardID)
 {
-  return GeneratedHasReprise($cardID) == "true";
+  return GeneratedHasReprise($cardID);
 }
 
 function RepriseActive()
@@ -4122,7 +4122,7 @@ function HasCombo($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasCombo();
-  GeneratedHasCombo($cardID);
+  return GeneratedHasCombo($cardID);
 }
 
 function ComboActive($cardID = "")
@@ -4296,12 +4296,12 @@ function HasBloodDebt($cardID)
   global $currentPlayer;
   $char = GetPlayerCharacter($currentPlayer);
   if ($char[0] == "levia_redeemed") return false;
-  return GeneratedHasBloodDebt($cardID) == "true";
+  return GeneratedHasBloodDebt($cardID);
 }
 
 function HasRunegate($cardID)
 {
-  return GeneratedHasRunegate($cardID) == "true";
+  return GeneratedHasRunegate($cardID);
 }
 
 function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player = "")
@@ -4484,12 +4484,12 @@ function SpellVoidAmount($cardID, $player): int
 
 function HasSpecialization($cardID): bool
 {
-  return GeneratedHasSpecialization($cardID) == "true";
+  return GeneratedHasSpecialization($cardID);
 }
 
 function HasLegendary($cardID): bool
 {
-  return GeneratedHasLegendary($cardID) == "true";
+  return GeneratedHasLegendary($cardID);
 }
 
 function Is1H($cardID): bool|int
@@ -4731,7 +4731,7 @@ function HasWard($cardID, $player)
     case "vengeful_apparition_blue":
       return true;
     default:
-      return false;
+      return GeneratedHasWard($cardID);
   }
 }
 
@@ -4742,7 +4742,7 @@ function ArcaneShelterAmount($cardID)
 
 function HasArcaneShelter($cardID): bool
 {
-  return GeneratedHasArcaneShelter($cardID) == "true";
+  return GeneratedHasArcaneShelter($cardID);
 }
 
 function HasDominate($cardID)
@@ -4794,126 +4794,32 @@ function HasDominate($cardID)
     default:
       break;
   }
-  return false;
+  return GeneratedHasDominate($cardID);
 }
 
 function HasAmbush($cardID, $player)
 {
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->HasAmbush();
-  switch ($cardID) {
-    case "tiger_eye_reflex_yellow":
-    case "tiger_eye_reflex_blue":
-    case "overcrowded_blue":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasAmbush($cardID);
 }
 
 function HasScrap($cardID)
 {
-  switch ($cardID) {
-    case "scrap_trader_red":
-    case "hydraulic_press_red":
-    case "hydraulic_press_yellow":
-    case "hydraulic_press_blue":
-    case "scrap_hopper_red":
-    case "scrap_hopper_yellow":
-    case "scrap_hopper_blue":
-    case "junkyard_dogg_red":
-    case "junkyard_dogg_yellow":
-    case "junkyard_dogg_blue":
-    case "scrap_compactor_red":
-    case "scrap_compactor_yellow":
-    case "scrap_compactor_blue":
-    case "scrap_harvester_red":
-    case "scrap_harvester_yellow":
-    case "scrap_harvester_blue":
-    case "scrap_prospector_red":
-    case "scrap_prospector_yellow":
-    case "scrap_prospector_blue":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasScrap($cardID);
 }
 
 function HasGalvanize($cardID)
 {
-  switch ($cardID) {
-    case "adaptive_plating":
-    case "ratchet_up_red":
-    case "ratchet_up_yellow":
-    case "ratchet_up_blue":
-    case "soup_up_red":
-    case "soup_up_yellow":
-    case "soup_up_blue":
-    case "torque_tuned_red":
-    case "torque_tuned_yellow":
-    case "torque_tuned_blue":
-    case "cognition_field_red":
-    case "cognition_field_yellow":
-    case "cognition_field_blue":
-    case "infuse_alloy_red":
-    case "infuse_alloy_yellow":
-    case "infuse_alloy_blue":
-    case "infuse_titanium_red":
-    case "infuse_titanium_yellow":
-    case "infuse_titanium_blue":
-    case "steel_street_hoons_blue":
-    case "golden_skywarden_yellow":
-    case "teeth_of_the_cog_red":
-    case "teeth_of_the_cog_yellow":
-    case "teeth_of_the_cog_blue":
-    case "tough_old_wrench_red":
-    case "tough_old_wrench_yellow":
-    case "tough_old_wrench_blue":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasGalvanize($cardID);
+
 }
 
 function HasStealth($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasStealth();
-  switch($cardID)
-  {
-    case "infiltrate_red":
-    case "back_stab_red": case "back_stab_yellow": case "back_stab_blue":
-    case "infect_red": case "infect_yellow": case "infect_blue":
-    case "isolate_red": case "isolate_yellow": case "isolate_blue":
-    case "malign_red": case "malign_yellow": case "malign_blue":
-    case "prowl_red": case "prowl_yellow": case "prowl_blue":
-    case "sedate_red": case "sedate_yellow": case "sedate_blue":
-    case "wither_red": case "wither_yellow": case "wither_blue":
-    case "bonds_of_agony_blue": case "persuasive_prognosis_blue":
-    case "art_of_desire_body_red": case "art_of_desire_soul_yellow": case "art_of_desire_mind_blue": 
-    case "bonds_of_attraction_red": case "bonds_of_attraction_yellow": case "bonds_of_attraction_blue": 
-    case "double_trouble_red": case "double_trouble_yellow": case "double_trouble_blue": 
-    case "bonds_of_memory_red": case "bonds_of_memory_yellow": case "bonds_of_memory_blue": 
-    case "desires_of_flesh_red": case "desires_of_flesh_yellow": case "desires_of_flesh_blue": 
-    case "impulsive_desire_red": case "impulsive_desire_yellow": case "impulsive_desire_blue": 
-    case "minds_desire_red": case "minds_desire_yellow": case "minds_desire_blue":
-    case "pick_to_pieces_red": case "pick_to_pieces_yellow": case "pick_to_pieces_blue":
-    case "kiss_of_death_red": case "under_the_trap_door_blue":
-    case "bite_red": case "bite_yellow": case "bite_blue":
-    case "whittle_from_bone_red": case "whittle_from_bone_yellow": case "whittle_from_bone_blue":
-    case "defang_the_dragon_red": case "extinguish_the_flames_red":
-    case "mark_of_the_black_widow_red": case "mark_of_the_black_widow_yellow": case "mark_of_the_black_widow_blue":
-    case "mark_of_the_funnel_web_red": case "mark_of_the_funnel_web_yellow": case "mark_of_the_funnel_web_blue":
-    case "mark_the_prey_red": case "mark_the_prey_yellow": case "mark_the_prey_blue":
-    case "plunge_the_prospect_red": case "plunge_the_prospect_yellow": case "plunge_the_prospect_blue":
-    case "reapers_call_red": case "reapers_call_yellow": case "reapers_call_blue":
-    case "scuttle_the_canal_red": case "scuttle_the_canal_yellow": case "scuttle_the_canal_blue":
-    case "graphene_chelicera":
-    case "undercover_acquisition_red":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasStealth($cardID);
 }
 
 function PowerCantBeModified($cardID)
