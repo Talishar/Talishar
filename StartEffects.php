@@ -65,6 +65,7 @@ function equipModularForPlayer($playerID, $equipmentObj, $zones) {
 
         if (IsModular($card)) {
             EquipEquipment($playerID, $card, $zoneName);
+            unset($equipmentObj->$zoneKey);
         }
     }
 }
