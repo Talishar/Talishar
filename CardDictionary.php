@@ -110,6 +110,14 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "DUMMYDISHONORED" => "C",
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W", // AI custom weapon
+    "aegis_archangel_of_protection" => "-",
+    "avalon_archangel_of_rebirth" => "-",
+    "bellona_archangel_of_war" => "-",//hardcoded for now
+    "metis_archangel_of_tenacity" => "-",
+    "sekem_archangel_of_ravages" => "-",
+    "suraya_archangel_of_erudition" => "-",
+    "themis_archangel_of_judgment" => "-",
+    "victoria_archangel_of_war" => "-",
   ];
   $card = GetClass($cardID, 0);
   if ($card != "-") {
@@ -119,7 +127,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
   if (isset($specialCases[$cardID])) {
     return $specialCases[$cardID];
   }
-
   $set = CardSet($cardID);
   if ($set != "DUM") {
     $setID = SetID($cardID);
