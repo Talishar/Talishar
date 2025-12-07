@@ -41,6 +41,7 @@
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");//Also images
+  GenerateFunction($cardArray, $handler, "CharacterIntelligence", "intelligence", "4");
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false");
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
@@ -127,7 +128,7 @@
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $isString = true;
     $isBool = false;
-    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "1H" || $propertyName == "goAgain") $isString = false;
+    if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "intelligence" || $propertyName == "1H" || $propertyName == "goAgain") $isString = false;
     if($propertyName == "1H" || $propertyName == "specialization" || $propertyName == "legendary" || $propertyName == "goAgain") $isBool = true;
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
     fwrite($handler, "return match(\$cardID) {\r\n");
@@ -464,6 +465,9 @@
           $data = $cardArray[$i]->health;
           if ($getImage && $cardID != "hunters_klaive_r") CheckImage($setID, $cardID, $isDuplicate);
           if (MapType($cardArray[$i], $setID) == "C") CheckImage($setID, $setID, $isDuplicate);
+          break;
+        case "intelligence":
+          $data = $cardArray[$i]->intelligence;
           break;
         case "rarity":
           $data = $cardRarity;

@@ -319,20 +319,7 @@ function CharacterIntellect($cardID)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
-  switch ($cardID) {
-    case "data_doll_mkii":
-      return 3;
-    case "teklovossen_the_mechropotent":
-      return 3;
-    case "lyath_goldmane":
-    case "lyath_goldmane_vile_savant":
-      return 5;
-    case "tuffnut":
-    case "tuffnut_bumbling_hulkster":
-      return 3;
-    default:
-      return 4;
-  }
+  return GeneratedCharacterIntelligence($cardID);
 }
 
 function CardSet($cardID)

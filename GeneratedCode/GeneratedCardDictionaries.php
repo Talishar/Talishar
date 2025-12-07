@@ -18619,6 +18619,18 @@ return match($cardID) {
 default => 20
 };
 }
+function GeneratedCharacterIntelligence($cardID) {
+if(is_int($cardID)) return 0;
+return match($cardID) {
+"data_doll_mkii" => 3,
+"lyath_goldmane" => 5,
+"lyath_goldmane_vile_savant" => 5,
+"teklovossen_the_mechropotent" => 3,
+"tuffnut" => 3,
+"tuffnut_bumbling_hulkster" => 3,
+default => 4
+};
+}
 function GeneratedRarity($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
