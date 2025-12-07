@@ -866,6 +866,12 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   $total = 0;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] == 0 || $character[$i + 12] == "DOWN") continue;
+    $card = GetClass($character[$i], $playerID);
+    if ($card != "-") {
+      $abAmount = $card->ArcaneBarrier();
+      ++$barrierArray[$abAmount];
+      $total += $abAmount;
+    }
     switch ($character[$i]) {
       case "achilles_accelerator":
         ++$barrierArray[1];

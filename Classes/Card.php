@@ -445,6 +445,14 @@ class Card {
   function PlayableFromBanish($mod, $nonLimitedOnly) {
     return false;
   }
+
+  function ArcaneBarrier() {
+    return 0;
+  }
+
+  function PlayCardAbility($cardID, $from) {
+    return;
+  }
 }
 
 ?>

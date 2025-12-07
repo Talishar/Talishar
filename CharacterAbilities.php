@@ -1582,6 +1582,8 @@ function CharacterPlayCardAbilities($cardID, $from)
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
+    $card = GetClass($characterID, $currentPlayer);
+    if ($card != "-") $card->PlayCardAbility($cardID, $from);
     switch ($characterID) {
       case "tiger_stripe_shuko":
         if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $currentPlayer, "CC") <= 2) {

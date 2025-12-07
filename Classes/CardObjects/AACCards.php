@@ -194,3 +194,113 @@ class horrors_of_the_past_yellow extends Card {
 		return PowerModifier($copiedText, "CC");
 	}
 }
+
+class nights_embrace_blue extends Card {
+	function __construct($controller) {
+    $this->cardID = "nights_embrace_blue";
+    $this->controller = $controller;
+	}
+
+	function HasStealth() {
+		return true;
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return HasStealth($CombatChain->AttackCard()->ID());
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+}
+
+class stalkers_steps extends Card {
+	function __construct($controller) {
+		$this->cardID = "stalkers_steps";
+		$this->controller = $controller;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain, $chainLinks;
+		if (HasStealth($CombatChain->AttackCard()->ID())) return false;
+		foreach ($chainLinks as $link) {
+			if (HasStealth($link[0])) return false;
+		}
+		return true;
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain;
+		if (HasStealth($CombatChain->AttackCard()->ID())) {
+			GiveAttackGoAgain();
+		}
+	}
+
+	function ArcaneBarrier() {
+		return 1;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		DestroyCharacter($this->controller, $index);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+}
+
+class prey_spotters extends Card {
+	function __construct($controller) {
+		$this->cardID = "prey_spotters";
+		$this->controller = $controller;
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		MarkHero($otherPlayer);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		DestroyCharacter($this->controller, $index);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+}
+
+class inverters_nightcowl extends Card {
+	function __construct($controller) {
+		$this->cardID = "inverters_nightcowl";
+		$this->controller = $controller;
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		DestroyCharacter($this->controller, $index);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function PlayCardAbility($cardID, $from) {
+		if (HasStealth($cardID)) AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		GainResources($this->controller, 1);
+	}
+}
