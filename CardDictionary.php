@@ -3582,6 +3582,7 @@ function HasBattleworn($cardID)
   global $defPlayer;
   switch ($cardID) {
     case "teklovossen_the_mechropotentb":
+    case "torc_of_vim":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
