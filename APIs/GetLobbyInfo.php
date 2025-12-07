@@ -229,6 +229,7 @@ if($handler) {
       $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
       $dictionaryCard->hasMark = GeneratedHasMark($card);
       $dictionaryCard->hasCharge = GeneratedHasCharge($card);
+      $dictionaryCard->hasSuspense = hasSuspense($card);
       array_push($response->deck->cardDictionary, $dictionaryCard);
     }
   }
