@@ -3598,6 +3598,7 @@ function HasTemper($cardID)
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTemper();
   switch ($cardID) {
+    case "trampling_trackers":
     case "nitro_mechanoidb":
     case "savage_sash": 
       return true;
