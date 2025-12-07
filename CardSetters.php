@@ -875,9 +875,6 @@ function RemoveInventory($player, $index)
 function IsAltCard($cardID)
 {
   switch ($cardID) {
-    case "MON400":
-    case "MON401":
-    case "MON402":
     case "the_librarian":
     case "minerva_themis":
     case "lady_barthimont":

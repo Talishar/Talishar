@@ -944,7 +944,7 @@ return match($cardID) {
 "grains_of_bloodspill" => "E",
 "grandeur_of_valahai_blue" => "R",
 "grandstand_legplates" => "E",
-"graphene_chelicera" => "T",
+"graphene_chelicera" => "W,T",
 "grasp_of_darkness" => "E",
 "grasp_of_the_arknight" => "E",
 "graven_call" => "W",

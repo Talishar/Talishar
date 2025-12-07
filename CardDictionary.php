@@ -98,9 +98,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 
   // Handle special cases
   $specialCases = [
-    "MON400" => "E",
-    "MON401" => "E",
-    "MON402" => "E",
     "UPR551" => "-",
     "nitro_mechanoida" => "W",
     "nitro_mechanoidb" => "E",
@@ -111,8 +108,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "suraya_archangel_of_knowledge" => "-",
     "DUMMY" => "C",
     "DUMMYDISHONORED" => "C",
-    "parry_blade" => "W,E",
-    "graphene_chelicera" => "W,T",
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W", // AI custom weapon
   ];
@@ -256,16 +251,9 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ally";
     case "kiss_of_death_red":
       return "Dagger,Attack";
-    case "polly_cranka":
-    case "sticky_fingers":
-      return "Off-Hand,Ally"; //handle being an ally elsewhere
     case "polly_cranka_ally":
     case "sticky_fingers_ally":
       return "Ally";
-    case "okana_scar_wraps":
-      return "Arms";
-    case "iris_of_the_blossom":
-      return "Head";
     default:
       break;
   }
@@ -295,47 +283,14 @@ function CardSubType($cardID, $uniqueID = -1)
       return GeneratedCardSubtype($cardID);
   }
   switch ($cardID) {
-    case "MON400":
-      return "Chest";
-    case "MON401":
-      return "Arms";
-    case "MON402":
-      return "Legs";
     case "UPR551":
       return "Ally";
     case "nitro_mechanoidb":
       return "Chest"; // Technically not true, but needed to work.
     case "nitro_mechanoidc":
       return "Item";
-    case "suraya_archangel_of_knowledge":
-      return "Angel,Ally";
-    case "blasmophet_levia_consumed":
-      return "Demon";
-    case "teklovossen_the_mechropotent":
-      return "Evo";
     case "teklovossen_the_mechropotentb":
       return "Chest,Evo";
-    case "MST000_inner_chi_blue":
-    case "MST010_inner_chi_blue":
-    case "MST032_inner_chi_blue":
-    case "MST053_inner_chi_blue":
-    case "MST095_inner_chi_blue":
-    case "MST096_inner_chi_blue":
-    case "MST097_inner_chi_blue":
-    case "MST098_inner_chi_blue":
-    case "MST099_inner_chi_blue":
-    case "MST100_inner_chi_blue":
-    case "MST101_inner_chi_blue":
-    case "MST102_inner_chi_blue":
-      return "Chi";
-    case "evo_recall_blue_equip":
-      return "Head,Evo";
-    case "evo_heartdrive_blue_equip":
-      return "Chest,Evo";
-    case "evo_shortcircuit_blue_equip":
-      return "Arms,Evo";
-    case "evo_speedslip_blue_equip":
-      return "Legs,Evo";
     default:
       return "";
   }
@@ -856,11 +811,6 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   }
   if ($block == -2) { //it hasn't been set yet
     switch ($cardID) {
-      case "MON400":
-      case "MON401":
-      case "MON402":
-        $block = 0;
-        break;
       case "minerva_themis":
       case "lady_barthimont":
       case "lord_sutcliffe":
@@ -3527,7 +3477,6 @@ function HasTemper($cardID)
   switch ($cardID) {
     case "trampling_trackers":
     case "nitro_mechanoidb":
-    case "savage_sash": 
       return true;
   }
   return GeneratedHasTemper($cardID);
@@ -3944,9 +3893,6 @@ function CharacterDefaultActiveState($cardID)
     case "halo_of_illumination":
     case "dream_weavers":
     case "ebon_fold":
-    case "MON400":
-    case "MON401":
-    case "MON402":
     case "spell_fray_tiara":
     case "spell_fray_cloak":
     case "spell_fray_gloves":

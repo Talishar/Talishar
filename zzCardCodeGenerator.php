@@ -554,7 +554,7 @@
 
   function MapType($card, $setID)
   {
-    $hasAction = false; $hasAttack = false; $hasInstant = false;
+    $hasAction = false; $hasAttack = false; $hasInstant = false; $hasToken = false;
     $hasEvent = false; $hasEquipment = false; $hasWeapon = false;
     $cardNumber = substr($setID, 3, 3);
     for($i=0; $i<count($card->types); ++$i)
@@ -567,7 +567,7 @@
       else if($card->types[$i] == "Weapon") $hasWeapon = true;
       else if($card->types[$i] == "Hero") return "C";
       else if($card->types[$i] == "Equipment") $hasEquipment = true;
-      else if($card->types[$i] == "Token") return "T";
+      else if($card->types[$i] == "Token") $hasToken = true;
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";
       else if($card->types[$i] == "Demi-Hero") return "D";
@@ -584,9 +584,11 @@
       return "E";
     }
     if($hasAction && $hasAttack) return "AA";
+    else if($hasWeapon && $hasToken) return "W,T";
     else if($hasWeapon) return "W";
     else if($hasAction) return "A";
     else if($hasInstant) return "I";
+    else if($hasToken) return "T";
     else if($hasEvent) return "Event";
     return "-";
   }
