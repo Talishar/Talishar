@@ -685,7 +685,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($currentPlayer == $defPlayer) {
         for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
           if ($combatChain[$j + 1] != $currentPlayer) continue;
-          if (CardType($combatChain[$j]) == "AA" && ClassContains($combatChain[$j], "MECHANOLOGIST", $currentPlayer)) CombatChainPowerModifier($j, 1);
+          ProcessPhantasmOnBlock($j);
         }
       }
       break;
