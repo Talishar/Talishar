@@ -69,22 +69,30 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     ++$numPowerCounters;
   }
 
-  $myHoldState = AuraDefaultHoldTriggerState($cardID);
+  $defaultHoldState = AuraDefaultHoldTriggerState($cardID);
+  $myHoldState = $defaultHoldState;
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
-  $theirHoldState = AuraDefaultHoldTriggerState($cardID);
+  $theirHoldState = $defaultHoldState;
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  
+  // Cache loop-invariant values outside loop to avoid repeated function calls
+  $cachedAuraPlayCounters = AuraPlayCounters($cardID);
+  $cachedAuraNumUses = AuraNumUses($cardID);
+  $isTokenFlag = $isToken ? 1 : 0;
+  
   for ($i = 0; $i < $number; ++$i) {
-    array_push($auras, $cardID);
-    array_push($auras, 2); //Status
-    if ($rogueHeronSpecial) array_push($auras, 0); //Only happens on the damage effect of the Heron Master in the Roguelike Gamemode
-    else array_push($auras, AuraPlayCounters($cardID)); //Miscellaneous Counters
-    array_push($auras, $numPowerCounters); //Power counters
-    array_push($auras, $isToken ? 1 : 0); //Is token 0=No, 1=Yes
-    array_push($auras, AuraNumUses($cardID));
-    array_push($auras, GetUniqueId($cardID, $player));
-    array_push($auras, $myHoldState); //My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-    array_push($auras, $theirHoldState); //Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-    array_push($auras, $from);
+    array_push($auras, 
+      $cardID, // 0: Card ID
+      2, // 1: Status
+      $rogueHeronSpecial ? 0 : $cachedAuraPlayCounters, // 2: Miscellaneous Counters
+      $numPowerCounters, // 3: Power counters
+      $isTokenFlag, // 4: Is token 0=No, 1=Yes
+      $cachedAuraNumUses, // 5: Number of uses
+      GetUniqueId($cardID, $player), // 6: Unique ID
+      $myHoldState, // 7: My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+      $theirHoldState, // 8: Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+      $from // 9: Where it's played from
+    );
   }
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
   else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
