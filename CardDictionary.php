@@ -168,7 +168,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 function CardTypeExtended($cardID, $from="") // used to handle evos
 {
   $cardID = BlindCard($cardID, true);
-  $evolutionTypes = [
+  $evoTypes = [
     "evo_steel_soul_memory_blue" => "A,E",
     "evo_steel_soul_processor_blue" => "A,E",
     "evo_steel_soul_controller_blue" => "A,E",
@@ -227,7 +227,7 @@ function CardTypeExtended($cardID, $from="") // used to handle evos
     "evo_speedslip_blue_equip" => "I,E"
   ];
 
-  return $evolutionTypes[$cardID] ?? CardType($cardID, $from);
+  return $evoTypes[$cardID] ?? CardType($cardID, $from);
 }
 
 function SetID($cardID)
@@ -3581,6 +3581,8 @@ function HasBattleworn($cardID)
 {
   global $defPlayer;
   switch ($cardID) {
+    case "teklovossen_the_mechropotentb":
+      return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
@@ -3595,7 +3597,9 @@ function HasTemper($cardID)
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTemper();
   switch ($cardID) {
-    case "savage_sash": return true;
+    case "nitro_mechanoidb":
+    case "savage_sash": 
+      return true;
   }
   return GeneratedHasTemper($cardID);
 }
