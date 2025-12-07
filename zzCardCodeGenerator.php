@@ -555,32 +555,39 @@
   function MapType($card, $setID)
   {
     $hasAction = false; $hasAttack = false; $hasInstant = false;
+    $hasEvent = false; $hasEquipment = false; $hasWeapon = false;
     $cardNumber = substr($setID, 3, 3);
     for($i=0; $i<count($card->types); ++$i)
     {
       if($card->types[$i] == "Action") $hasAction = true;
       else if($card->types[$i] == "Attack") $hasAttack = true;
-      else if($card->types[$i] == "Defense") $hasDefense = true;
       else if($card->types[$i] == "Defense Reaction") return "DR";
       else if($card->types[$i] == "Attack Reaction") return "AR";
       else if($card->types[$i] == "Instant") $hasInstant = true;
-      else if($card->types[$i] == "Weapon") return "W";
+      else if($card->types[$i] == "Weapon") $hasWeapon = true;
       else if($card->types[$i] == "Hero") return "C";
-      else if($card->types[$i] == "Equipment" && ($cardNumber >= 400 || (!$hasAction && !$hasInstant))) return "E";
+      else if($card->types[$i] == "Equipment") $hasEquipment = true;
       else if($card->types[$i] == "Token") return "T";
       else if($card->types[$i] == "Resource") return "R";
       else if($card->types[$i] == "Mentor") return "M";
-      else if($card->types[$i] == "Ally") return "ALLY";
       else if($card->types[$i] == "Demi-Hero") return "D";
       else if($card->types[$i] == "Block") return "B";
+      else if($card->types[$i] == "Event") $hasEvent = true;
+      else if($card->types[$i] == "Macro") return "Macro";
+      else if($card->types[$i] == "Companion") return "Companion";
+    }
+    
+    // Check for Equipment conditions after collecting all type flags
+    if($hasEquipment && ($cardNumber >= 400 || !$hasAction && !$hasInstant)) {
+      if($hasEvent) return "Event,E";
+      if($hasWeapon) return "W,E";
+      return "E";
     }
     if($hasAction && $hasAttack) return "AA";
+    else if($hasWeapon) return "W";
     else if($hasAction) return "A";
     else if($hasInstant) return "I";
-    else
-    {
-      echo("No type found for " . $card->name);
-    }
+    else if($hasEvent) return "Event";
     return "-";
   }
 
@@ -590,7 +597,8 @@
     {
       case "Action": case "Attack": case "Defense Reaction": case "Attack Reaction":
       case "Instant": case "Weapon": case "Hero": case "Equipment": case "Token":
-      case "Resource": case "Mentor": case "Companion": return true;
+      case "Resource": case "Mentor": case "Companion": case "Macro": case "Event":
+         return true;
       default: return false;
     }
   }
@@ -638,7 +646,7 @@
       else if($card->types[$i] == "Equipment") $hasEquipment = true;
       else if($card->types[$i] == "Instant") $hasInstant = true;
     }
-    return ($hasAction && $hasEquipment) || ($hasInstant && $hasEquipment);
+    return $hasAction && $hasEquipment || $hasInstant && $hasEquipment;
   }
 
   function PerchDuplicate($cardID)

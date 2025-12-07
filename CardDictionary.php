@@ -101,10 +101,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "MON400" => "E",
     "MON401" => "E",
     "MON402" => "E",
-    "the_librarian" => "M",
-    "minerva_themis" => "M",
-    "lady_barthimont" => "M",
-    "lord_sutcliffe" => "M",
     "UPR551" => "-",
     "nitro_mechanoida" => "W",
     "nitro_mechanoidb" => "E",
@@ -115,31 +111,8 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "suraya_archangel_of_knowledge" => "-",
     "DUMMY" => "C",
     "DUMMYDISHONORED" => "C",
-    "the_hand_that_pulls_the_strings" => "M",
     "parry_blade" => "W,E",
-    "sanctuary_of_aria" => "Macro",
-    "summit_the_unforgiving" => "W",
     "graphene_chelicera" => "W,T",
-    "valda_seismic_impact" => "C",
-    "chum_friendly_first_mate_yellow" => "A", //gravy allies
-    "anka_drag_under_yellow" => "A",
-    "chowder_hearty_cook_yellow" => "A",
-    "cutty_shark_quick_clip_yellow" => "A",
-    "scooba_salty_sea_dog_yellow" => "A",
-    "riggermortis_yellow" => "A",
-    "swabbie_yellow" => "A",
-    "limpit_hop_a_long_yellow" => "A",
-    "barnacle_yellow" => "A",
-    "sawbones_dock_hand_yellow" => "A",
-    "wailer_humperdinck_yellow" => "A",
-    "moray_le_fay_yellow" => "A",
-    "kelpie_tangled_mess_yellow" => "A",
-    "shelly_hardened_traveler_yellow" => "A",
-    "oysten_heart_of_gold_yellow" => "A",
-    "gallow_end_of_the_line_yellow" => "A",
-    "polly_cranka" => "Companion",
-    "sticky_fingers" => "Companion",
-    "treasure_island" => "Macro",
     "tusk" => "W", // AI custom weapon
     "wrenchtastic" => "W", // AI custom weapon
   ];
@@ -363,22 +336,6 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Arms,Evo";
     case "evo_speedslip_blue_equip":
       return "Legs,Evo";
-    case "chum_friendly_first_mate_yellow":
-    case "sawbones_dock_hand_yellow":
-    case "chowder_hearty_cook_yellow":
-    case "cutty_shark_quick_clip_yellow":
-    case "scooba_salty_sea_dog_yellow":
-    case "moray_le_fay_yellow":
-    case "wailer_humperdinck_yellow":
-    case "kelpie_tangled_mess_yellow":
-    case "shelly_hardened_traveler_yellow":
-    case "limpit_hop_a_long_yellow":
-    case "barnacle_yellow":
-    case "riggermortis_yellow":
-    case "oysten_heart_of_gold_yellow":
-    case "anka_drag_under_yellow":
-    case "gallow_end_of_the_line_yellow":
-      return "Ally";
     default:
       return "";
   }
@@ -478,33 +435,6 @@ function CardClass($cardID)
         if (IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts))) return "NONE";
       }
       return "RUNEBLADE";
-    case "valda_seismic_impact":
-      return "GUARDIAN";
-    case "sawbones_dock_hand_yellow":
-    case "riggermortis_yellow":
-    case "swabbie_yellow":
-    case "limpit_hop_a_long_yellow":
-    case "barnacle_yellow":
-    case "oysten_heart_of_gold_yellow":
-    case "wailer_humperdinck_yellow":
-    case "chum_friendly_first_mate_yellow":
-    case "anka_drag_under_yellow":
-    case "chowder_hearty_cook_yellow":
-    case "cutty_shark_quick_clip_yellow":
-    case "scooba_salty_sea_dog_yellow":
-    case "moray_le_fay_yellow":
-    case "kelpie_tangled_mess_yellow":
-    case "shelly_hardened_traveler_yellow":
-    case "gravy_bones":
-    case "gravy_bones_shipwrecked_looter":
-    case "gallow_end_of_the_line_yellow":
-      return "PIRATE,NECROMANCER";
-    case "marlynn":
-    case "marlynn_treasure_hunter":
-      return "PIRATE,RANGER";
-    case "puffin":
-    case "puffin_hightail":
-      return "PIRATE,MECHANOLOGIST";
     case "everbloom__life_blue":
       return "NONE";
     default:
@@ -529,13 +459,10 @@ function CardClass($cardID)
     }
   }
   switch ($cardID) {
-    case "suraya_archangel_of_knowledge":
-      return "ILLUSIONIST";
     case "nitro_mechanoida":
     case "nitro_mechanoidb":
     case "nitro_mechanoidc":
       return "MECHANOLOGIST";
-    case "teklovossen_the_mechropotent":
     case "teklovossen_the_mechropotentb":
       return "MECHANOLOGIST";
     default:

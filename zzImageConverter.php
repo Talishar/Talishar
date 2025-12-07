@@ -26,7 +26,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       else $imageURL = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID.webp";
     // else $imageURL = "https://d2wlb52bya4y8z.cloudfront.net/media/cards/large/$setID-RF.webp";
     echo("Image for " . $cardID . " does not exist.<BR>");
-    echo("Downloading image from $imageURL <BR>");
+    // echo("Downloading image from $imageURL <BR>");
     $handler = fopen($filename, "w");
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $imageURL);
@@ -34,10 +34,10 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     curl_exec($ch);
     curl_close($ch);
     if(filesize($filename) < 10000) { unlink($filename); return; }
-    if(file_exists($filename)) echo("Image for " . $cardID . " successfully retrieved.<BR>");
+    // if(file_exists($filename)) echo("Image for " . $cardID . " successfully retrieved.<BR>");
     if(file_exists($filename))
     {
-      echo("Normalizing file size for " . $cardID . ".<BR>");
+      // echo("Normalizing file size for " . $cardID . ".<BR>");
       $image = imagecreatefromwebp($filename);
       $image = imagescale($image, 450, 628);
       imagewebp($image, $filename);
@@ -56,7 +56,8 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     echo("Concat image for " . $cardID . " does not exist.<BR>");
     if(file_exists($filename))
     {
-      echo("Attempting to convert image for " . $cardID . " to concat.<BR>");
+      // Suppress conversion progress messages
+      // echo("Attempting to convert image for " . $cardID . " to concat.<BR>");
       $image = imagecreatefromwebp($filename);
       $imageTop = imagecrop($image, ['x' => 0, 'y' => 0, 'width' => 450, 'height' => 372]);
       $imageBottom = imagecrop($image, ['x' => 0, 'y' => 550, 'width' => 450, 'height' => 628]);
@@ -72,7 +73,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       imagedestroy($dest);
       imagedestroy($imageTop);
       imagedestroy($imageBottom);
-      if(file_exists($concatFilename)) echo("Image for " . $cardID . " successfully converted to concat.<BR>");
+      // if(file_exists($concatFilename)) echo("Image for " . $cardID . " successfully converted to concat.<BR>");
     }
   }
   $cropFilename = __DIR__ . "/crops/" . $cardID . "_cropped.png";

@@ -1936,7 +1936,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
         if ($from == "PLAY") {
           // reset the status
-          if (TypeContains($cardID, "ALLY")) {
+          if (SubtypeContains($cardID, "Ally")) {
             $allies = &GetAllies($currentPlayer);
             $allies[$index + 1] = 2;
           }
