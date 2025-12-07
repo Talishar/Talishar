@@ -33,5 +33,3 @@ APIKeys/APIKeys.php
 /APIKeys
 .env
 private_messaging_errors.log
-logs/apache-error.log
-logs/apache-access.log
