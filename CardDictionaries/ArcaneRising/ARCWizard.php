@@ -655,6 +655,7 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
     if ($remove) RemoveCurrentTurnEffect($i);
   }
   $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
+  $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i] == "arcane_compliance_blue" && $currentTurnEffects[$i+2] == $uniqueID) $modifier = 0;
   }
