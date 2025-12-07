@@ -23,6 +23,10 @@ services:
       - "../Talishar-FE:/opt/project/Talishar-FE" # Frontend project for ad-hoc running of zzCardCodeGenerator.php
       - "./docker/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini" # Xdebug configuration
       - "./docker/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini" # OPCache configuration
+      - "./docker/docker-php-ext-errors.ini:/usr/local/etc/php/conf.d/docker-php-ext-errors.ini" # Error logging configuration
+      - "./logs/apache-error.log:/var/log/apache2/error.log"
+      - "./logs/apache-access.log:/var/log/apache2/access.log"
+      - "./logs/php_error.log:/var/log/php_error.log"
 #      - "./.tmp:/tmp" # Temporary files for debugging
     command: apache2-foreground
     ports:
