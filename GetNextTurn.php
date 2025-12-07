@@ -600,18 +600,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     } 
   }
 
-  $validSlots = ["Head", "Chest", "Arms", "Legs"];
 
-  $filteredContents = [];
-  foreach ($characterContents as $card) {
-      $cardNumber = $card->cardNumber ?? "";
-      $sType = $card->sType ?? "";
-      if (($cardNumber == "NONE00" || (IsModular($cardNumber) && $sType === "" ))) {
-          continue;
-      }
-      $filteredContents[] = $card;
-  }
-  $response->opponentEquipment = $filteredContents;
+  $response->opponentEquipment = $characterContents;
 
 
   // my hand contents
@@ -815,18 +805,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
     }
   }
-  $validSlots = ["Head", "Chest", "Arms", "Legs"];
 
-  $filteredContents = [];
-  foreach ($myCharData as $card) {
-      $cardNumber = $card->cardNumber ?? "";
-      $sType = $card->sType ?? "";
-      if ($cardNumber == "NONE00" || IsModular($cardNumber) && $sType === "") {
-          continue;
-      }
-      $filteredContents[] = $card;
-  }
-  $response->playerEquipment = $filteredContents;
+  $response->playerEquipment = $myCharData;
 
 
   // Now display any previous chain links that can be activated
