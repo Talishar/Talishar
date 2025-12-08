@@ -477,7 +477,7 @@
           for($k=0; $k<count($cardArray[$i]->types); ++$k)
           {
             $type = $cardArray[$i]->types[$k];
-            if(!IsCardType($type) && !IsClass($type) && !IsTalent($type) && !IsHandedness($type))
+            if(!IsCardType($type) && !IsClass($type) && !IsTalent($type) && !IsHandedness($type) && !IsHero($type))
             {
               if($data != "") $data .= ",";
               $data .= $type;
@@ -640,6 +640,18 @@
     {
       case "1H": case "2H": return true;
       default: return false;
+    }
+  }
+
+  function IsHero($term)
+  {
+    switch($term) {
+      case "Arakni":
+      case "Puffin":
+      case "Scurv":
+        return true;
+      default:
+        return false;
     }
   }
 
