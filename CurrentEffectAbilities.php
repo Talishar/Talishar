@@ -2124,7 +2124,6 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   else if ($set == "MPG") return MPGCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "ASR") return ASRCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "SUP") return SUPCombatEffectActive($cardID, $cardToCheck);
-  else if ($set == "APS") return APSCombatEffectActive($cardID, $cardToCheck); //temporary
   else if ($set == "ARR") return ARRCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "AAC") return AACCombatEffectActive($cardID, $cardToCheck);
   else if ($set == "PEN") return PENCombatEffectActive($cardID, $cardToCheck);

@@ -117,7 +117,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "sekem_archangel_of_ravages" => "-",
     "suraya_archangel_of_erudition" => "-",
     "themis_archangel_of_judgment" => "-",
-    "victoria_archangel_of_war" => "-",
+    "victoria_archangel_of_triumph" => "-",
     "azvolai" => "-",
     "cromai" => "-",
     "dominia" => "-",
@@ -4506,6 +4506,8 @@ function HasWard($cardID, $player)
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index + 12] != "DOWN";
+    case "manifestation_of_miragai_blue": //missing from generated
+      return true;
     default:
       return GeneratedHasWard($cardID);
   }
