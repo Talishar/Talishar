@@ -292,14 +292,13 @@ function CardSubType($cardID, $uniqueID = -1)
     }
     return "";
   }
-  if (str_contains($cardID, "inner_chi")) return "Chi";
   $set = CardSet($cardID);
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     if ($number < 400) return GeneratedCardSubtype($cardID);
     else if (
-      $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "nitro_mechanoidc" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb" && $set != "MST")
+      $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "nitro_mechanoidc" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")
       return GeneratedCardSubtype($cardID);
   }
   switch ($cardID) {
