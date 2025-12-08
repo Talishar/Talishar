@@ -268,6 +268,10 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ash";
     case "UPR551":
       return "Ally";
+    case "blasmophet_levia_consumed":
+      return "Demon";
+    case "teklovossen_the_mechropotent":
+      return "Evo";
     case "kiss_of_death_red":
       return "Dagger,Attack";
     case "polly_cranka_ally":
