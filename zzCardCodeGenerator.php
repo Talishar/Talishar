@@ -14,9 +14,7 @@
   $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/compendium-of-rathe/json/english/card.json";
 
   $curl = curl_init();
-  $headers = array(
-    "Content-Type: application/json",
-  );
+  $headers = [ "Content-Type: application/json" ];
   curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
   curl_setopt($curl, CURLOPT_URL, $jsonUrl);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -85,7 +83,7 @@
     if ($name == "Goldfin Harpoon") return "goldfin_harpoon_yellow";
     $cardID = strtolower($name);
     $cardID = str_replace("//", $delimiter, $cardID);
-    $cardID = str_replace(array("ā", "ä", "ö", "ü", "ß", "ṣ"), array("a", "a", "o", "u", "s", "s"), $cardID);
+    $cardID = str_replace(["ā", "ä", "ö", "ü", "ß", "ṣ"], ["a", "a", "o", "u", "s", "s"], $cardID);
     $cardID = iconv('UTF-8', 'US-ASCII//TRANSLIT', $cardID);
     $cardID = str_replace(" ", $delimiter, $cardID);
     $cardID = str_replace("-", $delimiter, $cardID);
@@ -124,7 +122,7 @@
   {
     global $originalSets;
     $rarityDict = ["T"=>0, "B"=>0, "C"=>1, "R"=>2, "M"=>3, "L"=>4, "F"=>5, "V"=>6, "P"=>7, "S"=>8, "-"=>9];
-    echo("<BR>" . $functionName . "<BR>");
+    echo "<BR>" . $functionName . "<BR>";
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $isString = true;
     $isBool = false;
@@ -214,7 +212,7 @@
   function GenerateKeywordFunction(&$cardArray, $handler, $functionName, $keyword, $isAmountFunction)
   {
     global $originalSets;
-    echo("<BR>" . $functionName . "<BR>");
+    echo "<BR>" . $functionName . "<BR>";
     fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     fwrite($handler, "if(is_int(\$cardID)) return " . ($isAmountFunction ? "0" : "false") . ";\r\n");
     fwrite($handler, "return match(\$cardID) {\r\n");
@@ -360,12 +358,7 @@
     // Check for exact match
     if ($keywordWithoutNumber === $keyword) {
       // Extract the number if it exists
-      if (count($parts) > 0 && is_numeric(end($parts))) {
-        $amount = intval(end($parts));
-      }
-      else {
-        $amount = 1; // Default amount if keyword exists but no number
-      }
+      $amount = (count($parts) > 0 && is_numeric(end($parts))) ? intval(end($parts)) : 1;
       return true;
     }
     
@@ -398,12 +391,7 @@
         $compositeKeywordClean = trim(preg_replace('/\s+\d+$/', '', $compositeKeyword));
         if ($compositeKeywordClean === $keyword) {
           // Extract the number if it exists
-          if (is_numeric(substr($compositeKeyword, -1))) {
-            $amount = intval(substr($compositeKeyword, -1));
-          }
-          else {
-            $amount = 1;
-          }
+          $amount = (is_numeric(substr($compositeKeyword, -1))) ? intval(substr($compositeKeyword, -1)) : 1;
           return true;
         }
       }
@@ -419,12 +407,7 @@
         $compositeKeywordClean = trim(preg_replace('/\s+\d+$/', '', $compositeKeyword));
         if ($compositeKeywordClean === $keyword) {
           // Extract the number if it exists
-          if (is_numeric(substr($compositeKeyword, -1))) {
-            $amount = intval(substr($compositeKeyword, -1));
-          }
-          else {
-            $amount = 1;
-          }
+          $amount = (is_numeric(substr($compositeKeyword, -1))) ? intval(substr($compositeKeyword, -1)) : 1;
           return true;
         }
       }
@@ -532,8 +515,8 @@
           break;
       }
       if($isBool);
-      else if(($isString == false && !is_numeric($data) && $data != "") || $data == "-" || $data == "*" || $data == "X") echo("Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>");
-      if(($isBool && $data == "true") || ($data != "-" && $data != "" && $data != "*" && $data != $defaultValue))
+      else if($isString == false && !is_numeric($data) && $data != "" || $data == "-" || $data == "*" || $data == "X") echo "Exception with property name " . $propertyName . " data " . $data . " card " . $cardID . "<BR>";
+      if($isBool && $data == "true" || $data != "-" && $data != "" && $data != "*" && $data != $defaultValue)
       {
         if ($propertyName != "SIDtoCID") $AA[$cardID] = $data;
         else $AA[$setID] = $cardID;

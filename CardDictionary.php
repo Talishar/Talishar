@@ -129,7 +129,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "tomeltai" => "-",
     "vynserakai" => "-",
     "yendurai" => "-",
-    "dracona_optimai" => "_",
+    "dracona_optimai" => "-",
   ];
   $card = GetClass($cardID, 0);
   if ($card != "-") {
@@ -230,7 +230,6 @@ function SetID($cardID)
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
     "UPR551" => "UPR551", //ghostly touch
-    "alpha_instinct_blue" => "ARR022", //temporary
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -816,7 +815,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
     if ($set != "DUM") {
       $setID = SetID($cardID);
       $number = intval(substr($setID, 3));
-      if ($number < 400 || ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")) $block = GeneratedBlockValue($cardID);
+      if ($number < 400 || $set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") $block = GeneratedBlockValue($cardID);
     }
   }
   if ($block == -2) { //it hasn't been set yet
@@ -941,7 +940,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
-    if ($number < 400 || ($set != "MON" && $set != "DYN"))
+    if ($number < 400 || $set != "MON" && $set != "DYN")
     $basePower = $basePower == -1 ? GeneratedPowerValue($cardID) : $basePower;
   }
   $basePower = match ($cardID) {
@@ -1728,7 +1727,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
-  if ($CombatChain->HasCurrentLink() && ($phase == "B" || (($phase == "D" || $phase == "INSTANT") && $cardType == "DR"))) {
+  if ($CombatChain->HasCurrentLink() && ($phase == "B" || ($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) {
     if ($from == "HAND") {
       if (!DelimStringContains($abilityTypes, "I", true) && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) return false;
       $benjiActive = CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA";
@@ -1744,7 +1743,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B") && !str_contains(GetAbilityTypes($cardID, $index, $from), "I")) return false;
     }
   }
-  if ($phase == "B" && $from == "ARS" && !(($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player)) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
+  if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
   if ($phase == "B" || $phase == "D") {
     if ($cardType == "AA") {
       $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
@@ -1992,7 +1991,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed, $CS_NumAttacks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
-  if (($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH")) {
+  if ($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH") {
     switch ($cardID) {
       case "dig_up_dinner_blue":
         return "THEIRBANISH";
@@ -2357,7 +2356,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
       $isClub = SubtypeContains($CombatChain->AttackCard()->ID(), "Club");
       $isHammer = SubtypeContains($CombatChain->AttackCard()->ID(), "Hammer");
-      if ($isClub || $isHammer || (CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2 || $combatChainState[$CCS_AttackCost] >= 2)) return false;
+      if ($isClub || $isHammer || CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2 || $combatChainState[$CCS_AttackCost] >= 2) return false;
       return true;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
@@ -2365,7 +2364,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
       $attackCost = $combatChainState[$CCS_AttackCost] == -1 ? CardCost($CombatChain->AttackCard()->ID(), "CC") : $combatChainState[$CCS_AttackCost];
-      if ($subtype == "Sword" || $subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && $attackCost <= 1)) return false;
+      if ($subtype == "Sword" || $subtype == "Dagger" || CardType($CombatChain->AttackCard()->ID()) == "AA" && $attackCost <= 1) return false;
       return true;
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
@@ -2580,7 +2579,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "blade_flash_blue":
       return !$CombatChain->HasCurrentLink() || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";
     case "combustion_point_red":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || (!ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer));
+      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer);
     case "flamescale_furnace":
       return GetClassState($player, $CS_NumRedPlayed) == 0;
     case "sash_of_sandikai":
@@ -2686,7 +2685,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "razors_edge_red":
     case "razors_edge_yellow":
     case "razors_edge_blue":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || (CardType($CombatChain->AttackCard()->ID()) != "AA");
+      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "silverwind_shuriken_blue":
       return $from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID()) : false;
     case "trench_of_sunken_treasure":
@@ -2699,16 +2698,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       return false;
     case "concealed_blade_blue":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) && !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $mainPlayer));
+      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) && !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $mainPlayer);
     case "short_and_sharp_red":
     case "short_and_sharp_yellow":
     case "short_and_sharp_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if ($subtype == "Dagger" || (CardType($CombatChain->AttackCard()->ID()) == "AA" && PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") <= 2)) return false;
+      if ($subtype == "Dagger" || CardType($CombatChain->AttackCard()->ID()) == "AA" && PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") <= 2) return false;
       return true;
     case "mask_of_malicious_manifestations":
-      return (count($myHand) + count($myArsenal)) < 2;
+      return count($myHand) + count($myArsenal) < 2;
     case "death_touch_red":
     case "death_touch_yellow":
     case "death_touch_blue":
@@ -2722,12 +2721,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "fisticuffs":
       return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "fleet_foot_sandals":
-      return !$CombatChain->HasCurrentLink() || (CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", base:true) > 1;
+      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", base:true) > 1;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
       return count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
     case "luminaris_celestial_fury":
-      return !$CombatChain->HasCurrentLink() || (!str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer));
+      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer);
     case "angelic_descent_red":
     case "angelic_descent_yellow":
     case "angelic_descent_blue":
@@ -2884,7 +2883,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "venomous_bite_yellow":
     case "venomous_bite_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if ((CardType($CombatChain->AttackCard()->ID()) == "AA" && (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $player) || TalentContains($CombatChain->AttackCard()->ID(), "MYSTIC", $player)))) return false;
+      if (CardType($CombatChain->AttackCard()->ID()) == "AA" && (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $player) || TalentContains($CombatChain->AttackCard()->ID(), "MYSTIC", $player))) return false;
       return true;
     case "fang_strike":
     case "slither":
@@ -2933,7 +2932,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
       return true;
     case "longdraw_half_glove":
-      return (count($myHand) + count($myArsenal)) < 2;
+      return count($myHand) + count($myArsenal) < 2;
     case "shadowrealm_horror_red":
       return $discard->NumCards() < 3;
     case "enigma_new_moon":
@@ -4218,7 +4217,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
   if ($player == "") $player = $currentPlayer;
-  $mod = explode("-", ($mod ?? ""))[0];
+  $mod = explode("-", $mod ?? "")[0];
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "spew_shadow_red" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
@@ -4311,7 +4310,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
 function AbilityPlayableFromBanish($cardID, $mod = "")
 {
   global $currentPlayer, $mainPlayer;
-  $mod = explode("-", ($mod ?? ""))[0];
+  $mod = explode("-", $mod ?? "")[0];
   if (isFaceDownMod($mod)) return false;
   switch ($cardID) {
     case "guardian_of_the_shadowrealm_red":
@@ -4632,20 +4631,6 @@ function BlockCantBeModified($cardID)
 function Rarity($cardID)
 {
   $set = CardSet($cardID);
-  switch ($cardID) {
-    case "qi_unleashed_red":
-    case "qi_unleashed_yellow":
-    case "qi_unleashed_blue": 
-    case "thunder_quake_red":
-    case "thunder_quake_yellow":
-    case "thunder_quake_blue":
-    // case "frosthaven_sheath_red":
-    // case "leaven_sheath_red":
-    // case "stormwind_sheath_red":// Commoner workaround. Can be deleted later when the database is updated.
-      return "C";
-    case "valda_brightaxe":
-      return "T";
-  }
   if ($set != "DUM") {
     return GeneratedRarity($cardID);
   }
@@ -4678,14 +4663,7 @@ function CardCareAboutChiPitch($cardID)
 
 function IsModular($cardID)
 {
-  switch ($cardID) {
-    case "adaptive_plating":
-    case "adaptive_dissolver":
-    case "adaptive_alpha_mold":
-      return true;
-    default:
-      return false;
-  }
+  return GeneratedHasModular($cardID);
 }
 
 function HasCloaked($cardID, $player = "", $hero = "")

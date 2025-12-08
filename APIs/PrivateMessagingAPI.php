@@ -58,7 +58,7 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
   exit;
 }
 
-//  Activity update sampling - only update 10% of requests to reduce database load
+// Activity update sampling - only update 10% of requests to reduce database load
 // This significantly reduces write contention while still maintaining activity tracking
 if (rand(1, 10) === 1) {
   // Use UTC_TIMESTAMP to ensure timezone consistency across all servers

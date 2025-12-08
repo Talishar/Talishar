@@ -75,23 +75,10 @@ function RemoveAllyEffects($player, $uniqueID)
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 
-
-function IsTokenAlly($cardID)
-{
-  return match($cardID) {
-    "aether_ashwing" => true,
-    "blasmophet_the_soul_harvester" => true,
-    "nasreth_the_soul_harrower" => true,
-    "ursur_the_soul_reaper" => true,
-    "cintari_sellsword" => true,
-    "-" => true,
-    default => false
-  };
-}
-
 function AllyAddGraveyard($player, $cardID, $toBanished=false)
 {
-  if (CardType($cardID) != "T") {
+  if ($cardID == "-") return;
+  if (!TypeContains($cardID, "T")) {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
     $id = match($cardID) {
       "suraya_archangel_of_erudition" => "figment_of_erudition_yellow",
@@ -119,7 +106,6 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
       "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
-    if (IsTokenAlly($id)) return;
     if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player);
     else BanishCardForPlayer($id, $player, "PLAY");
   }
