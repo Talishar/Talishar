@@ -14,9 +14,6 @@ SetHeaders();
 header('Content-Type: application/json; charset=utf-8');
 $response = new stdClass();
 
-// Set timezone to UTC for consistent time calculations
-date_default_timezone_set('UTC');
-
 // Generate a UUID V4 for unique game identification
 if (!function_exists('GenerateGameGUID')) {
   function GenerateGameGUID()
@@ -58,24 +55,6 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
 $opponentInactive = false;
-
-// Update player activity during gameplay for online status tracking
-if ($isGamePlayer) {
-  // Get the logged-in user ID and update their lastActivity timestamp
-  include_once "./includes/dbh.inc.php";
-  include_once "./includes/functions.inc.php";
-  
-  if (IsUserLoggedIn()) {
-    $userId = LoggedInUser();
-    $conn = GetDBConnection();
-    if ($conn) {
-      // Update lastActivity with UTC timestamp (sampling: only 10% of requests to reduce load)
-      if (rand(1, 10) === 1) {
-        $conn->query("UPDATE users SET lastActivity = UTC_TIMESTAMP() WHERE usersId = " . intval($userId) . " LIMIT 1");
-      }
-    }
-  }
-}
 
 $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
