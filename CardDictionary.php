@@ -117,7 +117,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "sekem_archangel_of_ravages" => "-",
     "suraya_archangel_of_erudition" => "-",
     "themis_archangel_of_judgment" => "-",
-    "victoria_archangel_of_war" => "-",
+    "victoria_archangel_of_triumph" => "-",
     "azvolai" => "-",
     "cromai" => "-",
     "dominia" => "-",
