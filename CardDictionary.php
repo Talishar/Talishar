@@ -118,6 +118,18 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
     "suraya_archangel_of_erudition" => "-",
     "themis_archangel_of_judgment" => "-",
     "victoria_archangel_of_war" => "-",
+    "azvolai" => "-",
+    "cromai" => "-",
+    "dominia" => "-",
+    "kyloria" => "-",
+    "miragai" => "-",
+    "nekria" => "-",
+    "ouvia" => "-",
+    "themai" => "-",
+    "tomeltai" => "-",
+    "vynserakai" => "-",
+    "yendurai" => "-",
+    "dracona_optimai" => "_",
   ];
   $card = GetClass($cardID, 0);
   if ($card != "-") {
