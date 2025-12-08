@@ -445,7 +445,7 @@ enum PatreonCampaign : string
           "blossom_of_spring=LGS100-T", "blossoming_decay_red=VER008-T", "blossoming_decay_yellow=VER017-T", "blossoming_decay_blue=VER019-T", "blue_fin_harpoon_blue=GEM054-T",
           "board_the_ship_red=FAB347-T", "boast_blue=FAB189-T", "boltn_shot_red=GEM058-T", "bonebreaker_bellow_red=RHI016-T", "bonebreaker_bellow_yellow=RHI020-T",
           "bonebreaker_bellow_blue=RHI024-T", "boulder_trap_yellow=LGS138-T", "bravo=MPG529-T", "bravo_star_of_the_show=EVR417-T", "break_of_dawn_red=LGS169-T",
-          "break_of_dawn_yellow=LGS170-T", "break_of_dawn_blue=LGS171-T", "breaking_point_red=FAB091-T", "briar=ROS255-T", "briar_warden_of_thorns=ROS254-T",
+          "break_of_dawn_yellow=LGS170-T", "break_of_dawn_blue=LGS171-T", "breaking_point_red=FAB091-T",
           "brothers_in_arms_blue=FAB093-T", "bubble_to_the_surface_red=HNT154-T", "buckwild_red=GEM101-T", "bully_tactics_red=FAB380-T", "burgeoning_red=LGS069-T",
           "burgeoning_yellow=LGS070-T", "burgeoning_blue=LGS071-T", "call_to_the_grave_blue=ROS218-T", "calming_breeze_red=GEM031-T", "captains_call_blue=FAB352-T",
           "channel_lake_frigid_blue=ELE146-T", "channel_lightning_valley_yellow=FAB264-T", "channel_the_millennium_tree_red=FAB263-T", "channel_the_tranquil_domain_yellow=SUP263-T",
