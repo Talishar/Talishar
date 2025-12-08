@@ -504,7 +504,7 @@ enum PatreonCampaign : string
           "inflame_red=UPR097-T", "inner_chi_blue=MST410-T", "invigorate_red=LGS080-T", "invigorate_yellow=LGS081-T", "invigorate_blue=LGS082-T",
           "invoke_azvolai_red=UPR009-T", "invoke_cromai_red=UPR010-T", "invoke_dominia_red=UPR008-T", "invoke_dracona_optimai_red=UPR006-T", "invoke_kyloria_red=UPR011-T",
           "invoke_miragai_red=UPR012-T", "invoke_nekria_red=UPR013-T", "invoke_ouvia_red=UPR014-T", "invoke_suraya_yellow=DYN212-T", "invoke_themai_red=UPR015-T",
-          "invoke_tomeltai_red=UPR007-T", "invoke_vynserakai_red=UPR016-T", "invoke_yendurai_red=UPR017-T", "ira_scarlet_revenger=HER124-T", "ironsong_pride_red=DYN072-T",
+          "invoke_tomeltai_red=UPR007-T", "invoke_vynserakai_red=UPR016-T", "invoke_yendurai_red=UPR017-T", "ironsong_pride_red=DYN072-T",
           "ironsong_response_red=LGS008-T", "ironsong_response_yellow=LGS030-T", "ironsong_response_blue=LGS031-T", "iyslander=UPR103-T", "jack_o_lantern_red=LGS176-T",
           "jack_o_lantern_yellow=LGS177-T", "jack_o_lantern_blue=LGS178-T", "jagged_edge_red=FAB311-T", "jarl_vetreidi=MPG400-T", "jittery_bones_red=GEM049-T",
           "kabuto_of_imperial_authority=HNT115-T", "kassai=HVY491-T", "kassai_of_the_golden_sand=HVY490-T", "kayo=HVY402-T", "kayo_armed_and_dangerous=HVY401-T",
