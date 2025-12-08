@@ -561,7 +561,7 @@ enum PatreonCampaign : string
           "sigil_of_sanctuary_blue=LGS323-T", "sigil_of_solace_red=FAB136-T", "sigil_of_temporal_manipulation_blue=LGS328-T", "sigil_of_the_arknight_blue=LGS325-T",
           "sink_below_red=FAB332-T", "sirens_of_safe_harbor_red=GEM063-T", "sky_skimmer_red=GEM042-T", "slap_happy_red=LGS257-T", "slice_and_dice_red=EVR057-T",
           "slice_and_dice_yellow=EVR058-T", "slice_and_dice_blue=EVR059-T", "slither=FAB242-T", "smash_up_red=FAB272-T", "smashback_alehorn_blue=LGS245-T",
-          "smashing_ground_blue=GEM100-T", "smelting_of_the_old_ones_red=MPG028-T", "smoke_out_red=GEM017-T", "snatch_red=FAB331-T", "solid_ground_blue=MPG019-T",
+          "smashing_ground_blue=GEM100-T", "smelting_of_the_old_ones_red=MPG028-T", "smoke_out_red=GEM017-T", "solid_ground_blue=MPG019-T",
           "soup_up_red=LGS195-T", "soup_up_yellow=LGS196-T", "soup_up_blue=LGS197-T", "spectral_shield=FAB285-T", "spew_obscenities_yellow=LGS421-T",
           "spike_with_bloodrot_red=FAB324-T", "spike_with_frailty_red=LGS131-T", "spike_with_inertia_red=LGS132-T", "spinning_wheel_kick_red=LGS141-T",
           "spinning_wheel_kick_yellow=LGS142-T", "spinning_wheel_kick_blue=LGS143-T", "spoiled_skull=DTD106-T", "stains_of_the_redback_red=FAB322-T",
