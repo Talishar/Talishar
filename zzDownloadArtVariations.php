@@ -284,6 +284,7 @@ if (count($altArtsArray) > 0) {
 
 /**
  * Automatically update PatreonDictionary.php with new altArts
+ * Only adds NEW entries, doesn't replace existing ones
  */
 function UpdatePatreonDictionary($altArtsArray)
 {
@@ -296,12 +297,6 @@ function UpdatePatreonDictionary($altArtsArray)
   
   // Read the file
   $content = file_get_contents($patDictFile);
-  
-  // Build new altArts entries in the same format as existing ones
-  $newEntries = [];
-  foreach ($altArtsArray as $cardID => $filename) {
-    $newEntries[] = "          \"" . $cardID . "=" . $filename . "\"";
-  }
   
   // Find the Talishar/PvtVoid case and the closing ];
   // Pattern: case "7198186": // Talishar
@@ -317,18 +312,43 @@ function UpdatePatreonDictionary($altArtsArray)
     return;
   }
   
-  // Get the existing entries
+  // Parse existing entries to extract cardID => filename mapping
   $existingEntries = trim($matches[2]);
+  $existingMap = [];
   
-  // Remove trailing comma from existing entries
-  $existingEntries = rtrim($existingEntries, ",\n");
-  
-  // Combine: existing entries, comma, new entries
-  $combinedEntries = $existingEntries;
-  if (!empty($existingEntries)) {
-    $combinedEntries .= ",\n";
+  // Split by comma and parse each entry
+  $parts = preg_split('/",\s*"/', $existingEntries);
+  foreach ($parts as $part) {
+    // Clean quotes
+    $part = trim($part, '"');
+    if (!empty($part) && strpos($part, '=') !== false) {
+      list($cardID, $filename) = explode('=', $part, 2);
+      $existingMap[trim($cardID)] = trim($filename);
+    }
   }
-  $combinedEntries .= implode(", ", $newEntries);
+  
+  // Count new entries before adding
+  $newCount = 0;
+  $duplicateCount = 0;
+  
+  // Merge new entries, only adding ones that don't already exist
+  foreach ($altArtsArray as $cardID => $filename) {
+    if (!isset($existingMap[$cardID])) {
+      $existingMap[$cardID] = $filename;
+      $newCount++;
+    } else {
+      $duplicateCount++;
+    }
+  }
+  
+  // Rebuild the entries string in the original format
+  $rebuiltEntries = [];
+  foreach ($existingMap as $cardID => $filename) {
+    $rebuiltEntries[] = "\"" . $cardID . "=" . $filename . "\"";
+  }
+  
+  // Join with commas and proper indentation
+  $combinedEntries = "          " . implode(", ", $rebuiltEntries);
   
   // Create the replacement
   $replacement = $matches[1] . $combinedEntries . $matches[3];
@@ -339,7 +359,12 @@ function UpdatePatreonDictionary($altArtsArray)
   // Write back to file
   if ($newContent !== $content) {
     file_put_contents($patDictFile, $newContent);
-    echo "✓ Successfully updated PatreonDictionary.php with " . count($altArtsArray) . " new alt arts<BR>";
+    echo "✓ Successfully updated PatreonDictionary.php<BR>";
+    echo "  - New entries added: " . $newCount . "<BR>";
+    if ($duplicateCount > 0) {
+      echo "  - Duplicate entries skipped: " . $duplicateCount . "<BR>";
+    }
+    echo "  - Total entries: " . count($existingMap) . "<BR>";
   } else {
     echo "Warning: No changes made to PatreonDictionary.php (pattern may not have matched)<BR>";
   }
