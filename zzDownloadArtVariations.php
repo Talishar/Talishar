@@ -469,38 +469,66 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename)
       CreateDirIfNotExists(dirname($cardCropsMissingFolder));
       
       // Save main card image
-      @imagewebp($processedImage, $filepath, 80);
+      $webpResult = @imagewebp($processedImage, $filepath, 80);
+      if (!$webpResult) {
+        error_log("Warning: Failed to save webp for $filename to $filepath");
+      }
       if (!file_exists($cardImagesUploadedFolder)) {
         @imagewebp($processedImage, $cardImagesMissingFolder, 80);
       }
       
       // Create and save concat image (like zzImageConverter.php)
-      if (!file_exists($concatFilename)) {
-        $imageTop = imagecrop($processedImage, ['x' => 0, 'y' => 0, 'width' => 450, 'height' => 372]);
-        $imageBottom = imagecrop($processedImage, ['x' => 0, 'y' => 550, 'width' => 450, 'height' => 78]);
+      // Always regenerate for new downloads to ensure it exists
+      try {
+        $imageTop = @imagecrop($processedImage, ['x' => 0, 'y' => 0, 'width' => 450, 'height' => 372]);
+        $imageBottom = @imagecrop($processedImage, ['x' => 0, 'y' => 550, 'width' => 450, 'height' => 78]);
         
-        $dest = imagecreatetruecolor(450, 450);
-        @imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
-        @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
-        
-        @imagewebp($dest, $concatFilename, 80);
-        if (!file_exists($cardSquaresUploadedFolder)) {
-          @imagewebp($dest, $cardSquaresMissingFolder, 80);
+        if ($imageTop !== false && $imageBottom !== false) {
+          $dest = @imagecreatetruecolor(450, 450);
+          if ($dest !== false) {
+            @imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
+            @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
+            
+            $concatResult = @imagewebp($dest, $concatFilename, 80);
+            if (!$concatResult) {
+              error_log("Failed to save concat to $concatFilename");
+            }
+            
+            if (!file_exists($cardSquaresUploadedFolder)) {
+              @imagewebp($dest, $cardSquaresMissingFolder, 80);
+            }
+            
+            @imagedestroy($dest);
+          }
+        } else {
+          error_log("Failed to crop for concat: " . $filename);
         }
         
-        @imagedestroy($imageTop);
-        @imagedestroy($imageBottom);
-        @imagedestroy($dest);
+        if ($imageTop !== false) @imagedestroy($imageTop);
+        if ($imageBottom !== false) @imagedestroy($imageBottom);
+      } catch (Exception $e) {
+        error_log("Exception creating concat for $filename: " . $e->getMessage());
       }
       
       // Create and save crop image (like zzImageConverter.php)
-      if (!file_exists($cropFilename)) {
-        $cropImage = imagecrop($processedImage, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
-        @imagepng($cropImage, $cropFilename);
-        if (!file_exists($cardCropsUploadedFolder)) {
-          @imagepng($cropImage, $cardCropsMissingFolder);
+      // Always regenerate for new downloads to ensure it exists
+      try {
+        $cropImage = @imagecrop($processedImage, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
+        if ($cropImage !== false) {
+          $cropResult = @imagepng($cropImage, $cropFilename);
+          if (!$cropResult) {
+            error_log("Failed to save crop to $cropFilename");
+          }
+          
+          if (!file_exists($cardCropsUploadedFolder)) {
+            @imagepng($cropImage, $cardCropsMissingFolder);
+          }
+          @imagedestroy($cropImage);
+        } else {
+          error_log("Failed to create crop image for: " . $filename);
         }
-        @imagedestroy($cropImage);
+      } catch (Exception $e) {
+        error_log("Exception creating crop for $filename: " . $e->getMessage());
       }
       
       @imagedestroy($processedImage);
