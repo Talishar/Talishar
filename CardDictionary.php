@@ -4506,6 +4506,8 @@ function HasWard($cardID, $player)
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, $cardID);
       return $char[$index + 12] != "DOWN";
+    case "manifestation_of_miragai_blue": //missing from generated
+      return true;
     default:
       return GeneratedHasWard($cardID);
   }
