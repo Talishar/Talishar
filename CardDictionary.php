@@ -292,6 +292,7 @@ function CardSubType($cardID, $uniqueID = -1)
     }
     return "";
   }
+  if (str_contains($cardID, "inner_chi")) return "Chi";
   $set = CardSet($cardID);
   if ($set != "DUM") {
     $setID = SetID($cardID);
