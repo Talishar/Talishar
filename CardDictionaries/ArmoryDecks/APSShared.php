@@ -35,16 +35,6 @@ function APSHitEffect($cardID): void
   }
 }
 
-function APSCombatEffectActive($cardID, $attackID): bool
-{
-  global $mainPlayer;
-  return match($cardID) {
-    //right now confidence was first revealed in the armory deck
-    "confidence" => TypeContains($attackID, "AA", $mainPlayer),
-    default => false
-  };
-}
-
 function APSAbilityCost($cardID): int
 {
   return match($cardID) {
