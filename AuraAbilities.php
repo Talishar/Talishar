@@ -1346,7 +1346,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
 
 function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
 {
-  global $CS_DamageTaken, $CS_ArcaneDamageTaken, $CS_DamageDealt, $CS_ArcaneDamageDealt;
+  global $CS_DamageTaken, $CS_ArcaneDamageTaken, $CS_DamageDealt, $CS_ArcaneDamageDealt, $CS_DamageDealtToOpponent;
   $otherPlayer = $player == 1 ? 2 : 1;
 
   $auras = &GetAuras($player);
@@ -1380,18 +1380,19 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
     switch ($otherAuras[$i]) {
       case "channel_lightning_valley_yellow":
         if (!$selfInflicted) {
-          if(GetClassState($otherPlayer, $CS_DamageDealt) == 0 && GetClassState($otherPlayer, $CS_ArcaneDamageDealt) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
+          if(GetClassState($otherPlayer, $CS_DamageDealtToOpponent) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
             $otherAuras[$i + 5] -= 1;
             if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
               AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
             }
           }
-          elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
-            $otherAuras[$i + 5] -= 1;
-            if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
-              AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
-            }
-          }
+          // I think this block is unnecessary now
+          // elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
+          //   $otherAuras[$i + 5] -= 1;
+          //   if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
+          //     AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
+          //   }
+          // }
         }
         break;
       default:

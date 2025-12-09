@@ -726,7 +726,9 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       WriteLog("Lost life from " . CardLink("ode_to_wrath_yellow", "ode_to_wrath_yellow"));
     }
     $classState[$CS_DamageTaken] += $damage;
-    if (!IsAllyAttacking()) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
+    if (!IsAllyAttacking()) {
+      if ($playerSource ==  $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
+    }
     else {
       $allyInd = SearchAlliesForUniqueID($combatChain[8], $otherPlayer);
       $allies = &GetAllies($otherPlayer);
