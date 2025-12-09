@@ -586,6 +586,16 @@ enum PatreonCampaign : string
           "widespread_annihilation_blue=DTD137-T", "widespread_destruction_yellow=DTD138-T", "widespread_ruin_red=DTD139-T", "wind_up_the_crowd_blue=GEM085-T",
           "winds_of_eternity_blue=EVR040-T", "wrath_of_retribution_red=HNT061-T", "wrecker_romp_red=LGS020-T", "wrecker_romp_yellow=LGS021-T",
           "wrecker_romp_blue=FAB200-T", "yellow_fin_harpoon_blue=GEM056-T", "yendurai=UPR417-T", "yo_ho_ho_blue=GEM053-T", "zero_to_sixty_red=FAB177-T",
+          "amethyst_tiara=DYN171-T", "ash=UPR443-T", "blasmophet_levia_consumed=DTD564-T", "blazen_yoroi=DYN045-T", "celestial_kimono=DYN213-T", 
+          "chart_a_course_red=SEA173-T", "chart_a_course_yellow=SEA174-T", "chart_a_course_blue=SEA175-T", "divvy_up_blue=SEA144-T", 
+          "emperor_dracai_of_aesir=DYN001-T", "evo_atom_breaker_red=EVO031-T", "evo_circuit_breaker_red=EVO030-T", "evo_face_breaker_red=EVO032-T", 
+          "evo_mach_breaker_red=EVO033-T", "evo_steel_soul_controller_blue=EVO028-T", "evo_steel_soul_memory_blue=EVO026-T", "evo_steel_soul_processor_blue=EVO027-T",
+          "evo_steel_soul_tower_blue=EVO029-T", "golden_tipple_red=SEA159-T", "golden_tipple_yellow=SEA160-T", "golden_tipple_blue=SEA161-T", 
+          "hanabi_blaster=DYN088-T", "levia_redeemed=DTD164-T", "lost_in_transit_yellow=SEA151-T", "merciless_battleaxe=DYN068-T", "murderous_rabble_blue=SEA137-T", 
+          "mutiny_on_the_battalion_barque_blue=SEA176-T", "mutiny_on_the_nimbus_sovereign_blue=SEA177-T", "mutiny_on_the_swiftwater_blue=SEA178-T", 
+          "pilfer_the_wreck_red=SEA138-T", "pilfer_the_wreck_yellow=SEA139-T", "pilfer_the_wreck_blue=SEA140-T", "rok=DYN005-T", "sandscour_greatbow=DYN151-T", 
+          "seasoned_saviour=DYN026-T", "shifting_tides_blue=SEA148-T", "singularity_red=EVO010-T", "surgent_aethertide=DYN192-T", "swindlers_grift_red=SEA169-T", 
+          "swindlers_grift_yellow=SEA170-T", "swindlers_grift_blue=SEA171-T", "thievn_varmints_red=SEA172-T", "throw_caution_to_the_wind_blue=SEA150-T",
       ];
 
         break;
