@@ -397,12 +397,6 @@ enum PatreonCampaign : string
     if($char[0] == "enigma_new_moon") {
       $altArts[] = "spectral_shield=MON104-Green";
     }
-    if(CardSet($char[0]) == "HVY") {
-      $altArts[] = "gold=HVY243-gold";
-    }
-    if(CardSet($char[0]) == "SEA") {
-      $altArts[] = "gold=SEA244-gold";
-    }
 
     // Add campaign-specific alt arts
     $campaignAltArts = $this->getCampaignAltArts();
