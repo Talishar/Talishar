@@ -271,7 +271,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if(!AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
-        if($campaign->IsTeamMember($playerID == 1 ? $p2uid : $p1uid)) {
+        if($campaign->IsTeamMember($initialLoad->opponentName)) {
           $opponentAltArts = $campaign->AltArts($otherPlayer);
           if($opponentAltArts == "") continue;
           $opponentAltArts = explode(",", $opponentAltArts);
