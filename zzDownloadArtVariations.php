@@ -6,7 +6,6 @@ include __DIR__ . '/zzImageConverter.php';
 $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/compendium-of-rathe/json/english/card.json";
 
 echo "<h2>Starting Art Variations Download</h2>";
-echo "Fetching card data from FAB Cube...<BR>";
 
 $curl = curl_init();
 $headers = [ "Content-Type: application/json" ];
@@ -54,10 +53,8 @@ $downloadedCount = 0;
 $skippedCount = 0;
 $failedCount = 0;
 
-// Track best art variation per card (AA > FA > EA)
+// Track best art variation per card (AA > AB > FA > EA)
 $cardBestVariant = [];
-
-echo "Processing cards...<BR>";
 
 $cardCount = 0;
 $printingCount = 0;
@@ -70,8 +67,8 @@ $cardWithArtVar = null;
  */
 function GetArtVariationPriority($artVar) {
   $priorities = [
-    "AB" => 4,
-    "AA" => 3,
+    "AA" => 4,
+    "AB" => 3,
     "FA" => 2,
     "EA" => 1
   ];
@@ -114,7 +111,7 @@ foreach ($cardArray as $card) {
       continue;
     }
     
-    // Check if any of the art variations match EA, FA, AA
+    // Check if any of the art variations match EA, FA, AA, AB
     $hasTargetVariation = false;
     $bestVariationForPrinting = null;
     $bestPriority = 0;
