@@ -1650,6 +1650,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
         if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
           $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] == 1 : $myCharacter[$index + 14] == 1;
+          $powerCounters = $option[0] == "MYCHAR" ? $myCharacter[$index + 3] : $theirCharacter[$index + 3];
         }
 
         if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN")) {
