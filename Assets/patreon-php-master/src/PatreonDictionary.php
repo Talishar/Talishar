@@ -595,7 +595,8 @@ enum PatreonCampaign : string
           "mutiny_on_the_battalion_barque_blue=SEA176-T", "mutiny_on_the_nimbus_sovereign_blue=SEA177-T", "mutiny_on_the_swiftwater_blue=SEA178-T", 
           "pilfer_the_wreck_red=SEA138-T", "pilfer_the_wreck_yellow=SEA139-T", "pilfer_the_wreck_blue=SEA140-T", "rok=DYN005-T", "sandscour_greatbow=DYN151-T", 
           "seasoned_saviour=DYN026-T", "shifting_tides_blue=SEA148-T", "singularity_red=EVO010-T", "surgent_aethertide=DYN192-T", "swindlers_grift_red=SEA169-T", 
-          "swindlers_grift_yellow=SEA170-T", "swindlers_grift_blue=SEA171-T", "thievn_varmints_red=SEA172-T", "throw_caution_to_the_wind_blue=SEA150-T",
+          "swindlers_grift_yellow=SEA170-T", "swindlers_grift_blue=SEA171-T", "thievn_varmints_red=SEA172-T", "throw_caution_to_the_wind_blue=SEA150-T", "electrify_blue=ELE200-T",
+          "goliath_gauntler=WTR153-T", "hidden_agenda=AAZ005-T", "goldkiss_rum=SEA245-T"
       ];
 
         break;

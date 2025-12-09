@@ -5,6 +5,19 @@ include __DIR__ . '/zzImageConverter.php';
 // FAB Cube API endpoint for card data with all printing variations
 $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/compendium-of-rathe/json/english/card.json";
 
+
+$manualArtVariationOverrides = [
+  // Format option 1 - Auto-find URL: "cardID" => "artVariation"
+  //   "art_of_the_void_red" => "AA",
+  // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
+  //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
+
+  //"goldkiss_rum" => [
+  //  "artVariation" => "FA",
+  //  "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/SEA245-TP.webp"
+  //],
+];
+
 echo "<h2>Starting Art Variations Download</h2>";
 
 $curl = curl_init();
@@ -95,15 +108,29 @@ foreach ($cardArray as $card) {
     
     // Check for art variations: use the art_variations array
     $artVariations = $printing->art_variations ?? [];
+    $manualImageUrl = null;  // For manual URL overrides
     
-    // Debug: look for any art variations
+    // Check if this card has a manual override
+    if (isset($manualArtVariationOverrides[$cardID])) {
+      $override = $manualArtVariationOverrides[$cardID];
+      if (is_array($override)) {
+        // Format 2: Manual URL provided
+        $artVariations = [$override['artVariation']];
+        $manualImageUrl = $override['imageUrl'];
+        echo "[MANUAL OVERRIDE] Using override for " . $cardID . " with art variation: " . $override['artVariation'] . " and manual URL<BR>";
+      } else {
+        // Format 1: Auto-find URL
+        $artVariations = [$override];
+        echo "[MANUAL OVERRIDE] Using override for " . $cardID . " with art variation: " . $override . "<BR>";
+      }
+    }
+    
     if (!empty($artVariations) && is_array($artVariations)) {
       if ($cardWithArtVar === null) {
         $cardWithArtVar = (object)['name' => $cardName, 'printing' => $printing];
       }
       
       $artVariationCount++;
-      echo "[DEBUG] Found art variations for: " . $cardName . " - " . json_encode($artVariations) . "<BR>";
     }
     
     // Filter for EA, FA, AA, AB
@@ -163,8 +190,8 @@ foreach ($cardArray as $card) {
       $number += 400;
     }
 
-    // Get image URL
-    $imageUrl = $printing->image_url ?? null;
+    // Get image URL - use manual override if provided, otherwise use API URL
+    $imageUrl = $manualImageUrl ?? ($printing->image_url ?? null);
     if (empty($imageUrl)) {
       $skippedCount++;
       echo "Skipped: " . $setID . " - No image URL<BR>";
@@ -176,28 +203,27 @@ foreach ($cardArray as $card) {
     $filepath = __DIR__ . "/WebpImages/en/altarts/" . $filename . ".webp";
 
     // Track if this is the best variant for this card (only download the fanciest)
-    if (!isset($cardBestVariant[$cardID]) || $bestPriority > $cardBestVariant[$cardID]['priority']) {
-      // Remove old download entry if we're replacing with a fancier variant
-      if (isset($cardBestVariant[$cardID])) {
-        echo "Upgrading " . $cardID . " from " . $cardBestVariant[$cardID]['variant'] . " to " . $bestVariationForPrinting . "<BR>";
-      }
-      
-      $cardBestVariant[$cardID] = [
-        'priority' => $bestPriority,
-        'variant' => $bestVariationForPrinting,
-        'filename' => $filename,
-        'filepath' => $filepath,
-        'imageUrl' => $imageUrl
-      ];
-    } else {
+    // Allow download if: not yet tracked, OR better priority, OR manual override
+    $isManualOverride = isset($manualArtVariationOverrides[$cardID]);
+    $shouldDownload = !isset($cardBestVariant[$cardID]) || $bestPriority > $cardBestVariant[$cardID]['priority'] || $isManualOverride;
+    
+    if (!$shouldDownload) {
       // Skip this variant, we already have a better one for this card
-      echo "Skipped: " . $filename . " (" . $bestVariationForPrinting . ") - Already have " . $cardBestVariant[$cardID]['variant'] . "<BR>";
       $skippedCount++;
       continue;
     }
+    
+    // Update best variant tracking
+    $cardBestVariant[$cardID] = [
+      'priority' => $bestPriority,
+      'variant' => $bestVariationForPrinting,
+      'filename' => $filename,
+      'filepath' => $filepath,
+      'imageUrl' => $imageUrl
+    ];
 
     // Download only the best variant
-    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename);
+    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride);
     if ($downloadResult === false) {
       $failedCount++;
       echo "Failed: " . $filename . " - Could not download from URL<BR>";
@@ -210,13 +236,11 @@ foreach ($cardArray as $card) {
       echo "Downloaded: " . $filename . " (" . $bestVariationForPrinting . ")<BR>";
     } else if ($downloadResult === "exists") {
       // File already existed, skip adding to new downloads
-      echo "Already exists: " . $filename . "<BR>";
     }
   }
 }
 
 // Generate PatreonDictionary.php compatible array using only BEST variants
-echo "<h2>Generating altArts Array (Using Best Variants Only)</h2>";
 echo "Total cards processed: " . $cardCount . "<BR>";
 echo "Total printings processed: " . $printingCount . "<BR>";
 echo "Total art variations found: " . $artVariationCount . "<BR>";
@@ -229,23 +253,6 @@ echo "<BR>";
 // Build final altArts array with only newly downloaded images
 foreach ($newDownloads as $cardID => $filename) {
   $altArtsArray[$cardID] = $filename;
-}
-
-// Debug: Show sample printing structure
-if ($samplePrinting !== null) {
-  echo "<h3>Sample Printing Structure:</h3>";
-  echo "<pre>";
-  echo htmlspecialchars(json_encode($samplePrinting, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-  echo "</pre>";
-}
-
-// Debug: Show sample card with art variations
-if ($cardWithArtVar !== null) {
-  echo "<h3>Sample Card With Art Variations:</h3>";
-  echo "Card: " . $cardWithArtVar->name . "<BR>";
-  echo "<pre>";
-  echo htmlspecialchars(json_encode($cardWithArtVar->printing, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-  echo "</pre>";
 }
 
 if (count($altArtsArray) > 0) {
@@ -263,10 +270,70 @@ if (count($altArtsArray) > 0) {
 }
 
 /**
- * Download art variation image with error handling
- * Saves to both local WebpImages and CardImages folders (like zzImageConverter.php does)
+ * Regenerate concat and crop images from an existing main image
  */
-function DownloadArtVariationImage($filepath, $imageUrl, $filename)
+function RegenerateImageVariations($filepath, $filename)
+{
+  $concatFilename = __DIR__ . "/concat/en/" . $filename . ".webp";
+  $cardSquaresMissingFolder = __DIR__ . "/../CardImages/media/missing/cardsquares/english/" . $filename . ".webp";
+  $cropFilename = __DIR__ . "/crops/" . $filename . "_cropped.png";
+  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $filename . "_cropped.png";
+  
+  // Load the main image
+  $image = null;
+  if (function_exists('imagecreatefromwebp')) {
+    $image = @imagecreatefromwebp($filepath);
+  }
+  
+  if ($image === false) {
+    return false;
+  }
+  
+  try {
+    // Create and save concat image
+    $imageTop = @imagecrop($image, ['x' => 0, 'y' => 0, 'width' => 450, 'height' => 372]);
+    $imageBottom = @imagecrop($image, ['x' => 0, 'y' => 550, 'width' => 450, 'height' => 78]);
+    
+    if ($imageTop !== false && $imageBottom !== false) {
+      $dest = @imagecreatetruecolor(450, 450);
+      if ($dest !== false) {
+        @imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
+        @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
+        
+        CreateDirIfNotExists(dirname($concatFilename));
+        @imagewebp($dest, $concatFilename, 80);
+        
+        CreateDirIfNotExists(dirname($cardSquaresMissingFolder));
+        @imagewebp($dest, $cardSquaresMissingFolder, 80);
+        
+        @imagedestroy($dest);
+      }
+    }
+    
+    if ($imageTop !== false) @imagedestroy($imageTop);
+    if ($imageBottom !== false) @imagedestroy($imageBottom);
+    
+    // Create and save crop image
+    $cropImage = @imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
+    if ($cropImage !== false) {
+      CreateDirIfNotExists(dirname($cropFilename));
+      @imagepng($cropImage, $cropFilename);
+      
+      CreateDirIfNotExists(dirname($cardCropsMissingFolder));
+      @imagepng($cropImage, $cardCropsMissingFolder);
+      
+      @imagedestroy($cropImage);
+    }
+    
+    @imagedestroy($image);
+    return true;
+  } catch (Exception $e) {
+    @imagedestroy($image);
+    return false;
+  }
+}
+
+function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride = false)
 {
   // Define paths like zzImageConverter.php
   $cardImagesUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardimages/english/" . $filename . ".webp";
@@ -280,6 +347,11 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename)
   
   // Check if file already exists in any location
   if (file_exists($filepath) && file_exists($cardImagesUploadedFolder)) {
+    // If manual override, still regenerate concat/crops
+    if ($isManualOverride) {
+      echo "Regenerating concat/crops for manual override: " . $filename . "<BR>";
+      RegenerateImageVariations($filepath, $filename);
+    }
     return "exists";  // File already exists, return "exists" instead of true
   }
 
