@@ -3321,8 +3321,7 @@ function IsDefenseReactionPlayable($cardID, $from)
 {
   global $CombatChain, $mainPlayer;
   $attackCard = $CombatChain->AttackCard()->ID();
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  $extraText = GetHorrorsBuff();
   $blocksDreacts = ["command_and_conquer_red", "back_stab_red", "back_stab_yellow", "back_stab_blue",
                     "widowmaker_red", "widowmaker_yellow", "widowmaker_blue", "wreck_havoc_red", "wreck_havoc_yellow", "wreck_havoc_blue"];
   if ((in_array($attackCard, $blocksDreacts) || in_array($extraText, $blocksDreacts)) && CardType($cardID) == "DR") return false;

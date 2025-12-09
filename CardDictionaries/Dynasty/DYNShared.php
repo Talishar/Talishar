@@ -675,8 +675,9 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
     $contractType = ContractType($chainCard->ID());
     if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
     if ($i == 0) {
-      $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-      $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+      // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+      // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+      $extraText = GetHorrorsBuff();
       $contractType = ContractType($extraText);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);
     }
@@ -686,6 +687,11 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
       if($chainLinks[$i][$j+2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j]);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
+      if ($j == 0) {
+        $extraText = GetHorrorsBuff($i);
+        $contractType = ContractType($extraText);
+        if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);
+      }
     }
   }
 }

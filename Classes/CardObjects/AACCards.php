@@ -170,7 +170,8 @@ class horrors_of_the_past_yellow extends Card {
 		global $chainLinks, $combatChain;
 		for ($i = count($chainLinks) - 1; $i >=0; --$i) {
 			if (HasStealth($chainLinks[$i][0])) {
-				AddCurrentTurnEffect($this->cardID, $this->controller, "-", $chainLinks[$i][0]);
+				AddEffectToCurrentAttack("$this->cardID-" . $chainLinks[$i][0]);
+				return;
 			}
 		}
 	}
@@ -184,8 +185,8 @@ class horrors_of_the_past_yellow extends Card {
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-		$copiedText = SearchCurrentTurnEffects($this->cardID, $this->controller, returnUniqueID:true);
-		AddOnHitTrigger($copiedText, $this->cardID, $target);
+		$copiedText = explode("-", $parameter)[1] ?? "-";
+		if ($copiedText != "-") AddOnHitTrigger($copiedText, $this->cardID, $target);
 		return false;
 	}
 

@@ -210,7 +210,7 @@ function IsCombatEffectLimited($index)
 {
   global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID;
   if (count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
-  if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
+  // if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
   $attackSubType = CardSubType($combatChain[0]);
   if (DelimStringContains($attackSubType, "Ally")) {
     $allies = &GetAllies($mainPlayer);
@@ -1473,9 +1473,10 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   $parameter = explode("-", $effects[0])[0];
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   if (CardType($source) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
-  if (class_exists($effects[0])) {
-    $card = new $effects[0]($mainPlayer);
-    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $parameter);
+  $effectID = ExtractCardID($cardID);
+  if (class_exists($effectID)) {
+    $card = new $effectID($mainPlayer);
+    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID);
   }
   switch ($effects[0]) {
     case "warriors_valor_red":

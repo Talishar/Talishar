@@ -1554,8 +1554,9 @@ function IsDominateActive()
       }
     }
   }
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  $extraText = GetHorrorsBuff();
   $textBoxes = [$combatChain[0], $extraText];
   foreach ($textBoxes as $box) {
     switch ($box) {

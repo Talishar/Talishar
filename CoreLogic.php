@@ -556,8 +556,9 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
   global $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
-  $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
+  // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
+  $extraText = GetHorrorsBuff();
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
