@@ -14,7 +14,7 @@
   function LoggedInUserName()
   {
     CheckSession();
-    return $_SESSION["useruid"];
+    return $_SESSION["useruid"] ?? "";
   }
 
   function IsLoggedInUserPatron()
