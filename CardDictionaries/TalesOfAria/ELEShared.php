@@ -144,7 +144,7 @@
       case "snow_under_red": case "snow_under_yellow": case "snow_under_blue": return true;
       case "emerging_avalanche_red": case "emerging_avalanche_yellow": case "emerging_avalanche_blue": return CardType($attackID) == "AA";
       case "strength_of_sequoia_red": case "strength_of_sequoia_yellow": case "strength_of_sequoia_blue": return CardType($attackID) == "AA";
-      case "lexi_livewire-1": return true;
+      case "lexi-1": case "lexi_livewire-1": return true;
       case "shiver-1": case "shiver-2": return CardSubtype($attackID) == "Arrow";
       case "voltaire_strike_twice-1": case "voltaire_strike_twice-2": return CardSubtype($attackID) == "Arrow";
       case "frost_lock_blue-2": return true;

@@ -1824,6 +1824,7 @@ function CurrentEffectGrantsGoAgain()
         case "captains_call_red-2":
         case "captains_call_yellow-2":
         case "captains_call_blue-2":
+        case "lexi-1":
         case "lexi_livewire-1":
         case "voltaire_strike_twice-2":
         case "fulminate_yellow-GA":
