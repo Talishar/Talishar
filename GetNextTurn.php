@@ -239,17 +239,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->opponentIsPatron = $playerID == 1 ? $p2IsPatron : $p1IsPatron;
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
     $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
-    $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
+    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && isset($_SESSION["isPvtVoidPatron"]);
+    $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
-    $initialLoad->altArts = [];
+    $initialLoad->altArts = [];   
+    $initialLoad->opponentAltArts = [];
 
-    //Get Alt arts
     if(!AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
-        if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
+        if(isset($_SESSION[$campaign->SessionID()]) || $campaign->IsTeamMember(LoggedInUserName())) {
           $altArts = $campaign->AltArts($playerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
@@ -261,6 +261,28 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
             $altArt->cardId = $arr[0];
             $altArt->altPath = $arr[1];
             array_push($initialLoad->altArts, $altArt);
+          }
+        }
+      }
+    }
+
+    // Get opponent's alt arts (what this player sees when looking at opponent's board)
+    // Load if opponent is a Patreon AND current player has not disabled alt arts
+    if(!AltArtsDisabled($playerID))
+    {
+      foreach(PatreonCampaign::cases() as $campaign) {
+        if($campaign->IsTeamMember($initialLoad->opponentName)) {
+          $opponentAltArts = $campaign->AltArts($otherPlayer);
+          if($opponentAltArts == "") continue;
+          $opponentAltArts = explode(",", $opponentAltArts);
+          $opponentAltArtsCount = count($opponentAltArts);
+          for($i = 0; $i < $opponentAltArtsCount; ++$i) {
+            $arr = explode("=", $opponentAltArts[$i]);
+            $opponentAltArt = new stdClass();
+            $opponentAltArt->name = $campaign->CampaignName() . ($opponentAltArtsCount > 1 ? " " . ($i + 1) : "");
+            $opponentAltArt->cardId = $arr[0];
+            $opponentAltArt->altPath = $arr[1];
+            array_push($initialLoad->opponentAltArts, $opponentAltArt);
           }
         }
       }
