@@ -699,73 +699,76 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
-      if (str_contains($cardID, "|")) {
-        $cardIDParts = explode("|", $cardID);
-        $num = $cardIDParts[1];
-        $cardID = $cardIDParts[0];
-      }
-      else $num = 1;
-      if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
-      $cardID = str_replace(" ", "_", $cardID);
-      $splitCard = explode("_", $cardID);
-      $color = end($splitCard);
-      switch ($color) {
-        case "r":
-          $cardID .= "ed";
-          break;
-        case "y":
-          $cardID .= "ellow";
-          break;
-        case "b":
-          $cardID .= "lue";
-          break;
-        default:
-          break;
-      }
-      if (CardName($cardID) == "") {
-        if (CardName($cardID . "_red") != "") $cardID .= "_red";
-        elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
-        elseif (CardName($cardID . "_blue") != "") $cardID .= "_blue";
-      }
-      if (TypeContains($cardID, "C")) {
-        WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
-        $char = &GetPlayerCharacter($playerID);
-        $char[0] = $cardID;
-      }
-      elseif (CardType($cardID) == "E" || CardType($cardID) == "W"){
-        WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
-        EquipEquipment($playerID, $cardID);
-      }
-      elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
-        if ($num == "banish") {
-          WriteLog("Player " . $playerID . " manually added a card to their banish", highlight: true);
-          BanishCardForPlayer($cardID, $playerID, "MANUAL");
+      $cardList = explode("; ", $cardID);
+      foreach($cardList as $cardID) { 
+        if (str_contains($value, "|")) {
+          $cardIDParts = explode("|", $cardID);
+          $num = $cardIDParts[1];
+          $cardID = $cardIDParts[0];
         }
-        elseif ($num == "grave") {
-          WriteLog("Player " . $playerID . " manually added a card to their graveyard", highlight: true);
-          AddGraveyard($cardID, $playerID, "MANUAL");
+        else $num = 1;
+        if (SetIDtoCardID(strtoupper($cardID)) != "") $cardID = SetIDtoCardID(strtoupper($cardID));
+        $cardID = str_replace(" ", "_", $cardID);
+        $splitCard = explode("_", $cardID);
+        $color = end($splitCard);
+        switch ($color) {
+          case "r":
+            $cardID .= "ed";
+            break;
+          case "y":
+            $cardID .= "ellow";
+            break;
+          case "b":
+            $cardID .= "lue";
+            break;
+          default:
+            break;
         }
-        elseif ($num == "deck") {
-          WriteLog("Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
-          AddTopDeck($cardID, $playerID, "MANUAL");
+        if (CardName($cardID) == "") {
+          if (CardName($cardID . "_red") != "") $cardID .= "_red";
+          elseif (CardName($cardID . "_yellow") != "") $cardID .= "_yellow";
+          elseif (CardName($cardID . "_blue") != "") $cardID .= "_blue";
         }
-        elseif ($num == "inv") {
-          WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
-          $inventory = &GetInventory($playerID);
-          array_push($inventory, $cardID);
+        if (TypeContains($cardID, "C")) {
+          WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
+          $char = &GetPlayerCharacter($playerID);
+          $char[0] = $cardID;
+        }
+        elseif (CardType($cardID) == "E" || CardType($cardID) == "W"){
+          WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
+          EquipEquipment($playerID, $cardID);
+        }
+        elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
+          if ($num == "banish") {
+            WriteLog("Player " . $playerID . " manually added a card to their banish", highlight: true);
+            BanishCardForPlayer($cardID, $playerID, "MANUAL");
+          }
+          elseif ($num == "grave") {
+            WriteLog("Player " . $playerID . " manually added a card to their graveyard", highlight: true);
+            AddGraveyard($cardID, $playerID, "MANUAL");
+          }
+          elseif ($num == "deck") {
+            WriteLog("Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
+            AddTopDeck($cardID, $playerID, "MANUAL");
+          }
+          elseif ($num == "inv") {
+            WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
+            $inventory = &GetInventory($playerID);
+            array_push($inventory, $cardID);
+          }
+          else {
+            WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
+            $hand = &GetHand($playerID);
+            array_push($hand, $cardID);
+          }
         }
         else {
-          WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
-          $hand = &GetHand($playerID);
-          array_push($hand, $cardID);
+          WriteLog("Player " . $playerID . " manually created a token", highlight: true);
+          if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID, $num, from:"MANUAL");
+          elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID, number:$num, from:"MANUAL");
+          elseif (SubtypeContains($cardID, "Landmark")) PlayLandmark($cardID, $playerID, "MANUAL");
+          else PutPermanentIntoPlay($playerID, $cardID, from:"MANUAL");
         }
-      }
-      else {
-        WriteLog("Player " . $playerID . " manually created a token", highlight: true);
-        if (SubtypeContains($cardID, "Aura")) PlayAura($cardID, $playerID, $num, from:"MANUAL");
-        elseif (SubtypeContains($cardID, "Item")) PutItemIntoPlayForPlayer($cardID, $playerID, number:$num, from:"MANUAL");
-        elseif (SubtypeContains($cardID, "Landmark")) PlayLandmark($cardID, $playerID, "MANUAL");
-        else PutPermanentIntoPlay($playerID, $cardID, from:"MANUAL");
       }
       break;
     case 10012:
