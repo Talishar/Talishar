@@ -3959,6 +3959,7 @@ function CharacterDefaultActiveState($cardID)
     case "tremorshield_sabatons":
     case "grimoire_of_fellingsong":
     case "sealace_sarong":
+    case "talismanic_lense":
       return 1;
     default:
       return 2;
