@@ -202,10 +202,6 @@ class nights_embrace_blue extends Card {
     $this->controller = $controller;
 	}
 
-	function HasStealth() {
-		return true;
-	}
-
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
 	}
