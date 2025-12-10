@@ -58,9 +58,9 @@ function GetHorrorsBuff($index=-1) {
   global $CombatChain, $chainLinks;
   if ($index == -1) { //active chain link
     $attackCard = $CombatChain->AttackCard();
-    $buffs = explode(",", $attackCard->StaticBuffs());
+    $buffs = explode(",", $attackCard->StaticBuffs() ?? "");
   }
-  else $buffs = explode(",", $chainLinks[$index][6]); // past chain link
+  else $buffs = explode(",", $chainLinks[$index][6] ?? ""); // past chain link
   foreach ($buffs as $buff) {
     if (str_contains($buff, "AAC022")) return explode("-", $buff)[1] ?? "-";
   }
