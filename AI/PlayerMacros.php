@@ -64,9 +64,7 @@ function ProcessMacros()
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
       }
-      else if (!IsGameOver() && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
-        $somethingChanged = true; 
-        ContinueDecisionQueue("0"); 
+      else if (GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
     }
