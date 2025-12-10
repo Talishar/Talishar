@@ -699,8 +699,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
-      $cardList = explode("; ", $cardID);
-      foreach($cardList as $cardID) { 
+      $cardList = explode(";", $cardID);
+      foreach($cardList as $cardID) {
+        $cardID = trim($cardID);
         if (str_contains($value, "|")) {
           $cardIDParts = explode("|", $cardID);
           $num = $cardIDParts[1];
