@@ -743,7 +743,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
-    $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11]));
+    $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11] ?? ""));
     $sType = $sTypeArr[0];
     $sTypeArrCount = count($sTypeArr);
     for($j=0; $j<$sTypeArrCount; ++$j) {
