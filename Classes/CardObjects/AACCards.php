@@ -297,7 +297,11 @@ class inverters_nightcowl extends Card {
 		return "A";
 	}
 
-	function PlayCardAbility($cardID, $from) {
+	function AbilityHasGoAgain($from) {
+		return true;
+	}
+
+	function PlayCardEffectAbility($cardID, $from, &$remove) {
 		if (HasStealth($cardID)) AddLayer("TRIGGER", $this->controller, $this->cardID);
 	}
 

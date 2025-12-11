@@ -2326,6 +2326,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     CardPlayTrigger($cardID, $from);
+    if (!IsStaticType($cardType, $from, $cardID)) {
+      CurrentEffectPlayAbility($cardID, $from);
+    }
     if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
     
   }
@@ -4273,7 +4276,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if (!$isBlock && !$skipDRResolution) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
-      CurrentEffectPlayAbility($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
       CharacterPlayCardAbilities($cardID, $from);
     }

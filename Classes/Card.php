@@ -453,6 +453,10 @@ class Card {
   function PlayCardAbility($cardID, $from) {
     return;
   }
+
+  function PlayCardEffectAbility($cardID, $from, &$remove) {
+    return;
+  }
 }
 
 ?>
