@@ -144,7 +144,6 @@ try {
             $content = str_replace('<@695767191022338070>', '@hoodwill', $content);
             $content = str_replace('<@214191542292840448>', '@looseleaftea', $content);
 
-
             // Preserve line breaks - normalize to \n first, then convert to HTML
             $content = preg_replace('/\r\n|\r/', "\n", $content);
             $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
