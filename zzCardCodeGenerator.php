@@ -405,7 +405,7 @@
       foreach ($compositeKeywords as $compositeKeyword) {
         // Remove any trailing numbers from composite keywords
         $compositeKeywordClean = trim(preg_replace('/\s+\d+$/', '', $compositeKeyword));
-        if ($compositeKeywordClean === $keyword) {
+        if ($compositeKeywordClean === $keyword) { 
           // Extract the number if it exists
           $amount = (is_numeric(substr($compositeKeyword, -1))) ? intval(substr($compositeKeyword, -1)) : 1;
           return true;
