@@ -218,6 +218,10 @@ class nights_embrace_blue extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return 1;
 	}
+
+	function SpecialBlock() {
+		return 3;
+	}
 }
 
 class stalkers_steps extends Card {
