@@ -123,7 +123,7 @@ function BanishByEffect($cardID, $player, $banisher, &$rv) {
       $count = count($banish) - BanishPieces();
       $pitchValues = [];
       for ($i = $count-1; $i >= 0; $i--) {
-        if ($banish[$i + 1] == "Source-" . $banishedBy) {
+        if ($banish[$i + 1] == "Source-" . $attackCard) {
           array_push($pitchValues, ColorOverride($banish[$i], $player));
         }
       }
