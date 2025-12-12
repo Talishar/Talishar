@@ -95,7 +95,7 @@ function emailExists($conn, $email)
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 {
-	$conn = ($reportingServer) ? GetReportingDBConnection() : GetDBConnection();
+	$conn = $reportingServer ? GetReportingDBConnection() : GetDBConnection();
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
@@ -440,9 +440,9 @@ function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 
-	$headers = array(
+	$headers = [
 		"Authorization: Bearer " . $fabDBToken,
-	);
+	];
 
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	curl_setopt($ch, CURLINFO_HEADER_OUT, true);
@@ -470,10 +470,10 @@ function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckb
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-	$headers = array(
+	$headers = [
 		"x-api-key: " . $FaBraryKey,
 		"Content-Type: application/json",
-	);
+	];
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	$result = curl_exec($ch);
 	curl_close($ch);
@@ -536,31 +536,12 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
 {
-	global $firstPlayer, $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense;
+	global $currentTurn, $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense;
 	global $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
 	global $TurnStats_LifeLost, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $p1TotalTime, $p2TotalTime;
 
 	$countTurnStats = count($turnStats);
-
-	// Initialize turn 0 with default values for players who aren't the first player
-	if($firstPlayer != $player) {
-		$deck["turnResults"]["turn_0"]["turnNo"] = 0;
-		$deck["turnResults"]["turn_0"]["cardsUsed"] = 0;
-		$deck["turnResults"]["turn_0"]["cardsBlocked"] = 0;
-		$deck["turnResults"]["turn_0"]["cardsPitched"] = 0;
-		$deck["turnResults"]["turn_0"]["cardsDiscarded"] = 0;
-		$deck["turnResults"]["turn_0"]["resourcesUsed"] = 0;
-		$deck["turnResults"]["turn_0"]["resourcesLeft"] = 0;
-		$deck["turnResults"]["turn_0"]["cardsLeft"] = 0;
-		$deck["turnResults"]["turn_0"]["damageThreatened"] = 0;
-		$deck["turnResults"]["turn_0"]["damageDealt"] = 0;
-		$deck["turnResults"]["turn_0"]["damageBlocked"] = 0;
-		$deck["turnResults"]["turn_0"]["damagePrevented"] = 0;
-		$deck["turnResults"]["turn_0"]["damageTaken"] = 0;
-		$deck["turnResults"]["turn_0"]["lifeGained"] = 0;
-		$deck["turnResults"]["turn_0"]["lifeLost"] = 0;
-	}
 
 	// Populate turn results - only include turns that have actually occurred
 	for($i = 0; $i < $countTurnStats && intval($i / TurnStatPieces()) <= $currentTurn; $i += TurnStatPieces()) {
@@ -629,7 +610,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 function PopulateAggregateStats(&$deck, &$turnStats)
 {
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
-	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented, $currentTurn;
+	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented;
 
 	$totalDamageThreatened = 0;
 	$totalDamageDealt = 0;
@@ -685,8 +666,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$deck["averageDamageThreatenedPerCard"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened]) / $totalOffensiveCards, 2);
 	$deck["averageResourcesUsedPerTurn"] = round(($totalResourcesUsed - $turnStats[$TurnStats_ResourcesUsed]) / $numTurnsCount, 2);
 	$deck["averageCardsLeftOverPerTurn"] = round(($totalCardsLeft - $turnStats[$TurnStats_CardsLeft]) / $numTurnsCount, 2);
-	$deck["averageCombatValuePerTurn"] = round((($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened]) + ($totalBlocked - $turnStats[$TurnStats_DamageBlocked])) / $numTurnsCount, 2);
-	$deck["averageValuePerTurn"] = round((($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened]) + ($totalBlocked - $turnStats[$TurnStats_DamageBlocked]) + ($totalLifeGained - $turnStats[$TurnStats_LifeGained]) + ($totalLifeLost - $turnStats[$TurnStats_LifeLost]) + ($totalDamagePrevented - $turnStats[$TurnStats_DamagePrevented])) / $numTurnsCount, 2);
+	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened] + $totalBlocked - $turnStats[$TurnStats_DamageBlocked]) / $numTurnsCount, 2);
+	$deck["averageValuePerTurn"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened] + $totalBlocked - $turnStats[$TurnStats_DamageBlocked] + $totalLifeGained - $turnStats[$TurnStats_LifeGained] + $totalLifeLost - $turnStats[$TurnStats_LifeLost] + $totalDamagePrevented - $turnStats[$TurnStats_DamagePrevented]) / $numTurnsCount, 2);
 
 	// Calculate stats excluding last turn
 	$totalDamageThreatened_NoLast = $totalDamageThreatened;
@@ -698,7 +679,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$totalLifeGained_NoLast = $totalLifeGained;
 	$totalDamagePrevented_NoLast = $totalDamagePrevented;
 	$totalLifeLost_NoLast = $totalLifeLost;
-	$numTurns_NoLast = $numTurnsCount - 1;
+	$numTurns_NoLast = $numTurnsCount - 1; // Exclude last turn
 
 	// Subtract the last turn from NoLast values
 	if($endIndex - TurnStatPieces() >= $start) {
@@ -728,8 +709,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$deck["averageDamageThreatenedPerCard_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened]) / $totalOffensiveCards_NoLast, 2);
 	$deck["averageResourcesUsedPerTurn_NoLast"] = round(($totalResourcesUsed_NoLast - $turnStats[$TurnStats_ResourcesUsed]) / $numTurns_NoLast, 2);
 	$deck["averageCardsLeftOverPerTurn_NoLast"] = round(($totalCardsLeft_NoLast - $turnStats[$TurnStats_CardsLeft]) / $numTurns_NoLast, 2);
-	$deck["averageCombatValuePerTurn_NoLast"] = round((($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened]) + ($totalBlocked_NoLast - $turnStats[$TurnStats_DamageBlocked])) / $numTurns_NoLast, 2);
-	$deck["averageValuePerTurn_NoLast"] = round((($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened]) + ($totalBlocked_NoLast - $turnStats[$TurnStats_DamageBlocked]) + ($totalLifeGained_NoLast - $turnStats[$TurnStats_LifeGained]) + ($totalLifeLost_NoLast - $turnStats[$TurnStats_LifeLost]) + ($totalDamagePrevented_NoLast - $turnStats[$TurnStats_DamagePrevented])) / $numTurns_NoLast, 2);
+	$deck["averageCombatValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened] + $totalBlocked_NoLast - $turnStats[$TurnStats_DamageBlocked]) / $numTurns_NoLast, 2);
+	$deck["averageValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened] + $totalBlocked_NoLast - $turnStats[$TurnStats_DamageBlocked] + $totalLifeGained_NoLast - $turnStats[$TurnStats_LifeGained] + $totalLifeLost_NoLast - $turnStats[$TurnStats_LifeLost] + $totalDamagePrevented_NoLast - $turnStats[$TurnStats_DamagePrevented]) / $numTurns_NoLast, 2);
 }
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
@@ -1146,21 +1127,21 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 		error_log("Attempting SendGrid email with cURL fallback for $userEmail");
 		
 		// Build raw JSON for SendGrid API manually
-		$emailData = array(
-			"personalizations" => array(
-				array(
-					"to" => array(
-						array("email" => $userEmail)
-					)
-				)
-			),
-			"from" => array(
+		$emailData = [
+			"personalizations" => [
+				[
+					"to" => [
+						["email" => $userEmail]
+					]
+				]
+			],
+			"from" => [
 				"email" => "noreply@em5232.talishar.net",
 				"name" => "Talishar"
-			),
+			],
 			"subject" => "Talishar Password Reset Link",
-			"content" => array(
-				array(
+			"content" => [
+				[
 					"type" => "text/html",
 					"value" => "<html><body style='font-family: Arial, sans-serif;'>
 					<h2>Password Reset Request</h2>
@@ -1169,9 +1150,9 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 					<p style='margin: 20px 0;'><a href='" . htmlspecialchars($url) . "' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;'>Reset Password</a></p>
 					<p>This link expires in 30 minutes.</p>
 					</body></html>"
-				)
-			)
-		);
+				]
+			]
+		];
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://api.sendgrid.com/v3/mail/send');
@@ -1184,10 +1165,10 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
 			'Authorization: Bearer ' . $sendgridKey,
 			'Content-Type: application/json'
-		));
+		]);
 		
 		$response = curl_exec($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
