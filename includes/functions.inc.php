@@ -542,12 +542,22 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	global $TurnStats_LifeLost, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $p1TotalTime, $p2TotalTime;
 
 	$countTurnStats = count($turnStats);
+	$isNonFirstPlayer = $firstPlayer != $player;
+
+	$turn0CardsBlocked = 0;
+	$turn0DamageBlocked = 0;
+	$turn0DamagePrevented = 0;
+	if($isNonFirstPlayer && $countTurnStats >= TurnStatPieces()) {
+		$turn0CardsBlocked = $turnStats[$TurnStats_CardsBlocked];
+		$turn0DamageBlocked = $turnStats[$TurnStats_DamageBlocked];
+		$turn0DamagePrevented = $turnStats[$TurnStats_DamagePrevented];
+	}
 
 	// Initialize turn 0 with default values for players who aren't the first player
-	if($firstPlayer != $player) {
+	if($isNonFirstPlayer) {
 		$deck["turnResults"]["turn_0"]["turnNo"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsUsed"] = 0;
-		$deck["turnResults"]["turn_0"]["cardsBlocked"] = 0;
+		$deck["turnResults"]["turn_0"]["cardsBlocked"] = $turn0CardsBlocked;
 		$deck["turnResults"]["turn_0"]["cardsPitched"] = 0;
 		$deck["turnResults"]["turn_0"]["cardsDiscarded"] = 0;
 		$deck["turnResults"]["turn_0"]["resourcesUsed"] = 0;
@@ -555,14 +565,13 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$deck["turnResults"]["turn_0"]["cardsLeft"] = 0;
 		$deck["turnResults"]["turn_0"]["damageThreatened"] = 0;
 		$deck["turnResults"]["turn_0"]["damageDealt"] = 0;
-		$deck["turnResults"]["turn_0"]["damageBlocked"] = 0;
-		$deck["turnResults"]["turn_0"]["damagePrevented"] = 0;
+		$deck["turnResults"]["turn_0"]["damageBlocked"] = $turn0DamageBlocked;
+		$deck["turnResults"]["turn_0"]["damagePrevented"] = $turn0DamagePrevented;
 		$deck["turnResults"]["turn_0"]["damageTaken"] = 0;
 		$deck["turnResults"]["turn_0"]["lifeGained"] = 0;
 		$deck["turnResults"]["turn_0"]["lifeLost"] = 0;
 	}
 
-	// Populate turn results - only include turns that have actually occurred
 	for($i = 0; $i < $countTurnStats && intval($i / TurnStatPieces()) <= $currentTurn; $i += TurnStatPieces()) {
 		$turnNo = intval($i / TurnStatPieces());
 		$turnKey = "turn_" . $turnNo;
@@ -581,6 +590,19 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$damageTaken = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
 		$lifeGained = $turnStats[$i + $TurnStats_LifeGained];
 		$lifeLost = $turnStats[$i + $TurnStats_LifeLost];
+
+		// For non-first player: shift defensive stats down one turn starting from turn 2
+		if($isNonFirstPlayer && $turnNo > 1) {
+			// Turn 2+ gets the previous turn's defensive stats
+			$cardsBlocked = $turnStats[$i - TurnStatPieces() + $TurnStats_CardsBlocked];
+			$damageBlocked = $turnStats[$i - TurnStatPieces() + $TurnStats_DamageBlocked];
+			$damagePrevented = $turnStats[$i - TurnStatPieces() + $TurnStats_DamagePrevented];
+		} elseif($isNonFirstPlayer && $turnNo == 1) {
+			// Turn 1: P2 didn't defend, so defensive stats are 0
+			$cardsBlocked = 0;
+			$damageBlocked = 0;
+			$damagePrevented = 0;
+		}
 
 		if($useIntval) {
 			$cardsUsed = intval($cardsUsed);

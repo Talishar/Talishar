@@ -138,8 +138,8 @@ function LogCombatResolutionStats($damageThreatened, $damageBlocked)
   $defStats = &GetTurnStats($defPlayer);
   if(count($mainStats) <= $baseIndex) StatsStartTurn();
   if(count($defStats) <= $baseIndex) StatsStartTurn();
-  if(isset($mainStats[$baseIndex + $TurnStats_DamageThreatened])) $mainStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened > $damageBlocked ? $damageBlocked : $damageThreatened;//Excess is logged in the damage function
-  if(isset($defStats[$baseIndex + $TurnStats_DamageBlocked])) $defStats[$baseIndex + $TurnStats_DamageBlocked] += $damageBlocked;
+  if(isset($mainStats[$baseIndex + $TurnStats_DamageThreatened])) $mainStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened > $damageBlocked ? $damageBlocked : $damageThreatened; //Excess is logged in the damage function
+  if(isset($defStats[$baseIndex + $TurnStats_DamageBlocked])) $defStats[$baseIndex + $TurnStats_DamageBlocked] += min($damageThreatened, $damageBlocked); // If I block 3 on a 2 damage attack, I blocked 2 damage, not 3
   if(isset($defStats[$baseIndex + $TurnStats_Overblock])) $defStats[$baseIndex + $TurnStats_Overblock] += $damageBlocked > $damageThreatened ? $damageBlocked - $damageThreatened : 0;
 }
 
