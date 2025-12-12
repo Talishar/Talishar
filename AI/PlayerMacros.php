@@ -24,7 +24,7 @@ function ProcessMacros()
       else if((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < (LayerPieces() * 3)) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }
-      else if($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer)))
+      else if($turn[0] == "INSTANT" || $turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
         {
@@ -65,9 +65,9 @@ function ProcessMacros()
         ContinueDecisionQueue("0"); 
       }
       else if (!IsGameOver() && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
-        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
     }
   }
