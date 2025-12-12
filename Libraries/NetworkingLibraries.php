@@ -1597,9 +1597,6 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       case "rally_the_coast_guard_red":
       case "rally_the_coast_guard_yellow":
       case "rally_the_coast_guard_blue":
-      case "puncture_red":
-      case "puncture_yellow":
-      case "puncture_blue":
         array_push($effectsToRemove, $i);
         break;
       case "tarpit_trap_yellow":
@@ -1613,7 +1610,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
     if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedEffects;
   }
   $countEffectsToRemove = count($effectsToRemove);
-  for ($i = 0; $i < $countEffectsToRemove; ++$i) RemoveCurrentTurnEffect($effectsToRemove[$i]);
+  for ($i = 0; $i < $countEffectsToRemove; ++$i) {
+    RemoveCurrentTurnEffect($effectsToRemove[$i]);
+  }
 }
 
 function BeginTurnPass()
