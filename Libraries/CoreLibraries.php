@@ -3,10 +3,10 @@ function DelimStringContains($str, $find, $partial=false)
 {
   if($str == null) return false;
   $arr = explode(",", $str);
-  for($i=0; $i<count($arr); ++$i)
+  foreach($arr as $item)
   {
-    if($partial && str_contains($arr[$i], $find)) return true;
-    else if($arr[$i] == $find) return true;
+    if($partial && str_contains($item, $find)) return true;
+    else if($item == $find) return true;
   }
   return false;
 }
@@ -23,38 +23,28 @@ function SeedRandom($reroll=false)
 {
   global $randomSeeded, $currentTurn, $turn, $currentPlayer, $layers, $combatChain;
   $seedString = $currentTurn . implode("", $turn) . $currentPlayer;
-  if(count($layers) > 0) for($i=0; $i<count($layers); ++$i) $seedString .= $layers[$i];
-  if(count($combatChain) > 0) for($i=0; $i<count($combatChain); ++$i) $seedString .= $combatChain[$i];
+  if(!empty($layers)) $seedString .= implode("", $layers);
+  if(!empty($combatChain)) $seedString .= implode("", $combatChain);
 
+  $characterPieces = CharacterPieces();
   $char = &GetPlayerCharacter(1);
-  for($i=0; $i<count($char); ++$i) {
-    if ($i % CharacterPieces() == 9) continue;
-    $seedString .= $char[$i];
+  foreach($char as $i => $value) {
+    if ($i % $characterPieces != 9) $seedString .= $value;
   }
   $char = &GetPlayerCharacter(2);
-  for($i=0; $i<count($char); ++$i) {
-    if ($i % CharacterPieces() == 9) continue;
-    $seedString .= $char[$i];
+  foreach($char as $i => $value) {
+    if ($i % $characterPieces != 9) $seedString .= $value;
   }
 
-  $banish = &GetBanish(1);
-  for($i=0; $i<count($banish); ++$i) $seedString .= $banish[$i];
-  $banish = &GetBanish(2);
-  for($i=0; $i<count($banish); ++$i) $seedString .= $banish[$i];
-
-  $discard = &GetDiscard(1);
-  for($i=0; $i<count($discard); ++$i) $seedString .= $discard[$i];
-  $discard = &GetDiscard(2);
-  for($i=0; $i<count($discard); ++$i) $seedString .= $discard[$i];
-
-  $deck = &GetDeck(1);
-  for($i=0; $i<count($deck); ++$i) $seedString .= $deck[$i];
-  $deck = &GetDeck(2);
-  for($i=0; $i<count($deck); ++$i) $seedString .= $deck[$i];
+  $seedString .= implode("", GetBanish(1));
+  $seedString .= implode("", GetBanish(2));
+  $seedString .= implode("", GetDiscard(1));
+  $seedString .= implode("", GetDiscard(2));
+  $seedString .= implode("", GetDeck(1));
+  $seedString .= implode("", GetDeck(2));
 
   $seedString = hash("sha256", $seedString);
   if ($reroll) ++$seedString;
   mt_srand(crc32($seedString));
   $randomSeeded = true;
 }
-?>

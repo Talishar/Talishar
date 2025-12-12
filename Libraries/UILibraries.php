@@ -1,8 +1,6 @@
 <?php
 
-use JetBrains\PhpStorm\Language;
-
-require_once("CoreLibraries.php");
+require_once "CoreLibraries.php";
 
 $isReactFE = false;
 
@@ -314,7 +312,7 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
   $result->title = $title;
   $result->canClose = $canClose;
   $result->additionalComments = $additionalComments;
-  $cards = array();
+  $cards = [];
   for ($i = 0; $i < count($fromArr); $i += $arrElements) {
     array_push($cards, JSONRenderedCard($fromArr[$i]));
   }
@@ -332,7 +330,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
 {
   global $turn;
   $hero = GetPlayerCharacter($playerID)[0];
-  if ($turn[0] == "B") return ($isPlayable ? 6 : 0);
+  if ($turn[0] == "B") return $isPlayable ? 6 : 0;
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
@@ -349,7 +347,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   }
   if ($isPlayable && ComboActive($cardID)) return 3;
   if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-  if ($isPlayable && HasRupture($cardID) && RuptureActive(true, (CardType($cardID) != "AA"))) return 3;
+  if ($isPlayable && HasRupture($cardID) && RuptureActive(true, CardType($cardID) != "AA")) return 3;
   if ($isPlayable && HasEffectActive($cardID)) return 3;
   else if ($isPlayable) return 6;
   return 0;
@@ -395,30 +393,6 @@ function CardLink($caption, $cardNumber, $recordMenu = false)
   if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID) && !IsColorblindMode($playerID == 1 ? 2 : 1)) $pitchText = "";
   $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
   return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
-}
-
-function GetTheirBanishForDisplay($playerID)
-{
-  global $theirBanish;
-  $TheirCardBack = GetCardBack($playerID == 1 ? 2 : 1);
-  $banish = array();
-  for ($i = 0; $i < count($theirBanish); $i += BanishPieces()) {
-    if (isFaceDownMod($theirBanish[$i + 1])) array_push($banish, $TheirCardBack);
-    else array_push($banish, $theirBanish[$i]);
-  }
-  return $banish;
-}
-
-function GetMyBanishForDisplay($playerID)
-{
-  global $myBanish;
-  $myCardBack = GetCardBack($playerID == 1 ? 1 : 2);
-  $banish = array();
-  for ($i = 0; $i < count($myBanish); $i += BanishPieces()) {
-    if (isFaceDownMod($myBanish[$i + 1])) array_push($banish, $myCardBack);
-    else array_push($banish, $myBanish[$i]);
-  }
-  return $banish;
 }
 
 function isFaceDownMod($mod)

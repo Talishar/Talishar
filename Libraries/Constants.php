@@ -1,6 +1,0 @@
-<?php
-
-  $INF_CONST_TIMESTAMP_LENGTH = 11;
-
-?>
-
