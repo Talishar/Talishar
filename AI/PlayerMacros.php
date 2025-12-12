@@ -3,6 +3,7 @@
 function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
+  global $combatChainState, $CCS_RequiredEquipmentBlock;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
@@ -49,11 +50,13 @@ function ProcessMacros()
       if($turn[0] == "B" || $turn[0] == "D")
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
-        if($threshold == "99") { $somethingChanged = true; PassInput(); }
-        else if($threshold == "1")
-        {
-          CacheCombatResult();
-          if(CachedTotalPower() <= 1) { $somethingChanged = true; PassInput(); }
+        if ($combatChainState[$CCS_RequiredEquipmentBlock] == 0) {
+          if($threshold == "99") { $somethingChanged = true; PassInput(); }
+          else if($threshold == "1")
+          {
+            CacheCombatResult();
+            if(CachedTotalPower() <= 1) { $somethingChanged = true; PassInput(); }
+          }
         }
       }
       if(!IsGameOver() && ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
