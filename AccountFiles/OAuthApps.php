@@ -12,7 +12,7 @@ $allowedOAuthApps = [
         "description" => "Fablazing application",
         "secret" => $fablazingSecret,
         "allowed_redirect_uris" => [
-            "http://localhost:3000/auth/talishar/callback"
+            "http://localhost:3000/auth/talishar/callback",
             "https://fablazing.com/auth/talishar/callback",
             "https://www.fablazing.com/auth/talishar/callback"
 
