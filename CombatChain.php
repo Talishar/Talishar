@@ -641,12 +641,19 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         break;
       case "renounce_grandeur_red":
         $auras = GetAuras($defPlayer);
+        $foundAura = false;
         for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          if (TypeContains($auras[$i], "T", $defPlayer)) $power += 1;
+          if (TypeContains($auras[$i], "T", $defPlayer) && !$foundAura) {
+            $foundAura = true;
+            $power += 1;
+          }
         }
         $char = GetPlayerCharacter($defPlayer);
         for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-          if (TypeContains($char[$i], "T", $defPlayer) && SubtypeContains($char[$i], "Aura")) $power += 1;
+          if (TypeContains($char[$i], "T", $defPlayer) && SubtypeContains($char[$i], "Aura") && !$foundAura) {
+            $foundAura = true;
+            $power += 1;
+          }
         }
         $power += 0;
         break;
