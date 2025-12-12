@@ -292,11 +292,8 @@ function ChainLinkObject($link)
     }
     else $powerValue = 0;
     $uid = $chainLinks[$link][$i + 8];
-    if ($chainLinks[$link][$i + 1] == $defPlayer) $blockValue = ModifiedBlockValue($chainLinks[$link][$i], $defPlayer, "CC", "", $uid) + $chainLinks[$link][$i + 5];
-    else $blockValue = 0;
-
-    if($card->Player == $mainPlayer) $card->modifier = $powerValue;
-    else $card->modifier = $blockValue;
+    $blockValue = ($chainLinks[$link][$i + 1] == $defPlayer) ? ModifiedBlockValue($chainLinks[$link][$i], $defPlayer, "CC", "", $uid) + $chainLinks[$link][$i + 5] : 0;
+    $card->modifier = ($card->Player == $mainPlayer) ? $powerValue : $blockValue;
     $card->cardID = $chainLinks[$link][$i];
     $card->Name = CardName($chainLinks[$link][$i]);
 

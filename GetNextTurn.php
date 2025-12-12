@@ -383,10 +383,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $tracker->color = $playerID == $currentPlayer ? "blue" : "red";
   $layersCount = count($layers);
   $chainLinksCount = count($chainLinks);
-  if ($turnPhase == "B" || ($layersCount > 0 && $layers[0] == "DEFENDSTEP")) $tracker->position = "Defense";
+  if ($turnPhase == "B" || $layersCount > 0 && $layers[0] == "DEFENDSTEP") $tracker->position = "Defense";
   else if ($turnPhase == "A" || $turnPhase == "D") $tracker->position = "Reactions";
-  else if ($turnPhase == "PDECK" || $turnPhase == "ARS" || ($layersCount > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK"))) $tracker->position = "EndTurn";
-  else $tracker->position = ($chainLinksCount > 0 || ($layersCount > 0 && $layers[0] == "ATTACKSTEP")) ? "Combat" : "Main";
+  else if ($turnPhase == "PDECK" || $turnPhase == "ARS" || $layersCount > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK")) $tracker->position = "EndTurn";
+  else $tracker->position = ($chainLinksCount > 0 || $layersCount > 0 && $layers[0] == "ATTACKSTEP") ? "Combat" : "Main";
   $response->tracker = $tracker;
 
   //Display layer
