@@ -1886,6 +1886,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $optionsCount = count($options);
     $formOptions->maxNo = $optionsCount;
     $playerInputPopup->formOptions = $formOptions;
+    $wateryGraveCounter = false;
 
     $choiceOptions = "checkbox";
     $playerInputPopup->choiceOptions = $choiceOptions;
@@ -1901,7 +1902,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     } else {
       for ($i = 0; $i < $optionsCount; ++$i) {
         if ($options[$i] != "") {
-          if ($turnPhase == "MULTICHOOSEDISCARD") array_push($cardsArray, JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i));
+          if ($turnPhase == "MULTICHOOSEDISCARD") {
+            if (SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1) {
+              $wateryGraveCounter = true;
+            }
+            array_push($cardsArray, JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter));
+            $wateryGraveCounter = false;
+          }
           else if ($turnPhase == "MULTICHOOSETHEIRDISCARD") array_push($cardsArray, JSONRenderedCard($theirDiscard[$options[$i]], actionDataOverride: $i));
           else if ($turnPhase == "MULTICHOOSEHAND" || $turnPhase == "MAYMULTICHOOSEHAND") array_push($cardsArray, JSONRenderedCard($myHand[$options[$i]], actionDataOverride: $i));
           else if ($turnPhase == "MULTICHOOSEDECK") array_push($cardsArray, JSONRenderedCard($myDeck[$options[$i]], actionDataOverride: $i));

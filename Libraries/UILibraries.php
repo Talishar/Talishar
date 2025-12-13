@@ -61,6 +61,7 @@ function JSONRenderedCard(
   $sandCounters = NULL,
   $lightningPlayed = NULL,
   $showAmpAmount = false,
+  $wateryGraveIcon = false,
   $marked = NULL,
   $tapped = NULL,
   $uniqueID = NULL,
@@ -126,6 +127,9 @@ function JSONRenderedCard(
 
   $sandCounters = property_exists($countersMap, 'sand') ? $sandCounters->sand : $sandCounters;
   if($sandCounters != NULL) $countersMap->sand = $sandCounters;
+
+  $wateryGraveIcon = property_exists($countersMap, 'wateryGrave') ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
+  if($wateryGraveIcon != NULL) $countersMap->wateryGrave = $wateryGraveIcon;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
@@ -202,6 +206,12 @@ function JSONRenderedCard(
       $countersMap->counters = 0;
     } 
   }
+
+  if($wateryGraveIcon) {
+    $countersMap->wateryGrave = true;
+    $countersMap->counters = 0;
+  }
+  
   //Volzar Amp icon
   if($controller != NULL){
     if($cardNumber == "volzar_the_lightning_rod" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
