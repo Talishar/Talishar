@@ -18643,7 +18643,7 @@ return match($cardID) {
 default => 20
 };
 }
-function GeneratedCharacterIntelligence($cardID) {
+function GeneratedCharacterIntellect($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
 "data_doll_mkii" => 3,

@@ -341,7 +341,7 @@ function CharacterIntellect($cardID)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
-  return GeneratedCharacterIntelligence($cardID);
+  return GeneratedCharacterIntellect($cardID);
 }
 
 function CardSet($cardID)
