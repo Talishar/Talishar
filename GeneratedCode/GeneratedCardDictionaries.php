@@ -5725,7 +5725,6 @@ return match($cardID) {
 "nerve_scalpel" => -1,
 "nerve_scalpel_r" => -1,
 "new_horizon" => 2,
-"nights_embrace_blue" => -1,
 "nimble_strike_red" => 2,
 "nimble_strike_yellow" => 2,
 "nimble_strike_blue" => 2,
