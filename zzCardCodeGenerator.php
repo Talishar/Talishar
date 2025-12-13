@@ -39,7 +39,7 @@
   GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
   GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
   GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");//Also images
-  GenerateFunction($cardArray, $handler, "CharacterIntelligence", "intelligence", "4");
+  GenerateFunction($cardArray, $handler, "CharacterIntellect", "intelligence", "4");
   GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
   GenerateFunction($cardArray, $handler, "Is1H", "1H", "false");
   GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
