@@ -4523,7 +4523,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
     default:
       break;
   }
-  
+  LogPlayCardStats($player, $discarded, "HAND", "DISCARD");
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 

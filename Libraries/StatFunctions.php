@@ -73,12 +73,33 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
   if(!$found) array_push($cardStats, $cardID, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   switch($type)
   {
-    case "P": ++$cardStats[$i + $CardStats_TimesPitched]; if(isset($turnStats[$baseIndex + $TurnStats_CardsPitched])) ++$turnStats[$baseIndex + $TurnStats_CardsPitched]; break;
-    case "B": ++$cardStats[$i + $CardStats_TimesBlocked]; if($from != "PLAY" && $from != "EQUIP" && isset($turnStats[$baseIndex + $TurnStats_CardsBlocked])) ++$turnStats[$baseIndex + $TurnStats_CardsBlocked]; break;
-    case "HIT": ++$cardStats[$i + $CardStats_TimesHit]; break;
-    case "CHARGE": ++$cardStats[$i + $CardStats_TimesCharged]; break;
-    case "KATSUDISCARD":  ++$cardStats[$i + $CardStats_TimesKatsuDiscard]; break;
-    case "DISCARD": ++$cardStats[$i + $CardStats_TimesDiscarded]; if(isset($turnStats[$baseIndex + $TurnStats_CardsDiscarded])) ++$turnStats[$baseIndex + $TurnStats_CardsDiscarded]; break;
+    case "P": 
+      ++$cardStats[$i + $CardStats_TimesPitched]; 
+      if(isset($turnStats[$baseIndex + $TurnStats_CardsPitched])) {
+        ++$turnStats[$baseIndex + $TurnStats_CardsPitched]; 
+      }
+      break;
+    case "B": 
+      ++$cardStats[$i + $CardStats_TimesBlocked]; 
+      if($from != "PLAY" && $from != "EQUIP" && isset($turnStats[$baseIndex + $TurnStats_CardsBlocked])) {
+        ++$turnStats[$baseIndex + $TurnStats_CardsBlocked]; 
+      }
+      break;
+    case "HIT": 
+      ++$cardStats[$i + $CardStats_TimesHit]; 
+      break;
+    case "CHARGE": 
+      ++$cardStats[$i + $CardStats_TimesCharged]; 
+      break;
+    case "KATSUDISCARD":  
+      ++$cardStats[$i + $CardStats_TimesKatsuDiscard]; 
+      break;
+    case "DISCARD": 
+      ++$cardStats[$i + $CardStats_TimesDiscarded]; 
+      if(isset($turnStats[$baseIndex + $TurnStats_CardsDiscarded])) {
+        ++$turnStats[$baseIndex + $TurnStats_CardsDiscarded]; 
+      }
+      break;
     default:
       if ($from != "PLAY")
       {
