@@ -77,8 +77,8 @@ function JSONRenderedCard(
   $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
 
-  $defCounters = property_exists($countersMap, 'defence') ? $countersMap->defence : $defCounters;
-  if($defCounters != NULL) $countersMap->defence = $defCounters;
+  $defCounters = property_exists($countersMap, 'defense') ? $countersMap->defense : $defCounters;
+  if($defCounters != NULL) $countersMap->defense = $defCounters;
 
   $powerCounters = property_exists($countersMap, 'attack') ? $powerCounters->attack : $powerCounters;
   if($powerCounters != NULL) $countersMap->attack = $powerCounters;

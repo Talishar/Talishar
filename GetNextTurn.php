@@ -373,8 +373,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
   $activeChainLink->totalPower = $totalPower;
 
-  // current chain link defence
-  $activeChainLink->totalDefence = $blockVal;
+  // current chain link defense
+  $activeChainLink->totalDefense = $blockVal;
 
   $response->activeChainLink = $activeChainLink;
 
