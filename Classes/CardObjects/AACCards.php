@@ -152,7 +152,8 @@ class creep_red extends Card {
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
-		return HasStealth($CombatChain->AttackCard()->ID());
+		$attackID = $CombatChain->AttackCard()->ID();
+		return HasStealth($attackID) && TypeContains($attackID, "AA", $this->controller);
 	}
 }
 
