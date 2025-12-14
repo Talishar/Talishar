@@ -498,7 +498,7 @@ function OUTAbilityCost($cardID)
   {
     global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
-    global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_FlickedDamage;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_FlickedDamage, $CombatChain;
     switch ($cardID)
     {
       case "nerve_scalpel": case "nerve_scalpel_r":
@@ -513,9 +513,10 @@ function OUTAbilityCost($cardID)
       case "infiltrate_red":
         if(IsHeroAttackTarget())
         {
+          $attackCard = $CombatChain->AttackCard()->ID();
           $deck = new Deck($defPlayer);
           $deckCard = $deck->Top(true);
-          if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "NTFromOtherPlayer", $cardID);
+          if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "NTFromOtherPlayer", $attackCard);
         }
         break;
       case "shake_down_red":
