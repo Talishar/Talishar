@@ -628,7 +628,6 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $pl
   }
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
   $damage = $damage > 0 ? $damage : 0;
-  $damage = CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable);
   $damage = AuraTakeDamageAbilities($player, $damage, $type, $source);
   $damage = PermanentTakeDamageAbilities($player, $damage, $type, $source);
   $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
@@ -639,7 +638,7 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $pl
     $playerSource = $mainPlayer;
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, "$damage,$type,$source,$playerSource");
-  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable);
+  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable, $source);
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
     SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer, true);
@@ -688,12 +687,12 @@ function ResetAuraStatus($player)
   }
 }
 
-function AddDamagePreventionSelection($player, $damage, $type, $preventable)
+function AddDamagePreventionSelection($player, $damage, $type, $preventable, $source)
 {
-  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type, 1);
+  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type . "-" . $source, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
-  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage,$preventable");
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage,$preventable,$source");
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $playerSource)
@@ -2799,8 +2798,9 @@ function CanRevealCards($player)
   return true;
 }
 
-function GetDamagePreventionIndices($player, $type, $damage, $preventable=true)
+function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, $source = "")
 {
+  global $currentTurnEffects;
   $rv = "";
   $auras = &GetAuras($player);
   $indices = "";
@@ -2845,8 +2845,24 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true)
   }
   $indices = SearchMultiZoneFormat($indices, "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
-  $rv = $mzIndices;
 
+  $indices = "";
+  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+    if ($currentTurnEffects[$i + 1] == $player && CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, $type, $source) > 0) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  $indices = SearchMultiZoneFormat($indices, "CURRENTTURNEFFECTS");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+
+  //TODO:
+  //$damage = AuraTakeDamageAbilities($player, $damage, $type, $source);
+  //$damage = PermanentTakeDamageAbilities($player, $damage, $type, $source);
+  //$damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
+  //$damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
+
+  $rv = $mzIndices;
   return $rv;
 }
 

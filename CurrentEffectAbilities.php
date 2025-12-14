@@ -1208,330 +1208,459 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
   }
 }
 
-function CurrentEffectDamagePrevention($player, $type, $damage, $source, $preventable)
+function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type, $source)
+{
+  global $currentTurnEffects;
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $effects = explode("-", $currentTurnEffects[$index]);
+  switch ($effects[0]) {
+    case "dissipation_shield_yellow":
+      return intval($effects[1]);
+    case "blessing_of_serenity_red":
+      return 3;
+    case "blessing_of_serenity_yellow":
+      return 2;
+    case "blessing_of_serenity_blue":
+      return 1;
+    case "steadfast_red":
+    case "steadfast_yellow":
+    case "steadfast_blue":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        return $damage;
+      }
+      break;
+    case "amulet_of_intervention_blue":
+      return 1;
+    case "helios_mitre":
+      if ($source == $currentTurnEffects[$index + 2]) {
+          return $damage;
+        }
+      break;
+    case "oasis_respite_red":
+    case "oasis_respite_yellow":
+    case "oasis_respite_blue":
+      if ($source == $currentTurnEffects[$index + 2]) {
+          return $damage;
+        }
+      break;
+    case "seekers_hood":
+    case "seekers_gilet":
+    case "seekers_mitts":
+    case "seekers_leggings":
+      return 1;
+    case "brush_off_red":
+      if ($damage <= 3) {
+        return $damage;
+      }
+      break;
+    case "brush_off_yellow":
+      if ($damage <= 2) {
+        return $damage;
+      }
+      break;
+    case "brush_off_blue":
+      if ($damage == 1) {
+        return $damage;
+      }
+      break;
+    case "peace_of_mind_red":
+      if ($type == "COMBAT") {
+        return 4;
+      }
+      break;
+    case "peace_of_mind_yellow":
+      if ($type == "COMBAT") {
+        return 3;
+      }
+      break;
+    case "peace_of_mind_blue":
+      if ($type == "COMBAT") {
+        return 2;
+      }
+      break;
+    case "break_of_dawn_red":
+    case "break_of_dawn_yellow":
+    case "break_of_dawn_blue":
+      if ($effects[0] == "break_of_dawn_red") $prevention = 4;
+      else if ($effects[0] == "break_of_dawn_yellow") $prevention = 3;
+      else if ($effects[0] == "break_of_dawn_blue") $prevention = 2;
+      if (TalentContains($source, "SHADOW", $otherPlayer)) {
+        return $prevention;
+      }
+      break;
+    case "interlude_red":
+      return 3;
+    case "interlude_yellow":
+      return 2;
+    case "interlude_blue":
+      return 1;
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
+      return 1;
+    case "evo_circuit_breaker_red":
+    case "evo_atom_breaker_red":
+    case "evo_face_breaker_red":
+    case "evo_mach_breaker_red": //Card
+    case "evo_circuit_breaker_red_equip":
+    case "evo_atom_breaker_red_equip":
+    case "evo_face_breaker_red_equip":
+    case "evo_mach_breaker_red_equip": //Equipment
+      if (!isset($effects[1]) || $effects[1] != "BUFF") {
+        return intval($effects[1]);
+      }
+      break;
+    case "no_fear_red":
+      return intval($effects[1]);
+    case "battered_not_broken_red":
+    case "take_it_on_the_chin_red":
+    case "slap_happy_red":
+      return 2;
+    case "sheltered_cove":
+      return 2;
+    case "battlefront_bastion_red":
+    case "battlefront_bastion_yellow":
+    case "battlefront_bastion_blue":
+      return 1;
+    case "moon_chakra_red":
+      if ($currentTurnEffects[$index] == "moon_chakra_red-1") return 3;
+      else return 5;
+    case "moon_chakra_yellow":
+      if ($currentTurnEffects[$index] == "moon_chakra_yellow-1") return 2;
+      else return 4;
+    case "moon_chakra_blue":
+      if ($currentTurnEffects[$index] == "moon_chakra_blue-1") return 1;
+      else return 3;
+    case "cloud_cover_yellow":
+    case "sigil_of_shelter_yellow":
+        return 2;
+    case "sigil_of_shelter_blue":
+        return 1;
+    case "sanctuary_of_aria":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        return $damage;
+      }
+      break;
+    case "misfire_dampener":
+      return intval($effects[1]);
+    case "sawbones_dock_hand_yellow":
+      $character = &GetPlayerCharacter($player);
+      if(ClassContains($character[0], "PIRATE", $player)) {
+        return 1;
+      }
+      break;
+    case "throw_caution_to_the_wind_blue":
+      return intval($effects[1]);
+    case "light_up_the_leaves_red":
+      if ($source == $currentTurnEffects[$index + 2] && $type == "ARCANE") {
+        return $damage;
+      }
+      break;
+    default:
+      break;
+  }
+  return 0;
+}
+
+function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source, $preventable)
 {
   global $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   $source = ExtractCardID($source);
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0 && $damage > 0; $i -= CurrentTurnEffectPieces()) {
-    $remove = false;
-    if ($currentTurnEffects[$i + 1] == $player) {
-      $preventedDamage = 0;
-      $effects = explode("-", $currentTurnEffects[$i]);
-      $card = GetClass($effects[0], $player);
-      if ($card != "-") {
-        $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
-        if ($preventable) $preventedDamage += $prevention;
-      }
-      switch ($effects[0]) {
-        case "dissipation_shield_yellow":
-          if ($preventable) $preventedDamage += intval($effects[1]);
-          $remove = true;
-          break;
-        case "blessing_of_serenity_red":
-          if ($type == "COMBAT") {
-            if ($preventable) $preventedDamage += 3;
-            $remove = true;
-          }
-          break;
-        case "blessing_of_serenity_yellow":
-          if ($type == "COMBAT") {
-            if ($preventable) $preventedDamage += 2;
-            $remove = true;
-          }
-          break;
-        case "blessing_of_serenity_blue":
-          if ($type == "COMBAT") {
-            if ($preventable) $preventedDamage += 1;
-            $remove = true;
-          }
-          break;
-        case "steadfast_red":
-        case "steadfast_yellow":
-        case "steadfast_blue":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($preventable) {
-              $origDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              if ($preventedDamage > $damage) $preventedDamage = $damage;
-              $currentTurnEffects[$i + 3] -= $origDamage;
-            }
-            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-          }
-          break;
-        case "amulet_of_intervention_blue":
-          $remove = true;
-          break;
-        case "helios_mitre":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($preventable) {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-            }
-            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-            if ($source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
-          }
-          break;
-        case "oasis_respite_red":
-        case "oasis_respite_yellow":
-        case "oasis_respite_blue":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($preventable) {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-            }
-            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-            $multiAttack = match($source) {
-              "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
-              "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue" => true,
-              default => false,
-            };
-            if (SubtypeContains($source, "Dagger")) $multiAttack = true;
-            if (TypeContains($source, "AA") && !$multiAttack) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
-            if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
-          }
-          break;
-        case "seekers_hood":
-        case "seekers_gilet":
-        case "seekers_mitts":
-        case "seekers_leggings":
-          if ($preventable) {
-            $preventedDamage += 1;
-          }
-          $remove = true;
-          break;
-        case "brush_off_red":
-          if ($preventable && $damage <= 3) {
-            $preventedDamage = $damage;
-            $remove = true;
-          }
-          break;
-        case "brush_off_yellow":
-          if ($preventable && $damage <= 2) {
-            $preventedDamage = $damage;
-            $remove = true;
-          }
-          break;
-        case "brush_off_blue":
-          if ($preventable && $damage == 1) {
-            $preventedDamage = $damage;
-            $remove = true;
-          }
-          break;
-        case "peace_of_mind_red":
-          if ($type == "COMBAT") {
-            if ($preventable) $preventedDamage += 4;
-            $remove = true;
-          }
-          break;
-        case "peace_of_mind_yellow":
-          if ($type == "COMBAT") {
-            if ($preventable) $preventedDamage += 3;
-            $remove = true;
-          }
-          break;
-        case "peace_of_mind_blue":
-          if ($type == "COMBAT") {
-            if ($preventable) $preventedDamage += 2;
-            $remove = true;
-          }
-          break;
-        case "break_of_dawn_red":
-        case "break_of_dawn_yellow":
-        case "break_of_dawn_blue":
-          if ($effects[0] == "break_of_dawn_red") $prevention = 4;
-          else if ($effects[0] == "break_of_dawn_yellow") $prevention = 3;
-          else if ($effects[0] == "break_of_dawn_blue") $prevention = 2;
-          if (TalentContains($source, "SHADOW", $otherPlayer)) {
-            if ($preventable) $preventedDamage += $prevention;
-            $remove = true;
-          }
-          break;
-        case "interlude_red":
-          if ($preventable) $preventedDamage += 3;
-          $remove = true;
-          break;
-        case "interlude_yellow":
-          if ($preventable) $preventedDamage += 2;
-          $remove = true;
-          break;
-        case "interlude_blue":
-          if ($preventable) $preventedDamage += 1;
-          $remove = true;
-          break;
-        case "dissolving_shield_red":
-        case "dissolving_shield_yellow":
-        case "dissolving_shield_blue":
-          $remove = true;
-          break;
-        case "evo_circuit_breaker_red":
-        case "evo_atom_breaker_red":
-        case "evo_face_breaker_red":
-        case "evo_mach_breaker_red": //Card
-        case "evo_circuit_breaker_red_equip":
-        case "evo_atom_breaker_red_equip":
-        case "evo_face_breaker_red_equip":
-        case "evo_mach_breaker_red_equip": //Equipment
-          if (!isset($effects[1]) || $effects[1] != "BUFF") {
-            if ($preventable) $preventedDamage += intval($effects[1]);
-            $remove = true;
-          }
-          break;
-        case "no_fear_red":
-          if ($preventable) $preventedDamage += intval($effects[1]);
-          $remove = true;
-          break;
-        case "battered_not_broken_red":
-          if ($preventable) {
-            $preventedDamage += 2;
-            PlayAura("might", $player); 
-          }
-          $remove = true;
-          break;
-        case "take_it_on_the_chin_red":
-          if ($preventable) {
-            $preventedDamage += 2;
-            PlayAura("agility", $player); 
-          }
-          $remove = true;
-          break;
-        case "slap_happy_red":
-          if ($preventable) {
-            $preventedDamage += 2;
-            PlayAura("vigor", $player); 
-          }
-          $remove = true;
-          break;
-        case "sheltered_cove":
-          if ($preventable) $preventedDamage += 2;
-          $remove = true;
-          break;
-        case "battlefront_bastion_red":
-        case "battlefront_bastion_yellow":
-        case "battlefront_bastion_blue":
-          $remove = true;
-          break;
-        case "moon_chakra_red":
-          if ($preventable) {
-            if ($currentTurnEffects[$i] == "moon_chakra_red-1") $preventedDamage += 3;
-            else $preventedDamage += 5;
-          }
-          $remove = true;
-          break;
-        case "moon_chakra_yellow":
-          if ($preventable) {
-            if ($currentTurnEffects[$i] == "moon_chakra_yellow-1") $preventedDamage += 2;
-            else $preventedDamage += 4;
-          }
-          $remove = true;
-          break;
-        case "moon_chakra_blue":
-          if ($preventable) {
-            if ($currentTurnEffects[$i] == "moon_chakra_blue-1") $preventedDamage += 1;
-            else $preventedDamage += 3;
-          }
-          $remove = true;
-          break;
-        case "cloud_cover_yellow":
-        case "sigil_of_shelter_yellow":
-          if ($preventable) {
-            $preventedDamage += 2;
-          }
-          $remove = true;
-          break;
-        case "sigil_of_shelter_blue":
-          if ($preventable) {
-            $preventedDamage += 1;
-          }
-          $remove = true;
-          break;
-        case "sanctuary_of_aria":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($preventable) {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-            }
-            if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-          }
-          break;
-        case "misfire_dampener":
-          if ($preventable) {
-            $preventedDamage += intval($effects[1]);
-            $remove = true;
-            break;
-          }
-          break;
-        case "sawbones_dock_hand_yellow":
-          $character = &GetPlayerCharacter($player);
-          if(ClassContains($character[0], "PIRATE", $player) && $preventable) {
-            $preventedDamage += 1;
-          }
-          $remove = true;
-          break;
-        case "throw_caution_to_the_wind_blue":
-          if ($preventable) {
-            $preventedDamage += intval($effects[1]);
-          }
-          $remove = true;
-          break;
-        case "light_up_the_leaves_red":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($preventable && $type == "ARCANE") {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
-              if (!IsStaticType(CardType($source))) $remove = true;
-            }
-          }
-          break;
-        default:
-          break;
-      }
-      if ($remove) RemoveCurrentTurnEffect($i);
-      //apply vambrace only once and only after the first instance of prevention
-      if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
-        $preventedDamage -= 1;
-        $vambraceAvailable = false;
-        $vambraceRemove = true;
-      }
-      $damage -= $preventedDamage;
-    }
-    else {
-      $preventedDamage = 0;
-      $effects = explode("-", $currentTurnEffects[$i]);
-      switch ($effects[0]) {
-        case "light_up_the_leaves_red": //applies to both players
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($preventable && $type == "ARCANE") {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
-              if (!IsStaticType(CardType($source))) $remove = true;
-            }
-          }
-          break;
-        default:
-          break;
-      }
-      if ($remove) RemoveCurrentTurnEffect($i);
-      //apply vambrace only once and only after the first instance of prevention
-      if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
-        $preventedDamage -= 1;
-        $vambraceAvailable = false;
-        $vambraceRemove = true;
-      }
-      $damage -= $preventedDamage;
-    }
+  $remove = false;
+  $preventedDamage = 0;
+  $effects = explode("-", $currentTurnEffects[$index]);
+  $card = GetClass($effects[0], $player);
+  if ($card != "-") {
+    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
+    if ($preventable) $preventedDamage += $prevention;
   }
+  switch ($effects[0]) {
+    case "dissipation_shield_yellow":
+      if ($preventable) $preventedDamage += intval($effects[1]);
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "blessing_of_serenity_red":
+      if ($type == "COMBAT") {
+        if ($preventable) $preventedDamage += 3;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "blessing_of_serenity_yellow":
+      if ($type == "COMBAT") {
+        if ($preventable) $preventedDamage += 2;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "blessing_of_serenity_blue":
+      if ($type == "COMBAT") {
+        if ($preventable) $preventedDamage += 1;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "steadfast_red":
+    case "steadfast_yellow":
+    case "steadfast_blue":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        if ($preventable) {
+          $origDamage = $damage;
+          $preventedDamage += $currentTurnEffects[$index + 3];
+          if ($preventedDamage > $damage) $preventedDamage = $damage;
+          $currentTurnEffects[$index + 3] -= $origDamage;
+        }
+        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "amulet_of_intervention_blue":
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "helios_mitre":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        if ($preventable) {
+          $sourceDamage = $damage;
+          $preventedDamage += $currentTurnEffects[$index + 3];
+          $currentTurnEffects[$index + 3] -= $sourceDamage;
+        }
+        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+        if ($source == "runechant" || $source == "aether_ashwing") RemoveCurrentTurnEffect($index); //To be removed when coded with Unique ID instead of cardID name as $source
+      }
+      break;
+    case "oasis_respite_red":
+    case "oasis_respite_yellow":
+    case "oasis_respite_blue":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        if ($preventable) {
+          $sourceDamage = $damage;
+          $preventedDamage += $currentTurnEffects[$index + 3];
+          $currentTurnEffects[$index + 3] -= $sourceDamage;
+        }
+        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+        $multiAttack = match($source) {
+          "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
+          "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue" => true,
+          default => false,
+        };
+        if (SubtypeContains($source, "Dagger")) $multiAttack = true;
+        if (TypeContains($source, "AA") && !$multiAttack) RemoveCurrentTurnEffect($index); //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") RemoveCurrentTurnEffect($index); //To be removed when coded with Unique ID instead of cardID name as $source
+      }
+      break;
+    case "seekers_hood":
+    case "seekers_gilet":
+    case "seekers_mitts":
+    case "seekers_leggings":
+      if ($preventable) {
+        $preventedDamage += 1;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "brush_off_red":
+      if ($preventable && $damage <= 3) {
+        $preventedDamage = $damage;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "brush_off_yellow":
+      if ($preventable && $damage <= 2) {
+        $preventedDamage = $damage;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "brush_off_blue":
+      if ($preventable && $damage == 1) {
+        $preventedDamage = $damage;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "peace_of_mind_red":
+      if ($type == "COMBAT") {
+        if ($preventable) $preventedDamage += 4;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "peace_of_mind_yellow":
+      if ($type == "COMBAT") {
+        if ($preventable) $preventedDamage += 3;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "peace_of_mind_blue":
+      if ($type == "COMBAT") {
+        if ($preventable) $preventedDamage += 2;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "break_of_dawn_red":
+    case "break_of_dawn_yellow":
+    case "break_of_dawn_blue":
+      if ($effects[0] == "break_of_dawn_red") $prevention = 4;
+      else if ($effects[0] == "break_of_dawn_yellow") $prevention = 3;
+      else if ($effects[0] == "break_of_dawn_blue") $prevention = 2;
+      if (TalentContains($source, "SHADOW", $otherPlayer)) {
+        if ($preventable) $preventedDamage += $prevention;
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "interlude_red":
+      if ($preventable) $preventedDamage += 3;
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "interlude_yellow":
+      if ($preventable) $preventedDamage += 2;
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "interlude_blue":
+      if ($preventable) $preventedDamage += 1;
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "evo_circuit_breaker_red":
+    case "evo_atom_breaker_red":
+    case "evo_face_breaker_red":
+    case "evo_mach_breaker_red": //Card
+    case "evo_circuit_breaker_red_equip":
+    case "evo_atom_breaker_red_equip":
+    case "evo_face_breaker_red_equip":
+    case "evo_mach_breaker_red_equip": //Equipment
+      if (!isset($effects[1]) || $effects[1] != "BUFF") {
+        if ($preventable) $preventedDamage += intval($effects[1]);
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "no_fear_red":
+      if ($preventable) $preventedDamage += intval($effects[1]);
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "battlefront_bastion_blue":
+    case "battlefront_bastion_red":
+    case "battlefront_bastion_yellow":
+      if ($preventable) {
+        $preventedDamage += 1;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "battered_not_broken_red":
+      if ($preventable) {
+        $preventedDamage += 2;
+        PlayAura("might", $player); 
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "take_it_on_the_chin_red":
+      if ($preventable) {
+        $preventedDamage += 2;
+        PlayAura("agility", $player); 
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "slap_happy_red":
+      if ($preventable) {
+        $preventedDamage += 2;
+        PlayAura("vigor", $player); 
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "sheltered_cove":
+      if ($preventable) $preventedDamage += 2;
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "battlefront_bastion_red":
+    case "battlefront_bastion_yellow":
+    case "battlefront_bastion_blue":
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "moon_chakra_red":
+      if ($preventable) {
+        if ($currentTurnEffects[$index] == "moon_chakra_red-1") $preventedDamage += 3;
+        else $preventedDamage += 5;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "moon_chakra_yellow":
+      if ($preventable) {
+        if ($currentTurnEffects[$index] == "moon_chakra_yellow-1") $preventedDamage += 2;
+        else $preventedDamage += 4;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "moon_chakra_blue":
+      if ($preventable) {
+        if ($currentTurnEffects[$index] == "moon_chakra_blue-1") $preventedDamage += 1;
+        else $preventedDamage += 3;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "cloud_cover_yellow":
+    case "sigil_of_shelter_yellow":
+      if ($preventable) {
+        $preventedDamage += 2;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "sigil_of_shelter_blue":
+      if ($preventable) {
+        $preventedDamage += 1;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "sanctuary_of_aria":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        if ($preventable) {
+          $sourceDamage = $damage;
+          $preventedDamage += $currentTurnEffects[$index + 3];
+          $currentTurnEffects[$index + 3] -= $sourceDamage;
+        }
+        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "misfire_dampener":
+      if ($preventable) {
+        $preventedDamage += intval($effects[1]);
+        RemoveCurrentTurnEffect($index);
+        break;
+      }
+      break;
+    case "sawbones_dock_hand_yellow":
+      $character = &GetPlayerCharacter($player);
+      if(ClassContains($character[0], "PIRATE", $player) && $preventable) {
+        $preventedDamage += 1;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "throw_caution_to_the_wind_blue":
+      if ($preventable) {
+        $preventedDamage += intval($effects[1]);
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
+    case "light_up_the_leaves_red":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        if ($preventable && $type == "ARCANE") {
+          $sourceDamage = $damage;
+          $preventedDamage += $currentTurnEffects[$index + 3];
+          $currentTurnEffects[$index + 3] -= $sourceDamage;
+          if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+          if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") RemoveCurrentTurnEffect($index);
+          if (!IsStaticType(CardType($source))) RemoveCurrentTurnEffect($index);
+        }
+      }
+      break;
+    default:
+      break;
+  }
+  //apply vambrace only once and only after the first instance of prevention
+  if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
+    $preventedDamage -= 1;
+    $vambraceAvailable = false;
+    $vambraceRemove = true;
+  }
+  $damage -= $preventedDamage;
   if ($vambraceRemove) SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   return $damage;
 }

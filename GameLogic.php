@@ -49,6 +49,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $subparam = (count($parameters) > 1) ? $parameters[1] : "";
       $subparam2 = (count($parameters) > 2) ? $parameters[2] : "";
       $subparam3 = (count($parameters) > 3) ? $parameters[3] : true;
+      $subparam4 = (count($parameters) > 4) ? $parameters[4] : "";
       switch ($parameter) {
         case "TRAPS":
           $rv = GetTrapIndices($player);
@@ -60,7 +61,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
         case "DAMAGEPREVENTION":
-          $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3);
+          $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3, $subparam4);
           break;
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();
@@ -2678,13 +2679,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYITEMS":
           $damage = ChosenItemTakeDamageAbilities($player, intval($mzIndex[1]), $params[0], $params[1]);
           break;
+        case "CURRENTTURNEFFECTS":
+          $damage = CurrentEffectDamagePrevention($player, intval($mzIndex[1]), $params[2], $params[0], $params[3], $params[1]);
+          break;
         default:
           break;
       }
       if ($damage < 0) $damage = 0;
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
-      if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1]);
+      if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1], $params[3]);
       if ($damage < $originDamage) LogDamagePreventedStats($player, $originDamage - $damage);
       return $damage;
     case "EQUIPCARDINVENTORY":

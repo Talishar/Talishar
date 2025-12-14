@@ -1563,6 +1563,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         else if ($option[0] == "PRELAYERS") $source = GetPreLayers();
         else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
         else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
+        else if ($option[0] == "CURRENTTURNEFFECTS") $source = $currentTurnEffects;
         $counters = 0;
         $lifeCounters = 0;
         $enduranceCounters = 0;
@@ -1725,7 +1726,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if($option[0] == "MYDECK" && $option[1] == "0" && $turnPhase == "MAYCHOOSEMULTIZONE" && substr_count($turnData, "MYDECK") == 1) {
           $card = $MyCardBack;
         }
-
         if ($maxCount < 2)
           array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped));
         else
