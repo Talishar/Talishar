@@ -962,12 +962,8 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     case "spark_spray_red":
     case "spark_spray_yellow":
     case "spark_spray_blue":
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_buff_".CardLink($combatChain[0], $combatChain[0]), 0, 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
-        break;
+      AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+      break;
     case "pec_perfect_red":
       AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
       break;
@@ -1150,11 +1146,7 @@ function OnBlockResolveEffects($cardID = "")
           if ($combatChain[$i+1] == $defPlayer) $numBlocking += 1;
         }
         if ($numBlocking > 0) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_buff_".CardLink($cardID, $cardID), 0, 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 1, 1);
-          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-          AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
         }
         break;
       case "pec_perfect_red":
