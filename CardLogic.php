@@ -3387,7 +3387,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "battlefront_bastion_red":
       case "battlefront_bastion_yellow":
         AddCurrentTurnEffect($parameter, $player, "CC");
-        IncrementClassState($player, $CS_DamagePrevention, 1);
         break;
       case "stone_rain_red":
         $otherPlayer = $player == 1 ? 2 : 1;
