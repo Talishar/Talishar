@@ -242,7 +242,7 @@ function ShouldSkipARs($player)
 {
   global $SET_SkipARs;
   $settings = GetSettings($player);
-  return $settings[$SET_SkipARs];
+  return IsReplay() ? 0 : $settings[$SET_SkipARs];
 }
 
 function ShouldSkipDRs($player)
@@ -251,11 +251,12 @@ function ShouldSkipDRs($player)
   $settings = GetSettings($player);
   $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
   ChangeSetting($player, $SET_PassDRStep, 0);
-  return $skip;
+  return IsReplay() ? 0 : $skip;
 }
 
 function ShouldAutotargetOpponent($player)
 {
+  //this is going to break in replays
   global $SET_AutotargetArcane;
   $settings = GetSettings($player);
   return $settings[$SET_AutotargetArcane] == "1";
@@ -273,7 +274,7 @@ function ShortcutAttackThreshold($player)
 {
   global $SET_ShortcutAttackThreshold;
   $settings = GetSettings($player);
-  if (count($settings) < $SET_ShortcutAttackThreshold) return "0";
+  if (count($settings) < $SET_ShortcutAttackThreshold || IsReplay()) return "0";
   return $settings[$SET_ShortcutAttackThreshold];
 }
 

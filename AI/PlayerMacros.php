@@ -1,5 +1,17 @@
 <?php
 
+function WritePass() {
+  global $currentPlayer;
+  if (!IsReplay() && SaveReplay()) {
+    $gameName = $_POST["gameName"] ?? null;
+    if (isset($gameName)) {
+      $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
+      fwrite($commandFile, "$currentPlayer 99 undefined undefined 0 \r\n");
+      fclose($commandFile);
+    }
+  }
+}
+
 function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
@@ -7,6 +19,7 @@ function ProcessMacros()
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
+    WritePass();
     PassInput();
   }
   if (!IsGameOver()) {
@@ -14,8 +27,8 @@ function ProcessMacros()
       if ($lastPhase != $turn[0]) $i = 0;
       $lastPhase = $turn[0];
       $somethingChanged = false;
-      if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+      if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; WritePass(); PassInput(); }
+      else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; WritePass(); PassInput(); }
       else if(($turn[0] == "B") && !IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
       else if($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if($turn[0] == "CHOOSECARD" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
@@ -30,19 +43,20 @@ function ProcessMacros()
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
         {
           $somethingChanged = true;
+          WritePass();
           PassInput();
         }
         if($turn[0] == "INSTANT" && count($layers) > 0)
         {
-          if(($layers[0] == "FINALIZECHAINLINK" || $layers[0] == "RESOLUTIONSTEP" || $layers[0] == "CLOSINGCHAIN") && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
-          else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-          else if($layers[0] == "ATTACKSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          if(($layers[0] == "FINALIZECHAINLINK" || $layers[0] == "RESOLUTIONSTEP" || $layers[0] == "CLOSINGCHAIN") && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; WritePass(); PassInput(); }
+          else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; WritePass(); PassInput(); }
+          else if($layers[0] == "ATTACKSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; WritePass(); PassInput(); }
           else if($layers[5] != "-")//Means there is a unique ID
           {
             $subtype = CardSubType($layers[2]);
-            if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-            else if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-            else if($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+            if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; WritePass(); PassInput(); }
+            else if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; WritePass(); PassInput(); }
+            else if($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; WritePass(); PassInput(); }
           }
         }
       }
@@ -51,11 +65,11 @@ function ProcessMacros()
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
         if ($combatChainState[$CCS_RequiredEquipmentBlock] == 0) {
-          if($threshold == "99") { $somethingChanged = true; PassInput(); }
+          if($threshold == "99") { $somethingChanged = true; WritePass(); PassInput(); }
           else if($threshold == "1")
           {
             CacheCombatResult();
-            if(CachedTotalPower() <= 1) { $somethingChanged = true; PassInput(); }
+            if(CachedTotalPower() <= 1) { $somethingChanged = true; WritePass(); PassInput(); }
           }
         }
       }
