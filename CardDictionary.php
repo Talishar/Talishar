@@ -276,6 +276,8 @@ function CardSubType($cardID, $uniqueID = -1)
     case "polly_cranka_ally":
     case "sticky_fingers_ally":
       return "Ally";
+    case "suraya_archangel_of_knowledge":
+      return "Angel,Ally";
     default:
       break;
   }
