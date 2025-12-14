@@ -40,15 +40,14 @@ $TurnStats_CardsDiscarded = 14;
 function GetStatTurnIndex($player)
 {
   global $currentTurn, $mainPlayer, $firstPlayer;
-  
   // If player is the first player (goes first)
-  if ($player === $firstPlayer) {
+  if ($player == $firstPlayer) {
     return $currentTurn;
   }
   
   // If player is NOT the first player (goes second, P2)
   // Turn 0 is special: both players on index 0
-  if ($currentTurn === 0) {
+  if ($currentTurn == 0) {
     return 0;
   }
   
@@ -57,7 +56,7 @@ function GetStatTurnIndex($player)
   // When P2 is NOT attacking (defending): log to next turn index
   // Turn 1: P2 attacks (index 1), P2 blocks later (index 2)
   // Turn 2: P2 attacks (index 2), P2 blocks later (index 3)
-  if ($player !== $mainPlayer) {
+  if ($player != $mainPlayer) {
     return $currentTurn + 1;
   }
   
@@ -126,6 +125,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
   $turnStatPieces = TurnStatPieces();
   $baseIndex = GetStatTurnIndex($damagerPlayer) * $turnStatPieces;
   $damagerStats = &GetTurnStats($damagerPlayer);
+  //WriteLog("DEBUG: Logging damage for player $damagerPlayer at turn " . (GetStatTurnIndex($damagerPlayer)) . " with damage threatened $damageThreatened and damage dealt $damageDealt", highlight:true, highlightColor:"blue");
   if(count($damagerStats) <= $baseIndex) StatsStartTurn();
   $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
   $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
@@ -137,6 +137,7 @@ function LogLifeGainedStats($player, $healthGained)
   $turnStatPieces = TurnStatPieces();
   $baseIndex = GetStatTurnIndex($player) * $turnStatPieces;
   $healerStats = &GetTurnStats($player);
+  //WriteLog("DEBUG: Logging life gain for player $player at turn " . (GetStatTurnIndex($player)) . " with health gained $healthGained", highlight:true, highlightColor:"blue");
   if(count($healerStats) <= $baseIndex) StatsStartTurn();
   $healerStats[$baseIndex + $TurnStats_LifeGained] += $healthGained;
 }
@@ -147,6 +148,7 @@ function LogLifeLossStats($player, $healthLost)
   $turnStatPieces = TurnStatPieces();
   $baseIndex = GetStatTurnIndex($player) * $turnStatPieces;
   $healerStats = &GetTurnStats($player);
+  //WriteLog("DEBUG: Logging life loss for player $player at turn " . (GetStatTurnIndex($player)) . " with health lost $healthLost", highlight:true, highlightColor:"blue");
   if(count($healerStats) <= $baseIndex) StatsStartTurn();
   $healerStats[$baseIndex + $TurnStats_LifeLost] -= $healthLost;
 }
@@ -157,6 +159,7 @@ function LogDamagePreventedStats($player, $damagePrevented)
   $turnStatPieces = TurnStatPieces();
   $baseIndex = GetStatTurnIndex($player) * $turnStatPieces;
   $preventedStats = &GetTurnStats($player);
+  //WriteLog("DEBUG: Logging damage prevented for player $player at turn " . (GetStatTurnIndex($player)) . " with damage prevented $damagePrevented", highlight:true, highlightColor:"blue");
   if(count($preventedStats) <= $baseIndex) StatsStartTurn();
   $preventedStats[$baseIndex + $TurnStats_DamagePrevented] += $damagePrevented;
 }
@@ -171,6 +174,7 @@ function LogCombatResolutionStats($damageThreatened, $damageBlocked)
   $defStats = &GetTurnStats($defPlayer);
   if(count($mainStats) <= $mainBaseIndex) StatsStartTurn();
   if(count($defStats) <= $defBaseIndex) StatsStartTurn();
+  //WriteLog("DEBUG: Logging combat resolution stats for turn " . GetStatTurnIndex($mainPlayer) . " Main player, and turn " . GetStatTurnIndex($defPlayer) . " Def player, Damage Threatened: $damageThreatened, Damage Blocked: " . min($damageThreatened, $damageBlocked), highlight:true, highlightColor:"blue");
   $mainStats[$mainBaseIndex + $TurnStats_DamageThreatened] += $damageThreatened > $damageBlocked ? $damageBlocked : $damageThreatened;//Excess is logged in the damage function
   $defStats[$defBaseIndex + $TurnStats_DamageBlocked] += min($damageThreatened, $damageBlocked); // If I block 3 on a 2 damage attack, I blocked 2 damage, not 3
   $defStats[$defBaseIndex + $TurnStats_Overblock] += $damageBlocked > $damageThreatened ? $damageBlocked - $damageThreatened : 0;
