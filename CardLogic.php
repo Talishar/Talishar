@@ -2925,6 +2925,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "give_and_take_red":
         MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalPower()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalPower()-1, "MYTOPDECK", may: true);
         break;
+      case "spark_spray_red":
+      case "spark_spray_yellow":
+      case "spark_spray_blue":
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_buff_".CardLink($parameter, $parameter), 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $parameter, 1);
+        break;
       case "light_of_sol_yellow":
         $deck = new Deck($player);
         if ($deck->Reveal() && ColorContains($deck->Top(), 2, $player)) {
@@ -3620,11 +3629,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "hard_knuckle", 1);
-        break;
-      case "spark_spray_red":
-      case "spark_spray_yellow":
-      case "spark_spray_blue":
-        AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $parameter, 1);
         break;
       case "heavy_industry_surveillance":
         $deck = GetDeck($player);

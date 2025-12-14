@@ -10,7 +10,7 @@
         PlayAura("runechant", $currentPlayer);
         return "";
       case "crown_of_dichotomy":
-        MZMoveCard($currentPlayer, "MYDISCARD:type=A&MYDISCARD:type=AA", "MYTOPDECK");
+        MZMoveCard($currentPlayer, "MYDISCARD:type=A;class=RUNEBLADE&MYDISCARD:type=AA;class=RUNEBLADE", "MYTOPDECK");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CROWNOFDICHOTOMY", 1);
         return "";
       case "mordred_tide_red":
