@@ -657,7 +657,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CROWNOFDICHOTOMY":
       $lastType = CardType($lastResult);
       $newType = ($lastType == "A" ? "AA" : "A");
-      MZMoveCard($player, "MYDISCARD:type=" . $newType, "MYTOPDECK");
+      MZMoveCard($player, "MYDISCARD:type=" . $newType.";class=RUNEBLADE", "MYTOPDECK");
       return 1;
     case "PICKACARD":
       $index = explode("-", $dqVars[0])[1];
