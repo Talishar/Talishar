@@ -1459,6 +1459,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           $preventedDamage += $currentTurnEffects[$index + 3];
           $currentTurnEffects[$index + 3] -= $damage;
         }
+        else $remove = true;
         if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         if ($source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
       }
@@ -1472,6 +1473,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           $preventedDamage += $currentTurnEffects[$index + 3];
           $currentTurnEffects[$index + 3] -= $damage;
         }
+        else $remove = true;
         if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         $multiAttack = match($source) {
           "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
@@ -1719,6 +1721,9 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
           elseif ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
           elseif (!IsStaticType(CardType($source))) $remove = true;
+        }
+        elseif (!$preventable) {
+          $remove = true;
         }
       }
       if ($remove) RemoveCurrentTurnEffect($index);
