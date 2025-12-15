@@ -1618,6 +1618,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $damageToPrevent = min($damage, $effects[1]);
         $preventedDamage += $damageToPrevent;
         $effects[1] -= $damageToPrevent;
+        $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
@@ -1627,6 +1628,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $preventedDamage += $damageToPrevent;
         if($effects[1] == 2) PlayAura("runechant", $player); 
         $effects[1] -= $damageToPrevent;
+        $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
@@ -1636,6 +1638,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $preventedDamage += $damageToPrevent;
         if($effects[1] == 2) PlayAura("ponder", $player); 
         $effects[1] -= $damageToPrevent;
+        $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
