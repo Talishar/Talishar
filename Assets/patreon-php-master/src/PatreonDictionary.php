@@ -635,6 +635,11 @@ enum PatreonCampaign : string
           "embodiment_of_lightning=ELE110-Promo"
         ];
         break;
+      case "17": // Scowling
+        $altArts = [
+        "rhinar_reckless_rampage=WTR001-T", "romping_club=WTR003-T"
+        ];
+        break;
     }
 
     return implode(",", $altArts);
