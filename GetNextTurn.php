@@ -1690,6 +1690,11 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           }
         }
 
+        if($option[0] == "CURRENTTURNEFFECTS") {
+          $cardID = explode("-", $source[$index])[0];
+          $card = $cardID;
+        }
+
         //Show Life and Def counters on allies in the popups
         if ($option[0] == "THEIRALLY" || $option[0] == "MYALLY") {
           $player = $option[0] == "THEIRALLY" ? $otherPlayer : $playerID;
