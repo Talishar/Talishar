@@ -1473,16 +1473,18 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           $preventedDamage += $currentTurnEffects[$index + 3];
           $currentTurnEffects[$index + 3] -= $sourceDamage;
         }
-        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+        $remove = false;
+        if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         $multiAttack = match($source) {
           "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
           "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue" => true,
           default => false,
         };
         if (SubtypeContains($source, "Dagger")) $multiAttack = true;
-        if (TypeContains($source, "AA") && !$multiAttack) RemoveCurrentTurnEffect($index); //To be removed when coded with Unique ID instead of cardID name as $source
-        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") RemoveCurrentTurnEffect($index); //To be removed when coded with Unique ID instead of cardID name as $source
+        if (TypeContains($source, "AA") && !$multiAttack) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
       }
+      if ($remove) RemoveCurrentTurnEffect($index);
       break;
     case "seekers_hood":
     case "seekers_gilet":
