@@ -358,7 +358,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $activeChainLink->totalDefense = $blockVal;
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = GetAttackTargetNames($mainPlayer);
-  $activeChainLink->damagePrevention = ($combatChainCount > 0) ? GetDamagePrevention($defPlayer, $totalPower) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : GetDamagePrevention($defPlayer, $totalPower);
+  $activeChainLink->damagePrevention = ($combatChainCount > 0) ? GetDamagePrevention($defPlayer, $totalPower) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : 0;
   $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
