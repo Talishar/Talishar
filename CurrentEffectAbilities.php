@@ -1616,6 +1616,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "well_grounded":
     case "oldhim_grandfather_of_eternity": case "oldhim":
     case "bone_head_barrier_yellow":
+    case "seeds_of_tomorrow_blue":
       if ($preventable) {
         $damageToPrevent = min($damage, $effects[1]);
         $preventedDamage += $damageToPrevent;

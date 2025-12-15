@@ -831,11 +831,14 @@ function GetAttackTargetNames($player)
   return implode("|", $ret);
 }
 
-//Deprecated
-function GetDamagePrevention($player) 
+function GetDamagePrevention($player, $damage) 
 {
-  global $CS_DamagePrevention;
-  return GetClassState($player, $CS_DamagePrevention);
+  global $currentTurnEffects, $combatChain;
+  $preventionLeft = 0;
+  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+    $preventionLeft += CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, "COMBAT", $combatChain[0]);
+  }
+  return $preventionLeft;
 }
 
 function AttackPlayedFrom()

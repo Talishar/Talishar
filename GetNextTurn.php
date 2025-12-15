@@ -343,9 +343,22 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       countersMap: $countersMap,
     ));
   }
+
+  // current chain link attack
+  $totalPower = 0;
+  $totalDefense = 0;
+  if ($combatChainCount > 0) {
+    $chainPowerModifiers = [];
+    EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
+  }
+  $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
+  $activeChainLink->totalPower = $totalPower;
+
+  // current chain link defense
+  $activeChainLink->totalDefense = $blockVal;
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = GetAttackTargetNames($mainPlayer);
-  $activeChainLink->damagePrevention = ($combatChainCount > 0) ? GetDamagePrevention($defPlayer) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : GetDamagePrevention($defPlayer);
+  $activeChainLink->damagePrevention = ($combatChainCount > 0) ? GetDamagePrevention($defPlayer, $totalPower) + CurrentEffectPreventDamagePrevention($defPlayer, 100, $combatChain[0], true) : GetDamagePrevention($defPlayer, $totalPower);
   $activeChainLink->goAgain = DoesAttackHaveGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
@@ -362,19 +375,6 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($CombatChain->HasCurrentLink()) $activeChainLink->highTide = IsHighTideActive();
 
   $activeChainLink->fused = false;
-
-  // current chain link attack
-  $totalPower = 0;
-  $totalDefense = 0;
-  if ($combatChainCount > 0) {
-    $chainPowerModifiers = [];
-    EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
-  }
-  $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $activeChainLink->totalPower = $totalPower;
-
-  // current chain link defense
-  $activeChainLink->totalDefense = $blockVal;
 
   $response->activeChainLink = $activeChainLink;
 
