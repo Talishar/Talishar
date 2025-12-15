@@ -2026,6 +2026,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $isReplay = GetCachePiece($gameName, 10);
   $response->isReplay = ($isReplay === "1");
 
+  // Add AI infinite HP state for manual mode
+  $response->aiHasInfiniteHP = $AIHasInfiniteHP;
+
   // Check if opponent is typing
   if ($playerID >= 1 && $playerID <= 2) {
     $opponentID = ($playerID == 1) ? 2 : 1;

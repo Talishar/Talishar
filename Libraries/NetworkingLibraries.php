@@ -26,7 +26,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
-  global $roguelikeGameID, $CS_SkipAllRunechants;
+  global $roguelikeGameID, $CS_SkipAllRunechants, $numMode;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -846,6 +846,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         //load the gamestate
         RevertGamestate($backupFname);
         WriteLog("Moving to player $turnPlayer's turn $turnNumber", highlight: true);
+      }
+      break;
+    case 10019:
+      $targetPlayer = $playerID == 1 ? 2 : 1;
+      if (IsPlayerAI($targetPlayer)) {
+        global $AIHasInfiniteHP;
+        $infiniteMode = ($numMode == 1) ? true : false;
+        $AIHasInfiniteHP = $infiniteMode;
+        WriteLog("AI infinite HP toggled to " . ($infiniteMode ? "ON" : "OFF"), highlight: true);
       }
       break;
     case 100000: //Quick Rematch

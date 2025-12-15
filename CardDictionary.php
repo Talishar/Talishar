@@ -331,12 +331,10 @@ function CharacterHealth($cardID)
   }
   $set = CardSet($cardID);
   if ($set != "DUM") return GeneratedCharacterHealth($cardID);
-  switch ($cardID) {
-    case "DUMMY":
-      return 9999;
-    default:
-      return 20;
-  }
+  return match ($cardID) {
+    "DUMMY" => 40,
+    default => 20,
+  };
 }
 
 function CharacterIntellect($cardID)

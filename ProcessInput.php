@@ -52,6 +52,7 @@ if($mode == 100015)
 //We should also have some information on the type of command
 $buttonInput = isset($_GET["buttonInput"]) ? sanitizeString($_GET["buttonInput"]) : ""; //The player that is the target of the command - e.g. for changing life total
 $cardID = isset($_GET["cardID"]) ? sanitizeString($_GET["cardID"]) : "";
+$numMode = isset($_GET["numMode"]) ? intval($_GET["numMode"]) : 0;
 $chkCount = isset($_GET["chkCount"]) ? intval($_GET["chkCount"]) : 0;
 
 // Validate card ID if provided

@@ -39,7 +39,7 @@ function ParseGamestate()
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
-  global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI;
+  global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
@@ -137,6 +137,7 @@ function ParseGamestate()
   $p2Inventory = GetStringArray($gamestateContent[73+$numChainLinks]);
   $p1IsAI = trim($gamestateContent[74+$numChainLinks]);
   $p2IsAI = trim($gamestateContent[75+$numChainLinks]);
+  $AIHasInfiniteHP = isset($gamestateContent[76+$numChainLinks]) ? trim($gamestateContent[76+$numChainLinks]) == "1" : false;
 
   BuildMyGamestate($playerID);
 }
