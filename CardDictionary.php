@@ -949,10 +949,6 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
-    "story_beats_blue" => 5, //fabcube error
-    "story_beats_yellow" => 6, //fabcube error
-    "full_of_bravado_yellow" => 6, //fabcube error
-    "full_of_bravado_blue" => 5, //fabcube error
     default => $basePower,
   };
   $card = GetClass($cardID, $player);
