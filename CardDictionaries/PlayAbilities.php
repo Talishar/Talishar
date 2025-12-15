@@ -517,8 +517,8 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
-  global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_PlayIndex, $CS_NumItemsDestroyed, $CS_DamagePrevention, $currentTurnEffects, $CombatChain;
+  global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock;
+  global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_NumItemsDestroyed, $currentTurnEffects, $CombatChain;
   $rv = "";
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $character = &GetPlayerCharacter($currentPlayer);
@@ -700,8 +700,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
       if ($from == "PLAY") {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        IncrementClassState($currentPlayer, $CS_DamagePrevention, 1);
+        AddCurrentTurnEffect($cardID."-1", $currentPlayer);
       }
       return "";
     case "hyper_scrapper_blue":

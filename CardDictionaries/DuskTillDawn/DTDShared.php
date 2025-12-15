@@ -167,7 +167,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_DamagePrevention, $CS_NumCardsDrawn, $combatChain, $CombatChain;
+  global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_NumCardsDrawn, $combatChain, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -260,8 +260,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "lumina_lance_yellow":
       if($additionalCosts != "-"){
@@ -504,9 +503,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "hold_the_line_blue":
       if(GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2)
       {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        IncrementClassState($currentPlayer, $CS_DamagePrevention, 3);
-        WriteLog(CardLink($cardID, $cardID) . " prevents the next 3 damage");
+        AddCurrentTurnEffect($cardID . "-3", $currentPlayer);
       }
       return "";
     case "hack_to_reality_yellow":

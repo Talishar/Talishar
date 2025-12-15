@@ -214,8 +214,8 @@ function SEACombatEffectActive($cardID, $attackID): bool
 
 function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $combatChainState, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks, $CS_DamagePrevention;
-  global $CS_PlayIndex, $CS_NumAttacks, $CS_NextNAACardGoAgain, $defPlayer, $combatChainState, $CCS_CachedTotalPower, $layers;
+  global $currentPlayer, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks;
+  global $CS_PlayIndex, $CS_NextNAACardGoAgain, $defPlayer, $layers;
   global $CS_ArcaneTargetsSelected, $chainLinks;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {

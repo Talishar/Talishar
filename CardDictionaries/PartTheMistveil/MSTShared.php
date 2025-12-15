@@ -68,8 +68,8 @@ function MSTEffectPowerModifier($cardID): int
 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_DamagePrevention, $CS_PlayIndex;
-  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $combatChainState, $CS_NumAttacks;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_PlayIndex;
+  global $combatChain, $defPlayer, $CombatChain, $chainLinks, $CS_NumAttacks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
   switch ($cardID) {
@@ -328,7 +328,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "skybody_keikoi":
     case "skyhold_keikoi":
     case "skywalker_keikoi":
-      IncrementClassState($currentPlayer, $CS_DamagePrevention);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "attune_with_cosmic_vibrations_blue":
       if (IsHeroAttackTarget()) {

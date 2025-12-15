@@ -576,7 +576,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 
 function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $playerSource="-")
 {
-  global $CS_DamagePrevention, $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState, $mainPlayer;
+  global $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState, $mainPlayer;
   $classState = &GetPlayerClassState($player);
   if ($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -597,33 +597,6 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $pl
         $classState[$CS_ArcaneDamagePrevention] = 0;
       }
       SearchCurrentTurnEffects("enchanted_quiver", $player, remove:true);
-    }
-    if ($damage > 0) {
-      CheckIfPreventionEffectIsActive($player, $damage);
-      if ($classState[$CS_DamagePrevention] > 0) {
-        if($damage <= $classState[$CS_DamagePrevention]) {
-          $classState[$CS_DamagePrevention] -= $damage;
-          $damage = 0;
-        } else {
-          $damage -= $classState[$CS_DamagePrevention];
-          $classState[$CS_DamagePrevention] = 0;
-        }
-        if (SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {//vambrace
-          $damage += 1;
-          SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
-          // if there's still floating prevention after vambrace we do it again
-          // in the future this may need to be re-implemented as a while loop
-          if ($classState[$CS_DamagePrevention] > 0) {
-            if($damage <= $classState[$CS_DamagePrevention]) {
-              $classState[$CS_DamagePrevention] -= $damage;
-              $damage = 0;
-            } else {
-              $damage -= $classState[$CS_DamagePrevention];
-              $classState[$CS_DamagePrevention] = 0;
-            }
-          }
-        }
-      }
     }
   }
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
@@ -647,31 +620,6 @@ function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $pl
   if($damage < $origDamage) LogDamagePreventedStats($player, $origDamage - $damage);
   return $damage;
 }
-
-function CheckIfPreventionEffectIsActive($player, $damage): void
-{
-  global $currentTurnEffects;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-    $remove = 0;
-    if($currentTurnEffects[$i+1] != $player) continue;
-    switch ($currentTurnEffects[$i]) {
-      case "haunting_rendition_red":
-        if($damage > 0) PlayAura("runechant", $player); // Runechant
-        $damage -= 2;
-        $remove = 1;
-        break;
-      case "mental_block_blue":
-        if($damage > 0) PlayAura("ponder", $player); // Ponder
-        $damage -= 2;
-        $remove = 1;
-        break;
-      default:
-        break;
-    }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
-  }
-}
-
 
 function ResetAuraStatus($player)
 {

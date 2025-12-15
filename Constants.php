@@ -273,7 +273,7 @@ $CS_Num6PowDisc = 0;
 $CS_NumBoosted = 1;
 $CS_AttacksWithWeapon = 2;
 $CS_HitsWDawnblade = 3;
-$CS_DamagePrevention = 4;
+$CS_DamagePrevention = 4; //Deprecated
 $CS_CardsBanished = 5;
 $CS_DamageTaken = 6;
 $CS_NumActionsPlayed = 7;
@@ -645,7 +645,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumBoosted] = 0;
   $mainClassState[$CS_AttacksWithWeapon] = 0;
   $mainClassState[$CS_HitsWDawnblade] = 0;
-  $mainClassState[$CS_DamagePrevention] = 0;
+  $mainClassState[$CS_DamagePrevention] = 0; //Deprecated
   $mainClassState[$CS_CardsBanished] = 0;
   $mainClassState[$CS_DamageTaken] = 0;
   $mainClassState[$CS_NumActionsPlayed] = 0;
@@ -831,7 +831,8 @@ function GetAttackTargetNames($player)
   return implode("|", $ret);
 }
 
-function GetDamagePrevention($player)
+//Deprecated
+function GetDamagePrevention($player) 
 {
   global $CS_DamagePrevention;
   return GetClassState($player, $CS_DamagePrevention);

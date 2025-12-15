@@ -1281,9 +1281,11 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "break_of_dawn_red":
     case "break_of_dawn_yellow":
     case "break_of_dawn_blue":
-      if ($effects[0] == "break_of_dawn_red") $prevention = 4;
-      else if ($effects[0] == "break_of_dawn_yellow") $prevention = 3;
-      else if ($effects[0] == "break_of_dawn_blue") $prevention = 2;
+      $prevention = match ($effects[0]) {
+        "break_of_dawn_red" => 4,
+        "break_of_dawn_yellow" => 3,
+        "break_of_dawn_blue" => 2,
+      };
       if (TalentContains($source, "SHADOW", $otherPlayer)) {
         return $prevention;
       }
@@ -1293,10 +1295,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "interlude_yellow":
       return 2;
     case "interlude_blue":
-      return 1;
-    case "dissolving_shield_red":
-    case "dissolving_shield_yellow":
-    case "dissolving_shield_blue":
       return 1;
     case "evo_circuit_breaker_red":
     case "evo_atom_breaker_red":
@@ -1311,26 +1309,55 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       }
       break;
     case "no_fear_red":
+    case "seeds_of_tomorrow_blue":
+    case "hold_the_line_blue":
+    case "trip_the_light_fantastic_red":
+    case "trip_the_light_fantastic_yellow":
+    case "trip_the_light_fantastic_blue":
+    case "haunting_rendition_red":
+    case "mental_block_blue":
+    case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
+    case "twinkle_toes":
+    case "well_grounded":
+    case "oldhim_grandfather_of_eternity": case "oldhim":
+    case "bone_head_barrier_yellow":
       return intval($effects[1]);
     case "battered_not_broken_red":
     case "take_it_on_the_chin_red":
     case "slap_happy_red":
-      return 2;
     case "sheltered_cove":
       return 2;
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
     case "battlefront_bastion_red":
     case "battlefront_bastion_yellow":
     case "battlefront_bastion_blue":
+    case "skycrest_keikoi":
+    case "skybody_keikoi":
+    case "skyhold_keikoi":
+    case "skywalker_keikoi":
+    case "runaways":
+    case "hood_of_second_thoughts":
+    case "bruised_leather":
+    case "four_finger_gloves":
+    case "crown_of_seeds":
       return 1;
     case "moon_chakra_red":
-      if ($currentTurnEffects[$index] == "moon_chakra_red-1") return 3;
-      else return 5;
+      return match ($currentTurnEffects[$index]) {
+        "moon_chakra_red-1" => 3,
+        default => 5,
+      };
     case "moon_chakra_yellow":
-      if ($currentTurnEffects[$index] == "moon_chakra_yellow-1") return 2;
-      else return 4;
+      return match ($currentTurnEffects[$index]) {
+        "moon_chakra_yellow-1" => 2,
+        default => 4,
+      };
     case "moon_chakra_blue":
-      if ($currentTurnEffects[$index] == "moon_chakra_blue-1") return 1;
-      else return 3;
+      return match ($currentTurnEffects[$index]) {
+        "moon_chakra_blue-1" => 1,
+        default => 3,
+      };
     case "cloud_cover_yellow":
     case "sigil_of_shelter_yellow":
         return 2;
@@ -1414,6 +1441,16 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       }
       break;
     case "amulet_of_intervention_blue":
+    case "skycrest_keikoi":
+    case "skybody_keikoi":
+    case "skyhold_keikoi":
+    case "skywalker_keikoi":
+    case "runaways":
+    case "hood_of_second_thoughts":
+    case "bruised_leather":
+    case "four_finger_gloves":
+    case "crown_of_seeds":
+      if ($preventable) $preventedDamage += 1;
       RemoveCurrentTurnEffect($index);
       break;
     case "helios_mitre":
@@ -1515,11 +1552,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       if ($preventable) $preventedDamage += 1;
       RemoveCurrentTurnEffect($index);
       break;
-    case "dissolving_shield_red":
-    case "dissolving_shield_yellow":
-    case "dissolving_shield_blue":
-      RemoveCurrentTurnEffect($index);
-      break;
     case "evo_circuit_breaker_red":
     case "evo_atom_breaker_red":
     case "evo_face_breaker_red":
@@ -1570,29 +1602,67 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       if ($preventable) $preventedDamage += 2;
       RemoveCurrentTurnEffect($index);
       break;
-    case "battlefront_bastion_red":
-    case "battlefront_bastion_yellow":
-    case "battlefront_bastion_blue":
-      RemoveCurrentTurnEffect($index);
+    case "trip_the_light_fantastic_red":
+    case "trip_the_light_fantastic_yellow":
+    case "trip_the_light_fantastic_blue":
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
+    case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
+    case "hold_the_line_blue":
+    case "twinkle_toes":
+    case "well_grounded":
+    case "oldhim_grandfather_of_eternity": case "oldhim":
+    case "bone_head_barrier_yellow":
+      if ($preventable) {
+        $damageToPrevent = min($damage, $effects[1]);
+        $preventedDamage += $damageToPrevent;
+        $effects[1] -= $damageToPrevent;
+      }
+      if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
+      break;
+    case "haunting_rendition_red":
+      if ($preventable) {
+        $damageToPrevent = min($damage, $effects[1]);
+        $preventedDamage += $damageToPrevent;
+        if($effects[1] == 2) PlayAura("runechant", $player); 
+        $effects[1] -= $damageToPrevent;
+      }
+      if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
+      break;
+    case "mental_block_blue":
+      if ($preventable) {
+        $damageToPrevent = min($damage, $effects[1]);
+        $preventedDamage += $damageToPrevent;
+        if($effects[1] == 2) PlayAura("ponder", $player); 
+        $effects[1] -= $damageToPrevent;
+      }
+      if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
     case "moon_chakra_red":
       if ($preventable) {
-        if ($currentTurnEffects[$index] == "moon_chakra_red-1") $preventedDamage += 3;
-        else $preventedDamage += 5;
+        $preventedDamage = match ($currentTurnEffects[$index]) {
+          "moon_chakra_red-1" => 3,
+          default => 5,
+        };
       }
       RemoveCurrentTurnEffect($index);
       break;
     case "moon_chakra_yellow":
       if ($preventable) {
-        if ($currentTurnEffects[$index] == "moon_chakra_yellow-1") $preventedDamage += 2;
-        else $preventedDamage += 4;
+        $preventedDamage = match ($currentTurnEffects[$index]) {
+          "moon_chakra_yellow-1" => 2,
+          default => 4,
+        };
       }
       RemoveCurrentTurnEffect($index);
       break;
     case "moon_chakra_blue":
       if ($preventable) {
-        if ($currentTurnEffects[$index] == "moon_chakra_blue-1") $preventedDamage += 1;
-        else $preventedDamage += 3;
+        $preventedDamage = match ($currentTurnEffects[$index]) {
+          "moon_chakra_blue-1" => 1,
+          default => 3,
+        };
       }
       RemoveCurrentTurnEffect($index);
       break;

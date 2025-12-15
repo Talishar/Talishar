@@ -2,15 +2,14 @@
 
   function ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $CS_DamagePrevention;
+    global $currentPlayer;
     $rv = "";
     switch($cardID)
     {
       case "oldhim_grandfather_of_eternity": case "oldhim":
         if(SearchCardList($additionalCosts, $currentPlayer, talent:"EARTH") != "")
         { 
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+          AddCurrentTurnEffect($cardID."-2", $currentPlayer);
         }
         if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "")
         {

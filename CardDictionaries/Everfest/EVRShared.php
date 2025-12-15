@@ -186,8 +186,8 @@
 
   function EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CCS_NumBoosted;
-    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock, $CS_DamagePrevention;
+    global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_NumBoosted;
+    global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
     global $layers;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     $rv = "";
@@ -530,7 +530,6 @@
       case "amulet_of_intervention_blue":
         if($from == "PLAY") {
           AddCurrentTurnEffect($cardID, $currentPlayer, $from);
-          IncrementClassState($currentPlayer, $CS_DamagePrevention, 1);
         }
         return "";
       case "amulet_of_oblation_blue":

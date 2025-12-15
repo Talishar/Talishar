@@ -1849,7 +1849,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $CS_DamagePrevention, $combatChain, $CS_AdditionalCosts, $mainPlayer;
+  global $combatChain, $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $card = GetClass($parameter, $player);
   if ($card != "-") return $card->ProcessAbility($uniqueID, $target, $additionalCosts, $from);
@@ -1880,8 +1880,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "trip_the_light_fantastic_red":
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_blue":
-      AddCurrentTurnEffect($parameter, $player);
-      IncrementClassState($player, $CS_DamagePrevention, 2);
+      AddCurrentTurnEffect($parameter."-2", $player);
       WriteLog(CardLink($parameter, $parameter) . " is preventing the next 2 damage.");
       break;
     case "chorus_of_the_amphitheater_red":
@@ -1897,10 +1896,8 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "haunting_rendition_red":
     case "mental_block_blue":
-      AddCurrentTurnEffect($parameter, $player);
-      IncrementClassState($player, $CS_DamagePrevention, 2);
+      AddCurrentTurnEffect($parameter."-2", $player);
       break;
-    
     case "under_the_trap_door_blue":
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=Trap");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
@@ -1973,7 +1970,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
-  global $CS_DamagePrevention, $chainLinks, $currentTurnEffects;
+  global $chainLinks, $currentTurnEffects;
   global $landmarks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);

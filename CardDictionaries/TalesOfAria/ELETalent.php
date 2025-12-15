@@ -2,7 +2,7 @@
 
   function ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts="")
   {
-    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $CS_DamagePrevention, $combatChain, $layers, $CombatChain;
+    global $currentPlayer, $CS_PlayIndex, $mainPlayer, $combatChain, $layers, $CombatChain;
     global $CS_CardsInDeckBeforeOpt;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
@@ -41,7 +41,7 @@
         return "";
       case "crown_of_seeds":
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDCLASSSTATE", $currentPlayer, $CS_DamagePrevention . "-1", 1);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "plume_of_evergrowth":
         $params = explode("-", $target);
@@ -211,7 +211,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "runaways":
-        IncrementClassState($currentPlayer, $CS_DamagePrevention);
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       default: return "";
     }

@@ -65,9 +65,8 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_DamagePrevention, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $combatChainState, $CS_ArcaneDamageTaken;
-  global $mainPlayer, $CCS_EclecticMag, $CS_DamageDealt, $CS_ArcaneDamageDealt;
-  global $combatChainState, $CS_ActionsPlayed, $EffectContext;
+  global $currentPlayer, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $CS_ArcaneDamageTaken;
+  global $mainPlayer, $CCS_EclecticMag, $combatChainState, $CS_ActionsPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "germinate_blue":
@@ -123,8 +122,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "well_grounded":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "felling_of_the_crown_red":
     case "plow_under_yellow":
@@ -145,8 +143,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "seeds_of_tomorrow_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 5);
+      AddCurrentTurnEffect($cardID."-5", $currentPlayer);
       return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
     case "summers_fall_red":
     case "summers_fall_yellow":
@@ -208,8 +205,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "twinkle_toes":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      IncrementClassState($currentPlayer, $CS_DamagePrevention, 2);
+      AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "current_funnel_blue":
       $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed));
@@ -424,7 +420,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "hood_of_second_thoughts":
     case "bruised_leather":
     case "four_finger_gloves":
-      IncrementClassState($currentPlayer, $CS_DamagePrevention);
+      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "call_to_the_grave_blue":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");

@@ -154,7 +154,7 @@
 
   function WTRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
-    global $mainPlayer, $currentPlayer, $defPlayer, $CS_DamagePrevention, $CombatChain;
+    global $mainPlayer, $currentPlayer, $defPlayer, $CombatChain;
     $rv = "";
     switch($cardID) {
       case "blessing_of_deliverance_red": case "blessing_of_deliverance_yellow": case "blessing_of_deliverance_blue": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
@@ -195,8 +195,7 @@
         return "";
       case "bone_head_barrier_yellow":
         $roll = GetDieRoll($currentPlayer);
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        IncrementClassState($currentPlayer, $CS_DamagePrevention, $roll);
+        AddCurrentTurnEffect($cardID."-$roll", $currentPlayer);
         return "Prevents the next $roll damage that will be dealt to you this turn";
       case "breakneck_battery_red": case "breakneck_battery_yellow": case "breakneck_battery_blue":
         if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
