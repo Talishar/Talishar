@@ -24,7 +24,7 @@ function TCCHitEffect($cardID)
   global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
     case "mauling_qi_red":
-      if (ComboActive()) DamageTrigger($defPlayer, damage: 1, type: "DAMAGE", source: $cardID);
+      if (ComboActive()) DamageTrigger($defPlayer, damage: 1, type: "DAMAGE", source: $cardID, playerSource:$mainPlayer);
       break;
     case "under_loop_red":
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";

@@ -57,7 +57,7 @@
     switch($cardID)
     {
       case "light_it_up_yellow":
-        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT", $cardID);
+        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT", $cardID, $mainPlayer);
         break;
       case "boltn_shot_red": case "boltn_shot_yellow": case "boltn_shot_blue":
          Reload($mainPlayer);

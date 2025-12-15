@@ -183,7 +183,7 @@
           return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
         }
         else if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID);
+          WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID, $defPlayer);
         }
         return "";
       case "sand_sketched_plan_blue":
@@ -284,7 +284,7 @@
         return "";
       case "steelblade_shunt_red": case "steelblade_shunt_yellow": case "steelblade_shunt_blue":
         if(IsWeaponAttack()) {
-          DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID);
+          DamageTrigger($mainPlayer, 1, "DAMAGE", $cardID, $defPlayer);
           $rv = "Did 1 damage to the attacking hero";
         }
         return $rv;

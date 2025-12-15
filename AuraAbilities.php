@@ -1346,7 +1346,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
 
 function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
 {
-  global $CS_DamageTaken, $CS_ArcaneDamageTaken, $CS_DamageDealt, $CS_ArcaneDamageDealt, $CS_DamageDealtToOpponent;
+  global $CS_DamageDealtToOpponent;
   $otherPlayer = $player == 1 ? 2 : 1;
 
   $auras = &GetAuras($player);

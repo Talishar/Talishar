@@ -323,7 +323,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "shaden_death_hydra_yellow":
       $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
       $damage = 13 - $numBD;
-      DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID);
+      DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID, $currentPlayer);
       return "";
     case "blood_dripping_frenzy_blue":
       $cards = explode(",", $additionalCosts);

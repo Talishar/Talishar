@@ -1330,8 +1330,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameters = explode("-", $lastResult);
       $damage = $parameters[0] ?? 0;
       $source = $parameters[1] ?? "-";
-      $type = $parameters[2] ?? "-";
-      $playerSource = $parameters[3] ?? "-";
+      $type = $parameters[2] ?? "DAMAGE";
+      $playerSource = $parameters[3] ?? $player; //!! Important for end games stats
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         $allies = &GetAllies($targetPlayer);
         if ($allies[$target[1] + 6] > 0) {
@@ -1356,8 +1356,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode("-", $parameter);
       $damage = intval($params[0]);
       $source = count($params) > 1 ? $params[1] : "-";
-      $type = count($params) > 2 ? $params[2] : "-";
-      $playerSource = $params[3] ?? "-";
+      $type = count($params) > 2 ? $params[2] : "DAMAGE";
+      $playerSource = $params[3] ?? $player;
       if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
       $damage -= intval($lastResult);
       $damage = DealDamageAsync($player, $damage, $type, $source, $playerSource);
@@ -2088,7 +2088,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = $params[1];
       $damageThreatened = ($type != "ARCANE") ? $params[0] : 0; // Arcane Threatened is already calculated before prevention
       $source = $params[2];
-      $playerSource = $params[3] ?? "-";
+      $playerSource = $params[3];
 
       if ($damage > $damageThreatened)//Means there was excess damage prevention prevention
       {
@@ -2583,7 +2583,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (count($lastResultArr) < 2) return "";
       $removedSteamCounterCount = $lastResultArr[1];
       if ($removedSteamCounterCount >= 2) {
-        return DealDamageAsync($lastResultArr[0], 2);
+        return DealDamageAsync($lastResultArr[0], 2, "DAMAGE", "system_failure_yellow", $player);
       }
       return "";
     case "ONHITEFFECT":
@@ -2867,7 +2867,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return "";
     case "DEAL1DAMAGE":
-      DamageTrigger($player, damage: 1, type: "DAMAGE", source: $parameter);
+      DamageTrigger($player, damage: 1, type: "DAMAGE", source: $parameter, playerSource: $mainPlayer);
       return "";
     case "REMOVEINDICESIFACTIVECHAINLINK":
       $indices = explode(",", $lastResult);

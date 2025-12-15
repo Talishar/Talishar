@@ -1839,7 +1839,7 @@ class reckless_stampede_red extends Card {
   }
 
   function WonClashAbility($winnerID, $switched) {
-    AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-");
+    AddDecisionQueue("PASSPARAMETER", $winnerID, "1-$this->cardID-DAMAGE-" . $this->controller);
     AddDecisionQueue("DEALDAMAGE", $winnerID, "THEIRCHAR-0", 1);
   }
 }
@@ -2788,7 +2788,7 @@ class unexpected_backhand extends BaseCard{
   function ProcessTrigger() {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
-    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID);
+    DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID, $this->controller);
   }
 }
 

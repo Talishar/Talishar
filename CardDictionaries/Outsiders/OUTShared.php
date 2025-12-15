@@ -592,7 +592,7 @@ function OUTAbilityCost($cardID)
       case "one_two_punch_red": case "one_two_punch_yellow": case "one_two_punch_blue":
         if(ComboActive() && IsHeroAttackTarget())
         {
-          AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-" . $cardID . "-DAMAGE", 1);
+          AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-" . $cardID . "-DAMAGE-" . $cardID . "-" . $mainPlayer, 1);
           AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
         }
         break;
@@ -806,7 +806,7 @@ function OUTAbilityCost($cardID)
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
     if(!IsAllyAttacking() && $char[1] == 2 && ($characterID == "riptide_lurker_of_the_deep" || $characterID == "riptide"))
     {
-      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID);
+      DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID, $defPlayer);
     }
   }
 

@@ -1148,7 +1148,7 @@ function SEAHitEffect($cardID): void
           AddDecisionQueue("PASSPARAMETER", $defPlayer, "PASS");
         }
         AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER-" . $mainPlayer, 1);
         AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
       }
       break;

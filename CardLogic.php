@@ -1836,7 +1836,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       if ($cardID == "boom_grenade_red") $amount = 4;
       else if ($cardID == "boom_grenade_yellow") $amount = 3;
       else $amount = 2;
-      DamageTrigger($otherPlayer, $amount, "DAMAGE", $cardID);
+      DamageTrigger($otherPlayer, $amount, "DAMAGE", $cardID, $player);
       DestroyItemForPlayer($player, SearchItemsForUniqueID($uniqueID, $player));
       return true;
     case "autosave_script_blue":
@@ -2427,7 +2427,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, 1 . "-" . $combatChain[0] . "-" . "TRIGGER", 1);
+        AddDecisionQueue("PASSPARAMETER", $player, 1 . "-" . $combatChain[0] . "-" . "TRIGGER-" . $player, 1);
         AddDecisionQueue("DEALDAMAGE", $otherPlayer, "MYCHAR-0", 1);
         break;
       case "channel_thunder_steppe_yellow":
@@ -3269,7 +3269,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
         } else if (CountAura("agility", $player) > 0) {
           WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
-          DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter);
+          DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter, $player);
         }
         break;
       case "hearty_block_red":
@@ -3766,7 +3766,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "war_cry_of_bellona_yellow":
         $attackGoAgain = DoesAttackHaveGoAgain() && HasWard($combatChain[0], $mainPlayer);
-        DealDamageAsync($mainPlayer, $target, "DAMAGE", "war_cry_of_bellona_yellow");
+        DealDamageAsync($mainPlayer, $target, "DAMAGE", "war_cry_of_bellona_yellow", $mainPlayer);
         if ($attackGoAgain) GainActionPoints(1, $mainPlayer); //handles the attack getting destroyed, LKI applies
         break;
       case "douse_in_runeblood_red":

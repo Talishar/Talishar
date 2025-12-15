@@ -545,7 +545,7 @@ function HasIncreasedAttack()
   return false;
 }
 
-function DamageTrigger($player, $damage, $type, $source = "NA", $playerSource = "NA")
+function DamageTrigger($player, $damage, $type, $source, $playerSource)
 {
   PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);
   PrependDecisionQueue("PASSPARAMETER", $player, $damage . "-" . $source . "-" . $type . "-" . $playerSource);
@@ -574,7 +574,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   return true;
 }
 
-function DealDamageAsync($player, $damage, $type = "DAMAGE", $source = "NA", $playerSource="-")
+function DealDamageAsync($player, $damage, $type, $source, $playerSource)
 {
   global $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState, $mainPlayer;
   $classState = &GetPlayerClassState($player);
@@ -647,7 +647,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain;
-  global $landmarks;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -693,7 +692,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
   }
   if($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
-  else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives
+  else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
   PlayerLoseHealth($damage, $player);
   return $damage;
 }

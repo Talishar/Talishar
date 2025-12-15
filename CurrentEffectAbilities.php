@@ -143,18 +143,18 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       }
       break;
     case "ice_storm_red-2":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", "ice_storm_red");
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", "ice_storm_red", $mainPlayer);
       break;
     case "buzz_bolt_red":
     case "buzz_bolt_yellow":
     case "buzz_bolt_blue":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
       break;
     case "force_of_nature_blue-TRIGGER":
       if (HasIncreasedAttack()) Draw($mainPlayer);
       break;
     case "flashfreeze_red-BUFF":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT", $cardID);
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT", $cardID, $mainPlayer);
       break;
     case "ice_quake_red-HIT":
     case "ice_quake_yellow-HIT":
@@ -174,12 +174,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       SearchCurrentTurnEffects($cardID, $mainPlayer, true);
       break;
     case "shock_charmers":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
       return 1;
     case "shock_striker_red":
     case "shock_striker_yellow":
     case "shock_striker_blue":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID);
+      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
       break;
     case "electrify_red":
     case "electrify_yellow":
@@ -188,7 +188,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
         if ($cardID == "electrify_red") $damage = 3;
         else if ($cardID == "electrify_yellow") $damage = 2;
         else $damage = 1;
-        DamageTrigger($defPlayer, $damage, "ATTACKHIT", $cardID);
+        DamageTrigger($defPlayer, $damage, "ATTACKHIT", $cardID, $mainPlayer);
         return 1;
       }
       break;
