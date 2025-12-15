@@ -216,7 +216,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks;
   global $CS_PlayIndex, $CS_NextNAACardGoAgain, $defPlayer, $layers;
-  global $CS_ArcaneTargetsSelected, $chainLinks;
+  global $CS_ArcaneTargetsSelected, $chainLinks, $combatChainState;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   switch ($cardID) {
     // Generic cards
