@@ -1456,24 +1456,22 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "helios_mitre":
       if ($source == $currentTurnEffects[$index + 2]) {
         if ($preventable) {
-          $sourceDamage = $damage;
           $preventedDamage += $currentTurnEffects[$index + 3];
-          $currentTurnEffects[$index + 3] -= $sourceDamage;
+          $currentTurnEffects[$index + 3] -= $damage;
         }
-        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
-        if ($source == "runechant" || $source == "aether_ashwing") RemoveCurrentTurnEffect($index); //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
+        if ($source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
       }
+      if ($remove) RemoveCurrentTurnEffect($index);
       break;
     case "oasis_respite_red":
     case "oasis_respite_yellow":
     case "oasis_respite_blue":
       if ($source == $currentTurnEffects[$index + 2]) {
         if ($preventable) {
-          $sourceDamage = $damage;
           $preventedDamage += $currentTurnEffects[$index + 3];
-          $currentTurnEffects[$index + 3] -= $sourceDamage;
+          $currentTurnEffects[$index + 3] -= $damage;
         }
-        $remove = false;
         if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         $multiAttack = match($source) {
           "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
@@ -1684,9 +1682,8 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "sanctuary_of_aria":
       if ($source == $currentTurnEffects[$index + 2]) {
         if ($preventable) {
-          $sourceDamage = $damage;
           $preventedDamage += $currentTurnEffects[$index + 3];
-          $currentTurnEffects[$index + 3] -= $sourceDamage;
+          $currentTurnEffects[$index + 3] -= $damage;
         }
         if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
       }
@@ -1714,14 +1711,14 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "light_up_the_leaves_red":
       if ($source == $currentTurnEffects[$index + 2]) {
         if ($preventable && $type == "ARCANE") {
-          $sourceDamage = $damage;
           $preventedDamage += $currentTurnEffects[$index + 3];
-          $currentTurnEffects[$index + 3] -= $sourceDamage;
-          if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
-          if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") RemoveCurrentTurnEffect($index);
-          if (!IsStaticType(CardType($source))) RemoveCurrentTurnEffect($index);
+          $currentTurnEffects[$index + 3] -= $damage;
+          if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
+          elseif ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
+          elseif (!IsStaticType(CardType($source))) $remove = true;
         }
       }
+      if ($remove) RemoveCurrentTurnEffect($index);
       break;
     default:
       break;
