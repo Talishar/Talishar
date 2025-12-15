@@ -3453,6 +3453,8 @@ function HasBladeBreak($cardID)
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
+    case "mask_of_malicious_manifestations":
+      return true;
     default:
       return GeneratedHasBladeBreak($cardID);
   }
