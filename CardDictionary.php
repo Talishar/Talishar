@@ -2703,7 +2703,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($subtype == "Dagger" || CardType($CombatChain->AttackCard()->ID()) == "AA" && PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") <= 2) return false;
       return true;
     case "mask_of_malicious_manifestations":
-      return count($myHand) + count($myArsenal) < 2;
+      return count($myHand) + count($myArsenal) < 1;
     case "death_touch_red":
     case "death_touch_yellow":
     case "death_touch_blue":
