@@ -1238,17 +1238,17 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       break;
     case "oasis_respite_red":
       if ($source == $currentTurnEffects[$index + 2]) {
-          return 4;
+          return $currentTurnEffects[$index + 3];
         }
       break;
     case "oasis_respite_yellow":
       if ($source == $currentTurnEffects[$index + 2]) {
-          return 3;
+          return $currentTurnEffects[$index + 3];
         }
       break;
     case "oasis_respite_blue":
       if ($source == $currentTurnEffects[$index + 2]) {
-          return 2;
+          return $currentTurnEffects[$index + 3];
         }
       break;
     case "seekers_hood":
