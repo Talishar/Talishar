@@ -835,7 +835,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             $pointer = $i;
           }
         }
-        if ($point != -1) {
+        if ($pointer != -1) {
+          // $pointer += 1;
           $commands[0] = "$pointer\r\n";
           file_put_contents($filename, $commands);
         }

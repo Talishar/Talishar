@@ -76,6 +76,9 @@ $inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : ""
 SetHeaders();
 
 $numPass = 0;
+//First we need to parse the game state from the file
+include "ParseGamestate.php";
+
 if(IsReplay() && $mode == 99)
 {
   $filename = "./Games/$gameName/replayCommands.txt";
@@ -94,7 +97,8 @@ if(IsReplay() && $mode == 99)
   {
     $chkInput[$i] = trim($chkInput[$i]);
   }
-  if ($mode == "StartTurn") {
+  //skip any inputs where the non-active player tries something
+  if ($mode == "StartTurn" || $playerID != $currentPlayer) {
     ++$pointer;
     $line = $commands[$pointer];
     $params = explode(" ", $line);
@@ -123,9 +127,7 @@ if(IsReplay() && $mode == 99)
   file_put_contents($filename, $commands);
 }
 
-//First we need to parse the game state from the file
 $isProcessInput = true;
-include "ParseGamestate.php";
 
 $otherPlayer = $currentPlayer == 1 ? 2 : 1;
 $skipWriteGamestate = false;
