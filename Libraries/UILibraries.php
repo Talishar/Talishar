@@ -65,6 +65,7 @@ function JSONRenderedCard(
   $marked = NULL,
   $tapped = NULL,
   $uniqueID = NULL,
+  $isOpponent = NULL,
 ) {
   $cardNumber = BlindCard($cardNumber, true);
   global $playerID, $CS_NumLightningPlayed;
@@ -270,6 +271,7 @@ function JSONRenderedCard(
   if($marked !== NULL) $card->marked = $marked;
   if($tapped !== NULL) $card->tapped = $tapped;
   if($uniqueID !== NULL) $card->uniqueID = $uniqueID;
+  if($isOpponent !== NULL) $card->isOpponent = $isOpponent;
   return $card;
 }
 
