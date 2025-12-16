@@ -181,7 +181,9 @@
       case "flash_yellow": return CardCost($attackID) >= 1;
       case "flash_blue": return CardCost($attackID) >= 2;
       case "weave_lightning_red": case "weave_lightning_yellow": case "weave_lightning_blue": return TalentContainsAny($attackID, "LIGHTNING,ELEMENTAL",$mainPlayer) && CardType($attackID) == "AA";
-      case "lightning_press_red": case "lightning_press_yellow": case "lightning_press_blue": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
+      case "lightning_press_red": case "lightning_press_yellow": case "lightning_press_blue": 
+      case "lightning_press_red-VISUAL": case "lightning_press_yellow-VISUAL": case "lightning_press_blue-VISUAL": 
+        return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "shock_striker_red": case "shock_striker_yellow": case "shock_striker_blue": return true;
       case "electrify_red": case "electrify_yellow": case "electrify_blue": return CardType($attackID) == "AA";
       case "amulet_of_lightning_blue": return CardType($attackID) == "AA" || CardType($attackID) == "A";
