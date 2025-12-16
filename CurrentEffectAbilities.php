@@ -1233,7 +1233,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       return 1;
     case "helios_mitre":
       if ($source == $currentTurnEffects[$index + 2]) {
-          return $damage;
+          return 1;
         }
       break;
     case "oasis_respite_red":
