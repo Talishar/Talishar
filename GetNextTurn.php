@@ -1470,7 +1470,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         $options = explode(",", $turn[2]);
         $optCards = [];
         foreach ($options as $option) {
-          array_push($optCards, JSONRenderedCard($option, action: 0));
+          array_push($optCards, JSONRenderedCard($option, action: 0, isOpponent: true));
           array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $option, "20px"));
         }
         $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
@@ -1732,7 +1732,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $card = $MyCardBack;
         }
         if ($maxCount < 2)
-          array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped));
+          array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false));
         else
           array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
       }
