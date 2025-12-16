@@ -1459,6 +1459,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           $preventedDamage += $currentTurnEffects[$index + 3];
           $currentTurnEffects[$index + 3] -= $damage;
         }
+        else $remove = true;
         if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         if ($source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
       }
@@ -1472,6 +1473,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           $preventedDamage += $currentTurnEffects[$index + 3];
           $currentTurnEffects[$index + 3] -= $damage;
         }
+        else $remove = true;
         if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         $multiAttack = match($source) {
           "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
@@ -1614,10 +1616,12 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "well_grounded":
     case "oldhim_grandfather_of_eternity": case "oldhim":
     case "bone_head_barrier_yellow":
+    case "seeds_of_tomorrow_blue":
       if ($preventable) {
         $damageToPrevent = min($damage, $effects[1]);
         $preventedDamage += $damageToPrevent;
         $effects[1] -= $damageToPrevent;
+        $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
@@ -1627,6 +1631,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $preventedDamage += $damageToPrevent;
         if($effects[1] == 2) PlayAura("runechant", $player); 
         $effects[1] -= $damageToPrevent;
+        $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
@@ -1636,6 +1641,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $preventedDamage += $damageToPrevent;
         if($effects[1] == 2) PlayAura("ponder", $player); 
         $effects[1] -= $damageToPrevent;
+        $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
       break;
@@ -1716,6 +1722,9 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
           elseif ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
           elseif (!IsStaticType(CardType($source))) $remove = true;
+        }
+        elseif (!$preventable) {
+          $remove = true;
         }
       }
       if ($remove) RemoveCurrentTurnEffect($index);
