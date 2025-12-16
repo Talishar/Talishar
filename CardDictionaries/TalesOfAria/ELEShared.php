@@ -112,9 +112,6 @@
       case "weave_lightning_red": return 3;
       case "weave_lightning_yellow": return 2;
       case "weave_lightning_blue": return 1;
-      case "lightning_press_red": return 3;
-      case "lightning_press_yellow": return 2;
-      case "lightning_press_blue": return 1;
       case "tear_asunder_blue": return 1;
       case "embolden_red": return 5;
       case "embolden_yellow": return 4;

@@ -239,7 +239,7 @@ function DefendingTerm($term)
 
 function CombatChainPowerModifier($index, $amount)
 {
-  global $combatChain, $mainPlayer;
+  global $combatChain;
   if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
   $combatChain[$index + 5] += $amount;
   ProcessPhantasmOnBlock($index);
