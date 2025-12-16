@@ -121,6 +121,9 @@
       case "over_flex_yellow": return 3;
       case "over_flex_blue": return 2;
       case "cracker_jax": return 1;
+      case "lightning_press_red": return 3;
+      case "lightning_press_yellow": return 2;
+      case "lightning_press_blue": return 1;
       default: return 0;
     }
   }
