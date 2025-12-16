@@ -869,17 +869,39 @@
 
   function ShatterIndices($player, $pendingDamage)
   {
+    global $chainLinks, $combatChain, $CombatChain;
     $character = &GetPlayerCharacter($player);
     $indices = "";
-    for($i=0; $i<count($character); $i+=CharacterPieces()) {
-      if($character[$i+6] == 1 
-      && $character[$i+1] != 0 
-      && $character[$i+12] != "DOWN"
-      && (CardType($character[$i]) == "E" || DelimStringContains(CardSubType($character[$i]), "Evo")) 
-      && (BlockValue($character[$i]) - $character[$i+4]) < $pendingDamage)
-      {
-        if($indices != "") $indices .= ",";
-        $indices .= $i;
+    //past chain links
+    foreach($chainLinks as $link) {
+      for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+        $characterIndex = SearchCharacterForUniqueID($link[$i+8], $player);
+        if ($characterIndex != -1) {
+          if($character[$characterIndex+6] == 1 
+          && $character[$characterIndex+1] != 0 
+          && $character[$characterIndex+12] != "DOWN"
+          && (CardType($character[$characterIndex]) == "E" || DelimStringContains(CardSubType($character[$characterIndex]), "Evo")) 
+          && (BlockValue($character[$characterIndex]) - $character[$characterIndex+4] + $link[$i+5]) < $pendingDamage)
+          {
+            if($indices != "") $indices .= ",";
+            $indices .= $characterIndex;
+          }
+        }
+      }
+    }
+    // Current link
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      $characterIndex = SearchCharacterForUniqueID($CombatChain->Card($i)->OriginUniqueID(), $player);
+      if ($characterIndex != -1 && $character[$characterIndex] == $CombatChain->Card($i)->ID()) {
+        if($character[$characterIndex+6] == 1 
+        && $character[$characterIndex+1] != 0 
+        && $character[$characterIndex+12] != "DOWN"
+        && (CardType($character[$characterIndex]) == "E" || DelimStringContains(CardSubType($character[$characterIndex]), "Evo")) 
+        && ($CombatChain->Card($i)->CardBlockValue()) < $pendingDamage)
+        {
+          if($indices != "") $indices .= ",";
+          $indices .= $characterIndex;
+        }
       }
     }
     return $indices;
