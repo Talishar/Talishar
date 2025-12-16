@@ -169,7 +169,7 @@
         $index = explode("-", $target)[1];
         if (explode("-", $target)[0] == "COMBATCHAINLINK") {
           if ($CombatChain->HasCurrentLink() && $index != -1) CombatChainPowerModifier($index, $amount);
-          AddCurrentTurnEffect($cardID, $currentPlayer);//For Visual Effect only
+          // AddCurrentTurnEffect($cardID, $currentPlayer);//For Visual Effect only
         }
         elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
           // targeting a past chain link, do nothing for now
