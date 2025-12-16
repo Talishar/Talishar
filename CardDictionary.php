@@ -3397,6 +3397,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
     case "quickdodge_flexors":
       if (!CanBlockWithEquipment()) return false;
+      if (!CanBlock($cardID, "EQUIP")) return false;
       $countCombatChain = count($combatChain);
       $combatChainPieces = CombatChainPieces();
       for ($i = 0; $i < $countCombatChain; $i += $combatChainPieces) {
