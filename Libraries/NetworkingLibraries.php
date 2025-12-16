@@ -702,7 +702,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardList = explode(";", $cardID);
       foreach($cardList as $cardID) {
         $cardID = trim($cardID);
-        if (str_contains($value, "|")) {
+        if (str_contains($cardID, "|")) {
           $cardIDParts = explode("|", $cardID);
           $num = $cardIDParts[1];
           $cardID = $cardIDParts[0];
