@@ -1159,7 +1159,7 @@ function CurrentEffectCostModifiers($cardID, $from)
   return CostCantBeModified($cardID) ? 0 : $costModifier;
 }
 
-function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=false) //$skip is used to check the damage prevention without using it. Mostly for Front-end and UI work
+function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=false, $preventable=true) //$skip is used to check the damage prevention without using it. Mostly for Front-end and UI work
 {
   global $currentTurnEffects;
   $preventedDamage = 0;
@@ -1168,26 +1168,26 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "essence_of_ancestry_body_red":
-          if (PitchValue($source) == 1 && !$skip) {
+          if (PitchValue($source) == 1 && !$skip && $preventable) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "essence_of_ancestry_soul_yellow":
-          if (PitchValue($source) == 2 && !$skip) {
+          if (PitchValue($source) == 2 && !$skip && $preventable) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "essence_of_ancestry_mind_blue":
-          if (PitchValue($source) == 3 && !$skip) {
+          if (PitchValue($source) == 3 && !$skip && $preventable) {
             $preventedDamage += $damage;
             RemoveCurrentTurnEffect($i);
           }
           break;
         case "shelter_from_the_storm_red":
         case "calming_breeze_red":
-          $preventedDamage += 1;
+          if ($preventable) $preventedDamage += 1;
           if (!$skip) --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] == 0) $remove = true;
           break;

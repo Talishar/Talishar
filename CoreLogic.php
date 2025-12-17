@@ -585,8 +585,8 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   if ($damage > 0) $damage += CombatChainDamageModifiers($player, $source, $type);
+  if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $damage, $source, preventable:$preventable);
   if ($preventable) {
-    if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $damage, $source);
     if (ConsumeDamagePrevention($player)) return 0;//I damage can be prevented outright, don't use up your limited damage prevention
     if ($type == "ARCANE") {
       if ($damage <= $classState[$CS_ArcaneDamagePrevention]) {
