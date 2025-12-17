@@ -203,17 +203,18 @@ if ($handle = opendir($path)) {
         if($format != "compcc" && $format != "compblitz" && $format != "compllcc" && $format != "compsage") $openGame->p1Hero = GetCachePiece($gameName, 7);
         $formatName = "";
         if($format == "commoner") $formatName = "Commoner";
-        else if($format == "openformatcc") $formatName = "Open CC";
-        else if($format == "openformatblitz") $formatName = "Open Blitz";
-        else if($format == "openformatsage") $formatName = "Open Silver Age";
-        else if($format == "openformatsage") $formatName = "Open Silver Age";
+        else if($format == "futurecc") $formatName = "Future CC";
+        // else if($format == "openformatblitz") $formatName = "Open Blitz";
+        else if($format == "futuresage") $formatName = "Future Silver Age";
+        // else if($format == "openformatsage") $formatName = "Open Silver Age";
         else if($format == "clash") $formatName = "Clash";
         else if($format == "llcc") $formatName = "Living Legend CC";
         else if($format == "llblitz") $formatName = "Living Legend Blitz";
-        else if($format == "openformatllcc") $formatName = "Open Living Legend CC";
-        else if($format == "openformatllblitz") $formatName = "Open Living Legend Blitz";
+        else if($format == "futurell") $formatName = "Future Living Legend";
+        // else if($format == "openformatllblitz") $formatName = "Open Living Legend Blitz";
         else if($format == "precon") $formatName = "Preconstructed Deck";
         else if($format == "sage") $formatName = "Silver Age";
+        else if($format == "open") $formatName = "Open";
         
         $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $openGame->format = $format;
