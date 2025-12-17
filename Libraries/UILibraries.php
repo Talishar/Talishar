@@ -343,9 +343,6 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   global $turn, $dqState;
   
   // Early exits for global conditions
-
-  WriteLog($dqState[4]);
-
   if ($from == "HAND" && $isPlayable && (
     $dqState[4] == "Choose_a_card_to_charge" ||
     $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
