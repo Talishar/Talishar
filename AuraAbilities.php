@@ -1249,6 +1249,15 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
         $preventedDamage = 0;
       }
       break;
+    case "pyroglyphic_protection_red":
+      if ($type == "ARCANE") $preventedDamage += 3;
+      break;
+    case "pyroglyphic_protection_yellow":
+      if ($type == "ARCANE") $preventedDamage += 2;
+      break;
+    case "pyroglyphic_protection_blue":
+      if ($type == "ARCANE") $preventedDamage += 1;
+      break;
     default:
       break;
   }
@@ -1259,7 +1268,7 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
   return $preventedDamage;
 }
 
-//This function is for effects that prevent damage and DO destroy themselves
+//This function is for effects that prevent damage
 function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
 {
   $cancelRemove = false;
@@ -1272,15 +1281,22 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
     elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " prevented " . $preventionAmount . " damage.");
   }
   //hardcode this for now, figure out a better way to handle this later
-  if ($auras[$index] == "to_be_continued_blue") {
-    --$auras[$index + 5];
-    $cancelRemove = true;
+  switch ($auras[$index]) {
+    case "to_be_continued_blue":
+      --$auras[$index + 5];
+      $cancelRemove = true;
+    case "pyroglyphic_protection_red":
+    case "pyroglyphic_protection_yellow":
+    case "pyroglyphic_protection_blue":
+      $cancelRemove = true;
+      break;
+    default:
+      break;
   }
   if (!$cancelRemove) DestroyAura($player, $index);
   return $damage;
 }
 
-//This function is for effects that prevent damage and do NOT destroy themselves
 //These are applied first and not prompted (which would be annoying because of course you want to do this before consuming something)
 function AuraTakeDamageAbilities($player, $damage, $type, $source)
 {
@@ -1303,33 +1319,15 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
         if ($auras[$i + 1] == 2) {
           $auras[$i + 1] = 1;
           $numRunchants = CountAura("runechant", $player);
-          if ($numRunchants <= $damage) {
-            for ($j = 0; $j < $numRunchants; $j++) {
-              $index = SearchAurasForIndex("runechant", $player);
-              if ($index != -1) DestroyAuraUniqueID($player, $auras[$index + 6]);
-            }
-            if ($numRunchants > 1) WriteLog($numRunchants . " " . CardLink("runechant", "runechant") . "s were destroyed");
-            else WriteLog($numRunchants . " " . CardLink("runechant", "runechant") . " was destroyed");
-            if ($preventable) $preventedDamage += $numRunchants;
-          } else {
-            for ($j = 0; $j < $damage; $j++) {
-              $index = SearchAurasForIndex("runechant", $player);
-              if ($index != -1) DestroyAuraUniqueID($player, $auras[$index + 6]);
-            }
-            if ($damage > 1) WriteLog($damage . " " . CardLink("runechant", "runechant") . "s were destroyed");
-            else WriteLog($damage . " " . CardLink("runechant", "runechant") . " was destroyed");
-            if ($preventable) $preventedDamage += $damage;
+          $numToDestroy = min($numRunchants, $damage);
+          for ($j = 0; $j < $numToDestroy; $j++) {
+            $index = SearchAurasForIndex("runechant", $player);
+            if ($index != -1) DestroyAuraUniqueID($player, $auras[$index + 6]);
           }
+          $verb = $numToDestroy > 1 ? "s were" : " was";
+          WriteLog($numToDestroy . " " . CardLink("runechant", "runechant") . $verb . " destroyed");
+          if ($preventable) $preventedDamage += $numToDestroy;
         }
-        break;
-      case "pyroglyphic_protection_red":
-        if ($type == "ARCANE" && $preventable) $preventedDamage += 3;
-        break;
-      case "pyroglyphic_protection_yellow":
-        if ($type == "ARCANE" && $preventable) $preventedDamage += 2;
-        break;
-      case "pyroglyphic_protection_blue":
-        if ($type == "ARCANE" && $preventable) $preventedDamage += 1;
         break;
       default:
         break;

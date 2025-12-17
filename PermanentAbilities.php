@@ -103,13 +103,31 @@ function PermanentBeginEndPhaseEffects()
   }
 }
 
-function PermanentTakeDamageAbilities($player, $damage, $type, $source)
+function PermanentDamagePreventionAmount($player, $index, $damage, $preventable)
+{
+  $permanents = &GetPermanents($player);
+  $preventedDamage = 0;
+  switch ($permanents[$index]) {
+    case "UPR439":
+      $preventedDamage += 4;
+      break;
+    case "UPR440":
+      $preventedDamage += 3;
+      break;
+    case "UPR441":
+      $preventedDamage += 2;
+      break;
+    default:
+      break;
+  }
+  return $preventedDamage;
+}
+
+function PermanentTakeDamageAbilities($player, $index, $damage, $preventable, $type)
 {
   $char = &GetPlayerCharacter($player);
   $permanents = &GetPermanents($player);
-  $otherPlayer = $player == 1 ? 1 : 2;
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
-  $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
   $preventedDamage = 0;
   $countPermanents = count($permanents);
   $permanentPieces = PermanentPieces();

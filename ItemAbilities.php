@@ -360,6 +360,24 @@ function ItemHitTrigger($attackID)
   }
 }
 
+function ItemDamagePreventionAmount($player, $index, $damage=0, $preventable=true)
+{
+  $items = &GetItems($player);
+  switch ($items[$index]) {
+    case "mini_forcefield_red":
+    case "mini_forcefield_yellow":
+    case "mini_forcefield_blue":
+      return $items[$index + 1];
+    case "dissolution_sphere_yellow":
+      if ($damage == 1 && $preventable) return 1;
+      else return 0;
+    case "absorption_dome_yellow":
+      return $items[$index + 1];
+    default:
+      return 0;
+  }
+}
+
 function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
 {
   $items = &GetItems($player);
@@ -367,42 +385,19 @@ function ChosenItemTakeDamageAbilities($player, $index, $damage, $preventable)
     case "mini_forcefield_red":
     case "mini_forcefield_yellow":
     case "mini_forcefield_blue":
-      if ($preventable) $damage -= ItemDamagePeventionAmount($player, $index);
+      if ($preventable) $damage -= ItemDamagePreventionAmount($player, $index);
       DestroyItemForPlayer($player, $index);
       break;
     case "dissolution_sphere_yellow":
-      if ($preventable) $damage -= ItemDamagePeventionAmount($player, $index, $damage);
+      if ($preventable) $damage -= ItemDamagePreventionAmount($player, $index, $damage);
       break;
+    case "absorption_dome_yellow":
+        $absorbed = min($damage, $items[$index + 1]);
+        $items[$index + 1] -= $absorbed;
+        if ($preventable) $damage -= $absorbed;
+        if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
     default:
       break;
-  }
-  return $damage;
-}
-
-function ItemTakeDamageAbilities($player, $damage, $source, $type, $preventable = true)
-{
-  if ($type != "") {
-    $otherPlayer = $player == 1 ? 2 : 1;
-    $preventable = CanDamageBePrevented($otherPlayer, $damage, $type, $source);
-  }
-  $items = &GetItems($player);
-  $countItems = count($items);
-  $itemPieces = ItemPieces();
-  for ($i = $countItems - $itemPieces; $i >= 0 && $damage > 0; $i -= $itemPieces) {
-    switch ($items[$i]) {
-      case "absorption_dome_yellow":
-        if ($damage > $items[$i + 1]) {
-          if ($preventable) $damage -= $items[$i + 1];
-          $items[$i + 1] = 0;
-        } else {
-          $items[$i + 1] -= $damage;
-          if ($preventable) $damage = 0;
-        }
-        if ($items[$i + 1] <= 0) DestroyItemForPlayer($player, $i);
-        break;
-      default:
-        break;
-    }
   }
   return $damage;
 }
@@ -561,22 +556,6 @@ function SteamCounterLogic($cardID, $playerID, $uniqueID)
   }
   if(SearchCurrentTurnEffects("master_cog_yellow-".$cardID, $playerID, true)) $counters += 1;
   return $counters;
-}
-
-function ItemDamagePeventionAmount($player, $index, $damage=0, $preventable=true)
-{
-  $items = &GetItems($player);
-  switch ($items[$index]) {
-    case "mini_forcefield_red":
-    case "mini_forcefield_yellow":
-    case "mini_forcefield_blue":
-      return $items[$index + 1];
-    case "dissolution_sphere_yellow":
-      if ($damage == 1 && $preventable) return 1;
-      else return 0;
-    default:
-      return 0;
-  }
 }
 
 function ItemBlockModifier($cardID)

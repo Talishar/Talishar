@@ -112,30 +112,6 @@ function CharacterCounters($cardID)
   }
 }
 
-//CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
-function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
-{
-  $char = &GetPlayerCharacter($player);
-  $remove = false;
-  $preventedDamage = 0;
-  if ($damage > 0 && HasWard($char[$index], $player)) {
-    if ($preventable) $preventedDamage += WardAmount($char[$index], $player);//$damage -= WardAmount($char[$index], $player);
-    $remove = true;
-  }
-  switch ($char[$index]) {
-    default:
-      break;
-  }
-  if ($remove) DestroyCharacter($player, $index);
-  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
-    $preventedDamage -= 1;
-    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
-  }
-  $damage -= $preventedDamage;
-  if ($damage <= 0) $damage = 0;
-  return $damage;
-}
-
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer, $CS_TunicTicks;
@@ -1497,45 +1473,70 @@ function CharacterModifiesPlayAura($player, $isToken, $effectController)
   }
 }
 
-function CharacterTakeDamageAbilities($player, $damage, $type, $preventable)
+function CharacterDamagePreventionAmount($player, $index, $damage, $preventable) {
+  global $CS_NumCharged;
+  $char = &GetPlayerCharacter($player);
+  switch ($char[$index]) {
+    case "soulbond_resolve":
+      if ($damage > 0 && $preventable && $char[$index + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
+        if(SearchCurrentTurnEffects("soulbond_resolve", $player, true)){
+          return 1;
+        }
+      }
+      return 0;
+    case "shroud_of_darkness":
+    case "cloak_of_darkness":
+    case "grasp_of_darkness":
+    case "dance_of_darkness":
+      if ($char[$index + 9] == 0) return 0;
+      return 2;
+    default:
+      return 0;
+  }
+}
+
+//CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
+function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
   global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
+  $remove = false;
   $preventedDamage = 0;
-  $charCount = count($char);
-  $characterPieces = CharacterPieces();
-  for ($i = $charCount - $characterPieces; $i >= 0; $i -= $characterPieces) {
-    if ($char[$i + 1] == 0) continue;
-    switch ($char[$i]) {
-      case "soulbond_resolve":
-        if ($damage > 0 && $preventable && $char[$i + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
-          if(SearchCurrentTurnEffects("soulbond_resolve", $player, true)){
-            ++$preventedDamage;
-            --$char[$i + 5];
-          }
+  if ($damage > 0 && HasWard($char[$index], $player)) {
+    if ($preventable) $preventedDamage += WardAmount($char[$index], $player);
+    $remove = true;
+  }
+  switch ($char[$index]) {
+    case "soulbond_resolve":
+      if ($damage > 0 && $preventable && $char[$index + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
+        if(SearchCurrentTurnEffects("soulbond_resolve", $player, true)){
+          ++$preventedDamage;
+          --$char[$index + 5];
         }
-        break;
-      case "shroud_of_darkness":
-      case "cloak_of_darkness":
-      case "grasp_of_darkness":
-      case "dance_of_darkness":
-        if ($char[$i + 9] == 0) break;
-        if ($damage > 0) {
-          if ($preventable) $preventedDamage += 2;
-          BanishCardForPlayer($char[$i], $player, "PLAY");
-          DestroyCharacter($player, $i, skipDestroy: true);
-        }
-        break;
-      default:
-        break;
-    }
-    if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
-      $preventedDamage -= 1;
-      SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
-    }
+      }
+      break;
+    case "shroud_of_darkness":
+    case "cloak_of_darkness":
+    case "grasp_of_darkness":
+    case "dance_of_darkness":
+      if ($char[$index + 9] == 0) break;
+      if ($damage > 0) {
+        if ($preventable) $preventedDamage += 2;
+        BanishCardForPlayer($char[$index], $player, "PLAY");
+        DestroyCharacter($player, $index, skipDestroy: true);
+      }
+      break;
+    default:
+      break;
+  }
+  if ($remove) DestroyCharacter($player, $index);
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
+    $preventedDamage -= 1;
+    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   }
   $damage -= $preventedDamage;
-  return $damage > 0 ? $damage : 0;
+  if ($damage <= 0) $damage = 0;
+  return $damage;
 }
 
 function CharacterAttackDestroyedAbilities($attackID)

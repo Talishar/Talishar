@@ -601,16 +601,16 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   }
   //else: CR 2.0 6.4.10h If damage is not prevented, damage prevention effects are not consumed
   $damage = $damage > 0 ? $damage : 0;
+  //Prevention always checked and happens without user selection
   $damage = AuraTakeDamageAbilities($player, $damage, $type, $source);
-  $damage = PermanentTakeDamageAbilities($player, $damage, $type, $source);
-  $damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
-  $damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
+
   $dqVars[0] = $damage;
   if ($type == "COMBAT") {
     $dqState[6] = $damage;
     $playerSource = $mainPlayer;
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, "$damage,$type,$source,$playerSource");
+  //Prevention happens with user selection
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable, $source);
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
@@ -2751,6 +2751,8 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $rv = "";
   $auras = &GetAuras($player);
   $indices = "";
+
+  //TODO: Move Runeblood Barrier in AuraDamagePreventionAmount
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
     if (AuraDamagePreventionAmount($player, $i, $type, check: true) > 0 || HasWard($auras[$i], $player)) {
       if ($indices != "") $indices .= ",";
@@ -2759,10 +2761,21 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   }
   $mzIndices = SearchMultiZoneFormat($indices, "MYAURAS");
 
+  $permanents = &GetPermanents($player);
+  $indices = "";
+  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+    if (PermanentDamagePreventionAmount($player, $i, $damage, $preventable) > 0) {
+      if ($indices != "") $indices .= ",";
+      $indices .= $i;
+    }
+  }
+  $indices = SearchMultiZoneFormat($indices, "MYPERM");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+
   $char = &GetPlayerCharacter($player); 
   $indices = "";
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if ($char[$i + 1] != 0 && WardAmount($char[$i], $player) > 0 && $char[$i + 12] == "UP") {
+    if ($char[$i + 1] != 0 && (WardAmount($char[$i], $player) > 0 || CharacterDamagePreventionAmount($player, $i, $damage, $preventable) > 0) && $char[$i + 12] == "UP") {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
@@ -2774,7 +2787,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $itemCount = count($items);
   $indices = "";
   for ($i = 0; $i < $itemCount; $i += ItemPieces()) {
-    if (ItemDamagePeventionAmount($player, $i, $damage, $preventable) > 0) {
+    if (ItemDamagePreventionAmount($player, $i, $damage, $preventable) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
@@ -2802,12 +2815,6 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   }
   $indices = SearchMultiZoneFormat($indices, "CURRENTTURNEFFECTS");
   $mzIndices = CombineSearches($mzIndices, $indices);
-
-  //TODO:
-  //$damage = AuraTakeDamageAbilities($player, $damage, $type, $source);
-  //$damage = PermanentTakeDamageAbilities($player, $damage, $type, $source);
-  //$damage = ItemTakeDamageAbilities($player, $damage, $type, $source);
-  //$damage = CharacterTakeDamageAbilities($player, $damage, $type, $preventable);
 
   $rv = $mzIndices;
   return $rv;
