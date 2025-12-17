@@ -460,21 +460,22 @@ function FormatCode($format)
     case "cc": return 0;
     case "compcc": return 1;
     case "blitz": return 2;
-    case "compblitz": return 3;
-    case "openformatcc": return 4;
+    case "compblitz": return 3; //Currently not used
+    case "futurecc": return 4;
     case "commoner": return 5;
     case "sealed": return 6;
     case "draft": return 7;
     case "llcc": return 8;
     case "llblitz": return 9; //Currently not used
-    case "openformatblitz": return 10;
+    case "openformatblitz": return 10; //Currently not used
     case "clash": return -1;
-    case "openformatllcc": return 11;
+    case "futurell": return 11; //Currently not used
     case "openformatllblitz": return 12; //Currently not used
     case "compllcc": return 13;
     case "sage": return 14;
     case "compsage": return 15;
-    case "openformatsage": return 16;
+    case "futuresage": return 16;
+    case "open": return 17;
     case "precon": return -2;
     default: return -1;
   }
@@ -487,8 +488,8 @@ function FormatName($formatCode)
     case 0: return "cc";
     case 1: return "compcc";
     case 2: return "blitz";
-    case 3: return "compblitz";
-    case 4: return "openformatcc";
+    case 3: return "compblitz"; //Currently not  used
+    case 4: return "futurecc";
     case 5: return "commoner";
     case 6: return "sealed";
     case 7: return "draft";
@@ -496,12 +497,13 @@ function FormatName($formatCode)
     case 9: return "llblitz"; //Currently not used
     case 10: return "openformatblitz";
     case -1: return "clash";
-    case 11: return "openformatllcc";
+    case 11: return "futurell";
     case 12: return "openformatllblitz"; //Currently not used
     case 13: return "compllcc";
     case 14: return "sage";
     case 15: return "compsage";
-    case 16: return "openformatsage";
+    case 16: return "futuresage";
+    case 17: return "open";
     case -2: return "precon";
     default: return "-";
   }

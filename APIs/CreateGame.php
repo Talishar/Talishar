@@ -86,11 +86,11 @@ if ((!file_exists("../Games/$gameName")) && (mkdir("../Games/$gameName", 0700, t
 }
 
 if($isShadowBanned) {
-  if($format == "cc" || $format == "openformatcc" || $format == "llcc" || $format == "openformatllcc" || $format == "openformatsage") $format = "shadowcc";
+  if($format == "cc" || $format == "futurecc" || $format == "llcc" || $format == "openformatllcc" || $format == "openformatsage") $format = "shadowcc";
   else if($format == "compcc") $format = "shadowcompcc";
   else if($format == "compllcc") $format = "shadowcompllcc";
-  else if($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "openformatblitz" || $format == "openformatllblitz") $format = "shadowblitz";
-  else if($format == "openformatsage" || $format == "sage" || $format == "compsage") $format = "shadowcompsage";
+  else if($format == "blitz" || $format == "commoner") $format = "shadowblitz";
+  else if($format == "futuresage" || $format == "sage" || $format == "compsage") $format = "shadowcompsage";
 }
 
 $p1Data = [1];

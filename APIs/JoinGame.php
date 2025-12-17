@@ -296,17 +296,17 @@ if ($decklink != "") {
 
       if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "sage" || $format == "compsage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
+        if (($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
           if ($isDeckLegal != "") $isDeckLegal .= ", ";
           $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
       }
       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
-      if (($format == "cc" || $format == "compcc" || $format == "openformatcc" || $format == "llcc" || $format == "compllcc") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
+      if (($format == "cc" || $format == "compcc"|| $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
         if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
-      if(($format != "draft" && $format != "openformatcc" && $format != "openformatblitz" && $format != "openformatsage") && hasLegendary($id) && $cardCounts[$id] > 1) {
+      if(($format != "draft" && $format != "open") && hasLegendary($id) && $cardCounts[$id] > 1) {
         if ($isDeckLegal != "") $isDeckLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -332,13 +332,13 @@ if ($decklink != "") {
     exit;
   }
 
-  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "openformatcc")) {
+  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "futurecc")) {
     $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
   }
 
-  if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "openformatblitz" || $format == "sage" || $format == "compsage" || $format == "openformatsage")) {
+  if (CharacterHealth($character) >= 30 && ($format == "blitz"  || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
     $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
     echo (json_encode($response));
     exit;
@@ -356,25 +356,25 @@ if ($decklink != "") {
     exit;
   }
 
-  if ($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc")) {
+  if ($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
     $response->error = "⚠️ The deck link you have entered has too few cards (" . $totalCards . ") and is likely for the blitz/commoner format. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
   }
 
-  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "clash")) {
+  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "commoner" || $format == "clash")) {
     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
   }
 
-  if (($totalCards < 40 || $totalCards > 55) && ($format == "sage" || $format == "compsage")) {
+  if (($totalCards < 40 || $totalCards > 55) && ($format == "sage" || $format == "compsage" || $format == "futuresage")) {
     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
   }
 
-  if ($totalCards > 80  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc")) {
+  if ($totalCards > 80  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
     $response->error = "⚠️ The deck link you have entered has too many cards (" . $totalCards . "). Please double-check your decklist link and try again.";
     echo (json_encode($response));
     exit;
@@ -648,13 +648,13 @@ function IsCardBanned($cardID, $format, $character)
     if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
   }
   if ($format == "clash") return !isClashLegal($cardID, $character);
-  if ($format == "sage" || $format == "compsage") {
+  if ($format == "sage" || $format == "compsage" || $format == "futuresage") {
     $rarity = Rarity($cardID);
     if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
   }
 
   //Ban spoiler cards in non-open-format
-  if($format != "openformatcc" && $format != "openformatblitz" && $format != "openformatllcc" && $format != "openformatsage" && $format != "precon" && isSpecialUsePromo($cardID)) return true;
+  if($format != "futurecc" && $format != "futurell" && $format != "futuresage" && $format != "precon" && $format != "open" && isSpecialUsePromo($cardID)) return true;
   if(isBannedInFormat($cardID, $format)) return true;
   return false;
 }
@@ -705,9 +705,9 @@ function isUnimplemented($cardID) {
 
 function isBannedInFormat($cardID, $format) {
   if ($format == "compblitz") $format = "blitz";
-  if ($format == "compcc") $format = "cc";
-  if ($format == "compllcc") $format = "llcc";
-  if ($format == "compsage") $format = "sage";
+  if ($format == "compcc" || $format == "futurecc") $format = "cc";
+  if ($format == "compllcc" || $format == "futurell") $format = "llcc";
+  if ($format == "compsage" || $format == "futuresage") $format = "sage";
 
   $bannedCards = [
       "blitz" => [
