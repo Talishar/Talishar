@@ -341,29 +341,35 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
 function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
 {
   global $turn, $dqState;
-  $hero = GetPlayerCharacter($playerID)[0];
+  
+  // Early exits for global conditions
   if ($from == "HAND" && $dqState[4] == "Choose_a_card_to_charge" && $isPlayable) return 8;
   if ($turn[0] == "B") return $isPlayable ? 6 : 0;
+  
+  // Zone-specific logic
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
+    if (!$isPlayable && !PlayableFromBanish($cardID, $mod)) return 0;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
     if ($isPlayable && ComboActive($cardID)) return 3;
     if ($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;
-    if ($isPlayable || PlayableFromBanish($cardID, $mod)) return 7;
-    return 0;
+    return 7; 
   }
+  
   if ($from == "GY") {
     if ($isPlayable || PlayableFromGraveyard($cardID)) return 7;
+    $hero = GetPlayerCharacter($playerID)[0];
     if (($hero == "gravy_bones" || $hero == "gravy_bones_shipwrecked_looter") && HasWateryGrave($cardID)) return 7;
     if (SearchCurrentTurnEffects("cries_of_encore_red", $playerID) && HasSuspense($cardID)) return 7;
     return 0;
   }
-  if ($isPlayable && ComboActive($cardID)) return 3;
-  if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
-  if ($isPlayable && HasRupture($cardID) && RuptureActive(true, CardType($cardID) != "AA")) return 3;
-  if ($isPlayable && HasEffectActive($cardID)) return 3;
-  else if ($isPlayable) return 6;
-  return 0;
+
+  if (!$isPlayable) return 0;
+  if (HasReprise($cardID) && RepriseActive()) return 3;
+  if (ComboActive($cardID)) return 3;
+  if (HasRupture($cardID) && RuptureActive(true, CardType($cardID) != "AA")) return 3;
+  if (HasEffectActive($cardID)) return 3;
+  return 6;
 }
 
 function CardLink($caption, $cardNumber, $recordMenu = false)
