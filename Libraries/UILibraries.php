@@ -343,9 +343,9 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   global $turn, $dqState;
   
   // Early exits for global conditions
-  if ($from == "HAND" && $dqState[4] == "Choose_a_card_to_charge" && $isPlayable) return 8;
+  if ($from == "HAND" && $isPlayable && ($dqState[4] == "Choose_a_card_to_charge" || $turn[0] == "ARS")) return 8;
   if ($turn[0] == "B") return $isPlayable ? 6 : 0;
-  
+
   // Zone-specific logic
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
