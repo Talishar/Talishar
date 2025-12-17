@@ -133,11 +133,11 @@ function FetchAndSaveMetafyCommunities($access_token)
     error_log('[MetafyLoginAPI] Found owned community: ' . ($community_info['title'] ?? 'Unknown'));
   }
   
-  // 2. Fetch supported communities (subscriptions)
-  $subscriptions_url = 'https://metafy.gg/irk/api/v1/me/subscriptions?per_page=100';
+  // 2. Fetch all joined communities (memberships)
+  $memberships_url = 'https://metafy.gg/irk/api/v1/me/community/memberships?per_page=100';
   
   $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $subscriptions_url);
+  curl_setopt($ch, CURLOPT_URL, $memberships_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Authorization: Bearer ' . $access_token,
@@ -145,34 +145,34 @@ function FetchAndSaveMetafyCommunities($access_token)
   ));
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
   
-  $subscriptions_response = curl_exec($ch);
-  $sub_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $memberships_response = curl_exec($ch);
+  $memberships_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
   
-  error_log('[MetafyLoginAPI] Subscriptions fetch HTTP Code: ' . $sub_http_code);
+  error_log('[MetafyLoginAPI] Memberships fetch HTTP Code: ' . $memberships_http_code);
   
-  $subscriptions_data = json_decode($subscriptions_response, true);
+  $memberships_data = json_decode($memberships_response, true);
   
-  // Process subscriptions
-  if ($sub_http_code === 200 && isset($subscriptions_data['data'])) {
-    foreach ($subscriptions_data['data'] as $subscription) {
-      if (isset($subscription['community'])) {
-        $community_info = array(
-          'id' => $subscription['community']['id'] ?? null,
-          'title' => $subscription['community']['title'] ?? null,
-          'description' => $subscription['community']['description'] ?? null,
-          'logo_url' => $subscription['community']['logo_url'] ?? null,
-          'cover_url' => $subscription['community']['cover_url'] ?? null,
-          'url' => $subscription['community']['url'] ?? null,
-          'tiers' => $subscription['community']['tiers'] ?? [],
-          'type' => 'supported'
-        );
-        $all_communities[] = $community_info;
-        error_log('[MetafyLoginAPI] Found supported community: ' . ($community_info['title'] ?? 'Unknown'));
-      }
+  // Process all joined communities
+  if ($memberships_http_code === 200 && isset($memberships_data['communities'])) {
+    foreach ($memberships_data['communities'] as $community) {
+      // The new endpoint doesn't include type, so we mark all as 'supported'
+      // since we already got owned communities from the /me/community endpoint above
+      $community_info = array(
+        'id' => $community['id'] ?? null,
+        'title' => $community['title'] ?? null,
+        'description' => $community['description'] ?? null,
+        'logo_url' => $community['logo_url'] ?? null,
+        'cover_url' => $community['cover_url'] ?? null,
+        'url' => $community['url'] ?? null,
+        'tiers' => $community['tiers'] ?? [],
+        'type' => 'supported'
+      );
+      $all_communities[] = $community_info;
+      error_log('[MetafyLoginAPI] Found joined community: ' . ($community_info['title'] ?? 'Unknown'));
     }
   } else {
-    error_log('[MetafyLoginAPI] No subscriptions found or API error');
+    error_log('[MetafyLoginAPI] No joined communities found or API error');
   }
   
   // Save all communities to database
