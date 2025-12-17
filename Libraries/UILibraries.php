@@ -342,7 +342,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
 {
   global $turn, $dqState;
   $hero = GetPlayerCharacter($playerID)[0];
-  if ($from == "HAND" && $dqState[4] == "Choose_a_card_to_charge") return 8;
+  if ($from == "HAND" && $dqState[4] == "Choose_a_card_to_charge" && $isPlayable) return 8;
   if ($turn[0] == "B") return $isPlayable ? 6 : 0;
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
