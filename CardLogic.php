@@ -39,7 +39,7 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
   AddDecisionQueue("FINDINDICES", $player, "HAND");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Put_a_card_from_your_hand_on_the_bottom_of_your_deck.");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)");
   if ($mayAbility) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);

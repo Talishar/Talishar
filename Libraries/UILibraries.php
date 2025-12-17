@@ -343,7 +343,16 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   global $turn, $dqState;
   
   // Early exits for global conditions
-  if ($from == "HAND" && $isPlayable && ($dqState[4] == "Choose_a_card_to_charge" || $turn[0] == "ARS")) return 8;
+
+  WriteLog($dqState[4]);
+
+  if ($from == "HAND" && $isPlayable && (
+    $dqState[4] == "Choose_a_card_to_charge" ||
+    $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
+    $dqState[4] == "Choose_a_card_to_sink" ||
+    $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
+    $turn[0] == "ARS"
+  )) return 8;
   if ($turn[0] == "B") return $isPlayable ? 6 : 0;
 
   // Zone-specific logic
