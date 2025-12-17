@@ -1477,13 +1477,6 @@ function CharacterDamagePreventionAmount($player, $index, $damage, $preventable)
   global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   switch ($char[$index]) {
-    case "soulbond_resolve":
-      if ($damage > 0 && $preventable && $char[$index + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
-        if(SearchCurrentTurnEffects("soulbond_resolve", $player, true)){
-          return 1;
-        }
-      }
-      return 0;
     case "shroud_of_darkness":
     case "cloak_of_darkness":
     case "grasp_of_darkness":
@@ -1507,14 +1500,6 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
     $remove = true;
   }
   switch ($char[$index]) {
-    case "soulbond_resolve":
-      if ($damage > 0 && $preventable && $char[$index + 5] > 0 && GetClassState($player, $CS_NumCharged) > 0) {
-        if(SearchCurrentTurnEffects("soulbond_resolve", $player, true)){
-          ++$preventedDamage;
-          --$char[$index + 5];
-        }
-      }
-      break;
     case "shroud_of_darkness":
     case "cloak_of_darkness":
     case "grasp_of_darkness":

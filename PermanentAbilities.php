@@ -103,7 +103,7 @@ function PermanentBeginEndPhaseEffects()
   }
 }
 
-function PermanentDamagePreventionAmount($player, $index, $damage, $preventable)
+function PermanentDamagePreventionAmount($player, $index, $damage)
 {
   $permanents = &GetPermanents($player);
   $preventedDamage = 0;

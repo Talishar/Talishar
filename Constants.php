@@ -835,9 +835,27 @@ function GetDamagePrevention($player, $damage)
 {
   global $currentTurnEffects, $combatChain;
   $preventionLeft = 0;
-  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+
+  $countEffects = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  for($i = 0; $i < $countEffects; $i += $currentTurnEffectsPieces) {
     $preventionLeft += CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, "COMBAT", $combatChain[0]);
   }
+
+  $auras = &GetAuras($player);
+  $countAuras = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $auraPieces) {
+    $preventionLeft += AuraDamagePreventionAmount($player, $i, "COMBAT", $damage, check: true);
+  }
+
+  $permanents = &GetPermanents($player);
+  $countPermanents = count($permanents);
+  $permanentPieces = PermanentPieces();
+  for ($i = 0; $i < $countPermanents; $i += $permanentPieces) {
+    $preventionLeft += PermanentDamagePreventionAmount($player, $i, $damage);
+  }
+
   return $preventionLeft;
 }
 

@@ -2764,7 +2764,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $permanents = &GetPermanents($player);
   $indices = "";
   for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
-    if (PermanentDamagePreventionAmount($player, $i, $damage, $preventable) > 0) {
+    if (PermanentDamagePreventionAmount($player, $i, $damage) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
