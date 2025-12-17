@@ -153,23 +153,51 @@ function FetchAndSaveMetafyCommunities($access_token)
   
   $memberships_data = json_decode($memberships_response, true);
   
-  // Process all joined communities
+  // Process all joined communities, but filter for paid subscriptions only
   if ($memberships_http_code === 200 && isset($memberships_data['communities'])) {
     foreach ($memberships_data['communities'] as $community) {
-      // The new endpoint doesn't include type, so we mark all as 'supported'
-      // since we already got owned communities from the /me/community endpoint above
-      $community_info = array(
-        'id' => $community['id'] ?? null,
-        'title' => $community['title'] ?? null,
-        'description' => $community['description'] ?? null,
-        'logo_url' => $community['logo_url'] ?? null,
-        'cover_url' => $community['cover_url'] ?? null,
-        'url' => $community['url'] ?? null,
-        'tiers' => $community['tiers'] ?? [],
-        'type' => 'supported'
-      );
-      $all_communities[] = $community_info;
-      error_log('[MetafyLoginAPI] Found joined community: ' . ($community_info['title'] ?? 'Unknown'));
+      $community_id = $community['id'] ?? null;
+      
+      if (!$community_id) {
+        continue;
+      }
+      
+      // Check if user has an active paid subscription to this community
+      $purchase_url = 'https://metafy.gg/irk/api/v1/me/purchases/communities/' . urlencode($community_id);
+      
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $purchase_url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Authorization: Bearer ' . $access_token,
+        'Content-Type: application/json'
+      ));
+      curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+      
+      $purchase_response = curl_exec($ch);
+      $purchase_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      curl_close($ch);
+      
+      $purchase_data = json_decode($purchase_response, true);
+      
+      // Only include if user has active access (paid subscription)
+      if ($purchase_http_code === 200 && isset($purchase_data['community']['has_access']) && $purchase_data['community']['has_access'] === true) {
+      //if ($purchase_http_code === 200 && isset($purchase_data['community']['has_access'])) {
+        $community_info = array(
+          'id' => $community_id,
+          'title' => $community['title'] ?? null,
+          'description' => $community['description'] ?? null,
+          'logo_url' => $community['logo_url'] ?? null,
+          'cover_url' => $community['cover_url'] ?? null,
+          'url' => $community['url'] ?? null,
+          'tiers' => $community['tiers'] ?? [],
+          'type' => 'supported'
+        );
+        $all_communities[] = $community_info;
+        error_log('[MetafyLoginAPI] Found paid community: ' . ($community_info['title'] ?? 'Unknown'));
+      } else {
+        error_log('[MetafyLoginAPI] Skipping non-paid community or access denied: ' . ($community['title'] ?? 'Unknown'));
+      }
     }
   } else {
     error_log('[MetafyLoginAPI] No joined communities found or API error');

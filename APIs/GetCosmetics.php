@@ -6,6 +6,7 @@ include_once "../includes/dbh.inc.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
+include_once "../Assets/MetafyDictionary.php";
 
 session_start();
 
@@ -56,6 +57,48 @@ if(IsUserLoggedIn()) {
     }
     }
   }
+
+  // Add Metafy community benefits
+  $conn = GetDBConnection();
+  $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    $userName = LoggedInUserName();
+    mysqli_stmt_bind_param($stmt, 's', $userName);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    
+    if ($row && !empty($row['metafyCommunities'])) {
+      $communities = json_decode($row['metafyCommunities'], true);
+      if (is_array($communities)) {
+        foreach ($communities as $community) {
+          $communityId = $community['id'] ?? null;
+          if ($communityId) {
+            // Check if this community ID matches any Metafy community
+            foreach(MetafyCommunity::cases() as $metafyCommunity) {
+              if ($metafyCommunity->value === $communityId) {
+                // Add card backs
+                $cardBacks = $metafyCommunity->CardBacks();
+                if (!empty($cardBacks)) {
+                  $cardBackIds = explode(",", $cardBacks);
+                  for($i = 0; $i < count($cardBackIds); ++$i) {
+                    $cardBack = new stdClass();
+                    $cardBack->name = $metafyCommunity->CommunityName() . (count($cardBackIds) > 1 ? " " . ($i + 1) : "");
+                    $cardBack->id = trim($cardBackIds[$i]);
+                    array_push($response->cardBacks, $cardBack);
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  mysqli_close($conn);
 }
 
 session_write_close();

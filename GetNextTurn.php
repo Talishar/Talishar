@@ -5,6 +5,7 @@ include "HostFiles/Redirector.php";
 include "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
+include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php"; //  Add caching layer
 
@@ -264,6 +265,52 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           }
         }
       }
+
+      // Add Metafy community alt arts
+      if (IsUserLoggedIn()) {
+        $conn = GetDBConnection();
+        $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+        $stmt = mysqli_stmt_init($conn);
+        if (mysqli_stmt_prepare($stmt, $sql)) {
+          $userName = LoggedInUserName();
+          mysqli_stmt_bind_param($stmt, 's', $userName);
+          mysqli_stmt_execute($stmt);
+          $result = mysqli_stmt_get_result($stmt);
+          $row = mysqli_fetch_assoc($result);
+          mysqli_stmt_close($stmt);
+          
+          if ($row && !empty($row['metafyCommunities'])) {
+            $communities = json_decode($row['metafyCommunities'], true);
+            if (is_array($communities)) {
+              foreach ($communities as $community) {
+                $communityId = $community['id'] ?? null;
+                if ($communityId) {
+                  foreach(MetafyCommunity::cases() as $metafyCommunity) {
+                    if ($metafyCommunity->value === $communityId) {
+                      $metafyAltArts = $metafyCommunity->AltArts();
+                      if (!empty($metafyAltArts)) {
+                        $metafyAltArtsCount = count($metafyAltArts);
+                        for($i = 0; $i < $metafyAltArtsCount; ++$i) {
+                          $arr = explode("=", $metafyAltArts[$i]);
+                          if (count($arr) === 2) {
+                            $altArt = new stdClass();
+                            $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . ($i + 1) : "");
+                            $altArt->cardId = trim($arr[0]);
+                            $altArt->altPath = trim($arr[1]);
+                            array_push($initialLoad->altArts, $altArt);
+                          }
+                        }
+                      }
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        mysqli_close($conn);
+      }
     }
 
     // Get opponent's alt arts (what this player sees when looking at opponent's board)
@@ -286,6 +333,49 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           }
         }
       }
+
+      // Add opponent's Metafy community alt arts
+      $conn = GetDBConnection();
+      $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+      $stmt = mysqli_stmt_init($conn);
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, 's', $initialLoad->opponentName);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+        
+        if ($row && !empty($row['metafyCommunities'])) {
+          $communities = json_decode($row['metafyCommunities'], true);
+          if (is_array($communities)) {
+            foreach ($communities as $community) {
+              $communityId = $community['id'] ?? null;
+              if ($communityId) {
+                foreach(MetafyCommunity::cases() as $metafyCommunity) {
+                  if ($metafyCommunity->value === $communityId) {
+                    $opponentMetafyAltArts = $metafyCommunity->AltArts();
+                    if (!empty($opponentMetafyAltArts)) {
+                      $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
+                      for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
+                        $arr = explode("=", $opponentMetafyAltArts[$i]);
+                        if (count($arr) === 2) {
+                          $opponentAltArt = new stdClass();
+                          $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . ($i + 1) : "");
+                          $opponentAltArt->cardId = trim($arr[0]);
+                          $opponentAltArt->altPath = trim($arr[1]);
+                          array_push($initialLoad->opponentAltArts, $opponentAltArt);
+                        }
+                      }
+                    }
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      mysqli_close($conn);
     }
     $response->initialLoad = $initialLoad;
   }
