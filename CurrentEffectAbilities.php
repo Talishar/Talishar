@@ -1223,10 +1223,18 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "blessing_of_serenity_blue":
       return 1;
     case "steadfast_red":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        return 6;
+      }
+      break;
     case "steadfast_yellow":
+      if ($source == $currentTurnEffects[$index + 2]) {
+        return 5;
+      }
+      break;
     case "steadfast_blue":
       if ($source == $currentTurnEffects[$index + 2]) {
-        return $damage;
+        return 4;
       }
       break;
     case "amulet_of_intervention_blue":
