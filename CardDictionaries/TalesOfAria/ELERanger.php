@@ -77,7 +77,7 @@
       $element = $elementArray[$i];
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=" . $element, $subsequent);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which ". ucfirst(strtolower($element))." card to reveal for Fusion", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
       AddDecisionQueue("REVEALCARDS", $player, "-", 1);
@@ -306,4 +306,15 @@
     }
   }
 
-?>
+  function GetElementColorCode($element)
+  {
+    // Return color codes in the format {{element|name|colorCode}}
+    // These will be styled by the frontend
+    switch(strtoupper($element))
+    {
+      case "ICE": return "1";        // Ice - Cyan/Blue
+      case "LIGHTNING": return "2";  // Lightning - Yellow
+      case "EARTH": return "3";      // Earth - Green  
+      default: return "0";
+    }
+  }
