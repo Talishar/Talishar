@@ -349,12 +349,15 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
     $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
     $dqState[4] == "Choose_a_card_to_sink" ||
     $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
-    $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
-    $dqState[4] == "Choose_a_card_to_discard" ||
     $turn[0] == "ARS" ||
     $turn[0] == "P" ||
     $turn[0] == "CHOOSEHANDCANCEL"
   )) return 8;
+  if ($from == "HAND" && $isPlayable && (
+    $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
+    $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
+    $dqState[4] == "Choose_a_card_to_discard"
+  )) return 9;
   if ($turn[0] == "B") return $isPlayable ? 6 : 0;
 
   // Zone-specific logic
