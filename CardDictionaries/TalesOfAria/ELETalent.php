@@ -4,6 +4,7 @@
   {
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $combatChain, $layers, $CombatChain;
     global $CS_CardsInDeckBeforeOpt;
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     $rv = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
@@ -167,7 +168,7 @@
         if($cardID == "lightning_press_yellow") $amount = 2;
         else if($cardID == "lightning_press_blue") $amount = 1;
         $index = explode("-", $target)[1];
-        if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+        if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
           if ($CombatChain->HasCurrentLink() && $index != -1) CombatChainPowerModifier($index, $amount);
           AddCurrentTurnEffect($cardID."-VISUAL", $currentPlayer);//For Visual Effect only
         }
@@ -175,7 +176,8 @@
           // targeting a past chain link, do nothing for now
         }
         //only add current turn effect if there's no target (ie. played in layer step)
-        else AddCurrentTurnEffect($cardID, $currentPlayer);
+        elseif (IsLayerStep()) AddCurrentTurnEffect($cardID, $currentPlayer);
+        else return "FAILED";
         return "";
       case "lightning_surge_red": case "lightning_surge_yellow": case "lightning_surge_blue":
         if($from == "ARS") GiveAttackGoAgain();
