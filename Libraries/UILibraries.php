@@ -342,6 +342,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
 {
   global $turn, $dqState;
   
+  //WriteLog($dqState[4] . " - " . $turn[0]);
   // Early exits for global conditions
   if ($from == "HAND" && $isPlayable && (
     $dqState[4] == "Choose_a_card_to_charge" ||
@@ -350,7 +351,9 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
     $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
     $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
     $dqState[4] == "Choose_a_card_to_discard" ||
-    $turn[0] == "ARS"
+    $turn[0] == "ARS" ||
+    $turn[0] == "P" ||
+    $turn[0] == "CHOOSEHANDCANCEL"
   )) return 8;
   if ($turn[0] == "B") return $isPlayable ? 6 : 0;
 
