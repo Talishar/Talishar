@@ -517,7 +517,7 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock;
+  global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
   global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_NumItemsDestroyed, $currentTurnEffects, $CombatChain;
   $rv = "";
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
