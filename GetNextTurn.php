@@ -8,6 +8,7 @@ include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php"; //  Add caching layer
+include_once "includes/dbh.inc.php"; // Database connection handler
 
 // array holding allowed Origin domains
 SetHeaders();
