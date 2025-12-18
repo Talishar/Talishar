@@ -4201,6 +4201,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(CardType($cardID) != "T" && CardType($cardID) != "Macro" && $from != "PLAY") { //Don't need to add to anywhere if it's a token
         ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, "LAYER");
       }
+      // remove any buff associated with the played attack
+      for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+        if (IsCombatEffectActive($currentTurnEffects[$i], $cardID) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i])) {
+          RemoveCurrentTurnEffect($i);
+        }
+      }
     }
     if (!$skipDRResolution && $target != "") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
