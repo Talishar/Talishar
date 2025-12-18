@@ -627,7 +627,6 @@ function isTeamCupofTCG($userName)
     case "Glem":
     case "parallaxdream":
     case "2birds1stone":
-    case "PvtVoid":
       return true;
     default: break;
   }
@@ -638,7 +637,6 @@ function isTeamScowlingFleshBag($userName)
 {
   switch($userName) {
     case "Scowling":
-    case "PvtVoid":
       return true;
     default: break;
   }
@@ -649,7 +647,6 @@ function IsTeamThaiCardsShop($userName)
 {
   switch($userName) {
     case "thaicards":
-    case "PvtVoid":
       return true;
     default: break;
   }
@@ -669,7 +666,6 @@ function IsTeamFABChaos($userName)
     case "mythen":
     case "Enegon":
     case "Obnoxious":
-    case "PvtVoid":
       return true;
     default: break;
   }
@@ -686,7 +682,6 @@ function IsTeamColdFoilControl($userName)
     case "PurpleHaze":
     case "luxas":
     case "chefwheaton":
-    case "PvtVoid":
       return true;
     default: break;
   }
@@ -705,7 +700,6 @@ function IsTeamRighteousGaming($userName)
     case "TrentMcB":
     case "pzych":
     case "deragun":
-    case "PvtVoid":
     case "Harvey0209":
     case "f1av0r":
     case "Vemnyx":
@@ -724,7 +718,6 @@ function IsTeamRighteousGaming($userName)
 function IsTeamMetalFab($userName)
 {
   switch($userName) {
-      case "PvtVoid":
       case "deathstalker182":
       case "Closetnerds":
       case "Diene9":
@@ -750,7 +743,6 @@ function IsTeamMetalFab($userName)
 function IsTeamPotatoSquad($userName)
 {
   switch($userName) {
-    case "PvtVoid":
     case "Corry":
     case "Gibbie":
     case "sycotik":
@@ -773,7 +765,6 @@ function IsTeamPotatoSquad($userName)
 function IsTeamFabledBrazil($userName)
 {
   switch($userName) {
-    case "PvtVoid":
     case "tetsuo":
     case "hugodeoz":
     case "diorge":
@@ -799,7 +790,6 @@ function IsTeamFabledBrazil($userName)
 function IsTeamFatAndFurious($userName)
 {
   switch ($userName) {
-    case "PvtVoid":
     case "OopsAllPummels":
     case "AngelPillow":
     case "stefchwan":
@@ -824,7 +814,6 @@ function IsTeamFatAndFurious($userName)
 function IsTeamPitchDevils($userName)
 {
   switch ($userName) {
-    case "PvtVoid":
     case "Lestat":
     case "elnino":
     case "RTZ":
