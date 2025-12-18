@@ -53,6 +53,12 @@ enum MetafyCommunity : string
   {
     return match($this) {
       self::Talishar => $this->getTalisharAltArts(),
+      self::WeMakeBest => [],
+      self::FaBrary => [],
+      self::AggroBlaze => [],
+      self::TheCardGuyz => [],
+      self::SunflowerSamurai => [],
+      self::EmperorsRome => [],
     };
   }
 
