@@ -169,7 +169,7 @@
         else if($cardID == "lightning_press_blue") $amount = 1;
         $index = explode("-", $target)[1];
         if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
-          if ($CombatChain->HasCurrentLink() && $index != -1) CombatChainPowerModifier($index, $amount);
+          CombatChainPowerModifier($index, $amount);
           AddCurrentTurnEffect($cardID."-VISUAL", $currentPlayer);//For Visual Effect only
         }
         elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
