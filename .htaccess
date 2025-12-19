@@ -2,6 +2,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
+  # Redirect ads.txt to rev.iq external ads.txt (301 permanent redirect)
+  RewriteRule ^ads\.txt$ https://rev.iq/talishar.net/ads.txt [R=301,L]
+  
   # Handle case-insensitive requests for game API endpoints
   # processinput.php -> ProcessInput.php
   RewriteCond %{REQUEST_FILENAME} !-f
