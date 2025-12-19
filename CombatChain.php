@@ -1399,7 +1399,7 @@ function OnBlockResolveEffects($cardID = "")
       break;
     default:
       $lastCard = array_pop($blockingCards);
-      $otherCards = implode(",", $blockingCards);
+      $otherCards = implode(", ", $blockingCards);
       WriteLog("$message $otherCards, and $lastCard");
       break;
   }
