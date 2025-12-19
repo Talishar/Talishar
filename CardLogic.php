@@ -3927,7 +3927,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "loan_shark_yellow":
         DestroyAuraUniqueID($player, $uniqueID);
         WriteLog("Resolving " . CardLink($parameter, $parameter) . " ability");
-        PummelHit($player, true, context:"Choose a card to discard (or pass and lose 2 health)");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND");
+        AddDecisionQueue("SETDQCONTEXT", $player, CardLink($parameter, $parameter) . ": choose a card to discard (or pass and lose 2 health)");
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("ADDDISCARD", $player, "-", 1);
         AddDecisionQueue("NOTEQUALPASS", $player, "PASS");
         AddDecisionQueue("PASSPARAMETER", $player, "2", 1);
         AddDecisionQueue("OP", $mainPlayer, "PLAYERLOSEHEALTH", 1);
