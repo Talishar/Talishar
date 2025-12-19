@@ -66,10 +66,14 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     $power = 0;
     if ($attackType == "W") {
       $char = &GetPlayerCharacter($mainPlayer);
-      $power = $char[$combatChainState[$CCS_WeaponIndex] + 3];
+      $weaponIdx = $combatChainState[$CCS_WeaponIndex] + 3;
+      if (isset($char[$weaponIdx])) {
+        $power = $char[$weaponIdx];
+      }
       // check buffs from subcards
-      if ($char[$combatChainState[$CCS_WeaponIndex] + 10] != "-") {
-        $subcards = explode(",", $char[$combatChainState[$CCS_WeaponIndex] + 10]);
+      $subcardIdx = $combatChainState[$CCS_WeaponIndex] + 10;
+      if (isset($char[$subcardIdx]) && $char[$subcardIdx] != "-") {
+        $subcards = explode(",", $char[$subcardIdx]);
         foreach ($subcards as $subcard) {
           switch ($subcard) {
             case "galvanic_bender":

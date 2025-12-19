@@ -21,7 +21,7 @@ include_once "APIKeys/APIKeys.php";
 include_once "./Libraries/ValidationLibraries.php";
 
 //We should always have a player ID as a URL parameter
-$gameName = $_GET["gameName"];
+$gameName = isset($_GET["gameName"]) ? $_GET["gameName"] : "";
 if (!IsGameNameValid($gameName)) {
   echo "Invalid game name.";
   exit;
@@ -84,14 +84,14 @@ if(IsReplay() && $mode == 99)
   $filename = "./Games/$gameName/replayCommands.txt";
   $commands = file($filename);
   $pointer = intval(trim($commands[0])) + 1;
-  $line = $commands[$pointer];
+  $line = isset($commands[$pointer]) ? $commands[$pointer] : "";
   $params = explode(" ", $line);
-  $playerID = $params[0];
-  $mode = $params[1];
-  $buttonInput = $params[2];
-  $cardID = $params[3];
-  $chkCount = $params[4];
-  $chkInput = explode("|", $params[5]);
+  $playerID = isset($params[0]) ? $params[0] : "";
+  $mode = isset($params[1]) ? $params[1] : "";
+  $buttonInput = isset($params[2]) ? $params[2] : "";
+  $cardID = isset($params[3]) ? $params[3] : "";
+  $chkCount = isset($params[4]) ? $params[4] : "0";
+  $chkInput = isset($params[5]) ? explode("|", $params[5]) : [];
   $chkInputCount = count($chkInput);
   for($i=0; $i<$chkInputCount; ++$i)
   {
@@ -100,14 +100,14 @@ if(IsReplay() && $mode == 99)
   //skip any inputs where the non-active player tries something
   if ($mode == "StartTurn" || $playerID != $currentPlayer) {
     ++$pointer;
-    $line = $commands[$pointer];
+    $line = isset($commands[$pointer]) ? $commands[$pointer] : "";
     $params = explode(" ", $line);
-    $playerID = $params[0];
-    $mode = $params[1];
-    $buttonInput = $params[2];
-    $cardID = $params[3];
-    $chkCount = $params[4];
-    $chkInput = explode("|", $params[5]);
+    $playerID = isset($params[0]) ? $params[0] : "";
+    $mode = isset($params[1]) ? $params[1] : "";
+    $buttonInput = isset($params[2]) ? $params[2] : "";
+    $cardID = isset($params[3]) ? $params[3] : "";
+    $chkCount = isset($params[4]) ? $params[4] : "0";
+    $chkInput = isset($params[5]) ? explode("|", $params[5]) : [];
     $chkInputCount = count($chkInput);
     for($i=0; $i<$chkInputCount; ++$i)
     {

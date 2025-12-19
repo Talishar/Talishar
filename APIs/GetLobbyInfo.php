@@ -92,7 +92,9 @@ if($handler) {
   $response->deck->quiver = [];
   $response->deck->hands = [];
   $response->deck->demiHero = [];
+  $response->deck->modular = [];
   for($i = 1; $i < count($character); ++$i) {
+    if (!isset($character[$i])) continue;
     $cardID = $character[$i];
     if (SubtypeContains($cardID, "Head")) array_push($response->deck->head, $cardID);
     else if (SubtypeContains($cardID, "Chest")) array_push($response->deck->chest, $cardID);
