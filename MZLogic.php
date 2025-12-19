@@ -298,10 +298,10 @@ function MZBanish($player, $parameter, $lastResult)
       }
     }
     if (!isset($mzIndex[1])) WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
-    BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
-  }
-  if (count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
-  return $lastResult;
+    if (isset($mzIndex[1])) {
+      BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
+      if (count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
+    }
 }
 
 function MZGainControl($player, $target, $temporary=0)

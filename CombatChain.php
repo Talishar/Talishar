@@ -224,8 +224,8 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "push_the_point_red":
       case "push_the_point_yellow":
       case "push_the_point_blue":
-        if (!isset($chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()])) $power += 0;
-        $power += $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces()] > 0 ? 2 : 0;
+        $idx = count($chainLinkSummary) - ChainLinkSummaryPieces();
+        if (isset($chainLinkSummary[$idx]) && $chainLinkSummary[$idx] > 0) $power += 2;
         break;
       case "riled_up_red":
       case "riled_up_yellow":
