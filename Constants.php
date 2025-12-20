@@ -838,7 +838,7 @@ function GetDamagePrevention($player, $damage)
 
   $countEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
-  for($i = 0; $i < $countEffects; $i += $currentTurnEffectsPieces) {
+  for($i = 0; $i < $countEffects && $currentTurnEffects[$i + 1] == $player; $i += $currentTurnEffectsPieces) {
     $preventionLeft += CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, "COMBAT", $combatChain[0]);
   }
 
