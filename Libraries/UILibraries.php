@@ -432,3 +432,16 @@ function isFaceDownMod($mod)
 {
   return $mod == "INT" || $mod == "DOWN" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR";
 }
+
+  function GetElementColorCode($element)
+  {
+    // Return color codes in the format {{element|name|colorCode}}
+    // These will be styled by the frontend
+    switch(strtoupper($element))
+    {
+      case "ICE": return "1";        // Ice - Cyan/Blue
+      case "LIGHTNING": return "2";  // Lightning - Yellow
+      case "EARTH": return "3";      // Earth - Green  
+      default: return "0";
+    }
+  }

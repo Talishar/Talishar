@@ -531,13 +531,19 @@
       // Must have the minimum # of earth cards too.
       $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
       if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_Decompose");
-        AddDecisionQueue("NOPASS", $player, "-", 1);
         // Earth Banishes
         for($i = 0; $i < $earthBanishes; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($earthBanishes - $i) . " Earth card(s) to banish", 1);
+      switch ($earthBanishes - $i) {
+        case 1:
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose 1 {{element|Earth|" . GetElementColorCode("EARTH") . "}} card to banish", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          break;
+        default:
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $earthBanishes . " {{element|Earth|" . GetElementColorCode("EARTH") . "}} cards to banish (or pass)", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          break;
+      }
           AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
         }
