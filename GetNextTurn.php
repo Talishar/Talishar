@@ -649,6 +649,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     if($isGameOver) $theirCharacter[$i + 12] = "UP";
+    $border = CardBorderColor($theirChar, "THEIRCHAR", true, $otherPlayer);
     if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
       if($theirCharacter[$i + 1] > 0) { //Don't show broken equipment cards as they are in the graveyard
       array_push($characterContents, JSONRenderedCard(

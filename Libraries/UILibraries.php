@@ -344,6 +344,26 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   
   //WriteLog($dqState[4] . " - " . $turn[0]);
   // Early exits for global conditions
+
+  switch ($cardID) {
+    case "florian_rotwood_harbinger":
+    case "verdance_thorn_of_the_rose":
+      $results = SearchCount(SearchMultiZone($playerID, "MYBANISH:talent=EARTH"));
+      if ($results >= 8) {
+        return 10;
+      }
+      break;
+    case "florian":
+    case "verdance":
+      $results = SearchCount(SearchMultiZone($playerID, "MYBANISH:talent=EARTH"));
+      if ($results >= 4) {
+        return 10;
+      }
+      break;
+    default:
+      break;
+  }
+
   if ($from == "HAND" && $isPlayable && (
     $dqState[4] == "Choose_a_card_to_charge" ||
     $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
@@ -358,7 +378,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
     $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
     $dqState[4] == "Choose_a_card_to_discard"
   )) return 9;
-  if ($turn[0] == "B") return $isPlayable ? 6 : 0;
+  if ($turn[0] == "B" && $from != "THEIRCHAR") return $isPlayable ? 6 : 0;
 
   // Zone-specific logic
   if ($from == "BANISH") {
@@ -383,6 +403,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   if (ComboActive($cardID)) return 3;
   if (HasRupture($cardID) && RuptureActive(true, CardType($cardID) != "AA")) return 3;
   if (HasEffectActive($cardID)) return 3;
+  if($from == "THEIRCHAR") return 0;
   return 6;
 }
 
