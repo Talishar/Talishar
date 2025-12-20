@@ -1974,6 +1974,7 @@ function DoesAttackHaveGoAgain()
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
+  global $CS_ArcaneDamageDealt;
   $attackID = $CombatChain->AttackCard()->ID();
   $from = $combatChain[2] ?? "CC";
   $attackType = CardType($attackID);
@@ -2126,6 +2127,10 @@ function DoesAttackHaveGoAgain()
     case "zealous_belting_yellow":
     case "zealous_belting_blue":
       return SearchPitchHighestAttack($mainPitch) > PowerValue($attackID, $mainPlayer, "CC");
+    case "rites_of_lightning_red":
+    case "rites_of_lightning_yellow":
+    case "rites_of_lightning_blue":
+      return GetClassState($mainPlayer, $CS_ArcaneDamageDealt) > 0;
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":

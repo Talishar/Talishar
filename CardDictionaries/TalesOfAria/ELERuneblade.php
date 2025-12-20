@@ -24,7 +24,6 @@
         return "";
       case "rites_of_lightning_red": case "rites_of_lightning_yellow": case "rites_of_lightning_blue":
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);
-        AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
         return "";
       case "rites_of_replenishment_red": case "rites_of_replenishment_yellow": case "rites_of_replenishment_blue":
         if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) MZMoveCard($currentPlayer, "MYDISCARD:type=A", "MYBOTDECK", may:true);
