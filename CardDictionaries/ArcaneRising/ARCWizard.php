@@ -156,6 +156,7 @@ function GetArcaneTargetFromUID($player, $target) {
   $otherPlayer = $player == 1 ? 2 : 1;
   $targetArr = explode("-", $target);
   $indexTarget = "-";
+  if (!isset($targetArr[1])) return "-";
   if (is_numeric($targetArr[1])) return $target; // it's already an index
   if (str_contains($targetArr[0], "ALLY")) {
     $targetPlayer = $targetArr[0] == "MYALLY" ? $player : $otherPlayer;

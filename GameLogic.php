@@ -2688,6 +2688,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           break;
       }
+      if (!isset($damage)) $damage = 0;
       if ($damage < 0) $damage = 0;
       $dqVars[0] = $damage;
       $dqState[6] = $damage;

@@ -828,9 +828,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         for ($i = 0; $i < count($commands); $i += 1) {
           $line = $commands[$i];
           $params = explode(" ", $line);
-          $loadedPlayer = $params[0];
-          $loadedMode = $params[1];
-          $loadedTurn = $params[2];
+          $loadedPlayer = isset($params[0]) ? $params[0] : "";
+          $loadedMode = isset($params[1]) ? $params[1] : "";
+          $loadedTurn = isset($params[2]) ? $params[2] : "";
           if ($loadedMode == "StartTurn" && $loadedPlayer == $turnPlayer && $loadedTurn == $turnNumber) {
             $pointer = $i;
           }

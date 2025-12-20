@@ -21,7 +21,41 @@
   {
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk") return true;
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid") return true;
-    return (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "0");
+    
+    // Check if user is a Patreon supporter
+    if(isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"])) {
+      return "1";
+    }
+    
+    // Check if user is a Metafy Talishar supporter
+    if(isset($_SESSION["useruid"])) {
+      $userName = $_SESSION["useruid"];
+      $conn = GetDBConnection();
+      $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+      $stmt = mysqli_stmt_init($conn);
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, 's', $userName);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+        
+        if ($row && !empty($row['metafyCommunities'])) {
+          $communities = json_decode($row['metafyCommunities'], true);
+          if (is_array($communities)) {
+            // Check if Talishar community (UUID: be5e01c0-02d1-4080-b601-c056d69b03f6) is in the list
+            foreach($communities as $community) {
+              if(isset($community['id']) && $community['id'] === 'be5e01c0-02d1-4080-b601-c056d69b03f6') {
+                return "1";
+              }
+            }
+          }
+        }
+      }
+      mysqli_close($conn);
+    }
+    
+    return "0";
   }
 
   function SessionLastGameName()

@@ -4,8 +4,8 @@ session_start();
 
 include "./Libraries/HTTPLibraries.php";
 
-$gameName = $_GET["gameName"];
-$playerID = $_GET["playerID"];
+$gameName = isset($_GET["gameName"]) ? $_GET["gameName"] : "";
+$playerID = isset($_GET["playerID"]) ? $_GET["playerID"] : "0";
 
 // For profile settings (playerID == 0), allow gameName == 0
 if ($playerID == 0) {
@@ -19,7 +19,7 @@ if ($playerID == 0) {
 }
 
 $authKey = TryGet("authKey", "");
-$popupType = $_GET["popupType"];
+$popupType = isset($_GET["popupType"]) ? $_GET["popupType"] : "";
 $chainLinkIndex = TryGet("index", "");
 
 ob_start();
