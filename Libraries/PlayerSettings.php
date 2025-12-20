@@ -45,7 +45,7 @@ function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
-  return IsReplay() ? 1 : $settings[$SET_AlwaysHoldPriority];
+  return $settings[$SET_AlwaysHoldPriority];
 }
 
 function ManualTunicSetting($player)
@@ -242,7 +242,7 @@ function ShouldSkipARs($player)
 {
   global $SET_SkipARs;
   $settings = GetSettings($player);
-  return IsReplay() ? 0 : $settings[$SET_SkipARs];
+  return $settings[$SET_SkipARs];
 }
 
 function ShouldSkipDRs($player)
@@ -251,7 +251,7 @@ function ShouldSkipDRs($player)
   $settings = GetSettings($player);
   $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
   ChangeSetting($player, $SET_PassDRStep, 0);
-  return IsReplay() ? 0 : $skip;
+  return $skip;
 }
 
 function ShouldAutotargetOpponent($player)
@@ -274,7 +274,7 @@ function ShortcutAttackThreshold($player)
 {
   global $SET_ShortcutAttackThreshold;
   $settings = GetSettings($player);
-  if (count($settings) < $SET_ShortcutAttackThreshold || IsReplay()) return "0";
+  if (count($settings) < $SET_ShortcutAttackThreshold) return "0";
   return $settings[$SET_ShortcutAttackThreshold];
 }
 
