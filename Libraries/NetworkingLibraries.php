@@ -1091,6 +1091,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
       }
       ContinueDecisionQueue();
+      break;
+    case "SETTINGS": // should only show up in replays
+      $settingID = $buttonInput;
+      $settingValue = $cardID;
+      $userID = "";
+      ChangeSetting($playerID, $settingID, $settingValue);
+      break;
     default:
       break;
   }
