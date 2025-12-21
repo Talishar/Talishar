@@ -1129,7 +1129,7 @@ function ChannelTalent($uniqueID, $talent)
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
     for ($j = $toBottom; $j > 0; --$j) {
-      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose " . ucwords(strtolower($talent)) . " card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
+      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
