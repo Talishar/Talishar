@@ -270,7 +270,7 @@
         AddDecisionQueue("ADDMZBUFF", $currentPlayer, "shatter_yellow", 1);
         return "";
       case "blood_on_her_hands_yellow":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
+        if ($additionalCosts != "-") AddCurrentTurnEffect($cardID, $currentPlayer);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
         AddDecisionQueue("MODAL", $currentPlayer, "BLOODONHERHANDS", 1);
         break;
