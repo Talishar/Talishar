@@ -192,7 +192,7 @@
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
     $card = GetClass($cardID, $playerID);
-    if ($card != "-") $card->WonClashAbility($playerID);
+    if ($card != "-") $card->WonClashAbility($playerID, $switched);
     switch($cardID)
     {
       case "millers_grindstone":
