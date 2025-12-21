@@ -2782,7 +2782,7 @@ class authority_of_ataya_blue extends Card {
 
 class unexpected_backhand extends BaseCard{
   function WonClashWithAbility($winnerID) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+    AddLayer("TRIGGER", $winnerID, $this->cardID);
   }
 
   function ProcessTrigger() {

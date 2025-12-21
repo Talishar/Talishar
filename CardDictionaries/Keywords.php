@@ -191,8 +191,8 @@
     WriteLog("Player " . $playerID . " won the Clash");
     $numClashesWon = GetClassState($playerID, $CS_NumClashesWon) + 1;
     SetClassState($playerID, $CS_NumClashesWon, $numClashesWon);
-    $card = GetClass($cardID, $effectController);
-    if ($card != "-") $card->WonClashAbility($playerID, $switched);
+    $card = GetClass($cardID, $playerID);
+    if ($card != "-") $card->WonClashAbility($playerID);
     switch($cardID)
     {
       case "millers_grindstone":
