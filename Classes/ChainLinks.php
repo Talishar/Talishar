@@ -23,33 +23,66 @@ class ChainLink {
 
   // Properties
   private $link = [];
+	private $linkSummary = [];
 	private $linkNum;
 
   // Constructor
   function __construct($linkNum) {
-    global $chainLinks;
+    global $chainLinks, $chainLinkSummary;
     $this->linkNum = $linkNum;
     $this->link = &$chainLinks[$linkNum];
+		$summaryIndex = $linkNum * ChainLinkSummaryPieces();
+		$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
+		$this->linkSummary = &$chainLinkSummary;
   }
 
 	function GetLinkCard($index, $cardNumber=false) {
 		if ($cardNumber) $index = $index * ChainLinksPieces();
 		return new LinkCard($this->linkNum, $index);
 	}
+
+	function DamageDealt() {
+		return $this->linkSummary[0] ?? 0;
+	}
+
+	function TotalAttack() {
+		return $this->linkSummary[1] ?? 0;
+	}
+
+	function Talents() {
+		return $this->linkSummary[2] ?? "-";
+	}
+
+	function Class() {
+		return $this->linkSummary[3] ?? "-";
+	}
+
+	function ListofNames() {
+		return $this->linkSummary[4] ?? "";
+	}
+
+	function HitOnLink() {
+		return $this->linkSummary[5] ?? 0;
+	}
+
+	function ModifiedBaseAttack() {
+		return $this->linkSummary[6] ?? 0;
+	}
+
+	function ModalPlayAbility() {
+		return $this->linkSummary[7] ?? "-";
+	}
 }
 
 class LinkCard {
 	private $link = [];
 	private $index;
-	private $linkSummary = [];
 
 	// Constructor
 	function __construct($linkNum, $index) {
 		global $chainLinks, $chainLinkSummary;
 		$this->link = &$chainLinks[$linkNum];
 		$this->index = $index;
-		$summaryIndex = intdiv($index, ChainLinksPieces()) * ChainLinkSummaryPieces();
-		$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
 	}
 
 	function Index() {
@@ -95,37 +128,5 @@ class LinkCard {
 
 	function NumTimesUsed() {
 		return $this->link[$this->index+9] ?? 0;
-	}
-
-	function DamageDealt() {
-		return $this->linkSummary[0] ?? 0;
-	}
-
-	function TotalAttack() {
-		return $this->linkSummary[1] ?? 0;
-	}
-
-	function Talents() {
-		return $this->linkSummary[2] ?? "-";
-	}
-
-	function Class() {
-		return $this->linkSummary[3] ?? "-";
-	}
-
-	function ListofNames() {
-		return $this->linkSummary[4] ?? "";
-	}
-
-	function HitOnLink() {
-		return $this->linkSummary[5] ?? 0;
-	}
-
-	function ModifiedBaseAttack() {
-		return $this->linkSummary[6] ?? 0;
-	}
-
-	function ModalPlayAbility() {
-		return $this->linkSummary[7] ?? "-";
 	}
 }
