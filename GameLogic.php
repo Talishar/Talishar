@@ -13,6 +13,7 @@ include "MZLogic.php";
 include "Classes/Banish.php";
 include "Classes/Card.php";
 include "Classes/CombatChain.php";
+include "Classes/ChainLinks.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
 include "Classes/Character.php";
