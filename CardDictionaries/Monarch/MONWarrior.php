@@ -59,7 +59,7 @@
 
   function MONWarriorHitEffect($cardID)
   {
-    global $mainPlayer, $CS_NumCharged, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     switch($cardID)
     {
       case "bolt_of_courage_red": case "bolt_of_courage_yellow": case "bolt_of_courage_blue":
@@ -109,17 +109,9 @@
     PrependDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
   }
 
-  function HaveCharged($player)
-  {
-    global $CS_NumCharged;
-    return GetClassState($player, $CS_NumCharged) > 0;
-  }
-
   function MinervaThemisAbility($player, $index)
   {
     $arsenal = &GetArsenal($player);
     ++$arsenal[$index+3];
     if($arsenal[$index+3] == 3) MentorTrigger($player, $index);
   }
-
-?>

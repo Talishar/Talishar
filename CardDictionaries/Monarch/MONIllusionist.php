@@ -3,7 +3,6 @@
   function MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $defPlayer;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
       case "prism_sculptor_of_arc_light": case "prism":
@@ -136,7 +135,7 @@
 
   function DoesBlockTriggerPhantasm($index)
   {
-    global $CombatChain, $mainPlayer, $defPlayer, $powerModifiers;
+    global $CombatChain, $defPlayer, $powerModifiers;
     $powerModifiers = [];
     $card = $CombatChain->Card($index);
     $defendingCardType = CardType($card->ID());
@@ -147,7 +146,7 @@
 
   function IsPhantasmStillActive($source)
   {
-    global $combatChain, $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+    global $combatChain, $CombatChain, $mainPlayer;
     if(count($combatChain) == 0) return false;
     if($source == "burn_bare") return true;
     $blockGreaterThan6 = false;
@@ -162,7 +161,7 @@
 
   function PhantasmLayer($source)
   {
-    global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $defPlayer, $turn, $layers, $combatChain;
+    global $CombatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CS_NumPhantasmAADestroyed, $turn, $layers, $combatChain;
     if(IsPhantasmStillActive($source))
     {
       $attackID = $CombatChain->AttackCard()->ID();
@@ -187,12 +186,11 @@
     }
     else if ($combatChain[10] != "PHANTASM") {
       $turn[0] = "A";
-      $currentPlayer = $mainPlayer;
       for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
       {
-        if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "PHANTASM"))
+        if($layers[$i] == "DEFENDSTEP" || $layers[$i] == "LAYER" && $layers[$i+2] == "PHANTASM")
         {
-          for($j=$i; $j<($i+LayerPieces()); ++$j) unset($layers[$j]);
+          for($j=$i; $j<$i+LayerPieces(); ++$j) unset($layers[$j]);
         }
       }
       $layers = array_values($layers);
@@ -212,5 +210,3 @@
     Draw($player);
     if($arsenal[$index+3] == 3) MentorTrigger($player, $index);
   }
-
-?>
