@@ -4,7 +4,6 @@
   {
     global $currentPlayer;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $rv = "";
     switch($cardID)
     {
       case "chane_bound_by_shadow": case "chane":
@@ -22,9 +21,17 @@
         MZMoveCard($currentPlayer, "MYDISCARD:bloodDebtOnly=true;type=A", "MYBOTDECK", may:true);
         return "";
       case "dimenxxional_gateway_red": case "dimenxxional_gateway_yellow": case "dimenxxional_gateway_blue":
-        if($cardID == "dimenxxional_gateway_red") $optAmt = 3;
-        else if($cardID == "dimenxxional_gateway_yellow") $optAmt = 2;
-        else $optAmt = 1;
+      switch ($cardID) {
+        case "dimenxxional_gateway_red":
+          $optAmt = 3;
+          break;
+        case "dimenxxional_gateway_yellow":
+          $optAmt = 2;
+          break;
+        default:
+          $optAmt = 1;
+          break;
+      }
         Opt($cardID, $optAmt);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "TOPDECK");
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
@@ -104,7 +111,7 @@
     global $currentPlayer, $CS_NumAttackCards, $CS_NumNonAttackCards;
     if($from != "BANISH") return;
     $type = CardType($cardID);
-    if(($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 1) || DelimStringContains($type, "A") && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
+    if($type == "AA" && GetClassState($currentPlayer, $CS_NumAttackCards) == 1 || DelimStringContains($type, "A") && GetClassState($currentPlayer, $CS_NumNonAttackCards) == 1)
     {
       SetArcaneTarget($currentPlayer, "dimenxxional_crossroads_yellow", 0);
       AddDecisionQueue("ADDTRIGGER", $currentPlayer, "dimenxxional_crossroads_yellow", 1);
@@ -133,4 +140,3 @@
     }
   }
 
-?>

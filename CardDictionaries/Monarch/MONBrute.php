@@ -3,7 +3,6 @@
   function MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer;
-    $rv = "";
     switch($cardID)
     {
       case "hexagore_the_death_hydra":
@@ -107,4 +106,3 @@
     }
   }
 
-?>

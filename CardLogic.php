@@ -39,9 +39,14 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
   AddDecisionQueue("FINDINDICES", $player, "HAND");
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)");
-  if ($mayAbility) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-  else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+  if ($mayAbility) {
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink (or Pass)");
+    AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+  } 
+  else {
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to sink");
+    AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+  }
   AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
   if ($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);

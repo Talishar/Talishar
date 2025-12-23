@@ -575,7 +575,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
 
 function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs = false, $player = -1)
 {
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -628,7 +628,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
     switch ($characterID) {
       case "ser_boltyn_breaker_of_dawn":
       case "boltyn":
-        if (HaveCharged($mainPlayer) && NumAttacksBlocking() > 0) {
+        if (GetClassState($mainPlayer, $CS_NumCharged) > 0 && NumAttacksBlocking() > 0) {
           $modifier += 1;
           $powerModifiers[] = $characterID;
           $powerModifiers[] = 1;

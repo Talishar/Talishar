@@ -3,15 +3,20 @@
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
     global $currentPlayer, $CombatChain, $CS_PlayIndex;
-    $rv = "";
     switch($cardID)
     {
       case "blood_drop_brocade": GainResources($currentPlayer, 1); return "";
       case "stubby_hammerers": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
       case "time_skippers": GainActionPoints(2, $currentPlayer); return "";
       case "exude_confidence_red":
-        if($from == "PLAY") $CombatChain->AttackCard()->ModifyPower(2);
-        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+        switch ($from) {
+          case "PLAY":
+            $CombatChain->AttackCard()->ModifyPower(2);
+            break;
+          case "COMBATCHAINATTACKS":
+            WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+            break;
+        }
         return "";
       case "seek_horizon_red": case "seek_horizon_yellow": case "seek_horizon_blue":
         if($additionalCosts != "-") AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
@@ -89,4 +94,3 @@
     return $found;
   }
 
-?>
