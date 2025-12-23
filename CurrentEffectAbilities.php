@@ -1213,6 +1213,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
   global $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
   $effects = explode("-", $currentTurnEffects[$index]);
+  $source = explode("|", $source)[0] ?? $source;
   switch ($effects[0]) {
     case "dissipation_shield_yellow":
       return intval($effects[1]);
