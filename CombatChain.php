@@ -30,7 +30,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
       case "RUNEBLADE":
         return ARCRunebladeHitEffect($cardID);
       case "WIZARD":
-        return "";
+        return ARCWizardHitEffect($cardID);
       case "GENERIC":
         return ARCGenericHitEffect($cardID);
     }
@@ -791,7 +791,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "wax_on_red":
     case "wax_on_yellow":
     case "wax_on_blue":
-      return CardCost($attackID) == 0 && CardType($attackID) == "AA" ? 2 : 0;
+      return (CardCost($attackID) == 0 && CardType($attackID) == "AA" ? 2 : 0);
     case "blazen_yoroi":
       $blockModifier += (count($chainLinks) >= 3 ? 4 : 0);
       break;
@@ -826,7 +826,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       CountAura("vigor", $defPlayer) > 0 ? $blockModifier += 1 : 0; 
       break;
     case "boast_blue":
-      $blockModifier += 2 * GetClassState($defPlayer, $CS_NumClashesWon);
+      $blockModifier += (2 * GetClassState($defPlayer, $CS_NumClashesWon));
       break;
     case "parry_blade":
       if (IsWeaponAttack()) $blockModifier += 2;
@@ -1167,7 +1167,7 @@ function OnBlockResolveEffects($cardID = "")
       if ($card != "-") {
         $card -> OnBlockResolveEffects($blockedFromHand, $i, $start);
       }
-      if ($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND" || $blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND") UnityEffect($combatChain[$i]);
+      if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
       if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i);
       elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
       if (SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("commanding_performance_red") == -1) AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
@@ -1710,7 +1710,7 @@ function IsDominateActive()
       case "open_the_center_red":
       case "open_the_center_yellow":
       case "open_the_center_blue":
-        return ComboActive() ? true : false;
+        return (ComboActive() ? true : false);
       case "demolition_crew_red":
       case "demolition_crew_yellow":
       case "demolition_crew_blue":
@@ -1738,7 +1738,7 @@ function IsDominateActive()
       case "macho_grande_blue":
         return true;
       case "break_tide_yellow":
-        return ComboActive() ? true : false;
+        return (ComboActive() ? true : false);
       case "payload_red":
       case "payload_yellow":
       case "payload_blue":
@@ -1751,7 +1751,7 @@ function IsDominateActive()
         $hasDominate = false;
         for ($i = 0; $i < count($chainLinks); ++$i) {
           for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-            $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || $j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST");
+            $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
             if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "fractal_replication_red" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA") {
               if (!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
             }
@@ -1868,7 +1868,7 @@ function CombatChainClosedTriggers()
   for ($i = 0; $i < count($chainLinks); ++$i) {
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       $cardType = CardType($chainLinks[$i][$j]);
-      if ($chainLinks[$i][$j + 1] != $mainPlayer || $chainLinks[$i][$j + 2] == 0 && !IsStaticType($cardType)) continue;
+      if ($chainLinks[$i][$j + 1] != $mainPlayer || ($chainLinks[$i][$j + 2] == 0 && !IsStaticType($cardType))) continue;
       switch ($chainLinks[$i][$j]) {
         case "hell_hammer":
           $index = FindCharacterIndex($mainPlayer, "hell_hammer");
@@ -2026,20 +2026,20 @@ function CachedTotalBlock()
 function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
-  return $combatChainState[$CCS_CachedDominateActive] == "1" ? true : false;
+  return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
 }
 
 function CachedOverpowerActive()
 {
   global $combatChainState, $CCS_CachedOverpowerActive;
-  return $combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false;
+  return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
 }
 
 function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
-    return $combatChainState[$CCS_WagersThisLink] >= "1" ? true : false;
+    return ($combatChainState[$CCS_WagersThisLink] >= "1" ? true : false);
   } else return false;
 }
 
@@ -2047,7 +2047,7 @@ function CachedFusionActive()
 {
   global $combatChainState, $CCS_AttackFused;
   if (isset($combatChainState[$CCS_AttackFused])) {
-    return $combatChainState[$CCS_AttackFused] == "1" ? true : false;
+    return ($combatChainState[$CCS_AttackFused] == "1" ? true : false);
   } else return false;
 }
 
@@ -2055,7 +2055,7 @@ function CachedPhantasmActive()
 {
   global $combatChainState, $CCS_PhantasmThisLink;
   if (isset($combatChainState[$CCS_PhantasmThisLink])) {
-    return $combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false;
+    return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
   } else return false;
 }
 
@@ -2087,13 +2087,13 @@ function IsPiercingActive($cardID)
 function IsTowerActive()
 {
   global $combatChain;
-  return CachedTotalPower() >= 13 && HasTower($combatChain[0]);
+  return (CachedTotalPower() >= 13 && HasTower($combatChain[0]));
 }
 
 function IsHighTideActive()
 {
   global $combatChain, $mainPlayer;
-  return HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer);
+  return (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer));
 }
 
 function ActiveOnHits(): bool

@@ -2,7 +2,7 @@
 
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBoosted, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumBoosted, $actionPoints, $CS_PlayIndex;
   global $CombatChain, $CS_LastDynCost;
   $rv = "";
   switch($cardID) {
@@ -46,11 +46,13 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "pour_the_mold_red": case "pour_the_mold_yellow": case "pour_the_mold_blue":
-      $maxCost = ($cardID == "pour_the_mold_red") ? 2 : ($cardID == "pour_the_mold_yellow") ? 1 : 0;
+      if($cardID == "pour_the_mold_red") $maxCost = 2;
+      else if($cardID == "pour_the_mold_yellow") $maxCost = 1;
+      else $maxCost = 0;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:subtype=Item;maxCost=$maxCost;class=MECHANOLOGIST");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("PUTPLAY", $currentPlayer, GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0, 1);
+      AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
       return "";
     case "aether_sink_yellow":
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -113,10 +115,12 @@ function ARCMechanologistHitEffect($cardID, $from)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "cognition_nodes_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = (substr($from, 0, 5) != "THEIR") ? "BOTDECK" : "THEIRBOTDECK";
+      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
     case "over_loop_red": case "over_loop_yellow": case "over_loop_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = (substr($from, 0, 5) != "THEIR") ? "BOTDECK" : "THEIRBOTDECK";
+      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
     default: break;
   }
@@ -287,7 +291,8 @@ function OnBoostCardPutUnderCharacter(&$chars, $index, $charID, $player) {
 }
 
 function AddSubcardToChar(&$chars, $index, $cardID) {
-  $chars[$index+10] = (isSubcardEmpty($chars, $index)) ? $cardID : $chars[$index+10] . "," . $cardID;
+  if (isSubcardEmpty($chars, $index)) $chars[$index+10] = $cardID;
+  else $chars[$index+10] = $chars[$index+10] . "," . $cardID;
   $chars[$index+2]++;
 }
 

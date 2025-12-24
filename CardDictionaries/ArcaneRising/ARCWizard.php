@@ -144,6 +144,12 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
     default:
       return "";
   }
+
+}
+
+function ARCWizardHitEffect($cardID)
+{
+  return "";
 }
 
 function GetArcaneTargetFromUID($player, $target) {
@@ -174,10 +180,10 @@ function GetArcaneTargetFromUID($player, $target) {
 
 function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False) {
   $otherPlayer = $player == 1 ? 2 : 1;
-  AddDecisionQueue("PASSPARAMETER", $player, $source, $isPassable ? 1 : 0);
-  AddDecisionQueue("SETDQVAR", $player, "0", $isPassable ? 1 : 0);
-  AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $targetType, $isPassable ? 1 : 0);
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", $isPassable ? 1 : 0);
+  AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
+  AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
+  AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $targetType, ($isPassable ? 1 : 0));
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
   if(ShouldAutotargetOpponent($player) && $targetType == 0) {
     AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
   }
@@ -232,12 +238,12 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
     } else {
       if ($resolvedTarget != "-") {
         $cleanTarget = $useUIDs ? $resolvedTarget : GetArcaneTargetFromUID($player, $resolvedTarget);
-        AddDecisionQueue("PASSPARAMETER", $player, $cleanTarget, $isPassable ? 1 : 0);
+        AddDecisionQueue("PASSPARAMETER", $player, $cleanTarget, ($isPassable ? 1 : 0));
       } else {
-        AddDecisionQueue("PASSPARAMETER", $player, $source, subsequent: $isPassable ? 1 : 0);
-        AddDecisionQueue("SETDQVAR", $player, "0", $isPassable ? 1 : 0);
-        AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, $isPassable ? 1 : 0);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", $isPassable ? 1 : 0);
+        AddDecisionQueue("PASSPARAMETER", $player, $source, subsequent: ($isPassable ? 1 : 0));
+        AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
+        AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $target, ($isPassable ? 1 : 0));
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
         if(ShouldAutotargetOpponent($player) && $target == 0) {
           AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
         }
@@ -444,7 +450,7 @@ function GetArcaneTargetIndices($player, $target): string
   if ($target == 4) return "MYCHAR-0";
   if ($target != 4 && $target != 5) $rv = "THEIRCHAR-0";
   else $rv = "";
-  if ($target == 0 && !ShouldAutotargetOpponent($player) || $target == 2) $rv .= ",MYCHAR-0";
+  if (($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2) $rv .= ",MYCHAR-0";
   $allyPieces = AllyPieces();
   if ($target == 2) {
     $theirAllies = &GetAllies($otherPlayer);
@@ -840,7 +846,7 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "null__shock_yellow":
     case "consign_to_cosmos__shock_yellow":
       $meldState = GetClassState($playerID, $CS_AdditionalCosts);
-      return $meldState == "Both" || $meldState == "Shock";
+      return ($meldState == "Both" || $meldState == "Shock");
     case "pulsing_aether__life_red":
       $meldState = GetClassState($playerID, $CS_AdditionalCosts);
       return $meldState != "Life";
@@ -1066,8 +1072,8 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   if($returnBarrierArray) return $barrierArray;
   $choiceArray = [0];
   if ($barrierArray[1] > 0) $choiceArray[] = 1;
-  if ($barrierArray[2] > 0 || $barrierArray[1] > 1 && $max > 1 && $total >= 2) $choiceArray[] = 2;
-  if ($barrierArray[3] > 0 || $max > 2 && $total >= 3) $choiceArray[] = 3;
+  if ($barrierArray[2] > 0 || ($barrierArray[1] > 1 && $max > 1 && $total >= 2)) $choiceArray[] = 2;
+  if ($barrierArray[3] > 0 || ($max > 2 && $total >= 3)) $choiceArray[] = 3;
   for ($i = 4; $i <= $max; ++$i) {
     if ($i <= $total) $choiceArray[] = $i;
   }

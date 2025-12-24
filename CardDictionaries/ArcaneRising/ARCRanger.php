@@ -1,5 +1,6 @@
 <?php
 
+
   function ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
   {
     global $currentPlayer;
@@ -52,7 +53,9 @@
         return "";
       case "silver_the_tip_red": case "silver_the_tip_yellow": case "silver_the_tip_blue":
         if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, " . CardLink($cardID, $cardID) . " does nothing.";
-        $count = ($cardID == "silver_the_tip_red") ? 4 : ($cardID == "silver_the_tip_yellow") ? 3 : 2;
+        if($cardID == "silver_the_tip_red") $count = 4;
+        else if($cardID == "silver_the_tip_yellow") $count = 3;
+        else $count = 2;
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $count);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here are the top " . $count . " cards of your deck.", 1);
@@ -96,8 +99,9 @@
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "salvage_shot_red": case "salvage_shot_yellow": case "salvage_shot_blue":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = (substr($from, 0, 5) != "THEIR") ? "BOTDECK" : "THEIRBOTDECK";
-        break;
+        if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+        else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+          break;
       case "searing_shot_red": case "searing_shot_yellow": case "searing_shot_blue":
         if(IsHeroAttackTarget()) LoseHealth(1, $defPlayer);
         break;
@@ -133,3 +137,4 @@
     MZMoveCard($player, "MYHAND", "MYARS,HAND,DOWN", may:true, silent:true, DQContext:"Choose a card to put face down in arsenal");
   }
 
+?>

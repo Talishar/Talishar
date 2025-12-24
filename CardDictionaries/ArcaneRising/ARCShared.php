@@ -7,14 +7,14 @@
     {
       case "teklo_plasma_pistol":
         $abilityType = GetResolvedAbilityType($cardID);
-        return $abilityType == "A" ? 1 : 0;
+        return ($abilityType == "A" ? 1 : 0);
       case "teklo_foundry_heart": return 1;
       case "induction_chamber_red":
         $abilityType = GetResolvedAbilityType($cardID);
         return $CombatChain->HasCurrentLink() ? 0 : 1;
       case "aether_sink_yellow":
         $items = &GetItems($currentPlayer);
-        return $items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1;
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "cognition_nodes_blue":
         $abilityType = GetResolvedAbilityType($cardID);
         return $CombatChain->HasCurrentLink() ? 0 : 1;
@@ -44,11 +44,11 @@
       case "induction_chamber_red": return $CombatChain->HasCurrentLink() ? "AR" : "A";
       case "aether_sink_yellow":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if(isset($items[$index + 1])) return $items[$index+1] > 0 ? "I" : "A";
+        if(isset($items[$index + 1])) return ($items[$index+1] > 0 ? "I" : "A");
         else return "A";
       case "cognition_nodes_blue":
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return $CombatChain->HasCurrentLink() ? "AR" : "A";
+        return ($CombatChain->HasCurrentLink() ? "AR" : "A");
       case "convection_amplifier_red": return "A";
       case "dissipation_shield_yellow": return "I";
       case "optekal_monocle_blue": return "A";
@@ -77,10 +77,10 @@
         return !$CombatChain->HasCurrentLink();
       case "aether_sink_yellow":
         $items = &GetItems($currentPlayer);
-        return $items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false;
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
       case "cognition_nodes_blue":
         $items = &GetItems($currentPlayer);
-        return $items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false;
+        return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
       case "convection_amplifier_red": return true;
       case "optekal_monocle_blue": return true;
       case "azalea_ace_in_the_hole": case "azalea": case "death_dealer": case "skullbone_crosswrap": case "bulls_eye_bracers": return true;
@@ -143,3 +143,4 @@ function ARCCombatEffectActive($cardID, $attackID)
   }
 }
 
+?>

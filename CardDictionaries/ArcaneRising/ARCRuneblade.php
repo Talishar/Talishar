@@ -31,7 +31,7 @@
         $cards = explode(",", $deck->Top(amount:2));
         $type1 = CardType($cards[0]);
         $type2 = CardType($cards[1]);
-        if(DelimStringContains($type1, "AA") && DelimStringContains($type2, "A") || DelimStringContains($type2, "AA") && DelimStringContains($type1, "A")) {
+        if((DelimStringContains($type1, "AA") && DelimStringContains($type2, "A")) || (DelimStringContains($type2, "AA") && DelimStringContains($type1, "A"))) {
           $deck->Top(remove:true, amount:2);
           AddPlayerHand($cards[0], $currentPlayer, "HAND");
           AddPlayerHand($cards[1], $currentPlayer, "HAND");
@@ -93,3 +93,4 @@
     }
   }
 
+?>
