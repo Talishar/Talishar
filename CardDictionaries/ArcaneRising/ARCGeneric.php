@@ -1,6 +1,5 @@
 <?php
 
-
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention, $CombatChain;
@@ -28,7 +27,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
-      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "chains_of_eminence_red,{0}");
+      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $currentPlayer == 1 ? 2 : 1, "chains_of_eminence_red,{0}");
       return "";
     case "plunder_run_red": case "plunder_run_yellow": case "plunder_run_blue":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
