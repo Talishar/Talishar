@@ -1386,7 +1386,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       }
       break;
     case "misfire_dampener":
-      return intval($effects[1]);
+      return $type == "ARCANE" ? intval($effects[1]) : 0;
     case "sawbones_dock_hand_yellow":
       $character = &GetPlayerCharacter($player);
       if(ClassContains($character[0], "PIRATE", $player)) {
