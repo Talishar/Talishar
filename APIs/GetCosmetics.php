@@ -17,7 +17,7 @@ $response->cardBacks = [];
 $response->playmats = [];
 
 // Define default playmat IDs (kept in sync with frontend PLAYER_PLAYMATS)
-$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32, 33, 34];
+$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32, 33, 34, 35, 36];
 
 //Add default card back
 $cardBack = new stdClass();
@@ -101,6 +101,11 @@ if(IsUserLoggedIn()) {
   mysqli_close($conn);
 }
 
+// Sort playmats alphabetically by name
+usort($response->playmats, function($a, $b) {
+  return strcmp($a->name, $b->name);
+});
+
 session_write_close();
 echo json_encode($response);
 
@@ -177,6 +182,10 @@ function GetPlaymatName($id)
       return "High Seas";
     case 34:
       return "High Seas Necro";
+    case 35:
+      return "The Hunted";
+    case 36:
+      return "Deathmatch Arena";
     default:
       return "N/A";
   }

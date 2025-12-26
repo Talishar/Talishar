@@ -22,7 +22,7 @@
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk") return true;
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid") return true;
     
-    // Check if user is a Patreon supporter
+    // Check if user is a supporter
     if(isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"])) {
       return "1";
     }

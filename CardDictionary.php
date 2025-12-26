@@ -3960,6 +3960,9 @@ function CharacterDefaultActiveState($cardID)
     case "grimoire_of_fellingsong":
     case "sealace_sarong":
     case "talismanic_lense":
+    case "gravy_bones":
+    case "gravy_bones_shipwrecked_looter":
+    case "dead_threads":
       return 1;
     default:
       return 2;

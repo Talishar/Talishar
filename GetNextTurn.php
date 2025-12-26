@@ -315,7 +315,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     }
 
     // Get opponent's alt arts (what this player sees when looking at opponent's board)
-    // Load if opponent is a Patreon AND current player has not disabled alt arts
+    // Load if opponent is a supporter AND current player has not disabled alt arts
     if(!AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
