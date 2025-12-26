@@ -88,11 +88,12 @@ function parseQuickChat($inputEnum)
     case "14": return "Rematch?";
     case "15": return "Sorry!";
     case "16": return "Thanks!";
-    case "17": return "That was really cool!";
-    case "18": return "Thinking... Please bear with me!";
-    case "19": return "Want to Chat?";
-    case "20": return "Whoops!";
-    case "21": return "Yes";
+    case "17": return "Thanks for the game!";
+    case "18": return "That was really cool!";
+    case "19": return "Thinking... Please bear with me!";
+    case "20": return "Want to Chat?";
+    case "21": return "Whoops!";
+    case "22": return "Yes";
     default: return "";
   };
 }
