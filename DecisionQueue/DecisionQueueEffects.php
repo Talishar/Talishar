@@ -768,7 +768,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if(!is_array($lastResult)) $lastResult = [];
       for($i=count($lastResult)-1; $i>=0; --$i) {
         $cardID = RemoveHand($player, $lastResult[$i]);
-        BanishCardForPlayer($cardID, $player, "HAND", "NOFEAR", banishedBy:"no_fear_red");
+        BanishCardForPlayer($cardID, $player, "HAND", "NOFEAR", banisher:$player, banishedBy:"no_fear_red");
       }
       SetClassState($player, $CS_AdditionalCosts, count($lastResult));
       return "";
