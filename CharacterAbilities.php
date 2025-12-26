@@ -442,7 +442,7 @@ function MainCharacterEndTurnAbilities()
   }
 }
 
-function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
+function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = false)
 {
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $chainLinks, $defPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
@@ -530,7 +530,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1)
       case "arakni_marionette":
       case "arakni_web_of_deceit":
         if ($mainCharacter[$i+1] < 3) {
-          if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID) && ($cardID == "-" || $cardID == $attackID)) {
+          if (IsHeroAttackTarget() && CheckMarked($defPlayer) && HasStealth($attackID) && ($cardID == "-" || $cardID == $attackID) && !$flicked) {
             AddLayer("TRIGGER", $mainPlayer, $characterID, $damageSource, "MAINCHARHITEFFECT");
           }
         }

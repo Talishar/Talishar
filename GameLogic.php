@@ -2617,7 +2617,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             AddCardEffectHitTrigger($currentTurnEffects[$i], $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
           }
         }
-        MainCharacterHitTrigger($cardID, $targetPlayer);
+        MainCharacterHitTrigger($cardID, $targetPlayer, flicked:true);
         ArsenalHitEffects(); // should be reworked to add a triggered-layer, but not urgent
         AuraHitEffects($cardID);
         ItemHitTrigger($cardID);
