@@ -2032,7 +2032,8 @@ function CurrentEffectGrantsGoAgain()
         $param = explode("-", $turnEffects[0])[1] ?? "-";
         if ($card->CurrentEffectGrantsGoAgain($param)) return true;
       }
-      return DoesCurrentTurnEffectGrantGoAgain($turnEffects[0]);
+      WriteLog("HERE: $turnEffects[0]");
+      if (DoesCurrentTurnEffectGrantGoAgain($turnEffects[0])) return true;
     }
   }
   $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
@@ -2043,7 +2044,7 @@ function CurrentEffectGrantsGoAgain()
       if ($card != "-") {
         if ($card->CurrentEffectGrantsGoAgain("-")) return true;
       }
-      return DoesCurrentTurnEffectGrantGoAgain($effect);
+      if (DoesCurrentTurnEffectGrantGoAgain($effect)) return true;
     }
   }
   return false;
