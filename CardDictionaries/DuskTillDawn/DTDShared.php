@@ -147,9 +147,9 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "anthem_of_spring_blue": return CardType($attackID) == "AA";//Anthem of Spring
     case "call_down_the_lightning_yellow": return true;//Call Down the Lightning
     case "beseech_the_demigon_red": case "beseech_the_demigon_yellow": case "beseech_the_demigon_blue":
-      return SearchCurrentTurnEffects($cardID . "," . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
     case "tear_through_the_portal_red": case "tear_through_the_portal_yellow": case "tear_through_the_portal_blue":
-      return SearchCurrentTurnEffects($cardID . "," . $attackID, $mainPlayer) && $CombatChain->AttackCard()->From() == "BANISH";
+      if (count($params) == 1) return true; // this is for after its already associated with the attack
+      return ($params[1] ?? "-") == $attackID && $CombatChain->AttackCard()->From() == "BANISH";
     case "ironsong_versus": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
     case "chorus_of_ironsong_yellow": return CardNameContains($attackID, "Dawnblade", $mainPlayer);
     case "runic_reckoning_red": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
