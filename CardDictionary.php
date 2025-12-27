@@ -251,7 +251,9 @@ function SetIDtoCardID($setID)
 function ConvertToCardID($setID) {
   $bareSetID = substr($setID, 0, 6);
   $tags = substr($setID, strlen($bareSetID));
-  return SetIDtoCardID($bareSetID) . $tags;
+  $setID = SetIDtoCardID($bareSetID);
+  if ($setID == "") return "";
+  return $setID . $tags;
 }
 
 function CardSubType($cardID, $uniqueID = -1)

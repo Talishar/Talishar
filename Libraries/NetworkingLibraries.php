@@ -4226,6 +4226,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
         }
       }
+      WriteLog("HERE: " . $combatChain[$index+10]);
     }
     if ($index <= 0 && !$skipDRResolution || $isSpectraTarget) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);

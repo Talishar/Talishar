@@ -1301,6 +1301,25 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $opponentCounts[$cardID]++;
       }
   }
+  // Count static buffs associated with the current attack
+  if ($CombatChain->HasCurrentLink()) {
+    if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
+      $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
+      foreach ($activeEffects as $effectSetID) {
+        $cardID = ConvertToCardID($effectSetID);
+        if ($cardID != "") {
+          $isFriendly = $playerID == $mainPlayer;
+          if ($isFriendly) {
+            if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
+            $friendlyCounts[$cardID]++;
+          } else {
+            if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
+            $opponentCounts[$cardID]++;
+          }
+        }
+      }
+    }
+  }
 
   // Render the effects
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
@@ -1326,6 +1345,31 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           array_push($opponentRenderedEffects, $cardID);
           array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i));
       }  
+  }
+  // Render static buffs associated with the current attack
+  if ($CombatChain->HasCurrentLink()) {
+    if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
+      $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
+      foreach ($activeEffects as $effectSetID) {
+        $cardID = ConvertToCardID($effectSetID);
+        if ($cardID != "") {
+          $isFriendly = $playerID == $mainPlayer;
+          $BorderColor = $isFriendly ? "blue" : "red";
+
+          $counters = $isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID];
+          if ($isFriendly || $playerID == 3 && !$isFriendly) {
+            if(array_search($cardID, $friendlyRenderedEffects) === false || !skipEffectUIStacking($cardID)) {
+              array_push($friendlyRenderedEffects, $cardID);
+              array_push($playerEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP"));
+            }
+          }  
+          elseif(array_search($cardID, $opponentRenderedEffects) === false && !$isFriendly || !skipEffectUIStacking($cardID)) {
+            array_push($opponentRenderedEffects, $cardID);
+            array_push($opponentEffects, JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP"));
+          }
+        }
+      }
+    }
   }
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;
