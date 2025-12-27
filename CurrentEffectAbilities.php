@@ -2032,7 +2032,6 @@ function CurrentEffectGrantsGoAgain()
         $param = explode("-", $turnEffects[0])[1] ?? "-";
         if ($card->CurrentEffectGrantsGoAgain($param)) return true;
       }
-      WriteLog("HERE: $turnEffects[0]");
       if (DoesCurrentTurnEffectGrantGoAgain($turnEffects[0])) return true;
     }
   }
