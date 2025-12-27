@@ -1208,7 +1208,7 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
   }
 }
 
-function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type, $source)
+function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type, $source, $preventable=true)
 {
   global $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -1331,13 +1331,15 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "trip_the_light_fantastic_red":
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_blue":
-    case "haunting_rendition_red":
-    case "mental_block_blue":
     case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
     case "twinkle_toes":
     case "well_grounded":
     case "oldhim_grandfather_of_eternity": case "oldhim":
     case "bone_head_barrier_yellow":
+      return intval($effects[1]);
+    case "haunting_rendition_red":
+    case "mental_block_blue":
+      if (!$preventable) return 0;
       return intval($effects[1]);
     case "battered_not_broken_red":
     case "take_it_on_the_chin_red":
@@ -1668,7 +1670,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $effects[1] -= $damageToPrevent;
         $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
-      if ($effects[1] <= 0 || !$preventable) RemoveCurrentTurnEffect($index);
+      if ($effects[1] <= 0) RemoveCurrentTurnEffect($index);
       break;
     case "moon_chakra_red":
       if ($preventable) {

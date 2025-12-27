@@ -2817,7 +2817,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
   $indices = "";
   for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-    if ($currentTurnEffects[$i + 1] == $player && CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, $type, $source) > 0) {
+    if ($currentTurnEffects[$i + 1] == $player && CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, $type, $source, $preventable) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }
