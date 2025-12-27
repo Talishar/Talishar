@@ -1169,6 +1169,7 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
 
 function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
   //for now only tracking dagger buffs, ideally we'd want to track all static buffs
+  $cardID = explode(",", $cardID)[0];
   return match($cardID) {
     "plunge_red" => true,
     "plunge_yellow" => true,
@@ -1187,6 +1188,12 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "minnowism_red" => true,
     "minnowism__yellow" => true,
     "minnowism_blue" => true,
+    "tear_through_the_portal_red" => true,
+    "tear_through_the_portal_yellow" => true,
+    "tear_through_the_portal_blue" => true,
+    "beseech_the_demigon_red" => true,
+    "beseech_the_demigon_yellow" => true,
+    "beseech_the_demigon_blue" => true,
     default => false
   };
 }

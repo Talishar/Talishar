@@ -133,7 +133,7 @@ class ChainCard {
     }
 
     function StaticBuffs() {
-      return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : null;
+      return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : "";
     }
 
     function CardBlockValue() {
