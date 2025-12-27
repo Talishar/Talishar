@@ -175,6 +175,8 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     include_once "./includes/functions.inc.php";
     PlayerLoseHealth(GetHealth($otherPlayer), $otherPlayer);
     include "WriteGamestate.php";
+    // Mark current player as active to show the "Leave Game" button immediately
+    $currentPlayerActivity = 2;
   } else if ($currentPlayerActivity != 2 && $opponentInactive && !$isGameOver ) {
     $currentPlayerActivity = 2;
     //WriteLog("⌛Player $currentPlayer is inactive.");
