@@ -650,7 +650,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $deck = new Deck($currentPlayer);
         $deck->Reveal();
         $pitchValue = PitchValue($deck->Top());
-        MZMoveCard($currentPlayer, ("MYBANISH:class=MECHANOLOGIST;subtype=Item;pitch=" . $pitchValue), "MYTOPDECK", may: true, isReveal: true);
+        MZMoveCard($currentPlayer, ("MYBANISH:class=MECHANOLOGIST;subtype=Item;pitch=" . $pitchValue), "MYTOPDECK", may: false, isReveal: true);
       }
       break;
     case "quantum_processor_yellow":
