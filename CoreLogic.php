@@ -3357,13 +3357,8 @@ function PitchAbility($cardID, $from="HAND")
     case "light_of_sol_yellow":
     case "schism_of_chaos_blue":
     case "riches_of_tropal_dhani_yellow":
+    case "master_cog_yellow":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
-      break;
-    case "master_cog_yellow": // Technically wrong, it should be a trigger, but since we can't reorder those it works better gameplay-wise to not have that one as a trigger
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true&LAYER:hasCrank=true");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to put a steam counter", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZADDCOUNTER", $currentPlayer, $cardID, 1);
       break;
     case "grandeur_of_valahai_blue":
       PlayAura("seismic_surge", $currentPlayer);

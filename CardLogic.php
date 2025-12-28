@@ -4199,6 +4199,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $index = SearchItemsForUniqueID($uniqueID, $player);
         if ($index != -1) DestroyItemForPlayer($player, $index);
         break;
+      case "master_cog_yellow":
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:hasCrank=true&LAYER:hasCrank=true");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Crank to put a steam counter", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZADDCOUNTER", $player, $parameter, 1);
+        break;
       default:
         break;
     }
