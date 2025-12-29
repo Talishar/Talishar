@@ -2829,6 +2829,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     case "life_of_the_party_yellow":
     case "life_of_the_party_blue":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "LIFEOFPARTY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a {{element|Crazy Brew|4}} 🎉");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);

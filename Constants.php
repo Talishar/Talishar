@@ -837,9 +837,11 @@ function GetDamagePrevention($player, $damage)
   $preventionLeft = 0;
 
   $countEffects = count($currentTurnEffects);
-  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
-  for($i = 0; $i < $countEffects && $currentTurnEffects[$i + 1] == $player; $i += $currentTurnEffectsPieces) {
-    $preventionLeft += CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, "COMBAT", $combatChain[0]);
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();  
+  for($i = 0; $i < $countEffects; $i += $currentTurnEffectsPieces) {
+    if($currentTurnEffects[$i + 1] == $player) {
+      $preventionLeft += CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, "COMBAT", $combatChain[0]);
+    }
   }
 
   $auras = &GetAuras($player);

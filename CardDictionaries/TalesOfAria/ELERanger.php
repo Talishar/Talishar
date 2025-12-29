@@ -190,13 +190,14 @@
         PrependDecisionQueue("ELSE", $player, "-");
         PrependDecisionQueue("PAYRESOURCES", $player, "-", 1);
         PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
-        PrependDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
-        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
+        PrependDecisionQueue("NOPASS", $player, "-", $passable ? 1 : 0, 1);
+        PrependDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", $passable ? 1 : 0, 1);
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay $amount to avoid discarding");
-      } else {
+      }
+      else {
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to pay $amount to avoid discarding");
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", ($passable ? 1 : 0), 1);
-        AddDecisionQueue("NOPASS", $player, "-", ($passable ? 1 : 0), 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_" . $amount . "_to_avoid_discarding", $passable ? 1 : 0, 1);
+        AddDecisionQueue("NOPASS", $player, "-", $passable ? 1 : 0, 1);
         AddDecisionQueue("PASSPARAMETER", $player, $amount, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "-", 1);
         AddDecisionQueue("ELSE", $player, "-");
@@ -206,7 +207,7 @@
         AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
         AddDecisionQueue("DISCARDCARD", $player, "HAND", 1);
         PummelHit($player, $passable=true, fromDQ:false);
-      }
+        }
     }
   }
 

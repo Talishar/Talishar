@@ -110,9 +110,17 @@
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
         return "";
       case "flex_red": case "flex_yellow": case "flex_blue":
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff Flex", 1);
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
-        AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
+        $hand = &GetHand($currentPlayer);
+        $resources = &GetResources($currentPlayer);
+        if (count($hand) > 0 || $resources[0] >= 2)
+        {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff " . CardLink($cardID, $cardID), 1);
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
+          AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
+        }
+        else {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
+        }
         AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         return "";
