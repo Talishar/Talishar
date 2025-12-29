@@ -462,7 +462,8 @@ function isFaceDownMod($mod)
     {
       case "ICE": return "1";        // Ice - Cyan/Blue
       case "LIGHTNING": return "2";  // Lightning - Yellow
-      case "EARTH": return "3";      // Earth - Green  
+      case "EARTH": return "3";      // Earth - Green
+      case "RAINBOW": return "4";    // Rainbow - Multicolor
       default: return "0";
     }
   }
