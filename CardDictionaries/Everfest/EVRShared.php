@@ -224,8 +224,7 @@
         return "";
       case "bad_beats_red": case "bad_beats_yellow": case "bad_beats_blue":
         if($cardID == "bad_beats_red") $target = 4;
-        else if($cardID == "bad_beats_yellow") $target = 5;
-        else $target = 6;
+        else $target = ($cardID == "bad_beats_yellow") ? 5 : 6;
         if(GetDieRoll($currentPlayer) >= $target) AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "imposing_visage_blue":
@@ -243,8 +242,7 @@
         return "";
       case "seismic_stir_red": case "seismic_stir_yellow": case "seismic_stir_blue":
         if($cardID == "seismic_stir_red") $amount = 3;
-        else if($cardID == "seismic_stir_yellow") $amount = 2;
-        else $amount = 1;
+        else $amount = ($cardID == "seismic_stir_yellow") ? 2 : 1;
         PlayAura("seismic_surge", $currentPlayer, $amount);
         return "";
       case "steadfast_red": case "steadfast_yellow": case "steadfast_blue":
@@ -409,8 +407,7 @@
       case "pry_red": case "pry_yellow": case "pry_blue":
         if($mainPlayer != $currentPlayer) $numReveal = count(GetHand($otherPlayer));
         else if($cardID == "pry_red") $numReveal = 3;
-        else if($cardID == "pry_yellow") $numReveal = 2;
-        else $numReveal = 1;
+        else $numReveal = ($cardID == "pry_yellow") ? 2 : 1;
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numReveal);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
@@ -717,8 +714,7 @@
       if ($auras[$i] == "ponder") $totalResources += 3;
     }
     for($i=0; $i<count($hand); $i+=HandPieces()) {
-      if (is_numeric(PitchValue($hand[$i]))) $availableResources = $totalResources - PitchValue($hand[$i]);
-      else $availableResources = $totalResources;
+      $availableResources = (is_numeric(PitchValue($hand[$i]))) ? $totalResources - PitchValue($hand[$i]) : $totalResources;
       $heaveVal = HeaveValue($hand[$i]);
       if($heaveVal > 0 && ($availableResources >= $heaveVal || !$resourceCounting)) {
         if($heaveIndices != "") $heaveIndices .= ",";
@@ -816,7 +812,7 @@
     $hasGoAgain = false;
     for($i=0; $i<count($chainLinks); ++$i) {
       for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
-        $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST"));
+        $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) || $j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST");
         if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "fractal_replication_red" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
         {
           if($stat == "Hit") ProcessHitEffect($chainLinks[$i][$j]);
@@ -881,7 +877,7 @@
           && $character[$characterIndex+1] != 0 
           && $character[$characterIndex+12] != "DOWN"
           && (CardType($character[$characterIndex]) == "E" || DelimStringContains(CardSubType($character[$characterIndex]), "Evo")) 
-          && (BlockValue($character[$characterIndex]) - $character[$characterIndex+4] + $link[$i+5]) < $pendingDamage)
+          && BlockValue($character[$characterIndex]) - $character[$characterIndex+4] + $link[$i+5] < $pendingDamage)
           {
             if($indices != "") $indices .= ",";
             $indices .= $characterIndex;

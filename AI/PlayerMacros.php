@@ -14,18 +14,18 @@ function ProcessMacros()
       if ($lastPhase != $turn[0]) $i = 0;
       $lastPhase = $turn[0];
       $somethingChanged = false;
-      if($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if(($turn[0] == "B") && !IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
-      else if($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSECARD" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSETHEIRCHARACTER" && strlen($turn[2]) <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
-      else if((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < (LayerPieces() * 3)) { $somethingChanged = true; PassInput(); }
+      if ($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+      else if ($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+      else if ($turn[0] == "B" && !IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
+      else if ($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if ($turn[0] == "CHOOSECARD" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if ($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if ($turn[0] == "CHOOSETHEIRCHARACTER" && strlen($turn[2]) <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+      else if ($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
+      else if ((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < LayerPieces() * 3) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }
-      else if($turn[0] == "INSTANT" || $turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))
+      else if ($turn[0] == "INSTANT" || $turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
         {
@@ -161,4 +161,3 @@ function PlayerMacrosCardPlayed()
   }
 }
 
-?>
