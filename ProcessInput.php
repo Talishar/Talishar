@@ -162,10 +162,15 @@ $afterResolveEffects = [];
 $animations = [];
 $events = [];//Clear events each time so it's only updated ones that get sent
 
+if ($mode == 27) { //TODO add this to other play/activate modes
+  $hand = GetHand($playerID);
+  $index = intval($cardID);
+  $buttonInput = $hand[$index] ?? "";
+}
 // if ((IsPatron(1) || IsPatron(2)) && !IsReplay()) {
 if (SaveReplay() && !IsReplay()) {
   $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
-  fwrite($commandFile, $playerID . " " . $mode . " " . $buttonInput . " " . $cardID . " " . $chkCount . " " . implode("|", $chkInput) . "\r\n");
+  fwrite($commandFile, "$playerID $mode $buttonInput $cardID $chkCount " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
 }
 
