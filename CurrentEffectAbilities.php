@@ -1429,7 +1429,8 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "soulbond_resolve":
       $char = &GetPlayerCharacter($player);
       if ($preventable) $preventedDamage += 1;
-      --$char[$index + 5];
+      $charIndex = FindCharacterIndex($player, $effects[0]);
+      --$char[$charIndex + 5];
       RemoveCurrentTurnEffect($index);
       break;
     case "dissipation_shield_yellow":
