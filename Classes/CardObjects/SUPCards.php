@@ -3908,11 +3908,19 @@ class look_tuff extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to pay 1 to avoid losing 1 power.");
-    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_1_to_losing_1_power", 1);
-    AddDecisionQueue("NOPASS", $this->controller, "-", 1, 1);
-    AddDecisionQueue("PASSPARAMETER", $this->controller, 1, 1);
-    AddDecisionQueue("PAYRESOURCES", $this->controller, "-", 1);
+    $hand = &GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if (count($hand) > 0 || $resources[0] > 0)
+    {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to pay 1 to avoid losing 1 power.");
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_1_to_losing_1_power", 1);
+      AddDecisionQueue("NOPASS", $this->controller, "-", 1, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, 1, 1);
+      AddDecisionQueue("PAYRESOURCES", $this->controller, "-", 1);
+    }
+    else {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "PASS");
+    }
     AddDecisionQueue("ELSE", $this->controller, "-");
     AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $this->controller, "-1", 1);
   }
