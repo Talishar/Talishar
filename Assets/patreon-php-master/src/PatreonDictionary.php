@@ -88,7 +88,7 @@ enum PatreonCampaign : string
   case TeamTalishar = "14";
   case TeamTideBreakers = "15";
   case CupofTCG = "16";
-  case ScowlingFleshBag = "17";
+  case ScowlingFleshBag = "14707687";
   case ThaiCardsShop = "18";
   case MetalFab = "19";
   case PotatoSquad = "20";
@@ -230,7 +230,7 @@ enum PatreonCampaign : string
       case "14": return "Team Talishar";
       case "15": return "Team Tide Breakers";
       case "16": return "Cup of TCG";
-      case "17": return "ScowlingFleshBag";
+      case "14707687": return "ScowlingFleshBag";
       case "18": return "Thai Cards Shop";
       case "19": return "Metal Fab";
       case "20": return "Potato Squad";
@@ -316,7 +316,7 @@ enum PatreonCampaign : string
       case "14": return IsTeamTalishar($userName) || $userName == "Aegisworn";
       case "15": return IsTeamTideBreakers($userName);
       case "16": return IsTeamCupofTCG($userName);
-      case "17": return IsTeamScowlingFleshBag($userName);
+      case "14707687": return IsTeamScowlingFleshBag($userName);
       case "18": return IsTeamThaiCardsShop($userName);
       case "19": return IsTeamMetalFab($userName);
       case "20": return IsTeamPotatoSquad($userName);
@@ -666,7 +666,7 @@ enum PatreonCampaign : string
       case "14": return "82,83";
       case "15": return "84";
       case "16": return "87";
-      case "17": return "88,100";
+      case "14707687": return "88,100";
       case "18": return "96";
       case "19": return "105";
       case "20": return "106";
