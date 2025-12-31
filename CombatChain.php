@@ -94,7 +94,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
   global $CS_NumPlayedFromBanish, $CS_NumAuras, $CS_AttacksWithWeapon, $CS_Num6PowBan, $CS_HaveIntimidated, $chainLinkSummary;
   global $combatChain, $CS_Transcended, $CS_NumBluePlayed, $CS_NumLightningPlayed, $CS_DamageDealt, $CS_NumCranked, $CS_ArcaneDamageDealt;
-  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $CS_CheeredThisTurn, $CS_BooedThisTurn;
+  global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_NumItemsDestroyed;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($repriseActive == -1) $repriseActive = RepriseActive();
   $extraText = $cardID == $attackID ? GetHorrorsBuff() : "-";
@@ -449,6 +449,9 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "terminator_tank_red":
       case "war_machine_red":
         $power += EvoUpgradeAmount($mainPlayer) >= 4 ? 3 : 0;
+        break;
+      case "steel_street_hoons_blue":
+        $power += GetClassState($mainPlayer, piece: $CS_NumItemsDestroyed) > 0 ? 2 : 0;
         break;
       case "mechanical_strength_red":
       case "mechanical_strength_yellow":

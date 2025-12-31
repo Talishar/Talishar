@@ -766,9 +766,6 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "moonshot_yellow":
       for ($i = 0; $i < $resourcesPaid; $i += 2) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "steel_street_hoons_blue":
-      if (GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0) AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "meganetic_lockwave_blue":
       if ($resourcesPaid == 0) return;
       AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYCHAR:type=E");
