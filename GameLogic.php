@@ -13,6 +13,7 @@ include "MZLogic.php";
 include "Classes/Banish.php";
 include "Classes/Card.php";
 include "Classes/CombatChain.php";
+include "Classes/Stack.php";
 include "Classes/ChainLinks.php";
 include "Classes/Deck.php";
 include "Classes/Discard.php";
@@ -1815,7 +1816,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           $targetArr = explode("-", $lastResult);
           $otherPlayer = $player == 1 ? 2 : 1;
-          if ($targetArr[0] == "LAYER") $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+          if ($targetArr[0] == "LAYER") {
+            $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+          }
           if ($targetArr[0] == "THEIRDISCARD") {
             $discard = GetDiscard($otherPlayer);
             $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
@@ -2234,6 +2237,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           break;
         case "null__shock_yellow":
+          if ($lastResult == "Shock" || $lastResult == "Both") {
+            PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Shock", 1);
+            PrependDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
+            PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+          }
+          if ($lastResult == "Null" || $lastResult == "Both") {
+            PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
+            PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+            PrependDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            PrependDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>'s Null", 1);
+            PrependDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I", 1);
+            PrependDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+            PrependDecisionQueue("PASSPARAMETER", $currentPlayer, $parameter, 1);
+          }
+          break;
         case "consign_to_cosmos__shock_yellow":
           if ($lastResult == "Both" || $lastResult == "Shock") {
             PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);

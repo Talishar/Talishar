@@ -3159,8 +3159,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
       $targetArr = explode("-", $targ);
       switch ($targetArr[0]) {
         case "LAYERUID":
-          $targetArr[0] = "LAYER";
-          $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
+          if (!HasMeld($cardID)) { // skip this for null//shock
+            $targetArr[0] = "LAYER";
+            $targetArr[1] = SearchLayersForUniqueID($targetArr[1]);
+          }
           break;
         case "COMBATCHAINLINK":
           if (!is_numeric($targetArr[1])) {
