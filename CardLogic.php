@@ -4861,7 +4861,7 @@ function HasSteamCounter($array, $index, $player)
 function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
 {
   // handles running the left side of meld cards
-  global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken, $Stack;
+  global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken;
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($parameter) {
     case "thistle_bloom__life_yellow":
@@ -4898,11 +4898,9 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       break;
     case "null__shock_yellow":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
-        $nullTarget = str_contains($target, ",") ? explode(",", $target)[0] : $target;
-        $targetLayer = $Stack->FindCardUID(explode("-", $nullTarget)[1] ?? "-");
-        if ($targetLayer != "" && CardCost($targetLayer->ID(), "LAYERS") < GetClassState($player, $CS_ArcaneDamageDealt)) {
-          $Stack->Negate($targetLayer->Index());
-        }
+        AddDecisionQueue("MULTIZONEINDICES", $player, "LAYER:type=I;minCost=0;maxCost=".GetClassState($player, $CS_ArcaneDamageDealt)-1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("NEGATE", $player, "<-", 1);
       }
       break;
     case "comet_storm__shock_red":
