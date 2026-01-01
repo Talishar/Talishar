@@ -296,7 +296,12 @@ if ($decklink != "") {
 
       if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "blitz" || $format == "compblitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
+        if (($format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
+          if ($isDeckLegal != "") $isDeckLegal .= ", ";
+          $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+        }
+        // Deck Check for singleton blitz
+        elseif ($format == "blitz" && !hasUnlimited($id) && $cardCounts[$id] > 1) {
           if ($isDeckLegal != "") $isDeckLegal .= ", ";
           $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
         }
@@ -306,7 +311,7 @@ if ($decklink != "") {
         if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
-      if(($format != "draft" && $format != "open") && hasLegendary($id) && $cardCounts[$id] > 1) {
+      if((($format != "draft" && $format != "open") && hasLegendary($id) ) && $cardCounts[$id] > 1) {
         if ($isDeckLegal != "") $isDeckLegal .= ", ";
         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
       }
@@ -710,17 +715,7 @@ function isBannedInFormat($cardID, $format) {
   if ($format == "compsage" || $format == "futuresage") $format = "sage";
 
   $bannedCards = [
-      "blitz" => [
-          "rhinar", "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "dash", "teklo_plasma_pistol", "viserai", "nebula_blade",
-          "tome_of_aetherwind_red", "art_of_war_yellow", "awakening_blue", "briar", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "rosetta_thorn", "duskblade",
-          "heartened_cross_strap", "bloodsheath_skeleta", "snapback_red", "snapback_yellow", "snapback_blue", "cash_in_yellow", "tome_of_divinity_yellow", "stubby_hammerers", "mask_of_the_pouncing_lynx",
-          "tome_of_firebrand_red", "iyslander", "iyslander", "kraken's_aethervein", "oldhim", "winter's_wail", "chane", "galaxxi_black", "kano",
-          "crucible_of_aetherweave", "crucible_of_aetherweave", "kassai_cintari_sellsword", "ira_crimson_haze", "edge_of_autumn", "berserk_yellow", "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
-          "victor_goldmane", "miller's_grindstone", "orihon_of_mystic_tenets_blue", "belittle_red", "belittle_yellow", "belittle_blue",
-          "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_wildfire",
-          "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue",
-          "traverse_the_universe", "zephyr_needle", "channel_lightning_valley_yellow", "flicker_wisp_yellow", "storm_striders",
-          "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue", "talk_a_big_game_blue"
+      "blitz" => [ // no cards banned in singleton blitz
       ],
       "cc" => [
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
