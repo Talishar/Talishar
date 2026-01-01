@@ -107,7 +107,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "amulet_of_ice_blue":
     case "amulet_of_lightning_blue":
     case "amulet_of_assertiveness_yellow":
-    case "amulet_of_echoes_blue":
     case "amulet_of_havencall_blue":
     case "amulet_of_ignition_yellow":
     case "amulet_of_intervention_blue":
@@ -134,6 +133,17 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "ruby_amulet_blue":
     case "sapphire_amulet_blue":
       DestroyItemForPlayer($currentPlayer, $index);
+      break;
+    case "amulet_of_echoes_blue":
+      DestroyItemForPlayer($currentPlayer, $index);
+      $legalTargets = [];
+      if (HasPlayerEchoed($otherPlayer)) array_push($legalTargets, "THEIRCHAR-0");
+      if (HasPlayerEchoed($currentPlayer)) array_push($legalTargets, "MYCHAR-0");
+      $legalTargets = implode(",", $legalTargets);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for " . CardLink($cardID, $cardID));
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $legalTargets, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "dissipation_shield_yellow":
       AddAdditionalCost($currentPlayer, $items[$index + 1]);

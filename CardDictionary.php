@@ -2562,7 +2562,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "amulet_of_assertiveness_yellow":
       return $from == "PLAY" && count($myHand) < 4;
     case "amulet_of_echoes_blue":
-      return $from == "PLAY" && IsAmuletOfEchoesRestricted($from, $otherPlayer);
+      return $from == "PLAY" && IsAmuletOfEchoesRestricted($from);
     case "amulet_of_havencall_blue":
       return $from == "PLAY" && count($myHand) > 0;
     case "amulet_of_ignition_yellow":

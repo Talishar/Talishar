@@ -503,14 +503,9 @@
         return "";
       case "amulet_of_echoes_blue":
         if($from == "PLAY") {
-          if(ShouldAutotargetOpponent($currentPlayer)) {
-            AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
-          }
-          else {
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-            AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-          }
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "AMULETOFECHOES", 1);
+          $targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $currentPlayer;
+          PummelHit($targetPlayer);
+          PummelHit($targetPlayer);
         }
         return "";
       case "amulet_of_havencall_blue":
@@ -928,20 +923,29 @@
     return CombineSearches($rv, $itemIndices);
   }
 
-  function IsAmuletOfEchoesRestricted($from, $player)
+function HasPlayerEchoed($player) {
+  global $CS_NamesOfCardsPlayed;
+  if(GetClassState($player, $CS_NamesOfCardsPlayed) == "-") return false;
+  $cardsPlayed = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
+  $cardCount = count($cardsPlayed);
+  for($i=0; $i<$cardCount; ++$i) {
+    for($j=0; $j < $cardCount; ++$j) { 
+      if($i == $j) continue;
+      if(CardNameContains($cardsPlayed[$j], CardName($cardsPlayed[$i]), $player)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+  function IsAmuletOfEchoesRestricted($from)
   {
-    global $CS_NamesOfCardsPlayed;
+    global $mainPlayer, $defPlayer;
+    $players = [$mainPlayer, $defPlayer];
     if($from == "PLAY") {
-      if(GetClassState($player, $CS_NamesOfCardsPlayed) == "-") return true;
-      $cardsPlayed = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
-      $cardCount = count($cardsPlayed);
-      for($i=0; $i<$cardCount; ++$i) {
-        for($j=0; $j < $cardCount; ++$j) { 
-          if($i == $j) continue;
-          if(CardNameContains($cardsPlayed[$j], CardName($cardsPlayed[$i]), $player)) {
-            return false;
-          }
-        }
+      foreach ($players as $player) {
+        if (HasPlayerEchoed($player)) return false;
       }
     }
     return true;
