@@ -2030,6 +2030,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "HEAVE":
         Heave();
         break;
+      case "PHANTASM":
+        PhantasmLayer($additionalCosts);
+        break;
       case "heart_of_fyendal_blue":
         if (PlayerHasLessHealth($player)) GainHealth(1, $player);
         break;

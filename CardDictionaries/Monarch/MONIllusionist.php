@@ -130,7 +130,7 @@
   function ProcessPhantasmOnBlock($index)
   {
     global $mainPlayer;
-    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index) && SearchLayersForCardID("PHANTASM") == -1) AddLayer("LAYER", $mainPlayer, "PHANTASM");
+    if(IsPhantasmActive() && DoesBlockTriggerPhantasm($index) && SearchLayersForCardID("PHANTASM") == -1) AddLayer("TRIGGER", $mainPlayer, "PHANTASM");
   }
 
   function DoesBlockTriggerPhantasm($index)
@@ -188,7 +188,7 @@
       $turn[0] = "A";
       for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
       {
-        if($layers[$i] == "DEFENDSTEP" || $layers[$i] == "LAYER" && $layers[$i+2] == "PHANTASM")
+        if($layers[$i] == "DEFENDSTEP" || $layers[$i] == "TRIGGER" && $layers[$i+2] == "PHANTASM")
         {
           for($j=$i; $j<$i+LayerPieces(); ++$j) unset($layers[$j]);
         }
