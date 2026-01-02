@@ -238,29 +238,29 @@ function SelfBoostEffects($player, $boosted, $cardID)
 function ItemBoostEffects()
 {
   global $currentPlayer;
-  $items = &GetItems($currentPlayer);
-  for($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
-    switch($items[$i]) {
+  $Items = new Items($currentPlayer);
+  for ($i = $Items->NumItems() - 1; $i >=0; $i -= 1) {
+    
+    $Item = $Items->Card($i, true);
+    switch ($Item->CardID()) {
       case "hyper_driver_red": case "hyper_driver_yellow": case "hyper_driver_blue": case "hyper_driver":
-        if($items[$i+2] == 2) {
-          AddLayer("TRIGGER", $currentPlayer, $items[$i], $i, "-", $items[$i + 4]);
-          $items[$i+2] = 1;
+        if($Item->Status() == 2) {
+          AddLayer("TRIGGER", $currentPlayer, $Item->CardID(), $Item->Index(), "-", $Item->UniqueID());
+          $Item->SetStatus(1);
         }
         break;
       case "teklo_pounder_blue":
-        if($items[$i+2] == 2) {
-          WriteLog(CardLink($items[$i], $items[$i]) . " gives the attack +2");
-          --$items[$i+1];
-          $items[$i+2] = 1;
+        if($Item->Status() == 2) {
+          WriteLog(CardLink($Item->CardID(), $Item->CardID()) . " gives the attack +2");
+          $Item->AddCounters(-1);
+          $Item->SetStatus(1);
           AddCurrentTurnEffect("teklo_pounder_blue", $currentPlayer, "PLAY");
-          if($items[$i+1] <= 0) DestroyItemForPlayer($currentPlayer, $i);
+          if($Item->NumCounters() <= 0) DestroyItemForPlayer($currentPlayer, $Item->Index());
         }
         break;
       case "hadron_collider_red": case "hadron_collider_yellow": case "hadron_collider_blue":
-        AddCurrentTurnEffect($items[$i] . "," . $items[$i+1], $currentPlayer, "PLAY");
-        DestroyItemForPlayer($currentPlayer, $i);
+        AddLayer("TRIGGER", $currentPlayer, $Item->CardID(), $Item->Index(), "-", $Item->UniqueID());
         break;
-      default: break;
     }
   }
 }

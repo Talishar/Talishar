@@ -2726,6 +2726,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hyper_driver":
         AddDecisionQueue("HYPERDRIVER", $player, $uniqueID, 1);
         break;
+      case "hadron_collider_red":
+      case "hadron_collider_yellow":
+      case "hadron_collider_blue":
+        $Items = new Items($player);
+        $Item = $Items->FindCardUID($uniqueID);
+        if ($Item != "") {
+          AddCurrentTurnEffect($Item->CardID() . "," . $Item->NumCounters(), $player, "PLAY");
+          DestroyItemForPlayer($player, $Item->Index());
+        }
+        break;
       case "arakni_huntsman":
       case "arakni":
         AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
