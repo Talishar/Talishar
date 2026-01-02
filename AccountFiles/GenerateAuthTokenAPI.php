@@ -20,6 +20,12 @@ include_once '../includes/dbh.inc.php';
 
 SetHeaders();
 
+// Handle CORS preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 if (!IsUserLoggedIn()) {
     http_response_code(401);
     echo json_encode(['error' => 'User not authenticated']);
