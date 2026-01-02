@@ -240,7 +240,6 @@ function ItemBoostEffects()
   global $currentPlayer;
   $Items = new Items($currentPlayer);
   for ($i = $Items->NumItems() - 1; $i >=0; $i -= 1) {
-    
     $Item = $Items->Card($i, true);
     switch ($Item->CardID()) {
       case "hyper_driver_red": case "hyper_driver_yellow": case "hyper_driver_blue": case "hyper_driver":

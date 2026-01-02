@@ -72,6 +72,9 @@ class Card {
   }
 
   function EquipPayAdditionalCosts($cardIndex="-") {
+    $CharCard = new CharacterCard($cardIndex, $this->controller);
+    $CharCard->AddUse(-1);
+    if ($CharCard->NumUses() == 0) $CharCard->SetUsed(); //By default, if it's used, set it to used
     return;
   }
 
