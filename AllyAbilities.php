@@ -324,71 +324,18 @@ function SpecificAllyAttackAbilities($attackID)
         }
         break;
       case "suraya_archangel_of_erudition":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("DRAW", $mainPlayer, "suraya_archangel_of_erudition,2", 1);
-        break;
       case "themis_archangel_of_judgment":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRBANISH&MYBANISH", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZOP", $mainPlayer, "TURNBANISHFACEDOWN", 1);
-        break;
       case "aegis_archangel_of_protection":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("PLAYAURA", $mainPlayer, "spectral_shield-2", 1);
+      case "avalon_archangel_of_rebirth":
+      case "metis_archangel_of_tenacity":
+      case "victoria_archangel_of_triumph":
+      case "bellona_archangel_of_war":
+        AddLayer("TRIGGER", $mainPlayer, $attackID);
         break;
       case "sekem_archangel_of_ravages":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        DealArcane(2, 2, "PLAYCARD", $allies[$i], false, $mainPlayer, isPassable: 1);
-        break;
-      case "avalon_archangel_of_rebirth":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        MZMoveCard($mainPlayer, "MYDISCARD:pitch=2", "MYTOPDECK", isSubsequent: true);
-        break;
-      case "metis_archangel_of_tenacity":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "metis_archangel_of_tenacity", 1);
-        break;
-      case "victoria_archangel_of_triumph":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "victoria_archangel_of_triumph", 1);
-        break;
-      case "bellona_archangel_of_war":
-        $soul = &GetSoul($mainPlayer);
-        if (count($soul) == 0) break;
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish a card from soul");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        MZMoveCard($mainPlayer, "MYSOUL", "MYBANISH,SOUL,-", isSubsequent: true);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYALLY:subtype=Angel", 1);
-        AddDecisionQueue("ADDALLPOWERCOUNTERS", $mainPlayer, "1", 1);
+        SetArcaneTarget($mainPlayer, $attackID, 2);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $mainPlayer, $attackID, 1);
         break;
       default:
         break;
