@@ -991,7 +991,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         case "dauntless_red-2":
         case "dauntless_yellow-2":
         case "dauntless_blue-2":
-          if (CardType($cardID) == "DR") {
+          if (CardType($cardID) == "DR" && (GetResolvedAbilityType($cardID, $from) == "DR" || GetResolvedAbilityType($cardID, $from) == "")) {
             $costModifier += 1;
             $remove = true;
           }
