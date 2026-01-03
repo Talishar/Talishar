@@ -2026,6 +2026,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($numBD > 0) AddCurrentTurnEffect("soul_harvest_blue,$numBD", $player);
       return $lastResult;
     case "ADDPOWERCOUNTERS":
+      global $CombatChain;
       $lastResultArr = explode("-", $lastResult);
       $zone = $lastResultArr[0];
       $zoneDS = &GetMZZone($player, $zone);
@@ -2033,6 +2034,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $zoneDS[$index + 3] += $parameter;
       else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$index + 3] += $parameter;
       else if ($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$index + 9] += $parameter;
+      if ($CombatChain->HasCurrentLink()) {
+        CacheCombatResult();
+      }
       return $lastResult;
     case "ADDALLPOWERCOUNTERS":
       $lastResult = str_replace(",", "-", $lastResult);
