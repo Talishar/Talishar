@@ -9,6 +9,7 @@ enum MetafyCommunity : string
   case TheCardGuyz = "6d8c9a16-52af-41bc-9ae5-246ed868fcf2";
   case SunflowerSamurai = "0a44032f-2060-49e0-adae-2013f84c99c8";
   case EmperorsRome = "e0f5f68e-615f-4e52-a23b-3d5b6f9f1b8c";
+  case SnapDragons = "ae238384-f748-460d-8a40-b48bf280614d";
 
   public function CommunityName(): string
   {
@@ -20,6 +21,7 @@ enum MetafyCommunity : string
       self::TheCardGuyz => "The Card Guyz",
       self::SunflowerSamurai => "Sunflower Samurai",
       self::EmperorsRome => "Emperors Rome",
+      self::SnapDragons => "Snap Dragons",
     };
   }
 
@@ -33,6 +35,7 @@ enum MetafyCommunity : string
       self::TheCardGuyz => "metafyTheCardGuyz",
       self::SunflowerSamurai => "metafySunflowerSamurai",
       self::EmperorsRome => "metafyEmperorsRome",
+      self::SnapDragons => "metafySnapDragons",
     };
   }
 
@@ -46,6 +49,7 @@ enum MetafyCommunity : string
       self::TheCardGuyz => "35",
       self::SunflowerSamurai => "70",
       self::EmperorsRome => "67",
+      self::SnapDragons => "127",
     };
   }
 
@@ -59,6 +63,7 @@ enum MetafyCommunity : string
       self::TheCardGuyz => [],
       self::SunflowerSamurai => [],
       self::EmperorsRome => [],
+      self::SnapDragons => [],
     };
   }
 
