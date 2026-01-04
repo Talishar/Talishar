@@ -10,7 +10,7 @@ class Permanents {
 
   // Constructor
   function __construct($player) {
-    $this->allies = &GetPermanents($player);
+    $this->permanents = &GetPermanents($player);
     $this->player = $player;
   }
 
