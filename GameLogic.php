@@ -26,6 +26,7 @@ include "Classes/Effects.php";
 include "Classes/Arsenal.php";
 include "Classes/Landmarks.php";
 include "Classes/ClassState.php";
+include "Classes/CombatChainState.php";
 include "Classes/CardObjects/DBGCards.php"; //debug cards
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/HVYCards.php";

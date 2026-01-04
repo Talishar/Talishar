@@ -4534,7 +4534,7 @@ function HasArcaneShelter($cardID): bool
 
 function HasDominate($cardID)
 {
-  global $mainPlayer, $combatChainState;
+  global $mainPlayer, $combatChainState, $CombatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
   switch ($cardID) {
     case "open_the_center_red":
@@ -4569,7 +4569,7 @@ function HasDominate($cardID)
     case "payload_red":
     case "payload_yellow":
     case "payload_blue":
-      return $combatChainState[$CCS_NumBoosted] > 0;
+      return $CombatChainState->NumBoosted() > 0;
     case "drowning_dire_red":
     case "drowning_dire_yellow":
     case "drowning_dire_blue":
