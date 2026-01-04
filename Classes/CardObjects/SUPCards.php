@@ -1933,8 +1933,8 @@ class low_blow_red extends Card {
   }
 
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    global $CS_BooedThisTurn;
-    return GetClassState($this->controller, $CS_BooedThisTurn) ? 3 : 0;
+    $ClassState = new ClassState($this->controller);
+    return $ClassState->BooedThisTurn() ? 3 : 0;
   }
 }
 

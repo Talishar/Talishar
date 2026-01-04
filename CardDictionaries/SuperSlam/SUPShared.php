@@ -265,16 +265,6 @@ function Deal2OrDiscard($targetPlayer)
 {
   $hand = GetHand($targetPlayer);
   if (count($hand) > 0) {
-    // AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose if you want to discard or take 2 damage.");
-    // AddDecisionQueue("BUTTONINPUT", $targetPlayer, "Take_2_Damage,Discard", 1);
-    // AddDecisionQueue("EQUALPASS", $targetPlayer, "Take_2_Damage", 1);
-    // AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND", 1);
-    // AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose a card to discard", 1);
-    // AddDecisionQueue("CHOOSEHAND", $targetPlayer, "<-", 1);
-    // AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-    // AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
-    // AddDecisionQueue("ELSE", $targetPlayer, "-");
-    // is this more intuitive?
     AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND");
     AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else take 2 damage", 1);
     AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
@@ -287,8 +277,8 @@ function Deal2OrDiscard($targetPlayer)
 
 function BOO($player)
 {
-  global $CS_BooedThisTurn;
-  SetClassState($player, $CS_BooedThisTurn, 1);
+  $ClassState = new ClassState($player);
+  $ClassState->SetBooedThisTurn(1);
   $char = GetPlayerCharacter($player);
   $heroID = ShiyanaCharacter($char[0], $player);
   WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
@@ -308,8 +298,8 @@ function BOO($player)
 
 function Cheer($player)
 {
-  global $CS_CheeredThisTurn, $mainPlayer;
-  SetClassState($player, $CS_CheeredThisTurn, 1);
+  $ClassState = new ClassState($player);
+  $ClassState->SetCheeredThisTurn(1);
   $char = GetPlayerCharacter($player);
   WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0], $char[0]) . "!");
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
