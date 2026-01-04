@@ -64,6 +64,11 @@ class AuraCard {
     return $this->pieces[$this->index+2] ?? 0;
   }
 
+	function AddCounters($n=1) {
+		if (isset($this->pieces[$this->index+2])) $this->pieces[$this->index+2] += $n;
+		return $this->NumCounters();
+	}
+
   function NumPowerCounters() {
     return $this->pieces[$this->index+3] ?? 0;
   }
@@ -100,4 +105,39 @@ class AuraCard {
   function From() {
     return $this->pieces[$this->index+9] ?? "-";
   }
+
+	function Remove($skipTrigger = false, $skipClose = false, $mainPhase = true) { //don't call this for removing auras in the equipment
+		if (!$skipTrigger) AuraLeavesPlay($this->controller, $this->index, $this->UniqueID(), "AURAS", $mainPhase);
+		$cardID = $this->CardID();
+		$ClassState = new ClassState($this->controller);
+		if (HasSuspense($cardID)) $ClassState->SetSuspensePoppedThisTurn($ClassState->SuspensePoppedThisTurn() + 1);
+		if (!AfterDamage() && !$skipClose) {
+			if (IsSpecificAuraAttacking($this->controller, $this->index) || (IsSpecificAuraAttackTarget($this->controller, $this->index, $this->UniqueID()))) {
+				CloseCombatChain();
+			}
+		}
+		for ($i = $this->index + AuraPieces() - 1; $i >= $this->index; --$i) {
+			unset($this->pieces[$i]);
+		}
+		$this->pieces = array_values($this->pieces);
+		return $cardID;
+	}
+
+	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true) { //don't call this for removing auras in the equipment
+		global $CombatChainState, $CombatChain, $mainPlayer;
+		$location = "AURAS";
+		AuraDestroyAbility($this->controller, $this->index, $this->IsToken(), $location);
+		$from = $this->From();
+		$isToken = $this->IsToken();
+		$cardID = $this->Remove($skipTrigger, $skipClose, $mainPhase);
+		AuraDestroyed($this->controller, $cardID, $isToken, $from);
+		// Refreshes the aura index with the Unique ID in case of aura destruction
+		if ($CombatChain->HasCurrentLink() && DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura") && $this->controller == $mainPlayer) {
+			$Auras = new Auras($this->controller);
+			$updatedIndex = $Auras->FindCardUID($CombatChain->AttackCard()->OriginUniqueID());
+			$CombatChainState->SetWeaponIndex($updatedIndex);
+		}
+		if ($cardID == "passing_mirage_blue") ReEvalCombatChain(); //check if phantasm should trigger
+		return $cardID;
+	}
 }

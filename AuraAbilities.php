@@ -1119,24 +1119,23 @@ function AuraBeginEndPhaseAbilities()
 function ChannelTalent($uniqueID, $talent)
 {
   global $mainPlayer;
-  $auras = &GetAuras($mainPlayer);
-  $countAuras = count($auras);
-  $aurasPieces = AuraPieces();
-  for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
-    if ($auras[$i + 6] == $uniqueID) $index = $i;
-  }
-  $toBottom = ++$auras[$index + 2];
+  $Auras = new Auras($mainPlayer);
+  $AuraCard = $Auras->FindCardUID($uniqueID);
+  $toBottom = $AuraCard->AddCounters();
+  $index = $AuraCard->Index();
+  $auraID = $AuraCard->CardID();
+
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
     for ($j = $toBottom; $j > 0; --$j) {
-      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
+      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: "Choose {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auraID, $auraID) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "") . " on it:");
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    WriteLog("Not enough " . ucwords(strtolower($talent)) . " cards in your pitch to satisfy " . CardLink($auras[$index], $auras[$index]) . ". Aura destroyed.");
-    DestroyAuraUniqueID($mainPlayer, $uniqueID);
+    WriteLog("Not enough " . ucwords(strtolower($talent)) . " cards in your pitch to satisfy " . CardLink($auraID, $auraID) . ". Aura destroyed.");
+    $AuraCard->Destroy();
   }
 }
 
