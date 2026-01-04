@@ -102,7 +102,10 @@ function ARCGenericHitEffect($cardID)
   global $mainPlayer, $CS_NextNAAInstant, $defPlayer;
   switch($cardID) {
     case "command_and_conquer_red":
-      if(IsHeroAttackTarget()) DestroyArsenal($defPlayer, effectController:$mainPlayer);      
+      if(IsHeroAttackTarget()) {
+        $Arsenal = new Arsenal($defPlayer);
+        $Arsenal->DestroyAll($mainPlayer);
+      }
       break;
     case "life_for_a_life_red": case "life_for_a_life_yellow": case "life_for_a_life_blue":
       GainHealth(1, $mainPlayer);
