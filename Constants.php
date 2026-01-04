@@ -128,7 +128,7 @@ function CurrentTurnEffectsPieces()
 //4 - Number of turns before it takes effect
 function NextTurnEffectsPieces()
 {
-  return 4;
+  return 5;
 }
 
 //0 - Effect ID

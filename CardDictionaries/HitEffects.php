@@ -145,15 +145,10 @@ function EVOHitEffect($cardID)
 
 function HVYHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $currentTurnEffects;
+  global $mainPlayer, $defPlayer, $CurrentTurnEffects;
   switch ($cardID) {
     case "send_packing_yellow":
-      for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-        if ($currentTurnEffects[$i] == $cardID) {
-          RemoveCurrentTurnEffect($i);
-          break;
-        }
-      }
+      $CurrentTurnEffects->RemoveEffectByID($cardID);
       break;
     case "millers_grindstone":
       if (IsHeroAttackTarget()) {
