@@ -239,7 +239,7 @@ class Card {
   }
 
   function HasAmbush() {
-    return false;
+    return GeneratedHasAmbush($this->cardID);
   }
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
