@@ -72,7 +72,7 @@ class BanishCard {
 
     function ID()
     {
-      return $this->banish[$this->index];
+      return $this->banish[$this->index] ?? "-";
     }
 
     function Modifier()
@@ -83,25 +83,28 @@ class BanishCard {
 
     function UniqueID()
     {
-      return $this->banish[$this->index+2];
+      return $this->banish[$this->index+2] ?? "-";
     }
 
     function SetModifier($newModifier)
     {
-      $this->banish[$this->index+1] = $newModifier;
+      if (isset($this->banish[$this->index+1])) $this->banish[$this->index+1] = $newModifier;
     }
 
     function ClearModifier()
     {
-      $this->banish[$this->index+1] = "-";
+      if (isset($this->banish[$this->index+1])) $this->banish[$this->index+1] = "-";
     }
 
     function Remove()
     {
-      $cardID = $this->banish[$this->index];
-      for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$this->index+$i]);
-      $this->banish = array_values($this->banish);
-      return $cardID;
+      if (isset($this->banish[$this->index])) {
+        $cardID = $this->banish[$this->index];
+        for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$this->index+$i]);
+        $this->banish = array_values($this->banish);
+        return $cardID;
+      }
+      return "-";
     }
 }
 
