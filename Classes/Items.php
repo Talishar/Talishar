@@ -35,9 +35,11 @@ class ItemCard {
   // Properties
   private $pieces = [];
   private $index;
+  private $controller;
 
   // Constructor
   function __construct($index, $player) {
+    $this->controller = $player;
     $this->pieces = &GetItems($player);
     $this->index = $index;
   }
@@ -47,59 +49,63 @@ class ItemCard {
   }
 
   function CardID() {
-    return $this->pieces[$this->index];
+    return $this->pieces[$this->index] ?? "-";
   }
 
   function NumCounters() {
-    return $this->pieces[$this->index+1];
+    return $this->pieces[$this->index+1] ?? 0;
   }
 
   function AddCounters($num) { //can add negative amounts
-    $this->pieces[$this->index+1] += $num;
+    if (isset($this->pieces[$this->index+1])) $this->pieces[$this->index+1] += $num;
   }
 
   function Status() { //(2=ready, 1=unavailable, 0=destroyed)
-    return $this->pieces[$this->index+2];
+    return $this->pieces[$this->index+2] ?? 0;
   }
 
   function SetStatus($status) {
-    $this->pieces[$this->index+2] = $status;
+    if (isset($this->pieces[$this->index+2])) $this->pieces[$this->index+2] = $status;
   }
 
   function NumUses() {
-    return $this->pieces[$this->index+3];
+    return $this->pieces[$this->index+3] ?? 0;
   }
 
   function UniqueID() {
-    return $this->pieces[$this->index+4];
+    return $this->pieces[$this->index+4] ?? "-";
   }
 
   function MyGemStatus() {
-    return $this->pieces[$this->index+5];
+    return $this->pieces[$this->index+5] ?? 0;
   }
 
-
   function TheirGemStatus() {
-    return $this->pieces[$this->index+6];
+    return $this->pieces[$this->index+6] ?? 0;
+  }
+
+  function ToggleGem($player=0) {
+    $offset = ($player == $this->controller || $player == 0) ? 5 : 6;
+    if (isset($this->pieces[$this->index+$offset])) {
+      $state = $this->pieces[$this->index+$offset]  == "1" ? "0" : "1";
+      $this->pieces[$this->index+$offset] = $state;
+    }
   }
 
   function Frozen() {
     // 1  = yes, 0 = no
-    return $this->pieces[$this->index+7];
+    return $this->pieces[$this->index+7] ?? 0;
   }
 
   function Modalities() {
-    // 1 = yes, 0 = no
-    return $this->pieces[$this->index+8];
+    return $this->pieces[$this->index+8] ?? "-";
   }
 
   function From() {
-    // the "gem", 2 = always active, 1 = yes, 0 = no
-    return $this->pieces[$this->index+9];
+    return $this->pieces[$this->index+9] ?? "-";
   }
 
   function Tapped() {
-    // , delimited
-    return $this->pieces[$this->index+10];
+    return $this->pieces[$this->index+10] ?? 0;
   }
 }

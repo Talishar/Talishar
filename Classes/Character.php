@@ -23,11 +23,13 @@ class CharacterCard {
   // Properties
   private $pieces = [];
   private $index;
+  private $controller;
 
   // Constructor
   function __construct($index, $player) {
     $this->pieces = &GetPlayerCharacter($player);
     $this->index = $index;
+    $this->controller = $player;
   }
 
   function CardID() {
@@ -83,10 +85,11 @@ class CharacterCard {
     return $this->pieces[$this->index+9] ?? 0;
   }
 
-  function ToggleGem() {
-    if (isset($this->pieces[$this->index+9])) {
-      $state = $this->pieces[$this->index+9]  == "1" ? "0" : "1";
-      $this->pieces[$this->index+9] = $state;
+  function ToggleGem($player=0) {
+    $offset = 9;
+    if (isset($this->pieces[$this->index+$offset])) {
+      $state = $this->pieces[$this->index+$offset]  == "1" ? "0" : "1";
+      $this->pieces[$this->index+$offset] = $state;
     }
   }
 

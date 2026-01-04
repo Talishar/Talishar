@@ -568,46 +568,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 103: //Toggle my permanent Active
       $input = explode("-", $buttonInput);
       $index = $input[1];
-      switch ($input[0]) {
-        case "AURAS":
-          $zone = &GetAuras($playerID);
-          $offset = 7;
-          break;
-        case "ITEMS":
-          $zone = &GetItems($playerID);
-          $offset = 5;
-          break;
-        case "HERO":
-          $zone = &GetPlayerCharacter($playerID);
-          $offset = 9;
-          break;
-        default:
-          $zone = &GetAuras($playerID);
-          $offset = 7;
-          break;
-      }
-      if (($index + $offset) > count($zone)) break;
-      $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
+      $Card = GetPermanent($input[0], $index, $playerID);
+      $Card->ToggleGem();
       break;
     case 104: //Toggle other player permanent Active
       $input = explode("-", $buttonInput);
       $index = $input[1];
-      switch ($input[0]) {
-        case "AURAS":
-          $zone = &GetAuras($playerID == 1 ? 2 : 1);
-          $offset = 8;
-          break;
-        case "ITEMS":
-          $zone = &GetItems($playerID == 1 ? 2 : 1);
-          $offset = 6;
-          break;
-        default:
-          $zone = &GetAuras($playerID == 1 ? 2 : 1);
-          $offset = 8;
-          break;
-      }
-      if (($index + $offset) > count($zone)) break;
-      $zone[$index + $offset] = ($zone[$index + $offset] == "1" ? "0" : "1");
+      $Card = GetPermanent($input[0], $index, $playerID == 1 ? 2 : 1);
+      $Card->ToggleGem($playerID);
       break;
     case 105: //Skip all runechants
       SetClassState($playerID, $CS_SkipAllRunechants, 1);

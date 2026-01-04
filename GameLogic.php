@@ -19,6 +19,9 @@ include "Classes/Deck.php";
 include "Classes/Discard.php";
 include "Classes/Character.php";
 include "Classes/Items.php";
+include "Classes/Auras.php";
+include "Classes/Allies.php";
+include "Classes/Permanents.php";
 include "Classes/CardObjects/DBGCards.php"; //debug cards
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/HVYCards.php";
