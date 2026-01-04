@@ -562,8 +562,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 102: //Toggle equipment Active
       $index = $buttonInput;
-      $char = &GetPlayerCharacter($playerID);
-      $char[$index + 9] = ($char[$index + 9] == "1" ? "0" : "1");
+      $charCard = new CharacterCard($index, $playerID);
+      $charCard->ToggleGem();
       break;
     case 103: //Toggle my permanent Active
       $input = explode("-", $buttonInput);
