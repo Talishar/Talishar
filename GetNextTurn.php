@@ -22,6 +22,7 @@ SetHeaders();
 
 header('Content-Type: application/json; charset=utf-8');
 $response = new stdClass();
+$response->playerInventory = []; // Initialize inventory array
 
 // Generate a UUID V4 for unique game identification
 if (!function_exists('GenerateGameGUID')) {
@@ -1266,6 +1267,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     array_push($myPermanentsOutput, JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType, action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, restriction: $restriction));
   }
   $response->playerPermanents = $myPermanentsOutput;
+
+  //My Inventory
+  $myInventoryOutput = [];
+  $myInventory = &GetInventory($playerID == 1 ? 1 : 2);
+  $myInventoryCount = count($myInventory);
+  for ($i = 0; $i < $myInventoryCount; ++$i) {
+    array_push($myInventoryOutput, JSONRenderedCard(cardNumber: $myInventory[$i], controller: $playerID));
+  }
+  $response->playerInventory = $myInventoryOutput;
 
   //Landmarks
   $landmarksOutput = [];
