@@ -76,7 +76,7 @@ function InvalidateGamestateCache($gameName) {
  * Track spectators in memory instead of file
  * Reduces I/O on every spectator update
  */
-function TrackSpectator($gameName, $sessionKey) {
+function TrackSpectator($gameName, $sessionKey, $username = null) {
   // Track spectators in file for reliable cross-request spectator counting
   $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
   
@@ -98,8 +98,11 @@ function TrackSpectator($gameName, $sessionKey) {
   // Current timestamp in milliseconds (matching GetNextTurn.php format)
   $currentTime = round(microtime(true) * 1000);
   
-  // Add/update this spectator session
-  $spectators[$sessionKey] = $currentTime;
+  // Add/update this spectator session with optional username
+  $spectators[$sessionKey] = [
+    'timestamp' => $currentTime,
+    'username' => $username ?? 'Anonymous'
+  ];
   
   // Write back to file
   @file_put_contents($spectatorFile, json_encode($spectators));

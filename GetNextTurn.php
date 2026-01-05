@@ -82,8 +82,11 @@ if ($isGamePlayer) {
   $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
   $sessionKey = md5($clientIp . '|' . $userAgent);
   
+  // Get spectator username if logged in
+  $spectatorUsername = IsUserLoggedIn() ? LoggedInUserName() : null;
+  
   // Use memory-based tracking (falls back to no-op if APCu unavailable)
-  TrackSpectator($gameName, $sessionKey);
+  TrackSpectator($gameName, $sessionKey, $spectatorUsername);
 }
 $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -2143,6 +2146,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   // Count active spectators (viewing within last 30 seconds)
   $spectatorCount = 0;
+  $spectatorNames = [];
   $currentTime = round(microtime(true) * 1000);
   $spectatorTimeout = 30000; // 30 seconds
   $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
@@ -2153,10 +2157,17 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       $spectatorData = json_decode($content, true);
       if (is_array($spectatorData)) {
         $spectatorCount = 0;
-        foreach ($spectatorData as $sessionKey => $timestamp) {
+        foreach ($spectatorData as $sessionKey => $spectatorInfo) {
+          // Handle both old format (just timestamp) and new format (array with timestamp and username)
+          $timestamp = is_array($spectatorInfo) ? $spectatorInfo['timestamp'] : $spectatorInfo;
+          $username = is_array($spectatorInfo) ? $spectatorInfo['username'] : null;
+          
           $timeDiff = $currentTime - intval($timestamp);
           if ($timeDiff < $spectatorTimeout) {
             $spectatorCount++;
+            if ($username) {
+              $spectatorNames[] = $username;
+            }
           }
         }
       }
@@ -2164,6 +2175,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   
   $response->spectatorCount = $spectatorCount;
+  $response->spectatorNames = $spectatorNames;
   
   // Get visibility from cache (piece 9 in cache: "0" = private, "1" = public, "2" = friends-only)
   $cacheVisibility = GetCachePiece($gameName, 9);
