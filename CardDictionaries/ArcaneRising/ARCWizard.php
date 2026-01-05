@@ -450,7 +450,7 @@ function GetArcaneTargetIndices($player, $target): string
   if ($target == 4) return "MYCHAR-0";
   if ($target != 4 && $target != 5) $rv = "THEIRCHAR-0";
   else $rv = "";
-  if (($target == 0 && !ShouldAutotargetOpponent($player)) || $target == 2) $rv .= ",MYCHAR-0";
+  if (($target == 0 || $target == 2) && !ShouldAutotargetOpponent($player)) $rv .= ",MYCHAR-0";
   $allyPieces = AllyPieces();
   if ($target == 2) {
     $theirAllies = &GetAllies($otherPlayer);
