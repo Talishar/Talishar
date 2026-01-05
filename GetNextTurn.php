@@ -263,7 +263,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if(!AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
-        if(isset($_SESSION[$campaign->SessionID()]) || $campaign->IsTeamMember(LoggedInUserName())) {
+        $sessionID = $campaign->SessionID();
+        $isPatronOfCampaign = isset($_SESSION[$sessionID]);
+        
+        // Special handling for PvtVoid: check if user is "PvtVoid" or has the session var
+        if ($sessionID == "isPvtVoidPatron") {
+          $isPatronOfCampaign = (LoggedInUserName() == "PvtVoid") || isset($_SESSION[$sessionID]);
+        }
+        
+        if($isPatronOfCampaign || $campaign->IsTeamMember(LoggedInUserName())) {
           $altArts = $campaign->AltArts($playerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
@@ -331,7 +339,14 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if(!AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
-        if($campaign->IsTeamMember($initialLoad->opponentName)) {
+        $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($initialLoad->opponentName);
+        
+        // Special handling for PvtVoid: check if opponent is "PvtVoid" or team member
+        if ($campaign->SessionID() == "isPvtVoidPatron") {
+          $isOpponentSupporterOfCampaign = ($initialLoad->opponentName == "PvtVoid") || $campaign->IsTeamMember($initialLoad->opponentName);
+        }
+        
+        if($isOpponentSupporterOfCampaign) {
           $opponentAltArts = $campaign->AltArts($otherPlayer);
           if($opponentAltArts == "") continue;
           $opponentAltArts = explode(",", $opponentAltArts);
