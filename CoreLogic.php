@@ -2318,14 +2318,20 @@ function AttackDestroyedEffects($attackID)
   }
 }
 
-function CloseCombatChain($chainClosed = "true")
+function CloseCombatChain($chainClosed = true)
 {
-  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers;
+  global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers, $Stack;
 
   if (count($layers) <= LayerPieces() && isset($layers[0]) && isPriorityStep($layers[0])) $layers = [];//In case there's another combat chain related layer like defense step
-  // elseif (in_array("DEFENDSTEP", $layers)) PopLayer(); // this line is causing a bug when you bound giaf with electrostatic discharge
+  $steps = ["ATTACKSTEP", "DEFENDSTEP"];
+  foreach ($steps as $step) {
+    $Step = $Stack->FindCardID($step);
+    if ($Step != "") $Step->Negate();
+  }
+  $resolutionStep = $Stack->FindCardID("FINALIZECHAINLINK");
+  $closeStep = $Stack->FindCardID("CLOSESTEP");
   if(!$chainClosed) FinalizeChainLink(!$chainClosed);
-  elseif (!in_array("FINALIZECHAINLINK", $layers)) PrependLayer("FINALIZECHAINLINK", $mainPlayer, $chainClosed);
+  elseif ($resolutionStep == "" && $closeStep == "") PrependLayer("CLOSESTEP", $mainPlayer, $chainClosed);
   $turn[0] = "M";
   $currentPlayer = $mainPlayer;
   $combatChainState[$CCS_AttackTarget] = "NA";

@@ -352,11 +352,11 @@ function CloseDecisionQueue($skip=false)
 
 function ShouldHoldPriorityNow($player)
 {
-  global $layerPriority, $layers;
+  global $layerPriority, $Stack;
   if ($layerPriority[$player - 1] != "1") return false;
-  if ($layers[count($layers) - LayerPieces()] == "ENDPHASE") return false;
-  if ($layers[count($layers) - LayerPieces()] == "STARTTURN") return false;
-  $currentLayer = $layers[count($layers) - LayerPieces()];
+  $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
+  if (in_array($Stack->BottomLayer()->ID(), $noPriorityPhases)) return false;
+  $currentLayer = $Stack->TopLayer()->ID();
   $layerType = CardType($currentLayer);
   if (HoldPrioritySetting($player) == 3 && $layerType != "AA" && $layerType != "W") return false;
   return true;
@@ -476,6 +476,7 @@ function ContinueDecisionQueue($lastResult = "")
         else if ($cardID == "RESUMETURN") $turn[0] = "M";
         else if ($cardID == "LAYER") ProcessLayer($player, $parameter, $target, $additionalCosts);
         else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
+        else if ($cardID == "CLOSESTEP") FinalizeChainLink($parameter);
         else if ($cardID == "RESOLUTIONSTEP") {
           ResetCombatChainState();
           ProcessDecisionQueue();
@@ -1936,7 +1937,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       AddCurrentTurnEffect($parameter, $player);
       break;
     case "burn_bare":
-      if ($combatChain[10] != "PHANTASM") AddLayer("LAYER", $player, "PHANTASM", $combatChain[0], $parameter);
+      if ($combatChain[10] != "PHANTASM") AddLayer("TRIGGER", $player, "PHANTASM", $combatChain[0], $parameter);
       break;
     case "outside_interference_blue":
       if (CanRevealCards($player)) {
@@ -1975,7 +1976,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
-  global $chainLinks, $currentTurnEffects;
+  global $chainLinks, $currentTurnEffects, $Stack;
   global $landmarks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -2537,6 +2538,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "burn_them_all_red":
         DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
+        break;
+      case "silent_stilettos":
+        WriteLog("HERE in the trigger " . $Stack->BottomLayer()->ID());
+        $hand = &GetHand($mainPlayer);
+        $resources = &GetResources($mainPlayer);
+        if (Count($hand) > 0 || $resources[0] > 0) {
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point");
+          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
+          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 3, 1);
+          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+          AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
+          AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIPCARD,silent_stilettos", 1);
+          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
+        }
         break;
       case "mounting_anger_red":
       case "mounting_anger_yellow":
@@ -3653,7 +3668,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "face_purgatory":
-        if(!IsAllyAttacking()) PummelHit($otherPlayer);
+        if(!IsAllyAttacking() && $CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
         Draw($player);
         break;
       case "malefic_incantation_red":
