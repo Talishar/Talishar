@@ -153,8 +153,9 @@ if ($handle = opendir($path)) {
           deleteDirectory($folder);
           DeleteCache($gameToken);
         }
+        continue;
       }
-      else if($checkFileCreationTime) {
+      if($checkFileCreationTime) {
         $fileCreationTime = filectime($gs);
         if($fileCreationTime !== false && (time() - $fileCreationTime) > 18000) { //300 minutes
           deleteDirectory($folder);
