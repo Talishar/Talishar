@@ -91,6 +91,21 @@ if ($handle = opendir($path)) {
     $folder = $path . "/" . $folder . "/";
     $gs = $folder . "gamestate.txt";
     $currentTime = round(microtime(true) * 1000);
+    if($autoDeleteGames && $checkFileCreationTime) {
+      $dirPath = realpath(rtrim($folder, "/"));
+      if ($dirPath && is_dir($dirPath)) {
+        $lastModified = filemtime($dirPath);
+        $ageInSeconds = time() - $lastModified;
+        if($ageInSeconds > 18000) { 
+          if (deleteDirectory($dirPath)) {
+            DeleteCache($gameToken);
+            continue;
+          } else {
+            error_log("Failed to delete directory: " . $dirPath);
+          }
+      }
+      }
+    }
     if (file_exists($gs)) {
       $lastGamestateUpdate = intval(GetCachePiece($gameToken, 6));
       if ($currentTime - $lastGamestateUpdate < 30000) {
@@ -152,14 +167,7 @@ if ($handle = opendir($path)) {
         if ($autoDeleteGames) {
           deleteDirectory($folder);
           DeleteCache($gameToken);
-        }
-        continue;
-      }
-      if($autoDeleteGames && $checkFileCreationTime) {
-        $fileCreationTime = filectime($gs);
-        if($fileCreationTime !== false && (time() - $fileCreationTime) > 18000) { //300 minutes
-          deleteDirectory($folder);
-          DeleteCache($gameToken);
+          continue;
         }
       }
       continue;
@@ -244,40 +252,30 @@ if ($handle = opendir($path)) {
   echo json_encode($response);
 }
 
-function deleteDirectory($dir)
-{
-  if (!file_exists($dir)) {
-    return true;
-  }
-
-  if (!is_dir($dir)) {
-    // Only attempt to delete if file exists
-    if (file_exists($dir)) {
-      return @unlink($dir);
-    } else {
-      return true;
+function deleteDirectory($dir) {
+    if (!file_exists($dir)) {
+        return true;
     }
-  }
 
-  $items = @scandir($dir);
-  if ($items === false) {
-    // Directory cannot be read, treat as deleted or inaccessible
-    return true;
-  }
-  foreach ($items as $item) {
-    if ($item == '.' || $item == '..') {
-      continue;
+    if (!is_dir($dir)) {
+        return unlink($dir);
     }
-    if (!deleteDirectory($dir . "/" . $item)) {
-      // Optionally log error here
-      continue;
-    }
-  }
 
-  if (file_exists($dir)) {
-    return @rmdir($dir);
-  } else {
-    return true; // directory already deleted
-  }
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..') {
+            continue;
+        }
+        $path = $dir . DIRECTORY_SEPARATOR . $item;
+
+        if (is_dir($path)) {
+            deleteDirectory($path);
+        } else {
+            if (file_exists($path)) {
+                @unlink($path); 
+            }
+        }
+    }
+
+    return rmdir($dir);
 }
 
