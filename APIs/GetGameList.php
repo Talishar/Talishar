@@ -83,6 +83,7 @@ if(IsUserLoggedIn()) {
 
 $gameInProgressCount = 0;
 if ($handle = opendir($path)) {
+  $checkFileCreationTime = random_int(1, 1000) == 42;
   while (false !== ($folder = readdir($handle))) {
     if ('.' === $folder) continue;
     if ('..' === $folder) continue;
@@ -149,6 +150,13 @@ if ($handle = opendir($path)) {
       else if ($currentTime - $lastGamestateUpdate > 300000) //~5 minutes?
       {
         if ($autoDeleteGames) {
+          deleteDirectory($folder);
+          DeleteCache($gameToken);
+        }
+      }
+      else if($checkFileCreationTime) {
+        $fileCreationTime = filectime($gs);
+        if($fileCreationTime !== false && (time() - $fileCreationTime) > 18000) { //300 minutes
           deleteDirectory($folder);
           DeleteCache($gameToken);
         }
