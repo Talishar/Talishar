@@ -155,7 +155,7 @@ if ($handle = opendir($path)) {
         }
         continue;
       }
-      if($checkFileCreationTime) {
+      if($autoDeleteGames && $checkFileCreationTime) {
         $fileCreationTime = filectime($gs);
         if($fileCreationTime !== false && (time() - $fileCreationTime) > 18000) { //300 minutes
           deleteDirectory($folder);
