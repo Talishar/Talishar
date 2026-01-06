@@ -4858,7 +4858,7 @@ function IsGold($cardID) {
 
 function GetClass($cardID, $player) {
   if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
-  if ($cardID == "LAYER") return "-";
+  if ($cardID == "LAYER" || $cardID == "TRIGGER") return "-";
   $cardID = ExtractCardID($cardID);
   $className = match($cardID) {
     "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits

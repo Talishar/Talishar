@@ -1536,22 +1536,11 @@ function CharacterAttackDestroyedAbilities($attackID)
       case "phantasmal_footsteps":
         if ($character[$i + 5] > 0 && CardType($attackID) == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
           AddLayer("TRIGGER", $mainPlayer, $character[$i]);
-          // AddDecisionQueue("ADDTRIGGER", $mainPlayer, $character[$i], $i);
           --$character[$i + 5];
         }
         break;
       case "silent_stilettos":
-        $hand = &GetHand($mainPlayer);
-        $resources = &GetResources($mainPlayer);
-        if (Count($hand) > 0 || $resources[0] > 0) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_3_to_gain_an_action_point", 0, 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 3, 1);
-          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
-          AddDecisionQueue("GAINACTIONPOINTS", $mainPlayer, "1", 1);
-          AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIPCARD,silent_stilettos", 1);
-          AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
-        }
+        AddLayer("TRIGGER", $mainPlayer, $character[$i]);
         break;
       default:
         break;

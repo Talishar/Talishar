@@ -3314,7 +3314,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
       if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) {
         //only close the chain if removed before the resolution step
-        CloseCombatChain(false);
+        CloseCombatChain();
       }
       return $lastResult;
     case "TRUCE":
