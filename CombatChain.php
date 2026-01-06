@@ -2115,6 +2115,13 @@ function RemoveCombatChainLink($ind)
   return $chainLinks[$linkInd][0];
 }
 
+function IsResolutionStep()
+{
+  global $Stack;
+  $resolutionStep = $Stack->FindCardID("RESOLUTIONSTEP");
+  return $resolutionStep != "";
+}
+
 function IsLayerStep()
 {
   global $layers, $CombatChain, $mainPlayer;

@@ -2227,7 +2227,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter, $ChainLinks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
@@ -2515,9 +2515,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "lightning_press_red":
     case "lightning_press_yellow":
     case "lightning_press_blue":
-      if (count($layers) == 0 && !$CombatChain->HasCurrentLink()) return true;
+      if (count($layers) == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
       if (SearchCount(SearchCombatChainLink($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
       if (SearchCount(SearchCombatChainAttacks($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
+      if ($ChainLinks->SearchForType("AA") != "") return false;
       $countLayers = count($layers);
       $layerPieces = LayerPieces();
       for ($i = 0; $i < $countLayers; $i += $layerPieces) {

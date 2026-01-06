@@ -17,6 +17,22 @@ class ChainLinks {
   function GetLink($linkNum) {
     return new ChainLink($linkNum);
   }
+
+  function NumLinks() {
+		return count($this->chain);
+  }
+
+  function SearchForType($type) {
+		$found = [];
+		for ($i = 0; $i < $this->NumLinks(); ++$i) {
+			$Link = $this->GetLink($i);
+			for ($j = 0; $j < $Link->NumCards(); ++$j) {
+				$cardID = $Link->GetLinkCard($j, true)->ID();
+				if (TypeContains($cardID, $type)) array_push($found, $cardID);
+			}
+		}
+		return implode(",", $found);
+  }
 }
 
 class ChainLink {
@@ -35,6 +51,10 @@ class ChainLink {
 		$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
 		$this->linkSummary = &$chainLinkSummary;
   }
+
+	function NumCards() {
+		return intdiv(count($this->link), ChainLinksPieces());
+	}
 
 	function GetLinkCard($index, $cardNumber=false) {
 		if ($cardNumber) $index = $index * ChainLinksPieces();
