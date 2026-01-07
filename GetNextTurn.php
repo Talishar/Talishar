@@ -124,6 +124,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherPlayer + 3, "1");
     } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
+      $currentPlayerActivity = 2;
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherPlayer + 3, "2");
