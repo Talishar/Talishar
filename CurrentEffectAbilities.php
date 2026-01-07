@@ -1404,11 +1404,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "misfire_dampener":
       return $type == "ARCANE" ? intval($effects[1]) : 0;
     case "sawbones_dock_hand_yellow":
-      $character = &GetPlayerCharacter($player);
-      if(ClassContains($character[0], "PIRATE", $player)) {
-        return 1;
-      }
-      break;
+      return 1;
     case "throw_caution_to_the_wind_blue":
       return intval($effects[1]);
     case "light_up_the_leaves_red":
@@ -1745,10 +1741,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       }
       break;
     case "sawbones_dock_hand_yellow":
-      $character = &GetPlayerCharacter($player);
-      if(ClassContains($character[0], "PIRATE", $player) && $preventable) {
-        $preventedDamage += 1;
-      }
+      $preventedDamage += 1;
       RemoveCurrentTurnEffect($index);
       break;
     case "throw_caution_to_the_wind_blue":
