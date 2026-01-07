@@ -1214,6 +1214,11 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
   $otherPlayer = $player == 1 ? 2 : 1;
   $effects = explode("-", $currentTurnEffects[$index]);
   $source = explode("|", $source)[0] ?? $source;
+  $card = GetClass($effects[0], $player);
+  if ($card != "-") {
+    $remove = false;
+    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
+  }
   switch ($effects[0]) {
     case "dissipation_shield_yellow":
       return intval($effects[1]);
@@ -1433,6 +1438,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   if ($card != "-") {
     $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
     if ($preventable) $preventedDamage += $prevention;
+    if ($remove) RemoveCurrentTurnEffect($index);
   }
   switch ($effects[0]) {
     case "soulbond_resolve":
