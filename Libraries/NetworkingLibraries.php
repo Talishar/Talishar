@@ -2470,7 +2470,7 @@ function GetLayerTarget($cardID, $from)
       break;
     case "helios_mitre":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Helio's Mitre");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID));
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -2574,7 +2574,7 @@ function GetLayerTarget($cardID, $from)
     case "sanctuary_of_aria":
       if($from != "HAND"){
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Sanctuary of Aria");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID));
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -3008,7 +3008,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
       // discarding an extra earth card
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Earth Card to discard", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an {{element|Earth|" . GetElementColorCode("EARTH") . "}} Card to discard", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDTALENT,EARTH,NOPASS", 1);
       AddDecisionQueue("REVERTGAMESTATEIFNULL", $currentPlayer, "You don't have any earth cards in hand to discard!", 1);
       AddDecisionQueue("CHOOSEHAND", $currentPlayer, "<-", 1);
@@ -3016,7 +3016,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-" . $currentPlayer, 1);
       // targetting a source
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Light up the Leaves", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID), 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
@@ -3499,7 +3499,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "plume_of_evergrowth":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=I;talent=EARTH&MYDISCARD:type=A;talent=EARTH&MYDISCARD:type=AA;talent=EARTH");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose Earth action card or Earth instant card");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose {{element|Earth|" . GetElementColorCode("EARTH") . "}} action card or {{element|Earth|" . GetElementColorCode("EARTH") . "}} instant card");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);

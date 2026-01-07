@@ -141,7 +141,7 @@ function CharacterStartTurnAbility($index)
       }
       break;
     case "bravo_star_of_the_show":
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an Earth, Ice, and Lightning card for Bravo, Star of the Show");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may reveal an {{element|Earth|" . GetElementColorCode("EARTH") . "}}, {{element|Ice|" . GetElementColorCode("ICE") . "}}, and {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} card for Bravo, Star of the Show");
       AddDecisionQueue("FINDINDICES", $mainPlayer, "BRAVOSTARSHOW");
       AddDecisionQueue("MULTICHOOSEHAND", $mainPlayer, "<-", 1);
       AddDecisionQueue("BRAVOSTARSHOW", $mainPlayer, "-", 1);

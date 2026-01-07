@@ -172,7 +172,7 @@
       case "oasis_respite_red": case "oasis_respite_yellow": case "oasis_respite_blue":
         $targetHero = substr($target,0,2) == "MY" ? $currentPlayer : $otherPlayer;
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for Oasis Respite");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID));
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
