@@ -835,3 +835,25 @@ function IsTeamPitchDevils($userName)
   }
   return false;
 }
+
+function IsTeamSnapDragons($userName)
+{
+  switch ($userName) {
+    case "iamtherealdylanthompson":
+    case "SpoostingBendog":
+    case "EdgeOfAir":
+    case "matt":
+    case "diomedesau":
+    case "Nyjin":
+    case "Manavon":
+    case "Trouthammer":
+    case "N3ardeath":
+    case "Snaps":
+    case "TheGlib":
+    case "PvtVoid":
+      return true;
+    default:
+      break;
+  }
+  return false;
+}
