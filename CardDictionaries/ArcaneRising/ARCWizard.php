@@ -583,7 +583,7 @@ function MeldTriggersDealingArcane($source)
   };
 }
 
-function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|string
+function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRemove = false): int|string
 {
   global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
   $modifier = 0;
@@ -653,7 +653,7 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-"): int|st
       default:
         break;
     }
-    if ($remove) RemoveCurrentTurnEffect($i);
+    if ($remove && !$skipRemove) RemoveCurrentTurnEffect($i);
   }
   $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
   $currentTurnEffectsCount = count($currentTurnEffects);

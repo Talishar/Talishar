@@ -110,6 +110,7 @@ while (true) {
       SetCachePiece($gameName, $otherP + 3, "1");
     } else if ($timeSinceOppLastConnection > 60000 && $oppStatus == 1) {
       // Opponent confirmed left (more than 60 seconds since last activity)
+      $currentPlayerActivity = 2;
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");

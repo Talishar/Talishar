@@ -124,6 +124,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherPlayer + 3, "1");
     } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
+      $currentPlayerActivity = 2;
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherPlayer + 3, "2");
@@ -1768,17 +1769,26 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
         if ($layerCheckCount > 0 && $layers[0] != "" && ($option[0] == "MYDISCARD" || $option[0] == "THEIRDISCARD")) {
           $countLayers = count($layers);
           for ($j=0; $j < $countLayers; $j += LayerPieces()) { 
-              $target = $option[0]."-".$option[1];
-              $cardID = GetMZCard($currentPlayer, $target);
-              $params = explode("-", $layers[$j + 3]);
-              if(isset($params[1])) {
-                $uniqueIDIndex = ($option[0] == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
-              }
-              if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
-                $label = "Targeted";
-                continue;
-              }
+            $target = $option[0]."-".$option[1];
+            $cardID = GetMZCard($currentPlayer, $target);
+            $params = explode("-", $layers[$j + 3]);
+            if(isset($params[1])) {
+              $uniqueIDIndex = ($option[0] == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+            }
+            if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
+              $label = "Targeted";
+              continue;
+            }
           }   
+        }
+
+        if ($layerCheckCount > 0 && $layers[0] != "" && $option[0] == "LAYER" && $option[1] == 0) {
+          $params = explode("-", $layers[$j + 3]);
+          $target = $option[0]."-".$option[1];
+          $cardID = GetMZCard($currentPlayer, $target);
+          if($cardID == "runechant") {
+            $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer, skipRemove:true);
+          }
         }
 
         //Bonds of Agony - add indication for hand, graveyard and deck
