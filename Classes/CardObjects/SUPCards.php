@@ -4686,8 +4686,11 @@ class arrogant_showboating_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $count = CountBlockingCards();
-    PlayAura("might", $this->controller, $count, true, effectController:$this->controller, effectSource:$this->cardID);
+    global $mainPlayer;
+    if ($this->controller == $mainPlayer) {
+      $count = CountBlockingCards();
+      PlayAura("might", $this->controller, $count, true, effectController:$this->controller, effectSource:$this->cardID);
+    }
   }
 }
 
