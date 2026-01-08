@@ -842,7 +842,7 @@ function IsTeamSnapDragons($userName)
     case "iamtherealdylanthompson":
     case "SpoostingBendog":
     case "EdgeOfAir":
-    case "matt":
+    case "Matt":
     case "diomedesau":
     case "Nyjin":
     case "Manavon":
