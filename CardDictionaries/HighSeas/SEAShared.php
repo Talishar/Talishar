@@ -478,7 +478,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "scooba_salty_sea_dog_yellow":
       if ($from == "PLAY") {
-        $EffectContext = "-"; // hacky, but makes it not interact with ripple away
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:pitch=2&MYDISCARD:pitch=2", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target yellow card", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
