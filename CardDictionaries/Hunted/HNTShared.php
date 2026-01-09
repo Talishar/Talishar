@@ -669,13 +669,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($daggerUID != "-") {
         if (str_contains($target, "COMBATCHAINATTACKS")) {
           if ($chainLinks[intdiv($daggerUID,ChainLinksPieces())][2] == 0) return "FAILED";
+          if (!IsHeroAttackTarget()) {
+            WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
+            MZDestroy($currentPlayer, $target);
+            // AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+            return "";
+          }
         }
         else {
           $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
           if ($index == -1) return "FAILED";
         }
         if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
-        else {
+        elseif (!str_contains($target, "COMBATCHAINATTACKS")) {
           WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
           DestroyCharacter($currentPlayer, $index);
         }
