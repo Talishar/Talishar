@@ -156,7 +156,7 @@ function DYNCombatEffectActive($cardID, $attackID)
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrouchingTigerPlayedThisTurn;
-  global $combatChain, $chainLinks, $CombatChain;
+  global $combatChain, $chainLinks, $CombatChain, $ChainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -319,8 +319,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $targetInd = explode("-", $target)[1];
         $targetInd2 = explode("-", $target)[2] ?? "-";
         $targetZone = explode("-", $target)[0];
-        if (TypeContains($targetCard, "E")) {
-          $uid = $targetZone == "COMBATCHAINLINK" ? $combatChain[$targetInd+8] : $chainLinks[$targetInd2][$targetInd+8];
+        $TargetCard = $targetZone == "COMBATCHAINLINK" ? $CombatChain->Card($targetInd) : $ChainLinks->GetLink($targetInd2)->GetLinkCard($targetInd);
+        if (TypeContains($targetCard, "E") && $TargetCard->From() == "EQUIP") {
+          $uid = $TargetCard->OriginUniqueID();
           AddCurrentTurnEffect($cardID, $otherPlayer, uniqueID:$uid);
         }
         elseif ($targetZone == "COMBATCHAINLINK") {

@@ -142,7 +142,7 @@ class LinkCard {
 		return $this->link[$this->index+7] ?? "";
 	}
 
-	function OriginUID() {
+	function OriginUniqueID() {
 		return $this->link[$this->index+8] ?? "";
 	}
 
