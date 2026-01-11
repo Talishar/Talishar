@@ -355,7 +355,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $TargetCard =$CombatChain->Card($targetInd);
             if (TypeContains($targetCardID, "E") && $TargetCard->From() == "EQUIP") {
               $uid = $TargetCard->OriginUniqueID();
-              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$$uid);
+              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$uid);
             }
             else {
               CombatChainDefenseModifier($targetInd, -3);
