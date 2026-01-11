@@ -2540,7 +2540,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
         break;
       case "silent_stilettos":
-        WriteLog("HERE in the trigger " . $Stack->BottomLayer()->ID());
         $hand = &GetHand($mainPlayer);
         $resources = &GetResources($mainPlayer);
         if (Count($hand) > 0 || $resources[0] > 0) {
