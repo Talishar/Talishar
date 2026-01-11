@@ -1337,7 +1337,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
       $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
       foreach ($activeEffects as $effectSetID) {
-        $cardID = ConvertToCardID($effectSetID);
+        $cardID = ExtractCardID(ConvertToCardID($effectSetID));
         if ($cardID != "") {
           $isFriendly = $playerID == $mainPlayer;
           if ($isFriendly) {
@@ -1382,7 +1382,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
       $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
       foreach ($activeEffects as $effectSetID) {
-        $cardID = ConvertToCardID($effectSetID);
+        $cardID = ExtractCardID(ConvertToCardID($effectSetID));
         if ($cardID != "") {
           $isFriendly = $playerID == $mainPlayer;
           $BorderColor = $isFriendly ? "blue" : "red";
@@ -1787,7 +1787,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $target = $option[0]."-".$option[1];
           $cardID = GetMZCard($currentPlayer, $target);
           if($cardID == "runechant") {
-            $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer, skipRemove:true);
+            $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer);
           }
         }
 
