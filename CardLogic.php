@@ -3668,6 +3668,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "face_purgatory":
         if(!IsAllyAttacking() && $CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
+        else WriteLog("<span style='color:red;'>No card is discarded because there is no attacking hero when allies attack.</span>");
         Draw($player);
         break;
       case "malefic_incantation_red":
