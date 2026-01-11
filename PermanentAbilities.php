@@ -1,6 +1,6 @@
 <?php
 
-function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-", $subCards="-")
+function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from="-", $subCards="-", $uniqueID="-")
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
@@ -17,7 +17,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
     array_push($permanents, $cardID);
     array_push($permanents, $from);
     array_push($permanents, $subCards);
-    array_push($permanents, GetUniqueId($cardID, $player));
+    array_push($permanents, $uniqueID == "-" ? GetUniqueId($cardID, $player) : $uniqueID);
   }
   return count($permanents) - PermanentPieces();
 }
@@ -26,7 +26,11 @@ function RemovePermanent($player, $index)
 {
   $index = intval($index);
   $permanents = &GetPermanents($player);
+  $PermanentCard = new PermanentCard($index, $player);
   $cardID = $permanents[$index];
+  if ($cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") {
+    $cardID = explode(",", $PermanentCard->Subcards())[0];
+  }
   $permanentPieces = PermanentPieces();
   for($j = $index + $permanentPieces - 1; $j >= $index; --$j) {
     unset($permanents[$j]);
