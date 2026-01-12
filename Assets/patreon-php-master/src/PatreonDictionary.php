@@ -361,7 +361,7 @@ enum PatreonCampaign : string
       case "279086": return ($userName == "brandaotcg" || $userName == "OotTheMonk" || $userName == "Aegisworn");
       case "11184392": return ($userName == "PatSmashGood" || $userName == "OotTheMonk");
       case "11481720": return ($userName == "nxi");
-      case "9408649": return ($userName == "Aegisworn" || $userName == "PvtVoid");
+      case "9408649": return ($userName == "Aegisworn");
       case "9734205": return ($userName == "tog" || $userName == "bnet" || $userName == "balakay");
       case "9574942": return ($userName == "Azor");
       case "11561507": return "";
@@ -383,7 +383,7 @@ enum PatreonCampaign : string
       case "13518995": return ($userName == "Tegunn" || $userName == "AurOraOraOraOraORA");
       case "14460977": return ($userName == "AlpacaSciatrice");
       case "14951942": return IsTeamFatAndFurious($userName);
-      case "15323388": return ($userName == "OllinTogether" || $userName == "PvtVoid");
+      case "15323388": return ($userName == "OllinTogether");
       default: return "";
     }
   }
