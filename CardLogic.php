@@ -3093,7 +3093,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
           AddDecisionQueue("ELSE", $player, "-");
         }
-        AddDecisionQueue("TAKEDAMAGE", $player, "2-bloodrot_pox", 1);
+        AddDecisionQueue("TAKEDAMAGE", $player, "2-bloodrot_pox-DAMAGE-" . $otherPlayer, 1);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case $CID_Inertia:
