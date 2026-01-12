@@ -361,7 +361,7 @@ enum PatreonCampaign : string
       case "279086": return ($userName == "brandaotcg" || $userName == "OotTheMonk" || $userName == "Aegisworn");
       case "11184392": return ($userName == "PatSmashGood" || $userName == "OotTheMonk");
       case "11481720": return ($userName == "nxi");
-      case "9408649": return ($userName == "Aegisworn");
+      case "9408649": return ($userName == "Aegisworn" || $userName == "PvtVoid");
       case "9734205": return ($userName == "tog" || $userName == "bnet" || $userName == "balakay");
       case "9574942": return ($userName == "Azor");
       case "11561507": return "";
@@ -744,14 +744,25 @@ enum PatreonCampaign : string
   {
     switch($this->value)
     {
-      case "11527692": return "22";
-      case "8955846": return "23";
-      case "9370276": return "24";
-      case "7330270": return "25";
-      case "13518995": return "26";
-      case "21": return "27";
-      case "13905903": return "28";
-      case "14460977": return "29";
+      case "21": 
+        return "27";
+      case "11527692": 
+        return "22";
+      case "8955846": 
+        return "23";
+      case "9370276": 
+        return "24";
+      case "7330270": 
+        return "25";
+      case "13518995": 
+        return "26";
+      case "13905903": 
+        return "28";
+      case "14460977": 
+        return "29";
+      case "9408649": 
+      case "7198186":
+        return "37,38,39,40,41";
       default: return "";
     }
   }

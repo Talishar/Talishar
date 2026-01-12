@@ -49,8 +49,8 @@ if(IsUserLoggedIn()) {
     $playmats = explode(",", $playmats);
     for($i = 0; $i < count($playmats); ++$i) {
       $playmat = new stdClass();
-      $playmat->name = $campaign->CampaignName() . (count($playmats) > 1 ? " " . $i + 1 : "");
-      $playmat->id = $playmats[$i];
+      $playmat->id = trim($playmats[$i]);
+      $playmat->name = GetPlaymatName($playmat->id);
       if (!empty($playmat->id)) {
         array_push($response->playmats, $playmat);
       }
@@ -88,6 +88,17 @@ if(IsUserLoggedIn()) {
                     $cardBack->name = $metafyCommunity->CommunityName() . (count($cardBackIds) > 1 ? " " . ($i + 1) : "");
                     $cardBack->id = trim($cardBackIds[$i]);
                     array_push($response->cardBacks, $cardBack);
+                  }
+                }
+                // Add playmats
+                $playmats = $metafyCommunity->Playmats();
+                if (!empty($playmats)) {
+                  $playmatIds = explode(",", $playmats);
+                  for($i = 0; $i < count($playmatIds); ++$i) {
+                    $playmat = new stdClass();
+                    $playmat->id = trim($playmatIds[$i]);
+                    $playmat->name = GetPlaymatName($playmat->id);
+                    array_push($response->playmats, $playmat);
                   }
                 }
                 break;
@@ -186,6 +197,16 @@ function GetPlaymatName($id)
       return "The Hunted";
     case 36:
       return "Deathmatch Arena";
+    case 37:
+      return "Talishar Dark";
+    case 38:
+      return "Talishar Red";
+    case 39:
+      return "Talishar Blue";
+    case 40:
+      return "Talishar Green";
+    case 41:
+      return "Talishar Purple";
     default:
       return "N/A";
   }

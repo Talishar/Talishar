@@ -50,6 +50,15 @@ enum MetafyCommunity : string
       self::SunflowerSamurai => "70",
       self::EmperorsRome => "67",
       self::SnapDragons => "127",
+      default => "",
+    };
+  }
+
+  public function Playmats(): string
+  {
+    return match($this) {
+      self::Talishar => "37,38,39,40,41",
+      default => "",
     };
   }
 
@@ -57,13 +66,7 @@ enum MetafyCommunity : string
   {
     return match($this) {
       self::Talishar => $this->getTalisharAltArts(),
-      self::WeMakeBest => [],
-      self::FaBrary => [],
-      self::AggroBlaze => [],
-      self::TheCardGuyz => [],
-      self::SunflowerSamurai => [],
-      self::EmperorsRome => [],
-      self::SnapDragons => [],
+      default => [],
     };
   }
 
