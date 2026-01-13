@@ -802,6 +802,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	$cardStats = &GetCardStats($player);
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
+		$found = false;
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
 			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
 				$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
@@ -811,8 +812,26 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
 				$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
+				$found = true;
 				break;
 			}
+		}
+		// If card has stats but wasn't in the decklist, add it (for tokens created during the game)
+		if (!$found) {
+			$cardResult = [
+				"cardId" => $cardStats[$i],
+				"played" => $cardStats[$i + $CardStats_TimesPlayed],
+				"blocked" => $cardStats[$i + $CardStats_TimesBlocked],
+				"pitched" => $cardStats[$i + $CardStats_TimesPitched],
+				"hits" => $cardStats[$i + $CardStats_TimesHit],
+				"discarded" => $cardStats[$i + $CardStats_TimesDiscarded],
+				"charged" => $cardStats[$i + $CardStats_TimesCharged],
+				"cardName" => CardName($cardStats[$i]),
+				"pitchValue" => PitchValue($cardStats[$i]),
+				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
+				"numCopies" => 0,
+			];
+			array_push($deck["cardResults"], $cardResult);
 		}
 	}
 

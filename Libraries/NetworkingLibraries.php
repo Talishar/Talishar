@@ -1962,7 +1962,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
       $cachedPlayUniqueID = $uniqueID;
     }
-
     LogPlayCardStats($currentPlayer, $cardID, $from);
     if ($playingCard) {
       ClearAdditionalCosts($currentPlayer);
