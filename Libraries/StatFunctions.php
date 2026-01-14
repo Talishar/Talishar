@@ -91,7 +91,7 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
     case "KATSUDISCARD":  ++$cardStats[$i + $CardStats_TimesKatsuDiscard]; break;
     case "DISCARD": ++$cardStats[$i + $CardStats_TimesDiscarded]; ++$turnStats[$baseIndex + $TurnStats_CardsDiscarded]; break;
     default:
-      if ($from != "PLAY")
+      if ($from != "PLAY" && $from != "EQUIP")
       {
         // From "PLAY" means it was already played, don't account for it a second time.
         ++$cardStats[$i + $CardStats_TimesPlayed];
