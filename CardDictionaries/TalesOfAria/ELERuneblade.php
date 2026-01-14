@@ -26,7 +26,7 @@
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);
         return "";
       case "rites_of_replenishment_red": case "rites_of_replenishment_yellow": case "rites_of_replenishment_blue":
-        if(GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) MZMoveCard($currentPlayer, "MYDISCARD:type=A", "MYBOTDECK", may:true);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "bramble_spark_red": case "bramble_spark_yellow": case "bramble_spark_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);

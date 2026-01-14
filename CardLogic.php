@@ -2408,6 +2408,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddCurrentTurnEffect($parameter, $player);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
+      case "rites_of_replenishment_red":
+      case "rites_of_replenishment_yellow":
+      case "rites_of_replenishment_blue":
+        PrependDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
+        PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+        PrependDecisionQueue("MZADDZONE", $player, "MYBOTDECK,GY,DOWN", 1);
+        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=AA");
+        break;
       case "briar_warden_of_thorns":
       case "briar":
         if ($additionalCosts == "DAMAGE") PlayAura("embodiment_of_earth", $player);
@@ -4323,6 +4333,11 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
         AddDecisionQueue("DRAW", $defPlayer, "-");
         }
+      break;
+    case "rites_of_replenishment_red":
+    case "rites_of_replenishment_yellow":
+    case "rites_of_replenishment_blue":
+      if(GetClassState($player, $CS_ArcaneDamageDealt) > 0) MZMoveCard($player, "MYDISCARD:type=A", "MYBOTDECK", may:true);
       break;
     case "bonds_of_ancestry_red":
     case "bonds_of_ancestry_yellow":
