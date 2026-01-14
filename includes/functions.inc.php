@@ -801,6 +801,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	}
 
 	$cardStats = &GetCardStats($player);
+	$deck["tokenResults"] = [];
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
 		$found = false;
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
@@ -816,7 +817,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				break;
 			}
 		}
-		// If card has stats but wasn't in the decklist, add it (for tokens created during the game)
+		// If card has stats but wasn't in the decklist, add it to tokenResults (for tokens created during the game)
 		if (!$found) {
 			$cardResult = [
 				"cardId" => $cardStats[$i],
@@ -829,9 +830,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				"cardName" => CardName($cardStats[$i]),
 				"pitchValue" => PitchValue($cardStats[$i]),
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
-				"numCopies" => 0,
 			];
-			array_push($deck["cardResults"], $cardResult);
+			array_push($deck["tokenResults"], $cardResult);
 		}
 	}
 
@@ -921,7 +921,9 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	}
 
 	$cardStats = &GetCardStats($player);
+	$deck["tokenResults"] = [];
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
+		$found = false;
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
 			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
 				$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
@@ -931,8 +933,25 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
 				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
 				$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
+				$found = true;
 				break;
 			}
+		}
+		// If card has stats but wasn't in the decklist, add it to tokenResults (for tokens created during the game)
+		if (!$found) {
+			$cardResult = [
+				"cardId" => $cardStats[$i],
+				"played" => intval($cardStats[$i + $CardStats_TimesPlayed]),
+				"blocked" => intval($cardStats[$i + $CardStats_TimesBlocked]),
+				"pitched" => intval($cardStats[$i + $CardStats_TimesPitched]),
+				"hits" => intval($cardStats[$i + $CardStats_TimesHit]),
+				"discarded" => intval($cardStats[$i + $CardStats_TimesDiscarded]),
+				"charged" => intval($cardStats[$i + $CardStats_TimesCharged]),
+				"cardName" => CardName($cardStats[$i]),
+				"pitchValue" => PitchValue($cardStats[$i]),
+				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
+			];
+			array_push($deck["tokenResults"], $cardResult);
 		}
 	}
 	$turnStats = &GetTurnStats($player);
