@@ -1320,19 +1320,20 @@ function ResolveChainLink()
     $target = explode("-", $reorderedTargets[$i]);
     if ($target[0] == "THEIRALLY") {
       $index = $target[1];
-      $allies = &GetAllies($defPlayer);
-      $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-      if ($totalPower > 0) $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-      $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT", $combatChain[0]);
-      if ($totalPower < 0) $totalPower = 0;
-      if ($index < count($allies)) {
-        $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
-        if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
-        DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
+      if ($index != "") { //check to make sure target is still there
+        $allies = &GetAllies($defPlayer);
+        $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+        if ($totalPower > 0) $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+        $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT", $combatChain[0]);
+        if ($totalPower < 0) $totalPower = 0;
+        if ($index < count($allies)) {
+          $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
+          if ($totalPower > 0) AllyDamageTakenAbilities($defPlayer, $index);
+          DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
+        }
+        AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
       }
-      // if ($i > 0 && $i == count($targets) - 1) ResolveCombatDamage($totalPower, damageTarget: "ALLY");
-      // else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
-      AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
+      else AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "0,ALLY");
     } else {
       $damage = $combatChainState[$CCS_CombatDamageReplaced] === 1 ? 0 : $totalPower - $totalDefense;
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0], $mainPlayer); //Include prevention

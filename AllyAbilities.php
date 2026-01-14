@@ -56,9 +56,8 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $otherPlayer = $player == 1 ? 2 : 1;
   $owner = ($allies[$index+14] == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
-  $inDamageStep = SearchLayersForPhase("FINALIZECHAINLINK") != -1;
   RemoveAllyEffects($player, $uniqueID);
-  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat && !$inDamageStep)) {
+  if (IsSpecificAllyAttacking($player, $index) || (IsSpecificAllyAttackTarget($player, $index, $uniqueID) && !$fromCombat && IsLayerStep())) {
     CloseCombatChain();
   }
   $cardID = $allies[$index];
