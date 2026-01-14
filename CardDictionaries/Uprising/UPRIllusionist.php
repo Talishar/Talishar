@@ -163,8 +163,13 @@ function UPRIllusionistDealDamageEffect($cardID)
 
   function ResolveTransformPermanent($player, $materialIndex, $into)
   {
+    $PermanentCard = new PermanentCard($materialIndex, $player);
+    if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
+      $uniqueID = $PermanentCard->UniqueID();
+    }
+    else $uniqueID = "-";
     $materialType = RemovePermanent($player, $materialIndex);
-    return PutPermanentIntoPlay($player, $into, subCards: $materialType);
+    return PutPermanentIntoPlay($player, $into, subCards: $materialType, uniqueID:$uniqueID);
   }
 
   function ResolveTransformAura($player, $materialIndex, $into)

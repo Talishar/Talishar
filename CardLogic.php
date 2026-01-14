@@ -2408,6 +2408,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddCurrentTurnEffect($parameter, $player);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
+      case "rites_of_replenishment_red":
+      case "rites_of_replenishment_yellow":
+      case "rites_of_replenishment_blue":
+        PrependDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
+        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
+        PrependDecisionQueue("MZREMOVE", $player, "-", 1);
+        PrependDecisionQueue("MZADDZONE", $player, "MYBOTDECK,GY,DOWN", 1);
+        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=AA");
+        break;
       case "briar_warden_of_thorns":
       case "briar":
         if ($additionalCosts == "DAMAGE") PlayAura("embodiment_of_earth", $player);
@@ -2540,7 +2550,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DealArcane(1, 1, "STATIC", $combatChain[0], false, $mainPlayer);
         break;
       case "silent_stilettos":
-        WriteLog("HERE in the trigger " . $Stack->BottomLayer()->ID());
         $hand = &GetHand($mainPlayer);
         $resources = &GetResources($mainPlayer);
         if (Count($hand) > 0 || $resources[0] > 0) {
@@ -3094,7 +3103,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("PAYRESOURCES", $player, "3", 1);
           AddDecisionQueue("ELSE", $player, "-");
         }
-        AddDecisionQueue("TAKEDAMAGE", $player, "2-bloodrot_pox", 1);
+        AddDecisionQueue("TAKEDAMAGE", $player, "2-bloodrot_pox-DAMAGE-" . $otherPlayer, 1);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case $CID_Inertia:
@@ -3669,6 +3678,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "face_purgatory":
         if(!IsAllyAttacking() && $CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
+        else WriteLog("<span style='color:red;'>No card is discarded because there is no attacking hero when allies attack.</span>");
         Draw($player);
         break;
       case "malefic_incantation_red":
@@ -4323,6 +4333,11 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
         AddDecisionQueue("DRAW", $defPlayer, "-");
         }
+      break;
+    case "rites_of_replenishment_red":
+    case "rites_of_replenishment_yellow":
+    case "rites_of_replenishment_blue":
+      if(GetClassState($player, $CS_ArcaneDamageDealt) > 0) MZMoveCard($player, "MYDISCARD:type=A", "MYBOTDECK", may:true);
       break;
     case "bonds_of_ancestry_red":
     case "bonds_of_ancestry_yellow":

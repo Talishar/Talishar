@@ -1313,7 +1313,7 @@ function GetEasyAbilityNames($cardID, $index, $from) {
 function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): string
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
-  global $defPlayer, $CombatChain;
+  global $defPlayer, $CombatChain, $Stack;
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
@@ -1511,7 +1511,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if($foundNullTime && $from == "HAND") return "Ability";
       $names = ["-", "-"];
       //can it ability?
-      if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep())) $names[0] = "Ability";
+      if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep())) {
+        if ($Stack->BottomLayer()->ID() != $cardID) $names[0] = "Ability"; //don't let it target itself
+      }
       // can it attack?
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);

@@ -130,8 +130,10 @@ try {
           ChangeSetting($playerID, $setting->id, $setting->value, $userID);
           if (!IsReplay()) {
             $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
-            fwrite($commandFile, "$playerID SETTINGS $setting->id $setting->value 0\r\n");
-            fclose($commandFile);
+            if ($commandFile !== false) {
+              fwrite($commandFile, "$playerID SETTINGS $setting->id $setting->value 0\r\n");
+              fclose($commandFile);
+            }
           }
         }
       }

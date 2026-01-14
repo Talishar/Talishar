@@ -143,12 +143,7 @@
       case "arcanic_shockwave_red": case "arcanic_shockwave_yellow": case "arcanic_shockwave_blue": DealArcane(1, 0, "PLAYCARD", $cardID); break;
       case "vela_flash_red": case "vela_flash_yellow": case "vela_flash_blue": SetClassState($player, $CS_NextNAAInstant, 1); break;
       case "rites_of_replenishment_red": case "rites_of_replenishment_yellow": case "rites_of_replenishment_blue":
-        PrependDecisionQueue("WRITELOG", $player, "Card chosen: <0>", 1);
-        PrependDecisionQueue("SETDQVAR", $player, "0", 1);
-        PrependDecisionQueue("MZREMOVE", $player, "-", 1);
-        PrependDecisionQueue("MZADDZONE", $player, "MYBOTDECK,GY,DOWN", 1);
-        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:type=AA");
+        AddLayer("TRIGGER", $player, $cardID, "-", "FUSE");
         break;
       case "stir_the_wildwood_red": case "stir_the_wildwood_yellow": case "stir_the_wildwood_blue": AddCurrentTurnEffect($cardID, $player); break;
       case "bramble_spark_red": case "bramble_spark_yellow": case "bramble_spark_blue": AddCurrentTurnEffect($cardID . "-FUSE", $player); break;

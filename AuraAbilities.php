@@ -1134,7 +1134,7 @@ function ChannelTalent($uniqueID, $talent)
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    WriteLog("Not enough " . ucwords(strtolower($talent)) . " cards in your pitch to satisfy " . CardLink($auraID, $auraID) . ". Aura destroyed.");
+    WriteLog("Not enough <b>" . ucwords(strtolower($talent)) . "</b> cards in your pitch to satisfy " . CardLink($auraID, $auraID) . ". Aura destroyed.");
     $AuraCard->Destroy();
   }
 }
@@ -1162,7 +1162,7 @@ function ChannelPitchColor($uniqueID, $pitch)
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    WriteLog("Not enough " . $colorToBanish . " cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
+    WriteLog("Not enough <b>" . $colorToBanish . "</b> cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
     DestroyAuraUniqueID($mainPlayer, $uniqueID);
   }
 }

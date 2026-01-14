@@ -352,8 +352,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           if ($target != "-") {
             $targetCardID = GetMZCard($currentPlayer, $target);
             $targetInd = explode("-", $target)[1];
-            if (TypeContains($targetCardID, "E")) {
-              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$combatChain[$targetInd+8]);
+            $TargetCard =$CombatChain->Card($targetInd);
+            if (TypeContains($targetCardID, "E") && $TargetCard->From() == "EQUIP") {
+              $uid = $TargetCard->OriginUniqueID();
+              AddCurrentTurnEffect("$cardID-SHRED", $otherPlayer, uniqueID:$uid);
             }
             else {
               CombatChainDefenseModifier($targetInd, -3);
@@ -669,13 +671,19 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($daggerUID != "-") {
         if (str_contains($target, "COMBATCHAINATTACKS")) {
           if ($chainLinks[intdiv($daggerUID,ChainLinksPieces())][2] == 0) return "FAILED";
+          if (!IsHeroAttackTarget()) {
+            WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
+            MZDestroy($currentPlayer, $target);
+            // AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+            return "";
+          }
         }
         else {
           $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
           if ($index == -1) return "FAILED";
         }
         if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
-        else {
+        elseif (!str_contains($target, "COMBATCHAINATTACKS")) {
           WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
           DestroyCharacter($currentPlayer, $index);
         }

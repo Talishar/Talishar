@@ -9,6 +9,7 @@ include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php"; //  Add caching layer
 include_once "includes/dbh.inc.php"; // Database connection handler
+include_once "includes/MetafyHelper.php"; // Metafy community tier helper
 
 function IsDevEnvironment() {
   $domain = getenv("DOMAIN");
@@ -258,6 +259,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
+
+    // Get Metafy community tiers for both players
+    $initialLoad->playerMetafyTiers = GetUserMetafyCommunities($initialLoad->playerName);
+    $initialLoad->opponentMetafyTiers = GetUserMetafyCommunities($initialLoad->opponentName);
 
     $initialLoad->altArts = [];   
     $initialLoad->opponentAltArts = [];
@@ -1337,7 +1342,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
       $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
       foreach ($activeEffects as $effectSetID) {
-        $cardID = ConvertToCardID($effectSetID);
+        $cardID = ExtractCardID(ConvertToCardID($effectSetID));
         if ($cardID != "") {
           $isFriendly = $playerID == $mainPlayer;
           if ($isFriendly) {
@@ -1382,7 +1387,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
       $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
       foreach ($activeEffects as $effectSetID) {
-        $cardID = ConvertToCardID($effectSetID);
+        $cardID = ExtractCardID(ConvertToCardID($effectSetID));
         if ($cardID != "") {
           $isFriendly = $playerID == $mainPlayer;
           $BorderColor = $isFriendly ? "blue" : "red";
@@ -1787,7 +1792,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
           $target = $option[0]."-".$option[1];
           $cardID = GetMZCard($currentPlayer, $target);
           if($cardID == "runechant") {
-            $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer, skipRemove:true);
+            $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer);
           }
         }
 

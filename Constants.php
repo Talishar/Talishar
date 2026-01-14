@@ -577,7 +577,7 @@ function ResetChainLinkState()
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking, $CCS_NumPowerCounters;
   global $CCS_AttackCost;
 
-  WriteLog("The chain link was closed.");
+  WriteLog("The chain link was resolved.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
@@ -856,6 +856,13 @@ function GetDamagePrevention($player, $damage)
   $permanentPieces = PermanentPieces();
   for ($i = 0; $i < $countPermanents; $i += $permanentPieces) {
     $preventionLeft += PermanentDamagePreventionAmount($player, $i, $damage);
+  }
+
+  $character = &GetPlayerCharacter($player);
+  $countCharacter = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
+    if($character[$i + 12] == "UP") $preventionLeft += WardAmount($character[$i],$player);
   }
 
   return $preventionLeft;

@@ -56,6 +56,14 @@ class Stack {
   function TopLayer() {
     return $this->Card(0);
   }
+
+  function FindTrigger($cardID) {
+	if ($this->StackEmpty()) return "";
+    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+      if ($this->layers[$i] == "TRIGGER" && $this->layers[$i+2]) return new Layer($i);
+    }
+    return "";
+  }
 }
 
 class Layer {
@@ -84,7 +92,7 @@ class Layer {
 	}
 
 	function Parameter() {
-		return isset($this->layers[$this->index+1]) ? $this->layers[$this->index+2] : "-";
+		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
 
 	function Target() {

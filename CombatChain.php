@@ -932,6 +932,7 @@ function PlayBlockModifier($cardID)
 function OnDefenseReactionResolveEffects($from, $cardID)
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer, $combatChain, $CS_NumBlueDefended, $combatChainState, $CCS_NumCardsBlocking;
+  global $Stack;
   $blockedFromHand = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     if(DelimStringContains(CardType($combatChain[$i]), "DR")) {
@@ -947,7 +948,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       EvaluateCombatChain($totalPower, $totalBlock);
       break;
     case "decimator_great_axe":
-      if (!SearchCurrentTurnEffects("decimator_great_axe", $mainPlayer)) {
+      if (!SearchCurrentTurnEffects("decimator_great_axe", $mainPlayer) && $Stack->FindTrigger("decimator_great_axe") == "") {
         $nonEquipBlockingCards = GetChainLinkCards($defPlayer, "", "E", exclCardSubTypes: "Evo");
         if ($nonEquipBlockingCards != "") {
           $options = GetChainLinkCards($defPlayer, asMZInd:true);
@@ -956,9 +957,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $options);
           AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
           AddDecisionQueue("ADDTRIGGER", $mainPlayer, $combatChain[0], 1);
-          // AddCurrentTurnEffect("decimator_great_axe", $mainPlayer);
-          // AddDecisionQueue("CHOOSECOMBATCHAIN", $mainPlayer, $options);
-          // AddDecisionQueue("HALVEBASEDEFENSE", $defPlayer, "-", 1);
         }
       }
       break;

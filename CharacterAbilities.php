@@ -1474,7 +1474,6 @@ function CharacterModifiesPlayAura($player, $isToken, $effectController)
 }
 
 function CharacterDamagePreventionAmount($player, $index, $damage, $preventable) {
-  global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   switch ($char[$index]) {
     case "shroud_of_darkness":
@@ -1491,7 +1490,6 @@ function CharacterDamagePreventionAmount($player, $index, $damage, $preventable)
 //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
 function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
-  global $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   $remove = false;
   $preventedDamage = 0;

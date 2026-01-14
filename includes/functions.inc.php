@@ -801,7 +801,10 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	}
 
 	$cardStats = &GetCardStats($player);
+	$deck["tokenResults"] = [];
+	$deck["arenaCardResults"] = [];
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
+		$found = false;
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
 			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
 				$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
@@ -811,7 +814,29 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
 				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
 				$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
+				$found = true;
 				break;
+			}
+		}
+		// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
+		if (!$found) {
+			$cardType = CardType($cardStats[$i]);
+			$cardResult = [
+				"cardId" => $cardStats[$i],
+				"played" => $cardStats[$i + $CardStats_TimesPlayed],
+				"blocked" => $cardStats[$i + $CardStats_TimesBlocked],
+				"pitched" => $cardStats[$i + $CardStats_TimesPitched],
+				"hits" => $cardStats[$i + $CardStats_TimesHit],
+				"discarded" => $cardStats[$i + $CardStats_TimesDiscarded],
+				"charged" => $cardStats[$i + $CardStats_TimesCharged],
+				"cardName" => CardName($cardStats[$i]),
+				"pitchValue" => PitchValue($cardStats[$i]),
+				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
+			];
+			if (TypeContains($cardType, "E") || TypeContains($cardType, "W") || TypeContains($cardType, "Companion")) {
+				array_push($deck["arenaCardResults"], $cardResult);
+			} else {
+				array_push($deck["tokenResults"], $cardResult);
 			}
 		}
 	}
@@ -902,7 +927,10 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	}
 
 	$cardStats = &GetCardStats($player);
+	$deck["tokenResults"] = [];
+	$deck["arenaCardResults"] = [];
 	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
+		$found = false;
 		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
 			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
 				$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
@@ -912,7 +940,29 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
 				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
 				$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
+				$found = true;
 				break;
+			}
+		}
+		// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
+		if (!$found) {
+			$cardType = CardType($cardStats[$i]);
+			$cardResult = [
+				"cardId" => $cardStats[$i],
+				"played" => intval($cardStats[$i + $CardStats_TimesPlayed]),
+				"blocked" => intval($cardStats[$i + $CardStats_TimesBlocked]),
+				"pitched" => intval($cardStats[$i + $CardStats_TimesPitched]),
+				"hits" => intval($cardStats[$i + $CardStats_TimesHit]),
+				"discarded" => intval($cardStats[$i + $CardStats_TimesDiscarded]),
+				"charged" => intval($cardStats[$i + $CardStats_TimesCharged]),
+				"cardName" => CardName($cardStats[$i]),
+				"pitchValue" => PitchValue($cardStats[$i]),
+				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
+			];
+			if (TypeContains($cardType, "E") || TypeContains($cardType, "W") || TypeContains($cardType, "Companion")) {
+				array_push($deck["arenaCardResults"], $cardResult);
+			} else {
+				array_push($deck["tokenResults"], $cardResult);
 			}
 		}
 	}
