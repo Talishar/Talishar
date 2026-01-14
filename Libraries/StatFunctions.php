@@ -94,7 +94,6 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
       if ($from != "PLAY" || $from == "EQUIP")
       {
         // From "PLAY" means it was already played, don't account for it a second time.
-        WriteLog("DEBUG: Logging play card stats for player $player for card $cardID from $from at turn " . GetStatTurnIndex($player), highlight:true, highlightColor:"blue");
         ++$cardStats[$i + $CardStats_TimesPlayed];
       }
       if($from != "PLAY" && $from != "EQUIP")
