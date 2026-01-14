@@ -929,7 +929,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     return false;
   }
   if ((SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade") && $preventable) && $health > $otherHealth) {
-    WriteLog(CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life");
+    WriteLog("<span style='color:red;'>🗡️ " . CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life 🩸</span>");
     return false;
   }
   if ((SearchAurasForCard("parched_terrain_red", 1) != "" || SearchAurasForCard("parched_terrain_red", 2) != "") && $preventable) {
