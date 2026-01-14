@@ -2,6 +2,7 @@
 
 include "Libraries/HTTPLibraries.php";
 include "Libraries/SHMOPLibraries.php";
+include_once "includes/MetafyHelper.php";
 SetHeaders();
 
 $gameName = $_GET["gameName"];
@@ -40,18 +41,41 @@ $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star
 // List of mod usernames - should match frontend list
 $modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn");
 
-//its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
-if(isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SESSION['useruid'], $contributors)) {
-  $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
-}
 //This is the code for Contributor's icon.
 if(isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $contributors)) {
   $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a contributor to Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
+// Check for Metafy badges first - if user has Metafy badges, only show those
+$hasMetafyBadges = false;
+if(isset($_SESSION['useruid'])) {
+  $metafyTiers = GetUserMetafyCommunities($_SESSION['useruid']);
+  if(!empty($metafyTiers)) {
+    $metafyBadgeHtml = '';
+    foreach($metafyTiers as $tier) {
+      $tierImage = GetMetafyTierImage($tier);
+      if($tierImage) {
+        $metafyBadgeHtml .= "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img title='" . htmlspecialchars($tier) . " - Metafy' style='margin-bottom:3px; margin-left:3px; height:16px;' src='" . $tierImage . "'/></a>";
+      }
+    }
+    if(!empty($metafyBadgeHtml)) {
+      $displayName = $metafyBadgeHtml . $displayName;
+      $hasMetafyBadges = true;
+    }
+  }
+}
 
-//This is the code for PvtVoid Patreon
-if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], array("PvtVoid"))) {
-  $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of PvtVoid!' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
+// Only show Patreon badges if user doesn't have Metafy badges
+if(!$hasMetafyBadges) {
+  //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
+  if(isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SESSION['useruid'], $contributors)) {
+    $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
+  }
+
+
+  //This is the code for PvtVoid Patreon
+  if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], array("PvtVoid"))) {
+    $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of PvtVoid!' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
+  }
 }
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
@@ -97,3 +121,16 @@ function parseQuickChat($inputEnum)
     default: return "";
   };
 }
+
+function GetMetafyTierImage($tierName) {
+  $tierImages = array(
+    'Fyendal Supporters' => './images/fyendal.webp',
+    'Seers of Ophidia' => './images/ophidia.webp',
+    'Arknight Shards' => './images/arknight.webp',
+    'Lover of Grandeur' => './images/grandeur.webp',
+    'Sponsors of Trōpal-Dhani' => './images/tropal.webp',
+    'Light of Sol Gemini Circle' => './images/lightofsol.webp'
+  );
+  return isset($tierImages[$tierName]) ? $tierImages[$tierName] : null;
+}
+

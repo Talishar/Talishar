@@ -9,6 +9,7 @@ include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php"; //  Add caching layer
 include_once "includes/dbh.inc.php"; // Database connection handler
+include_once "includes/MetafyHelper.php"; // Metafy community tier helper
 
 function IsDevEnvironment() {
   $domain = getenv("DOMAIN");
@@ -258,6 +259,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
+
+    // Get Metafy community tiers for both players
+    $initialLoad->playerMetafyTiers = GetUserMetafyCommunities($initialLoad->playerName);
+    $initialLoad->opponentMetafyTiers = GetUserMetafyCommunities($initialLoad->opponentName);
 
     $initialLoad->altArts = [];   
     $initialLoad->opponentAltArts = [];
