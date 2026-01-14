@@ -851,6 +851,7 @@ function IsTeamSnapDragons($userName)
     case "Snaps":
     case "TheGlib":
     case "PvtVoid":
+    case "TheJudester":
       return true;
     default:
       break;
