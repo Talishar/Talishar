@@ -833,7 +833,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				"pitchValue" => PitchValue($cardStats[$i]),
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
 			];
-			if (TypeContains($cardType, "E") || TypeContains($cardType, "W") || TypeContains($cardType, "Companion")) {
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
 				array_push($deck["arenaCardResults"], $cardResult);
 			} else {
 				array_push($deck["tokenResults"], $cardResult);
@@ -959,7 +959,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				"pitchValue" => PitchValue($cardStats[$i]),
 				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
 			];
-			if (TypeContains($cardType, "E") || TypeContains($cardType, "W") || TypeContains($cardType, "Companion")) {
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
 				array_push($deck["arenaCardResults"], $cardResult);
 			} else {
 				array_push($deck["tokenResults"], $cardResult);
