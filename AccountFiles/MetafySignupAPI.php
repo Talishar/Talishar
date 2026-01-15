@@ -83,16 +83,9 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   $response->error = 'No authorization code provided';
 }
 
-// Output HTML redirect instead of JSON for browser compatibility
-if ($response->message === 'ok') {
-  // Store login response in session for pickup by frontend
-  $_SESSION['metafy_login_response'] = json_encode($response);
-  echo '<script>window.location.href = "/";</script>';
-} else {
-  // Store error in session
-  $_SESSION['metafy_login_error'] = $response->error;
-  echo '<script>window.location.href = "/login?error=' . urlencode($response->error) . '";</script>';
-}
+// Return JSON response for frontend to handle
+echo json_encode($response);
+exit;
 
 /**
  * Fetch user profile from Metafy API
