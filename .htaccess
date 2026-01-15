@@ -2,6 +2,11 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
+  # Allow direct access to AccountFiles directory (OAuth callbacks, etc)
+  RewriteCond %{REQUEST_URI} ^/AccountFiles/ [OR]
+  RewriteCond %{REQUEST_URI} ^/game/AccountFiles/
+  RewriteRule ^ - [L]
+  
   # Redirect ads.txt to rev.iq external ads.txt (301 permanent redirect)
   RewriteRule ^ads\.txt$ https://rev.iq/talishar.net/ads.txt [R=301,L]
   
