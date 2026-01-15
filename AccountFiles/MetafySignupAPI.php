@@ -10,8 +10,9 @@ SetHeaders();
 
 $response = new stdClass();
 
-$client_id = $metafyClientID ?? '';
-$client_secret = $metafyClientSecret ?? '';
+// Use the "Talishar Login" app credentials for signup/login flow
+$client_id = $metafyLoginClientID ?? '';
+$client_secret = $metafyLoginClientSecret ?? '';
 $redirect_uri = 'https://talishar.net/AccountFiles/MetafySignupAPI.php';
 
 // Exchange the authorization code for tokens
