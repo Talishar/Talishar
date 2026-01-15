@@ -166,10 +166,21 @@ if ($decklink != "") {
   $curl = curl_init();
   $isFaBDB = str_contains($decklink, "fabdb");
   $isFaBMeta = str_contains($decklink, "fabmeta");
+  $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
   if ($isFaBDB) {
     $decklinkArr = explode("/", $decklink);
     $slug = $decklinkArr[count($decklinkArr) - 1];
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
+  } else if ($isFaBTCGMeta) {
+    $parsedUrl = parse_url($decklink);
+    if (isset($parsedUrl['query'])) {
+      parse_str($parsedUrl['query'], $queryParams);
+      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
+    } else {
+      $decklinkArr = explode("/", $decklink);
+      $deckId = $decklinkArr[count($decklinkArr) - 1];
+    }
+    $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
   } else if (str_contains($decklink, "fabrary")) {
     $headers = array(
       "x-api-key: " . $FaBraryKey,
