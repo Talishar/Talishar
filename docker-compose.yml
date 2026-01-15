@@ -39,7 +39,7 @@ services:
       REDIS_ENABLED: "true"
       DOMAIN: "localhost"
       METAFY_CLIENT_ID: "4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI"
-      METAFY_LOGIN_CLIENT_ID: "mq4BefpUIWArURG8QOd1_oRfijB7BjzEmHNJf-yZmn0"
+      METAFY_LOGIN_CLIENT_ID: "2gAjeLUQxKdjOUaMP63CyoVHqedqkjQLa-WntE6UHss"
   mysql-server:
     image: mysql:lts
     restart: always
