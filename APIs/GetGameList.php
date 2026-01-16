@@ -151,6 +151,11 @@ if ($handle = opendir($path)) {
           continue;
         }
         
+        // Don't show games created by banned players
+        if($gameCreator != "-" && $gameCreator != "" && IsBanned($gameCreator)) {
+          continue;
+        }
+        
         $gameInProgress = new stdClass();
         $gameInProgress->p1Hero = GetCachePiece($gameToken, 7);
         $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
@@ -213,6 +218,11 @@ if ($handle = opendir($path)) {
         
         // Don't show open games from users who have blocked me
         if(in_array($p1uid, $usersWhoBlockedMe)) {
+          continue;
+        }
+        
+        // Don't show open games created by banned players
+        if($p1uid != "-" && $p1uid != "" && IsBanned($p1uid)) {
           continue;
         }
         
