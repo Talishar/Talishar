@@ -6,6 +6,8 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Libraries/HTTPLibraries.php';
 
+CheckSession();
+
 SetHeaders();
 
 $response = new stdClass();
