@@ -21,6 +21,9 @@ function IsDevEnvironment() {
 // array holding allowed Origin domains
 SetHeaders();
 
+// Enable detection of user disconnections (refresh, close tab, etc.)
+ignore_user_abort(true);
+
 header('Content-Type: application/json; charset=utf-8');
 $response = new stdClass();
 $response->playerInventory = []; // Initialize inventory array
@@ -105,7 +108,10 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   //  Check file existence less frequently (every 2 seconds, conservative)
   $currentRealTime = microtime(true);
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
-    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) break;
+    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
+      echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
+      exit;
+    }
     $lastFileCheckTime = $currentRealTime;
   }
   
@@ -142,6 +148,12 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   ++$count;
   if ($count == 100) break;
+  
+  // Check if client disconnected (e.g., user refreshed page)
+  if (connection_aborted()) {
+    exit;
+  }
+  
   // Increase sleep time exponentially, capped at 500ms
   $sleepMs = min($sleepMs * 1.5, 500);
 }

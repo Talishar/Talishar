@@ -57,15 +57,28 @@ $lastOppStatus = 0;
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 1.0;
 $gameFileExists = true;
+$lastConnectionCheck = microtime(true);
+$connectionCheckInterval = 2.0; // Check connection every 2 seconds
 
 while (true) {
-  // Check client connection and game file existence (early exit)
-  if (connection_aborted()) exit;
-  
   $currentRealTime = microtime(true);
+  
+  // Check client connection more frequently to detect refreshes/disconnects
+  if ($currentRealTime - $lastConnectionCheck >= $connectionCheckInterval) {
+    if (connection_aborted()) exit;
+    $lastConnectionCheck = $currentRealTime;
+  }
+  
+  // Check if game file still exists
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
     $lastFileCheckTime = $currentRealTime;
+  }
+  
+  // Check if game is over (status 99)
+  $gameStatus = intval(GetCachePiece($gameName, 14));
+  if ($gameStatus == 99) {
+    exit;
   }
   
   ++$count;
