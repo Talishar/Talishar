@@ -2,7 +2,15 @@
   function IsUserLoggedIn()
   {
     CheckSession();
-    return isset($_SESSION['useruid']);
+    if (!isset($_SESSION['useruid'])) {
+      return false;
+    }
+    if (IsSessionExpired()) {
+      ClearLoginSession();
+      return false;
+    }
+    UpdateSessionActivity();
+    return true;
   }
 
   function LoggedInUser()
@@ -77,6 +85,24 @@
     return $_SESSION["lastAuthKey"];
   }
 
+  function UpdateSessionActivity()
+  {
+    CheckSession();
+    $_SESSION['last_activity'] = time();
+  }
+
+  function IsSessionExpired()
+  {
+    CheckSession();
+    $maxInactivity = 86400; // 24 hours
+    if (isset($_SESSION['last_activity'])) {
+      if (time() - $_SESSION['last_activity'] > $maxInactivity) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   function ClearLoginSession()
   {
     // Only start session if it's not already active
@@ -102,6 +128,7 @@
       }
       ini_set('session.use_strict_mode', 1);
       ini_set('session.cookie_samesite', 'Lax');
+      ini_set('session.gc_maxlifetime', 86400);
       
       session_start();
       
@@ -126,6 +153,7 @@
       }
       ini_set('session.use_strict_mode', 1);
       ini_set('session.cookie_samesite', 'Lax');
+      ini_set('session.gc_maxlifetime', 86400);
       
       session_start();
       session_regenerate_id(true);
