@@ -393,6 +393,12 @@ if ($decklink != "") {
 
   //We have the decklist, now write to file
   $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+  $origFilename = "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt";
+  
+  // Ensure any old deck files are removed before writing new ones
+  if (file_exists($filename)) unlink($filename);
+  if (file_exists($origFilename)) unlink($origFilename);
+  
   $deckFile = fopen($filename, "w");
   $charString = $character;
   if ($weapon1 != "") $charString .= " " . $weapon1;
