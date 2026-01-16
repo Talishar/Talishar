@@ -9,9 +9,10 @@
 /**
  * Extract turn order preference from a single matchup
  * Fabrary sends preferredTurnOrder as: "First", "Second", "NoPreference", or undefined
+ * Also extracts and preserves notes field
  * 
  * @param mixed $matchup The matchup data from Fabrary (array or object)
- * @return object The matchup with standardized preferredTurnOrder field
+ * @return object The matchup with standardized preferredTurnOrder field and notes
  */
 function ExtractTurnOrderPreference($matchup) {
     // Convert to object if it's an array
@@ -42,6 +43,11 @@ function ExtractTurnOrderPreference($matchup) {
             // Fallback for any other value - treat as no preference
             $matchup->preferredTurnOrder = null;
         }
+    }
+    
+    // Ensure notes field exists (preserve from Fabrary if present)
+    if (!isset($matchup->notes)) {
+        $matchup->notes = null;
     }
     
     return $matchup;
