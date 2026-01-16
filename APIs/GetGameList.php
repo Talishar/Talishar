@@ -33,7 +33,7 @@ $response->canSeeQueue = $canSeeQueue;
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
-else if(IsUserLoggedIn()) $isShadowBanned = IsBanned(LoggedInUserName());
+else if(IsUserLoggedIn()) $isShadowBanned = IsBannedPlayer(LoggedInUserName());
 
 // Get blocked users list for filtering
 $blockedUserNames = [];
@@ -152,7 +152,7 @@ if ($handle = opendir($path)) {
         }
         
         // Don't show games created by banned players
-        if($gameCreator != "-" && $gameCreator != "" && IsBanned($gameCreator)) {
+        if($gameCreator != "-" && $gameCreator != "" && IsBannedPlayer($gameCreator)) {
           continue;
         }
         
@@ -222,7 +222,7 @@ if ($handle = opendir($path)) {
         }
         
         // Don't show open games created by banned players
-        if($p1uid != "-" && $p1uid != "" && IsBanned($p1uid)) {
+        if($p1uid != "-" && $p1uid != "" && IsBannedPlayer($p1uid)) {
           continue;
         }
         
