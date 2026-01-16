@@ -98,7 +98,7 @@ $cacheVal = intval(GetCachePiece($gameName, 1));
 $otherPlayer = $playerID == 1 ? 2 : 1;
 
 // This reduces CPU spinning and returns faster on updates
-$sleepMs = 50; // Start with 50ms (faster response)
+$sleepMs = 100; // Start with 100ms
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 2.0; // Check file every 2 seconds (conservative, safe interval)
 
@@ -155,7 +155,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   }
   
   // Increase sleep time exponentially, capped at 500ms
-  $sleepMs = min($sleepMs * 1.5, 500);
+  //Let's try removing this to see if it improves responsiveness
+  //$sleepMs = min($sleepMs * 1.5, 500);
 }
 
 if($count == 100) $lastUpdate = 0; //If we waited the full 10 seconds with nothing happening, send back an update in case it got stuck

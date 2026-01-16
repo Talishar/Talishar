@@ -92,7 +92,7 @@ while (true) {
     ob_flush();
     flush();
     set_time_limit(120);
-    $sleepMs = 50;
+    //$sleepMs = 50;
   }
 
   if($isGamePlayer) {
@@ -146,5 +146,5 @@ while (true) {
 
   // Wait with exponential backoff (50ms → 500ms cap)
   usleep(intval($sleepMs * 1000));
-  $sleepMs = min($sleepMs * 1.5, 500);
+  //$sleepMs = min($sleepMs * 1.5, 500);
 }
