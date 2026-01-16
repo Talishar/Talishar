@@ -606,7 +606,7 @@ function SearchUsers($searchTerm, $limit = 10) {
   $limit = max($limit, 1);
   
   $searchPattern = '%' . $searchTerm . '%';
-  $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? LIMIT ?";
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? COLLATE utf8mb4_general_ci LIMIT ?";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return [];
