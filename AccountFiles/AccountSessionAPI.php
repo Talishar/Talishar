@@ -39,28 +39,29 @@
     if(isset($_SESSION["useruid"])) {
       $userName = $_SESSION["useruid"];
       $conn = GetDBConnection();
-      $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-      $stmt = mysqli_stmt_init($conn);
-      if (mysqli_stmt_prepare($stmt, $sql)) {
-        mysqli_stmt_bind_param($stmt, 's', $userName);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
-        mysqli_stmt_close($stmt);
-        
-        if ($row && !empty($row['metafyCommunities'])) {
-          $communities = json_decode($row['metafyCommunities'], true);
-          if (is_array($communities)) {
-            // Check if Talishar community (UUID: be5e01c0-02d1-4080-b601-c056d69b03f6) is in the list
-            foreach($communities as $community) {
-              if(isset($community['id']) && $community['id'] === 'be5e01c0-02d1-4080-b601-c056d69b03f6') {
-                return "1";
+      if ($conn) {
+        $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+        $stmt = mysqli_stmt_init($conn);
+        if (mysqli_stmt_prepare($stmt, $sql)) {
+          mysqli_stmt_bind_param($stmt, 's', $userName);
+          mysqli_stmt_execute($stmt);
+          $result = mysqli_stmt_get_result($stmt);
+          $row = mysqli_fetch_assoc($result);
+          mysqli_stmt_close($stmt);
+          
+          if ($row && !empty($row['metafyCommunities'])) {
+            $communities = json_decode($row['metafyCommunities'], true);
+            if (is_array($communities)) {
+              // Check if Talishar community (UUID: be5e01c0-02d1-4080-b601-c056d69b03f6) is in the list
+              foreach($communities as $community) {
+                if(isset($community['id']) && $community['id'] === 'be5e01c0-02d1-4080-b601-c056d69b03f6') {
+                  return "1";
+                }
               }
             }
           }
         }
       }
-      mysqli_close($conn);
     }
     
     return "0";
@@ -76,13 +77,13 @@
   function SessionLastGamePlayerID()
   {
     CheckSession();
-    return $_SESSION["lastPlayerId"];
+    return $_SESSION["lastPlayerId"] ?? null;
   }
 
   function SessionLastAuthKey()
   {
     CheckSession();
-    return $_SESSION["lastAuthKey"];
+    return $_SESSION["lastAuthKey"] ?? null;
   }
 
   function UpdateSessionActivity()
@@ -144,19 +145,7 @@
   
   function SecureSessionStart()
   {
-    if (session_status() === PHP_SESSION_NONE) {
-      // Set secure session parameters
-      ini_set('session.cookie_httponly', 1);
-      // Only set secure flag if we're on HTTPS
-      if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-        ini_set('session.cookie_secure', 1);
-      }
-      ini_set('session.use_strict_mode', 1);
-      ini_set('session.cookie_samesite', 'Lax');
-      ini_set('session.gc_maxlifetime', 86400);
-      
-      session_start();
-      session_regenerate_id(true);
-    }
+    CheckSession();
+    session_regenerate_id(true);
   }
 ?>
