@@ -18,16 +18,6 @@ $redirect_uri = 'https://talishar.net/auth/metafy-signup';
 // Exchange the authorization code for tokens
 if (isset($_GET['code']) && !empty($_GET['code'])) {
   $code = $_GET['code'];
-  
-  // Prevent duplicate requests by checking if this code was already processed
-  session_start();
-  if (isset($_SESSION['metafy_last_code']) && $_SESSION['metafy_last_code'] === $code) {
-    error_log('[MetafySignupAPI] Duplicate request detected - code already processed');
-    $response->error = 'Authorization code already used';
-    echo json_encode($response);
-    exit;
-  }
-  $_SESSION['metafy_last_code'] = $code;
   error_log('[MetafySignupAPI] Received authorization code: ' . substr($code, 0, 10) . '...');
   error_log('[MetafySignupAPI] Redirect URI: ' . $redirect_uri);
   
