@@ -6,3 +6,5 @@ ALTER TABLE friends ADD COLUMN nickname VARCHAR(50) DEFAULT NULL AFTER status;
 
 -- Add index for faster queries if needed
 CREATE INDEX idx_nickname ON friends(nickname);
+
+ALTER TABLE friends ADD INDEX idx_user_status_created (userId, status, createdAt);
