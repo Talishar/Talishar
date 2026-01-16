@@ -147,6 +147,13 @@ if (IsUserLoggedIn() && $playerID != 3) {
   }
 }
 
+if ($joinerName != "Player 2" && IsBanned($joinerName)) {
+  if ($p1uid != $joinerName) {
+    WriteGameFile();
+    exit;
+  }
+}
+
 if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
   if ($gameStatus >= $MGS_GameStarted) {
     $response->gameStarted = true;
