@@ -92,7 +92,7 @@ while (true) {
     ob_flush();
     flush();
     set_time_limit(120);
-    //$sleepMs = 50;
+    $sleepMs = 100;
   }
 
   if($isGamePlayer) {
