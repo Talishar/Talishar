@@ -19,6 +19,18 @@ $redirect_uri = 'https://talishar.net/auth/metafy-signup';
 if (isset($_GET['code']) && !empty($_GET['code'])) {
   $code = $_GET['code'];
   
+  // Prevent duplicate requests by checking if this code was already processed
+  session_start();
+  if (isset($_SESSION['metafy_last_code']) && $_SESSION['metafy_last_code'] === $code) {
+    error_log('[MetafySignupAPI] Duplicate request detected - code already processed');
+    $response->error = 'Authorization code already used';
+    echo json_encode($response);
+    exit;
+  }
+  $_SESSION['metafy_last_code'] = $code;
+  error_log('[MetafySignupAPI] Received authorization code: ' . substr($code, 0, 10) . '...');
+  error_log('[MetafySignupAPI] Redirect URI: ' . $redirect_uri);
+  
   // Exchange the code for tokens using the correct Metafy endpoint
   $token_url = 'https://metafy.gg/irk/oauth/token';
   
@@ -27,6 +39,9 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     'code' => $code,
     'redirect_uri' => $redirect_uri
   );
+  
+  error_log('[MetafySignupAPI] Token exchange request: ' . json_encode($post_fields));
+  error_log('[MetafySignupAPI] Using client_id: ' . substr($client_id, 0, 10) . '...');
   
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $token_url);
@@ -45,9 +60,16 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   $curl_error = curl_error($ch);
   curl_close($ch);
   
+  error_log('[MetafySignupAPI] Token exchange HTTP code: ' . $http_code);
+  if ($curl_error) {
+    error_log('[MetafySignupAPI] cURL error: ' . $curl_error);
+  }
+  error_log('[MetafySignupAPI] Token response: ' . $token_response);
+  
   $tokens = json_decode($token_response, true);
   
   if (isset($tokens['access_token'])) {
+    error_log('[MetafySignupAPI] Successfully obtained access token');
     $access_token = $tokens['access_token'];
     $refresh_token = $tokens['refresh_token'] ?? '';
     
@@ -55,14 +77,18 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     $user_profile = GetMetafyUserProfile($access_token);
     
     if ($user_profile && isset($user_profile['id'])) {
+      error_log('[MetafySignupAPI] User profile retrieved for user ID: ' . $user_profile['id']);
       // Create or find user account
       $userID = CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token);
       
       if ($userID) {
+        error_log('[MetafySignupAPI] User account created/updated with ID: ' . $userID);
         // Log the user in
         $_SESSION['userid'] = $userID;
         $_SESSION['useruid'] = $user_profile['username'] ?? $user_profile['email'] ?? $userID;
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
+        
+        error_log('[MetafySignupAPI] User logged in successfully: ' . $_SESSION['useruid']);
         
         $response->message = 'ok';
         $response->redirect = '/game/MainMenu.php';
@@ -71,15 +97,22 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $response->loggedInUserName = $_SESSION['useruid'];
         $response->isPatron = $_SESSION['isPatron'];
       } else {
+        error_log('[MetafySignupAPI] Failed to create or update user account');
         $response->error = 'Failed to create or update user account';
       }
     } else {
+      error_log('[MetafySignupAPI] Failed to fetch user profile from Metafy');
       $response->error = 'Failed to fetch user profile from Metafy';
     }
   } else {
-    $response->error = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
+    $error_msg = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
+    $error_description = isset($tokens['error_description']) ? $tokens['error_description'] : 'No description';
+    error_log('[MetafySignupAPI] Token exchange failed - Error: ' . $error_msg . ', Description: ' . $error_description);
+    $response->error = $error_msg;
+    $response->error_description = $error_description;
   }
 } else {
+  error_log('[MetafySignupAPI] No authorization code provided in request. GET params: ' . json_encode($_GET));
   $response->error = 'No authorization code provided';
 }
 
@@ -94,6 +127,9 @@ function GetMetafyUserProfile($access_token)
 {
   $url = 'https://metafy.gg/irk/api/v1/me';
   
+  error_log('[MetafySignupAPI] GetMetafyUserProfile: Fetching user profile from ' . $url);
+  error_log('[MetafySignupAPI] GetMetafyUserProfile: Using access token: ' . substr($access_token, 0, 10) . '...');
+  
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -105,13 +141,33 @@ function GetMetafyUserProfile($access_token)
   
   $response = curl_exec($ch);
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $curl_error = curl_error($ch);
   curl_close($ch);
   
+  error_log('[MetafySignupAPI] GetMetafyUserProfile: HTTP Code: ' . $http_code);
+  if ($curl_error) {
+    error_log('[MetafySignupAPI] GetMetafyUserProfile: cURL error: ' . $curl_error);
+  }
+  error_log('[MetafySignupAPI] GetMetafyUserProfile: Response: ' . $response);
+  
   if ($http_code === 200) {
-    return json_decode($response, true);
+    $profile = json_decode($response, true);
+    // Metafy API returns user data nested under 'user' key
+    if (isset($profile['user'])) {
+      $user_data = $profile['user'];
+      // Map 'slug' to 'username' for consistency
+      if (isset($user_data['slug']) && !isset($user_data['username'])) {
+        $user_data['username'] = $user_data['slug'];
+      }
+      error_log('[MetafySignupAPI] GetMetafyUserProfile: Successfully decoded profile for user: ' . ($user_data['username'] ?? $user_data['email'] ?? 'unknown'));
+      return $user_data;
+    } else {
+      error_log('[MetafySignupAPI] GetMetafyUserProfile: Response missing user key');
+      return null;
+    }
   }
   
-  error_log('[MetafySignupAPI] Failed to fetch user profile. HTTP Code: ' . $http_code . ' Response: ' . $response);
+  error_log('[MetafySignupAPI] GetMetafyUserProfile: Failed - HTTP Code: ' . $http_code);
   return null;
 }
 

@@ -20,6 +20,8 @@ $redirect_uri = 'https://talishar.net/user/profile/linkmetafy';
 
 if (isset($_GET['code']) && !empty($_GET['code'])) {
   $code = $_GET['code'];
+  error_log('[MetafyLoginAPI] Received authorization code: ' . substr($code, 0, 10) . '...');
+  error_log('[MetafyLoginAPI] Redirect URI: ' . $redirect_uri);
   
   // Exchange the code for tokens using the correct Metafy endpoint
   $token_url = 'https://metafy.gg/irk/oauth/token';
@@ -29,6 +31,9 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     'code' => $code,
     'redirect_uri' => $redirect_uri
   );
+  
+  error_log('[MetafyLoginAPI] Token exchange request: ' . json_encode($post_fields));
+  error_log('[MetafyLoginAPI] Using client_id: ' . substr($client_id, 0, 10) . '...');
   
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $token_url);
@@ -47,6 +52,12 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   $curl_error = curl_error($ch);
   curl_close($ch);
   
+  error_log('[MetafyLoginAPI] Token exchange HTTP code: ' . $http_code);
+  if ($curl_error) {
+    error_log('[MetafyLoginAPI] cURL error: ' . $curl_error);
+  }
+  error_log('[MetafyLoginAPI] Token response: ' . $token_response);
+  
   $tokens = json_decode($token_response, true);
   $response->tokens = $tokens;
   
@@ -56,17 +67,26 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     $response->access_token = $access_token;
     $response->refresh_token = $refresh_token;
     
+    error_log('[MetafyLoginAPI] Successfully obtained access token');
+    
     // Save the access and refresh tokens for this user
     SaveMetafyTokens($access_token, $refresh_token);
+    error_log('[MetafyLoginAPI] Tokens saved for user');
     
     // Fetch user's communities
+    error_log('[MetafyLoginAPI] Fetching user communities');
     FetchAndSaveMetafyCommunities($access_token);
   } else {
-    $response->error = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
+    $error_msg = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
+    $error_description = isset($tokens['error_description']) ? $tokens['error_description'] : 'No description';
+    error_log('[MetafyLoginAPI] Token exchange failed - Error: ' . $error_msg . ', Description: ' . $error_description);
+    $response->error = $error_msg;
+    $response->error_description = $error_description;
   }
   
   $response->message = 'ok';
 } else {
+  error_log('[MetafyLoginAPI] No authorization code provided in request. GET params: ' . json_encode($_GET));
   $response->error = 'no code set';
 }
 
@@ -75,26 +95,38 @@ echo (json_encode($response));
 function SaveMetafyTokens($accessToken, $refreshToken)
 {
   if (!isset($_SESSION['userid'])) {
+    error_log('[MetafyLoginAPI] SaveMetafyTokens: No user session found');
     return;
   }
   $userID = $_SESSION['userid'];
+  error_log('[MetafyLoginAPI] SaveMetafyTokens: Saving tokens for user ID: ' . $userID);
   $conn = GetDBConnection();
   $sql = 'UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?';
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_bind_param($stmt, 'sss', $accessToken, $refreshToken, $userID);
     $result = mysqli_stmt_execute($stmt);
+    if ($result) {
+      error_log('[MetafyLoginAPI] SaveMetafyTokens: Tokens saved successfully');
+    } else {
+      error_log('[MetafyLoginAPI] SaveMetafyTokens: Failed to save tokens - ' . mysqli_error($conn));
+    }
     mysqli_stmt_close($stmt);
   } else {
+    error_log('[MetafyLoginAPI] SaveMetafyTokens: Failed to prepare statement - ' . mysqli_error($conn));
   }
   mysqli_close($conn);
 }
 
 function FetchAndSaveMetafyCommunities($access_token)
 {
-  if (!isset($_SESSION['userid'])) return;
+  if (!isset($_SESSION['userid'])) {
+    error_log('[MetafyLoginAPI] FetchAndSaveMetafyCommunities: No user session found');
+    return;
+  }
   
   $userID = $_SESSION['userid'];
+  error_log('[MetafyLoginAPI] FetchAndSaveMetafyCommunities: Starting fetch for user ID: ' . $userID);
   $conn = GetDBConnection();
   
   $all_communities = array();
