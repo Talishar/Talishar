@@ -37,7 +37,6 @@ else if(IsUserLoggedIn()) $isShadowBanned = IsBannedPlayer(LoggedInUserName());
 
 // If player is actually banned, return empty game list
 if(IsUserLoggedIn() && IsBannedPlayer(LoggedInUserName())) {
-  closedir($handle);
   echo json_encode($response);
   exit;
 }
@@ -92,6 +91,7 @@ if(IsUserLoggedIn()) {
 }
 
 $gameInProgressCount = 0;
+$autoDeleteGames = false; // Set to true to enable automatic deletion of old game directories
 if ($handle = opendir($path)) {
   $checkFileCreationTime = random_int(1, 1000) == 42;
   while (false !== ($folder = readdir($handle))) {
@@ -281,7 +281,12 @@ function deleteDirectory($dir) {
         return unlink($dir);
     }
 
-    foreach (scandir($dir) as $item) {
+    $items = @scandir($dir);
+    if ($items === false) {
+        return true; // Directory was deleted by another process
+    }
+
+    foreach ($items as $item) {
         if ($item == '.' || $item == '..') {
             continue;
         }
@@ -296,6 +301,9 @@ function deleteDirectory($dir) {
         }
     }
 
-    return rmdir($dir);
+    if (is_dir($dir)) {
+        return @rmdir($dir);
+    }
+    return true;
 }
 
