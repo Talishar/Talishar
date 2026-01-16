@@ -17,7 +17,7 @@ function GetUserMetafyCommunities($userName)
   if ($userName === "PvtVoid") {
     return ['Fyendal Supporters', 'Seers of Ophidia', 'Arknight Shards', 'Light of Sol Gemini Circle', 'Lover of Grandeur', 'Sponsors of Trōpal-Dhani'];
   } */
-
+  if (IsDevEnvironment()) return [];
   // Get access token from database
   $conn = GetDBConnection();
   $sql = "SELECT metafyAccessToken FROM users WHERE usersUid=?";
