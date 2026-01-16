@@ -35,6 +35,16 @@ $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 else if(IsUserLoggedIn()) $isShadowBanned = IsBannedPlayer(LoggedInUserName());
 
+// If player is actually banned, return empty game list
+if(IsUserLoggedIn() && IsBannedPlayer(LoggedInUserName())) {
+  closedir($handle);
+  echo json_encode($response);
+  exit;
+}
+
+// Get banned players list for filtering
+$bannedPlayers = GetBannedPlayers();
+
 // Get blocked users list for filtering
 $blockedUserNames = [];
 $usersWhoBlockedMe = [];
@@ -141,6 +151,11 @@ if ($handle = opendir($path)) {
           continue;
         }
         
+        // Don't show games from banned users
+        if(isset($bannedPlayers[strtolower($gameCreator)]) || isset($bannedPlayers[strtolower($p2Username)])) {
+          continue;
+        }
+        
         // Don't show games from blocked users
         if(in_array($gameCreator, $blockedUserNames) || in_array($p2Username, $blockedUserNames)) {
           continue;
@@ -203,6 +218,11 @@ if ($handle = opendir($path)) {
         
         // Don't show if not visible
         if(!$showGame) {
+          continue;
+        }
+        
+        // Don't show open games from banned users
+        if(isset($bannedPlayers[strtolower($p1uid)])) {
           continue;
         }
         
