@@ -4,7 +4,6 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
-include_once "../Libraries/FriendLibraries.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 require_once '../Assets/patreon-php-master/src/API.php';
 include_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
@@ -48,7 +47,7 @@ if (!isset($_SESSION["userid"])) {
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
-else if(isset($_SESSION["useruid"])) $isShadowBanned = IsBanned($_SESSION["useruid"]);
+else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
@@ -57,8 +56,6 @@ if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"]
   exit;
 }
 
-// User is allowed to create a game even if banned, but it will be hidden
-// (The visibility will be set to 0 in the game file)
 if (isset($_SESSION["userid"])) {
   //Save game creation settings
   include_once '../includes/functions.inc.php';
@@ -134,13 +131,7 @@ $handler = fopen($filename, "w");
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
-// If creator is banned, force visibility to private (0) to hide from GameList
-$creatorBanned = isset($_SESSION["useruid"]) && IsBanned($_SESSION["useruid"]);
-if ($creatorBanned) {
-  $cacheVisibility = "0"; // Force private/hidden
-} else {
-  $cacheVisibility = ($visibility == "public" ? "1" : ($visibility == "friends-only" ? "2" : "0"));
-}
+$cacheVisibility = ($visibility == "public" ? "1" : ($visibility == "friends-only" ? "2" : "0"));
 WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $cacheVisibility . "!0!0!0!" . FormatCode($format) . "!" . $gameStatus . "!0!0"); //Initialize SHMOP cache for this game
 
 $playerID = 1;
