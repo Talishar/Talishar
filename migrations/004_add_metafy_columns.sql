@@ -6,6 +6,7 @@
 
 ALTER TABLE users ADD metafyAccessToken VARCHAR(500) DEFAULT NULL COMMENT 'Metafy OAuth access token';
 ALTER TABLE users ADD metafyRefreshToken VARCHAR(500) DEFAULT NULL COMMENT 'Metafy OAuth refresh token';
+ALTER TABLE users ADD metafyID VARCHAR(255) DEFAULT NULL COMMENT 'Metafy user ID (UUID)';
 ALTER TABLE users ADD metafyCommunities LONGTEXT DEFAULT NULL COMMENT 'JSON-encoded array of communities user supports on Metafy';
 
 -- Add indexes for efficient queries if needed in future
