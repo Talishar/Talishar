@@ -64,7 +64,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
       AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
       break;
     case "null_time_zone_blue":
-      AddLayer("TRIGGER", $player, $cardID);
+      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     default:
       break;
