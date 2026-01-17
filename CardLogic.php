@@ -3888,10 +3888,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         GainHealth(1, $player);
         break;
       case "null_time_zone_blue":
+        $Items = new Items($player);
+        $ItemCard = $Items->FindCardUID($uniqueID);
         AddDecisionQueue("INPUTCARDNAME", $player, "-");
         AddDecisionQueue("SETDQVAR", $player, "0");
         AddDecisionQueue("WRITELOG", $player, "📣<b>{0}</b> was chosen");
-        AddDecisionQueue("NULLTIMEZONE", $player, SearchItemForLastIndex($parameter, $player).",{0}");
+        AddDecisionQueue("NULLTIMEZONE", $player, $ItemCard->Index().",{0}");
         break;
       case "zap_clappers":
         if (CanRevealCards($player) && !IsAllyAttacking()) {
