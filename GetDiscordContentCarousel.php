@@ -6,7 +6,10 @@
  * Returns YouTube and Twitch videos in a carousel format
  * 
  * Graceful error handling - returns empty carousel on any error (HTTP 200)
+ * Uses APCu caching (10 minute TTL) to reduce Discord API calls
  */
+
+include 'Libraries/APCuCache.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -19,6 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 http_response_code(200);
 
 try {
+    // Check cache first
+    $cacheKey = 'discord_carousel_videos';
+    $cachedResult = APCuCache::get($cacheKey);
+    if ($cachedResult !== null) {
+        echo json_encode($cachedResult);
+        exit;
+    }
+    
     $maxMessages = isset($_GET['maxMessages']) ? (int)$_GET['maxMessages'] : 100;
     $maxMessages = min($maxMessages, 100);
     
@@ -148,12 +159,17 @@ try {
     $final = array_values($byAuthor);
     usort($final, fn($a, $b) => strtotime($b['timestamp'] ?? '0') - strtotime($a['timestamp'] ?? '0'));
     
-    echo json_encode([
+    $result = [
         'success' => true,
         'count' => count($final),
         'videos' => array_slice($final, 0, 12),
         'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#talishar-content'
-    ]);
+    ];
+    
+    // Cache the result for 10 minutes
+    APCuCache::set($cacheKey, $result, 600);
+    
+    echo json_encode($result);
     
 } catch (Exception $e) {
     error_log('GetDiscordContentCarousel: ' . $e->getMessage());

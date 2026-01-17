@@ -3,6 +3,7 @@
  * GetDiscordReleaseNotes.php
  * 
  * Fetches the latest messages from the Discord #release-notes channel
+ * Uses APCu caching (10 minute TTL) to reduce Discord API calls
  * 
  * Requires:
  * - DISCORD_BOT_TOKEN environment variable
@@ -10,6 +11,8 @@
  * 
  * Usage: GET /GetDiscordReleaseNotes.php?maxMessages=5
  */
+
+include 'Libraries/APCuCache.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -23,6 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 try {
+    // Check cache first
+    $cacheKey = 'discord_release_notes';
+    $cachedResult = APCuCache::get($cacheKey);
+    if ($cachedResult !== null) {
+        http_response_code(200);
+        echo json_encode($cachedResult);
+        exit;
+    }
+    
     $maxMessages = isset($_GET['maxMessages']) ? (int)$_GET['maxMessages'] : 5;
     $maxMessages = min($maxMessages, 100); // Cap at 100 messages (Discord API max per request)
     
@@ -166,11 +178,16 @@ try {
         return strtotime($b['timestamp']) - strtotime($a['timestamp']);
     });
     
-    http_response_code(200);
-    echo json_encode([
+    $result = [
         'messages' => array_slice($data, 0, $maxMessages),
         'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#release-notes'
-    ]);
+    ];
+    
+    // Cache the result for 10 minutes
+    APCuCache::set($cacheKey, $result, 600);
+    
+    http_response_code(200);
+    echo json_encode($result);
     
 } catch (Exception $e) {
     error_log("Discord fetch error: " . $e->getMessage());
