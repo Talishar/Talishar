@@ -29,6 +29,27 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 
+// Attempt to restore session from lastAuthKey cookie if session is empty
+if (empty($_SESSION['useruid']) && isset($_COOKIE['lastAuthKey'])) {
+  $authKey = $_COOKIE['lastAuthKey'];
+  $conn = GetDBConnection();
+  if ($conn) {
+    $sql = "SELECT usersUid, usersId FROM users WHERE lastAuthKey = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_stmt_bind_param($stmt, 's', $authKey);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+      if ($row = mysqli_fetch_assoc($result)) {
+        $_SESSION['useruid'] = $row['usersUid'];
+        $_SESSION['userid'] = $row['usersId'];
+        $_SESSION['last_activity'] = time();
+      }
+      mysqli_stmt_close($stmt);
+    }
+  }
+}
+
 header('Content-Type: application/json');
 
 // Check if user is logged in

@@ -174,6 +174,7 @@ if ($handle = opendir($path)) {
         $gameInProgress->format = GetCachePiece($gameToken, 13);
         $gameInProgress->gameCreator = $gameCreator;
         $gameInProgress->p2Username = $p2Username;
+        $gameInProgress->visibility = $visibility;
         
         if($gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") array_push($response->gamesInProgress, $gameInProgress);
       }
@@ -259,6 +260,7 @@ if ($handle = opendir($path)) {
         $openGame->description = $description;
         $openGame->gameName = $gameToken;
         $openGame->gameCreator = $p1uid;
+        $openGame->visibility = $visibility;
         if($isShadowBanned) {
           if($format == "shadowblitz" || $format == "shadowcc") array_push($response->openGames, $openGame);
         } else {

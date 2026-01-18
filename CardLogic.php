@@ -4043,7 +4043,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SETDQCONTEXT", $player, CardLink($parameter, $parameter) . ": choose a card to discard (or pass and lose 2 health)");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        AddDecisionQueue("ADDDISCARD", $player, "-", 1);
+        AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
         AddDecisionQueue("NOTEQUALPASS", $player, "PASS");
         AddDecisionQueue("PASSPARAMETER", $player, "2", 1);
         AddDecisionQueue("OP", $mainPlayer, "PLAYERLOSEHEALTH", 1);
