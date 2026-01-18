@@ -173,13 +173,8 @@ if ($decklink != "") {
     $apiLink = "https://api.fabdb.net/decks/" . $slug;
   } else if ($isFaBTCGMeta) {
     $parsedUrl = parse_url($decklink);
-    if (isset($parsedUrl['query'])) {
-      parse_str($parsedUrl['query'], $queryParams);
-      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
-    } else {
-      $decklinkArr = explode("/", $decklink);
-      $deckId = $decklinkArr[count($decklinkArr) - 1];
-    }
+    parse_str($parsedUrl['query'], $queryParams);
+    $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
     $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
   } else if (str_contains($decklink, "fabrary")) {
     $headers = array(
