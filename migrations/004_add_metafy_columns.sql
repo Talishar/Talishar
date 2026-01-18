@@ -11,3 +11,9 @@ ALTER TABLE users ADD metafyCommunities LONGTEXT DEFAULT NULL COMMENT 'JSON-enco
 
 -- Add indexes for efficient queries if needed in future
 ALTER TABLE users ADD INDEX idx_metafy_access_token (metafyAccessToken);
+
+-- Fix the rememberMeToken scan (15k rows scanned per call is bad)
+ALTER TABLE users ADD INDEX idx_rememberMeToken (rememberMeToken);
+
+-- Fix the private messages count
+ALTER TABLE private_messages ADD INDEX idx_toUser_isRead (toUserId, isRead);
