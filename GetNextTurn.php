@@ -150,10 +150,15 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   ++$count;
   if ($count == 100) break;
   
+  // Check if client disconnected (e.g., user refreshed page)
+  if (connection_aborted()) {
+    exit;
+  }
+
   // With ignore_user_abort(false), PHP will terminate automatically on disconnect
   // We still flush to help PHP detect the disconnection sooner
-  if (ob_get_level() > 0) ob_flush();
-  flush();
+  //if (ob_get_level() > 0) ob_flush();
+  //flush();
   
   // Increase sleep time exponentially, capped at 500ms
   //Let's try removing this to see if it improves responsiveness
