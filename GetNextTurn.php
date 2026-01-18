@@ -101,12 +101,12 @@ $otherPlayer = $playerID == 1 ? 2 : 1;
 // This reduces CPU spinning and returns faster on updates
 $sleepMs = 100; // Start with 100ms
 $lastFileCheckTime = microtime(true);
-$fileCheckInterval = 2.0; // Check file every 2 seconds (conservative, safe interval)
+$fileCheckInterval = 30.0; // Check file every 30 seconds (conservative, safe interval)
 
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep(intval($sleepMs * 1000)); // Convert ms to microseconds
   
-  //  Check file existence less frequently (every 2 seconds, conservative)
+  //  Check file existence less frequently (every 30 seconds, conservative)
   $currentRealTime = microtime(true);
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {

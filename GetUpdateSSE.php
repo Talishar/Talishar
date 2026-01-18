@@ -59,7 +59,7 @@ $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
 $lastOppStatus = 0;
 $lastFileCheckTime = microtime(true);
-$fileCheckInterval = 1.0;
+$fileCheckInterval = 30.0;
 $gameFileExists = true;
 $lastHeartbeat = microtime(true);
 $heartbeatInterval = 15.0; // Send heartbeat every 15 seconds to detect dead connections
