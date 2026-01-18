@@ -448,6 +448,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
       AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-", 1);
+      AddDecisionQueue("WRITELOGCARDLINK", $defPlayer, "<-", 1);
       return 0;
     case "arakni_funnel_web-HIT":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS");
