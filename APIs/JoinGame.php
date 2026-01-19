@@ -10,12 +10,73 @@ include_once '../includes/dbh.inc.php';
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
 include_once "../includes/MatchupHelpers.php";
+include_once "../includes/MetafyHelper.php";
+include_once "../Assets/MetafyDictionary.php";
 
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 include_once "../Classes/CardObjects/PENCards.php";
 include_once "../Classes/CardObjects/AACCards.php";
 include_once "../Classes/CardObjects/AHACards.php";
+
+if (!function_exists("GetMetafyTiersFromDatabase")) {
+  function GetMetafyTiersFromDatabase($userName)
+  {
+    $conn = GetDBConnection();
+    $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_close($conn);
+      return [];
+    }
+    
+    mysqli_stmt_bind_param($stmt, 's', $userName);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+    
+    if (!$row || empty($row['metafyCommunities'])) {
+      return [];
+    }
+    
+    $communities = json_decode($row['metafyCommunities'], true);
+    if (!is_array($communities)) {
+      return [];
+    }
+    
+    $tiers = [];
+    foreach ($communities as $community) {
+      $communityId = $community['id'] ?? null;
+      if ($communityId) {
+        foreach(MetafyCommunity::cases() as $metafyCommunity) {
+          if ($metafyCommunity->value === $communityId) {
+            // Look for the user's actual subscription tier
+            $tierName = null;
+            
+            // Check subscription_tier field (from purchase data)
+            if (isset($community['subscription_tier']) && is_array($community['subscription_tier'])) {
+              $tierName = $community['subscription_tier']['name'] ?? null;
+            } elseif (isset($community['subscription_tier']) && is_string($community['subscription_tier'])) {
+              $tierName = $community['subscription_tier'];
+            }
+            
+            if ($tierName) {
+              error_log("DEBUG: Found tier name: $tierName for user $userName");
+              $tiers[] = $tierName;
+            } else {
+              error_log("DEBUG: No subscription_tier found for user $userName in community");
+            }
+            break;
+          }
+        }
+      }
+    }
+    
+    return $tiers;
+  }
+}
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
@@ -485,11 +546,15 @@ if ($matchup == "") {
     $p1id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
     $p1IsPatron = (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "");
     $p1ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
+    // Get Metafy tiers for player 1 from database
+    $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
   } else if ($playerID == 2) {
     $p2uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
     $p2id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
     $p2IsPatron = (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "");
     $p2ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
+    // Get Metafy tiers for player 2 from database
+    $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
   }
 
   if ($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());

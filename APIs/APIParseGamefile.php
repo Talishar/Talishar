@@ -61,6 +61,8 @@ $p2SideboardSubmitted = trim(fgets($gameFileHandler));
 $p1IsAI = trim(fgets($gameFileHandler));
 $p2IsAI = trim(fgets($gameFileHandler));
 $gameGUID = trim(fgets($gameFileHandler));
+$p1MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true) ?: [];
+$p2MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true) ?: [];
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;

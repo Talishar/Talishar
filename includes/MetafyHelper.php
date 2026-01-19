@@ -6,18 +6,24 @@
  */
 
 /**
+ * Check if running in dev environment (define only if not already defined)
+ */
+if (!function_exists('IsDevEnvironment')) {
+  function IsDevEnvironment() {
+    $domain = getenv("DOMAIN");
+    if ($domain === "localhost") return true;
+    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+    return false;
+  }
+}
+
+/**
  * Get the Metafy communities for a user
  * @param $userName The username to get Metafy communities for
  * @return array Array of community tier names the user belongs to
  */
 function GetUserMetafyCommunities($userName)
 {   
-
-  /* // Test mode: hardcode tiers for local testing
-  if ($userName === "PvtVoid") {
-    return ['Fyendal Supporters', 'Seers of Ophidia', 'Arknight Shards', 'Light of Sol Gemini Circle', 'Lover of Grandeur', 'Sponsors of Trōpal-Dhani'];
-  } */
-  if (IsDevEnvironment()) return [];
   // Get access token from database
   $conn = GetDBConnection();
   $sql = "SELECT metafyAccessToken FROM users WHERE usersUid=?";
