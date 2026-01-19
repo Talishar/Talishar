@@ -23,7 +23,7 @@ class Permanents {
   function FindCardUID($uid) {
     if (count($this->permanents) == 0) return "";
     for ($i = 0; $i < count($this->permanents); $i += PermanentPieces()) {
-      if ($this->permanents[$i + 5] == $uid) return new PermanentCard($i, $this->player);
+      if ($this->permanents[$i + 3] == $uid) return new PermanentCard($i, $this->player);
     }
     return "";
   } 

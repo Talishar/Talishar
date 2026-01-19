@@ -19,19 +19,19 @@
     }
     switch($cardID)
     {
-      case "silken_form": Transform($currentPlayer, "Ash", "aether_ashwing", target:$target); return "";
-      case "invoke_dracona_optimai_red": Transform($currentPlayer, "Ash", "dracona_optimai", target:$target); return "";
-      case "invoke_tomeltai_red": Transform($currentPlayer, "Ash", "tomeltai", target:$target); return "";
-      case "invoke_dominia_red": Transform($currentPlayer, "Ash", "dominia", target:$target); return "";
-      case "invoke_azvolai_red": Transform($currentPlayer, "Ash", "azvolai", target:$target); return "";
-      case "invoke_cromai_red": Transform($currentPlayer, "Ash", "cromai", target:$target); return "";
-      case "invoke_kyloria_red": Transform($currentPlayer, "Ash", "kyloria", target:$target); return "";
-      case "invoke_miragai_red": Transform($currentPlayer, "Ash", "miragai", target:$target); return "";
-      case "invoke_nekria_red": Transform($currentPlayer, "Ash", "nekria", target:$target); return "";
-      case "invoke_ouvia_red": Transform($currentPlayer, "Ash", "ouvia", target:$target); return "";
-      case "invoke_themai_red": Transform($currentPlayer, "Ash", "themai", target:$target); return "";
-      case "invoke_vynserakai_red": Transform($currentPlayer, "Ash", "vynserakai", target:$target); return "";
-      case "invoke_yendurai_red": Transform($currentPlayer, "Ash", "yendurai", target:$target); return "";
+      case "silken_form": return Transform($currentPlayer, "Ash", "aether_ashwing", target:$target);
+      case "invoke_dracona_optimai_red": return Transform($currentPlayer, "Ash", "dracona_optimai", target:$target);
+      case "invoke_tomeltai_red": return Transform($currentPlayer, "Ash", "tomeltai", target:$target);
+      case "invoke_dominia_red": return Transform($currentPlayer, "Ash", "dominia", target:$target);
+      case "invoke_azvolai_red": return Transform($currentPlayer, "Ash", "azvolai", target:$target);
+      case "invoke_cromai_red": return Transform($currentPlayer, "Ash", "cromai", target:$target);
+      case "invoke_kyloria_red": return Transform($currentPlayer, "Ash", "kyloria", target:$target);
+      case "invoke_miragai_red": return Transform($currentPlayer, "Ash", "miragai", target:$target);
+      case "invoke_nekria_red": return Transform($currentPlayer, "Ash", "nekria", target:$target);
+      case "invoke_ouvia_red": return Transform($currentPlayer, "Ash", "ouvia", target:$target);
+      case "invoke_themai_red": return Transform($currentPlayer, "Ash", "themai", target:$target);
+      case "invoke_vynserakai_red": return Transform($currentPlayer, "Ash", "vynserakai", target:$target);
+      case "invoke_yendurai_red": return Transform($currentPlayer, "Ash", "yendurai", target:$target);
       case "billowing_mirage_red": case "billowing_mirage_yellow": case "billowing_mirage_blue": Transform($currentPlayer, "Ash", "aether_ashwing", true); return "";
       case "sweeping_blow_red": case "sweeping_blow_yellow": case "sweeping_blow_blue":
         PutPermanentIntoPlay($currentPlayer, "ash");
@@ -126,13 +126,21 @@ function UPRIllusionistDealDamageEffect($cardID)
   {
     if($target != ""){
       $index = explode("-", $target);
-      if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
-        AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
-        AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);
+      $Permanents = new Permanents($player);
+      $targetPerm = $Permanents->FindCardUID($index[1]);
+      if ($targetPerm != "") {
+        if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
+          AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
+          AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);
+        }
+        else {
+          AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
+          AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
+        }
       }
       else {
-        AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
-        AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
+        WriteLog("The target to transform is no longer there!", highlight:true);
+        return "FAILED";
       }
     } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
@@ -153,6 +161,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       AddDecisionQueue("CHOOSEMY" . strtoupper($subType), $player, "<-", 1);
       AddDecisionQueue("TRANSFORM" . strtoupper($subType), $player, $into, 1);
     }
+    return "";
   }
 
   function ResolveTransform($player, $materialIndex, $into, $firstTransform=true)
