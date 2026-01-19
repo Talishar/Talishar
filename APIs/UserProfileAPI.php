@@ -17,10 +17,16 @@ if (!IsUserLoggedIn()) {
 
 $response = new stdClass();
 
-$response->userName = LoggedInUserName();
+$userName = LoggedInUserName();
+$response->userName = $userName;
 
 $response->patreonInfo = PatreonLink();
 $response->isPatreonLinked = isset($_SESSION["patreonAuthenticated"]);
+
+// Check if user is contributor or PvtVoid patron
+$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
+$response->isContributor = in_array($userName, $contributors);
+$response->isPvtVoidPatron = ($userName == "PvtVoid" || isset($_SESSION["isPvtVoidPatron"]));
 
 // Get Metafy info from database
 $conn = GetDBConnection();
@@ -28,7 +34,6 @@ $sql = "SELECT metafyAccessToken, metafyCommunities FROM users WHERE usersUid=?"
 $stmt = mysqli_stmt_init($conn);
 
 if (mysqli_stmt_prepare($stmt, $sql)) {
-  $userName = LoggedInUserName();
   mysqli_stmt_bind_param($stmt, 's', $userName);
   mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
