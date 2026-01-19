@@ -1,6 +1,13 @@
 <?php
 
 session_start();
+// CRITICAL: Capture session data immediately and release the lock
+// PHP sessions use exclusive file locks - holding the lock during processing
+// blocks all other requests from this user, causing session deadlock.
+$sessionUserId = $_SESSION["userid"] ?? null;
+// Release session lock before heavy processing
+// Note: loginFromCookie() will re-acquire and release session if needed
+session_write_close();
 
 include "./Libraries/HTTPLibraries.php";
 
@@ -170,7 +177,8 @@ switch ($popupType) {
     // For profile settings (playerID == 0), load from database
     if ($playerID == 0) {
       include_once "./includes/functions.inc.php";
-      $userID = $_SESSION["userid"] ?? "";
+      // Use captured session data (session already closed to prevent deadlock)
+      $userID = $sessionUserId ?? "";
       $dbSettingsFlat = LoadSavedSettings($userID);
       
       // Convert flat array to associative array: [settingID => settingValue]

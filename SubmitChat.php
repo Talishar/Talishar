@@ -17,15 +17,27 @@ $authKey = $_GET["authKey"];
 
 session_start();
 
+// CRITICAL: Capture all needed session data immediately and release the lock
+// PHP sessions use exclusive file locks - holding the lock during file I/O
+// blocks all other requests from this user, causing session deadlock.
+$sessionP1AuthKey = $_SESSION["p1AuthKey"] ?? null;
+$sessionP2AuthKey = $_SESSION["p2AuthKey"] ?? null;
+$sessionUserUid = $_SESSION['useruid'] ?? null;
+$sessionIsPatron = isset($_SESSION["isPatron"]);
+$sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
+
+// Release session lock NOW - before file operations
+session_write_close();
+
 if ($authKey == "") $authKey = isset($_COOKIE["lastAuthKey"]) ? $_COOKIE["lastAuthKey"] : "";
 
 $targetAuthKey = "";
-if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
-else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
+if ($playerID == 1 && $sessionP1AuthKey !== null) $targetAuthKey = $sessionP1AuthKey;
+else if ($playerID == 2 && $sessionP2AuthKey !== null) $targetAuthKey = $sessionP2AuthKey;
 if ($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
 
 $uid = "-";
-if (isset($_SESSION['useruid'])) $uid = $_SESSION['useruid'];
+if ($sessionUserUid !== null) $uid = $sessionUserUid;
 if($uid == "starmorgs") exit;
 $displayName = ($uid != "-" ? $uid : "Player " . $playerID);
 
@@ -43,13 +55,13 @@ $contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star
 $modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn");
 
 //This is the code for Contributor's icon.
-if(isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $contributors)) {
+if($sessionUserUid !== null && in_array($sessionUserUid, $contributors)) {
   $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a contributor to Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 // Check for Metafy badges first - if user has Metafy badges, only show those
 $hasMetafyBadges = false;
-if(isset($_SESSION['useruid'])) {
-  $metafyTiers = GetUserMetafyCommunities($_SESSION['useruid']);
+if($sessionUserUid !== null) {
+  $metafyTiers = GetUserMetafyCommunities($sessionUserUid);
   if(!empty($metafyTiers)) {
     $metafyBadgeHtml = '';
     foreach($metafyTiers as $tier) {
@@ -68,13 +80,13 @@ if(isset($_SESSION['useruid'])) {
 // Only show Patreon badges if user doesn't have Metafy badges
 if(!$hasMetafyBadges) {
   //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
-  if(isset($_SESSION["isPatron"]) && isset($_SESSION['useruid']) && !in_array($_SESSION['useruid'], $contributors)) {
+  if($sessionIsPatron && $sessionUserUid !== null && !in_array($sessionUserUid, $contributors)) {
     $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
   }
 
 
   //This is the code for PvtVoid Patreon
-  if(isset($_SESSION["isPvtVoidPatron"]) || isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], array("PvtVoid"))) {
+  if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, array("PvtVoid"))) {
     $displayName = "<a href='https://linktr.ee/Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of PvtVoid!' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
   }
 }
@@ -82,7 +94,7 @@ if(!$hasMetafyBadges) {
 $filename = "./Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "a");
 // Check if user is a mod - use gold color (#f0d666) for mods, otherwise use player color
-$isMod = isset($_SESSION['useruid']) && in_array($_SESSION['useruid'], $modUsernames);
+$isMod = $sessionUserUid !== null && in_array($sessionUserUid, $modUsernames);
 $chatColor = $isMod ? "#a58703ff" : "<PLAYER" . $playerID . "COLOR>";
 $output = "<span style='font-weight:bold; color:" . $chatColor . ";'>" . $displayName . ": </span>" . $chatText;
 if ($handler) {
