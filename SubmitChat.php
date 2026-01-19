@@ -13,6 +13,9 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = $_GET["playerID"];
 
+// Load game file to get Metafy tiers - this populates $p1MetafyTiers and $p2MetafyTiers
+include "MenuFiles/ParseGamefile.php";
+
 $authKey = $_GET["authKey"];
 
 session_start();
@@ -49,27 +52,27 @@ if (tryGet("quickChat")) {
 }
 
 //array for contributors
-$contributors = array("sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid");
+$contributors = array("sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid");
 
 // List of mod usernames - should match frontend list
 $modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn");
 
+// Get Metafy tiers for this player from the game file (already loaded via ParseGamefile.php)
+$metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+
 // Check for Metafy badges first - if user has Metafy badges, only show those
 $hasMetafyBadges = false;
-if($sessionUserUid !== null) {
-  $metafyTiers = GetUserMetafyCommunities($sessionUserUid);
-  if(!empty($metafyTiers)) {
-    $metafyBadgeHtml = '';
-    foreach($metafyTiers as $tier) {
-      $tierImage = GetMetafyTierImage($tier);
-      if($tierImage) {
-        $metafyBadgeHtml .= "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img title='" . htmlspecialchars($tier) . " - Metafy' style='margin-bottom:3px; margin-left:3px; height:16px;' src='" . $tierImage . "'/></a>";
-      }
+if(!empty($metafyTiers)) {
+  $metafyBadgeHtml = '';
+  foreach($metafyTiers as $tier) {
+    $tierImage = GetMetafyTierImage($tier);
+    if($tierImage) {
+      $metafyBadgeHtml .= "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='" . $tierImage . "'/></a>";
     }
-    if(!empty($metafyBadgeHtml)) {
-      $displayName = $metafyBadgeHtml . $displayName;
-      $hasMetafyBadges = true;
-    }
+  }
+  if(!empty($metafyBadgeHtml)) {
+    $displayName = $metafyBadgeHtml . $displayName;
+    $hasMetafyBadges = true;
   }
 }
 
@@ -77,18 +80,18 @@ if($sessionUserUid !== null) {
 if(!$hasMetafyBadges) {
   //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
   if($sessionIsPatron && $sessionUserUid !== null && !in_array($sessionUserUid, $contributors)) {
-    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
+    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
   }
 
   //This is the code for PvtVoid Patreon
   if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, array("PvtVoid"))) {
-    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a patron of PvtVoid!' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
+    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
   }
 }
 
 //This is the code for Contributor's icon.
 if($sessionUserUid !== null && in_array($sessionUserUid, $contributors)) {
-  $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a contributor to Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
+  $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
