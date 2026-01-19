@@ -2730,11 +2730,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $deck->AddBottom($parameter, "GY");
         break;
       case "plasma_mainline_red":
-        $targetIndex = SearchItemsForUniqueID($target, $player);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($items[$targetIndex], $items[$targetIndex]));
-        AddDecisionQueue("NOPASS", $player, "-");
-        AddDecisionQueue("PASSPARAMETER", $player, $uniqueID . "," . $target, 1);
-        AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
+        $Items = new Items($player);
+        $targetItem = $Items->FindCardUID($target);
+        if ($targetItem != "") {
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($targetItem->CardID(), $targetItem->CardID()));
+          AddDecisionQueue("NOPASS", $player, "-");
+          AddDecisionQueue("PASSPARAMETER", $player, $uniqueID . "," . $target, 1);
+          AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
+        }
         break;
       case "crankshaft_red":
       case "crankshaft_yellow":
