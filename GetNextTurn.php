@@ -196,18 +196,35 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
     $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
-    $initialLoad->playerIsPatron = $playerID == 1 ? $p1IsPatron : $p2IsPatron;
+    
+    // For patron status, check both game file and Metafy/Patreon status
+    // Game file stores initial status, but current status may have changed
+    // Check Metafy database for both players to get current patron status
+    $playerName = $initialLoad->playerName;
+    $opponentName = $initialLoad->opponentName;
+    
+    // Try to get current patron status from database for both players
+    $playerMetafyTiers = GetUserMetafyCommunities($playerName);
+    $opponentMetafyTiers = GetUserMetafyCommunities($opponentName);
+    
+    // Check if either has Metafy support
+    $playerHasMetafyTier = !empty($playerMetafyTiers) && count($playerMetafyTiers) > 0;
+    $opponentHasMetafyTier = !empty($opponentMetafyTiers) && count($opponentMetafyTiers) > 0;
+    
+    // Set patron status: use game file if available, or check Metafy status as fallback
+    $initialLoad->playerIsPatron = (!empty($playerID == 1 ? $p1IsPatron : $p2IsPatron) ? "1" : "") ?: ($playerHasMetafyTier ? "1" : "");
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
-    $initialLoad->opponentIsPatron = $playerID == 1 ? $p2IsPatron : $p1IsPatron;
+    $initialLoad->opponentIsPatron = (!empty($playerID == 1 ? $p2IsPatron : $p1IsPatron) ? "1" : "") ?: ($opponentHasMetafyTier ? "1" : "");
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
+    
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && isset($_SESSION["isPvtVoidPatron"]);
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
     // Get Metafy community tiers for both players
-    $initialLoad->playerMetafyTiers = GetUserMetafyCommunities($initialLoad->playerName);
-    $initialLoad->opponentMetafyTiers = GetUserMetafyCommunities($initialLoad->opponentName);
+    $initialLoad->playerMetafyTiers = $playerMetafyTiers;
+    $initialLoad->opponentMetafyTiers = $opponentMetafyTiers;
 
     $initialLoad->altArts = [];   
     $initialLoad->opponentAltArts = [];
