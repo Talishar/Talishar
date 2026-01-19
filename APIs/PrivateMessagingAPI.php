@@ -58,12 +58,9 @@ if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error
   exit;
 }
 
-// Activity update sampling - only update 10% of requests to reduce database load
-// This significantly reduces write contention while still maintaining activity tracking
-if (rand(1, 10) === 1) {
-  // Use UTC_TIMESTAMP to ensure timezone consistency across all servers
-  $conn->query("UPDATE users SET lastActivity = UTC_TIMESTAMP() WHERE usersId = " . intval($userId) . " LIMIT 1");
-}
+// Note: Activity tracking removed from this API
+// User lastActivity is updated from more critical interactions (game play, page visits)
+// No point adding DB checks here for a 30-minute granularity display
 
 $action = $_POST['action'] ?? '';
 $response = new stdClass();
@@ -404,8 +401,8 @@ function GetOnlineFriends($userId) {
     return [];
   }
   
-  // PERFORMANCE: Use single efficient query instead of individual queries
-  // Fetch ALL friends - frontend will determine online/away/offline based on timeSinceActivity
+  // PERFORMANCE: Use single efficient query to fetch last activity
+  // Only used for "Last Seen" display - no longer tracking real-time online status
   $placeholders = implode(',', array_fill(0, count($friendIds), '?'));
   $types = str_repeat('i', count($friendIds));
   
@@ -441,7 +438,7 @@ function GetOnlineFriends($userId) {
   }
   $stmt->close();
   
-  // Build response with activity data - avoid repeated strtotime() calls
+  // Build response with "Last Seen" data only
   $currentTime = time();
   $onlineFriends = [];
   
@@ -450,15 +447,14 @@ function GetOnlineFriends($userId) {
     
     // Check if friend has activity data
     if (!isset($activityMap[$friendId])) {
-      // Friend has never been seen - mark as offline
+      // Friend has never been seen - show as "Never"
       $onlineFriends[] = [
         'userId' => $friendId,
         'username' => $friend['username'],
         'nickname' => $friend['nickname'] ?? null,
-        'isOnline' => false,
-        'isAway' => false,
         'lastSeen' => null,
-        'timeSinceActivity' => null
+        'timeSinceActivitySeconds' => null,
+        'lastSeenText' => 'Never seen'
       ];
       continue;
     }
@@ -468,14 +464,16 @@ function GetOnlineFriends($userId) {
     $lastActivityTime = strtotime($lastActivity . ' UTC');
     $timeSinceActivity = $currentTime - $lastActivityTime;
     
+    // Format "Last Seen" text
+    $lastSeenText = FormatLastSeenTime($timeSinceActivity);
+    
     $onlineFriends[] = [
       'userId' => $friendId,
       'username' => $friend['username'],
       'nickname' => $friend['nickname'] ?? null,
-      'isOnline' => $timeSinceActivity < 60,
-      'isAway' => $timeSinceActivity >= 60 && $timeSinceActivity < 600,
       'lastSeen' => $lastActivity,
-      'timeSinceActivity' => $timeSinceActivity
+      'timeSinceActivitySeconds' => $timeSinceActivity,
+      'lastSeenText' => $lastSeenText
     ];
   }
   
@@ -594,6 +592,44 @@ function GetUserGamePreferences($userId) {
     'format' => 'cc',
     'visibility' => 'friends-only'
   ];
+}
+
+/**
+ * Format time difference into human-readable "Last Seen" text
+ * @param int $secondsAgo Time elapsed in seconds
+ * @return string Human-readable text like "5 minutes ago", "2 hours ago"
+ */
+function FormatLastSeenTime($secondsAgo) {
+  if ($secondsAgo === null) {
+    return 'Never seen';
+  }
+  
+  if ($secondsAgo < 60) {
+    return 'Just now';
+  }
+  
+  $minutesAgo = intdiv($secondsAgo, 60);
+  if ($minutesAgo < 60) {
+    return $minutesAgo === 1 ? '1 minute ago' : "$minutesAgo minutes ago";
+  }
+  
+  $hoursAgo = intdiv($minutesAgo, 60);
+  if ($hoursAgo < 24) {
+    return $hoursAgo === 1 ? '1 hour ago' : "$hoursAgo hours ago";
+  }
+  
+  $daysAgo = intdiv($hoursAgo, 24);
+  if ($daysAgo < 7) {
+    return $daysAgo === 1 ? '1 day ago' : "$daysAgo days ago";
+  }
+  
+  $weeksAgo = intdiv($daysAgo, 7);
+  if ($weeksAgo < 4) {
+    return $weeksAgo === 1 ? '1 week ago' : "$weeksAgo weeks ago";
+  }
+  
+  // For anything older, just say "A while ago"
+  return 'A while ago';
 }
 
 // Note: AreFriends() function is already available from FriendLibraries.php
