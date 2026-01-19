@@ -188,6 +188,29 @@ switch ($action) {
     break;
 }
 
+// Apply smart caching headers based on action type
+// This helps clients and proxies intelligently cache responses to reduce unnecessary requests
+switch ($action) {
+  case 'getOnlineFriends':
+  case 'getUnreadCount':
+  case 'getUnreadCountByFriend':
+    header('Cache-Control: private, max-age=30');
+    break;
+  case 'getMessages':
+    // Messages can be safely cached for 30 seconds
+    header('Cache-Control: private, max-age=30');
+    break;
+  case 'sendMessage':
+  case 'markAsRead':
+  case 'getUserGamePreferences':
+    // Mutations shouldn't be cached
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    break;
+  default:
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    break;
+}
+
 // Always close connection and return response
 if ($conn && $conn !== false) {
   $conn->close();
