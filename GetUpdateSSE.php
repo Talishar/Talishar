@@ -6,9 +6,6 @@ include "Libraries/SHMOPLibraries.php";
 include "Libraries/CacheLibraries.php";
 include "WriteLog.php";
 
-// Detect client disconnect as soon as possible
-ignore_user_abort(false);
-
 ob_implicit_flush(true);
 ob_end_flush();
 SetHeaders();
@@ -38,7 +35,6 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
-header('X-Accel-Buffering: no'); // Disable nginx buffering if applicable
 
 $lastUpdate = 0;
 $response->message = "update";
@@ -61,24 +57,16 @@ $lastOppStatus = 0;
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 30.0;
 $gameFileExists = true;
-$lastHeartbeat = microtime(true);
-$heartbeatInterval = 15.0; // Send heartbeat every 15 seconds to detect dead connections
+$lastConnectionCheck = microtime(true);
+$connectionCheckInterval = 2.0; // Check connection every 2 seconds
 
 while (true) {
   $currentRealTime = microtime(true);
   
-  // Send periodic heartbeat comment to detect dead connections
-  // SSE comments (lines starting with :) are ignored by the client but 
-  // will cause PHP to detect a closed connection when the write fails
-  if ($currentRealTime - $lastHeartbeat >= $heartbeatInterval) {
-    echo ": heartbeat\n\n";
-    if (!@ob_flush() || !@flush()) {
-      exit; // Failed to flush, client disconnected
-    }
-    if (connection_aborted()) {
-      exit;
-    }
-    $lastHeartbeat = $currentRealTime;
+  // Check client connection more frequently to detect refreshes/disconnects
+  if ($currentRealTime - $lastConnectionCheck >= $connectionCheckInterval) {
+    if (connection_aborted()) exit;
+    $lastConnectionCheck = $currentRealTime;
   }
   
   // Check if game file still exists
@@ -101,12 +89,8 @@ while (true) {
     $lastUpdate = $cacheVal;
     $response->cacheVal = $cacheVal;
     echo("data: " . json_encode($response) . "\n\n");
-    if (!@ob_flush() || !@flush()) {
-      exit; // Failed to flush, client disconnected
-    }
-    if (connection_aborted()) {
-      exit;
-    }
+    ob_flush();
+    flush();
     set_time_limit(120);
     $sleepMs = 100;
   }
@@ -155,12 +139,8 @@ while (true) {
       $opponentInactive = true;
       $response->cacheVal = $cacheVal;
       echo("data: " . json_encode($response) . "\n\n");
-      if (!@ob_flush() || !@flush()) {
-        exit; // Failed to flush, client disconnected
-      }
-      if (connection_aborted()) {
-        exit;
-      }
+      ob_flush();
+      flush();
     }
   }
 
