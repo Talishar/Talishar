@@ -138,6 +138,9 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $isCasterMode = IsCasterMode();
   $isReplay = IsReplay();
 
+  $lastUpdateTime = GetCachePiece($gameName, 6);
+  $currentTime = round(microtime(true) * 1000);
+  $timeSinceUpdate = $currentTime - $lastUpdateTime;
   if ($opponentDisconnected && !$isGameOver) {
     include_once "./includes/dbh.inc.php";
     include_once "./includes/functions.inc.php";
@@ -148,6 +151,10 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   } else if ($currentPlayerActivity != 2 && $opponentInactive && !$isGameOver ) {
     $currentPlayerActivity = 2;
     //WriteLog("⌛Player $currentPlayer is inactive.");
+    include "WriteGamestate.php";
+    GamestateUpdated($gameName);
+  } else if ($timeSinceUpdate > 60000) {
+    $currentPlayerActivity = 2;
     include "WriteGamestate.php";
     GamestateUpdated($gameName);
   }
