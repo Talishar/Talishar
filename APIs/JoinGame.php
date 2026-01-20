@@ -22,6 +22,7 @@ include_once "../Classes/CardObjects/AHACards.php";
 if (!function_exists("GetMetafyTiersFromDatabase")) {
   function GetMetafyTiersFromDatabase($userName)
   {
+    if (IsDevEnvironment()) return [];
     $conn = GetDBConnection();
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
