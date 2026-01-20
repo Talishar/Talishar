@@ -115,84 +115,10 @@ $count = 0;
 $cacheVal = intval(GetCachePiece($gameName, 1));
 $otherPlayer = $playerID == 1 ? 2 : 1;
 
-// This reduces CPU spinning and returns faster on updates
-$sleepMs = 100; // Start with 100ms
-$lastFileCheckTime = microtime(true);
-$fileCheckInterval = 30.0; // Check file every 30 seconds (conservative, safe interval)
-
-while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
-  usleep(intval($sleepMs * 1000)); // Convert ms to microseconds
-  
-  //  Check file existence less frequently (every 30 seconds, conservative)
-  $currentRealTime = microtime(true);
-  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
-    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
-      echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
-      exit;
-    }
-    $lastFileCheckTime = $currentRealTime;
-  }
-  
-  $currentTime = round(microtime(true) * 1000);
-  $cacheVal = GetCachePiece($gameName, 1);
-  
-  if ($isGamePlayer) {
-    //  Batch cache reads to reduce SHMOP calls
-    SetCachePiece($gameName, $playerID + 1, $currentTime);
-    $oppLastTime = intval(GetCachePiece($gameName, $otherPlayer + 1));
-    $oppStatus = intval(GetCachePiece($gameName, $otherPlayer + 3));
-    $lastUpdateTime = intval(GetCachePiece($gameName, 6));
-    $playerInactiveStatus = intval(GetCachePiece($gameName, 12));
-    
-    if (($currentTime - $oppLastTime) > 3000 && (intval($oppStatus) == 0)) {
-      WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
-      GamestateUpdated($gameName);
-      SetCachePiece($gameName, $otherPlayer + 3, "1");
-    } else if (($currentTime - $oppLastTime) > 60000 && $oppStatus == "1") {
-      $currentPlayerActivity = 2;
-      WriteLog("Opponent has left the game.");
-      GamestateUpdated($gameName);
-      SetCachePiece($gameName, $otherPlayer + 3, "2");
-      $lastUpdate = 0;
-      $opponentDisconnected = true;
-    }
-    
-    // Handle server timeout (60 seconds of no game updates)
-    if ($currentTime - $lastUpdateTime > 60000 && $playerInactiveStatus != "1") {
-      SetCachePiece($gameName, 12, "1");
-      $opponentInactive = true;
-      $lastUpdate = 0;
-    }
-  }
-  ++$count;
-  if ($count == 100) break;
-  
-  // Check if client disconnected (e.g., user refreshed page)
-  if (connection_aborted()) {
-    exit;
-  }
-
-  // With ignore_user_abort(false), PHP will terminate automatically on disconnect
-  // We still flush to help PHP detect the disconnection sooner
-  //if (ob_get_level() > 0) ob_flush();
-  //flush();
-  
-  // Increase sleep time exponentially, capped at 500ms
-  //Let's try removing this to see if it improves responsiveness
-  //$sleepMs = min($sleepMs * 1.5, 500);
-}
-
-if($count == 100) $lastUpdate = 0; //If we waited the full 10 seconds with nothing happening, send back an update in case it got stuck
-
-if($lastUpdate == 0) {
-  $lastUpdateTime = GetCachePiece($gameName, 6);
-  if($lastUpdateTime == "") { 
-    echo "The game no longer exists on the server."; 
-    exit; 
-  }
-  if($currentTime - $lastUpdateTime > 60000 && GetCachePiece($gameName, 12) == "1") { // 60 seconds
-    $opponentInactive = true;
-  }
+$lastUpdate = 0; // Always send full update for simplicity
+if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
+  echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
+  exit;
 }
 
 if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
