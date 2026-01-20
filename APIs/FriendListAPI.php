@@ -231,6 +231,32 @@ switch ($action) {
     $response->error = "Invalid action";
 }
 
+// Apply smart caching headers based on action type
+// This reduces unnecessary database hits when clients refetch the same data
+switch ($action) {
+  case 'getFriends':
+  case 'getPendingRequests':
+  case 'getSentRequests':
+    header('Cache-Control: private, max-age=120');
+    break;
+  case 'searchUsers':
+    // Search results can be cached briefly (60s) since new users don't appear constantly
+    header('Cache-Control: private, max-age=60');
+    break;
+  case 'addFriend':
+  case 'removeFriend':
+  case 'acceptRequest':
+  case 'rejectRequest':
+  case 'cancelRequest':
+  case 'updateNickname':
+    // Mutations should not be cached
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    break;
+  default:
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    break;
+}
+
 // Always close connection and return response
 if ($conn && $conn !== false) {
   $conn->close();

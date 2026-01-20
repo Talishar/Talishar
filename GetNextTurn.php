@@ -21,10 +21,6 @@ function IsDevEnvironment() {
 // array holding allowed Origin domains
 SetHeaders();
 
-// Allow PHP to terminate when client disconnects (e.g., page refresh)
-// This prevents orphaned Apache workers from the polling loop
-ignore_user_abort(false);
-
 header('Content-Type: application/json; charset=utf-8');
 $response = new stdClass();
 $response->playerInventory = []; // Initialize inventory array
@@ -67,6 +63,27 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
 }
 
+// CRITICAL: Capture all needed session data upfront and release the session lock immediately.
+// PHP sessions use exclusive file locks - if we hold the lock while processing game state,
+// all other requests from this user will be blocked, causing session deadlock.
+// The strace symptom is: flock(fd, LOCK_EX) stuck on sess_* file
+$sessionUserLoggedIn = IsUserLoggedIn();
+$sessionUserName = $sessionUserLoggedIn ? LoggedInUserName() : null;
+$sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
+
+// Capture all Patreon campaign session IDs before releasing session
+$sessionPatreonCampaigns = [];
+foreach(PatreonCampaign::cases() as $campaign) {
+  $sessionID = $campaign->SessionID();
+  $sessionPatreonCampaigns[$sessionID] = isset($_SESSION[$sessionID]);
+}
+
+// Release the session lock NOW - before any file I/O or processing
+// This is critical for preventing session deadlock on concurrent requests
+if (session_status() === PHP_SESSION_ACTIVE) {
+  session_write_close();
+}
+
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $opponentDisconnected = false;
 $opponentInactive = false;
@@ -88,8 +105,8 @@ if ($isGamePlayer) {
   $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
   $sessionKey = md5($clientIp . '|' . $userAgent);
   
-  // Get spectator username if logged in
-  $spectatorUsername = IsUserLoggedIn() ? LoggedInUserName() : null;
+  // Get spectator username from captured session data (session already closed)
+  $spectatorUsername = $sessionUserName;
   
   // Use memory-based tracking (falls back to no-op if APCu unavailable)
   TrackSpectator($gameName, $sessionKey, $spectatorUsername);
@@ -196,18 +213,20 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
     $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
-    $initialLoad->playerIsPatron = $playerID == 1 ? $p1IsPatron : $p2IsPatron;
+    
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
-    $initialLoad->opponentIsPatron = $playerID == 1 ? $p2IsPatron : $p1IsPatron;
+    $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
+    $initialLoad->playerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: [];
+    
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
-    $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && isset($_SESSION["isPvtVoidPatron"]);
-    $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && isset($_SESSION["isPvtVoidPatron"]);
-    $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
+    $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
+    $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
-    // Get Metafy community tiers for both players
-    $initialLoad->playerMetafyTiers = GetUserMetafyCommunities($initialLoad->playerName);
-    $initialLoad->opponentMetafyTiers = GetUserMetafyCommunities($initialLoad->opponentName);
+    $initialLoad->roguelikeGameID = $roguelikeGameID;
+    // Use captured session data (session already closed to prevent deadlock)
+    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
+    $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
+    $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
     $initialLoad->altArts = [];   
     $initialLoad->opponentAltArts = [];
@@ -216,14 +235,15 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     {
       foreach(PatreonCampaign::cases() as $campaign) {
         $sessionID = $campaign->SessionID();
-        $isPatronOfCampaign = isset($_SESSION[$sessionID]);
+        // Use captured session data (session already closed to prevent deadlock)
+        $isPatronOfCampaign = $sessionPatreonCampaigns[$sessionID] ?? false;
         
         // Special handling for PvtVoid: check if user is "PvtVoid" or has the session var
         if ($sessionID == "isPvtVoidPatron") {
-          $isPatronOfCampaign = (LoggedInUserName() == "PvtVoid") || isset($_SESSION[$sessionID]);
+          $isPatronOfCampaign = ($sessionUserName == "PvtVoid") || ($sessionPatreonCampaigns[$sessionID] ?? false);
         }
         
-        if($isPatronOfCampaign || $campaign->IsTeamMember(LoggedInUserName())) {
+        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '')) {
           $altArts = $campaign->AltArts($playerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
@@ -240,12 +260,13 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       }
 
       // Add Metafy community alt arts
-      if (IsUserLoggedIn() && !IsDevEnvironment()) {
+      // Use captured session data (session already closed to prevent deadlock)
+      if ($sessionUserLoggedIn && !IsDevEnvironment()) {
         $conn = GetDBConnection();
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
         $stmt = mysqli_stmt_init($conn);
         if (mysqli_stmt_prepare($stmt, $sql)) {
-          $userName = LoggedInUserName();
+          $userName = $sessionUserName;
           mysqli_stmt_bind_param($stmt, 's', $userName);
           mysqli_stmt_execute($stmt);
           $result = mysqli_stmt_get_result($stmt);

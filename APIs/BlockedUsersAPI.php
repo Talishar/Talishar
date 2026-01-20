@@ -143,5 +143,21 @@ switch ($action) {
     $response->error = "Invalid action";
 }
 
+// Apply smart caching headers based on action type
+// This reduces unnecessary database hits when clients refetch blocked users
+switch ($action) {
+  case 'getBlockedUsers':
+    // Reduces database load from repeated refetches
+    header('Cache-Control: private, max-age=120');
+    break;
+  case 'blockUser':
+  case 'unblockUser':
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    break;
+  default:
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    break;
+}
+
 echo json_encode($response);
 exit;

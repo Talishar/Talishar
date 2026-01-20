@@ -4,6 +4,14 @@ error_reporting(E_ALL);
 
 session_start();
 
+// CRITICAL: Capture session data immediately and release the lock
+// PHP sessions use exclusive file locks - holding the lock during game processing
+// blocks all other requests from this user, causing session deadlock.
+$sessionUserId = $_SESSION["userid"] ?? null;
+
+// Release session lock NOW - before any file I/O or game processing
+session_write_close();
+
 include "WriteLog.php";
 include "GameLogic.php";
 include "GameTerms.php";
@@ -110,9 +118,9 @@ try {
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
         if ($playerID == 0) {
-          // Profile settings update - get userID from session
-          if (isset($_SESSION["userid"])) {
-            $userID = $_SESSION["userid"];
+          // Profile settings update - use captured session data (session already closed)
+          if ($sessionUserId !== null) {
+            $userID = $sessionUserId;
           }
         } else {
           // In-game settings update - get userID from game file
