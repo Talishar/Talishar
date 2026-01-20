@@ -1421,6 +1421,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
       AttackDamageAbilitiesTrigger($damageDone);
+      CombatChainHitEffects($combatChain[0], $damageTarget);
 
       foreach(explode(",", $combatChain[10]) as $effectSetID) {
         $effect = ConvertToCardID($effectSetID);

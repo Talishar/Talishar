@@ -700,11 +700,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "pick_up_the_point_blue":
       Retrieve($currentPlayer, "Dagger");
       break;
-    case "poisoned_blade_red":
-    case "poisoned_blade_yellow":
-    case "poisoned_blade_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
+    // case "poisoned_blade_red":
+    // case "poisoned_blade_yellow":
+    // case "poisoned_blade_blue":
+    //   AddCurrentTurnEffect($cardID, $currentPlayer);
+    //   break;
     case "throw_yourself_at_them_red":
     case "throw_yourself_at_them_yellow":
     case "throw_yourself_at_them_blue":

@@ -2238,3 +2238,33 @@ function LinkBasePower()
   }
   return 0;
 }
+
+function CombatChainHitEffect($cardID, $sourceID="-", $targetPlayer="-") {
+  global $CombatChain, $mainPlayer, $defPlayer;
+  $source = $sourceID != "-" ? $sourceID : $CombatChain->AttackCard()->ID();
+  if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return false;
+  switch ($cardID) {
+    case "poisoned_blade_red":
+    case "poisoned_blade_yellow":
+    case "poisoned_blade_blue":
+      if(IsHeroAttackTarget() && (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger") || SubtypeContains($sourceID, "Dagger"))) {
+        AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
+  global $CombatChain, $ChainLinks;
+
+  if ($CombatChain->HasCurrentLink()) {
+    CombatChainHitEffect($CombatChain->AttackCard()->ID(), $sourceID, $targetPlayer);
+  }
+
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $attackCard = $ChainLinks->GetLink($i)->GetLinkCard(0)->ID();
+    CombatChainHitEffect($attackCard, $sourceID, $targetPlayer);
+  }
+}
