@@ -3320,7 +3320,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
 
 function PitchAbility($cardID, $from="HAND")
 {
-  global $currentPlayer, $CS_NumAddedToSoul, $actionPoints;
+  global $currentPlayer, $CS_NumAddedToSoul, $actionPoints, $mainPlayer;
 
   $pitchValue = PitchValue($cardID);
   if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "vestige_of_sol") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
@@ -3381,7 +3381,7 @@ function PitchAbility($cardID, $from="HAND")
     case "back_alley_breakline_red":
     case "back_alley_breakline_yellow":
     case "back_alley_breakline_blue":
-      if ($from == "DECK") {
+      if ($from == "DECK" && $currentPlayer == $mainPlayer) {
         WriteLog("Player ". $currentPlayer ." gained 1 action point from " . CardLink($cardID, $cardID).".");
         ++$actionPoints;
       }
