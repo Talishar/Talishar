@@ -1912,7 +1912,7 @@ function CurrentEffectAfterPlayOrActivateAbility($cache = true)
       switch ($effectArr[0]) {
         case "gauntlets_of_iron_will":
           if ($cache) CacheCombatResult();
-          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > intval($effectArr[1])) $currentTurnEffects[$i] = "gauntlets_of_iron_will,ACTIVE";
+          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > LinkBasePower()) $currentTurnEffects[$i] = "gauntlets_of_iron_will,ACTIVE";
           break;
         default:
           break;
