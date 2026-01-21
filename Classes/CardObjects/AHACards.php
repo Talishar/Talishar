@@ -120,5 +120,8 @@ class flurry extends Card {
 			$targetWep->SetUsed(2);
 			$targetWep->AddUse();
 		}
+		elseif ($otherFlurry != "") {
+			WriteLog(CardLink($targetWep->CardID(), $targetWep->CardID()) . " has already been flurried!");
+		}
 	}
 }

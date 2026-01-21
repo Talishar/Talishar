@@ -651,10 +651,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYCHAR":
         case "THEIRCHAR":
           if ($character[$lrArr[1] + 5] < 2 && SearchCurrentTurnEffects("blood_on_her_hands_yellow", $player, returnUniqueID: true) != $character[$lrArr[1] + 11]) {
-            AddCurrentTurnEffect("blood_on_her_hands_yellow", $player, uniqueID: $character[$lrArr[1] + 11]);
+            $uniqueID = $character[$lrArr[1] + 11];
+            // $otherFlurry = $CurrentTurnEffects->FindSpecificEffect("flurry", $target);
+            // if ($otherFlurry == "") {
+            AddCurrentTurnEffect("blood_on_her_hands_yellow", $player, uniqueID: $uniqueID);
             AddCharacterUses($player, $lrArr[1], $parameter);
             // uncomment when flurry is ready
             // AddCurrentTurnEffect("flurry", $player, "", $character[$lrArr[1] + 11]); // marks the effect as a "you may swing twice" effect
+            // }
+            // else {
+            //   WriteLog(CardLink($character[$lrArr[1]], $character[$lrArr[1]]) . " has already been flurried!");
+            // }
             break;
           }
         default:
