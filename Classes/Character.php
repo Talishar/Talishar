@@ -17,6 +17,14 @@ class PlayerCharacter {
     if($cardNumber) $index = $index * CharacterPieces();
     return new CharacterCard($index, $this->player);
   }
+
+  function FindCardUID($uid) {
+    if (count($this->char) == 0) return "";
+    for ($i = 0; $i < count($this->char); $i += CharacterPieces()) {
+      if ($this->char[$i + 11] == $uid) return new CharacterCard($i, $this->player);
+    }
+    return "";
+  }  
 }
 
 class CharacterCard {

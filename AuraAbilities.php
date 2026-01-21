@@ -1455,6 +1455,10 @@ function AuraPlayAbilities($cardID, $from = "")
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
+    $card = GetClass($auras[$i], $currentPlayer);
+    if ($card != "-") {
+      $remove = $card->PermanentPlayAbility($cardID, $from);
+    }
     switch ($auras[$i]) {
       case "quicken":
         $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);

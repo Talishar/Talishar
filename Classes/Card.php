@@ -460,6 +460,10 @@ class Card {
   function PlayCardEffectAbility($cardID, $from, &$remove) {
     return;
   }
+
+  function PermanentPlayAbility($cardID, $from) {
+    return false;
+  }
 }
 
 ?>

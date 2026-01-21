@@ -53,8 +53,12 @@ class Stack {
     return $this->Card($index);
   }
 
-  function TopLayer() {
-    return $this->Card(0);
+  function TopLayer($cardID="-") {
+    if ($cardID == "-") return $this->Card(0);
+    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+      if ($this->layers[$i] == $cardID) return $this->Card($i);
+    }
+    return "";
   }
 
   function FindTrigger($cardID) {
