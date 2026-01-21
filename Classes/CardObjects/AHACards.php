@@ -110,9 +110,13 @@ class flurry extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $CurrentTurnEffects;
 		$Char = new PlayerCharacter($this->controller);
 		$targetWep = $Char->FindCardUID($target);
-		if ($targetWep != "") { // how is this different from "additional time"?
+		// has flurry already been applied to the weapon?
+		$otherFlurry = $CurrentTurnEffects->FindSpecificEffect($this->cardID, $target);
+		if ($targetWep != "" && $otherFlurry == "") {
+			AddCurrentTurnEffect($this->cardID, $this->controller, "", $target);
 			$targetWep->SetUsed(2);
 			$targetWep->AddUse();
 		}

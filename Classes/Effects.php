@@ -27,7 +27,15 @@ class CurrentTurnEffects {
       if ($this->effects[$i + 2] == $uid) return new CurrentEffect($i);
     }
     return "";
-  } 
+  }
+
+  function FindSpecificEffect($cardID, $uid) {
+    if (count($this->effects) == 0) return "";
+    for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {
+      if ($this->effects[$i] == $cardID && $this->effects[$i + 2] == $uid) return new CurrentEffect($i);
+    }
+    return "";
+  }
 
   function NumEffects() {
     return intdiv(count($this->effects), CurrentTurnEffectPieces());
