@@ -4072,8 +4072,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $skipDRResolution = false;
-  $isSpectraTarget = false;
-  $spectraTargets = [];
   $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
@@ -4081,19 +4079,16 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
         // remove spectra cards from target
         $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
-        if ($ind != -1) {
-          $MZTarget = "THEIRAURAS-$ind";
-          if (HasSpectra(GetMZCard($currentPlayer, $MZTarget))) {
-            array_push($spectraTargets, $uidArr[$i]);
-            array_splice($targetArr, $i, 1);
-            array_splice($uidArr, $i, 1);
-            $isSpectraTarget = true;
-          }
-          $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
-          $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
+        if ($ind == -1) {
+          unset($targetArr[$i]);
+          unset($uidArr[$i]);
+          $targetArr = array_values($targetArr);
+          $uidArr = array_values($uidArr);
         }
       }
     }
+    $combatChainState[$CCS_AttackTarget] = count($targetArr) > 0 ? implode(",", $targetArr) : "NA";
+    $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
   }
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
@@ -4169,11 +4164,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "rage_baiters":
           break;
         default:
-          $target = ($combatChainState[$CCS_AttackTarget] == "") ? "" : GetMZCards($currentPlayer, GetAttackTarget());
+          $target = ($combatChainState[$CCS_AttackTarget] == "" || $combatChainState[$CCS_AttackTarget] == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
           break;
       }
     }
-    if ($isSpectraTarget && $target == "") { //if only spectra was targeted
+    if ($target == "MISSINGTARGET") { //if only spectra was targeted
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       if(CardType($cardID) != "T" && CardType($cardID) != "Macro" && $from != "PLAY") { //Don't need to add to anywhere if it's a token
         ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, "LAYER");
@@ -4197,10 +4192,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
     }
-    if ($index <= 0 && !$skipDRResolution || $isSpectraTarget) {
+    if ($index <= 0 && !$skipDRResolution) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
       $combatChainState[$CCS_AttackPlayedFrom] = $from;
-      $chainClosed = ProcessAttackTarget($spectraTargets);
+      $chainClosed = $target == "MISSINGTARGET";
+      if ($chainClosed) CloseCombatChain();
       $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
       if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
       $combatChainState[$CCS_AttackUniqueID] = $uniqueID;
@@ -4318,7 +4314,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if (!$isBlock) ProcessAllMirage();
-    if ($isSpectraTarget) CleanUpCombatEffects(isSpectraTarget: $isSpectraTarget);
+    if ($target == "MISSINGTARGET") CleanUpCombatEffects(isSpectraTarget: true);
   }
   if ($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
