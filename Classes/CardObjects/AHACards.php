@@ -57,12 +57,10 @@ class zenith_blade extends Card {
 	}
 
 	function DoesAttackHaveGoAgain() {
-		global $CombatChain;
-		$Char = new PlayerCharacter($this->controller);
+		global $CombatChain, $CurrentTurnEffects;
 		$originUID = $CombatChain->AttackCard()->OriginUniqueID();
-		$CharWeapon = $Char->FindCardUID($originUID);
-		if ($CharWeapon == "") return false;
-		return $CharWeapon->NumCounters() > 0;
+		$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+		return $foundSharpen != "";
 	}
 }
 
