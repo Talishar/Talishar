@@ -1733,6 +1733,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $combatChainState[$CCS_AttackTargetUID] .= ",$uid";
       }
       WriteLog("🎯" . GetMZCardLink($defPlayer, $lastResult) . " was chosen as the target.");
+      if (HasSpectra($zone[$mzArr[1]])) {
+        AddLayer("TRIGGER", $defPlayer, "SPECTRA", "-", "-", $uid);
+      }
       return 1;
     case "ADDITIONALATTACKTARGET":
       GetTargetOfAttack($parameter);

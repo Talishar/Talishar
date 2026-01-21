@@ -112,7 +112,7 @@ class AuraCard {
 		$ClassState = new ClassState($this->controller);
 		if (HasSuspense($cardID)) $ClassState->SetSuspensePoppedThisTurn($ClassState->SuspensePoppedThisTurn() + 1);
 		if (!AfterDamage() && !$skipClose) {
-			if (IsSpecificAuraAttacking($this->controller, $this->index) || (IsSpecificAuraAttackTarget($this->controller, $this->index, $this->UniqueID()))) {
+			if (IsSpecificAuraAttacking($this->controller, $this->index)) {
 				CloseCombatChain();
 			}
 		}

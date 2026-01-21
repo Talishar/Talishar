@@ -2028,6 +2028,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "PHANTASM":
         PhantasmLayer($additionalCosts);
         break;
+      case "SPECTRA":
+        $Auras = new Auras($player);
+        $AuraCard = $Auras->FindCardUID($uniqueID);
+        $AuraCard->Destroy();
+        break;
       case "heart_of_fyendal_blue":
         if (PlayerHasLessHealth($player)) GainHealth(1, $player);
         break;
