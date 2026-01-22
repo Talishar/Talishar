@@ -38,7 +38,7 @@ class fangs_a_lot_blue extends Card {
   }
 
   function SpecialCost() {
-    return 3;
+    return 4;
   }
 
   function SpecialName() {
