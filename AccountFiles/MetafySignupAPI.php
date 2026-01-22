@@ -77,7 +77,9 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         error_log('[MetafySignupAPI] User account created/updated with ID: ' . $userID);
         // Log the user in
         $_SESSION['userid'] = $userID;
-        $_SESSION['useruid'] = $user_profile['username'] ?? $user_profile['email'] ?? $userID;
+        // Get the actual username from database (prefer existing username over Metafy username)
+        $existingUsername = GetExistingUsername($userID);
+        $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
         
         error_log('[MetafySignupAPI] User logged in successfully: ' . $_SESSION['useruid']);
@@ -147,8 +149,10 @@ function GetMetafyUserProfile($access_token)
     // Metafy API returns user data nested under 'user' key
     if (isset($profile['user'])) {
       $user_data = $profile['user'];
-      // Map 'slug' to 'username' for consistency
-      if (isset($user_data['slug']) && !isset($user_data['username'])) {
+      // Prefer 'name' field for proper capitalization, fall back to 'slug' if not available
+      if (isset($user_data['name']) && !empty($user_data['name'])) {
+        $user_data['username'] = $user_data['name'];
+      } elseif (isset($user_data['slug']) && !isset($user_data['username'])) {
         $user_data['username'] = $user_data['slug'];
       }
       error_log('[MetafySignupAPI] GetMetafyUserProfile: Successfully decoded profile for user: ' . ($user_data['username'] ?? $user_data['email'] ?? 'unknown'));
@@ -207,14 +211,13 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
   
   // Create new user account
   $hashedPassword = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
-  $creation_date = date('Y-m-d H:i:s');
   
-  $sql = "INSERT INTO users (usersUid, usersEmail, usersPassword, usersCreated, metafyAccessToken, metafyRefreshToken, metafyID) 
-          VALUES (?, ?, ?, ?, ?, ?, ?)";
+  $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd, metafyAccessToken, metafyRefreshToken, metafyID) 
+          VALUES (?, ?, ?, ?, ?, ?)";
   $stmt = mysqli_stmt_init($conn);
   
   if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, 'sssssss', $username, $email, $hashedPassword, $creation_date, $access_token, $refresh_token, $metafy_id);
+    mysqli_stmt_bind_param($stmt, 'ssssss', $username, $email, $hashedPassword, $access_token, $refresh_token, $metafy_id);
     
     if (mysqli_stmt_execute($stmt)) {
       $userID = mysqli_insert_id($conn);
@@ -420,6 +423,32 @@ function CheckIfMetafySupporter($userID)
   
   mysqli_close($conn);
   return "0";
+}
+
+/**
+ * Get existing username from database
+ */
+function GetExistingUsername($userID)
+{
+  $conn = GetDBConnection();
+  $sql = "SELECT usersUid FROM users WHERE usersid=?";
+  $stmt = mysqli_stmt_init($conn);
+  
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, 's', $userID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    
+    if ($row && isset($row['usersUid'])) {
+      mysqli_close($conn);
+      return $row['usersUid'];
+    }
+  }
+  
+  mysqli_close($conn);
+  return null;
 }
 
 ?>
