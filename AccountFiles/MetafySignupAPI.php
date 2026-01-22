@@ -77,7 +77,9 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         error_log('[MetafySignupAPI] User account created/updated with ID: ' . $userID);
         // Log the user in
         $_SESSION['userid'] = $userID;
-        $_SESSION['useruid'] = $user_profile['username'] ?? $user_profile['email'] ?? $userID;
+        // Get the actual username from database (prefer existing username over Metafy username)
+        $existingUsername = GetExistingUsername($userID);
+        $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
         
         error_log('[MetafySignupAPI] User logged in successfully: ' . $_SESSION['useruid']);
@@ -420,6 +422,32 @@ function CheckIfMetafySupporter($userID)
   
   mysqli_close($conn);
   return "0";
+}
+
+/**
+ * Get existing username from database
+ */
+function GetExistingUsername($userID)
+{
+  $conn = GetDBConnection();
+  $sql = "SELECT usersUid FROM users WHERE usersid=?";
+  $stmt = mysqli_stmt_init($conn);
+  
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, 's', $userID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    
+    if ($row && isset($row['usersUid'])) {
+      mysqli_close($conn);
+      return $row['usersUid'];
+    }
+  }
+  
+  mysqli_close($conn);
+  return null;
 }
 
 ?>
