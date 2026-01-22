@@ -209,14 +209,13 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
   
   // Create new user account
   $hashedPassword = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
-  $creation_date = date('Y-m-d H:i:s');
   
-  $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd, usersCreated, metafyAccessToken, metafyRefreshToken, metafyID) 
-          VALUES (?, ?, ?, ?, ?, ?, ?)";
+  $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd, metafyAccessToken, metafyRefreshToken, metafyID) 
+          VALUES (?, ?, ?, ?, ?, ?)";
   $stmt = mysqli_stmt_init($conn);
   
   if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, 'sssssss', $username, $email, $hashedPassword, $creation_date, $access_token, $refresh_token, $metafy_id);
+    mysqli_stmt_bind_param($stmt, 'ssssss', $username, $email, $hashedPassword, $access_token, $refresh_token, $metafy_id);
     
     if (mysqli_stmt_execute($stmt)) {
       $userID = mysqli_insert_id($conn);
