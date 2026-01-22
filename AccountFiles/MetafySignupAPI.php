@@ -149,8 +149,10 @@ function GetMetafyUserProfile($access_token)
     // Metafy API returns user data nested under 'user' key
     if (isset($profile['user'])) {
       $user_data = $profile['user'];
-      // Map 'slug' to 'username' for consistency
-      if (isset($user_data['slug']) && !isset($user_data['username'])) {
+      // Prefer 'name' field for proper capitalization, fall back to 'slug' if not available
+      if (isset($user_data['name']) && !empty($user_data['name'])) {
+        $user_data['username'] = $user_data['name'];
+      } elseif (isset($user_data['slug']) && !isset($user_data['username'])) {
         $user_data['username'] = $user_data['slug'];
       }
       error_log('[MetafySignupAPI] GetMetafyUserProfile: Successfully decoded profile for user: ' . ($user_data['username'] ?? $user_data['email'] ?? 'unknown'));
