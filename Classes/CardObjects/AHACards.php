@@ -58,9 +58,18 @@ class zenith_blade extends Card {
 
 	function DoesAttackHaveGoAgain() {
 		global $CombatChain, $CurrentTurnEffects;
+		$ClassState = new ClassState($this->controller);
 		$originUID = $CombatChain->AttackCard()->OriginUniqueID();
 		$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
-		return $foundSharpen != "";
+		return $foundSharpen != "" && $ClassState->AttacksWithWeapon() < 1;
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
 	}
 }
 
@@ -98,12 +107,13 @@ class flurry extends Card {
     $this->controller = $controller;
 	}
 
-	function PermanentPlayAbility($cardID, $from) {
+	function PermanentPlayAbility($cardID, $from, $i) {
 		global $Stack;
 		$abilityType = GetResolvedAbilityType($cardID, $from);
 		$cardSubType = CardSubType($cardID);
+		$auraCard = new AuraCard($i, $this->controller);
 		if ((DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from)) || (TypeContains($cardID, "W", $this->controller) && $abilityType == "AA") && $abilityType != "I") {
-			AddLayer("TRIGGER", $this->controller, $this->cardID, $Stack->TopLayer($cardID)->UniqueID());
+			AddLayer("TRIGGER", $this->controller, $this->cardID, $Stack->TopLayer($cardID)->UniqueID(), "-", $auraCard->UniqueID());
 		}
 	}
 
@@ -121,5 +131,8 @@ class flurry extends Card {
 		elseif ($otherFlurry != "") {
 			WriteLog(CardLink($targetWep->CardID(), $targetWep->CardID()) . " has already been flurried!");
 		}
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		if ($AuraCard != "") $AuraCard->Destroy();
 	}
 }

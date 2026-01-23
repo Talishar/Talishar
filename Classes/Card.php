@@ -461,7 +461,7 @@ class Card {
     return;
   }
 
-  function PermanentPlayAbility($cardID, $from) {
+  function PermanentPlayAbility($cardID, $from, $i) {
     return false;
   }
 }
