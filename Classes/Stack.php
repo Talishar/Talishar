@@ -108,7 +108,7 @@ class Layer {
 	}
 
 	function UniqueID() { //(the unique ID of the object that created the layer)
-		return isset($this->chalayersin[$this->index+5]) ? $this->layers[$this->index+5] : "-";
+		return $this->layers[$this->index+5] ?? "-";
 	}
 
 	function LayerUniqueID() { //(the unique ID of the layer)
