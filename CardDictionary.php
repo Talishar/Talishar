@@ -3304,7 +3304,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       else {
         //for now only support buffing cards on the current chain link
-        $numOptions = GetChainLinkCards($currentPlayer, "", "C");
+        $numOptions = GetChainLinkCards($currentPlayer, "AA", "C");
         if ($numOptions == "") return true;
       }
       return false;
