@@ -17,13 +17,13 @@ class meet_madness_red extends Card {
 				$roll = GetRandom(1,3);
 				switch ($roll) {
 					case 1:
-						WriteLog("<b>The madness says \"Banish a card from hand!\"</b>");
+						WriteLog("🌪️ The madness says <b>\"Banish a card from hand!\"</b>");
 						break;
 					case 2:
-						WriteLog("<b>The madness says \"banish a card from arsenal!\"</b>");
+						WriteLog("🌪️ The madness says <b>\"banish a card from arsenal!\"</b>");
 						break;
 					case 3:
-						WriteLog("<b>The madness says \"banish a card from the top of your deck!\"</b>");
+						WriteLog("🌪️ The madness says <b>\"banish a card from the top of your deck!\"</b>");
 						break;
 					default:
 						break;
