@@ -59,6 +59,10 @@ if (!empty($metafyApiKey)) {
   if ($ownerHttpCode === 200 && $ownerResponseBody) {
     $ownerResponse = json_decode($ownerResponseBody);
     if ($ownerResponse && isset($ownerResponse->guides)) {
+      // Mark owner's guides so we can identify them in the frontend
+      foreach ($ownerResponse->guides as $guide) {
+        $guide->isOwnerGuide = true;
+      }
       $allGuides = array_merge($allGuides, $ownerResponse->guides);
       $allMeta = $ownerResponse->meta;
     }
