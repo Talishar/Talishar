@@ -49,7 +49,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
-  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter;
+  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
