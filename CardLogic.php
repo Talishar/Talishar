@@ -50,6 +50,8 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
   AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
   if ($shouldDraw) AddDecisionQueue("DRAW", $player, "-", 1);
+  AddDecisionQueue("ELSE", $player, "-");
+  AddDecisionQueue("WRITELOG", $player, "Player $player did not sink a card", 1);
 }
 
 function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $context = "Choose a card to sink (or Pass)")
