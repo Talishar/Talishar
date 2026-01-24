@@ -873,6 +873,7 @@ function IsTeamFabDads($userName)
       case "Pitsirikos":
       case "Alith0r0sKykl0pas":
       case "Jim":
+      case "nikfabfanfatty":
       case "PvtVoid":
       return true;
     default:
