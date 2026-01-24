@@ -230,6 +230,7 @@ function GetCardBack($player)
     case 125: return "CBMickzValda";
     case 126: return "CBOllinTogether";
     case 127: return "CBSnapDragons";
+    case 128: return "CBFabDads";
     default: return "CardBack";
   };
 }
@@ -852,6 +853,27 @@ function IsTeamSnapDragons($userName)
     case "TheGlib":
     case "PvtVoid":
     case "TheJudester":
+      return true;
+    default:
+      break;
+  }
+  return false;
+}
+
+function IsTeamFabDads($userName)
+{
+  switch ($userName) {
+      case "LostInDaSpace":
+      case "Belazhul":
+      case "zaketanapareis":
+      case "thilakinos":
+      case "Debread":
+      case "mellone":
+      case "makvag":
+      case "Pitsirikos":
+      case "Alith0r0sKykl0pas":
+      case "Jim":
+      case "PvtVoid":
       return true;
     default:
       break;
