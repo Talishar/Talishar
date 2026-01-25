@@ -421,56 +421,248 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $turnData = $turn[2] ?? "";
         $options = $turnData != "" ? explode(",", $turnData) : [];
+        $otherPlayer = $playerID == 2 ? 1 : 2;
+        $theirAllies = &GetAllies($otherPlayer);
+        $myAllies = &GetAllies($playerID);
         $cardsMultiZone = [];
+        $maxCount = 0;
+        $minCount = 0;
+        $countOffset = 0;
+        $subtitles = "";
+        $source = [];
         $optionsCount = count($options);
-
-        // Simplified multi-zone handling
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i]);
-          $source = [];
-          $index = intval($option[1] ?? 0);
+          if ($option[0] == "MYAURAS") $source = $myAuras;
+          else if ($option[0] == "THEIRAURAS") $source = $theirAuras;
+          else if ($option[0] == "MYCHAR") $source = $myCharacter;
+          else if ($option[0] == "THEIRCHAR") $source = $theirCharacter;
+          else if ($option[0] == "MYITEMS") $source = $myItems;
+          else if ($option[0] == "THEIRITEMS") $source = $theirItems;
+          else if ($option[0] == "LAYER") $source = $layers;
+          else if ($option[0] == "MYHAND") $source = $myHand;
+          else if ($option[0] == "THEIRHAND") $source = $theirHand;
+          else if ($option[0] == "MYARSENAL") $source = $myArsenal;
+          else if ($option[0] == "THEIRARSENAL") $source = $theirArsenal;
+          else if ($option[0] == "MYDISCARD" || $option[0] == "MYDISCARDUID") $source = $myDiscard;
+          else if ($option[0] == "THEIRDISCARD" || $option[0] == "THEIRDISCARDUID") $source = $theirDiscard;
+          else if ($option[0] == "MYBANISH") $source = $myBanish;
+          else if ($option[0] == "THEIRBANISH") $source = $theirBanish;
+          else if ($option[0] == "MYALLY") $source = $myAllies;
+          else if ($option[0] == "THEIRALLY") $source = $theirAllies;
+          else if ($option[0] == "MYARS") $source = $myArsenal;
+          else if ($option[0] == "THEIRARS") $source = $theirArsenal;
+          else if ($option[0] == "MYPERM") $source = $myPermanents;
+          else if ($option[0] == "THEIRPERM") $source = $theirPermanents;
+          else if ($option[0] == "MYPITCH") $source = $myPitch;
+          else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
+          else if ($option[0] == "MYDECK") $source = $myDeck;
+          else if ($option[0] == "THEIRDECK") $source = $theirDeck;
+          else if ($option[0] == "MYSOUL") $source = $mySoul;
+          else if ($option[0] == "THEIRSOUL") $source = $theirSoul;
+          else if ($option[0] == "LANDMARK") $source = $landmarks;
+          else if ($option[0] == "CC") $source = $combatChain;
+          else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
+          else if ($option[0] == "COMBATCHAINATTACKS") $source = GetCombatChainAttacks();
+          else if ($option[0] == "PASTCHAINLINK") $source = $chainLinks[$option[2]];
+          else if ($option[0] == "PRELAYERS") $source = GetPreLayers();
+          else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
+          else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
+          else if ($option[0] == "CURRENTTURNEFFECTS") $source = $currentTurnEffects;
+          $counters = 0;
+          $lifeCounters = 0;
+          $enduranceCounters = 0;
+          $powerCounters = 0;
+          $steamCounters = 0;
           $borderColor = 0;
+          $uniqueIDIndex = -1;
+          $label = "";
+          $tapped = false;
 
-          if ($option[0] == "MYAURAS") { $source = $myAuras; $borderColor = 1; }
-          else if ($option[0] == "THEIRAURAS") { $source = $theirAuras; $borderColor = 2; }
-          else if ($option[0] == "MYCHAR") { $source = $myCharacter; $borderColor = 1; }
-          else if ($option[0] == "THEIRCHAR") { $source = $theirCharacter; $borderColor = 2; }
-          else if ($option[0] == "MYITEMS") { $source = $myItems; $borderColor = 1; }
-          else if ($option[0] == "THEIRITEMS") { $source = $theirItems; $borderColor = 2; }
-          else if ($option[0] == "MYHAND") { $source = $myHand; $borderColor = 1; }
-          else if ($option[0] == "THEIRHAND") { $source = $theirHand; $borderColor = 2; }
-          else if ($option[0] == "MYARSENAL" || $option[0] == "MYARS") { $source = $myArsenal; $borderColor = 1; }
-          else if ($option[0] == "THEIRARSENAL" || $option[0] == "THEIRARS") { $source = $theirArsenal; $borderColor = 2; }
-          else if ($option[0] == "MYDISCARD" || $option[0] == "MYDISCARDUID") { $source = $myDiscard; $borderColor = 1; }
-          else if ($option[0] == "THEIRDISCARD" || $option[0] == "THEIRDISCARDUID") { $source = $theirDiscard; $borderColor = 2; }
-          else if ($option[0] == "MYBANISH") { $source = $myBanish; $borderColor = 1; }
-          else if ($option[0] == "THEIRBANISH") { $source = $theirBanish; $borderColor = 2; }
-          else if ($option[0] == "MYALLY") { $source = GetAllies($playerID); $borderColor = 1; }
-          else if ($option[0] == "THEIRALLY") { $source = GetAllies($playerID == 1 ? 2 : 1); $borderColor = 2; }
-          else if ($option[0] == "MYDECK") { $source = $myDeck; $borderColor = 1; }
-          else if ($option[0] == "THEIRDECK") { $source = $theirDeck; $borderColor = 2; }
-          else if ($option[0] == "MYSOUL") { $source = $mySoul; $borderColor = 1; }
-          else if ($option[0] == "THEIRSOUL") { $source = $theirSoul; $borderColor = 2; }
-          else if ($option[0] == "LANDMARK") { $source = $landmarks; $borderColor = 0; }
-          else if ($option[0] == "CC" || $option[0] == "COMBATCHAINLINK") { $source = $combatChain; $borderColor = ($combatChain[$index + 1] ?? 0) == $playerID ? 1 : 2; }
-          else if ($option[0] == "LAYER") { $source = $layers; $borderColor = ($source[$index + 1] ?? 0) == $playerID ? 1 : 2; }
-          else if ($option[0] == "MAXCOUNT" || $option[0] == "MINCOUNT") { continue; }
-          else if ($option[0] == "CARDID") { $card = $option[1]; $borderColor = 1; }
-          else continue;
+          if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) $label = "Attacking";
+          if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $playerID == $mainPlayer) $label = "Attacking";
 
-          if ($option[0] != "CARDID") {
-            $card = isset($source[$index]) ? $source[$index] : "-";
-            if (($option[0] == "LAYER") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY")) {
-              $card = $source[$index + 2] ?? "-";
+          //Add indication for attacking Allies and Auras
+          $layerCheckCount = count($layers);
+          if ($layerCheckCount > 0 && $layers[0] != "") {
+            $searchType = $option[0] == "THEIRALLY" || $option[0] == "MYALLY" ? "Ally" : "Aura";
+            $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
+            if ($index != "" && (DelimStringContains($option[0], "ALLY", true) || DelimStringContains($option[0], "AURAS", true))) {
+                $params = explode("|", $layers[intval($index[0]) + 2]);              
+                if (isset($params[2]) && $option[1] == $params[2]) {
+                  $label = "Attacking";
+                }
+            }
+          }
+          //Add indication for layers targets
+          if ($layerCheckCount > 0 && $layers[0] != "" && ($option[0] == "MYDISCARD" || $option[0] == "THEIRDISCARD")) {
+            $countLayers = count($layers);
+            for ($j=0; $j < $countLayers; $j += LayerPieces()) { 
+              $target = $option[0]."-".$option[1];
+              $cardID = GetMZCard($currentPlayer, $target);
+              $params = explode("-", $layers[$j + 3]);
+              if(isset($params[1])) {
+                $uniqueIDIndex = ($option[0] == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+              }
+              if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
+                $label = "Targeted";
+                continue;
+              }
+            }   
+          }
+
+          if ($layerCheckCount > 0 && $layers[0] != "" && $option[0] == "LAYER" && $option[1] == 0) {
+            $params = explode("-", $layers[$j + 3]);
+            $target = $option[0]."-".$option[1];
+            $cardID = GetMZCard($currentPlayer, $target);
+            if($cardID == "runechant") {
+              $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer, skipRemove:true);
             }
           }
 
-          array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, borderColor: $borderColor, actionDataOverride: $options[$i]));
-        }
+          //Bonds of Agony - add indication for hand, graveyard and deck
+          $combatChainCount = count($combatChain);
+          if($combatChainCount > 0) {
+            if($combatChain[0] == "bonds_of_agony_blue" && $turnPhase == "MAYCHOOSEMULTIZONE") {
+              switch ($option[0]) {
+                  case "THEIRHAND":
+                      $label = "Hand";
+                      break;
+                  case "THEIRDECK":
+                      $label = "Deck";
+                      break;
+                  case "THEIRDISCARD":
+                      $label = "Graveyard";
+                      break;
+              }  
+            }
+            if($combatChain[$combatChainCount - CombatChainPieces()] == "hunter_or_hunted_blue" && $turnPhase == "MAYCHOOSEMULTIZONE") {
+              switch ($option[0]) {
+                  case "THEIRHAND":
+                      $label = "Hand";
+                      break;
+                  case "THEIRDECK":
+                      $label = "Deck";
+                      break;
+                  case "THEIRDISCARD":
+                      $label = "Graveyard";
+                      break;
+                  case "THEIRARSENAL":
+                      $label = "Arsenal";
+                      break;
+              }  
+            }
+          }
 
-        $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, cardsArray: $cardsMultiZone);
-      }
-      break;
+          //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
+          if ($option[0] == "MYARS") $label = "Arsenal";
+          //Add indication for past chain links
+          if ($option[0] == "PASTCHAINLINK") $label = "Chain link " . $option[2]+1;
+          //Add indication for Attacking Mechanoid
+          if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "nitro_mechanoida" || GetMZCard($currentPlayer, $options[$i]) == "teklovossen_the_mechropotenta")) $label = "Attacking";
+
+          $index = intval($option[1] ?? 0);
+          $card = ($option[0] != "CARDID" && isset($source[$index])) ? $source[$index] : ($option[1] ?? 0);
+          if (($option[0] == "LAYER" || $option[0] == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY")) $card = $source[$index + 2];
+
+          if ($option[0] == "THEIRBANISH") {
+            $mod = explode("-", $theirBanish[$index + 1])[0];
+            $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
+            $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
+            if($borderColor == 7) $label = "Playable";
+            if (isFaceDownMod($source[$index + 1])) $card = $TheirCardBack;
+          }
+          else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
+          else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
+          else if ($option[0] == "CC") $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
+          else if ($option[0] == "LAYER" || $option[0] == "PRELAYERS") {
+            $borderColor = $source[$index + 1] == $playerID ? 1 : 2;
+          }
+          else if ($option[0] == "COMBATCHAINATTACKS") {
+            $borderColor = 1;
+          }
+          if ($option[0] == "COMBATCHAINLINK"){
+            $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
+          }
+
+          if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
+            $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] == 1 : $myCharacter[$index + 14] == 1;
+            $powerCounters = $option[0] == "MYCHAR" ? $myCharacter[$index + 3] : $theirCharacter[$index + 3];
+          }
+
+          if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN")) {
+            $card = $TheirCardBack;
+            switch ($option[0]) {
+              case "THEIRARS":
+                $label = "Arsenal";
+                break;
+              case "THEIRCHAR":
+                $label = "Equip-".CardSubType($theirCharacter[$option[1]]);
+                break;
+              default:
+                break;
+            }
+          }
+
+          if($option[0] == "CURRENTTURNEFFECTS") {
+            $cardID = explode("-", $source[$index])[0];
+            $card = $cardID;
+          }
+
+          //Show Life and Def counters on allies in the popups
+          if ($option[0] == "THEIRALLY" || $option[0] == "MYALLY") {
+            $player = $option[0] == "THEIRALLY" ? $otherPlayer : $playerID;
+            $index = intval($option[1]);
+            $lifeCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 2] : $myAllies[$index + 2];
+            $enduranceCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 6] : $myAllies[$index + 6];
+            $powerCounters =  $option[0] == "THEIRALLY" ? $theirAllies[$index + 9] : $myAllies[$index + 9];
+            $uniqueID = $option[0] == "THEIRALLY" ? $theirAllies[$index + 5] : $myAllies[$index + 5];
+            $tapped = $option[0] == "THEIRALLY" ? $theirAllies[$index + 11] == 1 : $myAllies[$index + 11] == 1;
+            if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
+                $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index], $player, "ALLY");
+            }
+          }
+          
+          if ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") {
+            //Show power counters on Auras in the popups
+            $powerCounters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3];
+            //Show various counters on Auras in the popups
+            $counters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2];
+          }
+          //Show Steam Counters on items
+          if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
+            $steamCounters = $option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1];
+            $tapped = $option[0] == "THEIRITEMS" ? $theirItems[$index + 10] == 1 : $myItems[$index + 10] == 1;
+            $label = $option[0] == "THEIRITEMS" && $theirItems[$index + 8] != "" && $theirItems[$index + 8] != "-" ? GamestateUnsanitize($theirItems[$index + 8]) : "";
+            $label = $option[0] == "MYITEMS" && $myItems[$index + 8] != "" && $myItems[$index + 8] != "-" ? GamestateUnsanitize($myItems[$index + 8]) : "";
+          }
+          
+          //Show Subtitles on MyDeck
+          if(substr($turnData, 0, 6) === "MYDECK" && $turnData != "MYDECK-0"){
+            $subtitles = "(You can click your deck to see its content during this card resolution)";
+          }
+
+          if($option[0] == "MYDECK" && $option[1] == "0" && $turnPhase == "MAYCHOOSEMULTIZONE" && substr_count($turnData, "MYDECK") == 1) {
+            $card = $MyCardBack;
+          }
+          if ($maxCount < 2)
+            array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false));
+          else
+            array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
+        }
+        if ($maxCount >= 2) {
+          $formOptions = new stdClass();
+          $formOptions->playerID = $playerID;
+          $formOptions->caption = "Submit";
+          $formOptions->mode = 19;
+          $formOptions->maxNo = count($options);
+          $playerInputPopup->formOptions = $formOptions;
+          $choiceOptions = "checkbox";
+          $playerInputPopup->choiceOptions = $choiceOptions;
+        }
+        $playerInputPopup->popup = CreatePopupAPI("CHOOSEMULTIZONE", [], 0, 1, GetPhaseHelptext(), 1, additionalComments: $subtitles,cardsArray: $cardsMultiZone);
+    }
+    break;
   }
 
   $playerInputPopup->buttons = $playerInputButtons;
