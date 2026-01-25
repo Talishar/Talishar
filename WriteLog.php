@@ -11,11 +11,13 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highli
   if($highlight) $output = $playerSpan . "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>" . $text . "</span></p>" . $playerSpanClose;
   else $output = $playerSpan . $text . $playerSpanClose;
   fwrite($handler, "$output\r\n");
+  fflush($handler); // Force immediate write to disk for SSE visibility
   fclose($handler);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     $filename = "{$path}Games/$gameName/fullGamelog.txt";
     $handler = fopen($filename, "a");
     fwrite($handler, "$output\r\n");
+    fflush($handler); // Force immediate write to disk for SSE visibility
     fclose($handler);
   }
 }
@@ -53,11 +55,13 @@ function WriteSystemMessage($text, $path="./")
   if(file_exists($filename)) $handler = fopen($filename, "a");
   else return; //File does not exist
   fwrite($handler, "$text\r\n");
+  fflush($handler); // Force immediate write to disk for SSE visibility
   fclose($handler);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     $filename = "{$path}Games/$gameName/fullGamelog.txt";
     $handler = fopen($filename, "a");
     fwrite($handler, "$text\r\n");
+    fflush($handler); // Force immediate write to disk for SSE visibility
     fclose($handler);
   }
 }
@@ -66,6 +70,7 @@ function JSONLog($gameName, $playerID, $path="./")
 {
   $response = "";
   $filename = "{$path}Games/$gameName/gamelog.txt";
+  clearstatcache(true, $filename); // Clear file stat cache to get fresh file size
   $filesize = filesize($filename);
   if ($filesize > 0) {
     $handler = fopen($filename, "r");
