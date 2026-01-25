@@ -455,11 +455,14 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           else if ($option[0] == "CC" || $option[0] == "COMBATCHAINLINK") { $source = $combatChain; $borderColor = ($combatChain[$index + 1] ?? 0) == $playerID ? 1 : 2; }
           else if ($option[0] == "LAYER") { $source = $layers; $borderColor = ($source[$index + 1] ?? 0) == $playerID ? 1 : 2; }
           else if ($option[0] == "MAXCOUNT" || $option[0] == "MINCOUNT") { continue; }
+          else if ($option[0] == "CARDID") { $card = $option[1]; $borderColor = 1; }
           else continue;
 
-          $card = isset($source[$index]) ? $source[$index] : "-";
-          if (($option[0] == "LAYER") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY")) {
-            $card = $source[$index + 2] ?? "-";
+          if ($option[0] != "CARDID") {
+            $card = isset($source[$index]) ? $source[$index] : "-";
+            if (($option[0] == "LAYER") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY")) {
+              $card = $source[$index + 2] ?? "-";
+            }
           }
 
           array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, borderColor: $borderColor, actionDataOverride: $options[$i]));

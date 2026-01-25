@@ -28,6 +28,10 @@ function CardName($cardID)
         return "Wrench-tastic!";
       case "consign_to_cosmos__shock_yellow":
         return "Consign To Cosmos // Shock";
+      case "nitro_mechanoida":
+      case "nitro_mechanoidb":
+      case "nitro_mechanoidc":
+        return "Nitro Mechanoid";
       default:
         break;
     }
