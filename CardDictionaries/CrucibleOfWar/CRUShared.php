@@ -237,17 +237,23 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "unified_decree_yellow":
       if(RepriseActive()) {
-        AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "AR", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ".CardLink($cardID, $cardID)."?");
-        AddDecisionQueue("YESNO", $currentPlayer, "whether to banish the card", 1);
-        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
-        AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCC", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+        $Deck = new Deck($currentPlayer);
+        if (!TypeContains($Deck->Top(), "AR")) {
+          LookAtTopCard($currentPlayer, $cardID, setPlayer: $currentPlayer);
+        }
+        else {
+          AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+          AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "AR", 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ".CardLink($cardID, $cardID)."?");
+          AddDecisionQueue("YESNO", $currentPlayer, "whether to banish the card", 1);
+          AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+          AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
+          AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
+          AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,TCC", 1);
+          AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+          AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
+        }
       }
       return "";
     case "spoils_of_war_red":
