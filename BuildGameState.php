@@ -75,14 +75,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $cacheVal = intval(GetCachePiece($gameName, 1));
 
-  // Include helper libraries (function definitions only need to be loaded once)
-  include_once 'GameLogic.php';
-  include_once "GameTerms.php";
-  include_once "Libraries/UILibraries.php";
-  include_once "Libraries/StatFunctions.php";
-  include_once "Libraries/PlayerSettings.php";
   include_once "ParseGamestate.php";
-
   // Re-read the game state file on each call (ParseGamestate.php only auto-parses on first include)
   // This is critical for SSE which needs fresh state on each update
   ParseGamestate();
