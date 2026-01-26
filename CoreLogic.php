@@ -2328,6 +2328,12 @@ function CloseCombatChain($chainClosed = true)
     $Step = $Stack->FindCardID($step);
     if ($Step != "") $Step->Negate();
   }
+  for ($i = 0; $i < $Stack->NumLayers(); $i++) { //7.7.3
+    $Layer = $Stack->Card($i, true);
+    if (TypeContains($Layer->ID(), "DR") || TypeContains($Layer->ID(), "AR")) {
+      $Layer->Negate("GY");
+    }
+  }
   $resolutionStep = $Stack->FindCardID("FINALIZECHAINLINK");
   $closeStep = $Stack->FindCardID("CLOSESTEP");
   if(!$chainClosed) FinalizeChainLink(!$chainClosed);

@@ -68,6 +68,10 @@ class Stack {
     }
     return "";
   }
+
+  function NumLayers() {
+    return intdiv(count($this->layers), LayerPieces());
+  }
 }
 
 class Layer {
