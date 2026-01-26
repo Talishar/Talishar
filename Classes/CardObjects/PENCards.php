@@ -472,3 +472,94 @@ class enflame_the_firebrand_red extends Card {
     return $param == "BUFF" ? 2 : 0;
   }
 }
+
+class aetherstorm_wellingtons extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "aetherstorm_wellingtons";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 2;
+  }
+}
+
+class double_cross_strap extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "double_cross_strap";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Destroy();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    GainResources($this->controller, 1);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer;
+    return HitsInCombatChain() < 2 || $this->controller != $mainPlayer;
+  }
+}
+
+class mask_of_the_swarming_claw extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "mask_of_the_swarming_claw";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function SpellVoidAmount() {
+    global $mainPlayer, $ChainLinks, $CombatChain;
+    if ($this->controller == $mainPlayer) return 0;
+    elseif (!$CombatChain->HasCurrentLink()) return 0;
+    else return $ChainLinks->NumLinks() + 1;
+  }
+}
+
+class fire_that_burns_within_red extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "fire_that_burns_within_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYHAND:isSameName=phoenix_flame_red");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red", "phoenix_flame_red") . "?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("DRAW", $this->controller, "-", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}

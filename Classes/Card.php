@@ -464,6 +464,10 @@ class Card {
   function PermanentPlayAbility($cardID, $from, $i) {
     return false;
   }
+
+  function SpellVoidAmount() {
+    return GeneratedSpellVoidAmount($this->cardID);
+  }
 }
 
 ?>
