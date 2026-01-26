@@ -83,7 +83,7 @@ if(!AltArtsDisabled($playerID))
                   // Add alt arts
                   $altArts = $metafyCommunity->AltArts();
                   if (!empty($altArts)) {
-                    $altArtIds = explode(",", $altArts);
+                    $altArtIds = $altArts;//explode(",", $altArts);
                     for($i = 0; $i < count($altArtIds); ++$i) {
                       $arr = explode("=", trim($altArtIds[$i]));
                       if (count($arr) === 2) {
