@@ -2138,7 +2138,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       elseif ($lastResult > $otherPlayerCount) {
         $targetType = 4;
       }
-      WriteLog("$lastResult $targetType $myCount $otherPlayerCount");
       $dqVars[$parameter] = $targetType;
       return $lastResult;
     case "SETDQVAR":
