@@ -1889,6 +1889,7 @@ function TalentOverride($cardID, $player = "", $zone="-")
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":
       case "brand_with_cinderclaw_blue":
+      case "enflame_the_firebrand_red":
         if (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) {
           $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
         }

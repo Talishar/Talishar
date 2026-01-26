@@ -434,3 +434,30 @@ class frost_spike_blue extends Card {
     FrostBiteExposed("-", $this->controller);
   }
 }
+
+class enflame_the_firebrand_red extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "enflame_the_firebrand_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $numDrac = NumDraconicChainLinks(); //this gets locked in immediately
+    if ($numDrac > 1) GiveAttackGoAgain();
+    if ($numDrac > 2) AddCurrentTurnEffect($this->cardID, $this->controller);
+    if ($numDrac > 3) AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $parameter == "BUFF";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 2 : 0;
+  }
+}
