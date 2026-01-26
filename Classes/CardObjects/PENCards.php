@@ -422,3 +422,15 @@ class ghost_protocol_mainframe_blue extends Card
     return $mod == "BOOST";
   }
 }
+
+class frost_spike_blue extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "frost_spike_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    FrostBiteExposed("-", $this->controller);
+  }
+}

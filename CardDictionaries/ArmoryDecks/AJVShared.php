@@ -89,12 +89,30 @@ function AJVEffectPowerModifier($cardID): int
 function FrostbiteExposed($otherPlayer, $player, $may=false) {
   $renouceInd = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $player);
   $rippleAways = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
+  if ($otherPlayer == "-") {
+    if (ListExposedEquipSlots(1) == "PASS") $otherPlayer = 2;
+    elseif (ListExposedEquipSlots(2) == "PASS") $otherPlayer = 1;
+    elseif (ShouldAutotargetOpponent($player)) $otherPlayer = $player == 2 ? 1 : 2;
+  }
   if($rippleAways <= 0 && $renouceInd == -1) {
-    AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
+    if ($otherPlayer == "-") {
+      AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET,0"); //Arcane Target isn't used for arcane only. Should be renamed to something else.
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a player to frostbite an exposed zone", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $player, "<-", 1);
+    }
+    else AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("frostbite", "frostbite"), 1);
     AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
-    AddDecisionQueue("SETDQVAR", $player, "0", 1);
-    AddDecisionQueue("EQUIPCARD", $otherPlayer, "frostbite-{0}", 1);
+    if ($otherPlayer == "-") {
+      AddDecisionQueue("SETDQVAR", $player, "1", 1);
+      AddDecisionQueue("EQUIPCARD", $player, "frostbite-{1}-{0}", 1);
+    }
+    else {
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("EQUIPCARD", $otherPlayer, "frostbite-{0}", 1);
+    }
   }
 }
 

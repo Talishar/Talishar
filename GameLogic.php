@@ -2782,7 +2782,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EQUIPCARD":
       $params = explode('-', $parameter);
       $slot = $params[1] ?? "-";
-      EquipEquipment($player, $params[0], $params[1]);
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $chosenPlayer = isset($params[2]) ? (str_contains($params[2], "MY") ? $player : $otherPlayer) : $player;
+      EquipEquipment($chosenPlayer, $params[0], $params[1]);
       return "";
     case "STEALEQUIPMENT":
       $targetPlayer = str_contains($lastResult, "THEIR") ? $otherPlayer : $player;
@@ -3279,7 +3281,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       });
       return empty($available) ? "PASS" : implode(",", $available);
     case "LISTEXPOSEDEQUIPSLOTS":
-      return ListExposedEquipSlots($player);
+      if ($parameter == "-") return ListExposedEquipSlots($player);
+      else {
+        $otherPlayer = $player == 1 ? 2 : 1;
+        $chosenPlayer = $player ? str_contains($parameter, "MY") : $otherPlayer;
+        return ListExposedEquipSlots($chosenPlayer);
+      }
     case "TRANSCEND":
       $params = explode(",", $parameter);
       Transcend($player, $params[0], $params[1]);
