@@ -73,6 +73,11 @@ class ChainLink {
 		return $this->linkSummary[2] ?? "-";
 	}
 
+	function AddTalent($tal) {
+		if ($this->linkSummary[2] == "-") $this->linkSummary[2] = $tal;
+		else $this->linkSummary[2] .= ",$tal";
+	}
+
 	function Class() {
 		return $this->linkSummary[3] ?? "-";
 	}

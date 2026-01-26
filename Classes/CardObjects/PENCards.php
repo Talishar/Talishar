@@ -447,14 +447,25 @@ class enflame_the_firebrand_red extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
+    global $ChainLinks;
     $numDrac = NumDraconicChainLinks(); //this gets locked in immediately
     if ($numDrac > 1) GiveAttackGoAgain();
-    if ($numDrac > 2) AddCurrentTurnEffect($this->cardID, $this->controller);
+    if ($numDrac > 2) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+      for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+        $Link = $ChainLinks->GetLink($i);
+        $Link->AddTalent("DRACONIC");
+      }
+    }
     if ($numDrac > 3) AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return $parameter == "BUFF";
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return $mode == "-";
   }
 
   function EffectPowerModifier($param, $attached = false) {

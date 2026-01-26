@@ -789,6 +789,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "poisoned_blade_yellow":
       case "poisoned_blade_blue":
       case "quickdodge_flexors":
+      case "enflame_the_firebrand_red":
         $remove = 1;
         break;
       default:
@@ -2815,6 +2816,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
                     case "brand_with_cinderclaw_red":
                     case "brand_with_cinderclaw_yellow":
                     case "brand_with_cinderclaw_blue":
+                    case "enflame_the_firebrand_red":
                       $restrict = false;
                       break;
                     default:
