@@ -468,6 +468,10 @@ class Card {
   function SpellVoidAmount() {
     return GeneratedSpellVoidAmount($this->cardID);
   }
+
+  function UnityEffect() {
+    return;
+  }
 }
 
 ?>

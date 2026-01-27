@@ -563,3 +563,55 @@ class fire_that_burns_within_red extends Card {
     return 2;
   }
 }
+
+class teklo_trebuchet_2000 extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChainState;
+    return $CombatChainState->IsBoosted();
+  }
+
+  function EffectPowerModifier() {
+    return 2;
+  }
+}
+
+class teklo_trebuchet_2000_blue extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "teklo_trebuchet_2000_blue";
+    $this->controller = $controller;
+    $this->baseCard = new teklo_trebuchet_2000($this->cardID, $controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier();
+  }
+}
+
+class gauntlets_of_unity extends Card {
+  function __construct($controller) {
+    $this->cardID = "gauntlets_of_unity";
+    $this->controller = $controller;
+  }
+
+  function UnityEffect() {
+    AddCurrentTurnEffect("gauntlets_of_unity", $this->controller);
+    return;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountCurrentTurnEffects($this->cardID, $this->controller);
+  }
+}
