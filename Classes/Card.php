@@ -472,6 +472,10 @@ class Card {
   function UnityEffect() {
     return;
   }
+
+  function RemoveEffectFromCombatChain() {
+    return false;
+  }
 }
 
 ?>

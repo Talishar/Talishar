@@ -471,6 +471,10 @@ class enflame_the_firebrand_red extends Card {
   function EffectPowerModifier($param, $attached = false) {
     return $param == "BUFF" ? 2 : 0;
   }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
+  }
 }
 
 class aetherstorm_wellingtons extends Card {
@@ -577,6 +581,11 @@ class teklo_trebuchet_2000 extends BaseCard {
   function EffectPowerModifier() {
     return 2;
   }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
+  }
+
 }
 
 class teklo_trebuchet_2000_blue extends Card {

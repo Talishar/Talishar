@@ -729,7 +729,7 @@ function EffectBlockModifier($cardID, $index, $from)
 
 function RemoveEffectsFromCombatChain($cardID = "")
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $mainPlayer;
   $searchedEffect = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
@@ -739,6 +739,8 @@ function RemoveEffectsFromCombatChain($cardID = "")
       $searchedEffect = $effectArr2[0];  
     }
     else $searchedEffect = $cardID;
+    $card = GetClass($searchedEffect, $mainPlayer);
+    if ($card != "-") $remove = $card->RemoveEffectFromCombatChain();
     switch ($searchedEffect) {
       case "mask_of_momentum":
       case "high_speed_impact_red":
@@ -789,8 +791,6 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "poisoned_blade_yellow":
       case "poisoned_blade_blue":
       case "quickdodge_flexors":
-      case "enflame_the_firebrand_red":
-      case "teklo_trebuchet_2000_blue":
         $remove = 1;
         break;
       default:
