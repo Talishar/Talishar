@@ -125,4 +125,8 @@ class CharacterCard {
     //1 = yes, 0 = no
     return $this->pieces[$this->index+14] ?? 0;
   }
+
+  function Destroy($skipDestroy = false, $wasBanished = false) {
+    DestroyCharacter($this->controller, $this->index, $skipDestroy, $wasBanished);
+  }
 }

@@ -407,9 +407,10 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   return 6;
 }
 
-function CardLink($caption, $cardNumber, $recordMenu = false)
+function CardLink($caption, $cardNumber="-", $recordMenu = false)
 {
   global $darkMode, $playerID, $isReactFE;
+  $cardNumber = $cardNumber == "-" ? $caption : $cardNumber;
   if ($isReactFE) {
     return "{{" . $cardNumber . "|" . CardName($cardNumber) . "|" . PitchValue($cardNumber) . "}}";
   }

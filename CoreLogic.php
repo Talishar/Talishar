@@ -3401,6 +3401,8 @@ function PitchAbility($cardID, $from="HAND")
 function UnityEffect($cardID)
 {
   global $defPlayer;
+  $card = GetClass($cardID, $defPlayer);
+  if ($card != "-") $card->UnityEffect();
   switch ($cardID) {
     case "united_we_stand_yellow"://United We Stand
       $char = &GetPlayerCharacter($defPlayer);

@@ -729,7 +729,7 @@ function EffectBlockModifier($cardID, $index, $from)
 
 function RemoveEffectsFromCombatChain($cardID = "")
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $mainPlayer;
   $searchedEffect = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
@@ -739,6 +739,8 @@ function RemoveEffectsFromCombatChain($cardID = "")
       $searchedEffect = $effectArr2[0];  
     }
     else $searchedEffect = $cardID;
+    $card = GetClass($searchedEffect, $mainPlayer);
+    if ($card != "-") $remove = $card->RemoveEffectFromCombatChain();
     switch ($searchedEffect) {
       case "mask_of_momentum":
       case "high_speed_impact_red":
@@ -2815,6 +2817,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
                     case "brand_with_cinderclaw_red":
                     case "brand_with_cinderclaw_yellow":
                     case "brand_with_cinderclaw_blue":
+                    case "enflame_the_firebrand_red":
                       $restrict = false;
                       break;
                     default:

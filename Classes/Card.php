@@ -464,6 +464,18 @@ class Card {
   function PermanentPlayAbility($cardID, $from, $i) {
     return false;
   }
+
+  function SpellVoidAmount() {
+    return GeneratedSpellVoidAmount($this->cardID);
+  }
+
+  function UnityEffect() {
+    return;
+  }
+
+  function RemoveEffectFromCombatChain() {
+    return false;
+  }
 }
 
 ?>

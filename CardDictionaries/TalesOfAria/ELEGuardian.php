@@ -34,7 +34,10 @@
       case "awakening_blue":
         $otherPlayer = $currentPlayer == 1 ? 2 : 1;
         if (!IsPlayerAI($otherPlayer)) $num = GetHealth($otherPlayer) - GetHealth($currentPlayer);
-        else $num = 10;
+        else {
+          $num = 10;
+          WriteLog(CardLink($cardID) . " always makes 10 " . CardLink("seismic_surge") . "s against the AI for convenience");
+        }
         PlayAura("seismic_surge", $currentPlayer, $num * (DelimStringContains($additionalCosts, "EARTH") ? 2 : 1));
         MZMoveCard($currentPlayer, "MYDECK:type=AA;class=GUARDIAN;maxCost=" . CountAura("seismic_surge", $currentPlayer), "MYHAND", may:true, isReveal:true);
         return "";
