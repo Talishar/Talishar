@@ -615,3 +615,19 @@ class gauntlets_of_unity extends Card {
     return CountCurrentTurnEffects($this->cardID, $this->controller);
   }
 }
+
+class helm_of_unity extends Card {
+  function __construct($controller) {
+    $this->cardID = "helm_of_unity";
+    $this->controller = $controller;
+  }
+
+  function UnityEffect() {
+    AddCurrentTurnEffect("helm_of_unity", $this->controller);
+    return;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountCurrentTurnEffects($this->cardID, $this->controller);
+  }
+}
