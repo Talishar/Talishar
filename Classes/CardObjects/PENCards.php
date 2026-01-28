@@ -707,6 +707,8 @@ class basalt_boots extends Card {
 
 class bear_hug extends BaseCard {
   function IsPlayRestricted() {
+    // this is *technically* not correct, it won't interact correctly with dpot
+    // leaving it as is for now because no one will play d-pot kayo
     $pitch = GetPitch($this->controller);
     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
