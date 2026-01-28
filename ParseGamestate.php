@@ -408,7 +408,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 {
-  global $gameName, $skipWriteGamestate, $filepath;
+  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings;
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
@@ -428,7 +428,11 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     WriteLog("Cannot undo further: Please revert to start of this/previousturn instead.");
     return;
   }
-  
+  // apply current settings to the backup
+  $gamestateBackup = file($backupFile);
+  $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
+  $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
+  file_put_contents($backupFile, $gamestateBackup);
   // Restore the target backup as current gamestate
   copy($backupFile, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
