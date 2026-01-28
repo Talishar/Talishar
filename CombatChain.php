@@ -2268,3 +2268,19 @@ function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
     CombatChainHitEffect($attackCard, $sourceID, $targetPlayer);
   }
 }
+
+function LayerStepPower() { //calculates the modified power of an attack in the layer step
+  global $currentTurnEffects, $Stack, $mainPlayer;
+  if (!IsLayerStep()) return 0;
+  $power = 0;
+  $cardID = $Stack->BottomLayer()->ID();
+  for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
+    if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
+      if ($currentTurnEffects[$j + 1] == $mainPlayer) {
+        $power += EffectPowerModifier($currentTurnEffects[$j]);
+      }
+    }
+  }  
+  $power += ModifiedPowerValue($cardID, $mainPlayer, "CC");
+  return $power;
+}

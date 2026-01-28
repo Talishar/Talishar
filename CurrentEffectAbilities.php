@@ -1092,15 +1092,7 @@ function CurrentEffectCostModifiers($cardID, $from)
           }
           break;
         case "savage_sash":
-          $power = 0;
-          for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
-            if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
-              if ($currentTurnEffects[$j + 1] == $currentPlayer) {
-                $power += EffectPowerModifier($currentTurnEffects[$j]);
-              }
-            }
-          }  
-          $power += ModifiedPowerValue($cardID, $currentPlayer, $from);
+          $power = LayerStepPower();
           if (CardType($cardID) == "AA" && $power >= 6) $costModifier -= 1;
           break;
         case "evo_heartdrive_blue":

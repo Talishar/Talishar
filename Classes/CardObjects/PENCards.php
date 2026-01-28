@@ -640,3 +640,84 @@ class helm_of_unity extends Card {
     return CountCurrentTurnEffects($this->cardID, $this->controller);
   }
 }
+
+class predatory_plating extends Card {
+  function __construct($controller) {
+    $this->cardID = "predatory_plating";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain, $ChainLinks;
+    if (LayerStepPower() >= 6) return false;
+
+    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $Card = $CombatChain->Card($i, true);
+      if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA") && $Card->TotalPower() >= 6) return false;
+    }
+
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $ChainLink = $ChainLinks->GetLink($i);
+      for ($j = 0; $j < $ChainLink->NumCards(); ++$j) {
+        $Card = $ChainLink->GetLinkCard($j, true);
+        if ($Card->PlayerID() == $this->controller && $Card->PowerModifier() >= 6) return false;
+      }
+    }
+
+    $Character = new PlayerCharacter($this->controller);
+    for ($i = 0; $i < $Character->NumCards(); ++$i) {
+      if (PowerValue($Character->Card($i, true), $this->controller, "EQUIP")) return false;
+    }
+
+    $Allies = new Allies($this->controller);
+    for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+      if (PowerValue($Allies->Card($i, true), $this->controller, "ALLIES")) return false;
+    }
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    GainResources($this->controller, 1);
+  }
+}
+
+class basalt_boots extends Card {
+  function __construct($controller) {
+    $this->cardID = "basalt_boots";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return SearchAuras("seismic_surge", $this->controller) ? 1 : 0;
+  }
+}
+
+class bear_hug_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bear_hug_blue";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
+    }
+    return true;
+  }
+}
+
+class enclosed_firemind extends Card {
+  function __construct($controller) {
+    $this->cardID = "enclosed_firemind";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+}

@@ -24,7 +24,11 @@ class PlayerCharacter {
       if ($this->char[$i + 11] == $uid) return new CharacterCard($i, $this->player);
     }
     return "";
-  }  
+  } 
+
+  function NumCards() {
+    return intdiv(count($this->char), CharacterPieces());
+  }
 }
 
 class CharacterCard {
