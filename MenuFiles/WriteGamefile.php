@@ -12,7 +12,7 @@
       global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink;
       global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP, $p1deckbuilderID, $p2deckbuilderID, $roguelikeGameID;
       global $p1Matchups, $p2Matchups, $p1StartingHealth, $p1ContentCreatorID, $p2ContentCreatorID;
-      global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1Equipment, $p2Equipment, $p1IsAI, $p2IsAI, $gameGUID;
+      global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1StartingEquipment, $p2StartingEquipment, $p1IsAI, $p2IsAI, $gameGUID;
       global $p1MetafyTiers, $p2MetafyTiers;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
@@ -48,8 +48,8 @@
       fwrite($gameFileHandler, $p2ContentCreatorID . "\r\n");
       fwrite($gameFileHandler, $p1SideboardSubmitted . "\r\n");
       fwrite($gameFileHandler, $p2SideboardSubmitted . "\r\n");
-      fwrite($gameFileHandler, json_encode($p1Equipment) . "\r\n");
-      fwrite($gameFileHandler, json_encode($p2Equipment) . "\r\n");
+      fwrite($gameFileHandler, json_encode($p1StartingEquipment) . "\r\n");
+      fwrite($gameFileHandler, json_encode($p2StartingEquipment) . "\r\n");
       fwrite($gameFileHandler, $p1IsAI . "\r\n");
       fwrite($gameFileHandler, $p2IsAI . "\r\n");
       fwrite($gameFileHandler, $gameGUID . "\r\n");
