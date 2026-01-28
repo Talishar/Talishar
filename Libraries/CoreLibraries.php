@@ -42,9 +42,9 @@ function SeedRandom($reroll=false)
   $seedString .= implode("", GetDiscard(2));
   $seedString .= implode("", GetDeck(1));
   $seedString .= implode("", GetDeck(2));
+  if($reroll) $seedString .= "|reroll";
 
   $seedString = hash("sha256", $seedString);
-  if ($reroll) ++$seedString;
   mt_srand(crc32($seedString));
   $randomSeeded = true;
 }
