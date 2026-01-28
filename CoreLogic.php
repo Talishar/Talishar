@@ -3116,8 +3116,9 @@ function HitsInRow()
 
 function HitsInCombatChain()
 {
-  global $chainLinkSummary, $combatChainState, $CCS_HitThisLink;
-  $numHits = intval($combatChainState[$CCS_HitThisLink]);
+  global $chainLinkSummary, $combatChainState, $CCS_HitThisLink, $CCS_DamageDealt;
+  $numHits = intval($combatChainState[$CCS_HitThisLink]); //track flicks
+  if ($combatChainState[$CCS_DamageDealt] > 0) $numHits += 1; //tracks during thhe damage step
   for ($i = count($chainLinkSummary) - ChainLinkSummaryPieces(); $i >= 0; $i -= ChainLinkSummaryPieces()) {
     $numHits += intval($chainLinkSummary[$i + 5]);
   }

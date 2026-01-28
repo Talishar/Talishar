@@ -532,9 +532,14 @@ class mask_of_the_swarming_claw extends Card {
 
   function SpellVoidAmount() {
     global $mainPlayer, $ChainLinks, $CombatChain;
-    if ($this->controller == $mainPlayer) return 0;
+    if ($this->controller != $mainPlayer) return 0;
     elseif (!$CombatChain->HasCurrentLink()) return 0;
+    elseif (IsLayerStep()) return $ChainLinks->NumLinks();
     else return $ChainLinks->NumLinks() + 1;
+  }
+
+  function DefaultActiveState() {
+    return 1;
   }
 }
 
@@ -581,11 +586,6 @@ class teklo_trebuchet_2000 extends BaseCard {
   function EffectPowerModifier() {
     return 2;
   }
-
-  function RemoveEffectFromCombatChain() {
-    return true;
-  }
-
 }
 
 class teklo_trebuchet_2000_blue extends Card {
@@ -606,6 +606,10 @@ class teklo_trebuchet_2000_blue extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return $this->baseCard->EffectPowerModifier();
+  }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
   }
 }
 
@@ -670,7 +674,7 @@ class predatory_plating extends Card {
 
     $Character = new PlayerCharacter($this->controller);
     for ($i = 0; $i < $Character->NumCards(); ++$i) {
-      if (PowerValue($Character->Card($i, true), $this->controller, "EQUIP")) return false;
+      if (PowerValue($Character->Card($i, true)->CardID(), $this->controller, "EQUIP")) return false;
     }
 
     $Allies = new Allies($this->controller);
@@ -682,6 +686,11 @@ class predatory_plating extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     GainResources($this->controller, 1);
+  }
+
+  function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Destroy();
   }
 }
 
@@ -707,7 +716,7 @@ class bear_hug extends BaseCard {
 }
 
 class bear_hug_red extends Card {
-  private $baseCard;
+  public $baseCard;
   function __construct($controller) {
     $this->cardID = "bear_hug_red";
     $this->controller = $controller;
@@ -720,7 +729,7 @@ class bear_hug_red extends Card {
 }
 
 class bear_hug_yellow extends Card {
-  private $baseCard;
+  public $baseCard;
   function __construct($controller) {
     $this->cardID = "bear_hug_yellow";
     $this->controller = $controller;
@@ -733,7 +742,7 @@ class bear_hug_yellow extends Card {
 }
 
 class bear_hug_blue extends Card {
-  private $baseCard;
+  public $baseCard;
   function __construct($controller) {
     $this->cardID = "bear_hug_blue";
     $this->controller = $controller;

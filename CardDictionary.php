@@ -2295,11 +2295,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     }
   }
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    $ret = $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
-    unset($card);
-    return $ret;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") {
+    return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
   }
   switch ($cardID) {
     case "breaking_scales":
@@ -4393,7 +4391,10 @@ function SpellVoidAmount($cardID, $player): int
 {
   if ($cardID == "runechant" && SearchCurrentTurnEffects("amethyst_tiara", $player)) return 1;
   $card = GetClass($cardID, $player);
-  if ($card != "-") return $card->SpellVoidAmount();
+  if ($card != "-") {
+    WriteLog("JERE!!! $cardID - " . $card->SpellVoidAmount());
+    return $card->SpellVoidAmount();
+  }
   return match ($cardID) {
     "arcanite_fortress" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
     default => GeneratedSpellVoidAmount($cardID),
