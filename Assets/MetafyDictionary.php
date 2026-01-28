@@ -254,7 +254,8 @@ enum MetafyCommunity : string
           "pilfer_the_wreck_red=SEA138-T", "pilfer_the_wreck_yellow=SEA139-T", "pilfer_the_wreck_blue=SEA140-T", "rok=DYN005-T", "sandscour_greatbow=DYN151-T", 
           "seasoned_saviour=DYN026-T", "shifting_tides_blue=SEA148-T", "singularity_red=EVO010-T", "surgent_aethertide=DYN192-T", "swindlers_grift_red=SEA169-T", 
           "swindlers_grift_yellow=SEA170-T", "swindlers_grift_blue=SEA171-T", "thievn_varmints_red=SEA172-T", "throw_caution_to_the_wind_blue=SEA150-T", "electrify_blue=ELE200-T",
-          "goliath_gauntler=WTR153-T", "hidden_agenda=AAZ005-T", "goldkiss_rum=SEA245-T"
+          "goliath_gauntler=WTR153-T", "hidden_agenda=AAZ005-T", "goldkiss_rum=SEA245-T", "command_and_conquer_red=ANQ009-T", "crown_of_providence=ANQ005-T", "enlightened_strike_red=PEN320-T", 
+          "fyendals_spring_tunic=ANQ006-T", "heart_of_fyendal_blue=ANQ001-T", "quickdodge_flexors=ANQ008-T", "riches_of_tropal_dhani_yellow=ANQ003-T", "stonewall_gauntlet=ANQ007-T"
       ];
       return $altArts;
     }
