@@ -2537,9 +2537,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "pack_call_yellow":
         $deck = new Deck($player);
-        if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: "pack_call_yellow") < 6) {
-          $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-          WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+        if ($deck->Reveal()) {
+          $cardID = $deck->Top(true);
+          if (ModifiedPowerValue($cardID, $player, "DECK", source: "pack_call_yellow") < 6) {
+            $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
+            WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+          }
+          else $deck->AddTop($cardID); // the card gets "put" on top
         }
         break;
       case "dromai":
@@ -3141,10 +3145,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "firewall_blue":
         $deck = new Deck($player);
         if ($deck->Reveal()) {
-          if (!SubtypeContains($deck->Top(), "Evo", $player)) {
+          $cardID = $deck->Top(true);
+          if (!SubtypeContains($cardID, "Evo", $player)) {
             WriteLog("The card was put on the bottom of your deck");
             $deck->AddBottom($deck->Top(remove: true), "DECK");
           }
+          else $deck->AddTop($cardID, "DECK");
         }
         break;
       case "big_bertha_red":

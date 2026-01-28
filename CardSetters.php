@@ -194,12 +194,15 @@ function AddBottomDeck($cardID, $player, $from)
 
 function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
 {
-  $deck = &GetDeck($player);
-  if ($deckIndexModifier == 0) {
-    array_unshift($deck, $cardID);
-    return;
-  }
-  array_splice($deck, $deckIndexModifier, 0, $cardID);
+  $Deck = new Deck($player);
+  $Deck->AddTop($cardID, $from, $deckIndexModifier);
+  // if ($deckIndexModifier)
+  // $deck = &GetDeck($player);
+  // if ($deckIndexModifier == 0) {
+  //   array_unshift($deck, $cardID);
+  //   return;
+  // }
+  // array_splice($deck, $deckIndexModifier, 0, $cardID);
 }
 
 function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1)

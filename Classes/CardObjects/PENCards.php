@@ -766,3 +766,27 @@ class enclosed_firemind extends Card {
     return 1;
   }
 }
+
+class topsy_turvy extends Card {
+    function __construct($controller) {
+    $this->cardID = "topsy_turvy";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
