@@ -52,9 +52,6 @@ if ($p2Char[0] == "DUMMY") {
 // Handle character-specific start game abilities
 handleCharacterStartAbilities();
 
-$p1StartingEquipment = $_SESSION['p1StartingEquipment'] ?? new stdClass();
-$p2StartingEquipment = $_SESSION['p2StartingEquipment'] ?? new stdClass();
-
 $zones = ['head' => 'Head', 'chest' => 'Chest', 'arms' => 'Arms', 'legs' => 'Legs'];
 
 function equipModularForPlayer($playerID, $equipmentObj, $zones) {

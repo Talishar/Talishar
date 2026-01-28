@@ -62,7 +62,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cast_bones_red":
       $deck = new Deck($currentPlayer);
       if ($deck->Reveal(6)) {
-        $cards = explode(",", $deck->Top(amount: 6));
+        $cards = explode(",", $deck->Top(remove: true, amount: 6));
         $numSixes = 0;
         $cardsCount = count($cards);
         for ($i = 0; $i < $cardsCount; ++$i) {
@@ -71,13 +71,8 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         PlayAura("might", $currentPlayer, $numSixes); 
         if (CountAura("might", $currentPlayer) >= 6) PlayAura("agility", $currentPlayer); 
 
-        $zone = &GetDeck($currentPlayer);
-        $topDeck = array_slice($zone, 0, 6);
-        shuffle($topDeck);
-        $topDeckCount = count($topDeck);
-        for ($i = 0; $i < $topDeckCount; ++$i) {
-          $zone[$i] = $topDeck[$i];
-        }
+        shuffle($cards);
+        foreach ($cards as $cardID) $deck->AddTop($cardID, "DECK");
       }
       return "";
     case "reckless_charge_blue":

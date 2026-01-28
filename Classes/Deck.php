@@ -94,8 +94,12 @@ class Deck {
     return $cardID;
   }
 
-  function AddTop($cardID, $from="GY")
+  function AddTop($cardID, $from="GY", $deckIndexModifier=0)
   {
+    if (SearchCurrentTurnEffects("topsy_turvy", 1) || SearchCurrentTurnEffects("topsy_turvy", 2)) {
+      WriteLog("Things are " . CardLink("topsy_turvy") . " so the card goes to the bottom instead!");
+      $this->AddBottom($cardID);
+    }
     array_unshift($this->deck, $cardID);
     return $cardID;
   }
@@ -117,8 +121,8 @@ class Deck {
         $valid = false;
       }
     }
-    $this->deck = array_merge($topCardID, $this->deck);
-    $this->deck = array_merge($this->deck, $bottomCardID);
+    foreach($topCardID as $cardID) $this->AddTop($cardID);
+    foreach($bottomCardID as $cardID) $this->AddBottom($cardID);
     return true;
   }
 

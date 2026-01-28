@@ -67,7 +67,7 @@ if(isset($submission->offhand) && $submission->offhand != "") $character .= " " 
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
 if ($playerID == 1) {
-  $_SESSION['p1StartingEquipment'] = (object)[
+  $p1StartingEquipment = (object)[
     'head'  => $submission->head,
     'chest' => $submission->chest,
     'arms'  => $submission->arms,
@@ -76,7 +76,7 @@ if ($playerID == 1) {
 }
 
 if ($playerID == 2) {
-  $_SESSION['p2StartingEquipment'] = (object)[
+  $p2StartingEquipment = (object)[
     'head'  => $submission->head,
     'chest' => $submission->chest,
     'arms'  => $submission->arms,

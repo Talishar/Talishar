@@ -4392,7 +4392,6 @@ function SpellVoidAmount($cardID, $player): int
   if ($cardID == "runechant" && SearchCurrentTurnEffects("amethyst_tiara", $player)) return 1;
   $card = GetClass($cardID, $player);
   if ($card != "-") {
-    WriteLog("JERE!!! $cardID - " . $card->SpellVoidAmount());
     return $card->SpellVoidAmount();
   }
   return match ($cardID) {
