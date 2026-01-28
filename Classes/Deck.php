@@ -122,7 +122,7 @@ class Deck {
       }
     }
     foreach($topCardID as $cardID) $this->AddTop($cardID);
-    foreach($topCardID as $cardID) $this->AddBottom($cardID);
+    foreach($bottomCardID as $cardID) $this->AddBottom($cardID);
     return true;
   }
 
