@@ -696,18 +696,52 @@ class basalt_boots extends Card {
   }
 }
 
-class bear_hug_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "bear_hug_blue";
-    $this->controller = $controller;
-  }
-
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+class bear_hug extends BaseCard {
+  function IsPlayRestricted() {
     $pitch = GetPitch($this->controller);
     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
     }
     return true;
+  }
+}
+
+class bear_hug_red extends Card {
+  private $baseCard;
+  function __construct($controller) {
+    $this->cardID = "bear_hug_red";
+    $this->controller = $controller;
+    $this->baseCard = new bear_hug($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
+
+class bear_hug_yellow extends Card {
+  private $baseCard;
+  function __construct($controller) {
+    $this->cardID = "bear_hug_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new bear_hug($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
+
+class bear_hug_blue extends Card {
+  private $baseCard;
+  function __construct($controller) {
+    $this->cardID = "bear_hug_blue";
+    $this->controller = $controller;
+    $this->baseCard = new bear_hug($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
   }
 }
 
