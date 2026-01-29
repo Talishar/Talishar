@@ -3961,13 +3961,20 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "war_cry_of_bellona_yellow":
       if (GetResolvedAbilityType($cardID, $from) == "I")   
       {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
+        $soul = GetSoul($currentPlayer);
+        if (count($soul) > 0) {
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
+          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+          AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
+        }
+        else {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, 0);
+          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+        }
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=W&THEIRAURAS:type=W", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target weapon", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
