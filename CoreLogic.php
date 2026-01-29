@@ -3776,10 +3776,10 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_steel_soul_controller_blue_equip":
       if (TypeContains($toCardID, "C", $player)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4", true);
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4", true);
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6;maxAttack=6", "MYTOPDECK-4", true);
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6;maxAttack=6", "MYTOPDECK-4", true);
       } else if (SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6", "MYTOPDECK-4", true);
+        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6;maxAttack=6", "MYTOPDECK-4", true);
       }
       break;
     case "evo_steel_soul_tower_blue_equip":
