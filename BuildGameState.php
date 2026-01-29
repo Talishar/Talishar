@@ -152,13 +152,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
 
       // Add Metafy community alt arts
-      if ($sessionUserLoggedIn && !IsDevEnvironment()) {
+      // We look up by player username since session might not have login data (e.g., in SSE connections)
+      $playerUsername = $playerID == 1 ? $p1uid : $p2uid;
+      if (!empty($playerUsername) && !IsDevEnvironment()) {
         $conn = GetDBConnection();
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
         $stmt = mysqli_stmt_init($conn);
         if (mysqli_stmt_prepare($stmt, $sql)) {
-          $userName = $sessionUserName;
-          mysqli_stmt_bind_param($stmt, 's', $userName);
+          mysqli_stmt_bind_param($stmt, 's', $playerUsername);
           mysqli_stmt_execute($stmt);
           $result = mysqli_stmt_get_result($stmt);
           $row = mysqli_fetch_assoc($result);
