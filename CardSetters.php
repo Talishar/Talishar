@@ -766,10 +766,11 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
     if ($player == $myStateBuiltFor) AddSpecificGraveyard($cardID, $myDiscard, $from, $mods);
     else AddSpecificGraveyard($cardID, $theirDiscard, $from, $mods);
   }
+  $grave = GetDiscard($player);
   if (HasWateryGrave($cardID) && $from == "PLAY") {
-    $grave = GetDiscard($player);
     AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$grave[count($grave) - DiscardPieces() + 1]);
   }
+  return $grave[count($grave) - DiscardPieces() + 1];
 }
 
 function RemoveGraveyard($player, $index, $resetGraveyard=true)

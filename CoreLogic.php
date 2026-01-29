@@ -3915,8 +3915,7 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       if ($from == "CC") break; //Things that would go to the GY stay on till the chain is closing and the close step.
       if ($from == "CHAINCLOSING") $from = "CC";
       if (DelimStringContains(CardSubType($cardID), "Affliction") && $from != "CC") $player = $otherPlayer;
-      AddGraveyard($cardID, $player, $from, $effectController);
-      break;
+      return AddGraveyard($cardID, $player, $from, $effectController);
     case "SOUL":
       AddSoul($cardID, $player, $from);
       break;
@@ -3930,14 +3929,14 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       BanishCardForPlayer($cardID, $otherPlayer, $from, $modifier);
       break;
     case "THEIRDISCARD":
-      AddGraveyard($cardID, $otherPlayer, $from, $effectController);
-      break;
+      return AddGraveyard($cardID, $otherPlayer, $from, $effectController);
     case "THEIRBOTDECK":
       AddBottomDeck($cardID, $otherPlayer, $from);
       break;
     default:
       break;
   }
+  return "-";
 }
 
 function isPreviousLinkDraconic()

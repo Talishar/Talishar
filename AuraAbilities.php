@@ -220,7 +220,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   }
   if (HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if (CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token
-  ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
+  return ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
 function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPhase = true, $destinationUID = "-")
@@ -432,8 +432,8 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
-  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose, $mainPhase);
-  AuraDestroyed($player, $cardID, $isToken, $from);
+  $destinationUID = AuraDestroyed($player, $auras[$index], $isToken, $from);
+  $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose, $mainPhase, $destinationUID);
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
     $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
@@ -463,10 +463,10 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
   }
 }
 
-function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true)
+function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true, $destinationUID = "-")
 {
   global $CS_SuspensePoppedThisTurn, $layers;
-  if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location, $mainPhase);
+  if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location, $mainPhase, $destinationUID);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
     $cardID = $auras[$index];
