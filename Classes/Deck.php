@@ -121,7 +121,7 @@ class Deck {
         $valid = false;
       }
     }
-    foreach($topCardID as $cardID) $this->AddTop($cardID);
+    for($i = count($topCardID); $i >= 0; --$i) $this->AddTop($topCardID[$i]);
     foreach($bottomCardID as $cardID) $this->AddBottom($cardID);
     return true;
   }
