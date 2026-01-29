@@ -1019,3 +1019,14 @@ class beckoning_haunt extends Card {
     return "";
   }
 }
+
+class engulfing_shadows_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "engulfing_shadows_yellow";
+    $this->controller = $controller;
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
+  }
+}
