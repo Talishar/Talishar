@@ -59,7 +59,7 @@
         break;
       case "take_the_tempo_red":
         $deck = new Deck($mainPlayer);
-        if(HitsInCombatChain() >= 2) $deck->BanishTop(CardType($deck->Top()) == "AA" ? "NT" : "-", $mainPlayer);
+        if(HitsInCombatChain() >= 3) $deck->BanishTop(CardType($deck->Top()) == "AA" ? "NT" : "-", $mainPlayer);
         break;
       default: break;
     }
