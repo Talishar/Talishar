@@ -477,7 +477,7 @@ function SearchCharacterForCard($player, $cardID)
   return false;
 }
 
-function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
+function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false, $excludeAuras=false)
 {
   global $currentTurnEffects, $combatChain;
   $character = &GetPlayerCharacter($player);
@@ -489,7 +489,7 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false)
       if (!$notActiveLink) return true;
       else if ($combatChain[8] != $character[$i + 11]) return true;
     }
-    if ($character[$i] == "frostbite") {
+    if ($character[$i] == "frostbite" && !$excludeAuras) {
       $slot = "";
       $effectCount = count($currentTurnEffects);
       for ($j = 0; $j < $effectCount; $j += $effectPieces) {

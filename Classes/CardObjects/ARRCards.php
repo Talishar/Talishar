@@ -17,7 +17,7 @@ class bare_destruction_red extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest");
+    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest", excludeAuras:true);
     if (SearchCurrentTurnEffects("BEATCHEST", $this->controller) && !$hasChest) {
       AddCurrentTurnEffectFromCombat($this->cardID, $this->controller);
       GiveAttackGoAgain();
@@ -53,7 +53,7 @@ class bare_swing_yellow extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest");
+    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest", excludeAuras:true);
     if (SearchCurrentTurnEffects("BEATCHEST", $this->controller) && !$hasChest) {
       AddCurrentTurnEffect($this->cardID, $this->controller);
     }
@@ -85,7 +85,7 @@ class bare_swing_red extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest");
+    $hasChest = SearchCharacterAliveSubtype($this->controller, "Chest", excludeAuras:true);
     if (SearchCurrentTurnEffects("BEATCHEST", $this->controller) && !$hasChest) {
       AddCurrentTurnEffect($this->cardID, $this->controller);
     }
