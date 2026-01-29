@@ -64,10 +64,7 @@ if (!function_exists("GetMetafyTiersFromDatabase")) {
             }
             
             if ($tierName) {
-              error_log("DEBUG: Found tier name: $tierName for user $userName");
               $tiers[] = $tierName;
-            } else {
-              error_log("DEBUG: No subscription_tier found for user $userName in community");
             }
             break;
           }
