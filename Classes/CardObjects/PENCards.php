@@ -791,19 +791,14 @@ class topsy_turvy extends Card {
   }
 }
 
-class runic_fellingsong_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "runic_fellingsong_red";
-    $this->controller = $controller;
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+class runic_fellingsong extends BaseCard {
+  function PlayAbility() {
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+  function ProcessTrigger($uniqueID, $target = '-') {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Aura");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish an aura to deal 1 arcane?", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -811,6 +806,57 @@ class runic_fellingsong_red extends Card {
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
     AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+  }
+}
+
+class runic_fellingsong_red extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "runic_fellingsong_red";
+    $this->controller = $controller;
+    $this->baseCard = new runic_fellingsong($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  }
+}
+
+class runic_fellingsong_yellow extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "runic_fellingsong_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new runic_fellingsong($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  }
+}
+
+class runic_fellingsong_blue extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "runic_fellingsong_blue";
+    $this->controller = $controller;
+    $this->baseCard = new runic_fellingsong($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($uniqueID, $target);
   }
 }
 
