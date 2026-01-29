@@ -198,7 +198,7 @@ class Card {
     return;
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     return;
   }
 

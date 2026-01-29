@@ -825,7 +825,7 @@ class sigil_of_silphidae_blue extends Card {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);

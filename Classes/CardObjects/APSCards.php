@@ -65,7 +65,7 @@ class superstar_blue extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     if ($mainPhase) AddLayer("TRIGGER", $this->controller, $this->cardID);
     else $this->ProcessTrigger($uniqueID);
   }

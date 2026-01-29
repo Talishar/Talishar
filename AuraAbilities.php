@@ -223,7 +223,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
-function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPhase = true)
+function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPhase = true, $destinationUID = "-")
 {
   global $mainPlayer;
   $auras = &GetAurasLocation($player, $location);
@@ -233,7 +233,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
   $uniqueID = $auras[$index + $uniqueIDIndex];
   $otherPlayer = $player == 1 ? 2 : 1;
   $card = GetClass($cardID, $player);
-  if ($card != "-") return $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase);
+  if ($card != "-") return $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID);
   switch ($cardID) {
     case "ironsong_pride_red":
       $char = &GetPlayerCharacter($player);

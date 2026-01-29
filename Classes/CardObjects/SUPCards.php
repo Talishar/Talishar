@@ -1180,7 +1180,7 @@ class leave_them_hanging_red extends Card {
     RemoveSuspense($this->controller, "MYAURAS-$index", mainPhase: false);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"BUFF");
   }
 
@@ -2147,7 +2147,7 @@ class act_of_glory_red extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2181,7 +2181,7 @@ class act_of_glory_yellow extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2215,7 +2215,7 @@ class act_of_glory_blue extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2249,7 +2249,7 @@ class edge_of_their_seats_red extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2283,7 +2283,7 @@ class edge_of_their_seats_yellow extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2317,7 +2317,7 @@ class edge_of_their_seats_blue extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2351,7 +2351,7 @@ class tension_in_the_air_red extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2385,7 +2385,7 @@ class tension_in_the_air_yellow extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2419,7 +2419,7 @@ class tension_in_the_air_blue extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     $this->archetype->LeavesPlayAbility($mainPhase);
   }
 
@@ -2707,7 +2707,7 @@ class cheers_blue extends Card {
     Cheer($this->controller);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -2730,7 +2730,7 @@ class booze_blue extends Card {
     Boo($this->controller);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3394,7 +3394,7 @@ class up_on_a_pedestal_blue extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3434,7 +3434,7 @@ class in_the_palm_of_your_hand_red extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -4179,7 +4179,7 @@ class hungry_for_more_red extends Card{
     $this->archetype->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -5767,7 +5767,7 @@ class turn_heads_blue extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -5803,7 +5803,7 @@ class who_blinks_first_blue extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-") {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
