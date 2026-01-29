@@ -43,10 +43,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $response->isMetafyLinked = !empty($row['metafyAccessToken']);
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
-  
-  // Debug: log the communities data
-  error_log("DEBUG UserProfileAPI - User: $userName, Communities: " . json_encode($response->metafyCommunities));
-  
+    
   // Check if user is actually a paid supporter or community owner of Talishar
   $response->isMetafySupporter = false;
   $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
@@ -63,12 +60,9 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   
   if (!empty($response->metafyCommunities)) {
     foreach ($response->metafyCommunities as $community) {
-      error_log("DEBUG - Checking community: " . json_encode($community));
       if (isset($community['id']) && $community['id'] === $talishar_community_id) {
-        error_log("DEBUG - Found Talishar community");
         // Check if owned (always a supporter if they own the community)
         if (isset($community['type']) && $community['type'] === 'owned') {
-          error_log("DEBUG - User owns community");
           $response->isMetafySupporter = true;
           break;
         }
@@ -82,14 +76,9 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
             $tier_name = $community['subscription_tier'];
           }
           
-          error_log("DEBUG - Checking tier name: '$tier_name' against paid tiers: " . json_encode($paid_tier_names));
-          
           if (!empty($tier_name) && in_array($tier_name, $paid_tier_names, true)) {
-            error_log("DEBUG - Tier name is in paid list");
             $response->isMetafySupporter = true;
             break;
-          } else {
-            error_log("DEBUG - Tier name NOT in paid list, setting as free user");
           }
         }
       }
