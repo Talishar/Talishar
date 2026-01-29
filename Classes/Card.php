@@ -476,6 +476,10 @@ class Card {
   function RemoveEffectFromCombatChain() {
     return false;
   }
+
+  function DynamicCost() {
+    return "";
+  }
 }
 
 ?>

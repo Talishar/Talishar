@@ -29,6 +29,14 @@ class Auras {
   function NumAuras() {
     return intdiv(count($this->auras), AuraPieces());
   }
+
+  function FindCardID($cardID) { //returns first AuraCard with a cardID
+    if (count($this->auras) == 0) return "";
+    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+      if ($this->auras[$i] == $cardID) return new AuraCard($i, $this->player);
+    }
+    return "";
+  }
 }
 
 class AuraCard {

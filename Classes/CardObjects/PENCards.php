@@ -931,3 +931,91 @@ class manifest_muscle_blue extends Card {
     return $ClassState->CreatedCardsThisTurn() > 0 ? 1 : 0;
   }
 }
+
+class runebleed_robe extends Card {
+  function __construct($controller) {
+    $this->cardID = "runebleed_robe";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Auras = new Auras($this->controller);
+    return $Auras->FindCardID("runechant") == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    $Auras = new Auras($this->controller);
+    $Runechant = $Auras->FindCardID("runechant");
+    if ($Runechant != "") $Runechant->Destroy();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+    if ($type == "ARCANE") {
+      $remove = true;
+      return 1;
+    }
+  }
+}
+
+class beckoning_haunt extends Card {
+  function __construct($controller) {
+    $this->cardID = "beckoning_haunt";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $auras = SearchMultizone($this->controller, "MYDISCARD:subtype=Aura");
+    return $auras == "";
+  }
+
+  function DynamicCost() {
+    $costs = [];
+    $discard = GetDiscard($this->controller);
+    for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+      $cardCost = CardCost($discard[$i]);
+      $cost = 2 * $cardCost + 1;
+      if (SubtypeContains($discard[$i], "Aura", $this->controller) && !in_array($cost, $costs)) {
+        array_push($costs, $cost);
+      }
+    }
+    sort($costs);
+    return implode(",", $costs);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    $ClassState = new ClassState($this->controller);
+    $costPaid = $ClassState->LastDynCost();
+    $cost = intdiv($costPaid - 1, 2);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Aura;maxCost=$cost;minCost=$cost");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target an Aura to return to hand.", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Discard = new Discard($this->controller);
+    $targetCard = $Discard->FindCardUID($target);
+    if ($targetCard == "") return "FAILED";
+    $targetIndex = $targetCard->ID();
+    $cardID = RemoveGraveyard($this->controller, $targetIndex);
+    AddPlayerHand($cardID, $this->controller, "DISCARD");
+    return "";
+  }
+}

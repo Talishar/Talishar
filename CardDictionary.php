@@ -658,6 +658,8 @@ function DynamicCost($cardID)
   global $currentPlayer;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardID = BlindCard($cardID, true);
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->DynamicCost();
   switch ($cardID) {
     case "staunch_response_red":
     case "staunch_response_yellow":

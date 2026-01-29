@@ -64,4 +64,29 @@ class Discard {
   function TopCard() {
     return $this->discard[count($this->discard) - DiscardPieces()];
   }
+
+  function FindCardUID($uid) {
+    if (count($this->discard) == 0) return "";
+    for ($i = 0; $i < count($this->discard); $i += DiscardPieces()) {
+      if ($this->discard[$i + 1] == $uid) return new DiscardCard($i, $this->playerID);
+    }
+    return "";
+  }
+}
+
+class DiscardCard {
+  private $pieces = [];
+  private $index;
+	private $controller;
+
+  // Constructor
+  function __construct($index, $player) {
+    $this->pieces = &GetDiscard($player);
+    $this->index = $index;
+		$this->controller = $player;
+  }
+
+  function ID() {
+    return $this->pieces[$this->index] ?? "-";
+  }
 }
