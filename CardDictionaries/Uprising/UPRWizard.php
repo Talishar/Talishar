@@ -27,6 +27,7 @@
         $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
         PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $currentPlayer);
         $amountArcane = SearchCount(SearchAurasForCard("frostbite", $otherPlayer));
+        $amountArcane += SearchCount(SearchCharacterForCardMulti($otherPlayer, "frostbite"));
         if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue":
