@@ -768,7 +768,7 @@ class enclosed_firemind extends Card {
 }
 
 class topsy_turvy extends Card {
-    function __construct($controller) {
+  function __construct($controller) {
     $this->cardID = "topsy_turvy";
     $this->controller = $controller;
   }
@@ -788,5 +788,100 @@ class topsy_turvy extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
+
+class runic_fellingsong_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "runic_fellingsong_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Aura");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish an aura to deal 1 arcane?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+    AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+  }
+}
+
+class sigil_of_silphidae_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_silphidae_blue";
+    $this->controller = $controller;
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase) {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard != "") $AuraCard->Destroy();
+    }
+    else {
+      $search = explode(",", SearchMultizone($this->controller, "MYDISCARD:subtype=Aura"));
+      $Discard = new Discard($this->controller);
+      if ($Discard->TopCard() == $this->cardID) { //it can't banish itself
+        array_pop($search);
+      }
+      if (count($search) > 0) {
+        AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $search));
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish an aura to deal 1 arcane?", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+        AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+      }
+    }
+  }
+}
+
+class fluid_motion_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "fluid_motion_blue";
+    $this->controller = $controller;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    $ClassState = new ClassState($this->controller);
+    return $ClassState->CreatedCardsThisTurn() > 0;
+  }
+}
+
+class manifest_muscle_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "manifest_muscle_blue";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    $ClassState = new ClassState($this->controller);
+    return $ClassState->CreatedCardsThisTurn() > 0 ? 1 : 0;
   }
 }

@@ -102,6 +102,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
+  if ($isToken) {
+    $ClassState = new ClassState($effectController);
+    $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
+  }
 }
 
 function StealAura($srcPlayer, $index, $destPlayer, $from)

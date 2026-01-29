@@ -60,4 +60,8 @@ class Discard {
     array_push($this->discard, GetUniqueId());
     array_push($this->discard, "-");
   }
+
+  function TopCard() {
+    return $this->discard[count($this->discard) - DiscardPieces()];
+  }
 }

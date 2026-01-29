@@ -1143,4 +1143,14 @@ class ClassState {
 		global $CS_HitCounter;
 		if (isset($this->classState[$CS_HitCounter])) $this->classState[$CS_HitCounter] = $value;
 	}
+
+	function CreatedCardsThisTurn() {
+		global $CS_CreatedCardsThisTurn;
+		return $this->classState[$CS_CreatedCardsThisTurn] ?? 0;
+	}
+
+	function SetCreatedCardsThisTurn($value) {
+		global $CS_CreatedCardsThisTurn;
+		if (isset($this->classState[$CS_CreatedCardsThisTurn])) $this->classState[$CS_CreatedCardsThisTurn] = $value;
+	}
 }

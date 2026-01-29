@@ -20,6 +20,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
+  $ClassState = new ClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
@@ -47,6 +48,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   }
   // created cards don't count as cards put into banish
   if ($from != "-") ++$classState[$CS_CardsBanished];
+  else $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
   if (isFaceDownMod($mod)) return $rv;
   //Do additional effects
   if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
@@ -218,6 +220,10 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1)
   else {
     $hand = &GetHand($player);
     if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
+    if (IsCreatedCard($cardID)) {
+      $ClassState = new ClassState($player);
+      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
+    }
     if ($index == -1) {
       for ($i = 0; $i < $amount; ++$i) {
         array_push($hand, $cardID);

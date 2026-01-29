@@ -4882,3 +4882,10 @@ function IsInstantMod($mod) {
     default => false
   };
 }
+
+function IsCreatedCard($cardID) {
+  return match($cardID) {
+    "crouching_tiger", "fang_strike", "slither", "goldfin_harpoon_yellow" => true,
+    default => false
+  };
+}

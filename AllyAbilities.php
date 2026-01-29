@@ -1,9 +1,10 @@
 <?php
 
-function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true, $tapped = 0, $from = "-")
+function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true, $tapped = 0, $from = "-", $playerSource = "-")
 {
   global $EffectContext;
   $otherPlayer = $player == 1 ? 2 : 1;
+  if ($playerSource == "-") $playerSource = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
@@ -35,6 +36,10 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
       Transform($player, "Ash", "aether_ashwing", true);
     }
     if (HasCrank($cardID, $player)) Crank($player, $index, zone:"MYALLY");
+  }
+  if ($isToken) {
+    $ClassState = new ClassState($playerSource);
+    $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
   }
   return count($allies) - AllyPieces();
 }
