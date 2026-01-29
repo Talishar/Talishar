@@ -103,6 +103,16 @@ function FetchAndSaveMetafyCommunities($access_token)
   
   $all_communities = array();
   
+  // List of paid tier names for Talishar
+  $paid_tier_names = array(
+    'Fyendal Supporters',
+    'Seers of Ophidia',
+    'Arknight Shards',
+    'Lover of Grandeur',
+    'Sponsors of Trōpal-Dhani',
+    'Light of Sol Gemini Circle'
+  );
+  
   // 1. Fetch the authenticated user's owned community (if they are a coach/creator)
   $community_url = 'https://metafy.gg/irk/api/v1/me/community';
   
@@ -187,6 +197,8 @@ function FetchAndSaveMetafyCommunities($access_token)
         // Extract the user's subscription tier from the purchase data
         $subscription_tier = null;
         $tier_id = $purchase_data['community']['tier_id'] ?? null;
+        $is_paid_subscription = false;
+        $community_type = 'member'; // Default to free member
         
         // Find community in the memberships list - it already has all community details including tiers
         $community_data = null;
@@ -205,22 +217,30 @@ function FetchAndSaveMetafyCommunities($access_token)
             foreach ($community_data['tiers'] as $tier) {
               if (isset($tier['id']) && $tier['id'] === $tier_id) {
                 $subscription_tier = $tier;
+                // Check if tier is a paid tier by checking its name against the list of paid tiers
+                $tier_name = $tier['name'] ?? '';
+                
+                if (in_array($tier_name, $paid_tier_names, true)) {
+                  $is_paid_subscription = true;
+                  $community_type = 'supported';
+                }
                 break;
               }
             }
           }
         }
         
+        // Add community to list (both paid and free, but marked appropriately)
         $community_info = array(
           'id' => $community_id,
-          'title' => $community_full['community']['title'] ?? $community['title'] ?? null,
-          'description' => $community_full['community']['description'] ?? $community['description'] ?? null,
-          'logo_url' => $community_full['community']['logo_url'] ?? $community['logo_url'] ?? null,
-          'cover_url' => $community_full['community']['cover_url'] ?? $community['cover_url'] ?? null,
-          'url' => $community_full['community']['url'] ?? $community['url'] ?? null,
-          'tiers' => $community_full['community']['tiers'] ?? [],
+          'title' => $community['title'] ?? null,
+          'description' => $community['description'] ?? null,
+          'logo_url' => $community['logo_url'] ?? null,
+          'cover_url' => $community['cover_url'] ?? null,
+          'url' => $community['url'] ?? null,
+          'tiers' => $community['tiers'] ?? [],
           'subscription_tier' => $subscription_tier,
-          'type' => 'supported'
+          'type' => $community_type
         );
         $all_communities[] = $community_info;
       }
