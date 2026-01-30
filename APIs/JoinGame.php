@@ -833,7 +833,7 @@ function isBannedInFormat($cardID, $format) {
         "rosetta_thorn", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
-        "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle"
+        "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle", "chane"
       ]
   ];
 
