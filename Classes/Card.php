@@ -380,7 +380,7 @@ class Card {
     return;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
     return 0;
   }
 

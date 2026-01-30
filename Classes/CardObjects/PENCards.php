@@ -975,7 +975,7 @@ class runebleed_robe extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
     if ($type == "ARCANE") {
       $remove = true;
       return 1;
@@ -1344,7 +1344,7 @@ class voltic_veil_red extends Card {
       DealArcane(1, 1, source:$this->cardID);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     if ($damage >= $Effect->NumUses()) {
@@ -1352,7 +1352,7 @@ class voltic_veil_red extends Card {
       return $Effect->NumUses();
     }
     else {
-      $Effect->AddUses(-$damage);
+      if (!$amount) $Effect->AddUses(-$damage);
       return $damage;
     }
   }
