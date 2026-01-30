@@ -112,9 +112,7 @@
     {
       case "endless_winter_red": AddCurrentTurnEffect($cardID, $otherPlayer); break;
       case "biting_gale_red": case "biting_gale_yellow": case "biting_gale_blue":
-        if (!IsAllyAttacking()) {
-          PayOrDiscard($otherPlayer, 2, true);
-        }
+        PayOrDiscard($otherPlayer, 2, true);
         break;
       case "turn_timber_red": case "turn_timber_yellow": case "turn_timber_blue":
         $index = GetClassState($player, $CS_PlayCCIndex);

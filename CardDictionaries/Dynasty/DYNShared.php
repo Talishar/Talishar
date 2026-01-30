@@ -181,15 +181,13 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "rumble_grunting_red": case "rumble_grunting_yellow": case "rumble_grunting_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "buckle_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "shield_bash_red": case "shield_bash_yellow": case "shield_bash_blue":
-      if(!IsAllyAttacking()) {
-        if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
-          AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
-          AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
-          AddDecisionQueue("ELSE", $otherPlayer, "-");
-          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, "1-".$cardID, 1);
-        }
+      if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+        AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
+        AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
+        AddDecisionQueue("ELSE", $otherPlayer, "-");
+        AddDecisionQueue("TAKEDAMAGE", $otherPlayer, "1-".$cardID, 1);
       }
       return "";
     case "reinforce_steel_red": case "reinforce_steel_yellow": case "reinforce_steel_blue":

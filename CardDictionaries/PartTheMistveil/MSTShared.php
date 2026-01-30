@@ -133,15 +133,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "sirens_call_red":
       $deck = new Deck($defPlayer);
-      if (IsHeroAttackTarget()) {
-        LookAtHand($defPlayer);
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDPITCH,3");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to add to the chain link", 1);
-        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
-        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      }
+      LookAtHand($defPlayer);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDPITCH,3");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to add to the chain link", 1);
+      AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
+      AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
       return "";
     case "sacred_art_undercurrent_desires_blue":
       if ($additionalCosts != "-") {

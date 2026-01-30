@@ -521,7 +521,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "provoke_blue":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer) && IsHeroAttackTarget()) {
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer)) {
         AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
