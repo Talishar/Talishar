@@ -1035,3 +1035,137 @@ class engulfing_shadows_yellow extends Card {
     return true;
   }
 }
+
+class concoct_disorder extends BaseCard {
+  function ProcessAttackTrigger() {
+    $cardsArsenaled = 0;
+    for ($player = 1; $player < 3; ++$player) {
+      $deck = new Deck($player);
+      if (!ArsenalFull($player) && $deck->RemainingCards() > 0) {
+        AddArsenal($deck->Top(), $player, "DECK", "DOWN");
+        RemoveDeck($player, 0);
+        ++$cardsArsenaled;
+      }
+    }
+    if ($cardsArsenaled >= 2) GiveAttackGoAgain();
+  }
+}
+
+class concoct_disorder_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "concoct_disorder_red";
+    $this->controller = $controller;
+    $this->baseCard = new concoct_disorder($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class concoct_disorder_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "concoct_disorder_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new concoct_disorder($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class concoct_disorder_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "concoct_disorder_blue";
+    $this->controller = $controller;
+    $this->baseCard = new concoct_disorder($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class hyper_inflation extends BaseCard {
+  function ProcessAttackTrigger() {
+    AddCurrentTurnEffect($this->cardID, 1);
+    AddCurrentTurnEffect($this->cardID, 2);
+  }
+
+  function CurrentEffectCostModifier() {
+    return 1;
+  }
+}
+
+class hyper_inflation_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "hyper_inflation_red";
+    $this->controller = $controller;
+    $this->baseCard = new hyper_inflation($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CurrentEffectCostModifier($cardID, &$remove) {
+    return $this->baseCard->CurrentEffectCostModifier();
+  }
+}
+
+class hyper_inflation_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "hyper_inflation_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new hyper_inflation($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CurrentEffectCostModifier($cardID, &$remove) {
+    return $this->baseCard->CurrentEffectCostModifier();
+  }
+}
+
+class hyper_inflation_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "hyper_inflation_blue";
+    $this->controller = $controller;
+    $this->baseCard = new hyper_inflation($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CurrentEffectCostModifier($cardID, &$remove) {
+    return $this->baseCard->CurrentEffectCostModifier();
+  }
+}
