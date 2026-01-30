@@ -2281,6 +2281,6 @@ function LayerStepPower() { //calculates the modified power of an attack in the 
       }
     }
   }  
-  $power += ModifiedPowerValue($cardID, $mainPlayer, "CC");
+  $power += ModifiedPowerValue($cardID, $mainPlayer, "LAYER");
   return $power;
 }
