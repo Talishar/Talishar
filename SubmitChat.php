@@ -11,7 +11,11 @@ if (!IsGameNameValid($gameName)) {
   echo ("Invalid game name.");
   exit;
 }
-$playerID = $_GET["playerID"];
+$playerID = intval($_GET["playerID"]);
+if($playerID !== 1 && $playerID !== 2) {
+  echo ("Invalid player ID.");
+  exit;
+}
 
 // Load game file to get Metafy tiers - this populates $p1MetafyTiers and $p2MetafyTiers
 include "MenuFiles/ParseGamefile.php";
