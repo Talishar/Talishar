@@ -1105,8 +1105,8 @@ class hyper_inflation extends BaseCard {
     AddCurrentTurnEffect($this->cardID, 2);
   }
 
-  function CurrentEffectCostModifier() {
-    return 1;
+  function CurrentEffectCostModifier($cardID, $from) {
+    return IsStaticType(CardType($cardID), $from, $cardID) ? 0 : 1;
   }
 }
 
@@ -1125,8 +1125,8 @@ class hyper_inflation_red extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, &$remove) {
-    return $this->baseCard->CurrentEffectCostModifier();
+  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 }
 
@@ -1145,8 +1145,8 @@ class hyper_inflation_yellow extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, &$remove) {
-    return $this->baseCard->CurrentEffectCostModifier();
+  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 }
 
@@ -1165,7 +1165,7 @@ class hyper_inflation_blue extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, &$remove) {
-    return $this->baseCard->CurrentEffectCostModifier();
+  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 }

@@ -421,7 +421,7 @@ class Card {
     return false;
   }
 
-  function CurrentEffectCostModifier($cardID, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove) {
     return 0;
   }
 

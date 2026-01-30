@@ -203,7 +203,7 @@ class torc_of_vim extends Card {
     return 1;
   }
 
-  function CurrentEffectCostModifier($cardID, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove) {
     if (TypeContains($cardID, "AA") && ClassContains($cardID, "BRUTE", $this->controller)) {
       $remove = true;
       return -2;
