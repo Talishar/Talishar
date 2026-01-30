@@ -3561,7 +3561,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           Decompose($player, "SUMMERSFALL", $zone . "AURAS-" . $index);
         }
         else {
-          WriteLog(CardLink($parameter, $parameter) . " layer fails as there are no remaining targets for the targeted effect.");
+          Decompose($player, "SUMMERSFALL", "NONE");
         }
         break;
       case "blossoming_decay_red":
