@@ -433,8 +433,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       }
       break;
     case "maul_yellow-HIT":
-      BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer);
-      BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer);
+      BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
+      BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
       break;
     case "target_totalizer":
       Draw($mainPlayer);

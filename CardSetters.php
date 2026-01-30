@@ -1,21 +1,21 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "", $banisher = "-")
+function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "", $banisher = "-", $created = false)
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn, $CS_CardsBanished;
   if (CardNameContains($cardID, "Crouching Tiger", $player) && $from == "-") IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
-    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
+    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
   } else {
-    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
-    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher);
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
+    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-")
+function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-", $created = false)
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
   $rv = -1;
@@ -48,7 +48,10 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   }
   // created cards don't count as cards put into banish
   if ($from != "-") ++$classState[$CS_CardsBanished];
-  else $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
+  if ($created) {
+      $ClassState = new ClassState($player);
+      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
+    }
   if (isFaceDownMod($mod)) return $rv;
   //Do additional effects
   if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
@@ -207,7 +210,7 @@ function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
   // array_splice($deck, $deckIndexModifier, 0, $cardID);
 }
 
-function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1)
+function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1, $created=false)
 {
   global $CS_NumCrouchingTigerCreatedThisTurn, $EffectContext;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") && !str_contains($from, "DISCARD") && !str_contains($from, "BANISH")) {
@@ -220,7 +223,7 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1)
   else {
     $hand = &GetHand($player);
     if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
-    if (IsCreatedCard($cardID)) {
+    if ($created) {
       $ClassState = new ClassState($player);
       $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
     }
@@ -729,7 +732,8 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   }
   if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow") return;
   $card = GetClass($cardID, $player);
-  if ($card != "-") $card->AddGraveyardEffect($from, $effectController);
+  if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController);
+  if ($ret) return;
   switch ($cardID) {
     case "mark_of_the_beast_yellow":
       BanishCardForPlayer($cardID, $player, $from, "NA");

@@ -585,7 +585,7 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "mindstate_of_tiger_blue":
-        AddPlayerHand("crouching_tiger", $mainPlayer, "-");
+        AddPlayerHand("crouching_tiger", $mainPlayer, "-", created:true);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "blessing_of_qi_red":
@@ -593,7 +593,7 @@ function AuraStartTurnAbilities()
       case "blessing_of_qi_blue":
         if ($auras[$i] == "blessing_of_qi_red") $amount = 3;
         else $amount = ($auras[$i] == "blessing_of_qi_yellow") ? 2 : 1;
-        $index = BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer);
+        $index = BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
         $banish = new Banish($mainPlayer);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $banish->Card($index)->UniqueID());
         AddDecisionQueue("ADDLIMITEDCURRENTEFFECT", $mainPlayer, $auras[$i] . ",BANISH");

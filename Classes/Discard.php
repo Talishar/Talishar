@@ -89,4 +89,12 @@ class DiscardCard {
   function ID() {
     return $this->pieces[$this->index] ?? "-";
   }
+
+  function UniqueID() {
+    return $this->pieces[$this->index+1] ?? "-";
+  }
+
+  function Index() {
+    return $this->index;
+  }
 }

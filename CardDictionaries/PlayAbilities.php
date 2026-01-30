@@ -499,7 +499,7 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       GainResources($currentPlayer, 1);
       return "";
     case "pouncing_paws":
-      BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer);
+      BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
       return "";
     case "growl_red":
     case "growl_yellow":

@@ -102,13 +102,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-", 1);
       return "";
     case "arousing_wave":
-      AddPlayerHand("fang_strike", $currentPlayer, $cardID); //Fang Strike
+      AddPlayerHand("fang_strike", $currentPlayer, $cardID, created:true); //Fang Strike
       return "";
     case "undertow_stilettos":
-      AddPlayerHand("slither", $currentPlayer, $cardID); //Slither
+      AddPlayerHand("slither", $currentPlayer, $cardID, created:true); //Slither
       return "";
     case "gorgons_gaze_yellow":
-      AddPlayerHand("slither", $currentPlayer, $cardID); //Slither
+      AddPlayerHand("slither", $currentPlayer, $cardID, created:true); //Slither
       $mod = "-";
       if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") $mod = "TCCGorgonsGaze";
       $defendingCards = GetChainLinkCards($defPlayer);
@@ -149,8 +149,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         for ($i = 0; $i < count($modes); ++$i) {
           switch ($modes[$i]) {
             case "Create_a_Fang_Strike_and_Slither":
-              AddPlayerHand("fang_strike", $currentPlayer, $cardID); //Fang Strike
-              AddPlayerHand("slither", $currentPlayer, $cardID); //Slither
+              AddPlayerHand("fang_strike", $currentPlayer, $cardID, created:true); //Fang Strike
+              AddPlayerHand("slither", $currentPlayer, $cardID, created:true); //Slither
               break;
             case "Banish_up_to_2_cards_in_an_opposing_hero_graveyard":
               AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
@@ -184,7 +184,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "hiss_yellow":
     case "hiss_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("slither", $currentPlayer, $cardID); //Slither
+      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("slither", $currentPlayer, $cardID, created:true); //Slither
       return "";
     case "intimate_inducement_red":
     case "intimate_inducement_yellow":
@@ -209,7 +209,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "venomous_bite_yellow":
     case "venomous_bite_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("fang_strike", $currentPlayer, $cardID); //Fang Strike
+      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("fang_strike", $currentPlayer, $cardID, created:true); //Fang Strike
       return "";
     case "fang_strike":
     case "slither":
@@ -260,7 +260,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "zen_tamer_of_purpose":
     case "zen":
-      AddPlayerHand("crouching_tiger", $currentPlayer, "NA");
+      AddPlayerHand("crouching_tiger", $currentPlayer, "NA", created:true);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:comboOnly=true", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBANISH,DECK,TT", 1);
@@ -282,7 +282,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "shifting_winds_of_the_mystic_beast_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") AddPlayerHand("crouching_tiger", $currentPlayer, "NA", 2);
+      if (SearchCardList($additionalCosts, $currentPlayer, subtype: "Chi") != "") AddPlayerHand("crouching_tiger", $currentPlayer, "NA", 2, created:true);
       return "";
     case "sacred_art_jade_tiger_domain_blue":
       if ($additionalCosts != "-") {
@@ -290,7 +290,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         for ($i = 0; $i < count($modes); ++$i) {
           switch ($modes[$i]) {
             case "Create_2_Crouching_Tigers":
-              AddPlayerHand("crouching_tiger", $currentPlayer, "NA", 2);
+              AddPlayerHand("crouching_tiger", $currentPlayer, "NA", 2, created:true);
               break;
             case "Crouching_Tigers_Get_+1_this_turn":
               AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -310,13 +310,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "harmony_of_the_hunt_red":
     case "harmony_of_the_hunt_yellow":
     case "harmony_of_the_hunt_blue":
-      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("crouching_tiger", $currentPlayer, $cardID);
+      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("crouching_tiger", $currentPlayer, $cardID, created:true);
       return "";
     case "tiger_form_incantation_red":
     case "tiger_form_incantation_yellow":
     case "tiger_form_incantation_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("crouching_tiger", $currentPlayer, $cardID);
+      if (SearchPitchForColor($currentPlayer, 3) > 0) AddPlayerHand("crouching_tiger", $currentPlayer, $cardID, created:true);
       return "";
     case "aqua_seeing_shell":
       Draw($currentPlayer);
@@ -545,14 +545,14 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "aspect_of_tiger_soul_yellow":
     case "aspect_of_tiger_mind_blue":
       if (ComboActive()) {
-        BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer);
+        BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
       }
       return "";
     case "breed_anger_red":
     case "breed_anger_yellow":
     case "breed_anger_blue":
       if (ComboActive()) {
-        BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer);
+        BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
         GiveAttackGoAgain();
       }
       return "";
@@ -731,7 +731,7 @@ function MSTHitEffect($cardID, $from): void
     case "biting_breeze_red":
     case "biting_breeze_yellow":
     case "biting_breeze_blue":
-      BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $cardID);
+      BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $cardID, created:true);
       break;
     case "rowdy_locals_blue":
       $hand = GetHand($mainPlayer);

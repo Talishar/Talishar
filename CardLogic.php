@@ -3172,7 +3172,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "tiger_eye_reflex_yellow":
       case "tiger_eye_reflex_blue":
-        BanishCardForPlayer("crouching_tiger", $player, "-", "NT");
+        BanishCardForPlayer("crouching_tiger", $player, "-", "NT", created:true);
         break;
       case "civic_steps":
         PlayAura("quicken", $otherPlayer, effectController:$player);
@@ -3485,7 +3485,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddCurrentTurnEffect($parameter . "-INST", $player, "PLAY");
         break;
       case "stride_of_reprisal":
-        AddPlayerHand("crouching_tiger", $player, $parameter);
+        AddPlayerHand("crouching_tiger", $player, $parameter, created:true);
         break;
       case "mask_of_wizened_whiskers":
         MZMoveCard($player, "MYDISCARD:comboOnly=true", "MYBOTDECK");

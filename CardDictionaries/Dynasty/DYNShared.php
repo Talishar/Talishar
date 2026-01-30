@@ -211,14 +211,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       return "";
     case "roar_of_the_tiger_yellow":
-      AddPlayerHand("crouching_tiger", $currentPlayer, "NA");
+      AddPlayerHand("crouching_tiger", $currentPlayer, "NA", created:true);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "predatory_streak_red": case "predatory_streak_yellow": case "predatory_streak_blue":
       if($cardID == "predatory_streak_red") $amount = 3;
       else if($cardID == "predatory_streak_yellow") $amount = 2;
       else $amount = 1;
-      for($i=0; $i < $amount; $i++) BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer);
+      for($i=0; $i < $amount; $i++) BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
       return "";
     case "merciless_battleaxe":
       CacheCombatResult();
@@ -529,10 +529,10 @@ function DYNHitEffect($cardID, $from, $attackID)
     case "tiger_swipe_red":
       if(ComboActive()) {
         $numLinks = NumChainLinksWithName("Crouching Tiger");
-        for($i=0; $i < $numLinks; $i++) BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer);
+        for($i=0; $i < $numLinks; $i++) BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
       }
       break;
-    case "flex_claws_red": case "flex_claws_yellow": case "flex_claws_blue": BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer); break;
+    case "flex_claws_red": case "flex_claws_yellow": case "flex_claws_blue": BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true); break;
     case "jubeel_spellbane": if(IsHeroAttackTarget() && !SearchAuras("spellbane_aegis", $mainPlayer)) PlayAura("spellbane_aegis", $mainPlayer); break;
     case "urgent_delivery_red": case "urgent_delivery_yellow": case "urgent_delivery_blue":
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);

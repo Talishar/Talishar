@@ -793,7 +793,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "marlynn_treasure_hunter":
     case "marlynn":
-      AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID);
+      AddPlayerHand("goldfin_harpoon_yellow", $currentPlayer, $cardID, created:true);
       break;
     case "gold_the_tip_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);

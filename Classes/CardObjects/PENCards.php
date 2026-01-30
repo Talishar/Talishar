@@ -1011,12 +1011,16 @@ class beckoning_haunt extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $Discard = new Discard($this->controller);
-    $targetCard = $Discard->FindCardUID($target);
+    $targetCard = $Discard->FindCardUID(explode("-", $target)[1] ?? "-");
     if ($targetCard == "") return "FAILED";
-    $targetIndex = $targetCard->ID();
+    $targetIndex = $targetCard->Index();
     $cardID = RemoveGraveyard($this->controller, $targetIndex);
     AddPlayerHand($cardID, $this->controller, "DISCARD");
     return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
   }
 }
 
@@ -1028,5 +1032,6 @@ class engulfing_shadows_yellow extends Card {
 
   function AddGraveyardEffect($from, $effectController) {
     BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
+    return true;
   }
 }
