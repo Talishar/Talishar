@@ -804,7 +804,7 @@ function OUTAbilityCost($cardID)
     global $mainPlayer, $defPlayer;
     $char = &GetPlayerCharacter($defPlayer);
     $characterID = ShiyanaCharacter($char[0], $defPlayer);
-    if($char[1] == 2 && ($characterID == "riptide_lurker_of_the_deep" || $characterID == "riptide"))
+    if(!IsAllyAttacking() && $char[1] == 2 && ($characterID == "riptide_lurker_of_the_deep" || $characterID == "riptide"))
     {
       DamageTrigger($mainPlayer, 1, "DAMAGE", $characterID, $defPlayer);
     }

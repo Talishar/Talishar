@@ -32,9 +32,11 @@
         }
         return "";
       case "frontline_scout_red": case "frontline_scout_yellow": case "frontline_scout_blue":
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
+        if(IsHeroAttackTarget()) {
+          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+          AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
+        }
         if($from == "ARS") GiveAttackGoAgain();
         return "";
       case "rally_the_rearguard_red": case "rally_the_rearguard_yellow": case "rally_the_rearguard_blue":

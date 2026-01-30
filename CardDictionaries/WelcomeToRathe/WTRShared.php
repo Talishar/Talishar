@@ -179,7 +179,10 @@
         }
         return $rv;
       case "reckless_swing_blue":
-        if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
+        if(IsAllyAttacking()) {
+          return "<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>";
+        }
+        else if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
           WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID, $defPlayer);
         }
         return "";

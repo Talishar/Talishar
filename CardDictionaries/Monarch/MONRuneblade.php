@@ -54,7 +54,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "dread_scythe":
-        DealArcane(1, 1, "PLAYCARD", $cardID);
+        if(IsHeroAttackTarget()) DealArcane(1, 1, "PLAYCARD", $cardID);
         return "";
       case "aether_ironweave":
         GainResources($currentPlayer, 2);

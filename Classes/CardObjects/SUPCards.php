@@ -1381,13 +1381,15 @@ class truth_or_trickery_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
     LookAtTopCard($this->controller, $this->cardID, setPlayer:$this->controller);
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "Red,Yellow,Blue");
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a color", 1);
-    AddDecisionQueue("BUTTONINPUT", $this->controller, "<-", 1);
-    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you think the top card is {0}?", 1);
-    AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
-    AddDecisionQueue("SPECIFICCARD", $mainPlayer, "TRUTHORTRICKERY-{0}", 1);
+    if (!IsAllyAttacking()) {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "Red,Yellow,Blue");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a color", 1);
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "<-", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you think the top card is {0}?", 1);
+      AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "TRUTHORTRICKERY-{0}", 1);
+    }
   }
 }
 
@@ -1745,11 +1747,13 @@ class steal_victory_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $search = "THEIRAURAS:type=T";
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to steal", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+    if (!IsAllyAttacking()) {
+      $search = "THEIRAURAS:type=T";
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to steal", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+    }
   }
 }
 
@@ -2988,24 +2992,26 @@ class vigorous_smashup extends BaseCard {
   }
 
   function ProcessTrigger() {
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
-    Clash($this->cardID, $this->controller);
-    // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
-    $revealedCardController = $this->controller;
-    if ($switched) {
-      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    if (!IsAllyAttacking()) {
+      $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+      Clash($this->cardID, $this->controller);
+      // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
+      $revealedCardController = $this->controller;
+      if ($switched) {
+        $revealedCardController = $this->controller == 1 ? 2 : 1;
+      }
+      AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+      AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+      AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+      AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+      AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+      AddDecisionQueue("ELSE", $this->controller, "-");
+      AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
     }
-    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
-    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
-    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
-    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
-    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
-    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
-    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
-    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
-    AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
   }
 
   function WonClashAbility($winnerID, $switched) {
@@ -3079,24 +3085,26 @@ class tough_smashup extends BaseCard {
   }
 
   function ProcessTrigger() {
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
-    Clash($this->cardID, $this->controller);
-    // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
-    $revealedCardController = $this->controller;
-    if ($switched) {
-      $revealedCardController = $this->controller == 1 ? 2 : 1;
+    if (!IsAllyAttacking()) {
+      $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+      Clash($this->cardID, $this->controller);
+      // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
+      $revealedCardController = $this->controller;
+      if ($switched) {
+        $revealedCardController = $this->controller == 1 ? 2 : 1;
+      }
+      AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
+      AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
+      AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
+      AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
+      AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
+      AddDecisionQueue("ELSE", $this->controller, "-");
+      AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
     }
-    AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
-    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose if you want to sink <0>", 1);
-    AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_sink_the_revealed_card", 1);
-    AddDecisionQueue("NOPASS", $this->controller, $this->cardID, 1);
-    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller sunk the revealed card", 1);
-    AddDecisionQueue("FINDINDICES", $revealedCardController, "TOPDECK", 1);
-    AddDecisionQueue("MULTIREMOVEDECK", $revealedCardController, "<-", 1);
-    AddDecisionQueue("ADDBOTDECK", $revealedCardController, "Skip", 1);
-    AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
   }
 
   function WonClashAbility($winnerID, $switched) {
@@ -3526,7 +3534,7 @@ class disarm_yellow extends Card {
     global $CombatChain, $mainPlayer;
     // This should technically check LKI if the combat chain is forced closed
     $defCard = $CombatChain->FindCardUID($target);
-    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6 && !IsAllyAttacking()) {
       MZMoveCard($mainPlayer, "MYHAND", "MYBOTDECK", silent:true);
     }
   }
@@ -3554,7 +3562,7 @@ class disembody_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
     $defCard = $CombatChain->FindCardUID($target);
-    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6 && !IsAllyAttacking()) {
       MZMoveCard($mainPlayer, "MYAURAS", "MYBOTDECK", silent:true);
     }
   }
@@ -3582,7 +3590,7 @@ class disperse_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $mainPlayer;
     $defCard = $CombatChain->FindCardUID($target);
-    if ($defCard != "" && $defCard->CardBlockValue() >= 6) {
+    if ($defCard != "" && $defCard->CardBlockValue() >= 6 && !IsAllyAttacking()) {
       MZMoveCard($mainPlayer, "MYARS", "MYBOTDECK", silent:true);
     }
   }
@@ -3722,7 +3730,7 @@ class turning_point_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    if (PlayerHasLessHealth($this->controller)) Cheer($this->controller);
+    if (!IsAllyAttacking() && PlayerHasLessHealth($this->controller)) Cheer($this->controller);
   }
 
   function CardBlockModifier($from, $resourcesPaid, $index) {

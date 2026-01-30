@@ -181,13 +181,15 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "rumble_grunting_red": case "rumble_grunting_yellow": case "rumble_grunting_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "buckle_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "shield_bash_red": case "shield_bash_yellow": case "shield_bash_blue":
-      if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
-        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
-        AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
-        AddDecisionQueue("ELSE", $otherPlayer, "-");
-        AddDecisionQueue("TAKEDAMAGE", $otherPlayer, "1-".$cardID, 1);
+      if(!IsAllyAttacking()) {
+        if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
+          AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
+          AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
+          AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
+          AddDecisionQueue("ELSE", $otherPlayer, "-");
+          AddDecisionQueue("TAKEDAMAGE", $otherPlayer, "1-".$cardID, 1);
+        }
       }
       return "";
     case "reinforce_steel_red": case "reinforce_steel_yellow": case "reinforce_steel_blue":
@@ -328,17 +330,19 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0>", 1);
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_sink_the_opponent's_card", 1);
-      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
-      AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
-      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-      AddDecisionQueue("ELSE", $currentPlayer, "-");
-      AddDecisionQueue("WRITELOG", $currentPlayer, "Left the card on top", 1);
+      if(IsHeroAttackTarget()) {
+        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0>", 1);
+        AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_sink_the_opponent's_card", 1);
+        AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
+        AddDecisionQueue("FINDINDICES", $otherPlayer, "TOPDECK", 1);
+        AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "<-", 1);
+        AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
+        AddDecisionQueue("ELSE", $currentPlayer, "-");
+        AddDecisionQueue("WRITELOG", $currentPlayer, "Left the card on top", 1);
+      }
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "sandscour_greatbow":

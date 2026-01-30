@@ -2944,7 +2944,7 @@ function SelfCostModifier($cardID, $from)
     case "stains_of_the_redback_red":
     case "stains_of_the_redback_yellow":
     case "stains_of_the_redback_blue":
-      return (CheckMarked(player: $otherPlayer)) ? -1 : 0;
+      return (IsHeroAttackTarget() && CheckMarked(player: $otherPlayer)) ? -1 : 0;
     case "rising_energy_red":
     case "rising_energy_yellow":
     case "rising_energy_blue":

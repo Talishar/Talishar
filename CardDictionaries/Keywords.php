@@ -89,9 +89,13 @@
 
   function Clash($cardID, $effectController="")
   {
-    WriteLog("⚔️CLASH⚔️");
-    ClashLogic($cardID, $effectController);
-    AddDecisionQueue("WONCLASH", 1, $cardID . "," . $effectController);
+    if(IsAllyAttacking()){
+      WriteLog("<span style='color:red;'>No clash is done because there is no attacking hero when allies attack.</span>");
+    } else {
+      WriteLog("⚔️CLASH⚔️");
+      ClashLogic($cardID, $effectController);
+      AddDecisionQueue("WONCLASH", 1, $cardID . "," . $effectController);
+    }
   }
 
   function ClashLogic($cardID, $effectController="")

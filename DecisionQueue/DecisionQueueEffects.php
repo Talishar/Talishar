@@ -316,19 +316,25 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       for($i = 0; $i < count($params); ++$i) {
         switch($params[$i]) {
           case "Wager_Agility":
-            AddCurrentTurnEffect("up_the_ante_blue-1", $player);
-            AddOnWagerEffects(canPass:false);
-            ++$numNewWagers;
+            if(IsHeroAttackTarget()) {
+              AddCurrentTurnEffect("up_the_ante_blue-1", $player);
+              AddOnWagerEffects(canPass:false);
+              ++$numNewWagers;
+            }
             break;
           case "Wager_Gold":
-            AddCurrentTurnEffect("up_the_ante_blue-2", $player);
-            AddOnWagerEffects(canPass:false);
-            ++$numNewWagers;
+              if(IsHeroAttackTarget()) {
+              AddCurrentTurnEffect("up_the_ante_blue-2", $player);
+              AddOnWagerEffects(canPass:false);
+              ++$numNewWagers;
+            }
             break;
           case "Wager_Vigor":
-            AddCurrentTurnEffect("up_the_ante_blue-3", $player);
-            AddOnWagerEffects(canPass:false);
-            ++$numNewWagers;
+            if(IsHeroAttackTarget()) {
+              AddCurrentTurnEffect("up_the_ante_blue-3", $player);
+              AddOnWagerEffects(canPass:false);
+              ++$numNewWagers;
+            }
             break;
           case "Buff_Attack":
             global $CCS_WagersThisLink;

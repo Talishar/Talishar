@@ -51,7 +51,8 @@
         GiveAttackGoAgain();
         return "";
       case "sigil_of_suffering_red": case "sigil_of_suffering_yellow": case "sigil_of_suffering_blue":
-        DealArcane(1, 1, "PLAYCARD", $cardID);
+        if(!IsAllyAttacking()) DealArcane(1, 1, "PLAYCARD", $cardID);
+        else WriteLog("<span style='color:red;'>No arcane damage is dealt because there is no attacking hero when allies attack.</span>");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIGILOFSUFFERING", 1);
         return "";
       case "singeing_steelblade_red": case "singeing_steelblade_yellow": case "singeing_steelblade_blue":

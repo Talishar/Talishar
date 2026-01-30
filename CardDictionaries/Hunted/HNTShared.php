@@ -521,7 +521,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "provoke_blue":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer)) {
+      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer) && IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
@@ -659,13 +659,24 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "danger_digits":
-      ThrowWeapon("Dagger", $cardID, target:$target);
+      if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, target:$target);
+      else {
+        $index = SearchCharacterForUniqueID($target, $currentPlayer);
+        WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
+        if ($index != -1) DestroyCharacter($currentPlayer, $index);
+      }
       break;
     case "throw_dagger_blue":
       $daggerUID = explode(",", $target)[1] ?? "-";
       if ($daggerUID != "-") {
         if (str_contains($target, "COMBATCHAINATTACKS")) {
           if ($chainLinks[intdiv($daggerUID,ChainLinksPieces())][2] == 0) return "FAILED";
+          if (!IsHeroAttackTarget()) {
+            WriteLog("When attacking an ally, there is no defending hero to deal damage to, but the dagger is still destroyed");
+            MZDestroy($currentPlayer, $target);
+            // AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
+            return "";
+          }
         }
         else {
           $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
@@ -735,7 +746,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           "to_the_point_yellow" => 2,
           "to_the_point_blue" => 1,
         };
-        if (CheckMarked($otherPlayer)) ++$amount;
+        if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) ++$amount;
         $combatChain[5] += $amount;
       }
       break;
@@ -846,13 +857,15 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "lay_low_yellow":
-      if(CheckMarked($otherPlayer)) {
+      if(!IsAllyAttacking() && CheckMarked($otherPlayer)) {
         AddCurrentTurnEffectNextAttack($cardID, $otherPlayer);
       }
       break;
     case "exposed_blue";
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      MarkHero($otherPlayer);
+      if(IsHeroAttackTarget()){
+        MarkHero($otherPlayer);
+      }
       break;
     case "nip_at_the_heels_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);

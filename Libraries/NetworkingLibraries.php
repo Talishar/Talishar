@@ -4285,10 +4285,38 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($definedCardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
-    if ($from != "EQUIP" && $from != "PLAY" && $from != "COMBATCHAINATTACKS") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-    else if ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
-    if (!$openedChain) {
-      ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts);
+    if($playText != "FAILED") //Meaning that the layer hasn't failed and resolve.
+    {
+      if ($from != "EQUIP" && $from != "PLAY" && $from != "COMBATCHAINATTACKS") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+      else if ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+      if (!$openedChain) {
+        // check for fizzling
+        $fizzled = false;
+        switch ($cardID) {
+          case "lightning_press_red":
+          case "lightning_press_yellow":
+          case "lightning_press_blue":
+            if ($target != "-") {
+              if (!$CombatChain->HasCurrentLink()) {
+                //chain link closed prematurely
+                WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
+                $fizzled = true;
+              }
+              elseif (explode("-", $target)[0] == "COMBATCHAINLINK") {
+                //chain link didn't close but target is still gone
+                $targetIndex = intval(explode("-", $target)[1]);
+                if ($targetIndex == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+                  WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
+                  $fizzled = true;
+                }
+              }
+            }
+            break;
+          default:
+            break;
+        }
+        if (!$fizzled) ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts);
+      }
     }
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
