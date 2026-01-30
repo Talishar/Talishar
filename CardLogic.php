@@ -4321,16 +4321,14 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
     case "phantasmaclasm_red":
-      if(IsHeroAttackTarget()) {
-        AddDecisionQueue("SHOWHANDWRITELOG", $defPlayer, "<-", 1);
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("WRITELOG", $player, "<0> was put on the bottom of the deck.", 1);
-        AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
-        AddDecisionQueue("DRAW", $defPlayer, "-");
-        }
+      AddDecisionQueue("SHOWHANDWRITELOG", $defPlayer, "<-", 1);
+      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+      AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "<0> was put on the bottom of the deck.", 1);
+      AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
+      AddDecisionQueue("DRAW", $defPlayer, "-");
       break;
     case "rites_of_replenishment_red":
     case "rites_of_replenishment_yellow":

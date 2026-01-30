@@ -440,7 +440,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "soul_butcher_yellow":
       case "soul_butcher_blue":
         $theirSoul = &GetSoul($defPlayer);
-        $power += (count($theirSoul) > 0 && IsHeroAttackTarget() ? 2 : 0);
+        $power += (count($theirSoul) > 0 ? 2 : 0);
         break;
       case "teklo_leveler":
         $power += EvoUpgradeAmount($mainPlayer) >= 4;
@@ -468,7 +468,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         break;
       case "show_no_mercy_red":
         $hand = &GetHand($defPlayer);
-        $power += $combatChain[0] == "show_no_mercy_red" && count($hand) == 0 && IsHeroAttackTarget() ? 3 : 0;
+        $power += $combatChain[0] == "show_no_mercy_red" && count($hand) == 0 ? 3 : 0;
         break;
       case "beast_mode_red":
       case "beast_mode_yellow":
