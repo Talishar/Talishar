@@ -732,6 +732,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   }
   if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow") return;
   $card = GetClass($cardID, $player);
+  $ret = false;
   if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController);
   if ($ret) return;
   switch ($cardID) {
