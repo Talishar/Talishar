@@ -204,7 +204,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
     }
   }
   $goesWhere = GoesWhereAfterResolving($cardID, $from);
-  $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $player)) + ($cardID == "merciful_retribution_yellow" ? 1 : 0);
+  $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $player));
   if ($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
     if ($goesWhere == "GY") {
       AddGraveyard($cardID, $player, "COMBATCHAIN");
