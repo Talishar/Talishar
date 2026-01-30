@@ -81,6 +81,10 @@ class CurrentEffect {
     return $this->pieces[$this->index+3] ?? 0;
   }
 
+  function AddUses($num) {//can be negative
+    $this->pieces[$this->index+3] += $num;
+  }
+
 	function Remove() {
 		for ($i = CurrentTurnEffectPieces() - 1; $i >= 0; --$i) {
 			unset($this->pieces[$this->index + $i]);

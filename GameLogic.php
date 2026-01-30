@@ -49,7 +49,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
-  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects;
+  global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -1503,6 +1503,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ARCANEHITEFFECT":
       if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //player, source, target, damage
       if ($dqVars[0] > 0) IncrementClassState($player, $CS_ArcaneDamageDealt, $dqVars[0]);
+      if ($dqVars[7] == "THEIRCHAR-0" && $dqVars[0] > 0)  IncrementClassState($player, $CS_ArcaneDamageDealtToOpponent, $dqVars[0]);
       return $lastResult;
     case "ARCANECHOSEN":
       if ($lastResult > 0 && CanDamageBePrevented($player, $lastResult, "ARCANE", $parameter)) {

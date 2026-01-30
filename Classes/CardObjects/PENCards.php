@@ -193,6 +193,10 @@ class frosthaven_sheath_red extends Card
     return "DR";
   }
 
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
     global $defPlayer, $mainPlayer;
@@ -214,6 +218,10 @@ class leaven_sheath_red extends Card
     return "DR";
   }
 
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
     global $defPlayer;
@@ -233,6 +241,10 @@ class stormwind_sheath_red extends Card
   function SpecialType($from = '', $additionalCosts = '-')
   {
     return "DR";
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
@@ -963,7 +975,7 @@ class runebleed_robe extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
     if ($type == "ARCANE") {
       $remove = true;
       return 1;
@@ -1167,5 +1179,185 @@ class hyper_inflation_blue extends Card {
 
   function CurrentEffectCostModifier($cardID, $from, &$remove) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
+  }
+}
+
+class strike_twice_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "strike_twice_red";
+    $this->controller = $controller;
+  }
+
+  function ArcaneTargeting($from) {
+    return 2;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(3, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    global $CS_ArcaneDamageDealtToOpponent;
+    return GetClassState($this->controller, $CS_ArcaneDamageDealtToOpponent) > 0;
+  }
+}
+
+class glyph_power_spell_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "glyph_power_spell_red";
+    $this->controller = $controller;
+  }
+
+  function ArcaneTargeting($from) {
+    return 2;
+  }
+
+  function ArcaneDamage() {
+    return 4;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $damage = HasAuraWithSigilInName($this->controller) ? 6 : 4;
+    DealArcane($damage, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+}
+
+class sigil_of_fate extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_fate";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->uniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Destroy();
+    }
+    else {
+      PlayerOpt($this->controller, 1);
+    }
+  }
+}
+
+class painful_premonition extends BaseCard {
+  function ArcaneHit() {
+    PlayAura("sigil_of_fate", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class painful_premonition_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "painful_premonition_red";
+    $this->controller = $controller;
+    $this->baseCard = new painful_premonition($this->cardID, $this->controller);
+  }
+
+  function ArcaneTargeting($from) {
+    return 2;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(3, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHit();
+  }
+}
+
+class future_sight_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "future_sight_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("sigil_of_fate", $this->controller, 3, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class future_sight_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "future_sight_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("sigil_of_fate", $this->controller, 2, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class future_sight_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "future_sight_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("sigil_of_fate", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+}
+
+class voltic_veil_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "voltic_veil_red";
+    $this->controller = $controller;
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING") != "")
+      DealArcane(1, 1, source:$this->cardID);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->Effect($index);
+    if ($damage >= $Effect->NumUses()) {
+      $remove = true;
+      return $Effect->NumUses();
+    }
+    else {
+      $Effect->AddUses(-$damage);
+      return $damage;
+    }
+  }
+
+  function CurrentTurnEffectUses() {
+    return 4;
   }
 }

@@ -4457,6 +4457,8 @@ function AbilityPlayableFromGraveyard($cardID, $index) {
 function CardCaresAboutPitch($cardID): bool
 {
   $cardID = ShiyanaCharacter($cardID);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->CardCareAboutPitch();
   return match ($cardID) {
     "oldhim_grandfather_of_eternity", "oldhim", "winters_wail", "annals_of_sutcliffe", "cryptic_crossing_yellow", "diabolic_ultimatum_red", "deathly_duet_red", "deathly_duet_yellow", "deathly_duet_blue", "aether_slash_red", "aether_slash_yellow",
     "aether_slash_blue", "runic_reaping_red", "runic_reaping_yellow", "runic_reaping_blue", "gorgons_gaze_yellow", "manifestation_of_miragai_blue", "shifting_winds_of_the_mystic_beast_blue", "cosmic_awakening_blue", "unravel_aggression_blue", "dense_blue_mist_blue", "orihon_of_mystic_tenets_blue",

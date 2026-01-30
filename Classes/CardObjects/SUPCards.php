@@ -5301,7 +5301,7 @@ class mage_hunter_arrow_red extends Card {
     AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
     if ($type == "ARCANE") {
       $remove = true;
       return 3;

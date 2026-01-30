@@ -1427,7 +1427,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   $effects = explode("-", $currentTurnEffects[$index]);
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
-    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $remove);
+    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove);
     if ($preventable) $preventedDamage += $prevention;
     if ($remove) RemoveCurrentTurnEffect($index);
   }

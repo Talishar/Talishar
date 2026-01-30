@@ -278,6 +278,8 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
 function PlayRequiresTarget($cardID, $from)
 {
   //modal card targeting is handled elsewhere
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->ArcaneTargeting($from);
   switch ($cardID) {
     case "blazing_aether_red":
       return 0;
@@ -666,6 +668,8 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRe
 function ArcaneDamage($cardID): int
 {
   //Blaze - Replacement effects aren't considered when evaluating how much an effect does so Emeritus Scolding (blu) would require 2 counters.
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->ArcaneDamage();
   return match ($cardID) {
     "burn_bare", "light_up_the_leaves_red" => 6,
 
@@ -715,6 +719,8 @@ function ActionsThatDoXArcaneDamage($cardID)
 function ActionsThatDoArcaneDamage($cardID, $playerID)
 {
   global $CS_AdditionalCosts;
+  $card = GetClass($cardID, $playerID);
+  if ($card != "-") return $card->ActionsThatDoArcaneDamage();
   switch ($cardID) {
     case "sonic_boom_yellow":
     case "forked_lightning_red":
@@ -1094,6 +1100,9 @@ function CheckSpellvoid($player, $damage)
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
   global $CS_ArcaneDamageDealt, $layers;
+  $cardID = explode("|",  $source)[0] ?? $source;
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->ArcaneHitEffect($source, $target, $damage);
   switch ($source) {
     case "encase_red|FUSED":
       if (MZIsPlayer($target) && $damage > 0) {

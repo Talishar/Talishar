@@ -380,7 +380,7 @@ class Card {
     return;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, &$remove) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove) {
     return 0;
   }
 
@@ -479,6 +479,30 @@ class Card {
 
   function DynamicCost() {
     return "";
+  }
+
+  function ArcaneTargeting($from) {
+    return -1;
+  }
+
+  function ArcaneDamage() {
+    return -1;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return false;
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    return;
+  }
+
+  function CardCaresAboutPitch() {
+    return false;
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
   }
 }
 

@@ -172,6 +172,8 @@ function CurrentTurnEffectPieces()
 function CurrentTurnEffectUses($cardID)
 {
   $effectID = ExtractCardID($cardID);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->CurrentTurnEffectUses();
   switch ($effectID) {
     case "steadfast_red":
       return 6;
