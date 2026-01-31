@@ -1132,9 +1132,55 @@ class laden_with_lightning_red extends Card {
   }
 }
 
+class oath_of_oak extends BaseCard {
+  function PlayAbility($number) {
+    PlayAura("embodiment_of_earth", $this->controller, $number);
+  }
+}
+
+class oath_of_oak_red extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "oath_of_oak_red";
+    $this->controller = $controller;
+    $this->baseCard = new oath_of_oak($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(3);
+  }
+}
+
+class oath_of_oak_yellow extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "oath_of_oak_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new oath_of_oak($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(2);
+  }
+}
+class oath_of_oak_blue extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "oath_of_oak_blue";
+    $this->controller = $controller;
+    $this->baseCard = new oath_of_oak($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(1);
+  }
+}
+
 class sprout_strength extends BaseCard {
-  function AddCurrentTurnEffect() {
-    AddCurrentTurnEffect("sprout_strength", $this->controller);
+  function AddCurrentTurnEffect($amount) {
+    for ($i = 0; $i < $amount; ++$i) {
+      AddCurrentTurnEffect("sprout_strength", $this->controller);
+    }
   }
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
@@ -1154,9 +1200,7 @@ class sprout_strength_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->AddCurrentTurnEffect();
-    $this->baseCard->AddCurrentTurnEffect();
-    $this->baseCard->AddCurrentTurnEffect();
+    $this->baseCard->AddCurrentTurnEffect(3);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -1177,8 +1221,7 @@ class sprout_strength_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->AddCurrentTurnEffect();
-    $this->baseCard->AddCurrentTurnEffect();
+    $this->baseCard->AddCurrentTurnEffect(2);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -1199,7 +1242,7 @@ class sprout_strength_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->AddCurrentTurnEffect();
+    $this->baseCard->AddCurrentTurnEffect(1);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
