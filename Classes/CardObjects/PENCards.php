@@ -2627,5 +2627,6 @@ class rainbow_goo_trap_red extends Card {
     global $CombatChain, $mainPlayer;
     $CombatChain->Card(0)->ModifyPower(-2);
     AddCurrentTurnEffect("rainbow_goo_trap_red", $mainPlayer);
+    TrapTriggered($this->cardID);
   }
 }
