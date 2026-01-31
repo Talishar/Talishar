@@ -717,6 +717,49 @@ class basalt_boots extends Card {
   }
 }
 
+class aggressive_pounce extends BaseCard {
+  function HasIntimidated($controller) {
+    global $CS_HaveIntimidated;
+    return GetClassState($controller, $CS_HaveIntimidated) > 0;
+  }
+}
+
+class aggressive_pounce_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "aggressive_pounce_red";
+    $this->controller = $controller;
+    $this->baseCard = new aggressive_pounce($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->HasIntimidated($this->controller);
+  }
+}
+
+class aggressive_pounce_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "aggressive_pounce_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new aggressive_pounce($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->HasIntimidated($this->controller);
+  }
+}
+
+class aggressive_pounce_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "aggressive_pounce_blue";
+    $this->controller = $controller;
+    $this->baseCard = new aggressive_pounce($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->HasIntimidated($this->controller);
+  }
+}
+
 class bear_hug extends BaseCard {
   function IsPlayRestricted() {
     // this is *technically* not correct, it won't interact correctly with dpot
