@@ -2799,3 +2799,19 @@ class skywarden_no161803 extends Card {
     if ($foundSkywarden) AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, "1", 1);
   }
 }
+
+class break_open_the_chests extends Card {
+  function __construct($controller) {
+    $this->cardID = "break_open_the_chests";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    TurnArsenalFaceUp($this->controller);
+    TurnArsenalFaceUp($otherPlayer);
+    if(ArsenalHasColor($this->controller, 2) || ArsenalHasColor($otherPlayer, 2))
+      PutItemIntoPlayForPlayer("gold", $this->controller, number: 2);
+  }
+} 
+

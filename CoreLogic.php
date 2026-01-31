@@ -4023,3 +4023,13 @@ function IsPlayed($cardID, $from="", $player=-1, $index=0) {
     return true;
   }
 }
+
+function TurnArsenalFaceUp($player) {
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "DOWN") {
+      $arsenal[$i + 1] = "UP";
+      ArsenalTurnFaceUpAbility($arsenal[$i], $player);
+    }
+  }
+}
