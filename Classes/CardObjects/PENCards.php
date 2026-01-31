@@ -2371,3 +2371,64 @@ class embraforged_gauntlets extends Card {
     return true;
   }
 }
+
+class depths_of_despair extends BaseCard {
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    if(SearchCurrentTurnEffects($this->cardID, $this->controller)) {
+      BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
+    }
+    return true;
+  }
+}
+
+class depths_of_despair_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "depths_of_despair_red";
+    $this->controller = $controller;
+    $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  }
+}
+
+class depths_of_despair_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "depths_of_despair_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  }
+}
+
+class depths_of_despair_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "depths_of_despair_blue";
+    $this->controller = $controller;
+    $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  }
+}
