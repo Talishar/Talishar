@@ -2029,3 +2029,47 @@ class limbs_of_lignum_vitae extends Card {
     return $results >= 4 ? 1 : 0;
   }
 }
+
+class drag_down extends BaseCard
+{
+  function PlayAbility($value) {
+    global $CombatChain;
+    $CombatChain->Card(0)->ModifyPower(-$value);
+  }
+}
+
+class drag_down_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "drag_down_red";
+    $this->controller = $controller;
+    $this->baseCard = new drag_down($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(3);
+  }
+}
+
+class drag_down_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "drag_down_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new drag_down($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(2);
+  }
+}
+
+class drag_down_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "drag_down_blue";
+    $this->controller = $controller;
+    $this->baseCard = new drag_down($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(1);
+  }
+}
