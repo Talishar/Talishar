@@ -1902,3 +1902,15 @@ class insult_to_injury_blue extends Card {
     $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
   }
 }
+
+class song_of_larinkmorth_white_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "song_of_larinkmorth_white_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    PlayAura("frostbite", $defPlayer);
+  }
+}
