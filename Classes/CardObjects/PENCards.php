@@ -2864,7 +2864,7 @@ class sigil_of_voltaris_blue extends Card {
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
   }
-  
+
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
@@ -2887,5 +2887,65 @@ class sigil_of_voltaris_blue extends Card {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
       AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
     }
+  }
+}
+
+class phoenix_bannerman extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if(CanRevealCards($this->controller)) {
+      MZMoveCard($this->controller, "MYDECK:isSameName=phoenix_flame_red", "MYHAND", may: true);
+      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+    }
+  }
+}
+class phoenix_bannerman_head extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_head";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    PlayAura("ponder", $this->controller);
+  }
+}
+
+class phoenix_bannerman_chest extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_chest";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    PlayAura("vigor", $this->controller);
+  }
+}
+
+class phoenix_bannerman_arms extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_arms";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    PlayAura("might", $this->controller);
+  }
+}
+
+class phoenix_bannerman_legs extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_legs";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    PlayAura("agility", $this->controller);
   }
 }
