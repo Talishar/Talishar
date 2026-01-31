@@ -657,6 +657,37 @@ class helm_of_unity extends Card {
   }
 }
 
+class plating_of_unity extends Card {
+  function __construct($controller) {
+    $this->cardID = "plating_of_unity";
+    $this->controller = $controller;
+  }
+
+  function UnityEffect() {
+    AddCurrentTurnEffect("plating_of_unity", $this->controller);
+    return;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountCurrentTurnEffects($this->cardID, $this->controller);
+  }
+}
+class pillar_of_unity extends Card {
+  function __construct($controller) {
+    $this->cardID = "pillar_of_unity";
+    $this->controller = $controller;
+  }
+
+  function UnityEffect() {
+    AddCurrentTurnEffect("pillar_of_unity", $this->controller);
+    return;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountCurrentTurnEffects($this->cardID, $this->controller);
+  }
+}
+
 class predatory_plating extends Card {
   function __construct($controller) {
     $this->cardID = "predatory_plating";
