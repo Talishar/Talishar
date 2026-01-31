@@ -2770,3 +2770,32 @@ class man_overboard_blue extends Card {
     return $this->baseCard->EffectPowerModifier($param, $attached);
   }
 }
+
+class skywarden_no161803 extends Card {
+  function __construct($controller) {
+    $this->cardID = "skywarden_no161803";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $combatChain;
+    $myItems = GetItems($this->controller);
+    // check to make sure it's still there before giving it a buff
+    $foundSkywarden = false;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i] == $this->cardID) $foundSkywarden = true;
+    }
+
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYITEMS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an item to galvanize for " . CardLink($this->cardID, $this->cardID) . " effect", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("GOLDENSKYWARDEN", $this->controller, $target, 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+    if ($foundSkywarden) AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, "1", 1);
+  }
+}
