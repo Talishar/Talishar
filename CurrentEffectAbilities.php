@@ -2005,6 +2005,24 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
             $remove = true;
           }
           break;
+        case "fasting_carcass_red":
+          if (ColorContains($cardID, 1, $currentPlayer)) {
+            $hasGoAgain = true;
+            if ($cardID != $turnEffects[0]) $remove = true;
+          }
+          break;        
+        case "fasting_carcass_yellow":
+          if (ColorContains($cardID, 2, $currentPlayer)) {
+            $hasGoAgain = true;
+            if ($cardID != $turnEffects[0]) $remove = true;
+          }
+          break;
+        case "fasting_carcass_blue":
+          if (ColorContains($cardID, 3, $currentPlayer)) {
+            $hasGoAgain = true;
+            if ($cardID != $turnEffects[0]) $remove = true;
+          }
+          break;
         case "first_tenet_of_chi_wind_blue":
           if (ColorContains($cardID, 3, $currentPlayer)) {
             $hasGoAgain = true;

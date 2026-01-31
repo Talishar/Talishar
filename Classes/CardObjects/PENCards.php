@@ -2432,3 +2432,47 @@ class depths_of_despair_blue extends Card {
     return $this->baseCard->AddGraveyardEffect($from, $effectController);
   }
 }
+
+class fasting_carcass extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    return ColorContains($CombatChain->AttackCard()->ID(), PitchValue($this->cardID), $this->controller);
+  }
+}
+
+class fasting_carcass_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "fasting_carcass_red";
+    $this->controller = $controller;
+    $this->baseCard = new fasting_carcass($this->cardID, $this->controller);
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
+
+class fasting_carcass_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "fasting_carcass_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new fasting_carcass($this->cardID, $this->controller);
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
+
+class fasting_carcass_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "fasting_carcass_blue";
+    $this->controller = $controller;
+    $this->baseCard = new fasting_carcass($this->cardID, $this->controller);
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}

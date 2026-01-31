@@ -2024,7 +2024,12 @@ function DoesAttackHaveGoAgain()
   if (DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "dromai_ash_artist") || SearchCharacterActive($mainPlayer, "dromai") || SearchCurrentTurnEffects("dromai_ash_artist-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("dromai-SHIYANA", $mainPlayer))) return true;
   if (SearchItemsForCard("mhz_script_yellow", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
   if (SearchCurrentTurnEffectsForCycle("engaged_swiftblade_red", "engaged_swiftblade_yellow", "engaged_swiftblade_blue", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
+  
+  if (SearchCurrentTurnEffects("fasting_carcass_red", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 1 && $CombatChain->AttackCard()->From() != "PLAY") return true;
+  if (SearchCurrentTurnEffects("fasting_carcass_yellow", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 2 && $CombatChain->AttackCard()->From() != "PLAY") return true;
+  if (SearchCurrentTurnEffects("fasting_carcass_blue", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
   if (SearchCurrentTurnEffects("first_tenet_of_chi_wind_blue", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
+  
   if ((SearchCurrentTurnEffects("arc_lightning_yellow-GOAGAIN", $mainPlayer)) && $CombatChain->AttackCard()->From() != "PLAY" && $attackType == "AA") return true;
   if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("sharpened_senses_yellow", $mainPlayer) && IsWeaponAttack()) return true;
   if (SearchCurrentTurnEffects("goldkiss_rum", $mainPlayer)) return true;
