@@ -2519,3 +2519,17 @@ class submerge_blue extends Card {
     $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 }
+
+class rip_of_the_top_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rip_of_the_top_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Draw($this->controller);
+    $card = PitchRandom($this->controller);
+    if(ModifiedPowerValue($card, $this->controller, "HAND", source:$this->cardID) >= 6) AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+}
