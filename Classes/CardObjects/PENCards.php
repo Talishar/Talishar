@@ -2847,3 +2847,45 @@ class pound_of_flesh extends Card {
     AddDecisionQueue("POUNDOFFLESHCHOICE", $otherPlayer, "<-", 1);
   }
 }
+
+class sigil_of_voltaris_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_voltaris_blue";
+    $this->controller = $controller;
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
+  }
+
+  function EntersArenaAbility() {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+  
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard != "") $AuraCard->Destroy();
+    }
+    else {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+      AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+    }
+  }
+}
