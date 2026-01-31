@@ -2191,7 +2191,7 @@ class cloud_cover_blue extends Card {
 class stadium_security extends BaseCard {
   function hasAmbush() {
     global $CS_NumToughnessDestroyed;
-    return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0;
   }
 }
 
