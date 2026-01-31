@@ -1025,6 +1025,32 @@ class silken_slippers extends Card {
   }
 }
 
+class shallow_water_shark_harpoon extends Card {
+  function __construct($controller) {
+    $this->cardID = "shallow_water_shark_harpoon";
+    $this->controller = $controller;
+  }
+
+    function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+      global $CS_NumCannonsActivated;
+    if (IsHeroAttackTarget() && GetClassState($this->controller, $CS_NumCannonsActivated) > 0) {
+      if (!$check) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = "-", $uniqueID = -1, $target="-") {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card you want to destroy from their arsenal", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "gold", 1);
+    AddDecisionQueue("PUTPLAY", $this->controller, "-", 1);
+  }
+}
 class sigil_of_silphidae_blue extends Card {
   function __construct($controller) {
     $this->cardID = "sigil_of_silphidae_blue";
