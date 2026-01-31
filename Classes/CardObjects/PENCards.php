@@ -2533,3 +2533,86 @@ class rip_of_the_top_yellow extends Card {
     return "";
   }
 }
+
+class distant_rumblings extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Draw($this->controller);
+    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4");
+  }
+
+  function StartTurnAbility($index, $number=1) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $number, "DESTROY", $AuraCard->uniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Destroy();
+    }
+    else {
+      PlayAura("seismic_surge", $this->controller, $target);
+    }
+  }
+}
+
+class distant_rumblings_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "distant_rumblings_red";
+    $this->controller = $controller;
+    $this->baseCard = new distant_rumblings($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function StartTurnAbility($index) {
+    $this->baseCard->StartTurnAbility($index, 3);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
+}
+
+class distant_rumblings_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "distant_rumblings_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new distant_rumblings($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function StartTurnAbility($index) {
+    $this->baseCard->StartTurnAbility($index, 2);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
+}
+
+class distant_rumblings_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "distant_rumblings_blue";
+    $this->controller = $controller;
+    $this->baseCard = new distant_rumblings($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function StartTurnAbility($index) {
+    $this->baseCard->StartTurnAbility($index, 1);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
+}
