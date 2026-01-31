@@ -617,7 +617,7 @@ class teklo_trebuchet_2000_blue extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return $this->baseCard->EffectPowerModifier();
+    return $this->baseCard->EffectPowerModifier($param);
   }
 
   function RemoveEffectFromCombatChain() {
@@ -1841,6 +1841,48 @@ class heavy_metal_hardcore_blue extends Card {
     $this->cardID = "heavy_metal_hardcore_blue";
     $this->controller = $controller;
     $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
+  }
+}
+
+class hulk_up extends BaseCard {
+    function SelfCostModifier($from) {
+      return PlayerHasLessHealth($this->controller) ? -1 : 0;
+    } 
+}
+
+class hulk_up_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "hulk_up_red";
+    $this->controller = $controller;
+    $this->baseCard = new hulk_up($this->cardID, $this->controller);
+  }
+
+  function SelfCostModifier($from) {
+    return $this->baseCard->SelfCostModifier($from);
+  }
+}
+
+class hulk_up_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "hulk_up_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new hulk_up($this->cardID, $this->controller);
+  }
+
+  function SelfCostModifier($from) {
+    return $this->baseCard->SelfCostModifier($from);
+  }
+}
+
+class hulk_up_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "hulk_up_blue";
+    $this->controller = $controller;
+    $this->baseCard = new hulk_up($this->cardID, $this->controller);
+  }
+
+  function SelfCostModifier($from) {
+    return $this->baseCard->SelfCostModifier($from);
   }
 }
 
