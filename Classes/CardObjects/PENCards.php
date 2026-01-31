@@ -2359,3 +2359,15 @@ class weeping_battleground_blue extends Card {
     return $this->baseCard->ProcessTrigger($uniqueID, $target);
   }
 }
+
+class embraforged_gauntlets extends Card {
+  function __construct($controller) {
+    $this->cardID = "embraforged_gauntlets";
+    $this->controller = $controller;
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
+    return true;
+  }
+}
