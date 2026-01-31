@@ -2000,6 +2000,7 @@ function DoesAttackHaveGoAgain()
   //Prevention Natural Go Again
   if (CurrentEffectPreventsGoAgain($attackID, $from)) return false;
   if (SearchCurrentTurnEffects("blizzard_blue", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("rainbow_goo_trap_red", $mainPlayer)) return false;
 
   //Natural Go Again
   if (!$isAura && HasGoAgain($attackID, "ATTACK")) return true;
@@ -2666,6 +2667,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
       if (SearchCurrentTurnEffects("current_funnel_blue", $mainPlayer, remove: true)) $hasGoAgain = true;
     }
     if ($cardType == "AA" && SearchCurrentTurnEffects("blizzard_blue", $player)) $hasGoAgain = false;
+    if ($cardType == "AA" && SearchCurrentTurnEffects("rainbow_goo_trap_red", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
     if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){

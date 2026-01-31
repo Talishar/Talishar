@@ -2616,3 +2616,16 @@ class distant_rumblings_blue extends Card {
     $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
   }
 }
+
+class rainbow_goo_trap_red extends Card {
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    if (HasIncreasedAttack() && IsDominateActive() && DoesAttackHaveGoAgain())
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain, $mainPlayer;
+    $CombatChain->Card(0)->ModifyPower(-2);
+    AddCurrentTurnEffect("rainbow_goo_trap_red", $mainPlayer);
+  }
+}
