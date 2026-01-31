@@ -807,6 +807,7 @@ function CombatChainDamageModifiers($player, $source, $type)
       case "ball_lightning_red":
       case "ball_lightning_yellow":
       case "ball_lightning_blue":
+      case "arc_bending_red":
         if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
         break;
       default:
@@ -819,6 +820,7 @@ function CombatChainDamageModifiers($player, $source, $type)
         case "ball_lightning_red":
         case "ball_lightning_yellow":
         case "ball_lightning_blue":
+        case "arc_bending_red":
           if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
           break;
         default:
