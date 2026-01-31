@@ -229,8 +229,10 @@ function SelfBoostEffects($player, $boosted, $cardID)
   switch($cardID) {
     case "sprocket_rocket_red": case "sprocket_rocket_yellow": case "sprocket_rocket_blue":
     case "dumpster_dive_red": case "dumpster_dive_yellow": case "dumpster_dive_blue":
-    case "heavy_metal_hardcore_red": case "heavy_metal_hardcore_yellow": case "heavy_metal_hardcore_blue":
       if(SubtypeContains($boosted, "Item", $player) || IsEquipment($boosted, $player)) AddCurrentTurnEffect($cardID, $player);
+      break;
+    case "heavy_metal_hardcore_red": case "heavy_metal_hardcore_yellow": case "heavy_metal_hardcore_blue":
+      if(SubtypeContains($boosted, "Evo", $player)) AddCurrentTurnEffect($cardID, $player);
       break;
     default: break;
   }
