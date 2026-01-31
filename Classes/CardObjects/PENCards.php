@@ -2001,3 +2001,19 @@ class arc_bending_red extends Card {
       GiveAttackGoAgain();
   }
 }
+
+class chorus_of_rotwood extends Card {
+  function __construct($controller) {
+    $this->cardID = "chorus_of_rotwood";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
+    PlayAura("runechant", $this->controller, 3);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Decompose($this->controller, "CHORUSOFROTWOOD");
+  }
+}

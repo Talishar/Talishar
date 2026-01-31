@@ -843,6 +843,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $CombatChain->Card($index)->ModifyDefense(1);
       }
       return $lastResult;
+    case "CHORUSOFROTWOOD":
+      PlayAura("embodiment_of_earth", $player);
+      return $lastResult;
     case "CADAVEROUSTILLING":
       $index = GetClassState($player, $CS_PlayCCIndex);
       $CombatChain->Card($index)->ModifyPower(2);
