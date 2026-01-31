@@ -2832,3 +2832,18 @@ class roaring_beam extends Card {
     }
   }
 }
+
+class pound_of_flesh extends Card {
+  function __construct($controller) {
+    $this->cardID = "pound_of_flesh";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    MZChooseAndBanish($this->controller, "MYHAND", "ARS,-");
+    AddDecisionQueue("POUNDOFFLESHCHOICE", $this->controller, "<-", 1);
+    MZChooseAndBanish($otherPlayer, "MYHAND", "ARS,-");
+    AddDecisionQueue("POUNDOFFLESHCHOICE", $otherPlayer, "<-", 1);
+  }
+}
