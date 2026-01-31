@@ -2680,3 +2680,93 @@ class quickening_sand_blue extends Card {
     TrapTriggered($this->cardID);
   }
 }
+
+class man_overboard extends BaseCard {
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+    function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYHAND:subtype=Ally");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard an ally?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+  }
+}
+
+class man_overboard_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "man_overboard_red";
+    $this->controller = $controller;
+    $this->baseCard = new man_overboard($this->cardID, $this->controller);
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
+class man_overboard_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "man_overboard_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new man_overboard($this->cardID, $this->controller);
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+
+    function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
+class man_overboard_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "man_overboard_blue";
+    $this->controller = $controller;
+    $this->baseCard = new man_overboard($this->cardID, $this->controller);
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+  
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
