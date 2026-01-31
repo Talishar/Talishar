@@ -549,6 +549,20 @@ function HasIncreasedAttack()
   return false;
 }
 
+function HasDecreasedAttack()
+{
+  global $CombatChain, $combatChainState, $mainPlayer, $combatChain;
+  if ($CombatChain->HasCurrentLink()) {
+    $power = CachedTotalPower();
+    if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
+      if ($power < WardAmount($combatChain[0], $mainPlayer)) return true;
+      else return false;
+    }
+    if ($power < LinkBasePower()) return true;
+  }
+  return false;
+}
+
 function DamageTrigger($player, $damage, $type, $source, $playerSource)
 {
   PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);
@@ -2000,6 +2014,7 @@ function DoesAttackHaveGoAgain()
   //Prevention Natural Go Again
   if (CurrentEffectPreventsGoAgain($attackID, $from)) return false;
   if (SearchCurrentTurnEffects("blizzard_blue", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("rainbow_goo_trap_red", $mainPlayer)) return false;
 
   //Natural Go Again
   if (!$isAura && HasGoAgain($attackID, "ATTACK")) return true;
@@ -2666,6 +2681,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
       if (SearchCurrentTurnEffects("current_funnel_blue", $mainPlayer, remove: true)) $hasGoAgain = true;
     }
     if ($cardType == "AA" && SearchCurrentTurnEffects("blizzard_blue", $player)) $hasGoAgain = false;
+    if ($cardType == "AA" && SearchCurrentTurnEffects("rainbow_goo_trap_red", $player)) $hasGoAgain = false;
     if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
     if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){
@@ -4005,5 +4021,15 @@ function IsPlayed($cardID, $from="", $player=-1, $index=0) {
     $resolvedAbilityType = GetResolvedAbilityType($cardID, $from, $player);
     if ($resolvedAbilityType != $cardType) return false;
     return true;
+  }
+}
+
+function TurnArsenalFaceUp($player) {
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "DOWN") {
+      $arsenal[$i + 1] = "UP";
+      ArsenalTurnFaceUpAbility($arsenal[$i], $player);
+    }
   }
 }

@@ -1064,6 +1064,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "DIGIN":
       PlayAura("toughness", $player, $lastResult, true, effectController:$player, effectSource:$initiator);
       return "";
+    case "VALAHAIRIVEN":
+      PlayAura("seismic_surge", $player, $lastResult, true, effectController:$player, effectSource:$initiator);
+      return "";
     case "LIAR":
       $char = &GetPlayerCharacter($player);
       $char[1] = 3;

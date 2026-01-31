@@ -4124,6 +4124,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "entangling_shot_red":
       case "nettling_shot_red":
+      case "quickening_sand_blue":
         $zone = explode("-", $target)[0];
         $uid = explode("-", $target)[1];
         $otherPlayer = $player == 1 ? 2 : 1;
@@ -4219,6 +4220,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
+        break;
+      case "valahai_riven_yellow":
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
+        AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
+        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
+        AddDecisionQueue("SPECIFICCARD", $player, "VALAHAIRIVEN,$parameter", 1);
         break;
       case "base_of_the_mountain":
         $search = "MYHAND:type=AA&MYHAND:type=A";
@@ -4590,6 +4597,18 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
   AddGraveyard($discarded, $player, "HAND", $effectController);
   DiscardedAtRandomEffects($player, $discarded, $source);
   return $discarded;
+}
+
+function PitchRandom($player)
+{
+  $hand = &GetHand($player);
+  if (count($hand) == 0) return "";
+  $index = (count($hand) > 1) ? GetRandom(0, count($hand) - 1) : 0;
+  $pitched = $hand[$index];
+  unset($hand[$index]);
+  $hand = array_values($hand);
+  Pitch($pitched, $player);
+  return $pitched;
 }
 
 function DiscardedAtRandomEffects($player, $discarded, $source)

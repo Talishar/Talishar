@@ -373,6 +373,21 @@ function SearchDiscardByName($player, $name)
   return implode(",", $cardList);
 }
 
+function SearchDiscardNameContains($player, $name)
+{
+  if (SearchCurrentTurnEffects("amnesia_red", $player)) return "";
+  $discard = &GetDiscard($player);
+  $countDiscard = count($discard);
+  $discardPieces = DiscardPieces();
+  $cardList = [];
+  for ($i = 0; $i < $countDiscard; $i += $discardPieces) {
+    if (DelimStringContains(ShareName(CardName($discard[$i]), $name), $name, true) && !isFaceDownMod($discard[$i+2])) {
+      $cardList[] = $i;
+    }
+  }
+  return implode(",", $cardList);
+}
+
 function SearchItemsByName($player, $name)
 {
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return "";

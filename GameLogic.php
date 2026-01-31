@@ -3685,6 +3685,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("Pitching " . CardLink($lastResult, $lastResult) . " prevented");
       }
       return $lastResult;
+    case "POUNDOFFLESHCHOICE":
+      if(ModifiedPowerValue($lastResult, $player, "BANISH") < 6) 
+        PlayerLoseHealth(1, $player);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
