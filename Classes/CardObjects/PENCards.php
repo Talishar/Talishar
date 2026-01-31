@@ -2250,3 +2250,16 @@ class mbrio_base_cortex extends Card {
     return SearchItemsByName($this->controller, "Hyper Driver") ? 2 : 0;
   }
 }
+
+class blast_rig_red extends Card
+{
+  function __construct($controller)
+  {
+    $this->cardID = "blast_rig_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return EvoUpgradeAmount($this->controller);
+  }
+}
