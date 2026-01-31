@@ -1914,3 +1914,54 @@ class song_of_larinkmorth_white_blue extends Card {
     PlayAura("frostbite", $defPlayer);
   }
 }
+
+class knife_through extends BaseCard {
+  function DoesAttackHaveGoAgain() {
+    global $combatChainState, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary;
+    $numDaggerHits = 0;
+    $count = count($chainLinks);
+    for($i=0; $i<$count; ++$i)
+    {
+      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) 
+        ++$numDaggerHits;
+    }
+    $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+    return $numDaggerHits > 0;
+  }
+}
+
+class knife_through_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "knife_through_red";
+    $this->controller = $controller;
+    $this->baseCard = new knife_through($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->DoesAttackHaveGoAgain();
+  }
+}
+
+class knife_through_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "knife_through_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new knife_through($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->DoesAttackHaveGoAgain();
+  }
+}
+
+class knife_through_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "knife_through_blue";
+    $this->controller = $controller;
+    $this->baseCard = new knife_through($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->DoesAttackHaveGoAgain();
+  }
+}
