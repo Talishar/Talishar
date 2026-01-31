@@ -784,6 +784,7 @@ function isUnimplemented($cardID) {
 }
 
 function isBannedInFormat($cardID, $format) {
+  global $livingLegends;
   if ($format == "compblitz") $format = "blitz";
   if ($format == "compcc" || $format == "futurecc") $format = "cc";
   if ($format == "compllcc" || $format == "futurell") $format = "llcc";
@@ -792,11 +793,11 @@ function isBannedInFormat($cardID, $format) {
   $bannedCards = [
       "blitz" => [ // no cards banned in singleton blitz
       ],
-      "cc" => [
+      "cc" => array_merge([
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
-          "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "chane_bound_by_shadow", "galaxxi_black", "stubby_hammerers", "belittle_red",
+          "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "galaxxi_black", "stubby_hammerers", "belittle_red",
           "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi_livewire",
-          "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "bravo_star_of_the_show", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
+          "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
           "count_your_blessings_red", "count_your_blessings_yellow", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
@@ -804,7 +805,7 @@ function isBannedInFormat($cardID, $format) {
           "plume_of_evergrowth", "talk_a_big_game_blue", "rootbound_carapace_red", "rootbound_carapace_yellow", "rootbound_carapace_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
           "chart_the_high_seas_blue", "wrath_of_retribution_red", "brand_with_cinderclaw_red", "brand_with_cinderclaw_yellow", "brand_with_cinderclaw_blue",
           "kano_dracai_of_aether", "crucible_of_aetherweave", "florian_rotwood_harbinger", "rotwood_reaper"
-      ],
+      ], $livingLegends),
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
           "waning_moon", "zephyr_needle", "reality_refractor"
@@ -836,7 +837,6 @@ function isBannedInFormat($cardID, $format) {
         "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle", "chane"
       ]
   ];
-
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
 

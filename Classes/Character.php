@@ -48,6 +48,14 @@ class CharacterCard {
     return $this->pieces[$this->index] ?? "-";
   }
 
+  function Become($cardID) {
+    global $CS_OriginalHero;
+    if ($this->index == 0 && GetClassState($this->controller, $CS_OriginalHero) == "-") {
+      SetClassState($this->controller, $CS_OriginalHero, $cardID);
+    }
+    $this->pieces[$this->index] = $cardID;
+  }
+
   function Status() {
     // (2=ready, 1=unavailable, 0=destroyed, 3=Sleeping (Sleep Dart, Crush Confidance, etc)), 4=Dishonored
     return $this->pieces[$this->index+1] ?? 0;

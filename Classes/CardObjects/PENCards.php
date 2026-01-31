@@ -1361,3 +1361,22 @@ class voltic_veil_red extends Card {
     return 4;
   }
 }
+
+class embody_greatness_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "embody_greatness_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $livingLegends;
+    $choices = [];
+    foreach($livingLegends as $hero) {
+      array_push($choices, "CARDID-$hero");
+    }
+    AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "EMBODYGREATNESS", 1);
+    AddNextTurnEffect($this->cardID, $this->controller);
+  }
+}

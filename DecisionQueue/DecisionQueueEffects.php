@@ -1173,7 +1173,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $arsenal = &GetArsenal($player);
       $arsenal[$index + 1] = "UP";
       ++$arsenal[$index + 6];
-    default: return "";
+      return "";
     case "BFB":
       if(!is_array($lastResult)) $modes = $lastResult == "PASS" ? [] : explode(",", $lastResult);
       else $modes = $lastResult;
@@ -1193,6 +1193,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         }
       }
       return "";
+    case "EMBODYGREATNESS":
+      $Character = new CharacterCard(0, $player);
+      $Character->Become(explode("-", $lastResult)[1] ?? $Character->CardID());
+      return $lastResult;
+    default: return "";
   }
 
 }

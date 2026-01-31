@@ -330,7 +330,7 @@ function CharacterBanishEffect($cardID, $player)
 
 function MainCharacterBeginEndPhaseAbilities()
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $CS_OriginalHero;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
@@ -365,6 +365,10 @@ function MainCharacterBeginEndPhaseAbilities()
       default:
         break;
     }
+  }
+  if (SearchCurrentTurnEffects("embody_greatness_yellow", $defPlayer)){
+    $DefCharacterCard = new CharacterCard(0, $defPlayer);
+    $DefCharacterCard->Become(GetClassState($defPlayer, $CS_OriginalHero));
   }
 }
 
