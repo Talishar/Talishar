@@ -73,20 +73,13 @@ if ($playerToBan != "") {
 if ($ipToBan != "") {
   $gameName = $ipToBan;
   include './MenuFiles/ParseGamefile.php';
-  $extractedIP = $playerNumberToBan == "1" ? $hostIP : $joinerIP;
-  
-  // Validate that we actually got an IP from the game file
-  if (empty($extractedIP)) {
+  $ipToBan = $playerNumberToBan == "1" ? $hostIP : $joinerIP;
+  $writeResult = file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
+  if ($writeResult === false) {
     $result["status"] = "error";
-    $result["message"] = "Failed to extract IP from game file. Game may not exist or IP data is missing.";
+    $result["message"] = "Failed to write banned IP to file";
   } else {
-    $writeResult = file_put_contents('./HostFiles/bannedIPs.txt', $extractedIP . "\r\n", FILE_APPEND | LOCK_EX);
-    if ($writeResult === false) {
-      $result["status"] = "error";
-      $result["message"] = "Failed to write banned IP to file";
-    } else {
-      $result["message"] = "IP $extractedIP has been banned.";
-    }
+    $result["message"] = "IP $ipToBan has been banned.";
   }
 }
 
