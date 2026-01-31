@@ -2263,3 +2263,15 @@ class blast_rig_red extends Card
     return EvoUpgradeAmount($this->controller);
   }
 }
+
+class blackstone_greaves extends Card {
+  function __construct($controller) {
+    $this->cardID = "blackstone_greaves";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_ArcaneDamageDealt;
+    return GetClassState($this->controller, $CS_ArcaneDamageDealt) ? 1 : 0;
+  }
+}
