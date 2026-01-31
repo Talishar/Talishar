@@ -2239,3 +2239,14 @@ class skera_strapping extends Card {
     return 0;
   }
 }
+
+class mbrio_base_cortex extends Card {
+  function __construct($controller) {
+    $this->cardID = "mbrio_base_cortex";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return SearchItemsByName($this->controller, "Hyper Driver") ? 2 : 0;
+  }
+}
