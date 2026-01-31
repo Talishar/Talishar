@@ -2476,3 +2476,46 @@ class fasting_carcass_blue extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 }
+
+class submerge extends BaseCard {
+  function PayAdditionalCosts($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_AdditionalCosts;
+    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4");
+  }
+}
+
+class submerge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "submerge_red";
+    $this->controller = $controller;
+    $this->baseCard = new submerge($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
+
+class submerge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "submerge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new submerge($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
+
+class submerge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "submerge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new submerge($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
