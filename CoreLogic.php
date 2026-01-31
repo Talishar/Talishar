@@ -549,6 +549,20 @@ function HasIncreasedAttack()
   return false;
 }
 
+function HasDecreasedAttack()
+{
+  global $CombatChain, $combatChainState, $mainPlayer, $combatChain;
+  if ($CombatChain->HasCurrentLink()) {
+    $power = CachedTotalPower();
+    if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
+      if ($power < WardAmount($combatChain[0], $mainPlayer)) return true;
+      else return false;
+    }
+    if ($power < LinkBasePower()) return true;
+  }
+  return false;
+}
+
 function DamageTrigger($player, $damage, $type, $source, $playerSource)
 {
   PrependDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);

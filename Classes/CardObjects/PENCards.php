@@ -2630,3 +2630,26 @@ class rainbow_goo_trap_red extends Card {
     TrapTriggered($this->cardID);
   }
 }
+
+class frail_swingline_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "frail_swingline_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    PlayAura("frailty", $otherPlayer);
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    if (HasDecreasedAttack())
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    PummelHit($mainPlayer, effectController:$this->controller);
+    TrapTriggered($this->cardID);
+  }
+}
