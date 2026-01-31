@@ -1454,3 +1454,37 @@ class embody_greatness_yellow extends Card {
     AddNextTurnEffect($this->cardID, $this->controller);
   }
 }
+
+class heavy_metal_hardcore extends BaseCard {
+  function CombatEffectActive() {
+    return true;
+  }
+
+  function EffectPowerModifier() {
+    return 1;
+  }
+}
+
+class heavy_metal_hardcore_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "heavy_metal_hardcore_red";
+    $this->controller = $controller;
+    $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
+  }
+}
+
+class heavy_metal_hardcore_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "heavy_metal_hardcore_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
+  }
+}
+
+class heavy_metal_hardcore_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "heavy_metal_hardcore_blue";
+    $this->controller = $controller;
+    $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
+  }
+}
