@@ -2017,3 +2017,15 @@ class chorus_of_rotwood extends Card {
     Decompose($this->controller, "CHORUSOFROTWOOD");
   }
 }
+
+class limbs_of_lignum_vitae extends Card {
+  function __construct($controller) {
+    $this->cardID = "limbs_of_lignum_vitae";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    $results = SearchCount(SearchMultiZone($this->controller, "MYBANISH:talent=EARTH"));
+    return $results >= 4 ? 1 : 0;
+  }
+}
