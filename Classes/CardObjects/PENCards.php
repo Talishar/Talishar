@@ -1051,6 +1051,54 @@ class shallow_water_shark_harpoon extends Card {
     AddDecisionQueue("PUTPLAY", $this->controller, "-", 1);
   }
 }
+
+class duty_bound extends BaseCard {
+  function IsPlayRestricted() {
+    global $CS_NumYellowPutSoul;
+    if (GetClassState($this->controller, $CS_NumYellowPutSoul) > 0) return false;
+    return true;
+  }
+}
+
+class duty_bound_red extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "duty_bound_red";
+    $this->controller = $controller;
+    $this->baseCard = new duty_bound($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
+
+class duty_bound_yellow extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "duty_bound_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new duty_bound($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
+
+class duty_bound_blue extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "duty_bound_blue";
+    $this->controller = $controller;
+    $this->baseCard = new duty_bound($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
+
 class sigil_of_silphidae_blue extends Card {
   function __construct($controller) {
     $this->cardID = "sigil_of_silphidae_blue";
