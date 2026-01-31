@@ -2073,3 +2073,89 @@ class drag_down_blue extends Card {
     $this->baseCard->PlayAbility(1);
   }
 }
+
+class cloud_cover extends BaseCard
+{
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this);
+  }
+}
+
+class cloud_cover_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cloud_cover_red";
+    $this->controller = $controller;
+    $this->baseCard = new cloud_cover($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+}
+
+class cloud_cover_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "cloud_cover_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new cloud_cover($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+}
+
+class cloud_cover_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cloud_cover_blue";
+    $this->controller = $controller;
+    $this->baseCard = new cloud_cover($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+}
+
+class stadium_security extends BaseCard {
+  function hasAmbush() {
+    global $CS_NumToughnessDestroyed;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0;
+  }
+}
+
+class stadium_security_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "stadium_security_red";
+    $this->controller = $controller;
+    $this->baseCard = new stadium_security($this->cardID, $this->controller);
+  }
+
+  function HasAmbush() {
+    return $this->baseCard->hasAmbush();
+  }
+}
+
+class stadium_security_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "stadium_security_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new stadium_security($this->cardID, $this->controller);
+  }
+
+  function HasAmbush() {
+    return $this->baseCard->hasAmbush();
+  }
+}
+
+class stadium_security_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "stadium_security_blue";
+    $this->controller = $controller;
+    $this->baseCard = new stadium_security($this->cardID, $this->controller);
+  }
+
+  function HasAmbush() {
+    return $this->baseCard->hasAmbush();
+  }
+}

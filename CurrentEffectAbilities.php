@@ -1386,9 +1386,12 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         "moon_chakra_blue-1" => 1,
         default => 3,
       };
+    case "cloud_cover_red":
+      return 3;
     case "cloud_cover_yellow":
     case "sigil_of_shelter_yellow":
         return 2;
+    case "cloud_cover_blue":
     case "sigil_of_shelter_blue":
         return 1;
     case "sanctuary_of_aria":
@@ -1706,6 +1709,12 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       }
       RemoveCurrentTurnEffect($index);
       break;
+    case "cloud_cover_red":
+      if ($preventable) {
+        $preventedDamage += 3;
+      }
+      RemoveCurrentTurnEffect($index);
+      break;
     case "cloud_cover_yellow":
     case "sigil_of_shelter_yellow":
       if ($preventable) {
@@ -1713,6 +1722,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       }
       RemoveCurrentTurnEffect($index);
       break;
+    case "cloud_cover_blue":
     case "sigil_of_shelter_blue":
       if ($preventable) {
         $preventedDamage += 1;
