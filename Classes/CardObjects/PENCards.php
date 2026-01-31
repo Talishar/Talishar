@@ -2275,3 +2275,69 @@ class blackstone_greaves extends Card {
     return GetClassState($this->controller, $CS_ArcaneDamageDealt) ? 1 : 0;
   }
 }
+
+class weeping_battleground extends BaseCard {
+  function PlayAbility() {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Aura");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish an aura to deal 1 arcane?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+    AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+  }
+}
+
+class weeping_battleground_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "weeping_battleground_red";
+    $this->controller = $controller;
+    $this->baseCard = new weeping_battleground($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  }
+}
+
+class weeping_battleground_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "weeping_battleground_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new weeping_battleground($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  }
+}
+
+class weeping_battleground_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "weeping_battleground_blue";
+    $this->controller = $controller;
+    $this->baseCard = new weeping_battleground($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  }
+}
