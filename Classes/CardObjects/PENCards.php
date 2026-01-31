@@ -968,6 +968,24 @@ class robe_of_resourcefulness extends Card {
   }
 }
 
+class gloves_of_erasure extends Card {
+  function __construct($controller) {
+    $this->cardID = "gloves_of_erasure";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:type=T&MYAURAS:type=T");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to destroy, or pass", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
+  }
+}
+
 class silken_shroud extends Card {
   function __construct($controller) {
     $this->cardID = "silken_shroud";
