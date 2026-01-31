@@ -968,6 +968,63 @@ class robe_of_resourcefulness extends Card {
   }
 }
 
+class silken_shroud extends Card {
+  function __construct($controller) {
+    $this->cardID = "silken_shroud";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("ponder", $this->controller);
+  }
+}
+class silken_shawl extends Card {
+  function __construct($controller) {
+    $this->cardID = "silken_shawl";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("vigor", $this->controller);
+  }
+}
+
+class silken_symphony extends Card {
+  function __construct($controller) {
+    $this->cardID = "silken_symphony";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("might", $this->controller);
+  }
+}
+class silken_slippers extends Card {
+  function __construct($controller) {
+    $this->cardID = "silken_slippers";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("agility", $this->controller);
+  }
+}
+
 class sigil_of_silphidae_blue extends Card {
   function __construct($controller) {
     $this->cardID = "sigil_of_silphidae_blue";
