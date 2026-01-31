@@ -1132,6 +1132,85 @@ class laden_with_lightning_red extends Card {
   }
 }
 
+class sprout_strength extends BaseCard {
+  function AddCurrentTurnEffect() {
+    AddCurrentTurnEffect("sprout_strength", $this->controller);
+  }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class sprout_strength_red extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "sprout_strength_red";
+    $this->controller = $controller;
+    $this->baseCard = new sprout_strength($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddCurrentTurnEffect();
+    $this->baseCard->AddCurrentTurnEffect();
+    $this->baseCard->AddCurrentTurnEffect();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
+class sprout_strength_yellow extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "sprout_strength_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new sprout_strength($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddCurrentTurnEffect();
+    $this->baseCard->AddCurrentTurnEffect();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
+class sprout_strength_blue extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "sprout_strength_blue";
+    $this->controller = $controller;
+    $this->baseCard = new sprout_strength($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->AddCurrentTurnEffect();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
 class duty_bound extends BaseCard {
   function IsPlayRestricted() {
     global $CS_NumYellowPutSoul;
