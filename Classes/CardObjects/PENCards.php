@@ -2890,6 +2890,23 @@ class sigil_of_voltaris_blue extends Card {
   }
 }
 
+class four_feathers_one_crown_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "four_feathers_one_crown_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $cardList = explode(",", SearchDiscardNameContains($this->controller, "phoenix_bannerman"));
+    $CombatChain->Card(0)->ModifyPower(count($cardList));
+  }
+}
+
 class phoenix_bannerman extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if(CanRevealCards($this->controller)) {
