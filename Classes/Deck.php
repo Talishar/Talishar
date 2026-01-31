@@ -96,11 +96,16 @@ class Deck {
 
   function AddTop($cardID, $from="GY", $deckIndexModifier=0)
   {
-    if (SearchCurrentTurnEffects("topsy_turvy", 1) || SearchCurrentTurnEffects("topsy_turvy", 2)) {
-      WriteLog("Things are " . CardLink("topsy_turvy") . " so the card goes to the bottom instead!");
-      $this->AddBottom($cardID);
+    if ($deckIndexModifier > 0) {
+      array_splice($this->deck, $deckIndexModifier, 0, $cardID);
     }
-    array_unshift($this->deck, $cardID);
+    else {
+      if (SearchCurrentTurnEffects("topsy_turvy", 1) || SearchCurrentTurnEffects("topsy_turvy", 2)) {
+        WriteLog("Things are " . CardLink("topsy_turvy") . " so the card goes to the bottom instead!");
+        $this->AddBottom($cardID);
+      }
+      array_unshift($this->deck, $cardID);
+    }
     return $cardID;
   }
 
