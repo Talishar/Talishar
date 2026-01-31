@@ -1294,6 +1294,7 @@ function OnBlockResolveEffects($cardID = "")
         case "sunkwater_pincers":
         case "sunkwater_scalers":
         case "call_for_backup_red":
+        case "valahai_riven_yellow":
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
           break;
         case "scowling_flesh_bag":
