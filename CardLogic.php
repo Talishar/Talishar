@@ -4124,6 +4124,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "entangling_shot_red":
       case "nettling_shot_red":
+      case "quickening_sand_blue":
         $zone = explode("-", $target)[0];
         $uid = explode("-", $target)[1];
         $otherPlayer = $player == 1 ? 2 : 1;

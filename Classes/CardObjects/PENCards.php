@@ -2653,3 +2653,30 @@ class frail_swingline_blue extends Card {
     TrapTriggered($this->cardID);
   }
 }
+
+class quickening_sand_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "quickening_sand_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    PlayAura("quicken", $otherPlayer);
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    if (DoesAttackHaveGoAgain())
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    $context = "Choose an a target to tangle";
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY&THEIRALLY&MYCHAR:type=C&THEIRCHAR:type=C");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, "<-", 1);
+    TrapTriggered($this->cardID);
+  }
+}
