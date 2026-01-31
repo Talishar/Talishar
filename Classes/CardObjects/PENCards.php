@@ -595,7 +595,7 @@ class teklo_trebuchet_2000 extends BaseCard {
     return $CombatChainState->IsBoosted();
   }
 
-  function EffectPowerModifier() {
+  function EffectPowerModifier($param, $attached = false) {
     return 2;
   }
 }
@@ -1049,6 +1049,86 @@ class shallow_water_shark_harpoon extends Card {
     AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "gold", 1);
     AddDecisionQueue("PUTPLAY", $this->controller, "-", 1);
+  }
+}
+
+class laden_with_earth_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "laden_with_earth_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    AddCurrentTurnEffect("laden_with_earth_red", $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "EARTH") != "")
+      PlayAura("embodiment_of_earth", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+    function CardCaresAboutPitch() {
+    return true;
+  }
+}
+
+class laden_with_frost_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "laden_with_frost_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    AddCurrentTurnEffect("laden_with_frost_red", $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "ICE") != ""){
+      //Technically wrong, should be "target hero". I don't think there is currently a reason to give yourself the Frostbite.
+      PlayAura("frostbite", $defPlayer);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+    function CardCaresAboutPitch() {
+    return true;
+  }
+}
+
+class laden_with_lightning_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "laden_with_lightning_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    AddCurrentTurnEffect("laden_with_lightning_red", $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING") != "")
+      PlayAura("embodiment_of_lightning", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+    function CardCaresAboutPitch() {
+    return true;
   }
 }
 
@@ -1613,7 +1693,7 @@ class heavy_metal_hardcore extends BaseCard {
     return true;
   }
 
-  function EffectPowerModifier() {
+  function EffectPowerModifier($param, $attached = false) {
     return 1;
   }
 }
