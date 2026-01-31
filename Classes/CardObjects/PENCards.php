@@ -2212,3 +2212,30 @@ class stadium_security_blue extends Card {
     return $this->baseCard->hasAmbush();
   }
 }
+
+class volcanic_vice extends Card {
+  function __construct($controller) {
+    $this->cardID = "volcanic_vice";
+    $this->controller = $controller;
+  }
+
+  function SpellVoidAmount() {
+    global $CS_SeismicSurgesCreated;
+    return GetClassState($this->controller, $CS_SeismicSurgesCreated) > 0 ? 3 : 0;
+  }
+}
+
+class skera_strapping extends Card {
+  function __construct($controller) {
+    $this->cardID = "skera_strapping";
+    $this->controller = $controller;
+  }
+
+  function SpellVoidAmount() {
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
+    }
+    return 0;
+  }
+}
