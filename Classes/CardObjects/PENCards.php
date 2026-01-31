@@ -1843,3 +1843,62 @@ class heavy_metal_hardcore_blue extends Card {
     $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
   }
 }
+
+class insult_to_injury extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if (PlayerHasLessHealth($otherPlayer)) GiveAttackGoAgain();
+  }
+}
+
+class insult_to_injury_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "insult_to_injury_red";
+    $this->controller = $controller;
+    $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+}
+
+class insult_to_injury_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "insult_to_injury_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+}
+
+class insult_to_injury_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "insult_to_injury_blue";
+    $this->controller = $controller;
+    $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+}
