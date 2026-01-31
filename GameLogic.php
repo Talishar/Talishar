@@ -1423,9 +1423,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
         $parameters = explode("-", $parameter);
         $damage = $parameters[0];
-        $source = $parameters[1];
+        $source = $parameters[1] ?? "-";
         $sourceID = ExtractCardID($source);
-        $type = $parameters[2];
+        $type = $parameters[2] ?? "-";
         $sourceType = CardType($sourceID);
         if ($type == "PLAYCARD") {
           $damage += ConsumeArcaneBonus($player);

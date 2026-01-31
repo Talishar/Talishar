@@ -62,7 +62,7 @@ class Discard {
   }
 
   function TopCard() {
-    return $this->discard[count($this->discard) - DiscardPieces()];
+    return count($this->discard) > 0 ? $this->discard[count($this->discard) - DiscardPieces()] : "";
   }
 
   function FindCardUID($uid) {
