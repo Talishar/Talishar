@@ -946,6 +946,28 @@ class runic_fellingsong_blue extends Card {
   }
 }
 
+class shroud_of_the_fate_watcher extends Card {
+  function __construct($controller) {
+    $this->cardID = "shroud_of_the_fate_watcher";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    PlayAura("ponder", $this->controller);
+  }
+}
+
+class robe_of_resourcefulness extends Card {
+  function __construct($controller) {
+    $this->cardID = "robe_of_resourcefulness";
+    $this->controller = $controller;
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    GainResources($this->controller, 2);
+  }
+}
+
 class sigil_of_silphidae_blue extends Card {
   function __construct($controller) {
     $this->cardID = "sigil_of_silphidae_blue";
