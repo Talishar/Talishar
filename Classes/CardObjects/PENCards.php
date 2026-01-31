@@ -1965,3 +1965,23 @@ class knife_through_blue extends Card {
     return $this->baseCard->DoesAttackHaveGoAgain();
   }
 }
+
+class seeds_of_strength_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_strength_red";
+    $this->controller = $controller;
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("might", $this->controller);
+    PlayAura("might", $this->controller);
+    PlayAura("might", $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "EARTH") != "")
+      PlayAura("might", $this->controller);
+  }
+}
+
