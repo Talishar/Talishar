@@ -2815,3 +2815,20 @@ class break_open_the_chests extends Card {
   }
 } 
 
+class roaring_beam extends Card {
+  function __construct($controller) {
+    $this->cardID = "roaring_beam";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    PlayAura("courage", $this->controller);
+    $soul = GetSoul($this->controller);
+    if (count($soul) == 0) {
+      AddPlayerHand($this->cardID, $this->controller, "CC");
+      $CombatChain->Remove(SearchCombatChainForIndex($this->cardID, $this->controller));
+      Charge(false, $this->controller);
+    }
+  }
+}
