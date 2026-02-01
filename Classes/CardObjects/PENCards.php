@@ -2088,21 +2088,21 @@ class seeds_of_strength_red extends Card {
 //   }
 // }
 
-// class chorus_of_rotwood_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "chorus_of_rotwood_red";
-//     $this->controller = $controller;
-//   }
+class chorus_of_rotwood_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "chorus_of_rotwood_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     PlayAura("runechant", $this->controller, 3);
-//     AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
-//   }
-
-//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-//     Decompose($this->controller, "CHORUSOFROTWOOD");
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Discard = new Discard($this->controller);
+    $Discard->RemoveTop(); //don't let them decompose itself
+    PlayAura("runechant", $this->controller, 3);
+    Decompose($this->controller, "CHORUSOFROTWOOD");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
+    AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
+  }
+}
 
 class limbs_of_lignum_vitae extends Card {
   function __construct($controller) {

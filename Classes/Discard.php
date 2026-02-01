@@ -55,6 +55,10 @@ class Discard {
     }
   }
 
+  function RemoveTop() {
+    $this->Remove(count($this->discard) - DiscardPieces());
+  }
+
   function Add($cardID, $from="GY", $mods="-") {
     array_push($this->discard, $cardID);
     array_push($this->discard, GetUniqueId());
@@ -96,5 +100,9 @@ class DiscardCard {
 
   function Index() {
     return $this->index;
+  }
+
+  function Remove() {
+    RemoveDiscard($this->controller, $this->index());
   }
 }
