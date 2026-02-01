@@ -873,6 +873,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $numModes = count($lastResult);
       for($i=0; $i<$numModes; ++$i) BanishFromSoul($player);
       return $lastResult;
+    case "SIGILOFSUFFERING":
+      if (GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0) {
+        $index = count($combatChain) - CombatChainPieces();
+        CombatChainDefenseModifier($index, 1);
+      }
+      return $lastResult;
     case "CHARTTHEHIGHSEAS":
       if (DelimStringContains($lastResult, "MYDECK", true)) {
         $cardID = MZRemove($player, $lastResult);
