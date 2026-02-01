@@ -825,10 +825,10 @@ function RemoveThisLinkEffects($cardID="")
   $combatChainState[$CCS_EclecticMag] = 0;
 }
 
-function OnAttackEffects($power)
+function OnAttackEffects($cardID)
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;
-  $attackType = CardType($power);
+  $attackType = CardType($cardID);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
@@ -897,7 +897,7 @@ function OnAttackEffects($power)
           }
           break;
         case "shifting_winds_of_the_mystic_beast_blue":
-          if (CardNameContains($power, "Crouching Tiger", $mainPlayer)) {
+          if (CardNameContains($cardID, "Crouching Tiger", $mainPlayer)) {
             AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
             AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
             AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "crouching_tiger-");
@@ -906,13 +906,22 @@ function OnAttackEffects($power)
           }
           break;
         case "first_tenet_of_chi_moon_blue":
-          if (PitchValue($power) == 3) {
+          if (PitchValue($cardID) == 3) {
             Draw($mainPlayer);
             $remove = true;
           }
         case "unsheathed_red":
           if (IsCombatEffectActive($currentTurnEffects[$i])){
             AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], additionalCosts:"ATTACKTRIGGER");
+          }
+          break;
+        case "shapeless_form_blue":
+          if (HasEphemeral($cardID) && TypeContains($cardID, "AA", $mainPlayer)) {
+            AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
+            AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
+            AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "crouching_tiger-");
+            AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "<-");
+            AddDecisionQueue("WRITELOG", $mainPlayer, "📣<b>{0}</b> was chosen");
           }
           break;
         default:

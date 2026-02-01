@@ -2002,7 +2002,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       SetClassState($currentPlayer, $CS_DynCostResolved, $dynCostResolved);
       $baseCost = $from == "PLAY" || $from == "EQUIP" || $from == "COMBATCHAINATTACKS" ? AbilityCost($cardID) : (CardCost($cardID, $from) + SelfCostModifier($cardID, $from));
-      if ($from == "GY" && $cardID == "graven_call") $baseCost = 0; // hardcoding for now as the card is weird
+      if ($from == "GY" && ($cardID == "graven_call" || $cardID == "graven_gaslight")) $baseCost = 0; // hardcoding for now as the card is weird
       if(HasMeld($cardID) && $cachedAdditionalCosts == "Both") $baseCost += $baseCost;
       if (!$playingCard) $resources[1] += $dynCostResolved;
       else {
@@ -3798,6 +3798,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "RAISEANARMY", 1);
       break;
     case "graven_call":
+    case "graven_gaslight":
       if ($from == "GY") {
         //mark which specific graven call was activated
         $graveyard = GetDiscard($currentPlayer);

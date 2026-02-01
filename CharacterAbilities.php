@@ -780,7 +780,7 @@ function CharacterCostModifier($cardID, $from, $cost)
   return CostCantBeModified($cardID) ? 0 : $modifier;
 }
 
-function EquipEquipment($player, $cardID, $slot = "")
+function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
 {
   global $EffectContext;
   if ($slot == "") {
@@ -802,12 +802,16 @@ function EquipEquipment($player, $cardID, $slot = "")
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   for ($i = $characterPieces; $i < $charCount && !$replaced; $i += $characterPieces) {
+    $negativeCounters = 0;
+    if ($from != "MYDISCARD" && ($cardID == "graven_cowl" || $cardID == "graven_vestment" || $cardID == "graven_gloves" || $cardID == "graven_walkers")) {
+        --$negativeCounters;
+    }    
     if (SubtypeContains($char[$i], $slot, $player, $uniqueID)) {
       $char[$i] = $cardID;
       $char[$i + 1] = 2;
       $char[$i + 2] = 0;
       $char[$i + 3] = 0;
-      $char[$i + 4] = 0;
+      $char[$i + 4] = $negativeCounters;
       $char[$i + 5] = 1;
       $char[$i + 6] = 0;
       $char[$i + 7] = 0;
@@ -826,7 +830,7 @@ function EquipEquipment($player, $cardID, $slot = "")
     $char[] = 2; //1 - Status
     $char[] = 0; //2 - Num counters
     $char[] = 0; //3 - Num power counters
-    $char[] = 0; //4 - Num defense counters
+    $char[] = $negativeCounters; //4 - Num defense counters
     $char[] = 1; //5 - Num uses
     $char[] = 0; //6 - On chain
     $char[] = 0; //7 - Flagged for destruction

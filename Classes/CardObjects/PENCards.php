@@ -4096,3 +4096,73 @@ class cut_n_carve_blue extends Card {
     return true;
   }
 }
+class graven_gaslight extends Card {
+  function __construct($controller) {
+    $this->cardID = "graven_gaslight";
+    $this->controller = $controller;
+  }
+
+  function PlayableFromGraveyard($index) {
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    if ($from == "GY") return "I";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from == "GY") return CountItem("silver", $this->controller) < 2; 
+    else return false;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "GY") {
+      $discardIndex = SearchDiscardForUniqueID($target, $this->controller);
+      if ($discardIndex != -1) {
+        RemoveDiscard($this->controller, $discardIndex);
+        $character = &GetPlayerCharacter($this->controller);
+        EquipWeapon($this->controller, "graven_gaslight");
+      }
+      else {
+        WriteLog("Graven Gaslight failed to be equipped");
+      }
+    }
+    return "";
+  }
+}
+
+class graven_cowl extends Card {
+  function __construct($controller) {
+    $this->cardID = "graven_cowl";
+    $this->controller = $controller;
+  }
+}
+class graven_vestment extends Card {
+  function __construct($controller) {
+    $this->cardID = "graven_vestment";
+    $this->controller = $controller;
+  }
+}
+class graven_gloves extends Card {
+  function __construct($controller) {
+    $this->cardID = "graven_gloves";
+    $this->controller = $controller;
+  }
+}
+class graven_walkers extends Card {
+  function __construct($controller) {
+    $this->cardID = "graven_walkers";
+    $this->controller = $controller;
+  }
+}
+
+class shapeless_form_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shapeless_form_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
