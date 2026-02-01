@@ -1359,20 +1359,20 @@ class sigil_of_silphidae_blue extends Card {
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
     global $CS_ArcaneTargetsSelected;
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
-    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected, 1);
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_ArcaneTargetsSelected;
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
-    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected, 1);
     SetArcaneTarget($this->controller, $this->cardID, 0, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
