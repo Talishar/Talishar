@@ -3157,7 +3157,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $cardID = $deck->Top(true);
           if (!SubtypeContains($cardID, "Evo", $player)) {
             WriteLog("The card was put on the bottom of your deck");
-            $deck->AddBottom($deck->Top(remove: true), "DECK");
+            $deck->AddBottom($cardID, "DECK");
           }
           else $deck->AddTop($cardID, "DECK");
         }
