@@ -2320,6 +2320,16 @@ function DestroyCurrentWeapon()
   $char[$index + 7] = "1";
 }
 
+function BlockCardDestroyed($cardID, $player)
+{
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->BlockCardDestroyed();
+  switch ($cardID) {
+    default:
+      break;
+  }
+}
+
 function AttackDestroyed($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
