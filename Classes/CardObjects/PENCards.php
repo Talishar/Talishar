@@ -3750,3 +3750,10 @@ class rend_flesh_blue extends Card {
     return false;
   }
 }
+
+class deep_recesses_of_existence_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "deep_recesses_of_existence_blue";
+    $this->controller = $controller;
+  }
+}
