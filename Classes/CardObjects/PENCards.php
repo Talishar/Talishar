@@ -1044,9 +1044,9 @@ class silken_slippers extends Card {
   }
 }
 
-class shallow_water_shark_harpoon extends Card {
+class shallow_water_shark_harpoon_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "shallow_water_shark_harpoon";
+    $this->cardID = "shallow_water_shark_harpoon_yellow";
     $this->controller = $controller;
   }
 
