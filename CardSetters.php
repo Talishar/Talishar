@@ -24,6 +24,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $otherPlayer = $player == 1 ? 2 : 1;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
+  $amount = 1;
   AddEvent("BANISH", (isFaceDownMod($mod) ? "CardBack" : $cardID));
   //Effects that change the modifier
   if ($characterID == "blasmophet_levia_consumed" && $character[1] < 3) {
@@ -35,22 +36,29 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
+  if (HasEphemeral($cardID)) {
+    if(SearchCurrentTurnEffects("spreading_mist_blue", $player, true) || SearchCurrentTurnEffects("billowing_mist_blue", $player, true)){
+      ++$amount;
+    }
+  } 
   if (!TypeContains($cardID, "T", $player)) { //If you banish a token, the token ceases to exist.
     if ($cardID == "fangs_a_lot_blue" && $from == "DISCARD") {
       AddPlayerHand($cardID, $player, $from);
     }
     else {
-      $rv = count($banish);
-      array_push($banish, $cardID);
-      array_push($banish, $mod);
-      array_push($banish, GetUniqueId($cardID, $player));
+      for ($i = 0; $i < $amount; ++$i) {
+        $rv = count($banish);
+        array_push($banish, $cardID);
+        array_push($banish, $mod);
+        array_push($banish, GetUniqueId($cardID, $player));
+      }
     }
   }
   // created cards don't count as cards put into banish
-  if ($from != "-") ++$classState[$CS_CardsBanished];
+  if ($from != "-") $classState[$CS_CardsBanished] += $amount;
   if ($created) {
       $ClassState = new ClassState($player);
-      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
+      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $amount);
     }
   if (isFaceDownMod($mod)) return $rv;
   //Do additional effects
@@ -222,10 +230,15 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1, $created
   }
   else {
     $hand = &GetHand($player);
-    if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
+    if (HasEphemeral($cardID)) {
+      if(SearchCurrentTurnEffects("spreading_mist_blue", $player, true) || SearchCurrentTurnEffects("billowing_mist_blue", $player, true)){
+        ++$amount;
+      }
+    }     
+    if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn, $amount);
     if ($created) {
       $ClassState = new ClassState($player);
-      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + 1);
+      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $amount);
     }
     if ($index == -1) {
       for ($i = 0; $i < $amount; ++$i) {
