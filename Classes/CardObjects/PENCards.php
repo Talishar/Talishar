@@ -3710,3 +3710,43 @@ class shimmering_specter_blue extends Card {
     $this->baseCard->BlockCardDestroyed();
   }
 }
+
+class rend_flesh_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rend_flesh_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $combatChainState, $CCS_WeaponIndex, $defPlayer;
+    $CharCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+    if ($CharCard->NumPowerCounters() > 0) {
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_remove_a_counter_from_" . CardLink($CharCard->CardID()) . "?");
+      AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYCHAR-" . $CharCard->Index(), 1);
+      AddDecisionQueue("MZOP", $this->controller, "REMOVEPOWERCOUNTER", 1);
+      AddDecisionQueue("PASSPARAMETER", $defPlayer, 2, 1);
+      AddDecisionQueue("OP", $defPlayer, "LOSEHEALTH", 1);
+    }
+  }
+  
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    global $CombatChain;
+    if (IsHeroAttackTarget() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+      AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT");
+    return false;
+  }
+}

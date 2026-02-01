@@ -52,6 +52,10 @@ class CharacterCard {
     $this->controller = $player;
   }
 
+  function Index() {
+    return $this->index;
+  }
+
   function CardID() {
     return $this->pieces[$this->index] ?? "-";
   }
@@ -79,6 +83,11 @@ class CharacterCard {
 
   function NumPowerCounters() {
     return $this->pieces[$this->index+3] ?? 0;
+  }
+
+  function AddPowerCounters($num) {
+    if (isset($this->pieces[$this->index + 3]))
+      $this->pieces[$this->index + 3] += $num;
   }
 
   function NumDefenseCounters() {

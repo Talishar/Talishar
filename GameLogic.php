@@ -759,6 +759,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             case "MYAURAS":
               --$auras[$mzArr[1] + 3];
               break;
+            case "MYCHAR":
+              $CharacterCard = new CharacterCard($mzArr[1], $player);
+              $CharacterCard->AddPowerCounters(-1);
+              break;
             default:
               break;
           }
