@@ -3180,6 +3180,13 @@ class assembly_module_blue extends Card {
     $this->controller = $controller;
   }
 
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false)
+  {
+    if (CheckTapped("MYITEMS-$index", $this->controller))
+      return true;
+    return false;
+  }
+
   function AbilityType($index = -1, $from = '-') {
     return "A";
   }
@@ -3207,5 +3214,22 @@ class doubling_season_red extends Card {
   function __construct($controller) {
     $this->cardID = "doubling_season_red";
     $this->controller = $controller;
+  }
+}
+
+class speed_demon_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "speed_demon_red";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return SearchItemsForCardName("Hyper Driver", $this->controller) != "" ? 1 : 0;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1){
+    if(DelimStringContains($additionalCosts, "hyper_driver", true)) {
+      PutItemIntoPlayForPlayer("hyper_driver", $this->controller, 2);
+    }
   }
 }

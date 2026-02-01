@@ -208,8 +208,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "assembly_module_blue":
-      $items = GetItems($currentPlayer);
-      $items[$index + 10] = 1;
+      Tap("MYITEMS-" . $index, $currentPlayer);
       break;
     default:
       break;

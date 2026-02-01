@@ -84,7 +84,7 @@
   {
     global $CS_AdditionalCosts;
     MZMoveCard($player, "MYDISCARD:type=E&MYDISCARD:subtype=Item&MYDISCARD:subtype=Evo", "MYBANISH,GY,-", may:true);
-    AddDecisionQueue("APPENDCLASSSTATE", $player, $CS_AdditionalCosts . "-SCRAP", 1);
+    AddDecisionQueue("APPENDSCRAPEDCARD", $player, $CS_AdditionalCosts . "-SCRAP", 1);
   }
 
   function Clash($cardID, $effectController="")
