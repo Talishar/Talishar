@@ -3263,3 +3263,60 @@ class speed_demon_red extends Card {
 
   }
 }
+
+class dyed_silk_sleeves extends Card {
+  function __construct($controller) {
+    $this->cardID = "dyed_silk_sleeves";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Tap("MYCHAR-$index", $this->controller);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA", 1);
+    AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $this->controller, "<-", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    if (!TypeContains($attackCard, "AA") || !ClassContains($attackCard, "NINJA", $this->controller)) return true;
+    if (!SearchCharacterAliveSubtype($this->controller, "Dagger", true) && SearchCombatChainAttacks($this->controller, subtype:"Dagger", type:"AA") == "") {
+      $restriction = "No dagger to poke with";
+      return true;
+    }
+    return false;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function ResolutionStepEffectTriggers($parameter) {
+    global $combatChainState, $CCS_DamageDealt;
+    if ($combatChainState[$CCS_DamageDealt] == 0) {
+      $Character = new PlayerCharacter($this->controller);
+      $CharacterCard = $Character->FindCardID($this->cardID);
+      $CharacterCard->Destroy();
+    }
+  }
+}
