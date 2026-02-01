@@ -2360,7 +2360,8 @@ class blackstone_greaves extends Card {
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
     global $CS_ArcaneDamageDealt;
-    return GetClassState($this->controller, $CS_ArcaneDamageDealt) ? 1 : 0;
+    WriteLog("JERE: " . GetClassState($this->controller, $CS_ArcaneDamageDealt));
+    return GetClassState($this->controller, $CS_ArcaneDamageDealt) > 0 ? 1 : 0;
   }
 }
 
@@ -2372,7 +2373,7 @@ class weeping_battleground extends BaseCard {
     AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-    AddDecisionQueue("DEALARCANE", $this->controller, "1-".$this->cardID, 1);
+    AddDecisionQueue("THREATENARCANE", $this->controller, $this->cardID . ",$target", 1);
   }
 
   function PayAdditionalCosts() {
