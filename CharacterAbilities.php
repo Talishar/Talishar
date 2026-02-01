@@ -757,6 +757,22 @@ function CharacterCostModifier($cardID, $from, $cost)
         $fealties = SearchAurasForCardName("Fealty", $currentPlayer);
         if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
         break;
+      case "evo_beta_base_head_blue":
+      case "evo_beta_base_head_blue_equip":
+        if (SubtypeContains($cardID, "Evo") && SubtypeContains($cardID, "Head")) --$modifier;
+        break;
+      case "evo_beta_base_chest_blue":
+      case "evo_beta_base_chest_blue_equip":
+        if (SubtypeContains($cardID, "Evo") && SubtypeContains($cardID, "Chest")) --$modifier;
+        break;
+      case "evo_beta_base_arms_blue":
+      case "evo_beta_base_arms_blue_equip":
+        if (SubtypeContains($cardID, "Evo") && SubtypeContains($cardID, "Arms")) --$modifier;
+        break;
+      case "evo_beta_base_legs_blue":
+      case "evo_beta_base_legs_blue_equip":
+        if (SubtypeContains($cardID, "Evo") && SubtypeContains($cardID, "Legs")) --$modifier;
+        break;
        default:
         break;
     }
