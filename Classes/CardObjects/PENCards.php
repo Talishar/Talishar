@@ -3245,6 +3245,8 @@ class evo_beta_base_legs_blue extends Card {
     $this->controller = $controller;
   }
 }
+  }
+}
     
 class speed_demon_red extends Card {
   function __construct($controller) {
