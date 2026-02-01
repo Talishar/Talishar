@@ -512,7 +512,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
 
           if ($layerCheckCount > 0 && $layers[0] != "" && $option[0] == "LAYER" && $option[1] == 0) {
-            $params = explode("-", $layers[$j + 3]);
+            // $params = explode("-", $layers[$j + 3]);
+            $params = explode("-", $layers[3]);
             $target = $option[0]."-".$option[1];
             $cardID = GetMZCard($currentPlayer, $target);
             if($cardID == "runechant") {
