@@ -1212,7 +1212,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
     $remove = false;
-    return $card->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, true);
+    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, true);
   }
   switch ($effects[0]) {
     case "dissipation_shield_yellow":

@@ -2167,10 +2167,6 @@ class cloud_cover extends BaseCard
   function PlayAbility() {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
-
-  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
-    return $this->preventionAmount;
-  }
   
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
     $remove = true;
@@ -2190,10 +2186,6 @@ class cloud_cover_red extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
-    return $this->baseCard->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, $amount);
-  }
-  
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
@@ -2211,10 +2203,6 @@ class cloud_cover_yellow extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
-    return $this->baseCard->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, $amount);
-  }
-
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
@@ -2230,10 +2218,6 @@ class cloud_cover_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $this->baseCard->PlayAbility();
-  }
-
-  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
-    return $this->baseCard->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, $amount);
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
