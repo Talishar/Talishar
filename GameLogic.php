@@ -1607,6 +1607,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameters = explode("-", $parameter);
       AppendClassState($player, $parameters[0], $parameters[1]);
       return $lastResult;
+    case "APPENDSCRAPEDCARD":
+      $parameters = explode("-", $parameter);
+      AppendClassState($player, $parameters[0], $parameters[1] . "-" . $lastResult);
+      return $lastResult;
     case "AFTERFUSE":
       $params = explode("-", $parameter);
       $card = $params[0];
