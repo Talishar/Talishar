@@ -3891,6 +3891,10 @@ class shimmering_specter_red extends Card {
   function BlockCardDestroyed() {
     $this->baseCard->BlockCardDestroyed();
   }
+
+  function SpecialBlock() {
+    return 2;
+  }
 }
 
 class shimmering_specter_yellow extends Card {
@@ -3907,6 +3911,10 @@ class shimmering_specter_yellow extends Card {
   function BlockCardDestroyed() {
     $this->baseCard->BlockCardDestroyed();
   }
+
+  function SpecialBlock() {
+    return 2;
+  }
 }
 
 class shimmering_specter_blue extends Card {
@@ -3922,6 +3930,10 @@ class shimmering_specter_blue extends Card {
   
   function BlockCardDestroyed() {
     $this->baseCard->BlockCardDestroyed();
+  }
+
+  function SpecialBlock() {
+    return 2;
   }
 }
 
