@@ -1503,7 +1503,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ARCANEHITEFFECT":
       if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0]); //player, source, target, damage
       if ($dqVars[0] > 0) IncrementClassState($player, $CS_ArcaneDamageDealt, $dqVars[0]);
-      if ($dqVars[7] == "THEIRCHAR-0" && $dqVars[0] > 0)  IncrementClassState($player, $CS_ArcaneDamageDealtToOpponent, $dqVars[0]);
       return $lastResult;
     case "ARCANECHOSEN":
       if ($lastResult > 0 && CanDamageBePrevented($player, $lastResult, "ARCANE", $parameter)) {
@@ -1513,7 +1512,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $arrayOfArcaneBarrierChoices = ArcaneBarrierChoices($player, $lastResult, true);
           if ($char[$index + 2] < 4 && GetClassState($player, $CS_AlluvionUsed) == 0) {
             $shouldAddCounter = true;
-            if ($lastResult == 2 && $arrayOfArcaneBarrierChoices[1] < 2) {
+            if ($lastResult == 2 && $arrayOfArcaneBarrierChoices[1] < 2) { 
               $shouldAddCounter = false;
             } elseif ($lastResult == 3 && ($arrayOfArcaneBarrierChoices[1] < 3 && $arrayOfArcaneBarrierChoices[2] < 1)) {
               $shouldAddCounter = false;
@@ -1532,6 +1531,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $playerSource = $parameters[2];
+      if ($player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
       if($playerSource != $player) LogDamageStats($player, $damage, 0); //Log arcane damageThreatened before it's prevented
 
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;

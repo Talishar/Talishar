@@ -1807,6 +1807,10 @@ class voltic_veil_red extends Card {
   function CurrentTurnEffectUses() {
     return 4;
   }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
 }
 
 class embody_greatness_yellow extends Card {
