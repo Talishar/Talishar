@@ -105,4 +105,9 @@ class DiscardCard {
   function Remove() {
     RemoveDiscard($this->controller, $this->index());
   }
+
+  function Flip($facing="DOWN") {
+    if (isset($this->pieces[$this->index + 2]))
+      $this->pieces[$this->index + 2] = $facing;
+  }
 }

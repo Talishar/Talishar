@@ -4825,3 +4825,114 @@ class beneath_the_surface extends Card {
     $this->controller = $controller;
   }
 }
+
+class tentacular_toll extends BaseCard {
+  function PlayAbility($n) {
+    for ($i = 0; $i < $n; ++$i) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Ally", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Turn an ally into gold?", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZOP", $this->controller, "FLIP", 1);
+      AddDecisionQueue("PLAYITEM", $this->controller, "gold", 1);
+    }
+  }
+}
+
+class tentacular_toll_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tentacular_toll_red";
+    $this->controller = $controller;
+    $this->baseCard = new tentacular_toll($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(3);
+  }
+}
+
+class tentacular_toll_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tentacular_toll_red";
+    $this->controller = $controller;
+    $this->baseCard = new tentacular_toll($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(2);
+  }
+}
+
+class tentacular_toll_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tentacular_toll_red";
+    $this->controller = $controller;
+    $this->baseCard = new tentacular_toll($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(1);
+  }
+}
+
+class lighten_the_load extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYITEMS&MYHAND", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Destroy an item or discard a card?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDDISCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("OP", $this->controller, "GIVEATTACKGOAGAIN", 1);
+  }
+}
+
+class lighten_the_load_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "lighten_the_load_red";
+    $this->controller = $controller;
+    $this->baseCard = new lighten_the_load($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class lighten_the_load_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "lighten_the_load_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new lighten_the_load($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class lighten_the_load_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "lighten_the_load_blue";
+    $this->controller = $controller;
+    $this->baseCard = new lighten_the_load($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}

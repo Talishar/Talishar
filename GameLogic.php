@@ -771,6 +771,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               break;
           }
           break;
+        case "FLIP":
+          $mzArr = explode("-", $lastResult);
+          switch($mzArr[0]) {
+            case "MYDISCARD":
+              $GraveCard = new DiscardCard($mzArr[1], $player);
+              $GraveCard->Flip("DOWN");
+              break;
+            default:
+              break;
+          }
+          break;
         case "TRANSFERPOWERCOUNTER":
           $auras = &GetAuras($player);
           $mzArr = explode("-", $lastResult);
@@ -1986,7 +1997,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "PLAYITEM":
-      PutItemIntoPlayForPlayer("gold", $player);
+      PutItemIntoPlayForPlayer($parameter, $player);
       return $lastResult;
     case "COUNTPARAM":
       $array = explode(",", $parameter);
