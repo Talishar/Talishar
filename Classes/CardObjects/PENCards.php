@@ -4236,3 +4236,10 @@ class descend_into_madness_blue extends Card {
     Draw($otherPlayer, effectSource:$this->cardID);
   }
 }
+
+class tough_as_a_rok_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tough_as_a_rok_blue";
+    $this->controller = $controller;
+  }
+}

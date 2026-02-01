@@ -938,6 +938,9 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     case "diabolic_offering_blue":
       $basePower = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
       break;
+    case "tough_as_a_rok_blue":
+      $basePower = PlayerHasLessHealth($player) ? 6 : 0;
+      break;
     default:
       break;
   }

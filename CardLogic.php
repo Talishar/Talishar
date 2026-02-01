@@ -4713,6 +4713,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   else if ($cardID == "fractal_replication_red") $power = FractalReplicationStats("Power");
   else if ($cardID == "spectral_procession_red") $power = CountAura("spectral_shield", $player);
   else if ($cardID == "diabolic_offering_blue") $power = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
+  else if ($cardID == "tough_as_a_rok_blue") $power = PlayerHasLessHealth($player) ? 6 : 0;
   
   if ($index != -1) {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
