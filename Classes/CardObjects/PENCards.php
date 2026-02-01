@@ -4166,3 +4166,19 @@ class shapeless_form_blue extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 }
+
+class look_within_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "look_within_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:subtype=Chi");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+    AddDecisionQueue("REVEALCARDS", $this->controller, "-", 1);
+    AddDecisionQueue("MULTIADDTOPDECK", $this->controller, "-", 1);
+  }
+}
