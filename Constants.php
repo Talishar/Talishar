@@ -242,7 +242,7 @@ function ChainLinksPieces()
 //8 - Colors
 function ChainLinkSummaryPieces()
 {
-  return 8;
+  return 9;
 }
 
 //0 - Card ID
