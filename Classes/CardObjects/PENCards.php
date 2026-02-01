@@ -2240,14 +2240,14 @@ class cloud_cover_blue extends Card {
   }
 }
 
-class stadium_security extends BaseCard { //untested
+class stadium_security extends BaseCard {
   function hasAmbush() {
     global $CS_NumToughnessDestroyed;
     return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0;
   }
 }
 
-class stadium_security_red extends Card { //untested
+class stadium_security_red extends Card {
   function __construct($controller) {
     $this->cardID = "stadium_security_red";
     $this->controller = $controller;
@@ -2259,7 +2259,7 @@ class stadium_security_red extends Card { //untested
   }
 }
 
-class stadium_security_yellow extends Card { //untested
+class stadium_security_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "stadium_security_yellow";
     $this->controller = $controller;
@@ -2271,7 +2271,7 @@ class stadium_security_yellow extends Card { //untested
   }
 }
 
-class stadium_security_blue extends Card { //untested
+class stadium_security_blue extends Card {
   function __construct($controller) {
     $this->cardID = "stadium_security_blue";
     $this->controller = $controller;
@@ -2976,7 +2976,7 @@ class sigil_of_voltaris_blue extends Card {
   }
 }
 
-class four_feathers_one_crown_red extends Card { //untested
+class four_feathers_one_crown_red extends Card {
   function __construct($controller) {
     $this->cardID = "four_feathers_one_crown_red";
     $this->controller = $controller;
@@ -3051,5 +3051,31 @@ class phoenix_bannerman_legs_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
     PlayAura("agility", $this->controller);
+  }
+}
+
+class buzzard_helm extends Card {
+  function __construct($controller) {
+    $this->cardID = "buzzard_helm";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CombatChain;
+    $uid = $CombatChain->Card($i)->UniqueID();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $uid);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    Draw($this->controller);
+    $card = DiscardRandom($this->controller, $this->cardID, $this->controller);
+    if(ModifiedPowerValue($card, $this->controller, "HAND", source:$this->cardID) >= 6){
+      $defCard = $CombatChain->FindCardUID($target);
+      if ($defCard != "") {
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $defCard->Index(), 1);
+        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, 1, 1);
+      }
+    }
   }
 }
