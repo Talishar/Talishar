@@ -1366,7 +1366,7 @@ class sigil_of_silphidae_blue extends Card {
     AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  function EntersArenaAbility() {
     global $CS_ArcaneTargetsSelected;
     SetArcaneTarget($this->controller, $this->cardID, 0, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
@@ -1376,6 +1376,7 @@ class sigil_of_silphidae_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_ArcaneTargetsSelected;
     if ($additionalCosts == "DESTROY") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
@@ -1396,6 +1397,8 @@ class sigil_of_silphidae_blue extends Card {
         AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
         AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+        AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+        AddDecisionQueue("SETCLASSSTATE", $this->controller, parameter: $CS_ArcaneTargetsSelected);
       }
     }
   }
@@ -3182,24 +3185,25 @@ class sigil_of_voltaris_blue extends Card {
   }
 
   function EntersArenaAbility() {
+    global $CS_ArcaneTargetsSelected;
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, parameter: $CS_ArcaneTargetsSelected);
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    global $CS_ArcaneTargetsSelected;
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    SetArcaneTarget($this->controller, $this->cardID, 0);
-    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_ArcaneTargetsSelected;
     if ($additionalCosts == "DESTROY") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
@@ -3208,6 +3212,8 @@ class sigil_of_voltaris_blue extends Card {
     else {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
       AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+      AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
     }
   }
 }
