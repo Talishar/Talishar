@@ -476,7 +476,8 @@ function ItemStartTurnAbility($index)
     case "clamp_press_blue":
     case "golden_cog":
     case "copper_cog_blue":
-    case "assembly_module_blue:":
+    case "assembly_module_blue":
+      WriteLog("HERE!!!");
       if ($mainItems[$index + 1] > 0 && GetItemGemState($mainPlayer, $mainItems[$index], $index) == 0) --$mainItems[$index + 1];
       elseif($mainItems[$index + 1] > 0) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to remove a Steam Counter and keep " . CardLink($mainItems[$index], $mainItems[$index]) . " and keep it in play?");

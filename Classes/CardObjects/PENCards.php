@@ -3270,7 +3270,7 @@ class assembly_module_blue extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false)
   {
-    if (CheckTapped("MYITEMS-$index", $this->controller))
+    if ($from == "PLAY" && CheckTapped("MYITEMS-$index", $this->controller))
       return true;
     return false;
   }
@@ -3280,14 +3280,17 @@ class assembly_module_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:isSameName=hyper_driver_red");
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a " . CardLink("hyper_driver", "hyper_driver") . "?", 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-    AddDecisionQueue("MZOP", $this->controller, "GETCARDID", 1);
-    AddDecisionQueue("PUTPLAY", $this->controller, "False", 1);
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "{0}", 1);
-    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    if ($from == "PLAY") {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:isSameName=hyper_driver_red");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a " . CardLink("hyper_driver", "hyper_driver") . "?", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+      AddDecisionQueue("PUTPLAY", $this->controller, "-", 1);
+    }
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") Tap("MYITEMS-$index", $this->controller);
   }
 }
 
