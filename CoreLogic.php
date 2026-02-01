@@ -813,7 +813,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 
 function CombatChainDamageModifiers($player, $source, $type)
 {
-  global $chainLinks, $CombatChain, $mainPlayer;
+  global $chainLinks, $CombatChain, $mainPlayer, $CurrentTurnEffects;
   $modifier = 0;
   if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
   if ($CombatChain->HasCurrentLink()) {
@@ -821,7 +821,6 @@ function CombatChainDamageModifiers($player, $source, $type)
       case "ball_lightning_red":
       case "ball_lightning_yellow":
       case "ball_lightning_blue":
-      case "arc_bending_red":
         if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
         break;
       default:
@@ -834,6 +833,17 @@ function CombatChainDamageModifiers($player, $source, $type)
         case "ball_lightning_red":
         case "ball_lightning_yellow":
         case "ball_lightning_blue":
+          if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() == $mainPlayer) {
+      switch ($Effect->EffectID()) {
         case "arc_bending_red":
           if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
           break;

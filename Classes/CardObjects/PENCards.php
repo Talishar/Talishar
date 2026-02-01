@@ -2069,24 +2069,26 @@ class seeds_of_strength_red extends Card {
   }
 }
 
-// class arc_bending_red extends Card { //untested
-//   //arc bending actually works different than ball lightning, it's an attack trigger that creates a CurrentTurnEffect
-//   //and the current turn effect is what causes the damage to increase. Different interaction with 
-//   function __construct($controller) {
-//     $this->cardID = "arc_bending_red";
-//     $this->controller = $controller;
-//   }
+class arc_bending_red extends Card { //untested
+  function __construct($controller) {
+    $this->cardID = "arc_bending_red";
+    $this->controller = $controller;
+  }
 
-//   function CardCaresAboutPitch() {
-//     return true;
-//   }
+  function CardCaresAboutPitch() {
+    return true;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     AddCurrentTurnEffect($this->cardID, $this->controller);
-//     if (SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING") != "")
-//       GiveAttackGoAgain();
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING") != "")
+      GiveAttackGoAgain();
+  }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
+  }
+}
 
 class chorus_of_rotwood_red extends Card {
   function __construct($controller) {
