@@ -2690,6 +2690,11 @@ function CurrentEffectNameModifier($effectID, $effectParameter, $player)
     case "retrace_the_past_blue":
       $name = $effectParameter;
       break;
+    case "become_the_bottle_red":
+    case "become_the_bottle_yellow":
+    case "become_the_bottle_blue":
+      $name = $effectParameter;
+      break;
     default:
       break;
   }

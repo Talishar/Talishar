@@ -508,6 +508,10 @@ class Card {
   function DestroyEffect() {
     return;
   }
+
+  function ResolutionStepAttackTriggers() {
+    return;
+  }
 }
 
 ?>

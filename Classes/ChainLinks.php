@@ -22,6 +22,10 @@ class ChainLinks {
 		return count($this->chain);
   }
 
+	function LastLink() {
+		return new ChainLink($this->NumLinks() - 1);
+	}
+
   function SearchForType($type) {
 		$found = [];
 		for ($i = 0; $i < $this->NumLinks(); ++$i) {
@@ -97,6 +101,10 @@ class ChainLink {
 	function ModalPlayAbility() {
 		return $this->linkSummary[7] ?? "-";
 	}
+
+	function Colors() {
+		return $this->linkSummary[8] ?? "-";
+	}
 }
 
 class LinkCard {
@@ -116,7 +124,7 @@ class LinkCard {
 
 	function ID() {
 		if (count($this->link) == 0) return "";
-		return $this->link[$this->index];
+		return $this->link[$this->index] ?? "-";
 	}
 
 	function PlayerID() {

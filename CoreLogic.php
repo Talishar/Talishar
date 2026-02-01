@@ -1281,6 +1281,8 @@ function ResolutionStepAttackTriggers()
 {
   global $mainPlayer, $defPlayer, $combatChain, $CombatChain, $CS_Transcended;
   if ($CombatChain->HasCurrentLink()) {
+    $card = GetClass($combatChain[0], $mainPlayer);
+    if ($card != "-") return $card->ResolutionStepAttackTriggers();
     switch ($combatChain[0]) {
       case "virulent_touch_red":
       case "virulent_touch_yellow":
@@ -1831,11 +1833,31 @@ function NameOverride($cardID, $player = "")
 
 function ColorOverride($cardID, $player = "")
 {
+  global $CurrentTurnEffects;
   $pitch = PitchValue($cardID);
   if ($cardID == "goldfin_harpoon_yellow") $pitch = 2;
   if (SearchCurrentTurnEffects("blanch_red", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_yellow", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_blue", $player)) $pitch = 0;
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $effectParams = explode("-", $Effect->EffectID());
+    switch ($effectParams[0]) {
+      case "become_the_cup_red":
+      case "become_the_cup_yellow":
+      case "become_the_cup_blue":
+        $pitchToAdd = match ($effectParams[1] ?? "-") {
+        "Red" => 1, "Yellow" => 2, "Blue" => 3, default => 0
+        };
+        if ($pitchToAdd != 0) {
+          if ($pitch == 0) $pitch = $pitchToAdd;
+          else $pitch = "$pitch,$pitchToAdd";
+        }
+        break;
+      default:
+      break;  
+    }
+  }
   return $pitch;
 }
 
@@ -3101,7 +3123,9 @@ function GetCurrentAttackNames()
     $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $mainPlayer);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
-      $names[] = $name;
+      if (str_contains($name, ","))
+        $names = array_merge($names, explode(",", $name));
+      else $names[] = $name;
     }
   }
   return $names;

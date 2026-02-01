@@ -531,6 +531,32 @@ class double_cross_strap extends Card {
   }
 }
 
+class two_steps_forward extends Card {
+  function __construct($controller)
+  {
+    $this->cardID = "two_steps_forward";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Destroy();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("agility", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer;
+    return HitsInCombatChain() < 2 || $this->controller != $mainPlayer;
+  }
+}
+
 class mask_of_the_swarming_claw extends Card {
   function __construct($controller)
   {
@@ -3320,5 +3346,168 @@ class dyed_silk_sleeves extends Card {
       $CharacterCard = $Character->FindCardID($this->cardID);
       $CharacterCard->Destroy();
     }
+  }
+}
+
+class feign_vengeance_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "feign_vengeance_blue";
+    $this->controller = $controller;
+  }
+
+  function ResolutionStepAttackTriggers() {
+    global $CombatChain, $defPlayer;
+    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      if ($CombatChain->Card($i, true)->PlayerID() == $defPlayer) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID);
+        return;
+      }
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Draw($this->controller, effectSource:$this->cardID);
+  }
+}
+
+class become_the_bottle extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    global $ChainLinks;
+    $choices = [];
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      for ($j = 0; $j < $Link->NumCards(); ++$j) {
+        $LinkCard = $Link->GetLinkCard($j, true);
+        $ind = $LinkCard->Index();
+        if (!TypeContains($LinkCard->ID(), "AR")) array_push($choices, "PASTCHAINLINK-$ind-$i");
+      }
+    }
+    $choices = implode(",", $choices);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card for the bottle to become", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "BOTTLE", 1);
+  }
+}
+
+class become_the_bottle_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_bottle_red";
+    $this->controller = $controller;
+    $this->baseCard = new become_the_bottle($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class become_the_bottle_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_bottle_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new become_the_bottle($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class become_the_bottle_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_bottle_blue";
+    $this->controller = $controller;
+    $this->baseCard = new become_the_bottle($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class become_the_cup extends BaseCard {
+  function PayAdditionalCosts() {
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", subsequent: 1);
+    AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains {0} color", 1);
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, $this->cardID . "-", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "<-", 1);
+  }
+}
+
+class become_the_cup_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_cup_red";
+    $this->controller = $controller;
+    $this->baseCard = new become_the_cup($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class become_the_cup_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_cup_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new become_the_cup($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class become_the_cup_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_cup_blue";
+    $this->controller = $controller;
+    $this->baseCard = new become_the_cup($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
   }
 }

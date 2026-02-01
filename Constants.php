@@ -239,6 +239,7 @@ function ChainLinksPieces()
 //5 - Hit on link
 //6 - Modified Base Attack Stats - e.g. Transmogrify
 //7 - Modal Play Ability - e.g. Enlightened Strike
+//8 - Colors
 function ChainLinkSummaryPieces()
 {
   return 8;

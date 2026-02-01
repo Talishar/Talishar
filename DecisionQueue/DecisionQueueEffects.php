@@ -448,7 +448,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects;
-  global $combatChainState, $CCS_LinkBasePower;
+  global $combatChainState, $CCS_LinkBasePower, $ChainLinks;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -1202,6 +1202,18 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "EMBODYGREATNESS":
       $Character = new CharacterCard(0, $player);
       $Character->Become(explode("-", $lastResult)[1] ?? $Character->CardID());
+      return $lastResult;
+    case "BOTTLE":
+      $params = explode("-", $lastResult);
+      $linkNum = $params[2] ?? "-";
+      $ind = $params[1] ?? "-";
+      if ($linkNum != "-" && $ind != "-") {
+        $Link = $ChainLinks->GetLink($linkNum);
+        $LinkCard = $Link->GetLinkCard($ind);
+        if ($ind == 0) $names = $Link->ListofNames();
+        else $names = GamestateSanitize(NameOverride($LinkCard->ID(), $player));
+        AddCurrentTurnEffect("become_the_bottle_red-$names", $player);
+      }
       return $lastResult;
     default: return "";
   }

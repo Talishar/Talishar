@@ -4046,7 +4046,7 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $CombatChain, $chainLinkSummary, $mainPlayer, $chainLinks;
+  global $CombatChain, $chainLinkSummary, $mainPlayer, $chainLinks, $ChainLinks;
   if ($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if ($cardID == "") return false;
   if (count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
@@ -4179,11 +4179,11 @@ function ComboActive($cardID = "")
         if ($lastAttackName == "Crouching Tiger") return true;
         break;
       case "aspect_of_tiger_body_red":
-        return ColorContains($chainLinks[count($chainLinks) - 1][0], 1, $mainPlayer);
+        return DelimStringContains($ChainLinks->LastLink()->Colors(), 1);
       case "aspect_of_tiger_soul_yellow":
-        return ColorContains($chainLinks[count($chainLinks) - 1][0], 2, $mainPlayer);
+        return DelimStringContains($ChainLinks->LastLink()->Colors(), 2);
       case "aspect_of_tiger_mind_blue":
-        return ColorContains($chainLinks[count($chainLinks) - 1][0], 3, $mainPlayer);
+        return DelimStringContains($ChainLinks->LastLink()->Colors(), 3);
       case "breed_anger_red":
       case "breed_anger_yellow":
       case "breed_anger_blue":
