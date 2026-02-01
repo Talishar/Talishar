@@ -3862,3 +3862,10 @@ class power_of_make_believe_blue extends Card {
     return $this->baseCard->PowerModifier();
   }
 }
+
+class shimmering_mirage_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shimmering_mirage_blue";
+    $this->controller = $controller;
+  }
+}
