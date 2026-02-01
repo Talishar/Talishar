@@ -992,7 +992,7 @@ class silken_shroud extends Card {
     $this->controller = $controller;
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+  function CharacterDestroyEffect($cardID, $player): void {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1000,13 +1000,14 @@ class silken_shroud extends Card {
     PlayAura("ponder", $this->controller);
   }
 }
+
 class silken_shawl extends Card {
   function __construct($controller) {
     $this->cardID = "silken_shawl";
     $this->controller = $controller;
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+  function CharacterDestroyEffect($cardID, $player): void {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1020,7 +1021,7 @@ class silken_symphony extends Card {
     $this->controller = $controller;
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+  function CharacterDestroyEffect($cardID, $player): void {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1034,7 +1035,7 @@ class silken_slippers extends Card {
     $this->controller = $controller;
   }
 
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+  function CharacterDestroyEffect($cardID, $player): void {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
