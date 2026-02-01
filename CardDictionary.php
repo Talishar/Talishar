@@ -2131,6 +2131,9 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
     case "cog_in_the_machine_red":
     case "shifting_tides_blue":
       return "-";
+    case "shimmering_mirage_blue":
+      if ($from == "COMBATCHAIN") return "BANISH,TCC";
+      else return "GY";
     default:
       return "GY";
   }

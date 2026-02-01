@@ -3815,3 +3815,57 @@ class deep_recesses_of_existence_blue extends Card {
     $this->controller = $controller;
   }
 }
+
+class power_of_make_believe extends BaseCard {
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $combatChain, $defPlayer, $CombatChain;
+    $modifier = 0;
+    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] == $defPlayer && $CombatChain->Card($i)->TotalPower() >= 6) $modifier += 1;
+    }
+    return $modifier;
+  }
+}
+
+class power_of_make_believe_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "power_of_make_believe_red";
+    $this->controller = $controller;
+    $this->baseCard = new power_of_make_believe($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
+}
+
+class power_of_make_believe_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "power_of_make_believe_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new power_of_make_believe($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
+}
+
+class power_of_make_believe_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "power_of_make_believe_blue";
+    $this->controller = $controller;
+    $this->baseCard = new power_of_make_believe($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
+}
+
+class shimmering_mirage_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shimmering_mirage_blue";
+    $this->controller = $controller;
+  }
+}
