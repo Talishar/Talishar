@@ -4411,3 +4411,107 @@ class tough_as_a_rok_blue extends Card {
     $this->controller = $controller;
   }
 }
+
+class bad_breath extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    Intimidate();
+  }
+
+  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT");
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+}
+
+class bad_breath_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bad_breath_red";
+    $this->controller = $controller;
+    $this->baseCard = new bad_breath($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    PlayAura("might", $this->controller, 3);
+  }
+  
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
+  }
+}
+
+class bad_breath_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "bad_breath_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new bad_breath($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    PlayAura("might", $this->controller, 2);
+  }
+  
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
+  }
+}
+
+class bad_breath_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bad_breath_blue";
+    $this->controller = $controller;
+    $this->baseCard = new bad_breath($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    PlayAura("might", $this->controller, 1);
+  }
+  
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
+  }
+}
