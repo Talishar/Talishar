@@ -4043,3 +4043,14 @@ class graven_walkers extends Card {
     $this->controller = $controller;
   }
 }
+
+class shapeless_form_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shapeless_form_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
