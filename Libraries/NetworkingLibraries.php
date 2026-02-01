@@ -4160,7 +4160,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     if ($resourcesPaid != "Skipped") {
       switch ($cardID) {
-        case "flick_knives":
+        case "flick_knives": //cards that go on the combat chain but need to keep track of targets
         case "danger_digits":
         case "throw_dagger_blue":
         case "shred_red":
@@ -4169,6 +4169,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "tarantula_toxin_red":
         case "platinum_amulet_blue":
         case "rage_baiters":
+        case "weeping_battleground_red":
+        case "weeping_battleground_yellow":
+        case "weeping_battleground_blue":
           break;
         default:
           $target = ($combatChainState[$CCS_AttackTarget] == "" || $combatChainState[$CCS_AttackTarget] == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());

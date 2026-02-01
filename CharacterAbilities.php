@@ -148,10 +148,7 @@ function CharacterStartTurnAbility($index)
       break;
     case "valda_brightaxe":
     case "valda_seismic_impact":
-      if (CountAura("seismic_surge", $mainPlayer) >= 3) {
-        WriteLog(CardLink($char->cardID, $char->cardID) . " gives Crush attacks Dominate this turn");
-        AddCurrentTurnEffect($cardID, $mainPlayer);
-      }
+      AddLayer("TRIGGER", $mainPlayer, $cardID, "-", "STARTTURN");
       break;
     case "blasmophet_levia_consumed":
       if ($character[1] < 3) {

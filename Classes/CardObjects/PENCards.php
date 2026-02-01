@@ -1829,12 +1829,9 @@ class embody_greatness_yellow extends Card {
 }
 
 class heavy_metal_hardcore extends BaseCard {
-  function CombatEffectActive() {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 1;
+  function PowerModifier() {
+    global $CS_EvosBoosted;
+    return GetClassState($this->controller, $CS_EvosBoosted) > 0 ? 1 : 0;
   }
 }
 
@@ -1844,6 +1841,10 @@ class heavy_metal_hardcore_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
   }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
 }
 
 class heavy_metal_hardcore_yellow extends Card {
@@ -1851,6 +1852,10 @@ class heavy_metal_hardcore_yellow extends Card {
     $this->cardID = "heavy_metal_hardcore_yellow";
     $this->controller = $controller;
     $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
   }
 }
 
@@ -1860,9 +1865,13 @@ class heavy_metal_hardcore_blue extends Card {
     $this->controller = $controller;
     $this->baseCard = new heavy_metal_hardcore($this->cardID, $this->controller);
   }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier();
+  }
 }
 
-class emboldened_by_the_crowd extends Card {
+class emboldened_by_the_crowd_yellow extends Card { //untested
   function __construct($controller) {
     $this->cardID = "emboldened_by_the_crowd";
     $this->controller = $controller;
@@ -1873,13 +1882,13 @@ class emboldened_by_the_crowd extends Card {
   } 
 }
 
-class hulk_up extends BaseCard {
-    function SelfCostModifier($from) {
-      return PlayerHasLessHealth($this->controller) ? -1 : 0;
-    } 
+class hulk_up extends BaseCard { //untested
+  function SelfCostModifier($from) {
+    return PlayerHasLessHealth($this->controller) ? -1 : 0;
+  } 
 }
 
-class hulk_up_red extends Card {
+class hulk_up_red extends Card { //untested
   function __construct($controller) {
     $this->cardID = "hulk_up_red";
     $this->controller = $controller;
@@ -1891,7 +1900,7 @@ class hulk_up_red extends Card {
   }
 }
 
-class hulk_up_yellow extends Card {
+class hulk_up_yellow extends Card { //untested
   function __construct($controller) {
     $this->cardID = "hulk_up_yellow";
     $this->controller = $controller;
@@ -1903,7 +1912,7 @@ class hulk_up_yellow extends Card {
   }
 }
 
-class hulk_up_blue extends Card {
+class hulk_up_blue extends Card { //untested
   function __construct($controller) {
     $this->cardID = "hulk_up_blue";
     $this->controller = $controller;
@@ -1915,7 +1924,7 @@ class hulk_up_blue extends Card {
   }
 }
 
-class insult_to_injury extends BaseCard {
+class insult_to_injury extends BaseCard { //untested
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
   }
@@ -1926,7 +1935,7 @@ class insult_to_injury extends BaseCard {
   }
 }
 
-class insult_to_injury_red extends Card {
+class insult_to_injury_red extends Card { //untested
   function __construct($controller) {
     $this->cardID = "insult_to_injury_red";
     $this->controller = $controller;
@@ -1942,7 +1951,7 @@ class insult_to_injury_red extends Card {
   }
 }
 
-class insult_to_injury_yellow extends Card {
+class insult_to_injury_yellow extends Card { //untested
   function __construct($controller) {
     $this->cardID = "insult_to_injury_yellow";
     $this->controller = $controller;
@@ -1958,7 +1967,7 @@ class insult_to_injury_yellow extends Card {
   }
 }
 
-class insult_to_injury_blue extends Card {
+class insult_to_injury_blue extends Card { //untested
   function __construct($controller) {
     $this->cardID = "insult_to_injury_blue";
     $this->controller = $controller;
@@ -2037,7 +2046,7 @@ class knife_through_blue extends Card {
   }
 }
 
-class seeds_of_strength_red extends Card {
+class seeds_of_strength_red extends Card { //untested (probably works)
   function __construct($controller) {
     $this->cardID = "seeds_of_strength_red";
     $this->controller = $controller;
@@ -2056,7 +2065,9 @@ class seeds_of_strength_red extends Card {
   }
 }
 
-class arc_bending_red extends Card {
+class arc_bending_red extends Card { //untested
+  //arc bending actually works different than ball lightning, it's an attack trigger that creates a CurrentTurnEffect
+  //and the current turn effect is what causes the damage to increase. Different interaction with 
   function __construct($controller) {
     $this->cardID = "arc_bending_red";
     $this->controller = $controller;
@@ -2073,7 +2084,7 @@ class arc_bending_red extends Card {
   }
 }
 
-class chorus_of_rotwood extends Card {
+class chorus_of_rotwood extends Card { //untested
   function __construct($controller) {
     $this->cardID = "chorus_of_rotwood";
     $this->controller = $controller;
@@ -2089,7 +2100,7 @@ class chorus_of_rotwood extends Card {
   }
 }
 
-class limbs_of_lignum_vitae extends Card {
+class limbs_of_lignum_vitae extends Card { //untested (probably works)
   function __construct($controller) {
     $this->cardID = "limbs_of_lignum_vitae";
     $this->controller = $controller;
@@ -2101,7 +2112,7 @@ class limbs_of_lignum_vitae extends Card {
   }
 }
 
-class drag_down extends BaseCard
+class drag_down extends BaseCard //untested
 {
   function PlayAbility($value) {
     global $CombatChain;
@@ -2109,7 +2120,7 @@ class drag_down extends BaseCard
   }
 }
 
-class drag_down_red extends Card {
+class drag_down_red extends Card { //untested
   function __construct($controller) {
     $this->cardID = "drag_down_red";
     $this->controller = $controller;
@@ -2121,7 +2132,7 @@ class drag_down_red extends Card {
   }
 }
 
-class drag_down_yellow extends Card {
+class drag_down_yellow extends Card { //untested
   function __construct($controller) {
     $this->cardID = "drag_down_yellow";
     $this->controller = $controller;
@@ -2133,7 +2144,7 @@ class drag_down_yellow extends Card {
   }
 }
 
-class drag_down_blue extends Card {
+class drag_down_blue extends Card { //untested
   function __construct($controller) {
     $this->cardID = "drag_down_blue";
     $this->controller = $controller;
@@ -2145,14 +2156,14 @@ class drag_down_blue extends Card {
   }
 }
 
-class cloud_cover extends BaseCard
+class cloud_cover extends BaseCard  //untested (probably works)
 {
   function PlayAbility() {
     AddCurrentTurnEffect($this->cardID, $this);
   }
 }
 
-class cloud_cover_red extends Card {
+class cloud_cover_red extends Card { //untested (probably works)
   function __construct($controller) {
     $this->cardID = "cloud_cover_red";
     $this->controller = $controller;
@@ -2164,7 +2175,7 @@ class cloud_cover_red extends Card {
   }
 }
 
-class cloud_cover_yellow extends Card {
+class cloud_cover_yellow extends Card { //untested (probably works)
   function __construct($controller) {
     $this->cardID = "cloud_cover_yellow";
     $this->controller = $controller;
@@ -2176,7 +2187,7 @@ class cloud_cover_yellow extends Card {
   }
 }
 
-class cloud_cover_blue extends Card {
+class cloud_cover_blue extends Card { //untested (probably works)
   function __construct($controller) {
     $this->cardID = "cloud_cover_blue";
     $this->controller = $controller;
@@ -2188,14 +2199,14 @@ class cloud_cover_blue extends Card {
   }
 }
 
-class stadium_security extends BaseCard {
+class stadium_security extends BaseCard { //untested
   function hasAmbush() {
     global $CS_NumToughnessDestroyed;
     return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0;
   }
 }
 
-class stadium_security_red extends Card {
+class stadium_security_red extends Card { //untested
   function __construct($controller) {
     $this->cardID = "stadium_security_red";
     $this->controller = $controller;
@@ -2207,7 +2218,7 @@ class stadium_security_red extends Card {
   }
 }
 
-class stadium_security_yellow extends Card {
+class stadium_security_yellow extends Card { //untested
   function __construct($controller) {
     $this->cardID = "stadium_security_yellow";
     $this->controller = $controller;
@@ -2219,7 +2230,7 @@ class stadium_security_yellow extends Card {
   }
 }
 
-class stadium_security_blue extends Card {
+class stadium_security_blue extends Card { //untested
   function __construct($controller) {
     $this->cardID = "stadium_security_blue";
     $this->controller = $controller;
@@ -2243,20 +2254,21 @@ class volcanic_vice extends Card {
   }
 }
 
-class skera_strapping extends Card {
-  function __construct($controller) {
-    $this->cardID = "skera_strapping";
-    $this->controller = $controller;
-  }
+// class skera_strapping extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "skera_strapping";
+//     $this->controller = $controller;
+//   }
 
-  function SpellVoidAmount() {
-    $pitch = GetPitch($this->controller);
-    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
-    }
-    return 0;
-  }
-}
+//   function SpellVoidAmount() {
+//     //this has an issue where it can actually gain spellvoid in the middle of preventing arcane damage
+//     $pitch = GetPitch($this->controller);
+//     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+//       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
+//     }
+//     return 0;
+//   }
+// }
 
 class mbrio_base_cortex extends Card {
   function __construct($controller) {
@@ -2265,7 +2277,7 @@ class mbrio_base_cortex extends Card {
   }
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
-    return SearchItemsByName($this->controller, "Hyper Driver") ? 2 : 0;
+    return SearchItemsByName($this->controller, "Hyper Driver") != "" ? 2 : 0;
   }
 }
 
@@ -2295,20 +2307,20 @@ class blackstone_greaves extends Card {
 }
 
 class weeping_battleground extends BaseCard {
-  function PlayAbility() {
-    SetArcaneTarget($this->controller, $this->cardID, 0);
-    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-') {
+  function PlayAbility($target) {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Aura");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish an aura to deal 1 arcane?", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-    AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+    AddDecisionQueue("DEALARCANE", $this->controller, "1-".$this->cardID, 1);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
   }
 }
 
@@ -2319,12 +2331,12 @@ class weeping_battleground_red extends Card {
     $this->baseCard = new weeping_battleground($this->cardID, $this->controller);
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility();
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
   }
 }
 
@@ -2335,12 +2347,12 @@ class weeping_battleground_yellow extends Card {
     $this->baseCard = new weeping_battleground($this->cardID, $this->controller);
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility();
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
   }
 }
 
@@ -2351,12 +2363,12 @@ class weeping_battleground_blue extends Card {
     $this->baseCard = new weeping_battleground($this->cardID, $this->controller);
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility();
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    return $this->baseCard->ProcessTrigger($uniqueID, $target);
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
   }
 }
 
@@ -2373,15 +2385,12 @@ class embraforged_gauntlets extends Card {
 }
 
 class depths_of_despair extends BaseCard {
-  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
-  }
-
   function AddGraveyardEffect($from, $effectController) {
-    if(SearchCurrentTurnEffects($this->cardID, $this->controller)) {
+    global $defPlayer;
+    if($from == "CC" && $this->controller == $defPlayer) {
       BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
+      return true;
     }
-    return true;
   }
 }
 
@@ -2390,10 +2399,6 @@ class depths_of_despair_red extends Card {
     $this->cardID = "depths_of_despair_red";
     $this->controller = $controller;
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
-  }
-
-  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
   }
 
   function AddGraveyardEffect($from, $effectController) {
@@ -2408,10 +2413,6 @@ class depths_of_despair_yellow extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
-  }
-
   function AddGraveyardEffect($from, $effectController) {
     return $this->baseCard->AddGraveyardEffect($from, $effectController);
   }
@@ -2422,10 +2423,6 @@ class depths_of_despair_blue extends Card {
     $this->cardID = "depths_of_despair_blue";
     $this->controller = $controller;
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
-  }
-
-  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-    $this->baseCard->OnBlockResolveEffects($blockedFromHand, $i, $start);
   }
 
   function AddGraveyardEffect($from, $effectController) {
@@ -2453,6 +2450,10 @@ class fasting_carcass_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
 }
 
 class fasting_carcass_yellow extends Card {
@@ -2463,6 +2464,10 @@ class fasting_carcass_yellow extends Card {
   }
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
   }
 }
 
@@ -2475,16 +2480,20 @@ class fasting_carcass_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
 }
 
-class submerge extends BaseCard {
+class submerge extends BaseCard { //untested
   function PayAdditionalCosts($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_AdditionalCosts;
     MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4");
   }
 }
 
-class submerge_red extends Card {
+class submerge_red extends Card { //untested
   function __construct($controller) {
     $this->cardID = "submerge_red";
     $this->controller = $controller;
@@ -2496,7 +2505,7 @@ class submerge_red extends Card {
   }
 }
 
-class submerge_yellow extends Card {
+class submerge_yellow extends Card { //untested
   function __construct($controller) {
     $this->cardID = "submerge_yellow";
     $this->controller = $controller;
@@ -2508,7 +2517,7 @@ class submerge_yellow extends Card {
   }
 }
 
-class submerge_blue extends Card {
+class submerge_blue extends Card { //untested
   function __construct($controller) {
     $this->cardID = "submerge_blue";
     $this->controller = $controller;
@@ -2520,9 +2529,9 @@ class submerge_blue extends Card {
   }
 }
 
-class rip_of_the_top_yellow extends Card {
+class rip_off_the_top_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "rip_of_the_top_yellow";
+    $this->cardID = "rip_off_the_top_yellow";
     $this->controller = $controller;
   }
 
@@ -2532,9 +2541,21 @@ class rip_of_the_top_yellow extends Card {
     if(ModifiedPowerValue($card, $this->controller, "HAND", source:$this->cardID) >= 6) AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
+
+  function SpecialCost() { //fabcube error
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
 }
 
-class distant_rumblings extends BaseCard {
+class distant_rumbling extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     Draw($this->controller);
     MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4");
@@ -2550,18 +2571,16 @@ class distant_rumblings extends BaseCard {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
       $AuraCard->Destroy();
-    }
-    else {
       PlayAura("seismic_surge", $this->controller, $target);
     }
   }
 }
 
-class distant_rumblings_red extends Card {
+class distant_rumbling_red extends Card {
   function __construct($controller) {
-    $this->cardID = "distant_rumblings_red";
+    $this->cardID = "distant_rumbling_red";
     $this->controller = $controller;
-    $this->baseCard = new distant_rumblings($this->cardID, $this->controller);
+    $this->baseCard = new distant_rumbling($this->cardID, $this->controller);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -2573,15 +2592,15 @@ class distant_rumblings_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+    $this->baseCard->ProcessTrigger($uniqueID, 3, $additionalCosts, $from);
   }
 }
 
-class distant_rumblings_yellow extends Card {
+class distant_rumbling_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "distant_rumblings_yellow";
+    $this->cardID = "distant_rumbling_yellow";
     $this->controller = $controller;
-    $this->baseCard = new distant_rumblings($this->cardID, $this->controller);
+    $this->baseCard = new distant_rumbling($this->cardID, $this->controller);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -2593,15 +2612,15 @@ class distant_rumblings_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+    $this->baseCard->ProcessTrigger($uniqueID, 2, $additionalCosts, $from);
   }
 }
 
-class distant_rumblings_blue extends Card {
+class distant_rumbling_blue extends Card {
   function __construct($controller) {
-    $this->cardID = "distant_rumblings_blue";
+    $this->cardID = "distant_rumbling_blue";
     $this->controller = $controller;
-    $this->baseCard = new distant_rumblings($this->cardID, $this->controller);
+    $this->baseCard = new distant_rumbling($this->cardID, $this->controller);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -2613,7 +2632,7 @@ class distant_rumblings_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+    $this->baseCard->ProcessTrigger($uniqueID, 1, $additionalCosts, $from);
   }
 }
 
@@ -2628,6 +2647,7 @@ class rainbow_goo_trap_red extends Card {
     $CombatChain->Card(0)->ModifyPower(-2);
     AddCurrentTurnEffect("rainbow_goo_trap_red", $mainPlayer);
     TrapTriggered($this->cardID);
+    // should probably do something with blind card here, and then remember to unblind it when it goes to graveyard
   }
 }
 
@@ -2639,18 +2659,30 @@ class frail_swingline_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    PlayAura("frailty", $otherPlayer);
+    $targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $this->controller;
+    PlayAura("frailty", $targetPlayer);
   }
 
-  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
-    if (HasDecreasedAttack())
+  function PayAdditionalCosts($from, $index = '-') {
+    $choices = ["THEIRCHAR-0"];
+    if (!ShouldAutotargetOpponent($this->controller)) array_push($choices, "MYCHAR-0");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a frailty", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    if (HasDecreasedAttack()) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
+      TrapTriggered($this->cardID);
+    }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
     PummelHit($mainPlayer, effectController:$this->controller);
-    TrapTriggered($this->cardID);
   }
 }
 
@@ -2662,22 +2694,35 @@ class quickening_sand_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    PlayAura("quicken", $otherPlayer);
+    $targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $this->controller;
+    PlayAura("quicken", $targetPlayer);
   }
 
-  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
-    if (DoesAttackHaveGoAgain())
-      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  function PayAdditionalCosts($from, $index = '-') {
+    $choices = ["THEIRCHAR-0"];
+    array_push($choices, "MYCHAR-0");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a quicken", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    if (DoesAttackHaveGoAgain()) {
+      $context = "Choose an a target to tangle";
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY&THEIRALLY&MYCHAR:type=C&THEIRCHAR:type=C");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+      //eventually will need to set this with unique ids
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      TrapTriggered($this->cardID);
+    }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    global $mainPlayer;
-    $context = "Choose an a target to tangle";
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY&THEIRALLY&MYCHAR:type=C&THEIRCHAR:type=C");
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("ADDTRIGGER", $this->controller, "<-", 1);
-    TrapTriggered($this->cardID);
+    Tap($target, $this->controller, 1);
   }
 }
 
@@ -2771,14 +2816,10 @@ class man_overboard_blue extends Card {
   }
 }
 
-class skywarden_no161803 extends Card {
+class skywarden_no161803_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "skywarden_no161803";
+    $this->cardID = "skywarden_no161803_yellow";
     $this->controller = $controller;
-  }
-
-  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -2798,11 +2839,15 @@ class skywarden_no161803 extends Card {
     AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
     if ($foundSkywarden) AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, "1", 1);
   }
+
+  function SpecialBlock() {
+    return 2;
+  }
 }
 
-class break_open_the_chests extends Card {
+class break_open_the_chests_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "break_open_the_chests";
+    $this->cardID = "break_open_the_chests_yellow";
     $this->controller = $controller;
   }
 
@@ -2815,9 +2860,9 @@ class break_open_the_chests extends Card {
   }
 } 
 
-class roaring_beam extends Card {
+class roaring_beam_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "roaring_beam";
+    $this->cardID = "roaring_beam_yellow";
     $this->controller = $controller;
   }
 
@@ -2833,9 +2878,9 @@ class roaring_beam extends Card {
   }
 }
 
-class pound_of_flesh extends Card {
+class pound_of_flesh_blue extends Card {
   function __construct($controller) {
-    $this->cardID = "pound_of_flesh";
+    $this->cardID = "pound_of_flesh_blue";
     $this->controller = $controller;
   }
 
@@ -2890,7 +2935,7 @@ class sigil_of_voltaris_blue extends Card {
   }
 }
 
-class four_feathers_one_crown_red extends Card {
+class four_feathers_one_crown_red extends Card { //untested
   function __construct($controller) {
     $this->cardID = "four_feathers_one_crown_red";
     $this->controller = $controller;
@@ -2907,7 +2952,7 @@ class four_feathers_one_crown_red extends Card {
   }
 }
 
-class phoenix_bannerman extends BaseCard {
+class phoenix_bannerman extends BaseCard { //untested
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if(CanRevealCards($this->controller)) {
       MZMoveCard($this->controller, "MYDECK:isSameName=phoenix_flame_red", "MYHAND", may: true);
@@ -2915,7 +2960,7 @@ class phoenix_bannerman extends BaseCard {
     }
   }
 }
-class phoenix_bannerman_head extends Card {
+class phoenix_bannerman_head extends Card { //untested
   function __construct($controller) {
     $this->cardID = "phoenix_bannerman_head";
     $this->controller = $controller;
@@ -2928,7 +2973,7 @@ class phoenix_bannerman_head extends Card {
   }
 }
 
-class phoenix_bannerman_chest extends Card {
+class phoenix_bannerman_chest extends Card { //untested
   function __construct($controller) {
     $this->cardID = "phoenix_bannerman_chest";
     $this->controller = $controller;
@@ -2941,7 +2986,7 @@ class phoenix_bannerman_chest extends Card {
   }
 }
 
-class phoenix_bannerman_arms extends Card {
+class phoenix_bannerman_arms extends Card { //untested
   function __construct($controller) {
     $this->cardID = "phoenix_bannerman_arms";
     $this->controller = $controller;
@@ -2954,7 +2999,7 @@ class phoenix_bannerman_arms extends Card {
   }
 }
 
-class phoenix_bannerman_legs extends Card {
+class phoenix_bannerman_legs extends Card { //untested
   function __construct($controller) {
     $this->cardID = "phoenix_bannerman_legs";
     $this->controller = $controller;

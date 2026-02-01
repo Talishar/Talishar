@@ -4195,7 +4195,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "valda_brightaxe":
       case "valda_seismic_impact":
-        PlayAura("seismic_surge", $otherPlayer, $additionalCosts, effectSource:$parameter);
+        if ($additionalCosts == "STARTTURN") {
+          if (CountAura("seismic_surge", $mainPlayer) >= 3) {
+            $char = new CharacterCard(0, $player);
+            WriteLog(CardLink($char->cardID(), $char->cardID()) . " gives Crush attacks Dominate this turn");
+            AddCurrentTurnEffect($parameter, $mainPlayer);
+          }
+        }
+        else PlayAura("seismic_surge", $otherPlayer, $additionalCosts, effectSource:$parameter);
         break;
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":

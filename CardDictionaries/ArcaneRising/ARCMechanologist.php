@@ -150,7 +150,7 @@ function Boost($cardID)
 
 function DoBoost($player, $cardID, $boostCount=1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
@@ -165,6 +165,9 @@ function DoBoost($player, $cardID, $boostCount=1)
     BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     $banish = GetBanish($player);
     $topInd = count($banish) - BanishPieces(); // index of card that just got banished
+    if (SubtypeContains($boostedCardID, "Evo")) {
+      IncrementClassState($player, $CS_EvosBoosted);
+    }
     if (CardNameContains($boostedCardID, "Hyper Driver", $player) && SearchCharacterActive($player, "hyper_x3")) {
       //give it the uid of the banished card as a target
       AddLayer("TRIGGER", $player, "hyper_x3", $banish[$topInd + 2]);
@@ -230,9 +233,6 @@ function SelfBoostEffects($player, $boosted, $cardID)
     case "sprocket_rocket_red": case "sprocket_rocket_yellow": case "sprocket_rocket_blue":
     case "dumpster_dive_red": case "dumpster_dive_yellow": case "dumpster_dive_blue":
       if(SubtypeContains($boosted, "Item", $player) || IsEquipment($boosted, $player)) AddCurrentTurnEffect($cardID, $player);
-      break;
-    case "heavy_metal_hardcore_red": case "heavy_metal_hardcore_yellow": case "heavy_metal_hardcore_blue":
-      if(SubtypeContains($boosted, "Evo", $player)) AddCurrentTurnEffect($cardID, $player);
       break;
     default: break;
   }
