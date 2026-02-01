@@ -1875,16 +1875,16 @@ class heavy_metal_hardcore_blue extends Card {
   }
 }
 
-// class emboldened_by_the_crowd_yellow extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "emboldened_by_the_crowd";
-//     $this->controller = $controller;
-//   }
-//   function SelfCostModifier($from) {
-//     global $CS_CheeredThisTurn;
-//     return GetClassState($this->controller, $CS_CheeredThisTurn) ? -3 : 0;
-//   } 
-// }
+class emboldened_by_the_crowd_yellow extends Card { //untested
+  function __construct($controller) {
+    $this->cardID = "emboldened_by_the_crowd";
+    $this->controller = $controller;
+  }
+  function SelfCostModifier($from) {
+    global $CS_CheeredThisTurn;
+    return GetClassState($this->controller, $CS_CheeredThisTurn) ? -3 : 0;
+  } 
+}
 
 // class hulk_up extends BaseCard { //untested
 //   function SelfCostModifier($from) {
