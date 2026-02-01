@@ -4602,6 +4602,54 @@ class excessive_bloodloss_red extends Card {
   }
 }
 
+class excessive_bloodloss_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "excessive_bloodloss_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new excessive_bloodloss($this->cardID, $this->controller);
+  }
+
+  function ContractType($chosenName = '') {
+    return "REDPITCH";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->HitEffect();
+  }
+}
+
+class excessive_bloodloss_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "excessive_bloodloss_blue";
+    $this->controller = $controller;
+    $this->baseCard = new excessive_bloodloss($this->cardID, $this->controller);
+  }
+
+  function ContractType($chosenName = '') {
+    return "REDPITCH";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->HitEffect();
+  }
+}
+
 class burnished_bunkerplate extends Card {
   function __construct($controller) {
     $this->cardID = "burnished_bunkerplate";
