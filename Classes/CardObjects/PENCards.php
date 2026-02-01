@@ -3189,3 +3189,25 @@ class rites_of_earthlore_blue extends Card {
     return 1;
   }
 }
+
+class assembly_module_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "assembly_module_blue";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:isSameName=hyper_driver_red");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a " . CardLink("hyper_driver", "hyper_driver") . "?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("MZOP", $this->controller, "GETCARDID", 1);
+    AddDecisionQueue("PUTPLAY", $this->controller, "False", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "{0}", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+  }
+}

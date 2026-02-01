@@ -187,7 +187,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "dissolving_shield_red":
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyItemForPlayer($currentPlayer, $index);
       break;
@@ -207,6 +206,10 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+      break;
+    case "assembly_module_blue":
+      $items = GetItems($currentPlayer);
+      $items[$index + 10] = 1;
       break;
     default:
       break;
@@ -474,6 +477,7 @@ function ItemStartTurnAbility($index)
     case "clamp_press_blue":
     case "golden_cog":
     case "copper_cog_blue":
+    case "assembly_module_blue:":
       if ($mainItems[$index + 1] > 0 && GetItemGemState($mainPlayer, $mainItems[$index], $index) == 0) --$mainItems[$index + 1];
       elseif($mainItems[$index + 1] > 0) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to remove a Steam Counter and keep " . CardLink($mainItems[$index], $mainItems[$index]) . " and keep it in play?");

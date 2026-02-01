@@ -3639,6 +3639,7 @@ function ETASteamCounters($cardID)
     case "mhz_script_yellow":
     case "autosave_script_blue":
     case "golden_cog":
+    case "assembly_module_blue":
       return 1;
     case "teklo_core_blue":
     case "convection_amplifier_red":
