@@ -3225,3 +3225,31 @@ class doubling_season_red extends Card {
     $this->controller = $controller;
   }
 }
+
+class evo_beta_base_head_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "evo_beta_base_head_blue";
+    $this->controller = $controller;
+  }
+}
+
+class evo_beta_base_chest_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "evo_beta_base_chest_blue";
+    $this->controller = $controller;
+  }
+}
+
+class evo_beta_base_arms_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "evo_beta_base_arms_blue";
+    $this->controller = $controller;
+  }
+}
+
+class evo_beta_base_legs_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "evo_beta_base_legs_blue";
+    $this->controller = $controller;
+  }
+}
