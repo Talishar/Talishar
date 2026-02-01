@@ -2360,7 +2360,6 @@ class blackstone_greaves extends Card {
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
     global $CS_ArcaneDamageDealt;
-    WriteLog("JERE: " . GetClassState($this->controller, $CS_ArcaneDamageDealt));
     return GetClassState($this->controller, $CS_ArcaneDamageDealt) > 0 ? 1 : 0;
   }
 }

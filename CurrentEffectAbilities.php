@@ -2563,13 +2563,13 @@ function IsCombatEffectPersistent($cardID)
     case "imperial_seal_of_command_red-HIT":
     case "war_cry_of_bellona_yellow-BUFF":
     case "war_cry_of_bellona_yellow-DMG":
-    case "fist_pump":
     case "bam_bam_yellow":
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
     case "chill_to_the_bone_red":
     case "chill_to_the_bone_yellow":
     case "chill_to_the_bone_blue":
+    case "fist_pump-WEAPON":
       return true;
     default:
       return false;

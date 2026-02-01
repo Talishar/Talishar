@@ -150,7 +150,7 @@ function Boost($cardID)
 
 function DoBoost($player, $cardID, $boostCount=1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted;
+  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted, $Stack;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   for ($i = 0; $i < $boostCount; $i++) {
@@ -191,8 +191,18 @@ function DoBoost($player, $cardID, $boostCount=1)
           case "fist_pump":
             if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
               // there should only ever be one wrench equipped
+              $choices = [];
               $wrenchInd = SearchCharacter($player, subtype:"Wrench");
-              if ($wrenchInd != "") AddLayer("TRIGGER", $player, $char[$j], GetMZCard($player, $wrenchInd));
+              if ($wrenchInd != "") array_push($choices, "MYCHAR-$wrenchInd");
+              if (IsLayerStep() && SubtypeContains($Stack->BottomLayer()->ID(), "Wrench"))
+                array_push($choices, "LAYER-" .$Stack->BottomLayer()->Index());
+              if (count($choices) > 0) {
+                AddDecisionQueue("PASSPARAMETER", $player, implode(",", $choices));
+                AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Wrench to " . CardLink("fist_pump"));
+                AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+                AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+                AddDecisionQueue("ADDTRIGGER", $player, $char[$j], 1);
+              }
             }
             break;
           default:

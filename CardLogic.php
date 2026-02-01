@@ -3991,9 +3991,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($char[$target + 4] < 0) ++$char[$target + 4];
         break;
       case "fist_pump":
-        $char = &GetPlayerCharacter($player);
-        $index = SearchCharacterIndexSubtype($player, "Wrench");
-        AddCurrentTurnEffect($parameter, $player, "", $char[$index + 11]);
+        if ($target == "LAYER-0") {
+          AddCurrentTurnEffect("$parameter-ATTACK", $player);
+        }
+        else {
+          $char = &GetPlayerCharacter($player);
+          $index = SearchCharacterIndexSubtype($player, "Wrench");
+          AddCurrentTurnEffect("$parameter-WEAPON", $player, "", $char[$index + 11]);
+        }
         break;
       case "treasure_island":
         $treasureID = SearchLandmarksForID("treasure_island");
