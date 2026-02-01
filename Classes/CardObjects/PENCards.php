@@ -3515,3 +3515,24 @@ class become_the_cup_blue extends Card {
     return true;
   }
 }
+
+class heart_wrencher_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "heart_wrencher_red";
+    $this->controller = $controller;
+  }
+}
+
+class heart_wrencher_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "heart_wrencher_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class heart_wrencher_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "heart_wrencher_blue";
+    $this->controller = $controller;
+  }
+}
