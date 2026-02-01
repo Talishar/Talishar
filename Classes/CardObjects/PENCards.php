@@ -1280,10 +1280,10 @@ class duty_bound extends BaseCard {
   }
 }
 
-class duty_bound_red extends Card {
+class duty_bound_blitz_red extends Card {
   public $baseCard;
   function __construct($controller) {
-    $this->cardID = "duty_bound_red";
+    $this->cardID = "duty_bound_blitz_red";
     $this->controller = $controller;
     $this->baseCard = new duty_bound($this->cardID, $this->controller);
   }
@@ -1293,10 +1293,10 @@ class duty_bound_red extends Card {
   }
 }
 
-class duty_bound_yellow extends Card {
+class duty_bound_blitz_yellow extends Card {
   public $baseCard;
   function __construct($controller) {
-    $this->cardID = "duty_bound_yellow";
+    $this->cardID = "duty_bound_blitz_yellow";
     $this->controller = $controller;
     $this->baseCard = new duty_bound($this->cardID, $this->controller);
   }
@@ -1306,10 +1306,10 @@ class duty_bound_yellow extends Card {
   }
 }
 
-class duty_bound_blue extends Card {
+class duty_bound_blitz_blue extends Card {
   public $baseCard;
   function __construct($controller) {
-    $this->cardID = "duty_bound_blue";
+    $this->cardID = "duty_bound_blitz_blue";
     $this->controller = $controller;
     $this->baseCard = new duty_bound($this->cardID, $this->controller);
   }
