@@ -238,7 +238,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
   $uniqueID = $auras[$index + $uniqueIDIndex];
   $otherPlayer = $player == 1 ? 2 : 1;
   $card = GetClass($cardID, $player);
-  if ($card != "-") return $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID);
+  if ($card != "-") $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID);
   switch ($cardID) {
     case "ironsong_pride_red":
       $char = &GetPlayerCharacter($player);
