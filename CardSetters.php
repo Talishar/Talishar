@@ -36,7 +36,11 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     $character = &GetPlayerCharacter($player);
     AddLayer("TRIGGER", $player, $character[0], $cardID);
   }
-  if (HasEphemeral($cardID) && SearchCurrentTurnEffects("spreading_mist_blue", $player, true)) ++$amount;
+  if (HasEphemeral($cardID)) {
+    if(SearchCurrentTurnEffects("spreading_mist_blue", $player, true) || SearchCurrentTurnEffects("billowing_mist_blue", $player, true)){
+      ++$amount;
+    }
+  } 
   if (!TypeContains($cardID, "T", $player)) { //If you banish a token, the token ceases to exist.
     if ($cardID == "fangs_a_lot_blue" && $from == "DISCARD") {
       AddPlayerHand($cardID, $player, $from);
@@ -226,7 +230,11 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1, $created
   }
   else {
     $hand = &GetHand($player);
-    if (HasEphemeral($cardID) && SearchCurrentTurnEffects("spreading_mist_blue", $player, true)) ++$amount;
+    if (HasEphemeral($cardID)) {
+      if(SearchCurrentTurnEffects("spreading_mist_blue", $player, true) || SearchCurrentTurnEffects("billowing_mist_blue", $player, true)){
+        ++$amount;
+      }
+    }     
     if (CardNameContains($cardID, "Crouching Tiger", $player)) IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn, $amount);
     if ($created) {
       $ClassState = new ClassState($player);

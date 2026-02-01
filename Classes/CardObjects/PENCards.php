@@ -4199,3 +4199,27 @@ class spreading_mist_blue extends Card {
     }
   }
 }
+
+class billowing_mist_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "billowing_mist_blue";
+    $this->controller = $controller;
+  }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    if ($parameter == "BUFF") {
+      return true;
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false)
+  {
+    if ($param == "BUFF") {
+      return 1;
+    }
+  }
+}
