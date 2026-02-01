@@ -620,8 +620,9 @@ function MirageLayer()
     {
       if(IsMirageActive($i*CombatChainPieces())) {
         $cardID = $CombatChain->Remove($i, cardNumber:true);
+        BlockCardDestroyed($cardID, $defPlayer);
         AddGraveyard($cardID, $defPlayer, "CC");
-        WriteLog(CardLink($cardID, $cardID) . " is destroyed by Mirage");
+        WriteLog(CardLink($cardID, $cardID) . " is destroyed by <b>Mirage</b>");
         if(ClassContains($cardID, "ILLUSIONIST", $mainPlayer)) PhantomTidemawDestroy();
       }
     }

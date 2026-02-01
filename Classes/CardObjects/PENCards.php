@@ -3651,3 +3651,61 @@ class verdant_tide_red extends Card {
     }
   }
 }
+
+class shimmering_specter extends BaseCard {
+  function CombatChainCloseAbility($chainLink) {
+    PlayAura("spectral_shield", $this->controller);
+  }
+
+  function BlockCardDestroyed() {
+    PlayAura("spectral_shield", $this->controller);
+  }
+}
+
+class shimmering_specter_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shimmering_specter_red";
+    $this->controller = $controller;
+    $this->baseCard = new shimmering_specter($this->cardID, $this->controller);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    $this->baseCard->CombatChainCloseAbility($chainLink);
+  }
+
+  function BlockCardDestroyed() {
+    $this->baseCard->BlockCardDestroyed();
+  }
+}
+
+class shimmering_specter_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shimmering_specter_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new shimmering_specter($this->cardID, $this->controller);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    $this->baseCard->CombatChainCloseAbility($chainLink);
+  }
+
+  function BlockCardDestroyed() {
+    $this->baseCard->BlockCardDestroyed();
+  }
+}
+
+class shimmering_specter_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shimmering_specter_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shimmering_specter($this->cardID, $this->controller);
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    $this->baseCard->CombatChainCloseAbility($chainLink);
+  }
+  
+  function BlockCardDestroyed() {
+    $this->baseCard->BlockCardDestroyed();
+  }
+}

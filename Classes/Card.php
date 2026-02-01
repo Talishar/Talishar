@@ -516,6 +516,8 @@ class Card {
   function GetHitTrigger($source) {
     return;
   }
-}
 
-?>
+  function BlockCardDestroyed() {
+    return;
+  }
+}
