@@ -3678,6 +3678,7 @@ class become_the_cup extends BaseCard {
     AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", subsequent: 1);
     AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains {0} color", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "BECOMETHECUP", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $this->controller, $this->cardID . "-", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "<-", 1);
   }

@@ -447,8 +447,8 @@ function filterIndices($indices, $zone, $dqVars, $condition) {
 function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
-  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects;
-  global $combatChainState, $CCS_LinkBasePower, $ChainLinks;
+  global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects, $CS_NumBluePlayed, $CS_NumRedPlayed;
+  global $combatChainState, $CCS_LinkBasePower, $ChainLinks, $Stack;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -1215,6 +1215,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         else $names = GamestateSanitize(NameOverride($LinkCard->ID(), $player));
         AddCurrentTurnEffect("become_the_bottle_red-$names", $player);
       }
+      return $lastResult;
+    case "BECOMETHECUP":
+      // the card is improperly gaining colors too late
+      $layerColor = ColorOverride($Stack->BottomLayer()->ID(), $player);
+      if ($lastResult == "Red" && $layerColor != 1) IncrementClassState($player, $CS_NumRedPlayed);
+      // if ($lastResult == "YELLOW" && $layerColor != 2) IncrementClassState($player, $CS_NumYellowPlayed);
+      if ($lastResult == "Blue" && $layerColor != 3) IncrementClassState($player, $CS_NumBluePlayed);
       return $lastResult;
     default: return "";
   }
