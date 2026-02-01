@@ -4050,10 +4050,15 @@ class display_of_craftsmanship extends BaseCard {
 
   function PlayAbility($target) {
     global $combatChainState, $CCS_WeaponIndex, $CombatChain;
+    global $CombatChain, $CurrentTurnEffects;
     if (TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller)) {
     // if ($target == "COMBATCHAINLINK-0") { //TODO make it possible to target past links reasonably
       AddCurrentTurnEffect($this->cardID, $this->controller);
-      Sharpen("MYCHAR-$combatChainState[$CCS_WeaponIndex]", $this->controller);
+      $ClassState = new ClassState($this->controller);
+      $originUID = $CombatChain->AttackCard()->OriginUniqueID();
+      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+      $WeaponCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+      if ($foundSharpen != "") $WeaponCard->AddPowerCounters(1);
     }
   }
 }
