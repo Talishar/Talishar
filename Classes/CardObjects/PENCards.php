@@ -3080,3 +3080,112 @@ class buzzard_helm extends Card {
     }
   }
 }
+
+class rites_of_earthlore extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("seismic_surge", $this->controller);
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->uniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Destroy();
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $this->controller) && CardType($CombatChain->AttackCard()->ID()) == "AA";
+  }
+}
+
+class rites_of_earthlore_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rites_of_earthlore_red";
+    $this->controller = $controller;
+    $this->baseCard = new rites_of_earthlore($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function StartTurnAbility($index) {
+    $this->baseCard->StartTurnAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
+
+class rites_of_earthlore_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rites_of_earthlore_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rites_of_earthlore($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function StartTurnAbility($index) {
+    $this->baseCard->StartTurnAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
+
+class rites_of_earthlore_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rites_of_earthlore_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rites_of_earthlore($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function StartTurnAbility($index) {
+    $this->baseCard->StartTurnAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
