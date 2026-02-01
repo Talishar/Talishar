@@ -4601,3 +4601,40 @@ class excessive_bloodloss_red extends Card {
     return $this->baseCard->HitEffect();
   }
 }
+
+class burnished_bunkerplate extends Card {
+  function __construct($controller) {
+    $this->cardID = "burnished_bunkerplate";
+    $this->controller = $controller;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $phase == "B";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    return SearchArsenal($this->controller, type:"A") == "" && SearchArsenal($this->controller, type:"AA");
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "DR";
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = "-") {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $canBlock = CanBlock("fry_red", "ARS"); //a little hacky for now, just checking, "can you block with an AA from arsenal"
+    if ($canBlock) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYARS:type=A&MYARS:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card to add as a defending card", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $this->controller, "ARS", 1);
+    }
+    else WriteLog("You cannot add your arsenal as a defending card");
+  }
+}
