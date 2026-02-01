@@ -130,6 +130,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HANDCLASS":
           $rv = SearchHand($player, class:$subparam);
           break;
+        case "HANDSUBTYPE":
+          WriteLog("JERE: $subparam");
+          $rv = SearchHand($player, subtype:$subparam);
+          break;
         case "HANDWATERYGRAVE":
           $rv = SearchHand($player, hasWateryGrave: true);
           break;

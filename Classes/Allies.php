@@ -112,4 +112,8 @@ class AllyCard {
 	function Modifier() { // e.g "Temporary" for cards that get stolen for a turn.
     return $this->pieces[$this->index+14] ?? "-";
   }
+
+  function Destroy($skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false) {
+    DestroyAlly($this->controller, $this->index, $skipDestroy, $fromCombat, $uniqueID, $toBanished);
+  }
 }

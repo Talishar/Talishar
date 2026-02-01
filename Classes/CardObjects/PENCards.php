@@ -4692,3 +4692,122 @@ class burnished_bunkerplate extends Card {
     else WriteLog("You cannot add your arsenal as a defending card");
   }
 }
+
+class carrion_crown extends Card {
+  function __construct($controller) {
+    $this->cardID = "carrion_crown";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return SearchHand($this->controller, subtype:"Ally") == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $ChacterCard = new CharacterCard($index, $this->controller);
+    $ChacterCard->Destroy();
+    AddDecisionQueue("FINDINDICES", $this->controller, "HANDSUBTYPE,Ally,NOPASS");
+    AddDecisionQueue("REVERTGAMESTATEIFNULL", $this->controller, "You don't have any allies in hand to discard!", 1);
+    AddDecisionQueue("CHOOSEHAND", $this->controller, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
+    AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-" . $this->controller, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Draw($this->controller);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+}
+
+class mournful_casket extends Card {
+  function __construct($controller) {
+    $this->cardID = "mournful_casket";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_NumAllyPutInGraveyard;
+    return GetClassState($this->controller, $CS_NumAllyPutInGraveyard) > 0 ? 1 : 0;
+  }
+}
+
+class reach_beyond_the_grave extends Card {
+  function __construct($controller) {
+    $this->cardID = "reach_beyond_the_grave";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $ChacterCard = new CharacterCard($index, $this->controller);
+    $ChacterCard->Destroy();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Ally");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an ally to return to hand", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDHAND", $this->controller, "<-", 1);
+    PummelHit($this->controller);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+}
+
+class scuttle_toes extends Card {
+  function __construct($controller) {
+    $this->cardID = "scuttle_toes";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Allies = new Allies($this->controller);
+    return $Allies->NumAllies() == 0;
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $ChacterCard = new CharacterCard($index, $this->controller);
+    $ChacterCard->Destroy();
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an ally to untap an ally", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Allies = new Allies($this->controller);
+    $TargetAlly = $Allies->FindCardUID(explode("-", $target)[1]);
+    Tap("MYALLY-" . $TargetAlly->Index(), $this->controller, 0);
+    AddCurrentTurnEffect($this->cardID, $this->controller, "-", $TargetAlly->UniqueID());
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    $Effect = new CurrentEffect($i);
+    $Allies = new Allies($this->controller);
+    $TargetAlly = $Allies->FindCardUID($Effect->AppliestoUniqueID());
+    $TargetAlly->Destroy();
+    $remove = true;
+  }
+}
