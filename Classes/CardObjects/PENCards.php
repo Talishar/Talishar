@@ -4515,3 +4515,89 @@ class bad_breath_blue extends Card {
     $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
   }
 }
+
+class mist_hunter_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mist_hunter_red";
+    $this->controller = $controller;
+  }
+
+  function ContractType($chosenName = '') {
+    return "BLUEPITCH";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $search = SearchDeckByName($defPlayer, "Inner Chi");
+    $defDeck = new Deck($defPlayer);
+    for ($i = 0; $i < SearchCount($search); ++$i) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDECK:isSameName=MST000_inner_chi_blue", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Hunt the mists", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZBANISH", $this->controller, "-,Source-" . $this->cardID . "," . $this->cardID, 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    }
+    AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $defDeck->RemainingCards());
+    AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
+    AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, CardLink($this->cardID) . " shows your opponent's deck", 1);
+    AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $this->controller, "<-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
+  }
+}
+
+class excessive_bloodloss extends BaseCard {
+  function AddOnHitTrigger($check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect() {
+    global $defPlayer;
+    $defDeck = new Deck($defPlayer);
+    $numBanishes = 1;
+    if (ColorContains($defDeck->Top(), 1, $defPlayer)) ++$numBanishes;
+    for ($i = 0; $i < $numBanishes; ++$i) {
+      $defDeck->BanishTop();
+    }
+  }
+}
+
+class excessive_bloodloss_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "excessive_bloodloss_red";
+    $this->controller = $controller;
+    $this->baseCard = new excessive_bloodloss($this->cardID, $this->controller);
+  }
+
+  function ContractType($chosenName = '') {
+    return "REDPITCH";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->HitEffect();
+  }
+}
