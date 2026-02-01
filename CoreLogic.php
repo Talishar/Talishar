@@ -2080,7 +2080,8 @@ function DoesAttackHaveGoAgain()
   if (SearchCurrentTurnEffects("fasting_carcass_yellow", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 2 && $CombatChain->AttackCard()->From() != "PLAY") return true;
   if (SearchCurrentTurnEffects("fasting_carcass_blue", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
   if (SearchCurrentTurnEffects("first_tenet_of_chi_wind_blue", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
-  
+  if (SearchCurrentTurnEffects("spreading_mist_blue-GOAGAIN", $mainPlayer) && $CombatChain->AttackCard()->From() != "PLAY") return true;
+
   if ((SearchCurrentTurnEffects("arc_lightning_yellow-GOAGAIN", $mainPlayer)) && $CombatChain->AttackCard()->From() != "PLAY" && $attackType == "AA") return true;
   if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("sharpened_senses_yellow", $mainPlayer) && IsWeaponAttack()) return true;
   if (SearchCurrentTurnEffects("goldkiss_rum", $mainPlayer)) return true;

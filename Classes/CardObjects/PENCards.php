@@ -4182,3 +4182,20 @@ class look_within_blue extends Card {
     AddDecisionQueue("MULTIADDTOPDECK", $this->controller, "-", 1);
   }
 }
+
+class spreading_mist_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "spreading_mist_blue";
+    $this->controller = $controller;
+  }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID . "-GOAGAIN", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    if ($parameter == "GOAGAIN") {
+      return true;
+    }
+  }
+}
