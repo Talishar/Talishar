@@ -4706,6 +4706,7 @@ class vigorous_roar_red extends Card {
     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) {
         PlayAura("vigor", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+        return;
       }
     }
   }
