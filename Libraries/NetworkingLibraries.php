@@ -4182,6 +4182,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "weeping_battleground_red":
         case "weeping_battleground_yellow":
         case "weeping_battleground_blue":
+        case "display_of_craftsmanship_red":
+        case "display_of_craftsmanship_yellow":
+        case "display_of_craftsmanship_blue":
           break;
         default:
           $target = ($combatChainState[$CCS_AttackTarget] == "" || $combatChainState[$CCS_AttackTarget] == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());

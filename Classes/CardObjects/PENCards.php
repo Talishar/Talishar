@@ -3869,3 +3869,118 @@ class shimmering_mirage_blue extends Card {
     $this->controller = $controller;
   }
 }
+
+class display_of_craftsmanship extends BaseCard {
+  function GetLayerTarget() {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:type=W&ACTIVEATTACK:type=W");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a weapon attack");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);  
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($target) {
+    global $combatChainState, $CCS_WeaponIndex, $CombatChain;
+    if (TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller)) {
+    // if ($target == "COMBATCHAINLINK-0") { //TODO make it possible to target past links reasonably
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+      Sharpen("MYCHAR-$combatChainState[$CCS_WeaponIndex]", $this->controller);
+    }
+  }
+}
+
+class display_of_craftsmanship_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "display_of_craftsmanship_red";
+    $this->controller = $controller;
+    $this->baseCard = new display_of_craftsmanship($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if (SearchCombatChainAttacks($this->controller, type:"W") != "") return false;
+    if (TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller)) return false;
+    return true;
+}
+
+  function GetLayerTarget($from) {
+    $this->baseCard->GetLayerTarget();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 4;
+  }
+}
+
+class display_of_craftsmanship_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "display_of_craftsmanship_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new display_of_craftsmanship($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if (SearchCombatChainAttacks($this->controller, type:"W") != "") return false;
+    if (TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller)) return false;
+    return true;
+}
+
+  function GetLayerTarget($from) {
+    $this->baseCard->GetLayerTarget();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
+
+class display_of_craftsmanship_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "display_of_craftsmanship_blue";
+    $this->controller = $controller;
+    $this->baseCard = new display_of_craftsmanship($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if (SearchCombatChainAttacks($this->controller, type:"W") != "") return false;
+    if (TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller)) return false;
+    return true;
+}
+
+  function GetLayerTarget($from) {
+    $this->baseCard->GetLayerTarget();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
