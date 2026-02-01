@@ -2840,6 +2840,162 @@ class quickening_sand_blue extends Card {
   }
 }
 
+class courageous_crossing_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "courageous_crossing_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $this->controller;
+    PlayAura("courage", $targetPlayer);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $choices = ["THEIRCHAR-0"];
+    array_push($choices, "MYCHAR-0");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a quicken", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    if (HasIncreasedAttack()) {
+      $context = "Choose an a target to remove a counter from";
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS&THEIRAURAS&MYCHAR:type=W&THEIRCHAR:type=W");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    TrapTriggered($this->cardID);
+    $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
+    if (str_contains($target, "CHAR")) {
+      $Character = new PlayerCharacter($targetPlayer);
+      $CharacterCard = $Character->FindCardUID(explode("-", $target)[1]);
+      if ($CharacterCard != "") $CharacterCard->AddPowerCounters(-1);
+    }
+    elseif (str_contains($target, "AURAS")) {
+      $Auras = new Auras($targetPlayer);
+      $AuraCard = $Auras->FindCardUID(explode("-", $target)[1]);
+      if ($AuraCard != "") $AuraCard->AddPowerCounters(-1);
+    }
+  }
+}
+
+class spellbane_trap extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects() {
+    global $CS_ArcaneDamageDealt, $mainPlayer;
+    if (GetClassState($mainPlayer, $CS_ArcaneDamageDealt) > 0) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger() {
+    PlayAura("spellbane_aegis", $this->controller);
+    TrapTriggered($this->cardID);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Arrow");
+  }
+}
+
+class spellbane_trap_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spellbane_trap_red";
+    $this->controller = $controller;
+    $this->baseCard = new spellbane_trap($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class spellbane_trap_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "spellbane_trap_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new spellbane_trap($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class spellbane_trap_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "spellbane_trap_blue";
+    $this->controller = $controller;
+    $this->baseCard = new spellbane_trap($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $this->baseCard->OnBlockResolveEffects();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
 class man_overboard extends BaseCard {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
@@ -3611,7 +3767,7 @@ class concealed_pathogen extends Card {
       $Character = new PlayerCharacter($this->controller);
       $CharCard = $Character->FindCardID($this->cardID);
       if ($CharCard != "" && $CharCard->IsActive() && NumAttackReactionsPlayed() > 0 && $CharCard->Facing() == "DOWN") {
-        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas?");
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the pathogen?");
         AddDecisionQueue("NOPASS", $this->controller, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
       }
@@ -3643,7 +3799,7 @@ class concealed_sedative extends Card {
       $Character = new PlayerCharacter($this->controller);
       $CharCard = $Character->FindCardID($this->cardID);
       if ($CharCard != "" && $CharCard->IsActive() && HasIncreasedAttack() && $CharCard->Facing() == "DOWN") {
-        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas?");
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the sedative?");
         AddDecisionQueue("NOPASS", $this->controller, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
       }

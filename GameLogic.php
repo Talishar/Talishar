@@ -3083,6 +3083,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           AddLayer("TRIGGER", $player, $params[0], "$location-$uid");
           break;
+        case "courageous_crossing_blue":
+          $targetLoc = explode("-", $target)[0];
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
+          break;
         default:
           AddLayer("TRIGGER", $player, $params[0], $target);
           break;
