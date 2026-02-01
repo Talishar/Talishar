@@ -3211,3 +3211,17 @@ class assembly_module_blue extends Card {
     AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
   }
 }
+
+class line_crossers extends Card {
+  function __construct($controller) {
+    $this->cardID = "line_crossers";
+    $this->controller = $controller;
+  }
+}
+
+class doubling_season_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "doubling_season_red";
+    $this->controller = $controller;
+  }
+}
