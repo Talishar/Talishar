@@ -4223,3 +4223,16 @@ class billowing_mist_blue extends Card {
     }
   }
 }
+
+class descend_into_madness_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "descend_into_madness_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    BanishRandom($otherPlayer, $this->cardID);
+    Draw($otherPlayer, effectSource:$this->cardID);
+  }
+}
