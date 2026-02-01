@@ -678,7 +678,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
 
 function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
 {
-  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
+  global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageDealt, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $CS_NumBluePlayed, $currentTurnEffects, $combatChain, $combatChainState, $CCS_CachedTotalPower;
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID);
@@ -767,6 +767,11 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $card = GetClass($cardID, $defPlayer);
   if ($card != "-") $blockModifier += $card->CardBlockModifier($from, $resourcesPaid, $index);
   switch ($cardID) {
+    case "sigil_of_suffering_red":  
+    case "sigil_of_suffering_yellow":
+    case "sigil_of_suffering_blue":
+      $blockModifier += GetClassState($defPlayer, $CS_ArcaneDamageDealt) > 0 ? 1 : 0;
+      break;
     case "unmovable_red":
     case "unmovable_yellow":
     case "unmovable_blue":
