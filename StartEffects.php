@@ -154,6 +154,16 @@ function handleCharacterStartAbilities()
   if (($index = FindCharacterIndex(2, "seasoned_saviour")) > 0) {
     $p2Char[$index + 4] = -2;
   }
+  // graven equipment
+  $graven_equipment = ["graven_cowl", "graven_gloves", "graven_vestment", "graven_walkers"];
+  $Char1 = new PlayerCharacter(1);
+  $Char2 = new PlayerCharacter(2);
+  foreach ($graven_equipment as $cardID) {
+    $GravenCard = $Char1->FindCardID($cardID);
+    if ($GravenCard != "") $GravenCard->AddDefenseCounters(-1);
+    $GravenCard = $Char2->FindCardID($cardID);
+    if ($GravenCard != "") $GravenCard->AddDefenseCounters(-1);
+  }
   
   // Barbed Castaway
   if (($index = FindCharacterIndex(1, "barbed_castaway")) > 0) {

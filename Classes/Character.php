@@ -94,6 +94,11 @@ class CharacterCard {
     return $this->pieces[$this->index+4] ?? 0;
   }
 
+  function AddDefenseCounters($num) {
+    if (isset($this->pieces[$this->index + 4]))
+      $this->pieces[$this->index + 4] += $num;
+  }
+
   function NumUses() {
     return $this->pieces[$this->index+5] ?? 0;
   }
