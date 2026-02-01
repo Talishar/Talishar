@@ -1115,7 +1115,7 @@ class laden_with_earth_red extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 2;
+    return 3;
   }
 
     function CardCaresAboutPitch() {
@@ -1143,7 +1143,7 @@ class laden_with_frost_red extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 2;
+    return 3;
   }
 
     function CardCaresAboutPitch() {
@@ -1169,7 +1169,7 @@ class laden_with_lightning_red extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 2;
+    return 3;
   }
 
     function CardCaresAboutPitch() {
