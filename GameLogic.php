@@ -2792,7 +2792,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $slot = $params[1] ?? "-";
       $otherPlayer = $player == 1 ? 2 : 1;
       $chosenPlayer = isset($params[2]) ? (str_contains($params[2], "MY") ? $player : $otherPlayer) : $player;
-      EquipEquipment($chosenPlayer, $params[0], $params[1]);
+      EquipEquipment($chosenPlayer, $params[0], $params[1], $params[3] ?? "-");
       return "";
     case "STEALEQUIPMENT":
       $targetPlayer = str_contains($lastResult, "THEIR") ? $otherPlayer : $player;

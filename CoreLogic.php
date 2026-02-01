@@ -357,6 +357,10 @@ function MZStartTurnIndices()
       case "mask_of_perdition":
       case "redback_shroud":
       case "shriek_razors":
+      case "graven_cowl":
+      case "graven_vestment":
+      case "graven_gloves":
+      case "graven_walkers":
         $emptyEquipmentSlots = explode(",", FindEmptyEquipmentSlots($mainPlayer));
         $discardIndex = SearchDiscardForCard($mainPlayer, $graveyard[$i]);
         $foundSlot = in_array(CardSubType($graveyard[$i]), $emptyEquipmentSlots);
@@ -367,7 +371,7 @@ function MZStartTurnIndices()
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "silver-2", 1);
           AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
-          AddDecisionQueue("EQUIPCARD", $mainPlayer, $graveyard[$i]."-".CardSubType($graveyard[$i]), 1);
+          AddDecisionQueue("EQUIPCARD", $mainPlayer, $graveyard[$i]."-".CardSubType($graveyard[$i])."-MYDISCARD-MYDISCARD", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         }
