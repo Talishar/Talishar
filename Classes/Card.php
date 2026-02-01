@@ -504,6 +504,10 @@ class Card {
   function CurrentTurnEffectUses() {
     return 1;
   }
+
+  function DestroyEffect() {
+    return;
+  }
 }
 
 ?>
