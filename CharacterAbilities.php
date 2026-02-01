@@ -287,7 +287,7 @@ function DefCharacterStartTurnAbilities()
 function CharacterDestroyEffect($cardID, $player)
 {
   $card = GetClass($cardID, $player);
-  if ($card != "-") $card->CharacterDestroyEffect();
+  if ($card != "-") $card->DestroyEffect();
   switch ($cardID) {
     case "new_horizon":
       WriteLog(Cardlink($cardID, $cardID) . " destroys your arsenal");
