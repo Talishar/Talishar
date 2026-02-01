@@ -658,7 +658,7 @@ function CardPlayTrigger($cardID, $from)
     }
 }
 
-function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check = false): bool
+function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check=false): bool
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
@@ -1306,6 +1306,13 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
       break;
   }
   return false;
+}
+
+function AddCharacterGetHitTrigger($cardID, $source = "-", $flickInfo = "-") {
+  // how do I make this work with flicks???
+  global $defPlayer;
+  $card = GetClass($cardID, $defPlayer);
+  if ($card != "-") $card->GetHitTrigger($source);
 }
 
 function AddCrushEffectTrigger($cardID)

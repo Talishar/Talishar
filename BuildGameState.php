@@ -744,7 +744,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
       $powerCounters = $myCharacter[$i + 3];
     }
-    if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3 && ($myCharacter[$i + 12] ?? "-") != "DOWN") {
+    if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3) {
       $gem = $myCharacter[$i + 9] == 1 ? 1 : 2;
     }
     $restriction = implode("_", explode(" ", $restriction));

@@ -3536,3 +3536,99 @@ class heart_wrencher_blue extends Card {
     $this->controller = $controller;
   }
 }
+
+class concealed_pathogen extends Card {
+  function __construct($controller) {
+    $this->cardID = "concealed_pathogen";
+    $this->controller = $controller;
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  function GetHitTrigger($source) {
+    if ($source == "CURRENTATTACK") {
+      $Character = new PlayerCharacter($this->controller);
+      $CharCard = $Character->FindCardID($this->cardID);
+      if ($CharCard != "" && $CharCard->IsActive() && NumAttackReactionsPlayed() > 0 && $CharCard->Facing() == "DOWN") {
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas?");
+        AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      }
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    TrapTriggered($this->cardID);
+    $Character = new PlayerCharacter($this->controller);
+    $CharCard = $Character->FindCardID($this->cardID);
+    $CharCard->Destroy();
+    PlayAura("bloodrot_pox", $mainPlayer);
+  }
+}
+
+class concealed_sedative extends Card {
+  function __construct($controller) {
+    $this->cardID = "concealed_sedative";
+    $this->controller = $controller;
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  function GetHitTrigger($source) {
+    if ($source == "CURRENTATTACK") {
+      $Character = new PlayerCharacter($this->controller);
+      $CharCard = $Character->FindCardID($this->cardID);
+      if ($CharCard != "" && $CharCard->IsActive() && HasIncreasedAttack() && $CharCard->Facing() == "DOWN") {
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas?");
+        AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      }
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    TrapTriggered($this->cardID);
+    $Character = new PlayerCharacter($this->controller);
+    $CharCard = $Character->FindCardID($this->cardID);
+    $CharCard->Destroy();
+    PlayAura("inertia", $mainPlayer);
+  }
+}
+
+class concealed_nerve_gas extends Card {
+  function __construct($controller) {
+    $this->cardID = "concealed_nerve_gas";
+    $this->controller = $controller;
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  function GetHitTrigger($source) {
+    if ($source == "CURRENTATTACK") {
+      $Character = new PlayerCharacter($this->controller);
+      $CharCard = $Character->FindCardID($this->cardID);
+      if ($CharCard != "" && $CharCard->IsActive() && DoesAttackHaveGoAgain() && $CharCard->Facing() == "DOWN") {
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas?");
+        AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+        AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      }
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    TrapTriggered($this->cardID);
+    $Character = new PlayerCharacter($this->controller);
+    $CharCard = $Character->FindCardID($this->cardID);
+    $CharCard->Destroy();
+    PlayAura("frailty", $mainPlayer);
+  }
+}

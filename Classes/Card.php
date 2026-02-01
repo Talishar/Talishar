@@ -512,6 +512,10 @@ class Card {
   function ResolutionStepAttackTriggers() {
     return;
   }
+
+  function GetHitTrigger($source) {
+    return;
+  }
 }
 
 ?>

@@ -1413,6 +1413,14 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
         }
       }
 
+      if ($damageTarget == "HERO") {
+        $DefChar = new PlayerCharacter($defPlayer);
+        for ($i = 0; $i < $DefChar->NumCards(); ++$i) {
+          $CharCard = $DefChar->Card($i, true);
+          AddCharacterGetHitTrigger($CharCard->CardID(), "CURRENTATTACK");
+        }
+      }
+
       $currentTurnEffects = array_values($currentTurnEffects);
       $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
       MainCharacterHitTrigger($cardID, $targetPlayer);
@@ -1422,6 +1430,7 @@ function ResolveCombatDamage($damageDone, $damageTarget="HERO")
       ItemHitTrigger($cardID);
       AttackDamageAbilitiesTrigger($damageDone);
       CombatChainHitEffects($combatChain[0], $damageTarget);
+      
 
       foreach(explode(",", $combatChain[10]) as $effectSetID) {
         $effect = ConvertToCardID($effectSetID);

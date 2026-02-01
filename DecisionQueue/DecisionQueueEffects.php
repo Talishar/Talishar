@@ -802,6 +802,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       if(!ArsenalFull($player)) {
           $rand = GetRandom(0, 2);
+          WriteLog("HERE: " . implode(",", $cardList));
           AddArsenal($cardList[$rand], $player, "BANISH", "DOWN");
           RemoveBanish($player, SearchBanishForCard($player, $cardList[$rand]));
         }
