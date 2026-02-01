@@ -52,7 +52,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
 
   $countVerdantTide = CountCurrentTurnEffects("verdant_tide_red", $player);
   if ($countVerdantTide > 0 && (ClassContains($cardID, "RUNEBLADE", $player) || TalentContains($cardID, "ELEMENTAL", $player))) {
-    $number += $countVerdantTide;
+    if ($isToken) $number += $countVerdantTide;
   }
 
   if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) $number -= $numMinusTokens;
