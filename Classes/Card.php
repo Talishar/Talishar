@@ -434,7 +434,7 @@ class Card {
   }
 
   function HasStealth() {
-    return false;
+    return GeneratedHasStealth($this->cardID);
   }
 
   function CurrentEffectEndTurnAbilities($i, &$remove) {
