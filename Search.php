@@ -381,11 +381,11 @@ function SearchDiscardNameContains($player, $name)
   $discardPieces = DiscardPieces();
   $cardList = [];
   for ($i = 0; $i < $countDiscard; $i += $discardPieces) {
-    if (DelimStringContains(ShareName(CardName($discard[$i]), $name), $name, true) && !isFaceDownMod($discard[$i+2])) {
+    if (DelimStringContains($discard[$i], $name, true) && !isFaceDownMod($discard[$i+2])) {
       $cardList[] = $i;
     }
   }
-  return implode(",", $cardList);
+  return $cardList;
 }
 
 function SearchItemsByName($player, $name)

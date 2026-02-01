@@ -1875,7 +1875,7 @@ class heavy_metal_hardcore_blue extends Card {
   }
 }
 
-class emboldened_by_the_crowd_yellow extends Card { //untested
+class emboldened_by_the_crowd_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "emboldened_by_the_crowd";
     $this->controller = $controller;
@@ -1886,106 +1886,105 @@ class emboldened_by_the_crowd_yellow extends Card { //untested
   } 
 }
 
-// class hulk_up extends BaseCard { //untested
-//   function SelfCostModifier($from) {
-//     return PlayerHasLessHealth($this->controller) ? -1 : 0;
-//   } 
-// }
+class hulk_up extends BaseCard {
+  function SelfCostModifier($from) {
+    return PlayerHasLessHealth($this->controller) ? -1 : 0;
+  } 
+}
 
-// class hulk_up_red extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "hulk_up_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new hulk_up($this->cardID, $this->controller);
-//   }
+class hulk_up_red extends Card {  function __construct($controller) {
+    $this->cardID = "hulk_up_red";
+    $this->controller = $controller;
+    $this->baseCard = new hulk_up($this->cardID, $this->controller);
+  }
 
-//   function SelfCostModifier($from) {
-//     return $this->baseCard->SelfCostModifier($from);
-//   }
-// }
+  function SelfCostModifier($from) {
+    return $this->baseCard->SelfCostModifier($from);
+  }
+}
 
-// class hulk_up_yellow extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "hulk_up_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new hulk_up($this->cardID, $this->controller);
-//   }
+class hulk_up_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "hulk_up_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new hulk_up($this->cardID, $this->controller);
+  }
 
-//   function SelfCostModifier($from) {
-//     return $this->baseCard->SelfCostModifier($from);
-//   }
-// }
+  function SelfCostModifier($from) {
+    return $this->baseCard->SelfCostModifier($from);
+  }
+}
 
-// class hulk_up_blue extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "hulk_up_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new hulk_up($this->cardID, $this->controller);
-//   }
+class hulk_up_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "hulk_up_blue";
+    $this->controller = $controller;
+    $this->baseCard = new hulk_up($this->cardID, $this->controller);
+  }
 
-//   function SelfCostModifier($from) {
-//     return $this->baseCard->SelfCostModifier($from);
-//   }
-// }
+  function SelfCostModifier($from) {
+    return $this->baseCard->SelfCostModifier($from);
+  }
+}
 
-// class insult_to_injury extends BaseCard { //untested
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
-//   }
+class insult_to_injury extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ATTACKTRIGGER");
+  }
 
-//   function ProcessAttackTrigger($target, $uniqueID) {
-//     $otherPlayer = $this->controller == 1 ? 2 : 1;
-//     if (PlayerHasLessHealth($otherPlayer)) GiveAttackGoAgain();
-//   }
-// }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if (PlayerHasLessHealth($otherPlayer)) GiveAttackGoAgain();
+  }
+}
 
-// class insult_to_injury_red extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "insult_to_injury_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
-//   }
+class insult_to_injury_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "insult_to_injury_red";
+    $this->controller = $controller;
+    $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
 
-//   function ProcessAttackTrigger($target, $uniqueID) {
-//     $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
-//   }
-// }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+}
 
-// class insult_to_injury_yellow extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "insult_to_injury_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
-//   }
+class insult_to_injury_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "insult_to_injury_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
 
-//   function ProcessAttackTrigger($target, $uniqueID) {
-//     $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
-//   }
-// }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+}
 
-// class insult_to_injury_blue extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "insult_to_injury_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
-//   }
+class insult_to_injury_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "insult_to_injury_blue";
+    $this->controller = $controller;
+    $this->baseCard = new insult_to_injury($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
 
-//   function ProcessAttackTrigger($target, $uniqueID) {
-//     $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
-//   }
-// }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
+  }
+}
 
 class song_of_larinkmorth_white_blue extends Card {
   function __construct($controller) {
@@ -2050,24 +2049,24 @@ class knife_through_blue extends Card {
   }
 }
 
-// class seeds_of_strength_red extends Card { //untested (probably works)
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_strength_red";
-//     $this->controller = $controller;
-//   }
+class seeds_of_strength_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_strength_red";
+    $this->controller = $controller;
+  }
 
-//   function CardCaresAboutPitch() {
-//     return true;
-//   }
+  function CardCaresAboutPitch() {
+    return true;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     PlayAura("might", $this->controller);
-//     PlayAura("might", $this->controller);
-//     PlayAura("might", $this->controller);
-//     if (SearchCardList($additionalCosts, $this->controller, talent: "EARTH") != "")
-//       PlayAura("might", $this->controller);
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("might", $this->controller);
+    PlayAura("might", $this->controller);
+    PlayAura("might", $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "EARTH") != "")
+      PlayAura("might", $this->controller);
+  }
+}
 
 // class arc_bending_red extends Card { //untested
 //   //arc bending actually works different than ball lightning, it's an attack trigger that creates a CurrentTurnEffect
@@ -2088,15 +2087,15 @@ class knife_through_blue extends Card {
 //   }
 // }
 
-// class chorus_of_rotwood extends Card { //untested
+// class chorus_of_rotwood_red extends Card {
 //   function __construct($controller) {
-//     $this->cardID = "chorus_of_rotwood";
+//     $this->cardID = "chorus_of_rotwood_red";
 //     $this->controller = $controller;
 //   }
 
 //   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
 //     PlayAura("runechant", $this->controller, 3);
+//     AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
 //   }
 
 //   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -2104,147 +2103,185 @@ class knife_through_blue extends Card {
 //   }
 // }
 
-// class limbs_of_lignum_vitae extends Card { //untested (probably works)
-//   function __construct($controller) {
-//     $this->cardID = "limbs_of_lignum_vitae";
-//     $this->controller = $controller;
-//   }
+class limbs_of_lignum_vitae extends Card {
+  function __construct($controller) {
+    $this->cardID = "limbs_of_lignum_vitae";
+    $this->controller = $controller;
+  }
 
-//   function CardBlockModifier($from, $resourcesPaid, $index) {
-//     $results = SearchCount(SearchMultiZone($this->controller, "MYBANISH:talent=EARTH"));
-//     return $results >= 4 ? 1 : 0;
-//   }
-// }
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    $results = SearchCount(SearchMultiZone($this->controller, "MYBANISH:talent=EARTH"));
+    return $results >= 4 ? 1 : 0;
+  }
+}
 
-// class drag_down extends BaseCard //untested
-// {
-//   function PlayAbility($value) {
-//     global $CombatChain;
-//     $CombatChain->Card(0)->ModifyPower(-$value);
-//   }
-// }
+class drag_down extends BaseCard
+{
+  function PlayAbility($value) {
+    global $CombatChain;
+    $CombatChain->Card(0)->ModifyPower(-$value);
+  }
+}
 
-// class drag_down_red extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "drag_down_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new drag_down($this->cardID, $this->controller);
-//   }
+class drag_down_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "drag_down_red";
+    $this->controller = $controller;
+    $this->baseCard = new drag_down($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility(3);
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(3);
+  }
+}
 
-// class drag_down_yellow extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "drag_down_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new drag_down($this->cardID, $this->controller);
-//   }
+class drag_down_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "drag_down_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new drag_down($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility(2);
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(2);
+  }
+}
 
-// class drag_down_blue extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "drag_down_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new drag_down($this->cardID, $this->controller);
-//   }
+class drag_down_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "drag_down_blue";
+    $this->controller = $controller;
+    $this->baseCard = new drag_down($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility(1);
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(1);
+  }
+}
 
-// class cloud_cover extends BaseCard  //untested (probably works)
-// {
-//   function PlayAbility() {
-//     AddCurrentTurnEffect($this->cardID, $this);
-//   }
-// }
+class cloud_cover extends BaseCard
+{
+  public $preventionAmount = 0;
 
-// class cloud_cover_red extends Card { //untested (probably works)
-//   function __construct($controller) {
-//     $this->cardID = "cloud_cover_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new cloud_cover($this->cardID, $this->controller);
-//   }
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//   }
-// }
+  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->preventionAmount;
+  }
+  
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    $remove = true;
+    return $this->preventionAmount;
+  }
+}
 
-// class cloud_cover_yellow extends Card { //untested (probably works)
-//   function __construct($controller) {
-//     $this->cardID = "cloud_cover_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new cloud_cover($this->cardID, $this->controller);
-//   }
+class cloud_cover_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cloud_cover_red";
+    $this->controller = $controller;
+    $this->baseCard = new cloud_cover($this->cardID, $this->controller);
+    $this->baseCard->preventionAmount = 3;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
 
-// class cloud_cover_blue extends Card { //untested (probably works)
-//   function __construct($controller) {
-//     $this->cardID = "cloud_cover_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new cloud_cover($this->cardID, $this->controller);
-//   }
+  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->baseCard->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, $amount);
+  }
+  
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//   }
-// }
+class cloud_cover_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "cloud_cover_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new cloud_cover($this->cardID, $this->controller);
+    $this->baseCard->preventionAmount = 2;
+  }
 
-// class stadium_security extends BaseCard { //untested
-//   function hasAmbush() {
-//     global $CS_NumToughnessDestroyed;
-//     return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0;
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
 
-// class stadium_security_red extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "stadium_security_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new stadium_security($this->cardID, $this->controller);
-//   }
+  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->baseCard->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, $amount);
+  }
 
-//   function HasAmbush() {
-//     return $this->baseCard->hasAmbush();
-//   }
-// }
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
+  }
+}
 
-// class stadium_security_yellow extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "stadium_security_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new stadium_security($this->cardID, $this->controller);
-//   }
+class cloud_cover_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cloud_cover_blue";
+    $this->controller = $controller;
+    $this->baseCard = new cloud_cover($this->cardID, $this->controller);
+    $this->baseCard->preventionAmount = 1;
+  }
 
-//   function HasAmbush() {
-//     return $this->baseCard->hasAmbush();
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
 
-// class stadium_security_blue extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "stadium_security_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new stadium_security($this->cardID, $this->controller);
-//   }
+  function CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->baseCard->CurrentTurnEffectDamagePreventionAmount($type, $damage, $source, $index, $remove, $amount);
+  }
 
-//   function HasAmbush() {
-//     return $this->baseCard->hasAmbush();
-//   }
-// }
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
+  }
+}
+
+class stadium_security extends BaseCard { //untested
+  function hasAmbush() {
+    global $CS_NumToughnessDestroyed;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed) > 0 || CountAura("toughness", $this->controller) > 0;
+  }
+}
+
+class stadium_security_red extends Card { //untested
+  function __construct($controller) {
+    $this->cardID = "stadium_security_red";
+    $this->controller = $controller;
+    $this->baseCard = new stadium_security($this->cardID, $this->controller);
+  }
+
+  function HasAmbush() {
+    return $this->baseCard->hasAmbush();
+  }
+}
+
+class stadium_security_yellow extends Card { //untested
+  function __construct($controller) {
+    $this->cardID = "stadium_security_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new stadium_security($this->cardID, $this->controller);
+  }
+
+  function HasAmbush() {
+    return $this->baseCard->hasAmbush();
+  }
+}
+
+class stadium_security_blue extends Card { //untested
+  function __construct($controller) {
+    $this->cardID = "stadium_security_blue";
+    $this->controller = $controller;
+    $this->baseCard = new stadium_security($this->cardID, $this->controller);
+  }
+
+  function HasAmbush() {
+    return $this->baseCard->hasAmbush();
+  }
+}
 
 class volcanic_vice extends Card {
   function __construct($controller) {
@@ -2490,48 +2527,48 @@ class fasting_carcass_blue extends Card {
   }
 }
 
-// class submerge extends BaseCard { //untested
-//   function PayAdditionalCosts($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     global $CS_AdditionalCosts;
-//     MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4");
-//   }
-// }
+class submerge extends BaseCard {
+  function PayAdditionalCosts($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_AdditionalCosts;
+    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", DQContext: "Choose a card to put fifth from the top of your deck");
+  }
+}
 
-// class submerge_red extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "submerge_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new submerge($this->cardID, $this->controller);
-//   }
+class submerge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "submerge_red";
+    $this->controller = $controller;
+    $this->baseCard = new submerge($this->cardID, $this->controller);
+  }
 
-//   function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-//   }
-// }
+  function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
 
-// class submerge_yellow extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "submerge_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new submerge($this->cardID, $this->controller);
-//   }
+class submerge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "submerge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new submerge($this->cardID, $this->controller);
+  }
 
-//   function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-//   }
-// }
+  function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
 
-// class submerge_blue extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "submerge_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new submerge($this->cardID, $this->controller);
-//   }
+class submerge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "submerge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new submerge($this->cardID, $this->controller);
+  }
 
-//   function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-//   }
-// }
+  function PayAdditionalCosts($from, $index = '-', $resourcesPaid = '-', $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PayAdditionalCosts($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+}
 
 class rip_off_the_top_yellow extends Card {
   function __construct($controller) {
@@ -2939,79 +2976,80 @@ class sigil_of_voltaris_blue extends Card {
   }
 }
 
-// class four_feathers_one_crown_red extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "four_feathers_one_crown_red";
-//     $this->controller = $controller;
-//   }
+class four_feathers_one_crown_red extends Card { //untested
+  function __construct($controller) {
+    $this->cardID = "four_feathers_one_crown_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     AddLayer("TRIGGER", $this->controller, $this->cardID);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
 
-//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-//     global $CombatChain;
-//     $cardList = explode(",", SearchDiscardNameContains($this->controller, "phoenix_bannerman"));
-//     $CombatChain->Card(0)->ModifyPower(count($cardList));
-//   }
-// }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $cardList = SearchDiscardNameContains($this->controller, "phoenix_bannerman");
+    $CombatChain->Card(0)->ModifyPower(count($cardList));
+  }
+} 
 
-// class phoenix_bannerman extends BaseCard { //untested
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     if(CanRevealCards($this->controller)) {
-//       MZMoveCard($this->controller, "MYDECK:isSameName=phoenix_flame_red", "MYHAND", may: true);
-//       AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
-//     }
-//   }
-// }
-// class phoenix_bannerman_head extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "phoenix_bannerman_head";
-//     $this->controller = $controller;
-//     $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
-//   }
+class phoenix_bannerman extends BaseCard {
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//     PlayAura("ponder", $this->controller);
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if(CanRevealCards($this->controller)) {
+      MZMoveCard($this->controller, "MYDECK:isSameName=phoenix_flame_red", "MYHAND", may:true);
+      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+    }
+  }
+}
+class phoenix_bannerman_head_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_head_red";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->cardID, $this->controller);
+  }
 
-// class phoenix_bannerman_chest extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "phoenix_bannerman_chest";
-//     $this->controller = $controller;
-//     $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+    PlayAura("ponder", $this->controller);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//     PlayAura("vigor", $this->controller);
-//   }
-// }
+class phoenix_bannerman_chest_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_chest_red";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->cardID, $this->controller);
+  }
 
-// class phoenix_bannerman_arms extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "phoenix_bannerman_arms";
-//     $this->controller = $controller;
-//     $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+    PlayAura("vigor", $this->controller);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//     PlayAura("might", $this->controller);
-//   }
-// }
+class phoenix_bannerman_arms_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_arms_red";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->cardID, $this->controller);
+  }
 
-// class phoenix_bannerman_legs extends Card { //untested
-//   function __construct($controller) {
-//     $this->cardID = "phoenix_bannerman_legs";
-//     $this->controller = $controller;
-//     $this->baseCard = new phoenix_bannerman($this->card, $this->controller);
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+    PlayAura("might", $this->controller);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     $this->baseCard->PlayAbility();
-//     PlayAura("agility", $this->controller);
-//   }
-// }
+class phoenix_bannerman_legs_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "phoenix_bannerman_legs_red";
+    $this->controller = $controller;
+    $this->baseCard = new phoenix_bannerman($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+    PlayAura("agility", $this->controller);
+  }
+}
