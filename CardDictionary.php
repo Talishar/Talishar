@@ -3750,8 +3750,10 @@ function DoesEffectGrantsOverpower($cardID): bool
 
 function DoesEffectGrantsDominate($cardID): bool
 {
-  global $combatChainState, $CCS_AttackFused;
+  global $combatChainState, $CCS_AttackFused, $mainPlayer;
   $cardID = ShiyanaCharacter($cardID);
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->DoesEffectGrantDominate();
   switch ($cardID) {
     case "bravo_showstopper":
     case "bravo":

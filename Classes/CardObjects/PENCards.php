@@ -3984,3 +3984,115 @@ class display_of_craftsmanship_blue extends Card {
     return 2;
   }
 }
+
+class cut_n_carve extends BaseCard {
+  function GetLayerTarget() {
+		$search = "MYCHAR:subtype=Sword";
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen");
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+	}
+
+  function PlayAbility($target) {
+    $uid = explode("-", $target)[1] ?? -1;
+		$index = SearchCharacterForUniqueID($uid, $this->controller);
+		if ($index != -1) {
+			Sharpen("MYCHAR-$index", $this->controller);
+			$weaponCard = new CharacterCard($index, $this->controller);
+      $threshold = match($this->cardID) {
+        "cut_n_carve_red" => 0,
+        "cut_n_carve_yellow" => 1,
+        "cut_n_carve_blue" => 2,
+      };
+			if ($weaponCard->NumPowerCounters() > $threshold) {
+				AddCurrentTurnEffect($this->cardID, $this->controller, "-", $weaponCard->UniqueID());
+			}
+		}
+  }
+}
+
+class cut_n_carve_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cut_n_carve_red";
+    $this->controller = $controller;
+    $this->baseCard = new cut_n_carve($this->cardID, $this->controller);
+  }
+
+  function GetLayerTarget($from) {
+    $this->baseCard->GetLayerTarget();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+  }
+
+  function DoesEffectGrantDominate() {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+}
+
+class cut_n_carve_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "cut_n_carve_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new cut_n_carve($this->cardID, $this->controller);
+  }
+
+  function GetLayerTarget($from) {
+    $this->baseCard->GetLayerTarget();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+  }
+
+  function DoesEffectGrantDominate() {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+}
+
+class cut_n_carve_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cut_n_carve_blue";
+    $this->controller = $controller;
+    $this->baseCard = new cut_n_carve($this->cardID, $this->controller);
+  }
+
+  function GetLayerTarget($from) {
+    $this->baseCard->GetLayerTarget();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+  }
+
+  function DoesEffectGrantDominate() {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+}

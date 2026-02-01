@@ -520,4 +520,8 @@ class Card {
   function BlockCardDestroyed() {
     return;
   }
+
+  function DoesEffectGrantDominate() {
+    return false;
+  }
 }
