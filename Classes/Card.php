@@ -373,7 +373,7 @@ class Card {
   }
 
   function HasWateryGrave() {
-    return false;
+    return GeneratedHasWateryGrave($this->cardID);
   }
 
   function BeginningActionPhaseAbility($index) {

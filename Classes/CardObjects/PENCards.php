@@ -4818,3 +4818,10 @@ class scuttle_toes extends Card {
     $remove = true;
   }
 }
+
+class beneath_the_surface extends Card {
+  function __construct($controller) {
+    $this->cardID = "beneath_the_surface";
+    $this->controller = $controller;
+  }
+}
