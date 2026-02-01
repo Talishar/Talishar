@@ -3632,3 +3632,22 @@ class concealed_nerve_gas extends Card {
     PlayAura("frailty", $mainPlayer);
   }
 }
+
+class verdant_tide_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "verdant_tide_red";
+    $this->controller = $controller;
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
+  {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    if (SearchCardList($additionalCosts, $this->controller, talent: "EARTH") != "") {
+      PlayAura("embodiment_of_earth", $this->controller);
+    }
+  }
+}
