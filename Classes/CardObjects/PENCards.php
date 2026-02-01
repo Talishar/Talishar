@@ -1769,6 +1769,62 @@ class painful_premonition_red extends Card {
   }
 }
 
+class painful_premonition_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "painful_premonition_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new painful_premonition($this->cardID, $this->controller);
+  }
+
+  function ArcaneTargeting($from) {
+    return 2;
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(2, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHit();
+  }
+}
+
+class painful_premonition_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "painful_premonition_blue";
+    $this->controller = $controller;
+    $this->baseCard = new painful_premonition($this->cardID, $this->controller);
+  }
+
+  function ArcaneTargeting($from) {
+    return 2;
+  }
+
+  function ArcaneDamage() {
+    return 1;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(1, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHit();
+  }
+}
+
 class future_sight_red extends Card {
   function __construct($controller) {
     $this->cardID = "future_sight_red";
