@@ -23,6 +23,7 @@ class ChainLinks {
   }
 
 	function LastLink() {
+		WriteLog("JERE: " . $this->NumLinks());
 		return new ChainLink($this->NumLinks() - 1);
 	}
 
@@ -53,7 +54,6 @@ class ChainLink {
     $this->link = &$chainLinks[$linkNum];
 		$summaryIndex = $linkNum * ChainLinkSummaryPieces();
 		$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
-		$this->linkSummary = &$chainLinkSummary;
   }
 
 	function NumCards() {
