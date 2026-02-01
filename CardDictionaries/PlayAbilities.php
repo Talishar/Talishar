@@ -715,13 +715,13 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $numScrap = 0;
       $costAry = explode(",", $additionalCosts);
       $costAryCount = count($costAry);
-      for ($i = 0; $i < $costAryCount; ++$i) if ($costAry[$i] == "SCRAP") ++$numScrap;
+      for ($i = 0; $i < $costAryCount; ++$i) if (DelimStringContains($costAry[$i], "SCRAP")) ++$numScrap;
       if ($numScrap > 0) GainResources($currentPlayer, $numScrap * 2);
       return "";
     case "hydraulic_press_red":
     case "hydraulic_press_yellow":
     case "hydraulic_press_blue":
-      if ($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (DelimStringContains($additionalCosts, "SCRAP")) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "ratchet_up_red":
     case "ratchet_up_yellow":
@@ -731,22 +731,22 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "scrap_hopper_red":
     case "scrap_hopper_yellow":
     case "scrap_hopper_blue":
-      if ($additionalCosts == "SCRAP") PlayAura("quicken", $currentPlayer);
+      if (DelimStringContains($additionalCosts, "SCRAP")) PlayAura("quicken", $currentPlayer);
       return "";
     case "junkyard_dogg_red":
     case "junkyard_dogg_yellow":
     case "junkyard_dogg_blue":
-      if ($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (DelimStringContains($additionalCosts, "SCRAP")) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "scrap_compactor_red":
     case "scrap_compactor_yellow":
     case "scrap_compactor_blue":
-      if ($additionalCosts == "SCRAP") AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (DelimStringContains($additionalCosts, "SCRAP")) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "scrap_harvester_red":
     case "scrap_harvester_yellow":
     case "scrap_harvester_blue":
-      if ($additionalCosts == "SCRAP") {
+      if (DelimStringContains($additionalCosts, "SCRAP")) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:hasCrank=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card with Crank to get a steam counter", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -756,7 +756,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "scrap_prospector_red":
     case "scrap_prospector_yellow":
     case "scrap_prospector_blue":
-      if ($additionalCosts == "SCRAP") GainResources($currentPlayer, 1);
+      if (DelimStringContains($additionalCosts, "SCRAP")) GainResources($currentPlayer, 1);
       return "";
     case "moonshot_yellow":
       for ($i = 0; $i < $resourcesPaid; $i += 2) AddCurrentTurnEffect($cardID, $currentPlayer);
