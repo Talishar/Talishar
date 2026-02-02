@@ -5452,3 +5452,81 @@ class myrkhellir_helm extends Card {
     return CountItemByName("Gold", $this->controller) > 0 ? 1 : 0;
   }
 }
+
+class elixir extends BaseCard {
+  function PlayAbility($auraName) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:isSameName=".$auraName, 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
+    AddDecisionQueue("GAINLIFE", $this->controller, "1", 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
+
+class clearwater_elixir_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "clearwater_elixir_red";
+    $this->controller = $controller;
+    $this->baseCard = new elixir($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility("bloodrot_pox");  
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
+class restvine_elixir_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restvine_elixir_red";
+    $this->controller = $controller;
+    $this->baseCard = new elixir($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility("inertia");  
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
+
+class sapwood_elixir_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sapwood_elixir_red";
+    $this->controller = $controller;
+    $this->baseCard = new elixir($this->cardID, $this->controller);
+  }
+
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility("frailty");  
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter, $defendingCard, $flicked);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param, $attached);
+  }
+}
