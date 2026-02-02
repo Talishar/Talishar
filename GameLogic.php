@@ -540,6 +540,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDHAND":
       AddPlayerHand($lastResult, $player, "-");
       return $lastResult;
+    case "CREATECARD":
+      WriteLog("JERE: $lastResult");
+      $params = explode(",", $parameter);
+      switch($params[0]) {
+        case "HAND":
+          AddPlayerHand($lastResult, $player, "-", created:true);
+          break;
+        default:
+          break;
+      }
+      return $lastResult;
     case "ADDHANDOWNER":
       $otherPlayer = $player == 1 ? 2 : 1;
       if (substr($combatChain[$lastResult + 2], 0, 5) == "THEIR") AddPlayerHand($combatChain[$lastResult], $otherPlayer, "CC");

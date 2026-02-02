@@ -5650,6 +5650,7 @@ class put_on_ice extends BaseCard {
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "{0},", 1);
       AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      // note to self: ADDLAYERTARGET
       AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     }
   }
@@ -5871,5 +5872,45 @@ class helm_of_might_and_magic extends Card {
   function __construct($controller) {
     $this->cardID = "helm_of_might_and_magic";
     $this->controller = $controller;
+  }
+}
+
+class serpents_kiss_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "serpents_kiss_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $CS_Transcended;
+    if (GetClassState($this->controller, $CS_Transcended)) {
+      AddPlayerHand("fang_strike", $this->controller, $this->cardID, created:true);
+      AddPlayerHand("slither", $this->controller, $this->cardID, created:true);
+    }
+    else {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Which card to create in hand?");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "fang_strike,slither", 1);
+      AddDecisionQueue("CREATECARD", $this->controller, "HAND", 1);
+    }
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $indices = "THEIRDECK-0,THEIRDECK-1";
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $indices);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish a card", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-");
+    AddDecisionQueue("MZBANISH", $this->controller, "DECK,-," . $this->cardID . "," . $this->controller, 1);
   }
 }
