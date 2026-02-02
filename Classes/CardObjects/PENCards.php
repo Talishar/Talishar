@@ -1,5 +1,5 @@
 <?php
-include_once "HVYCards.php";
+include_once  __DIR__ . "/HVYCards.php";
 class synapse_sparkcap extends Card
 {
   function __construct($controller)
