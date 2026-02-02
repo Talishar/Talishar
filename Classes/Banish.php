@@ -21,8 +21,9 @@ class Banish {
     return count($this->banish) / BanishPieces();
   }
 
-  function Card($index)
+  function Card($index, $cardNumber = false)
   {
+    if($cardNumber) $index = $index * BanishPieces();
     return new BanishCard($this->playerID, $index);
   }
 
@@ -52,6 +53,14 @@ class Banish {
       else if($cardModifier == "Source" && $modifier == "TCL") $this->banish[$i+1] = $newMod;
     }
   }
+
+  function FindCardUID($uid) {
+    if (count($this->banish) == 0) return "";
+    for ($i = 0; $i < count($this->banish); $i += BanishPieces()) {
+      if ($this->banish[$i + 2] == $uid) return new BanishCard($this->playerID, $i);
+    }
+    return "";
+  }
 }
 
 class BanishCard {
@@ -79,6 +88,10 @@ class BanishCard {
     {
         $key = $this->index + 1;
         return $this->banish[$key] ?? null;
+    }
+
+    function Modify($mod) {
+      if (isset($this->banish[$this->index + 1])) $this->banish[$this->index + 1] = $mod;
     }
 
     function UniqueID()

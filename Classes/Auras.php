@@ -24,7 +24,15 @@ class Auras {
       if ($this->auras[$i + 6] == $uid) return new AuraCard($i, $this->player);
     }
     return "";
-  } 
+  }
+
+  function SearchAurasForModality($mode) {
+    if (count($this->auras) == 0) return "";
+    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+      if (DelimStringContains($this->auras[$i + 10], $mode)) return new AuraCard($i, $this->player);
+    }
+    return "";
+  }
 
   function NumAuras() {
     return intdiv(count($this->auras), AuraPieces());
@@ -54,6 +62,10 @@ class AuraCard {
 
   function Index() {
     return $this->index;
+  }
+
+  function Player() {
+    return $this->controller;
   }
 
   function CardID() {
@@ -126,4 +138,14 @@ class AuraCard {
 	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true) { //don't call this for removing auras in the equipment
     return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase);
 	}
+
+  function GetModalities() {
+    return $this->pieces[$this->index+10] ?? "-";
+  }
+
+  function AddModality($mode) {
+    if ($this->pieces[$this->index+10] == "-")
+      $this->pieces[$this->index+10] = $mode;
+    else $this->pieces[$this->index+10] .= ",$mode";
+  }
 }

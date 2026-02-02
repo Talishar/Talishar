@@ -936,6 +936,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
+    if($theirAuras[$i] == "blessing_of_themis_yellow") {
+      $label = GamestateUnsanitize($theirAuras[$i + 10]);
+    }
+    elseif (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1) {
+      $label = "Token Copy";
+    }
+    else $label = "";
     array_push($theirAurasOutput,
       JSONRenderedCard(cardNumber: $theirAuras[$i],
       actionDataOverride: strval($i),
@@ -946,7 +953,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       type: $type,
       sType: $sType,
       gem: $gem,
-      label: !TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1 ? "Token Copy" : ""));
+      label: $label));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -1041,6 +1048,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
+    if($myAuras[$i] == "blessing_of_themis_yellow") {
+      $label = GamestateUnsanitize($myAuras[$i + 10]);
+    }
+    elseif (!TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1) {
+      $label = "Token Copy";
+    }
     array_push($myAurasOutput, JSONRenderedCard(
       cardNumber: $myAuras[$i],
       overlay: $myAuras[$i + 1] != 2 ? 1 : 0,
@@ -1053,7 +1066,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       actionDataOverride: strval($i),
       sType: $sType,
       gem: $gem,
-      label: !TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1 ? "Token Copy" : ""
+      label: $label
     ));
   }
   $response->playerAuras = $myAurasOutput;

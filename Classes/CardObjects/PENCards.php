@@ -5332,7 +5332,48 @@ class solray_plating extends Card {
 
   function DefaultActiveState() {
     return 0;
+  }  
+}
+
+class blessing_of_themis_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_themis_yellow";
+    $this->controller = $controller;
   }
 
-  
+  function EntersArenaAbility() {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "-", $AuraCard->UniqueID());
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    switch ($additionalCosts) {
+      case "FLIP":
+        $Banish = new Banish($target);
+        $BanishCard = $Banish->FindCardUID($uniqueID);
+        if ($BanishCard != "")
+          $BanishCard->Modify("DOWN");
+        break;
+      case "STARTTURN":
+        $Auras = new Auras($this->controller);
+        $AuraCard = $Auras->FindCardUID($uniqueID);
+        $AuraCard->Remove();
+        AddSoul($this->cardID, $this->controller, "AURAS", false);
+        break;
+      default:
+        $Auras = new Auras($this->controller);
+        $AuraCard = $Auras->FindCardUID($uniqueID);
+        AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+        AddDecisionQueue("SETDQVAR", $this->controller, "0");
+        AddDecisionQueue("WRITELOG", $this->controller, "📣<b>{0}</b> was chosen");
+        AddDecisionQueue("BLESSINGOFTHEMIS", $this->controller, $AuraCard->Index().",{0}");
+        break;
+    }
+  }
 }

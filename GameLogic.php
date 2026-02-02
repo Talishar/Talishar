@@ -3569,6 +3569,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       $items[$params[0]+8] = $params[1];
       return $lastResult;
+    case "BLESSINGOFTHEMIS":
+      $params = explode(",", $parameter);
+      $AuraCard = new AuraCard($params[0], $player);
+      $AuraCard->AddModality($params[1]);
+      foreach ([1,2] as $playerID) {
+        $Banish = new Banish($playerID);
+        for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+          $BanishCard = $Banish->Card($i, true);
+          if (GamestateSanitize(NameOverride($BanishCard->ID(), $playerID)) == $params[1]) {
+            $BanishCard->Modify("DOWN");
+          }
+        }
+      }
+      return $lastResult;
     case "MZTAP":
       $parameter != 0 ? $parameter = 1 : $parameter = 0;
       WriteLog("HERE: $lastResult");
