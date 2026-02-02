@@ -355,6 +355,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
+    case "ALLYINDICES":
+      $currentTargets = explode(",", $parameter);
+      $search = "THEIRALLY&MYALLY";
+      $rvOrig = explode(",", SearchMultizone($player, $search));
+      $rv = [];
+      //remove any choices that have already been targeted
+      foreach ($rvOrig as $ind) {
+        if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
+      }
+      $rv = implode(",", $rv);
+      return $rv == "" ? "PASS" : $rv;
     case "CUTTINGINDICES":
       $currentNames = [];
       foreach (explode(",", $lastResult) as $cardID) {

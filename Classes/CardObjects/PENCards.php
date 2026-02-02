@@ -5630,3 +5630,45 @@ class shamanic_shinbones extends Card {
     return 1;
   }
 }
+
+class put_on_ice extends BaseCard {
+  function PlayAbility($from, $target) {
+    if ($from == "ARS") Draw($this->controller);
+    //this card's targeting is a mess right now that I don't want to deal with anymore, this works and I'm happy
+    $targetArr = explode("~", $target);
+    $targerArr = explode(",", $targetArr[count($targetArr) - 1]);
+    for ($i = 1; $i < count($targetArr); ++$i) {
+      MZFreeze($targerArr[$i]);
+    }
+  }
+
+  function SetTargets($N) {
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "~");
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    for($i=0; $i<$N; ++$i) {
+      AddDecisionQueue("ALLYINDICES", $this->controller, "{0}", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose " . $N - 1 . " allies(s) to freeze", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "{0},", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+  }
+}
+
+class put_on_ice_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "put_on_ice_red";
+    $this->controller = $controller;
+    $this->baseCard = new put_on_ice($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->SetTargets(3);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $target);
+  }
+}
