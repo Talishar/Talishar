@@ -1300,6 +1300,7 @@ function GetEasyAbilityNames($cardID, $index, $from) {
   $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
   switch ($abilityTypes) {
     case "I,AA":
+      if (IsResolutionStep()) $layerCount -= LayerPieces();
       $names = "Ability";
       if($foundNullTime && $from == "HAND") return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
