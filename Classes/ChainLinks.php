@@ -23,7 +23,6 @@ class ChainLinks {
   }
 
 	function LastLink() {
-		WriteLog("JERE: " . $this->NumLinks());
 		return new ChainLink($this->NumLinks() - 1);
 	}
 
