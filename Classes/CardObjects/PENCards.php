@@ -3455,6 +3455,7 @@ class assembly_module_blue extends Card {
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
       AddDecisionQueue("PUTPLAY", $this->controller, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
     }
   }
 
