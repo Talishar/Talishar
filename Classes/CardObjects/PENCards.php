@@ -5530,3 +5530,14 @@ class sapwood_elixir_red extends Card {
     return $this->baseCard->EffectPowerModifier($param, $attached);
   }
 }
+
+class shamanic_shinbones extends Card {
+  function __construct($controller) {
+    $this->cardID = "shamanic_shinbones";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+}
