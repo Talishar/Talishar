@@ -5672,3 +5672,101 @@ class put_on_ice_red extends Card {
     $this->baseCard->PlayAbility($from, $target);
   }
 }
+
+class put_on_ice_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "put_on_ice_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new put_on_ice($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->SetTargets(2);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $target);
+  }
+}
+
+class put_on_ice_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "put_on_ice_blue";
+    $this->controller = $controller;
+    $this->baseCard = new put_on_ice($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->SetTargets(1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from, $target);
+  }
+}
+
+class reckless_arithmetic_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "reckless_arithmetic_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $roll = GetDieRoll($this->controller);
+    AddCurrentTurnEffect($this->cardID . "," . $roll, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    global $currentTurnEffects;
+    foreach ($currentTurnEffects as $effect) {
+      $effects = explode(",", $effect);
+      if ($effects[0] == $this->cardID) {
+        return $effects[1];
+      }
+    }
+    return 0;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class lay_down_the_challenge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "lay_down_the_challenge_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Intimidate();
+    $hand = GetHand($this->controller);
+    $handOpponent = GetHand($this->controller == 1 ? 2 : 1);
+    if (count($hand) < count($handOpponent)-1) 
+      Draw($this->controller);
+  }
+}
+
+class shield_beater extends Card {
+  function __construct($controller) {
+    $this->cardID = "shield_beater";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 4;
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    Tap("MYCHAR-$cardIndex", $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
+    return false;
+  }
+}

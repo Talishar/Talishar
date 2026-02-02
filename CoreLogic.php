@@ -1966,6 +1966,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
     $cardName = explode(" ", $cardName);
     $cardName = implode(",", $cardName);
   }
+  WriteLog("DEBUG: CardNameContains checking if '$cardName' contains '$name'");
   if ($cardName == $name) return true; //Card is breaking due to comma
   return DelimStringContains($cardName, $name, $partial);
 }
@@ -2750,6 +2751,9 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
           if (GetClassState($player, $CS_NumWateryGrave) == 1 && HasWateryGrave($cardID) && $from=="GY") {
             $hasGoAgain = true;
           }
+          break;
+        case "shield_beater":
+          if (CardNameContains($cardID, "Visit Anvilheim", $player)) $hasGoAgain = true;
           break;
         default:
           break;
