@@ -64,6 +64,7 @@ class savage_claw extends Card
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
+    WriteLog("HER: $additionalCosts");
     if (SearchCardList($additionalCosts, $this->controller, minAttack: 6) != "")
       AddCurrentTurnEffect($this->cardID, $this->controller);
   }
@@ -76,6 +77,10 @@ class savage_claw extends Card
   function EffectPowerModifier($param, $attached = false)
   {
     return 1;
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
   }
 }
 
