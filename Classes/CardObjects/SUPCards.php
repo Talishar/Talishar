@@ -782,7 +782,7 @@ class turn_the_crowd_hateful {
     }
   }
 
-  function EffectPowerModifier($param, $attached = false) {
+  function EffectPowerModifier() {
     return 3;
   }
 
@@ -911,7 +911,7 @@ class turn_the_crowd_grateful {
     }
   }
 
-  function EffectPowerModifier($param, $attached = false) {
+  function EffectPowerModifier() {
     return 1;
   }
 
