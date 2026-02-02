@@ -5453,6 +5453,95 @@ class myrkhellir_helm extends Card {
   }
 }
 
+class conquer_the_icy_terrain extends BaseCard {
+  function HitTrigger($check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect() {
+    global $defPlayer;
+    AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to pay 2 to avoid a frozen card being destroyed");
+    AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_pay_2_to_avoid_discarding", 1);
+    AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
+    AddDecisionQueue("PASSPARAMETER", $defPlayer, 2, 1);
+    AddDecisionQueue("PAYRESOURCES", $defPlayer, "-", 1);
+    AddDecisionQueue("ELSE", $defPlayer, "-");
+    //don't do auras for now
+    $choices = SearchMultizone($this->controller, "THEIRCHAR:frozenOnly=1&THEIRALLY:frozenOnly=1&THEIRITEMS:frozenOnly=1&THEIRARS:frozenOnly=1");
+    function NotHero($mzind) {
+      return $mzind != "THEIRCHAR-0";
+    }
+    $choices = implode(",", array_filter(explode(",", $choices), "NotHero"));
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $choices, 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+  }
+}
+
+class conquer_the_icy_terrain_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "conquer_the_icy_terrain_red";
+    $this->controller = $controller;
+    $this->baseCard = new conquer_the_icy_terrain($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->HitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
+class conquer_the_icy_terrain_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "conquer_the_icy_terrain_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new conquer_the_icy_terrain($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->HitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
+class conquer_the_icy_terrain_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "conquer_the_icy_terrain_blue";
+    $this->controller = $controller;
+    $this->baseCard = new conquer_the_icy_terrain($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->HitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
 class elixir extends BaseCard {
   function PlayAbility($auraName) {
     AddCurrentTurnEffect($this->cardID, $this->controller);
