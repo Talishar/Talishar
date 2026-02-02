@@ -4550,7 +4550,9 @@ class mist_hunter_red extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    if (IsHeroAttackTarget()) {
+    global $defPlayer;
+    $DefHero = new CharacterCard(0, $defPlayer);
+    if (IsHeroAttackTarget() && TalentContains($DefHero->CardID(), "MYSTIC", $defPlayer)) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
     }
