@@ -1966,7 +1966,6 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
     $cardName = explode(" ", $cardName);
     $cardName = implode(",", $cardName);
   }
-  WriteLog("DEBUG: CardNameContains checking if '$cardName' contains '$name'");
   if ($cardName == $name) return true; //Card is breaking due to comma
   return DelimStringContains($cardName, $name, $partial);
 }
