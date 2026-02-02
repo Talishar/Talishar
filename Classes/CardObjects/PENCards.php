@@ -733,12 +733,10 @@ class predatory_plating extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CombatChain, $ChainLinks;
     if (LayerStepPower() >= 6) return false;
-
     for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
       $Card = $CombatChain->Card($i, true);
       if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA") && $Card->TotalPower() >= 6) return false;
     }
-
     for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
       $ChainLink = $ChainLinks->GetLink($i);
       for ($j = 0; $j < $ChainLink->NumCards(); ++$j) {
@@ -746,15 +744,14 @@ class predatory_plating extends Card {
         if ($Card->PlayerID() == $this->controller && $Card->PowerModifier() >= 6) return false;
       }
     }
-
     $Character = new PlayerCharacter($this->controller);
     for ($i = 0; $i < $Character->NumCards(); ++$i) {
-      if (PowerValue($Character->Card($i, true)->CardID(), $this->controller, "EQUIP")) return false;
+      $powerValue = PowerValue($Character->Card($i, true)->CardID(), $this->controller, "EQUIP");
+      if ($powerValue >= 6) return false;
     }
-
     $Allies = new Allies($this->controller);
     for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
-      if (PowerValue($Allies->Card($i, true), $this->controller, "ALLIES")) return false;
+      if (PowerValue($Allies->Card($i, true), $this->controller, "ALLIES") >= 6) return false;
     }
     return true;
   }
