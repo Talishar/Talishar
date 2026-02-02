@@ -4826,6 +4826,10 @@ class scuttle_toes extends Card {
     $TargetAlly->Destroy();
     $remove = true;
   }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
 }
 
 class beneath_the_surface_yellow extends Card {
