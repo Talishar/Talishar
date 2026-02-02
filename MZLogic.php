@@ -398,28 +398,33 @@ function MZBottom($player, $lastResult, $allArsenal = true)
   return $lastResult;
 }
 
-function MZFreeze($target)
+function MZFreeze($target, $player="-", $freezeState=1)
 {
   global $currentPlayer;
+  if ($player == "-") $player = $currentPlayer;
   $pieces = explode("-", $target);
-  $player = (substr($pieces[0], 0, 2) == "MY" ? $currentPlayer : ($currentPlayer == 1 ? 2 : 1));
+  $player = (substr($pieces[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
   $zone = &GetMZZone($player, $pieces[0]);
   switch ($pieces[0]) {
     case "THEIRCHAR":
     case "MYCHAR":
-      $zone[$pieces[1] + 8] = 1;
+      $zone[$pieces[1] + 8] = $freezeState;
       break;
     case "THEIRALLY":
     case "MYALLY":
-      $zone[$pieces[1] + 3] = 1;
+      $zone[$pieces[1] + 3] = $freezeState;
       break;
     case "THEIRARS":
     case "MYARS":
-      $zone[$pieces[1] + 4] = 1;
+      $zone[$pieces[1] + 4] = $freezeState;
       break;
     case "THEIRITEMS":
     case "MYITEMS":
-      $zone[$pieces[1] + 7] = 1;
+      $zone[$pieces[1] + 7] = $freezeState;
+      break;
+    case "MYAURAS":
+    case "THEIRAURAS":
+      $zone[$pieces[1] + 11] = $freezeState;
       break;
     default:
       break;
@@ -651,4 +656,57 @@ function MZSwitchPlayer($zoneStr)
     $zoneStr .= $zone;
   }
   return $zoneStr;
+}
+
+function MZIndexToMZUID($player, $mzIndex) {
+  $targetArr = explode("-", $mzIndex);
+  $targetPlayer = str_contains($mzIndex, "MY") ? $player : ($player == 1 ? 2 : 1);
+  switch ($targetArr[0]) {
+    case "THEIRCHAR":
+    case "MYCHAR":
+      $Card = new CharacterCard($targetArr[1], $targetPlayer);
+      break;
+    case "THEIRITEMS":
+    case "MYITEMS":
+      $Card = new ItemCard($targetArr[1], $targetPlayer);
+      break;
+    case "THEIRALLY":
+    case "MYALLY":
+      $Card = new AllyCard($targetArr[1], $targetPlayer);
+      break;
+    case "THEIRAURA":
+    case "MYAURA":
+      $Card = new AuraCard($targetArr[1], $targetPlayer);
+      break;
+    default:
+      return "-";
+  }
+  return "$targetArr[0]-" . $Card->UniqueID();
+}
+
+function MZUIDtoMZIndex($player, $mzUID) {
+  $targetArr = explode("-", $mzUID);
+  $targetPlayer = str_contains($mzUID, "MY") ? $player : ($player == 1 ? 2 : 1);
+  switch ($targetArr[0]) {
+    case "THEIRCHAR":
+    case "MYCHAR":
+      $Zone = new PlayerCharacter($targetPlayer);
+      break;
+    case "THEIRITEMS":
+    case "MYITEMS":
+      $Zone = new Items($targetPlayer);
+      break;
+    case "THEIRALLY":
+    case "MYALLY":
+      $Zone = new Allies($targetPlayer);
+      break;
+    case "THEIRAURA":
+    case "MYAURA":
+      $Zone = new Auras($targetPlayer);
+      break;
+    default:
+      return "-";
+  }
+  $Card = $Zone->FindCardUID($targetArr[1]);
+  return "$targetArr[0]-" . $Card->Index();
 }

@@ -5377,3 +5377,115 @@ class blessing_of_themis_yellow extends Card {
     }
   }
 }
+
+class shattering_grasp extends Card {
+  function __construct($controller) {
+    $this->cardID = "shattering_grasp";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    foreach ([1,2] as $player) {
+      $Allies = new Allies($player);
+      for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+        if ($Allies->Card($i, true)->Frozen()) return false;
+      }
+    }
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY:frozenOnly&THEIRALLY:frozenOnly");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a frozen ally to destroy", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 2 ? 1 : 2);
+    $Allies = new Allies($targetPlayer);
+    $AllyCard = $Allies->FindCardUID(explode("-", $target)[1] ?? "-");
+    if ($AllyCard != "") $AllyCard->Destroy();
+  }
+}
+
+class channel_galcias_cradle_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_galcias_cradle_blue";
+    $this->controller = $controller;
+  }
+
+  private
+  function SetTargets($uniqueID) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY&MYITEMS&MYCHAR:type=E&MYAURA&THEIRALLY&THEIRITEMS&THEIRCHAR:type=E");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose something to freeze", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("GALCIASCRADLE", $this->controller, $uniqueID, 1);
+  }
+
+  function EntersArenaAbility() {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
+    $this->SetTargets($AuraCard->UniqueID());
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    $this->SetTargets($AuraCard->UniqueID());
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $AuraCard->CardID(), "-", "CHANNEL", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    WriteLog("JERE: $uniqueID");
+    if ($AuraCard != "") {
+      if ($additionalCosts == "CHANNEL") {
+        ChannelTalent($uniqueID, "ICE");
+      }
+      else {
+        $mzIndex = MZUIDtoMZIndex($this->controller, $target);
+        WriteLog("HERE: $mzIndex");
+        MZFreeze($mzIndex, $this->controller);
+        AddCurrentTurnEffect($this->cardID, $this->controller, "-", "$target," . $AuraCard->UniqueID());
+      }
+    }
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    global $CurrentTurnEffects;
+    $AuraCard = new AuraCard($index, $this->controller);
+    for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+      $Effect = $CurrentTurnEffects->Effect($i, true);
+      $params = explode(",", $Effect->AppliestoUniqueID());
+      $source = $params[1] ?? "-";
+      if ($source == $AuraCard->UniqueID()) {
+        $Effect->Remove();
+        MZFreeze(MZUIDtoMZIndex($this->controller, $params[0]), $this->controller, 0);
+      }
+    }
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->Effect($i);
+    AddNextTurnEffect($Effect->EffectID(), $this->controller, $Effect->AppliestoUniqueID());
+    $remove = true;
+  }
+}

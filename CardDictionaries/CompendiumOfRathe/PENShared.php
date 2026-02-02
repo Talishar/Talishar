@@ -77,3 +77,14 @@ function DoSolrayPlating($targetPlayer, $damage)
     LogDamagePreventedStats($targetPlayer, 1);
   }
 }
+
+function SuperFrozen($player, $MZIndex) {
+  global $CurrentTurnEffects;
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() != $player || $Effect->EffectID() != "channel_galcias_cradle_blue") continue;
+    $mzUID = MZIndexToMZUID($player, $MZIndex);
+    if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[1] ?? "-")) return true;
+  }
+  return false;
+}
