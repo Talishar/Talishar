@@ -5207,7 +5207,9 @@ class ion_charged_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect($this->cardID, $otherPlayer);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -5226,5 +5228,81 @@ class ion_charged_yellow extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 1;
+  }
+}
+
+class overcharge extends BaseCard {
+  function PowerModifier($param, $attached = false) {
+    global $combatChainState, $CCS_NumInstantsPlayedByAttackingPlayer;
+    return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0 ? $param : 0;
+  }
+}
+
+class overcharge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "overcharge_red";
+    $this->controller = $controller;
+    $this->baseCard = new overcharge($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier(3);
+  }
+}
+
+class overcharge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "overcharge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new overcharge($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier(2);
+  }
+}
+
+class overcharge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "overcharge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new overcharge($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier(1);
+  }
+}
+ 
+class voltic_vanguard extends Card {
+  function __construct($controller) {
+    $this->cardID = "voltic_vanguard";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID."-2", $this->controller);
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CS_NumInstantPlayed;
+    return GetClassState($this->controller, $CS_NumInstantPlayed) == 0;
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    global $currentTurnEffects;
+    $effects = explode("-", $currentTurnEffects[$index]);
+    $prevented = min($damage, $effects[1]);
+    $effects[1] -= $prevented;
+    if ($effects[1] <= 0) $remove = true;
+    return $prevented;
   }
 }
