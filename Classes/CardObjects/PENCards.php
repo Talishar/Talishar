@@ -2866,7 +2866,7 @@ class courageous_crossing_blue extends Card {
     $choices = ["THEIRCHAR-0"];
     array_push($choices, "MYCHAR-0");
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a quicken", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a courage", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
@@ -2889,12 +2889,12 @@ class courageous_crossing_blue extends Card {
     if (str_contains($target, "CHAR")) {
       $Character = new PlayerCharacter($targetPlayer);
       $CharacterCard = $Character->FindCardUID(explode("-", $target)[1]);
-      if ($CharacterCard != "") $CharacterCard->AddPowerCounters(-1);
+      if ($CharacterCard != "" && $CharacterCard->NumPowerCounters() > 0) $CharacterCard->AddPowerCounters(-1);
     }
     elseif (str_contains($target, "AURAS")) {
       $Auras = new Auras($targetPlayer);
       $AuraCard = $Auras->FindCardUID(explode("-", $target)[1]);
-      if ($AuraCard != "") $AuraCard->AddPowerCounters(-1);
+      if ($AuraCard != "" && $AuraCard->NumPowerCounters()) $AuraCard->AddPowerCounters(-1);
     }
   }
 }
