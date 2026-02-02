@@ -584,10 +584,11 @@ function DoesAttackTriggerMirage()
 
 function ProcessMirageOnBlock($index)
 {
-  global $mainPlayer;
+  global $defPlayer;
   if(IsMirageActive($index) && DoesAttackTriggerMirage() && (SearchLayersForCardID("MIRAGE") == -1))
   {
-    AddLayer("LAYER", $mainPlayer, "MIRAGE");
+    $ChainCard = new ChainCard($index);
+    AddLayer("TRIGGER", $defPlayer, "MIRAGE", $ChainCard->UniqueID());
   }
 }
 
@@ -611,23 +612,21 @@ function HasMirage($cardID)
   return GeneratedHasMirage($cardID);
 }
 
-function MirageLayer()
+function MirageLayer($target)
 {
   global $CombatChain, $mainPlayer, $combatChainState, $defPlayer, $turn, $layers;
   if(DoesAttackTriggerMirage())
   {
-    for($i=$CombatChain->NumCardsActiveLink()-1; $i>=1; --$i)
-    {
-      if(IsMirageActive($i*CombatChainPieces())) {
-        $cardID = $CombatChain->Remove($i, cardNumber:true);
-        BlockCardDestroyed($cardID, $defPlayer);
-        AddGraveyard($cardID, $defPlayer, "CC");
-        WriteLog(CardLink($cardID, $cardID) . " is destroyed by <b>Mirage</b>");
-        if(ClassContains($cardID, "ILLUSIONIST", $mainPlayer)) PhantomTidemawDestroy();
-      }
+    $ChainCard = $CombatChain->FindCardUID($target);
+    if($ChainCard != "" & IsMirageActive($ChainCard->Index())) {
+      $cardID = $ChainCard->Remove();
+      BlockCardDestroyed($cardID, $defPlayer);
+      AddGraveyard($cardID, $defPlayer, "CC");
+      WriteLog(CardLink($cardID, $cardID) . " is destroyed by <b>Mirage</b>");
+      if(ClassContains($cardID, "ILLUSIONIST", $mainPlayer)) PhantomTidemawDestroy();
     }
   }
-  else {
+  else { //Aegisworn: I don't understand this block
     $turn[0] = "A";
     $currentPlayer = $mainPlayer;
     for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())

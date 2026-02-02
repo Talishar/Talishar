@@ -147,4 +147,9 @@ class ChainCard {
       if(count($this->chain) == 0) return "";
       return $this->chain[$this->index + 9];
     }
+
+    function Remove() {
+      global $CombatChain;
+      return $CombatChain->Remove($this->Index());
+    }
 }

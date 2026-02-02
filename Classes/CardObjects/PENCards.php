@@ -4053,6 +4053,10 @@ class shimmering_mirage_blue extends Card {
     $this->cardID = "shimmering_mirage_blue";
     $this->controller = $controller;
   }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 }
 
 class display_of_craftsmanship extends BaseCard {

@@ -623,7 +623,7 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
       PhantasmLayer($additionalCosts);
       break;
     case "MIRAGE":
-      MirageLayer();
+      MirageLayer($additionalCosts);
       break;
     default:
       break;
@@ -2038,6 +2038,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "PHANTASM":
         PhantasmLayer($additionalCosts);
+        break;
+      case "MIRAGE":
+        MirageLayer($target);
         break;
       case "SPECTRA":
         $Auras = new Auras($player);
