@@ -2267,17 +2267,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "tripwire_trap_red":
         TrapTriggered($parameter);
-        if (!IsAllyAttacking()) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
-          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
-          AddDecisionQueue("ELSE", $mainPlayer, "-");
-          AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
-        }
-        else { //if there is no attacking hero, the trap just goes off
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, 0);
-          AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
-        }
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
         break;
       case "pitfall_trap_yellow":
         TrapTriggered($parameter);
@@ -2812,8 +2806,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           if (CardSubType($deck->Top()) == "Arrow") {
             if (IsAllyAttacking()) {
               $allyIndex = "THEIRALLY-" . $combatChainState[$CCS_WeaponIndex];
-              AddDecisionQueue("PASSPARAMETER", $player, $allyIndex, 1);
-            } else AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=C", 1);
+              $indices = "THEIRCHAR-0,$allyIndex";
+            } else $indices = "THEIRCHAR-0";
+            AddDecisionQueue("PASSPARAMETER", $player, $indices);
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage");
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $parameter, 1);
@@ -2952,7 +2947,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "tarpit_trap_yellow":
         AddCurrentTurnEffect($parameter, $mainPlayer);
-        if (!IsAllyAttacking()) TrapTriggered($parameter);
+        TrapTriggered($parameter);
         break;
       case "virulent_touch_red":
       case "virulent_touch_yellow":
@@ -3301,18 +3296,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "evo_magneto_blue_equip":
-        if (IsAllyAttacking()) {
-          WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
-        } else {
-          $index = FindCharacterIndex($player, "evo_magneto_blue_equip");
-          if ($index != -1) {
-            CharacterChooseSubcard($player, $index, isMandatory: false);
-            AddDecisionQueue("ADDDISCARD", $player, "CHAR", 1);
-            AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
-            AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-            AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
-          }
+        $index = FindCharacterIndex($player, "evo_magneto_blue_equip");
+        if ($index != -1) {
+          CharacterChooseSubcard($player, $index, isMandatory: false);
+          AddDecisionQueue("ADDDISCARD", $player, "CHAR", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:minCost=0;maxCost=1", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to gain control.", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
         }
         break;
       case "fast_and_furious_red":
@@ -3396,9 +3387,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (CountAura("might", $player) > 0) MZMoveCard($player, "MYDISCARD:type=AA", "MYTOPDECK", may: true);
         break;
       case "run_into_trouble_red":
-        if (IsAllyAttacking()) {
-          WriteLog("<span style='color:red;'>No damage is dealt because there is no attacking hero when allies attack.</span>");
-        } else if (CountAura("agility", $player) > 0) {
+        if (CountAura("agility", $player) > 0) {
           WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
           DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter, $player);
         }
@@ -3584,7 +3573,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           Decompose($player, "SUMMERSFALL", $zone . "AURAS-" . $index);
         }
         else {
-          WriteLog(CardLink($parameter, $parameter) . " layer fails as there are no remaining targets for the targeted effect.");
+          Decompose($player, "SUMMERSFALL", "NONE");
         }
         break;
       case "blossoming_decay_red":
@@ -3699,8 +3688,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "face_purgatory":
-        if(!IsAllyAttacking() && $CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
-        else WriteLog("<span style='color:red;'>No card is discarded because there is no attacking hero when allies attack.</span>");
+        if($CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
         Draw($player);
         break;
       case "malefic_incantation_red":
@@ -3825,7 +3813,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "mask_of_deceit":
         $char = &GetPlayerCharacter($player);
-        if (CheckMarked($mainPlayer) && !IsAllyAttacking()) AddDecisionQueue("CHOOSECARD", $player, "arakni_black_widow,arakni_funnel_web,arakni_orb_weaver,arakni_redback,arakni_tarantula,arakni_trap_door");
+        if (CheckMarked($mainPlayer)) AddDecisionQueue("CHOOSECARD", $player, "arakni_black_widow,arakni_funnel_web,arakni_orb_weaver,arakni_redback,arakni_tarantula,arakni_trap_door");
         else AddDecisionQueue("PASSPARAMETER", $player, -1);
         AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
         break;
@@ -3837,7 +3825,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hunted_or_hunter_red":
         WriteLog("👹 The Hunter has become the hunted");
         LoseHealth(1, $mainPlayer);
-        if (!IsAllyAttacking()) TrapTriggered($parameter);
+        TrapTriggered($parameter);
         break;
       case "blood_runs_deep_red":
         ThrowWeapon("Dagger", "blood_runs_deep_red");
@@ -3878,7 +3866,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "den_of_the_spider_red":
         WriteLog("The Hunter stumbles into the spider");
         MarkHero($mainPlayer);
-        if (!IsAllyAttacking()) TrapTriggered($parameter);
+        TrapTriggered($parameter);
         break;
       case "thick_hide_hunter_yellow":
         DiscardRandom();
@@ -3894,7 +3882,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             AddDecisionQueue("CHAINREACTION", $player, "-", 1);
           }
         }
-        if (!IsAllyAttacking()) TrapTriggered($parameter);
+        TrapTriggered($parameter);
         break;
       case "war_cry_of_bellona_yellow":
         $attackGoAgain = DoesAttackHaveGoAgain() && HasWard($combatChain[0], $mainPlayer);
@@ -3918,7 +3906,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("NULLTIMEZONE", $player, $ItemCard->Index().",{0}");
         break;
       case "zap_clappers":
-        if (CanRevealCards($player) && !IsAllyAttacking()) {
+        if (CanRevealCards($player)) {
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
@@ -4166,11 +4154,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         Tap($MZIndex, $player);
         break;
       case "light_fingers":
-        if (!IsAllyAttacking()) {
-          AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "THEIRITEMS:type=T;cardID=gold");
-          AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $defPlayer, "GAINCONTROL", 1);
-        }
+        AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "THEIRITEMS:type=T;cardID=gold");
+        AddDecisionQueue("CHOOSEMULTIZONE", $defPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $defPlayer, "GAINCONTROL", 1);
         break;
       case "anka_drag_under_yellow":
         PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
@@ -4366,16 +4352,14 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
     case "phantasmaclasm_red":
-      if(IsHeroAttackTarget()) {
-        AddDecisionQueue("SHOWHANDWRITELOG", $defPlayer, "<-", 1);
-        AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-        AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-        AddDecisionQueue("SETDQVAR", $player, "0", 1);
-        AddDecisionQueue("WRITELOG", $player, "<0> was put on the bottom of the deck.", 1);
-        AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
-        AddDecisionQueue("DRAW", $defPlayer, "-");
-        }
+      AddDecisionQueue("SHOWHANDWRITELOG", $defPlayer, "<-", 1);
+      AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+      AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
+      AddDecisionQueue("SETDQVAR", $player, "0", 1);
+      AddDecisionQueue("WRITELOG", $player, "<0> was put on the bottom of the deck.", 1);
+      AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
+      AddDecisionQueue("DRAW", $defPlayer, "-");
       break;
     case "rites_of_replenishment_red":
     case "rites_of_replenishment_yellow":

@@ -133,15 +133,13 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "sirens_call_red":
       $deck = new Deck($defPlayer);
-      if (IsHeroAttackTarget()) {
-        LookAtHand($defPlayer);
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDPITCH,3");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to add to the chain link", 1);
-        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
-        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-      }
+      LookAtHand($defPlayer);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDPITCH,3");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to add to the chain link", 1);
+      AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
+      AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
       return "";
     case "sacred_art_undercurrent_desires_blue":
       if ($additionalCosts != "-") {
@@ -189,20 +187,18 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "intimate_inducement_red":
     case "intimate_inducement_yellow":
     case "intimate_inducement_blue":
-      if (IsHeroAttackTarget()){
-        $amount = 4;
-        if ($cardID == "intimate_inducement_yellow") $amount = 3;
-        elseif ($cardID == "intimate_inducement_blue") $amount = 2;
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "DECKTOPXINDICES," . $amount);
-        AddDecisionQueue("DECKCARDS", $otherPlayer, "<-", 1);
-        AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("CHOOSETHEIRDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "DECK", 1);
-        AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
-        AddDecisionQueue("PUTCOMBATCHAINDEFENSE0", $otherPlayer, "-", 1);
-        AddDecisionQueue("PUTINANYORDER", $currentPlayer, $amount - 1);
-      }
+      $amount = 4;
+      if ($cardID == "intimate_inducement_yellow") $amount = 3;
+      elseif ($cardID == "intimate_inducement_blue") $amount = 2;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here's the card that on top of your deck.", 1);
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "DECKTOPXINDICES," . $amount);
+      AddDecisionQueue("DECKCARDS", $otherPlayer, "<-", 1);
+      AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("CHOOSETHEIRDECK", $currentPlayer, "<-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "DECK", 1);
+      AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
+      AddDecisionQueue("PUTCOMBATCHAINDEFENSE0", $otherPlayer, "-", 1);
+      AddDecisionQueue("PUTINANYORDER", $currentPlayer, $amount - 1);
       AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "venomous_bite_red":

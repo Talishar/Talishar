@@ -440,7 +440,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "soul_butcher_yellow":
       case "soul_butcher_blue":
         $theirSoul = &GetSoul($defPlayer);
-        $power += (count($theirSoul) > 0 && IsHeroAttackTarget() ? 2 : 0);
+        $power += (count($theirSoul) > 0 ? 2 : 0);
         break;
       case "teklo_leveler":
         $power += EvoUpgradeAmount($mainPlayer) >= 4;
@@ -468,7 +468,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         break;
       case "show_no_mercy_red":
         $hand = &GetHand($defPlayer);
-        $power += $combatChain[0] == "show_no_mercy_red" && count($hand) == 0 && IsHeroAttackTarget() ? 3 : 0;
+        $power += $combatChain[0] == "show_no_mercy_red" && count($hand) == 0 ? 3 : 0;
         break;
       case "beast_mode_red":
       case "beast_mode_yellow":
@@ -980,7 +980,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "pitfall_trap_yellow":
-      if (!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "rockslide_trap_blue":
       AddLayer("TRIGGER", $defPlayer, $cardID);
@@ -989,40 +989,40 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "collapsing_trap_blue":
-      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "spike_pit_trap_blue":
-      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "boulder_trap_yellow":
-      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "pendulum_trap_yellow":
-      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "tarpit_trap_yellow":
       if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "bloodrot_trap_red":
-      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "frailty_trap_red":
-      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "inertia_trap_red":
-      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "hunted_or_hunter_red":
-      if (!IsAllyAttacking() && NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "smoke_out_red":
       if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "lair_of_the_spider_red":
-      if (!IsAllyAttacking() && DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "den_of_the_spider_red":
-      if (!IsAllyAttacking() && HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
+      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "chain_reaction_yellow":
       if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
@@ -1175,7 +1175,7 @@ function OnBlockResolveEffects($cardID = "")
       switch ($defendingCard) {//code for Jarl's armor
         case "ollin_ice_cap":
           $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
-          if ($blockedWithIce - $sub > 0 && !IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          if ($blockedWithIce - $sub > 0) AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
           break;
         case "tectonic_crust":
           $sub = TalentContains($defendingCard, "EARTH", $defPlayer) == true ? 1 : 0; //necessary for a fringe case where the chest but not the other blocking card loses its talent
@@ -1189,8 +1189,7 @@ function OnBlockResolveEffects($cardID = "")
       }
       switch ($defendingCard) {
         case "stalagmite_bastion_of_isenloft":
-          if (!IsAllyAttacking()) AddLayer("TRIGGER", $defPlayer, $defendingCard);
-          else WriteLog("<span style='color:red;'>No ".CardLink("frostbite", "frostbite")." is created because there is no attacking hero when allies attack.</span>");
+          AddLayer("TRIGGER", $defPlayer, $defendingCard);
           break;
         case "ironhide_helm":
         case "ironhide_plate":

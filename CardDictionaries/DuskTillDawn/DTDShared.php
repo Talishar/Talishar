@@ -402,7 +402,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "soul_cleaver_red": case "soul_cleaver_yellow": case "soul_cleaver_blue":
       $theirSoul = &GetSoul($otherPlayer);
-      if(count($theirSoul) > 0 && IsHeroAttackTarget()) GiveAttackGoAgain();
+      if(count($theirSoul) > 0) GiveAttackGoAgain();
       return "";
     case "beseech_the_demigon_red": case "beseech_the_demigon_yellow": case "beseech_the_demigon_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=AA");

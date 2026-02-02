@@ -2868,7 +2868,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($from == "GY") return CountItem("silver", $currentPlayer) < 2; else return false;
     case "mask_of_recurring_nightmares":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!IsHeroAttackTarget()) return true;
       return false;
     case "pass_over_blue":
       return count($otherPlayerDiscard) <= 0;
