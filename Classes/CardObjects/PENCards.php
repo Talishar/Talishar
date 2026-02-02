@@ -4467,6 +4467,7 @@ class bad_breath_red extends Card {
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
     PlayAura("might", $this->controller, 3);
+    return 1;
   }
   
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -4495,6 +4496,7 @@ class bad_breath_yellow extends Card {
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
     PlayAura("might", $this->controller, 2);
+    return 1;
   }
   
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -4523,6 +4525,7 @@ class bad_breath_blue extends Card {
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
     PlayAura("might", $this->controller, 1);
+    return 1;
   }
   
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
