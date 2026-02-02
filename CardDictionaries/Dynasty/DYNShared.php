@@ -500,6 +500,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           WriteLog("💰 NOT SO FAST");
           Draw($otherPlayer, effectSource:$cardID);
         }
+        if (SearchCurrentTurnEffects("myrkhellir_helm", $currentPlayer, true)) {
+          Draw($currentPlayer, effectSource:$cardID, num:2);
+        }
         else Draw($currentPlayer, effectSource:$cardID);
       }
       return $rv;

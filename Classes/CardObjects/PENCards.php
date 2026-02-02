@@ -5410,3 +5410,38 @@ class unflinching_foothold extends Card {
     return true;
   }
 }
+
+class myrkhellir_helm extends Card {
+  function __construct($controller) {
+    $this->cardID = "myrkhellir_helm";
+    $this->controller = $controller;
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $phase == "B";
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountItemByName("Gold", $this->controller) > 0 ? 1 : 0;
+  }
+}
