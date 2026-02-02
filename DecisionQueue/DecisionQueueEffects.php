@@ -1234,6 +1234,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       // if ($lastResult == "YELLOW" && $layerColor != 2) IncrementClassState($player, $CS_NumYellowPlayed);
       if ($lastResult == "Blue" && $layerColor != 3) IncrementClassState($player, $CS_NumBluePlayed);
       return $lastResult;
+    case "FELLINGSONG":
+      DealArcane(1, $lastResult, "PLAYCARD", $CombatChain->AttackCard()->ID());
+      break;
     default: return "";
   }
 

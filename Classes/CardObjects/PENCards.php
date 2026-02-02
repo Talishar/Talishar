@@ -917,7 +917,7 @@ class runic_fellingsong extends BaseCard {
     AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-    AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "FELLINGSONG", 1);
   }
 }
 
