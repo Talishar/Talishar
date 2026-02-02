@@ -882,29 +882,29 @@ class enclosed_firemind extends Card {
   }
 }
 
-// class topsy_turvy extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "topsy_turvy";
-//     $this->controller = $controller;
-//   }
+class topsy_turvy extends Card {
+  function __construct($controller) {
+    $this->cardID = "topsy_turvy";
+    $this->controller = $controller;
+  }
 
-//   function ArcaneBarrier() {
-//     return 1;
-//   }
+  function ArcaneBarrier() {
+    return 1;
+  }
 
-//   function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
-//     $CharacterCard = new CharacterCard($index, $this->controller);
-//     $CharacterCard->Destroy();
-//   }
+  function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
 
-//   function AbilityType($index = -1, $from = '-') {
-//     return "I";
-//   }
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     AddCurrentTurnEffect($this->cardID, $this->controller);
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
 
 class runic_fellingsong extends BaseCard {
   function PlayAbility() {
@@ -5853,5 +5853,16 @@ class two_faced extends Card {
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->cardID, 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+  }
+}
+
+class energy_of_the_audience_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "energy_of_the_audience_yellow";
+    $this->controller = $controller;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return PlayerHasLessHealth($this->controller) ? count(GetSuspenseAuras($this->controller)) : 0;
   }
 }
