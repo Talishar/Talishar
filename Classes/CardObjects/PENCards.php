@@ -1975,13 +1975,14 @@ class heavy_metal_hardcore_blue extends Card {
 
 class emboldened_by_the_crowd_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "emboldened_by_the_crowd";
+    $this->cardID = "emboldened_by_the_crowd_yellow";
     $this->controller = $controller;
   }
+  
   function SelfCostModifier($from) {
     global $CS_CheeredThisTurn;
-    return GetClassState($this->controller, $CS_CheeredThisTurn) ? -3 : 0;
-  } 
+    return GetClassState($this->controller, $CS_CheeredThisTurn) > 0 ? -3 : 0;
+  }
 }
 
 class hulk_up extends BaseCard {
