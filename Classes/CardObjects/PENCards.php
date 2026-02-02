@@ -4825,9 +4825,9 @@ class scuttle_toes extends Card {
   }
 }
 
-class beneath_the_surface extends Card {
+class beneath_the_surface_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "beneath_the_surface";
+    $this->cardID = "beneath_the_surface_yellow";
     $this->controller = $controller;
   }
 }
@@ -4995,5 +4995,94 @@ class herald_of_victoria_yellow extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return -1;
+  }
+}
+
+class soul_bond_belief extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    if (CanRevealCards($this->controller)) {
+      $Deck = new Deck($this->controller);
+      $Deck->Reveal();
+      if (ColorContains($Deck->Top(), 2, $this->controller)) {
+        AddSoul($Deck->Top(true), $this->controller, "DECK");
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      }
+    }
+  }
+}
+
+class soul_bond_belief_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "soul_bond_belief_red";
+    $this->controller = $controller;
+    $this->baseCard = new soul_bond_belief($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class soul_bond_belief_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "soul_bond_belief_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new soul_bond_belief($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class soul_bond_belief_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "soul_bond_belief_blue";
+    $this->controller = $controller;
+    $this->baseCard = new soul_bond_belief($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
   }
 }
