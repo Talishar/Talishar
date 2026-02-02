@@ -2150,10 +2150,10 @@ function IsLayerStep()
   global $layers, $CombatChain, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) return false;
   $layerInd = count($layers) - LayerPieces();
+  if (!isset($layers[$layerInd])) return false;
   // account for transitioning from resolution step to layerstep
   if ($layers[$layerInd] == "RESOLUTIONSTEP" && isset($layers[$layerInd - LayerPieces()])) $layerInd -= LayerPieces();
   $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN"];
-  if (!isset($layers[$layerInd])) return false;
   if (in_array($layers[$layerInd], $nonCardLayers)) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2])[0];
