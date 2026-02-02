@@ -224,6 +224,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "SOULINDICES":
           $soul = &GetSoul($player);
+          $rv = GetIndices(count($soul), 1, SoulPieces());
+          break;
+        case "SOULINDICES0":
+          $soul = &GetSoul($player);
           $rv = GetIndices(count($soul), 0, SoulPieces());
           break;
         case "beacon_of_victory_yellow-2":

@@ -72,7 +72,7 @@ function DoSolrayPlating($targetPlayer, $damage)
     PrependDecisionQueue("MULTIBANISHSOUL", $targetPlayer, "-", 1);
     PrependDecisionQueue("MAYCHOOSEMYSOUL", $targetPlayer, "<-", 1);
     PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Banish a card from soul to " . CardLink("solray_plating"), 1);
-    PrependDecisionQueue("FINDINDICES", $targetPlayer, "SOULINDICES", 1);
+    PrependDecisionQueue("FINDINDICES", $targetPlayer, "SOULINDICES0", 1);
     PrependDecisionQueue("SETDQVAR", $targetPlayer, "0", 1); // current damage prevention
     LogDamagePreventedStats($targetPlayer, 1);
   }
