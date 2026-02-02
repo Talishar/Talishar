@@ -1,5 +1,5 @@
 <?php
-
+include_once "HVYCards.php";
 class synapse_sparkcap extends Card
 {
   function __construct($controller)
@@ -4974,7 +4974,7 @@ class herald_of_victoria_yellow extends Card {
 
   function CardCost($from = '-') {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
-    return 3;
+    return 2;
   }
 
   function GetAbilityTypes($index = -1, $from = '-') {
