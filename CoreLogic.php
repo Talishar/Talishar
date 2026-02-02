@@ -2501,6 +2501,8 @@ function RemoveCharacter($player, $index)
   }
   $char = &GetPlayerCharacter($player);
   $ret = $char[$index];
+  $card = GetClass($ret, $player);
+  if ($card != "-") $card->LeavesPlayAbility($index, $char[$index+11], "CHAR", true);
   for ($i = 0; $i < CharacterPieces(); ++$i) {
     unset($char[$index + $i]);
   }

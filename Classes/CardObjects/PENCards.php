@@ -982,7 +982,7 @@ class shroud_of_the_fate_watcher extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
-    PlayAura("ponder", $this->controller);
+    PlayAura("sigil_of_fate", $this->controller);
   }
 }
 
