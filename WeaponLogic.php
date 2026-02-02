@@ -28,6 +28,32 @@ function WeaponWithNonAttack($cardID, $from)
   return false;
 }
 
+function GetHighestBaseWeaponPower($player)
+{
+  $character = GetPlayerCharacter($player);
+  $countCharacter = count($character);
+  $characterPieces = CharacterPieces();
+  $maxPower = 0;
+  for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
+    if (TypeContains($character[$i], "W", $player)) {
+      $basePower = PowerValue($character[$i], $player);
+      if ($basePower > $maxPower) {
+        $maxPower = $basePower;
+      }
+    }
+  }
+  $auras = GetAuras($player);
+  $countAuras = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $countAuras; $i += $auraPieces) {
+      $basePower = PowerValue($auras[$i], $player);
+      if ($basePower > $maxPower) {
+        $maxPower = $basePower;
+      }
+  }
+  return $maxPower;
+}
+
 function WeaponIndices($chooser, $player, $subtype = "")
 {
   global $mainPlayer;

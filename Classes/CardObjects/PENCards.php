@@ -4451,6 +4451,13 @@ class tough_as_a_rok_blue extends Card {
   }
 }
 
+class rockyard_rodeo_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rockyard_rodeo_blue";
+    $this->controller = $controller;
+  }
+}
+
 class bad_breath extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddCurrentTurnEffect($this->cardID, $this->controller);
