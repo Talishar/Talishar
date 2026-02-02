@@ -5187,3 +5187,10 @@ class mbrio_base_digits extends Card {
     return true;
   }
 }
+
+class mbrio_base_vizier extends Card {
+  function __construct($controller) {
+    $this->cardID = "mbrio_base_vizier";
+    $this->controller = $controller;
+  }
+}

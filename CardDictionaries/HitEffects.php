@@ -94,7 +94,7 @@ function EVOHitEffect($cardID)
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVECOUNTER", $mainPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVEALLCOUNTERS", $mainPlayer, "-", 1);
       break;
     case "data_link_red":
     case "data_link_yellow":

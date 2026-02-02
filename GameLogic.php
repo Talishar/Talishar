@@ -1503,6 +1503,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
         CheckSpellvoid($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier") && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         DoQuell($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
@@ -2601,6 +2603,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "MZREMOVECOUNTER":
+      $lastResultArr = explode(",", $lastResult);
+      $otherPlayer = $player == 1 ? 2 : 1;
+      $params = explode(",", $parameter);
+      for ($i = 0; $i < count($lastResultArr); ++$i) {
+        $mzIndex = explode("-", $lastResultArr[$i]);
+        switch ($mzIndex[0]) {
+          case "MYITEMS":
+            $items = &GetItems($player);
+            $items[$mzIndex[1] + 1] -= 1;
+            WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " lost a steam counter.");
+            break;
+          default:
+            break;
+        }
+      }
+      return $lastResult;
     case "SUPERCELL":
       $lastResultArr = explode(",", $lastResult);
       for ($i = 0; $i < count($lastResultArr); ++$i) {
@@ -2618,7 +2637,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (substr($dqVars[0], -1) == ",") $dqVars[0] = rtrim($dqVars[0], ",");
       $dqVars[0] = str_replace(",,", ",", $dqVars[0]);
       return $lastResult;
-    case "MZREMOVECOUNTER":
+    case "MZREMOVEALLCOUNTERS":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = $player == 1 ? 2 : 1;
       $params = explode(",", $parameter);

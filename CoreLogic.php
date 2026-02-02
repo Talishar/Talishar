@@ -739,6 +739,19 @@ function DoQuell($targetPlayer, $damage)
   }
 }
 
+function DoMbrioBaseVizier($player, $damage)
+{
+  if ($damage > 0) {
+    PrependDecisionQueue("ADDTOLASTRESULT", $player, "{0}", 1);
+    PrependDecisionQueue("PASSPARAMETER", $player, 1, 1); //prevent 1 damage
+    PrependDecisionQueue("MZREMOVECOUNTER", $player, "<-", 1);
+    PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a ". Cardlink("hyper_driver", "hyper_driver")." to remove a steam counter", 1);
+    PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red");
+    PrependDecisionQueue("SETDQVAR", $player, "0", 1); // current damage prevention
+  }
+}
+
 function PreventLethal($targetPlayer, $damage)
 {
   global $CS_NextDamagePrevented;

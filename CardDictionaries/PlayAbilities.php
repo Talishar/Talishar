@@ -601,7 +601,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MAXCOUNT-" . EvoUpgradeAmount($mainPlayer) . ",MINCOUNT-" . 0 . ",", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . EvoUpgradeAmount($currentPlayer) . " card" . (EvoUpgradeAmount($mainPlayer) > 1 ? "s" : "") . " to remove all steam counters from.", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVECOUNTER", $currentPlayer, "<-");
+        AddDecisionQueue("MZREMOVEALLCOUNTERS", $currentPlayer, "<-");
       }
       return "";
     case "pulsewave_protocol_yellow":
@@ -775,7 +775,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true&MYITEMS:hasSteamCounter=true&MYCHAR:hasSteamCounter=true");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an equipment, item, or weapon. Remove all steam counters from it.");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZREMOVECOUNTER", $currentPlayer, "-", 1);
+      AddDecisionQueue("MZREMOVEALLCOUNTERS", $currentPlayer, "-", 1);
       AddDecisionQueue("SYSTEMFAILURE", $currentPlayer, "<-", 1);
       return "";
     case "system_reset_yellow":
