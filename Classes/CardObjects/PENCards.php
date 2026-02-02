@@ -5207,16 +5207,21 @@ class ion_charged_yellow extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    static $recursionGuard = false;
+    if ($recursionGuard) return false;
+    $recursionGuard = true;
+    $hasGoAgain = DoesAttackHaveGoAgain();
+    $recursionGuard = false;
+    return $hasGoAgain && (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller));
+  }
+
   function IsCombatEffectPersistent($mode) {
     return true;
   }
 
   function EffectPowerModifier($param, $attached = false) {
     return 1;
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    global $CombatChain;
-    return (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller)) && DoesAttackHaveGoAgain();
   }
 }
