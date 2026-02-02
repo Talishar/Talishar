@@ -5794,3 +5794,64 @@ class walk_in_my_shoes_yellow extends SUPCrushDwarfCard {
     return true;
   }
 }
+
+class snarky_prick_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "snarky_prick_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget()) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    }
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $defPlayer;
+    $Deck = new Deck($defPlayer);
+    if (ColorContains($Deck->Top(), 1, $defPlayer)) {
+      $cardID = $Deck->Top(true);
+      AddGraveyard($cardID, $defPlayer, "DECK", $this->controller);
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+      WriteLog("You " . CardLink($this->cardID) . "! You destroyed my " . CardLink($cardID) . "!");
+    }
+    else {
+      AddDecisionQueue("WRITELOG", $defPlayer, "Shows opponent's top deck", 1);
+      AddDecisionQueue("DECKCARDS", $defPlayer, "0", 1);
+      AddDecisionQueue("SETDQVAR", $defPlayer, "1", 1);
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, CardLink($this->cardID) . " shows the top of their deck is <1>", 1);
+      AddDecisionQueue("OK", $this->controller, "-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "-");
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 4;
+  }
+}
+
+class two_faced extends Card {
+  function __construct($controller) {
+    $this->cardID = "two_faced";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    Draw($mainPlayer);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a card from your opponent's hand", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->cardID, 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+  }
+}
