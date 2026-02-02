@@ -5672,3 +5672,27 @@ class lay_down_the_challenge_yellow extends Card {
       Draw($this->controller);
   }
 }
+
+class shield_beater extends Card {
+  function __construct($controller) {
+    $this->cardID = "shield_beater";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 4;
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    Tap("MYCHAR-$cardIndex", $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
+    return false;
+  }
+}
