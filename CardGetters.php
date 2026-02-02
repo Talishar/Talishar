@@ -451,16 +451,6 @@ function ArsenalHasArrowFacingColor($player, $facing, $color)
   return false;
 }
 
-function ArsenalHasColor($player, $color)
-{
-  $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-    if ($arsenal[$i + 1] == "UP" && ColorContains($arsenal[$i], $color, $player)) return true;
-  }
-  return false;
-}
-
-
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);

@@ -121,15 +121,18 @@
   function CheckSession()
   {
     if (session_status() === PHP_SESSION_NONE) {
-      // Set secure session parameters
-      ini_set('session.cookie_httponly', 1);
-      // Only set secure flag if we're on HTTPS
-      if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-        ini_set('session.cookie_secure', 1);
+      // Only set ini options if headers haven't been sent yet
+      if (!headers_sent()) {
+        // Set secure session parameters
+        ini_set('session.cookie_httponly', 1);
+        // Only set secure flag if we're on HTTPS
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+          ini_set('session.cookie_secure', 1);
+        }
+        ini_set('session.use_strict_mode', 1);
+        ini_set('session.cookie_samesite', 'Lax');
+        ini_set('session.gc_maxlifetime', 86400);
       }
-      ini_set('session.use_strict_mode', 1);
-      ini_set('session.cookie_samesite', 'Lax');
-      ini_set('session.gc_maxlifetime', 86400);
       
       session_start();
       

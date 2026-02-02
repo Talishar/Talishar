@@ -1890,6 +1890,16 @@ function ColorContains($cardID, $color, $player)
   return DelimStringContains($cardColor, $color);
 }
 
+function ArsenalHasColor($player, $color)
+{
+  $arsenal = &GetArsenal($player);
+  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+    if ($arsenal[$i + 1] == "UP" && ColorContains($arsenal[$i], $color, $player)) return true;
+  }
+  return false;
+}
+
+
 function PitchContains($cardID, $pitch)
 {
   $cardPitch = PitchValue($cardID);

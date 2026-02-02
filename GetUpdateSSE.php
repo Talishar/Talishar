@@ -27,9 +27,35 @@ include_once "Libraries/PlayerSettings.php";
 include_once "BuildGameState.php";
 include_once "BuildPlayerInputPopup.php";
 
+// Capture session data BEFORE outputting anything
+// This is critical - we must capture and close session BEFORE the long-running SSE loop
+$sessionData = [];
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+$sessionData['userLoggedIn'] = IsUserLoggedIn();
+$sessionData['userName'] = $sessionData['userLoggedIn'] ? LoggedInUserName() : null;
+$sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
+
+// Capture all Patreon campaign session IDs
+$sessionData['patreonCampaigns'] = [];
+foreach(PatreonCampaign::cases() as $campaign) {
+  $sessionID = $campaign->SessionID();
+  $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
+}
+
+// Release session lock BEFORE SSE loop to prevent deadlock
+if (session_status() === PHP_SESSION_ACTIVE) {
+  session_write_close();
+}
+
+// Now set headers for SSE
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+
+// Now setup output buffering and initial setup
 ob_implicit_flush(true);
 ob_end_flush();
-SetHeaders();
 
 $response = new stdClass();
 
@@ -53,31 +79,6 @@ $authKey = TryGet("authKey", "");
 if (($playerID == 1 || $playerID == 2) && $authKey == "") {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
 }
-
-// Capture session data before setting SSE headers
-// This is critical - we must capture and close session BEFORE the long-running SSE loop
-$sessionData = [];
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
-$sessionData['userLoggedIn'] = IsUserLoggedIn();
-$sessionData['userName'] = $sessionData['userLoggedIn'] ? LoggedInUserName() : null;
-$sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
-
-// Capture all Patreon campaign session IDs
-$sessionData['patreonCampaigns'] = [];
-foreach(PatreonCampaign::cases() as $campaign) {
-  $sessionID = $campaign->SessionID();
-  $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
-}
-
-// Release session lock BEFORE SSE loop to prevent deadlock
-if (session_status() === PHP_SESSION_ACTIVE) {
-  session_write_close();
-}
-
-header('Content-Type: text/event-stream');
-header('Cache-Control: no-cache');
 
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
