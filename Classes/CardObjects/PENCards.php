@@ -5377,3 +5377,36 @@ class blessing_of_themis_yellow extends Card {
     }
   }
 }
+
+class unflinching_foothold extends Card {
+  function __construct($controller) {
+    $this->cardID = "unflinching_foothold";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if ($CombatChain->HasCurrentLink()) return false;//If there's an attack, there's a valid target
+    return !IsLayerStep();
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $phase == "B";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller == 1 ? 2 : 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}

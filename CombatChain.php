@@ -1688,6 +1688,8 @@ function IsDominateActive()
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("unflinching_foothold", $mainPlayer)) return false;
+
   $characterEffects = GetCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
