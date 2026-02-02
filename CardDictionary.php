@@ -4396,7 +4396,7 @@ function RequiresDieRoll($cardID, $from, $player): bool
   return match ($cardID) {
     "crazy_brew_blue" => $from == "PLAY",
     "scabskin_leathers", "barkbone_strapping", "bone_head_barrier_yellow", "argh_smash_yellow", "rolling_thunder_red", "bad_beats_red", "bad_beats_yellow", "bad_beats_blue", "knucklehead" => true,
-    "reckless_charge_blue" => true,
+    "reckless_charge_blue", "reckless_arithmetic_blue" => true,
     default => false
   };
 }
