@@ -718,6 +718,7 @@ function EffectBlockModifier($cardID, $index, $from)
     case "heavy_industry_surveillance":
     case "heavy_industry_ram_stop":
     case "breaker_helm_protos":
+    case "mbrio_base_digits":
       $blockModifier += 1;
       break;
     default:

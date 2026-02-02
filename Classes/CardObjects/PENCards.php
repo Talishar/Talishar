@@ -5145,3 +5145,45 @@ class chain_of_brutality_red extends Card {
     return 6;
   }
 }
+
+class mbrio_base_digits extends Card {
+  function __construct($controller) {
+    $this->cardID = "mbrio_base_digits";
+    $this->controller = $controller;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $phase == "B";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
+    if (GetUntapped($this->controller, "MYITEMS", "subtype=Cog") == "") return true;
+    return false;
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+      Tap("MYCHAR-$cardIndex", $this->controller);
+      $inds = GetUntapped($this->controller, "MYITEMS", "subtype=Cog");
+      if($inds != "") Tap(explode(",", $inds)[0], $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $index = SearchCombatChainForIndex($this->cardID, $this->controller);
+    if ($index != "") {
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+    }
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller)) return CountCurrentTurnEffects($this->cardID, $this->controller);
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+}
