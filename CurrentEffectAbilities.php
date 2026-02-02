@@ -2725,6 +2725,7 @@ function EffectDefenderPowerModifiers($cardID)
           break;
         case "figment_of_triumph_yellow":
         case "victoria_archangel_of_triumph":
+        case "herald_of_victoria_yellow":
           $mod -= 1;
           break;
         default:
