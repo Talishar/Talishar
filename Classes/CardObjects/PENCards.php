@@ -2496,9 +2496,9 @@ class weeping_battleground_blue extends Card {
   }
 }
 
-class embraforged_gauntlets extends Card {
+class embraforged_gauntlet extends Card {
   function __construct($controller) {
-    $this->cardID = "embraforged_gauntlets";
+    $this->cardID = "embraforged_gauntlet";
     $this->controller = $controller;
   }
 
