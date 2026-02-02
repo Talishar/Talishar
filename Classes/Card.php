@@ -524,4 +524,8 @@ class Card {
   function DoesEffectGrantDominate() {
     return false;
   }
+
+  function ResolutionStepBlockTrigger($i) {
+    return;
+  }
 }

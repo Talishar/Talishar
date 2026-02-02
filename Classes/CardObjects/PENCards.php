@@ -4057,6 +4057,13 @@ class shimmering_mirage_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
+
+  function ResolutionStepBlockTrigger($i) {
+    global $CombatChain;
+    $ChainCard = $CombatChain->Card($i, true);
+    $ChainCard->Remove();
+    BanishCardForPlayer($this->cardID, $this->controller, "CC", "TCC");
+  }
 }
 
 class display_of_craftsmanship extends BaseCard {

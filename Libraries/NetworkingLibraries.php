@@ -1502,6 +1502,7 @@ function FinalizeChainLink($chainClosed = false)
     ResolutionStepEffectTriggers();
     ResolutionStepCharacterTriggers();
     ResolutionStepAttackTriggers();
+    ResolutionStepBlockTriggers();
   }
   
 
