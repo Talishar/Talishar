@@ -2149,6 +2149,8 @@ function IsLayerStep()
   global $layers, $CombatChain, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) return false;
   $layerInd = count($layers) - LayerPieces();
+  // account for transitioning from resolution step to layerstep
+  if ($layers[$layerInd] == "RESOLUTIONSTEP" && isset($layers[$layerInd - LayerPieces()])) $layerInd -= LayerPieces();
   $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN"];
   if (!isset($layers[$layerInd])) return false;
   if (in_array($layers[$layerInd], $nonCardLayers)) return false;
@@ -2298,6 +2300,8 @@ function LayerStepPower() { //calculates the modified power of an attack in the 
   if (!IsLayerStep()) return 0;
   $power = 0;
   $cardID = $Stack->BottomLayer()->ID();
+  // account for transitioning from resolution step to layerstep
+  if ($cardID == "RESOLUTIONSTEP" && $Stack->NumLayers() > 1) $cardID = $Stack->BottomLayer(1)->ID();
   for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
       if ($currentTurnEffects[$j + 1] == $mainPlayer) {

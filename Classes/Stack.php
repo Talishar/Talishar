@@ -48,8 +48,8 @@ class Stack {
     return count($this->layers) == 0;
   }
 
-  function BottomLayer() {
-    $index = count($this->layers) - LayerPieces();
+  function BottomLayer($i=0) {
+    $index = count($this->layers) - LayerPieces() * ($i + 1);
     return $this->Card($index);
   }
 
