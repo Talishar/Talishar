@@ -224,7 +224,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "SOULINDICES":
           $soul = &GetSoul($player);
-          $rv = GetIndices(count($soul), 1, SoulPieces());
+          $rv = GetIndices(count($soul), 0, SoulPieces());
           break;
         case "beacon_of_victory_yellow-2":
           $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult));
@@ -1384,6 +1384,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
+        $Character = new PlayerCharacter($targetPlayer);
+        $Solray = $Character->FindCardID("solray_plating");
+        if ($Solray != "-" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
         DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }

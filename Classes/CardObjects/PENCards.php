@@ -1978,7 +1978,7 @@ class emboldened_by_the_crowd_yellow extends Card {
     $this->cardID = "emboldened_by_the_crowd_yellow";
     $this->controller = $controller;
   }
-  
+
   function SelfCostModifier($from) {
     global $CS_CheeredThisTurn;
     return GetClassState($this->controller, $CS_CheeredThisTurn) > 0 ? -3 : 0;
@@ -5322,4 +5322,17 @@ class voltic_vanguard extends Card {
     if ($effects[1] <= 0) $remove = true;
     return $prevented;
   }
+}
+
+class solray_plating extends Card {
+  function __construct($controller) {
+    $this->cardID = "solray_plating";
+    $this->controller = $controller;
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  
 }

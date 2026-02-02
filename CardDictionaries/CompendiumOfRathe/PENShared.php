@@ -61,3 +61,19 @@ function PENHitEffect($cardID): void
       break;
   }
 }
+
+function DoSolrayPlating($targetPlayer, $damage)
+{
+  if ($damage > 0) {
+    PrependDecisionQueue("ADDTOLASTRESULT", $targetPlayer, "{0}", 1);
+    PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1, 1); //prevent 1 damage
+    if (!SearchCurrentTurnEffects("solray_plating", $targetPlayer))
+      PrependDecisionQueue("CHARFLAGDESTROY", $targetPlayer, FindCharacterIndex($targetPlayer, "solray_plating"), 1);
+    PrependDecisionQueue("MULTIBANISHSOUL", $targetPlayer, "-", 1);
+    PrependDecisionQueue("MAYCHOOSEMYSOUL", $targetPlayer, "<-", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Banish a card from soul to " . CardLink("solray_plating"), 1);
+    PrependDecisionQueue("FINDINDICES", $targetPlayer, "SOULINDICES", 1);
+    PrependDecisionQueue("SETDQVAR", $targetPlayer, "0", 1); // current damage prevention
+    LogDamagePreventedStats($targetPlayer, 1);
+  }
+}
