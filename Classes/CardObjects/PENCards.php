@@ -5207,7 +5207,9 @@ class ion_charged_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect($this->cardID, $otherPlayer);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -5272,3 +5274,35 @@ class overcharge_blue extends Card {
   }
 }
  
+class voltic_vanguard extends Card {
+  function __construct($controller) {
+    $this->cardID = "voltic_vanguard";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID."-2", $this->controller);
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    DestroyCharacter($this->controller, $cardIndex);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CS_NumInstantPlayed;
+    return GetClassState($this->controller, $CS_NumInstantPlayed) == 0;
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    global $currentTurnEffects;
+    $effects = explode("-", $currentTurnEffects[$index]);
+    $prevented = min($damage, $effects[1]);
+    $effects[1] -= $prevented;
+    if ($effects[1] <= 0) $remove = true;
+    return $prevented;
+  }
+}

@@ -3979,6 +3979,7 @@ function CharacterDefaultActiveState($cardID)
     case "gravy_bones":
     case "gravy_bones_shipwrecked_looter":
     case "dead_threads":
+    case "voltic_vanguard":
       return 1;
     default:
       return 2;
