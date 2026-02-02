@@ -5109,3 +5109,36 @@ class sowing_thorns_red extends Card {
     AddDecisionQueue("GAINLIFE", $this->controller, "1", 1);
   }
 }
+
+class chain_of_brutality_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "chain_of_brutality_red";
+    $this->controller = $controller;
+    $this->baseCard = new flex($this->cardID, $this->controller);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if ($this->baseCard->sixPower() && IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return $this->baseCard->sixPower();
+  }
+
+  function EffectSetBasePower($basePower) {
+    return 6;
+  }
+}
