@@ -5118,11 +5118,10 @@ class chain_of_brutality_red extends Card {
   function __construct($controller) {
     $this->cardID = "chain_of_brutality_red";
     $this->controller = $controller;
-    $this->baseCard = new flex($this->cardID, $this->controller);
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    if ($this->baseCard->sixPower() && IsHeroAttackTarget()) {
+    if (CachedTotalPower() >= 6 && IsHeroAttackTarget()) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
     }
@@ -5139,7 +5138,7 @@ class chain_of_brutality_red extends Card {
   }
 
   function DoesAttackHaveGoAgain() {
-    return $this->baseCard->sixPower();
+    return CachedTotalPower() >= 6;
   }
 
   function EffectSetBasePower($basePower) {
