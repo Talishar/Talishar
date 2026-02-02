@@ -5228,3 +5228,47 @@ class ion_charged_yellow extends Card {
     return 1;
   }
 }
+
+class overcharge extends BaseCard {
+  function PowerModifier($param, $attached = false) {
+    global $combatChainState, $CCS_NumInstantsPlayedByAttackingPlayer;
+    return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0 ? $param : 0;
+  }
+}
+
+class overcharge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "overcharge_red";
+    $this->controller = $controller;
+    $this->baseCard = new overcharge($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier(3);
+  }
+}
+
+class overcharge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "overcharge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new overcharge($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier(2);
+  }
+}
+
+class overcharge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "overcharge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new overcharge($this->cardID, $this->controller);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return $this->baseCard->PowerModifier(1);
+  }
+}
+ 
