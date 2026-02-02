@@ -4841,15 +4841,6 @@ function HasEffectActive($cardID) {
 }
 
 function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
-  // Handle AllyCard objects or other objects with CardID() method
-  if (is_object($cardID)) {
-    if (method_exists($cardID, 'CardID')) {
-      $cardID = $cardID->CardID();
-    } else {
-      return $cardID;
-    }
-  }
-  
   if (!$unblind && $excludeEquips && TypeContains($cardID, "E")) return $cardID;
   $blindMarker = "BLIND";
   $c = strlen($blindMarker) + 1;
