@@ -1386,7 +1386,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         $Character = new PlayerCharacter($targetPlayer);
         $Solray = $Character->FindCardID("solray_plating");
-        if ($Solray != "-" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
+        if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
         DoQuell($targetPlayer, $damage);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
