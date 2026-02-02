@@ -5866,3 +5866,10 @@ class energy_of_the_audience_yellow extends Card {
     return PlayerHasLessHealth($this->controller) ? count(GetSuspenseAuras($this->controller)) : 0;
   }
 }
+
+class helm_of_might_and_magic extends Card {
+  function __construct($controller) {
+    $this->cardID = "helm_of_might_and_magic";
+    $this->controller = $controller;
+  }
+}
