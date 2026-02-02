@@ -847,6 +847,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CHORUSOFROTWOOD":
       PlayAura("embodiment_of_earth", $player);
       return $lastResult;
+    case "SOWINGTHORNS":
+      if (CanRevealCards($player)) {
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:talent=EARTH;subtype=Aura");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an earth aura to put on top of deck", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZREMOVE", $player, "-", 1);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-");
+        AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+        AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
+      }
+      return $lastResult;
     case "CADAVEROUSTILLING":
       $index = GetClassState($player, $CS_PlayCCIndex);
       $CombatChain->Card($index)->ModifyPower(2);
