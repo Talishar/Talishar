@@ -1,5 +1,6 @@
 <?php
 include_once  __DIR__ . "/HVYCards.php";
+include_once  __DIR__ . "/SUPCards.php";
 class synapse_sparkcap extends Card
 {
   function __construct($controller)
@@ -5768,5 +5769,31 @@ class shield_beater extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
     return false;
+  }
+}
+
+class walk_in_my_shoes_yellow extends SUPCrushDwarfCard {
+  function __construct($controller) {
+    $this->cardID = "walk_in_my_shoes_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessCrushEffect() {
+    global $defPlayer;
+    AddCurrentTurnEffect($this->cardID, $defPlayer);
+    AddNextTurnEffect($this->cardID, $defPlayer);
+    WriteLog("Who's short now?", highlight:true, highlightColor:"orange");
+  }
+
+  function EffectDivideBasePower() {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
   }
 }

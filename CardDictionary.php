@@ -775,8 +775,12 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
     $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
+    $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes", $player);
   }
-  else $lyathActive = false;
+  else {
+    $lyathActive = false;
+    $lyathShoes = false;
+  }
   $block = -2;
   $cardID = BlindCard($cardID, true);
   switch ($cardID) { //cards with a mistake in GeneratedBlockValue
@@ -872,8 +876,9 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
     }
   }
   if ($block == -1 || $block == -2) return -1; //it should never be -2, but being careful
-  elseif ($lyathActive && !$blocking) return $block = ceil($block / 2); // lyath debuff handled elsewhere when a card is defending
-  else return $block;
+  elseif ($lyathActive && !$blocking) $block = ceil($block / 2); // lyath debuff handled elsewhere when a card is defending
+  if ($lyathShoes) $block = ceil($block / 2);
+  return $block;
 }
 
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
@@ -889,8 +894,12 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
     $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
+    $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes", $player);
   }
-  else $lyathActive = false;
+  else {
+    $lyathActive = false;
+    $lyathShoes = false;
+  }
 
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
@@ -965,6 +974,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   if ($card != "-" && $card->SpecialPower() != -1) $basePower = $card->SpecialPower();
   // Lyath ability is handled elsewhere while attacking
   if ($lyathActive && !$attacking) $basePower = ceil($basePower / 2);
+  if ($lyathShoes && !$attacking) $basePower = ceil($basePower / 2);
   return $basePower;
 }
 

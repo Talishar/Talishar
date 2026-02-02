@@ -4759,6 +4759,9 @@ function ModifiedBlockValue($cardID, $player, $from, $source="", $uniqueID=-1)
           break;
       }
     }
+    if (SearchCurrentTurnEffects("walk_in_my_shoes", $player)) {
+      $block = ceil($block / 2);
+    }
   }
   if ($uniqueID != -1) {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
