@@ -609,7 +609,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddPlayerHand($lastResult, $player, "-");
       return $lastResult;
     case "CREATECARD":
-      WriteLog("JERE: $lastResult");
       $params = explode(",", $parameter);
       switch($params[0]) {
         case "HAND":
