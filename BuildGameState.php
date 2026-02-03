@@ -937,7 +937,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
-    if(in_array($myAuras[$i], $labeledAuras)) {
+    if(in_array($theirAuras[$i], $labeledAuras)) {
       $label = GamestateUnsanitize($theirAuras[$i + 10]);
     }
     elseif (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1) {

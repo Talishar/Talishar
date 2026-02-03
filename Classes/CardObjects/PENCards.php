@@ -6796,3 +6796,20 @@ class leave_em_speechless_blue extends Card {
     }
   }
 }
+
+class tome_of_pandemonium_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tome_of_pandemonium_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Deck = new Deck($this->controller);
+    $cardID = $Deck->Top(true);
+    if ($cardID != "") BanishCardForPlayer($cardID, $this->controller, "DECK", "TT", $this->cardID);
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $deck = new Deck($otherPlayer);
+    $deckCard = $deck->Top(true);
+    if($deckCard != "") BanishCardForPlayer($deckCard, $otherPlayer, "THEIRDECK", "TTFromOtherPlayer", $this->cardID);
+  }
+}
