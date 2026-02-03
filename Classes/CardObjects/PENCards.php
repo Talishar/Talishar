@@ -6454,3 +6454,23 @@ class smoldering_scales extends Card {
     return 0;
   }
 }
+
+class recede_to_mistform_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "recede_to_mistform_blue";
+    $this->controller = $controller;
+  }
+
+  function DynamicCost() {
+    return "0,1,2,3,4";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    for ($i = 0; $i < $resourcesPaid; ++$i) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYCHAR:hasCloaked=1;faceUp=1", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Turn a cloaked equipment facedown", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZOP", $this->controller, "FLIP", 1);
+    }
+  }
+}
