@@ -6275,7 +6275,7 @@ class kimono_of_layered_lessons extends Card {
   }
 
   function AbilityCost() {
-    return 1;
+    return 3;
   }
 
   function EquipPayAdditionalCosts($cardIndex = '-') {
@@ -6288,9 +6288,9 @@ class kimono_of_layered_lessons extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $character = GetPlayerCharacter($this->controller);
-    $charIndex = FindCharacterIndex($this->controller, $this->cardID);
-    $character[$charIndex + 4] += 1;
+    $Character = new PlayerCharacter($this->controller);
+    $Kimono = $Character->FindCardID($this->cardID);
+    $Kimono->AddDefenseCounters(1);
   }
 }
 
