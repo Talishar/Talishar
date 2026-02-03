@@ -56,6 +56,10 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $chainLinks[$ind][2] = 0;
         AddGraveyard($chainLinks[$ind][7], $player, "CC", $player);
         break;
+      case "MYPERM":
+        $Perm = new PermanentCard($mzIndex[1], $player);
+        $Perm->Destroy();
+        break;
       default:
         break;
     }

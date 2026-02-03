@@ -5962,3 +5962,49 @@ class wax_and_wane_blue extends Card {
     }
   }
 }
+
+class haboob_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "haboob_red";
+    $this->controller = $controller;
+  }
+
+  private
+  function Maintenence($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    $AuraCard->AddCounters(1);
+    $search = SearchPermanents($this->controller, subtype:"Ash");
+    if (SearchCount($search) < $AuraCard->NumCounters()) $AuraCard->Destroy();
+    else {
+      for ($i = 0; $i < $AuraCard->NumCounters(); ++$i) {
+        $message = "Destroy " . $AuraCard->NumCounters() - $i . " ash you control to keep " . CardLink($this->cardID);
+        if ($i == 0) $message .= " or pass to destroy it";
+        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYPERM:subtype=Ash", 1);
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, $message, 1);
+        if ($i == 0) AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+        else AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+      }
+      AddDecisionQueue("ELSE", $this->controller, "-");
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYAURAS-".$AuraCard->Index(), 1);
+      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    }
+  }
+
+  function StartTurnAbility($index) {
+    $this->Maintenence($index);
+  }
+
+  function OppStartTurnAbility($index) {
+    $this->Maintenence($index);
+  }
+
+  function StaticPowerModifier($index, &$powerModifiers) { //applies to opponent's cards
+    global $CombatChain;
+    if (CardType($CombatChain->CurrentAttack()) == "AA") {
+      array_push($powerModifiers, $this->cardID);
+      array_push($powerModifiers, -1);
+      return -1;
+    }
+  }
+}

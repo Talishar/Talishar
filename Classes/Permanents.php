@@ -65,6 +65,10 @@ class PermanentCard {
   function UniqueID() {
     return $this->pieces[$this->index + 3] ?? "-";
   }
+
+  function Destroy() {
+    DestroyPermanent($this->controller, $this->index);
+  }
 }
 
 function GetPermanent($zone, $index, $player) {
