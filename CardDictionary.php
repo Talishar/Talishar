@@ -772,14 +772,12 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 {
   global $defPlayer, $combatChain;
   $char = GetPlayerCharacter($player);
+  $lyathActive = false;
+  $lyathShoes = false;
   if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
     $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
-    $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes", $player);
-  }
-  else {
-    $lyathActive = false;
-    $lyathShoes = false;
+    $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   $block = -2;
   $cardID = BlindCard($cardID, true);
@@ -891,16 +889,13 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $player = $player == "-" ? $mainPlayer : $player;
   $char = GetPlayerCharacter($player);
+  $lyathActive = false;
+  $lyathShoes = false;
   if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
     $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
-    $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes", $player);
+    $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
-  else {
-    $lyathActive = false;
-    $lyathShoes = false;
-  }
-
   //Only weapon that gains power, NOT on their attack
   if (!$base) {
     $basePower = PowerValue($cardID, $player, $from, $index, true);

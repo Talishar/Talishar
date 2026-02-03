@@ -4753,7 +4753,7 @@ function ModifiedBlockValue($cardID, $player, $from, $source="", $uniqueID=-1)
           break;
       }
     }
-    if (SearchCurrentTurnEffects("walk_in_my_shoes", $player)) {
+    if (SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA")) {
       $block = ceil($block / 2);
     }
   }

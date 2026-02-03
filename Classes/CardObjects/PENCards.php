@@ -5782,7 +5782,7 @@ class walk_in_my_shoes_yellow extends SUPCrushDwarfCard {
     global $defPlayer;
     AddCurrentTurnEffect($this->cardID, $defPlayer);
     AddNextTurnEffect($this->cardID, $defPlayer);
-    WriteLog("Who's short now?", highlight:true, highlightColor:"orange");
+    WriteLog("👠Who's short now?", highlight:true, highlightColor:"orange");
   }
 
   function EffectDivideBasePower() {
@@ -5790,7 +5790,8 @@ class walk_in_my_shoes_yellow extends SUPCrushDwarfCard {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
+    global $CombatChain;
+    return TypeContains($CombatChain->CurrentAttack(), "AA");
   }
 
   function IsCombatEffectPersistent($mode) {
@@ -6001,7 +6002,7 @@ class haboob_red extends Card {
 
   function StaticPowerModifier($index, &$powerModifiers) { //applies to opponent's cards
     global $CombatChain;
-    if (CardType($CombatChain->CurrentAttack()) == "AA") {
+    if (TypeContains($CombatChain->CurrentAttack(), "AA")) {
       array_push($powerModifiers, $this->cardID);
       array_push($powerModifiers, -1);
       return -1;
