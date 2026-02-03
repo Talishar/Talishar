@@ -5653,7 +5653,6 @@ class put_on_ice extends BaseCard {
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "{0},", 1);
       AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-      // note to self: ADDLAYERTARGET
       AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     }
   }
@@ -5915,5 +5914,51 @@ class serpents_kiss_blue extends Card {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish a card", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-");
     AddDecisionQueue("MZBANISH", $this->controller, "DECK,-," . $this->cardID . "," . $this->controller, 1);
+  }
+}
+
+class wax_and_wane_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "wax_and_wane_blue";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (SearchAura($this->controller, hasWard:true) != "") return false;
+    if (SearchAura($this->controller, pitch:3) != "") return false;
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    $modalities = [];
+    if (SearchAura($this->controller, pitch:3) != "") array_push($modalities, "Buff_blue_aura");
+    if (SearchAura($this->controller, hasWard:true) != "") array_push($modalities, "Buff_ward_aura");
+    if (count($modalities) == 2) array_push($modalities, "Both");
+    $modalities = implode(",", $modalities);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
+    AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "WAXANDWANE", 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targets = explode(",", $target);
+    $Auras = new Auras($this->controller);
+    foreach ($targets as $targ) {
+      $uid = explode("-", $targ)[1];
+      $AuraCard = $Auras->FindCardUID($uid);
+      if ($AuraCard != "") $AuraCard->AddPowerCounters(1);
+    }
+    if (count($targets) == 2 && CanRevealCards($this->controller)) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:isSameName=MST000_inner_chi_blue");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an ".CardLink("MST000_inner_chi_blue")." put on top of deck", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+      AddDecisionQueue("REVEALCARDS", $this->controller, "-", 1);
+      AddDecisionQueue("MULTIADDTOPDECK", $this->controller, "-", 1);
+    }
   }
 }

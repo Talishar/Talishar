@@ -652,3 +652,66 @@ function MZSwitchPlayer($zoneStr)
   }
   return $zoneStr;
 }
+
+function CleanTarget($player, $lastResult) { //converts a target to use unique ids
+  global $layers, $CombatChain;
+  $targetArr = explode("-", $lastResult);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if ($targetArr[0] == "LAYER") {
+    $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+  }
+  if ($targetArr[0] == "THEIRDISCARD") {
+    $discard = GetDiscard($otherPlayer);
+    $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
+  }
+  if ($targetArr[0] == "MYDISCARD") {
+    $discard = GetDiscard($player);
+    $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
+  }
+  if ($targetArr[0] == "THEIRAURAS") {
+    $auras = GetAuras($otherPlayer);
+    $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
+  }
+  if ($targetArr[0] == "MYAURAS") {
+    $auras = GetAuras($player);
+    $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+  }
+  if ($targetArr[0] == "THEIRCHAR") {
+    $char = GetPlayerCharacter($otherPlayer);
+    $cleanTarget = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
+  }
+  if ($targetArr[0] == "MYCHAR") {
+    $char = GetPlayerCharacter($player);
+    $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
+  }
+  if ($targetArr[0] == "COMBATCHAINATTACKS") {
+    // It's not possible for this index to get messed up before resolution
+    $cleanTarget = $lastResult;
+  }
+  if ($targetArr[0] == "COMBATCHAIN") {
+    $char = GetPlayerCharacter($otherPlayer);
+    //right now only support targetting the active chain link
+    $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+  }
+  if ($targetArr[0] == "MYALLY") {
+    $allies = GetAllies($player);
+    $cleanTarget = "MYALLY-" . $allies[$targetArr[1] + 5];
+  }
+  if ($targetArr[0] == "THEIRALLY") {
+    $allies = GetAllies($otherPlayer);
+    $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
+  }
+  if ($targetArr[0] == "MYPERM") {
+    $permanents = GetPermanents($player);
+    $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
+  }
+  if ($targetArr[0] == "PASTCHAINLINK") {
+    // It's not possible for this index to get messed up before resolution
+    $cleanTarget = $lastResult;
+  }
+  if ($targetArr[0] == "COMBATCHAINLINK") {
+    $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
+  }
+  $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
+  return $target;
+}

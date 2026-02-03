@@ -702,6 +702,22 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PrependDecisionQueue("SETDQVAR", $player, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $player, $target);
       break;
+    case "WAXANDWANE":
+      if ($lastResult == "Both" || $lastResult == "Buff_ward_aura") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "wax_and_wane_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a ward aura to give a +1 counter", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS:hasWard=1", 1);
+      }
+      if ($lastResult == "Both" || $lastResult == "Buff_blue_aura") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "wax_and_wane_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a blue aura to give a +1 counter", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS:pitch=3", 1);
+      }
+      break;
     case "ALLURINGINDUCEMENT":
       //this is broken for now
       global $combatChain, $combatChainState, $CCS_LinkBasePower;
