@@ -4229,12 +4229,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
         break;
-      case "valahai_riven_yellow":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-        AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("SPECIFICCARD", $player, "VALAHAIRIVEN,$parameter", 1);
-        break;
       case "base_of_the_mountain":
         $search = "MYHAND:type=AA&MYHAND:type=A";
         $fromMod = "Hand,MOUNTAIN";

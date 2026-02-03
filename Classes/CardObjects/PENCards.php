@@ -6014,6 +6014,17 @@ class valahai_riven_yellow extends Card {
     $this->cardID = "valahai_riven_yellow";
     $this->controller = $controller;
   }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
+    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "VALAHAIRIVEN,seismic_surge", 1);
+  }
 }
 
 class ransack_and_raze_blue extends Card {
