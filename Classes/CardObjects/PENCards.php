@@ -6669,3 +6669,36 @@ class sense_weakness_blue extends Card {
     }
   }
 }
+
+class doomsaying_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "doomsaying_red";
+    $this->controller = $controller;
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    $uid = $AuraCard->UniqueID();
+    $numCounters = $AuraCard->NumCounters();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", $numCounters, $uid);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    if ($AuraCard != "") {
+      $AuraCard->AddCounters();
+      $numCounters = $AuraCard->NumCounters();
+    }
+    else $numCounters = $additionalCosts; //last known information approximation
+    foreach ([$this->controller, $this->controller == 1 ? 2 : 1] as $player) {
+      for ($i = 0; $i < $numCounters; ++$i) {
+        $numRemaining = $numCounters - $i;
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Destroy $numRemaining aura(s) you control", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZDESTROY", $player, "<-", 1);
+      }
+    }
+  }
+}
