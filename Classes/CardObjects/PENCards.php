@@ -1377,7 +1377,7 @@ class sigil_of_silphidae_blue extends Card {
     global $CS_ArcaneTargetsSelected;
     SetArcaneTarget($this->controller, $this->cardID, 0, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID."|ENTERS", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
     AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
   }
@@ -1392,8 +1392,7 @@ class sigil_of_silphidae_blue extends Card {
     else {
       $search = explode(",", SearchMultizone($this->controller, "MYDISCARD:subtype=Aura"));
       $Discard = new Discard($this->controller);
-      WriteLog("HJERE: $target");
-      if ($Discard->TopCard() == $this->cardID) { //it can't banish itself
+      if ($Discard->TopCard() == $this->cardID && $additionalCosts != "ENTERS") { //it can't banish itself
         array_pop($search);
       }
       if (count($search) > 0) {
@@ -1403,7 +1402,7 @@ class sigil_of_silphidae_blue extends Card {
         AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
         AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-        AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
+        AddDecisionQueue("DEALARCANE", $this->controller, "1-" . $this->cardID, 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
         AddDecisionQueue("SETCLASSSTATE", $this->controller, parameter: $CS_ArcaneTargetsSelected);
       }

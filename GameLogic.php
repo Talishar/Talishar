@@ -3119,7 +3119,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "nettling_shot_red":
         case "sigil_of_aether_blue":
           $targetLoc = explode("-", $target)[0];
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
           break;
         case "decimator_great_axe":
           $location = explode("-", $target)[0];
@@ -3150,7 +3150,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
           break;
         default:
-          AddLayer("TRIGGER", $player, $params[0], $target);
+          AddLayer("TRIGGER", $player, $params[0], $target, $additional);
           break;
       }
       return $lastResult;
