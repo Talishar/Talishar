@@ -2385,21 +2385,21 @@ class volcanic_vice extends Card {
   }
 }
 
-// class skera_strapping extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "skera_strapping";
-//     $this->controller = $controller;
-//   }
+class skera_strapping extends Card {
+  function __construct($controller) {
+    $this->cardID = "skera_strapping";
+    $this->controller = $controller;
+  }
 
-//   function SpellVoidAmount() {
-//     //this has an issue where it can actually gain spellvoid in the middle of preventing arcane damage
-//     $pitch = GetPitch($this->controller);
-//     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
-//       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
-//     }
-//     return 0;
-//   }
-// }
+  function SpellVoidAmount() {
+    //this has an issue where it can actually gain spellvoid in the middle of preventing arcane damage
+    $pitch = GetPitch($this->controller);
+    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+      if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
+    }
+    return 0;
+  }
+}
 
 class mbrio_base_cortex extends Card {
   function __construct($controller) {

@@ -1088,12 +1088,10 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
 
 function CheckSpellvoid($player, $damage)
 {
-  $spellvoidChoices = SearchSpellvoidIndices($player, $damage);
-  if ($spellvoidChoices != "") {
-    PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
-    PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $spellvoidChoices);
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Spellvoid to prevent damage (or pass)");
-  }
+  PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
+  PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Spellvoid to prevent damage (or pass)", 1);
+  PrependDecisionQueue("FINDINDICES", $player, "SPELLVOID,$damage", 1);
 }
 
 

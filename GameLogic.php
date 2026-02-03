@@ -392,6 +392,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "SPELLVOID":
+          $rv = SearchSpellvoidIndices($player, $subparam);
+          break;
         default:
           $rv = "";
           break;
