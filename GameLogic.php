@@ -3854,6 +3854,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if(ModifiedPowerValue($lastResult, $player, "BANISH") < 6) 
         PlayerLoseHealth(1, $player);
       return $lastResult;
+    case "GALCIASCRADLE":
+      $target = CleanTarget($player, $lastResult);
+      AddLayer("TRIGGER", $player, "channel_galcias_cradle_blue", $target, "-", $parameter);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

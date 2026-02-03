@@ -309,17 +309,28 @@ function StartTurnAbilities()
   for ($i = 0; $i < $defItemsCount; $i += ItemPieces()) {
     $defItems[$i + 2] = "2";
     $defItems[$i + 3] = ItemUses($defItems[$i]);
-    $defItems[$i + 7] = "0";//Reset Frozen
+    if ($defItems[$i + 7] == "1" && !SuperFrozen($mainPlayer, "THEIRITEMS-$i") && !SuperFrozen($defPlayer, "MYITEMS-$i"))
+      $defItems[$i + 7] = "0";//Reset Frozen
   }
   $defCharacter = &GetPlayerCharacter($defPlayer);
   $defCharacterCount = count($defCharacter);
   for ($i = 0; $i < $defCharacterCount; $i += CharacterPieces()) {
-    $defCharacter[$i + 8] = "0";//Reset Frozen
+    if ($defCharacter[$i+8] == "1" && !SuperFrozen($mainPlayer, "THEIRCHAR-$i") && !SuperFrozen($defPlayer, "MYCHAR-$i")) {
+      WriteLog("HERE unfreezing $defCharacter[$i]");
+      $defCharacter[$i + 8] = "0";//Reset Frozen
+    }
   }
   $defAllies = &GetAllies($defPlayer);
   $defAlliesCount = count($defAllies);
   for ($i = 0; $i < $defAlliesCount; $i += AllyPieces()) {
-    $defAllies[$i + 3] = "0";//Reset Frozen
+    if ($defAllies[$i+3] == "1" && !SuperFrozen($mainPlayer, "THEIRALLY-$i") && !SuperFrozen($defPlayer, "MYALLY-$i"))
+      $defAllies[$i + 3] = "0";//Reset Frozen
+  }
+  $defAuras = &GetAuras($defPlayer);
+  $defAuraCount = count($defAuras);
+  for ($i = 0; $i < $defAuraCount; $i += AuraPieces()) {
+    if ($defAuras[$i+11] == "1" && !SuperFrozen($mainPlayer, "THEIRAURAS-$i") && !SuperFrozen($defPlayer, "MYAURAS-$i"))
+      $defAuras[$i + 11] = "0";//Reset Frozen
   }
   $defArsenal = &GetArsenal($defPlayer);
   $defArsenalCount = count($defArsenal);

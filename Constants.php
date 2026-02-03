@@ -87,9 +87,10 @@ function CombatChainPieces()
 //8 - Opponent Hold priority for triggers (2 = always hold, 1 = hold, 0 = don't hold)
 //9 - Where it's played from
 //10 - Modalities (eg. blessing of themis)
+//11 - Frozen (1 = yes, 0 = no)
 function AuraPieces()
 {
-  return 11;
+  return 12;
 }
 
 //0 - Item ID

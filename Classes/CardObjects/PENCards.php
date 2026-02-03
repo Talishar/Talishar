@@ -5386,6 +5386,116 @@ class blessing_of_themis_yellow extends Card {
   }
 }
 
+class shattering_grasp extends Card {
+  function __construct($controller) {
+    $this->cardID = "shattering_grasp";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    foreach ([1,2] as $player) {
+      $Allies = new Allies($player);
+      for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+        if ($Allies->Card($i, true)->Frozen()) return false;
+      }
+    }
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYALLY:frozenOnly=1&THEIRALLY:frozenOnly=1");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a frozen ally to destroy", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 2 ? 1 : 2);
+    $Allies = new Allies($targetPlayer);
+    $AllyCard = $Allies->FindCardUID(explode("-", $target)[1] ?? "-");
+    if ($AllyCard != "") $AllyCard->Destroy();
+  }
+}
+
+class channel_galcias_cradle_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_galcias_cradle_blue";
+    $this->controller = $controller;
+  }
+
+  private
+  function SetTargets($uniqueID) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRALLY&THEIRITEMS&THEIRCHAR:type=E&THEIRAURAS&MYALLY&MYITEMS&MYCHAR:type=E&MYAURAS");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose something to freeze", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("GALCIASCRADLE", $this->controller, $uniqueID, 1);
+  }
+
+  function EntersArenaAbility() {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
+    $this->SetTargets($AuraCard->UniqueID());
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    $this->SetTargets($AuraCard->UniqueID());
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $AuraCard->CardID(), "-", "CHANNEL", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    if ($AuraCard != "") {
+      if ($additionalCosts == "CHANNEL") {
+        ChannelTalent($uniqueID, "ICE");
+      }
+      else {
+        $mzIndex = CleanTargetToIndex($this->controller, $target);
+        MZFreeze($mzIndex, $this->controller);
+        AddCurrentTurnEffect($this->cardID, $this->controller, "-", "$target," . $AuraCard->UniqueID());
+      }
+    }
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    global $CurrentTurnEffects;
+    $AuraCard = new AuraCard($index, $this->controller);
+    for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0 ; --$i) {
+      $Effect = $CurrentTurnEffects->Effect($i, true);
+      $params = explode(",", $Effect->AppliestoUniqueID());
+      $source = $params[1] ?? "-";
+      if ($source == $AuraCard->UniqueID()) {
+        $Effect->Remove();
+        MZFreeze(CleanTargetToIndex($this->controller, $params[0]), $this->controller, 0);
+      }
+    }
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->Effect($i);
+    AddNextTurnEffect($Effect->EffectID(), $this->controller, $Effect->AppliestoUniqueID());
+    $remove = true;
+  }
+}
+
 class unflinching_foothold extends Card {
   function __construct($controller) {
     $this->cardID = "unflinching_foothold";
@@ -6471,6 +6581,49 @@ class recede_to_mistform_blue extends Card {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Turn a cloaked equipment facedown", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("MZOP", $this->controller, "FLIP", 1);
+    }
+  }
+}
+
+class monolith_of_galcia_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "monolith_of_galcia_blue";
+    $this->controller = $controller;
+  }
+
+  private
+  function GetModes() {
+    $modalities = [];
+    $allies = SearchMultizone($this->controller, "THEIRALLY:frozenOnly=1&MYALLY:frozenOnly=1");
+    $auras = SearchMultizone($this->controller, "THEIRAURAS:frozenOnly=1&MYAURAS:frozenOnly=1");
+    $equipment = SearchMultizone($this->controller, "THEIRCHAR:frozenOnly=1;type=E&MYCHAR:frozenOnly=1;type=E");
+    $items = SearchMultizone($this->controller, "THEIRITEMS:frozenOnly=1&MYITEMS:frozenOnly=1");
+    if (SearchCount($allies) > 0) array_push($modalities, "Target_ally");
+    if (SearchCount($auras) > 0) array_push($modalities, "Target_aura");
+    if (SearchCount($equipment) > 0) array_push($modalities, "Target_equipment");
+    if (SearchCount($items) > 0) array_push($modalities, "Target_item");
+    return $modalities;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $modalities = $this->GetModes();
+    return count($modalities) == 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $modalities = $this->GetModes();
+    $nModes = count($modalities);
+    $modalities = implode(",", $modalities);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose any number of options");
+    AddDecisionQueue("MAYMULTICHOOSETEXT", $this->controller, "$nModes-$modalities");
+    AddDecisionQueue("MODAL", $this->controller, "MONOLITH", 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targetArr = explode(",", $target);
+    foreach($targetArr as $targ) {
+      $mzInd = CleanTargetToIndex($this->controller, $targ);
+      MZDestroy($this->controller, $mzInd);
     }
   }
 }
