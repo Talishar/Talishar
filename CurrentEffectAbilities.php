@@ -605,7 +605,7 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "TCC") return TCCEffectPowerModifier($cardID);
   else if ($set == "EVO") return EVOEffectPowerModifier($cardID);
   else if ($set == "HVY") return HVYEffectPowerModifier($cardID);
-  else if ($set == "MST") return MSTEffectPowerModifier($cardID);
+  else if ($set == "MST") return MSTEffectPowerModifier($cardID, $attached);
   else if ($set == "AAZ") return AAZEffectPowerModifier($cardID);
   else if ($set == "TER") return TEREffectPowerModifier($cardID);
   else if ($set == "AUR") return AUREffectPowerModifier($cardID);

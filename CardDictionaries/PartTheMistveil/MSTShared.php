@@ -45,7 +45,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
   };
 }
 
-function MSTEffectPowerModifier($cardID): int
+function MSTEffectPowerModifier($cardID, $attached=false): int
 {
   global $mainPlayer;
   $idArr = explode(",", $cardID);
@@ -56,12 +56,13 @@ function MSTEffectPowerModifier($cardID): int
     "deep_blue_sea_blue", "wide_blue_yonder_blue" => SearchPitchForColor($mainPlayer, 3),
     "tide_chakra_red-2", "wind_chakra_red-2", "just_a_nick_red-BUFF" => 5,
     "tide_chakra_yellow-2", "wind_chakra_yellow-2", "longdraw_half_glove" => 4,
-    "tide_chakra_red-1", "tide_chakra_blue-2", "hiss_red", "venomous_bite_red", "wind_chakra_red-1", "wind_chakra_blue-2", "tiger_form_incantation_red", "attune_with_cosmic_vibrations_blue", "chase_the_tail_red", "maul_yellow-BUFF",
+    "tide_chakra_red-1", "tide_chakra_blue-2", "hiss_red", "venomous_bite_red", "wind_chakra_red-1", "wind_chakra_blue-2", "tiger_form_incantation_red", "attune_with_cosmic_vibrations_blue", "maul_yellow-BUFF",
     "prismatic_leyline_yellow-BLUE" => 3,
     "tide_chakra_yellow-1", "hiss_yellow", "venomous_bite_yellow", "wind_chakra_yellow-1", "tiger_form_incantation_yellow", "levels_of_enlightenment_blue", "first_tenet_of_chi_tide_blue", "prismatic_leyline_yellow-YELLOW", "emissary_of_tides_red" => 2,
     "beckoning_mistblade", "hiss_blue", "venomous_bite_blue", "fang_strike", "tooth_and_claw_red-BUFF", "sacred_art_jade_tiger_domain_blue", "wind_chakra_blue-1", "tiger_form_incantation_blue", "tide_chakra_blue-1", "intimate_inducement_red-BUFF",
     "intimate_inducement_yellow-BUFF", "intimate_inducement_blue-BUFF", "waves_of_aqua_marine", "the_grain_that_tips_the_scale_blue", "tiger_taming_khakkara", "untamed_red", "untamed_yellow", "untamed_blue", "prismatic_leyline_yellow-RED", "water_the_seeds_red",
     "water_the_seeds_yellow", "water_the_seeds_blue", "murky_water_red", "shadowrealm_horror_red-1" => 1,
+    "chase_the_tail_red" => $attached ? 3 : 0,
     default => 0,
   };
 }
