@@ -5239,12 +5239,11 @@ class mage_hunter_arrow_red extends Card {
   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
     global $mainPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
     $layerCount = count($layers);
-    $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $mainPlayer, "null_time_zone_blue") != -1;
-    $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($this->cardID)), $defPlayer, "null_time_zone_blue") != -1;
+    $nameBlocked = NameBlocked($this->cardID, $index, $from);
     $arsenal = GetArsenal($this->controller);
     if ($facing != "UP") return "-,Attack";
     $names = "Ability";
-    if($foundNullTime && $from == "ARS") return $names;
+    if($nameBlocked && $from == "ARS") return $names;
     if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
       $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $this->controller);
       $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($this->cardID)), $this->controller);

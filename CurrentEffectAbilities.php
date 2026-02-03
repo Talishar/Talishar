@@ -1172,24 +1172,6 @@ function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=f
     $remove = false;
     if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
-        case "essence_of_ancestry_body_red":
-          if (PitchValue($source) == 1 && !$skip && $preventable) {
-            $preventedDamage += $damage;
-            RemoveCurrentTurnEffect($i);
-          }
-          break;
-        case "essence_of_ancestry_soul_yellow":
-          if (PitchValue($source) == 2 && !$skip && $preventable) {
-            $preventedDamage += $damage;
-            RemoveCurrentTurnEffect($i);
-          }
-          break;
-        case "essence_of_ancestry_mind_blue":
-          if (PitchValue($source) == 3 && !$skip && $preventable) {
-            $preventedDamage += $damage;
-            RemoveCurrentTurnEffect($i);
-          }
-          break;
         case "shelter_from_the_storm_red":
         case "calming_breeze_red":
           if ($preventable) $preventedDamage += 1;
@@ -1396,6 +1378,21 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         "moon_chakra_blue-1" => 1,
         default => 3,
       };
+    case "essence_of_ancestry_body_red":
+      if (ColorContains($source, 1, $otherPlayer)) {
+        return $damage;
+      }
+      break;
+    case "essence_of_ancestry_soul_yellow":
+      if (ColorContains($source, 2, $otherPlayer)) {
+        return $damage;
+      }
+      break;
+    case "essence_of_ancestry_mind_blue":
+      if (ColorContains($source, 3, $otherPlayer)) {
+        return $damage;
+      }
+      break;
     case "sigil_of_shelter_yellow":
       return 2;
     case "sigil_of_shelter_blue":
@@ -1714,6 +1711,30 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         };
       }
       RemoveCurrentTurnEffect($index);
+      break;
+    case "essence_of_ancestry_body_red":
+      if (ColorContains($source, 1, $otherPlayer)) {
+        if ($preventable) {
+          $preventedDamage = $damage;
+        }
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "essence_of_ancestry_soul_yellow":
+      if (ColorContains($source, 2, $otherPlayer)) {
+        if ($preventable) {
+          $preventedDamage = $damage;
+        }
+        RemoveCurrentTurnEffect($index);
+      }
+      break;
+    case "essence_of_ancestry_mind_blue":
+      if (ColorContains($source, 3, $otherPlayer)) {
+        if ($preventable) {
+          $preventedDamage = $damage;
+        }
+        RemoveCurrentTurnEffect($index);
+      }
       break;
     case "sigil_of_shelter_yellow":
       if ($preventable) {
