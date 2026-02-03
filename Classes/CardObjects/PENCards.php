@@ -6305,3 +6305,22 @@ class mistborn_protector_blue extends Card {
     return GetClassState($this->controller, $CS_CreatedCardsThisTurn) > 0 ? 1 : 0;
   }
 }
+
+class blunten_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blunten_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    if(IsWeaponAttack()) AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PummelHit($this->controller == 1 ? 2 : 1);
+  }
+}
