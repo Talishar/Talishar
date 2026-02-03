@@ -3320,12 +3320,12 @@ class buzzard_helm extends Card {
     Draw($this->controller);
     $card = DiscardRandom($this->controller, $this->cardID, $this->controller);
     if(ModifiedPowerValue($card, $this->controller, "HAND", source:$this->cardID) >= 6){
-      $defCard = $CombatChain->FindCardUID($target);
-      if ($defCard != "") {
-        AddDecisionQueue("PASSPARAMETER", $this->controller, $defCard->Index(), 1);
-        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $this->controller, 1, 1);
-      }
+      AddCurrentTurnEffect($this->cardID, $this->controller);
     }
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountCurrentTurnEffects($this->cardID, $this->controller);
   }
 }
 
