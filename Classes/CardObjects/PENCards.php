@@ -2689,7 +2689,7 @@ class rip_off_the_top_yellow extends Card {
 class distant_rumbling extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     Draw($this->controller);
-    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4");
+    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", silent:true);
   }
 
   function StartTurnAbility($index, $number=1) {
