@@ -45,6 +45,13 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     }
   }
+  if ($cardID == "frostbite" && SearchCharacterActive($player, "smoldering_scales", true)) {
+    WriteLog("The heat of your " . CardLink("smoldering_scales") . " melts the frostbites!");
+    $Character = new PlayerCharacter($player);
+    $Scales = $Character->FindCardID("smoldering_scales");
+    $Scales->Destroy();
+    return;
+  }
   if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event

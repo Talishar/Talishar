@@ -6406,3 +6406,51 @@ class blessing_of_bellona_yellow extends Card {
       $AuraCard->Remove();
   }
 }
+
+class smoldering_steel_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "smoldering_steel_red";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if (!SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) return true;
+    return false;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddEffectToCurrentAttack($this->cardID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $defPlayer;
+    LoseHealth(1, $defPlayer);
+  }
+}
+
+class smoldering_scales extends Card {
+  function __construct($controller) {
+    $this->cardID = "smoldering_scales";
+    $this->controller = $controller;
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+}
