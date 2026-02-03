@@ -6015,3 +6015,110 @@ class valahai_riven_yellow extends Card {
     $this->controller = $controller;
   }
 }
+
+class ransack_and_raze_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "ransack_and_raze_blue";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $Landmarks;
+    for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
+      $LM = $Landmarks->Card($i, true);
+      if (CardCost($LM->CardID()) != -1) return false;
+    }
+    return true;
+  }
+
+  function DynamicCost() {
+    global $Landmarks;
+    $costs = [];
+    for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
+      $LM = $Landmarks->Card($i, true);
+      if (CardCost($LM->CardID()) != -1) array_push($costs, CardCost($LM->CardID()));
+    }
+    return implode(",", $costs);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    // I'm gonna be lazy and assume there's only one landmark
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $Landmarks;
+    $LM = $Landmarks->Card(0,true);
+    $LM->Destroy();
+    PutItemIntoPlayForPlayer("gold", $this->controller, 0, $resourcesPaid, $this->controller, true);
+  }
+}
+
+class destructive_tendencies_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "destructive_tendencies_blue";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $otherPlayer = $this->controller == 2 ? 1 : 2;
+    foreach ([$otherPlayer, $this->controller] as $player) {
+      $Items = new Items($player);
+      for ($i = 0; $i < $Items->NumItems(); ++$i) {
+        $Item = $Items->Card($i, true);
+        if (TypeContains($Item->CardID(), "T")) return False;
+      }
+      $Auras = new Auras($player);
+      for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+        $Aura = $Auras->Card($i, true);
+        if (TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) return False;
+      }
+    }
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    $modalities = [];
+    $otherPlayer = $this->controller == 2 ? 1 : 2;
+    foreach ([$otherPlayer, $this->controller] as $player) {
+      $Items = new Items($player);
+      for ($i = 0; $i < $Items->NumItems(); ++$i) {
+        $Item = $Items->Card($i, true);
+        if (TypeContains($Item->CardID(), "T") && !in_array("Remove_from_item", $modalities))
+          array_push($modalities, "Remove_from_item");
+      }
+      $Auras = new Auras($player);
+      for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+        $Aura = $Auras->Card($i, true);
+        if ((TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) && !in_array("Remove_from_aura", $modalities))
+          array_push($modalities, "Remove_from_aura");
+      }
+    }
+    if (count($modalities) == 2) array_push($modalities, "Both");
+    $modalities = implode(",", $modalities);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
+    AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "DESTTENDIES", 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targets = explode(",", $target);
+    foreach($targets as $targ) {
+      $targArray = explode("-", $targ);
+      $zone = match($targArray[0]) {
+        "THEIRAURASUID" => new Auras($otherPlayer),
+        "MYAURASUID" => new Auras($this->controller),
+        "THEIRITEMSUID" => new Items($otherPlayer),
+        "MYITEMSUID" => new Items($this->controller),
+        default => "-"
+      };
+      if ($zone != "-") {
+        $Card = $zone->FindCardUID($targArray[1]);
+        if ($Card != "") $Card->RemoveAllCounters();
+      }
+    }
+  }
+}

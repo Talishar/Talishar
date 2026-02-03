@@ -108,4 +108,11 @@ class ItemCard {
   function Tapped() {
     return $this->pieces[$this->index+10] ?? 0;
   }
+
+  function RemoveAllCounters() {
+    foreach ([1] as $i) {
+      if (isset($this->pieces[$this->index + $i]))
+        $this->pieces[$this->index + $i] = 0;
+    }
+  }
 }

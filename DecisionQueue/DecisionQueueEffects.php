@@ -718,6 +718,22 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PrependDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS:pitch=3", 1);
       }
       break;
+    case "DESTTENDIES":
+      if ($lastResult == "Both" || $lastResult == "Remove_from_aura") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "destructive_tendencies_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an aura to remove all counters from", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "TOKENAURAS", 1);
+      }
+      if ($lastResult == "Both" || $lastResult == "Remove_from_item") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "destructive_tendencies_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an item to remove all counters from", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "TOKENITEMS", 1);
+      }
+      break;
     case "ALLURINGINDUCEMENT":
       //this is broken for now
       global $combatChain, $combatChainState, $CCS_LinkBasePower;

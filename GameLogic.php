@@ -327,6 +327,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "TOKENAURAS":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer, $player] as $p) {
+            $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
+            $Auras = new Auras($p);
+            for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+              $Aura = $Auras->Card($i, true);
+              if (TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) array_push($rv, "$prefix-" . $Aura->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
+        case "TOKENITEMS":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer, $player] as $p) {
+            $prefix = $p == $player ? "MYITEMS" : "THEIRITEMS";
+            $Items = new Items($p);
+            for ($i = 0; $i < $Items->NumItems(); ++$i) {
+              $Item = $Items->Card($i, true);
+              if (TypeContains($Item->CardID(), "T") ) array_push($rv, "$prefix-" . $Item->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;
@@ -1908,6 +1934,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($targetArr[0] == "MYAURAS") {
             $auras = GetAuras($player);
             $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+          }
+          if ($targetArr[0] == "THEIRITEMS") {
+            $items = GetItems($otherPlayer);
+            $cleanTarget = "THEIRITEMSUID-" . $items[$targetArr[1] + 4];
+          }
+          if ($targetArr[0] == "MYITEMS") {
+            $items = GetItems($player);
+            $cleanTarget = "MYITEMSUID-" . $items[$targetArr[1] + 4];
           }
           if ($targetArr[0] == "THEIRCHAR") {
             $char = GetPlayerCharacter($otherPlayer);
