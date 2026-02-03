@@ -6008,3 +6008,10 @@ class haboob_red extends Card {
     }
   }
 }
+
+class valahai_riven_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "valahai_riven_yellow";
+    $this->controller = $controller;
+  }
+}
