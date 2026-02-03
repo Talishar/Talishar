@@ -6025,6 +6025,7 @@ class serpents_kiss_blue extends Card {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish a card", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-");
     AddDecisionQueue("MZBANISH", $this->controller, "DECK,-," . $this->cardID . "," . $this->controller, 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
   }
 }
 
