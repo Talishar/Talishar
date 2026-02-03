@@ -45,6 +45,13 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     }
   }
+  if ($cardID == "frostbite" && SearchCharacterActive($player, "smoldering_scales", true)) {
+    WriteLog("The heat of your " . CardLink("smoldering_scales") . " melts the frostbites!");
+    $Character = new PlayerCharacter($player);
+    $Scales = $Character->FindCardID("smoldering_scales");
+    $Scales->Destroy();
+    return;
+  }
   if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
@@ -811,6 +818,8 @@ function AuraStartTurnAbilities()
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $EffectContext = $defPlayerAuras[$i];
+    $card = GetClass($defPlayerAuras[$i], $defPlayer);
+    if ($card != "-") $card->OppStartTurnAbility($i);
     switch ($defPlayerAuras[$i]) {
       case "restless_coalescence_yellow":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
@@ -1669,9 +1678,12 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
       }
     }
   }
-  $theirAuras = &GetAuras($player == 1 ? 2 : 1);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $theirAuras = &GetAuras($otherPlayer);
   $countTheirAuras = count($theirAuras);
   for ($i = 0; $i < $countTheirAuras; $i += $aurasPieces) {
+    $card = GetClass($theirAuras[$i], $otherPlayer);
+    if ($card != "-") $modifier += $card->StaticPowerModifier($index, $powerModifiers);
     switch ($theirAuras[$i]) {
       case "parable_of_humility_yellow":
         if (CardType($CombatChain->CurrentAttack()) == "AA") {

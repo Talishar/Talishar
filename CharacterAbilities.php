@@ -215,6 +215,7 @@ function CharacterStartTurnAbility($index)
     case "aqua_seeing_shell":
     case "waves_of_aqua_marine":
     case "aqua_laps":
+    case "kimono_of_layered_lessons":
       $index = FindCharacterIndex($mainPlayer, $cardID);
       if ($character[$index + 12] == "UP") DestroyCharacter($mainPlayer, $index);
       break;

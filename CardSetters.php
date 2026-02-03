@@ -477,6 +477,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
     if ($player == $mainPlayer)
       if (SearchCharacterAlive($player, "empyrean_rapture") && !SearchCurrentTurnEffects("empyrean_rapture", $player) && CardNameContains($cardID, "Herald", $player, true)) AddCurrentTurnEffect("empyrean_rapture", $player);
   }
+  if(SearchAurasForCard("blessing_of_bellona_yellow", $player) != "") PlayAura("courage", $player);
 }
 
 function AddSpecificSoul($cardID, &$soul, $from)

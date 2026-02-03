@@ -528,4 +528,12 @@ class Card {
   function ResolutionStepBlockTrigger($i) {
     return;
   }
+
+  function OppStartTurnAbility($index) {
+    return;
+  }
+
+  function StaticPowerModifier($index, &$powerModifiers) {
+    return 0;
+  }
 }

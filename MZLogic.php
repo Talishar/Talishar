@@ -56,6 +56,10 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $chainLinks[$ind][2] = 0;
         AddGraveyard($chainLinks[$ind][7], $player, "CC", $player);
         break;
+      case "MYPERM":
+        $Perm = new PermanentCard($mzIndex[1], $player);
+        $Perm->Destroy();
+        break;
       default:
         break;
     }
@@ -658,55 +662,65 @@ function MZSwitchPlayer($zoneStr)
   return $zoneStr;
 }
 
-function MZIndexToMZUID($player, $mzIndex) {
-  $targetArr = explode("-", $mzIndex);
-  $targetPlayer = str_contains($mzIndex, "MY") ? $player : ($player == 1 ? 2 : 1);
-  switch ($targetArr[0]) {
-    case "THEIRCHAR":
-    case "MYCHAR":
-      $Card = new CharacterCard($targetArr[1], $targetPlayer);
-      break;
-    case "THEIRITEMS":
-    case "MYITEMS":
-      $Card = new ItemCard($targetArr[1], $targetPlayer);
-      break;
-    case "THEIRALLY":
-    case "MYALLY":
-      $Card = new AllyCard($targetArr[1], $targetPlayer);
-      break;
-    case "THEIRAURA":
-    case "MYAURA":
-      $Card = new AuraCard($targetArr[1], $targetPlayer);
-      break;
-    default:
-      return "-";
+function CleanTarget($player, $lastResult) { //converts a target to use unique ids
+  global $layers, $CombatChain;
+  $targetArr = explode("-", $lastResult);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if ($targetArr[0] == "LAYER") {
+    $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
   }
-  return "$targetArr[0]-" . $Card->UniqueID();
-}
-
-function MZUIDtoMZIndex($player, $mzUID) {
-  $targetArr = explode("-", $mzUID);
-  $targetPlayer = str_contains($mzUID, "MY") ? $player : ($player == 1 ? 2 : 1);
-  switch ($targetArr[0]) {
-    case "THEIRCHAR":
-    case "MYCHAR":
-      $Zone = new PlayerCharacter($targetPlayer);
-      break;
-    case "THEIRITEMS":
-    case "MYITEMS":
-      $Zone = new Items($targetPlayer);
-      break;
-    case "THEIRALLY":
-    case "MYALLY":
-      $Zone = new Allies($targetPlayer);
-      break;
-    case "THEIRAURA":
-    case "MYAURA":
-      $Zone = new Auras($targetPlayer);
-      break;
-    default:
-      return "-";
+  if ($targetArr[0] == "THEIRDISCARD") {
+    $discard = GetDiscard($otherPlayer);
+    $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
   }
-  $Card = $Zone->FindCardUID($targetArr[1]);
-  return "$targetArr[0]-" . $Card->Index();
+  if ($targetArr[0] == "MYDISCARD") {
+    $discard = GetDiscard($player);
+    $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
+  }
+  if ($targetArr[0] == "THEIRAURAS") {
+    $auras = GetAuras($otherPlayer);
+    $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
+  }
+  if ($targetArr[0] == "MYAURAS") {
+    $auras = GetAuras($player);
+    $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+  }
+  if ($targetArr[0] == "THEIRCHAR") {
+    $char = GetPlayerCharacter($otherPlayer);
+    $cleanTarget = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
+  }
+  if ($targetArr[0] == "MYCHAR") {
+    $char = GetPlayerCharacter($player);
+    $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
+  }
+  if ($targetArr[0] == "COMBATCHAINATTACKS") {
+    // It's not possible for this index to get messed up before resolution
+    $cleanTarget = $lastResult;
+  }
+  if ($targetArr[0] == "COMBATCHAIN") {
+    $char = GetPlayerCharacter($otherPlayer);
+    //right now only support targetting the active chain link
+    $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+  }
+  if ($targetArr[0] == "MYALLY") {
+    $allies = GetAllies($player);
+    $cleanTarget = "MYALLY-" . $allies[$targetArr[1] + 5];
+  }
+  if ($targetArr[0] == "THEIRALLY") {
+    $allies = GetAllies($otherPlayer);
+    $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
+  }
+  if ($targetArr[0] == "MYPERM") {
+    $permanents = GetPermanents($player);
+    $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
+  }
+  if ($targetArr[0] == "PASTCHAINLINK") {
+    // It's not possible for this index to get messed up before resolution
+    $cleanTarget = $lastResult;
+  }
+  if ($targetArr[0] == "COMBATCHAINLINK") {
+    $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
+  }
+  $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
+  return $target;
 }

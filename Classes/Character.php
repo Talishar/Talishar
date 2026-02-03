@@ -150,6 +150,11 @@ class CharacterCard {
     return $this->pieces[$this->index+12] ?? "-";
   }
 
+  function Flip($facing) {
+    if (isset($this->pieces[$this->index+12]))
+      $this->pieces[$this->index+12] = $facing;
+  }
+
   function Marked() {
     //1 = yes, 0 = no
     return $this->pieces[$this->index+13] ?? 0;

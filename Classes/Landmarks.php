@@ -55,4 +55,8 @@ class LandmarkCard {
   function Counters() {
     return $this->pieces[$this->index + 3] ?? 0;
   }
+
+  function Destroy() {
+    DestroyLandmark($this->index);
+  }
 }

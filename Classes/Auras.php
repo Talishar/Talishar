@@ -148,4 +148,11 @@ class AuraCard {
       $this->pieces[$this->index+10] = $mode;
     else $this->pieces[$this->index+10] .= ",$mode";
   }
+
+  function RemoveAllCounters() {
+    foreach ([2, 3] as $i) {
+      if (isset($this->pieces[$this->index + $i]))
+        $this->pieces[$this->index + $i] = 0;
+    }
+  }
 }

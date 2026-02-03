@@ -104,7 +104,7 @@ class Deck {
         WriteLog("Things are " . CardLink("topsy_turvy") . " so the card goes to the bottom instead!");
         $this->AddBottom($cardID);
       }
-      array_unshift($this->deck, $cardID);
+      else array_unshift($this->deck, $cardID);
     }
     return $cardID;
   }

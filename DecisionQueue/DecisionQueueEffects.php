@@ -702,6 +702,63 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PrependDecisionQueue("SETDQVAR", $player, "0", 1);
       PrependDecisionQueue("PASSPARAMETER", $player, $target);
       break;
+    case "WAXANDWANE":
+      if ($lastResult == "Both" || $lastResult == "Buff_ward_aura") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "wax_and_wane_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a ward aura to give a +1 counter", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS:hasWard=1", 1);
+      }
+      if ($lastResult == "Both" || $lastResult == "Buff_blue_aura") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "wax_and_wane_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a blue aura to give a +1 counter", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS:pitch=3", 1);
+      }
+      break;
+    case "DESTTENDIES":
+      if ($lastResult == "Both" || $lastResult == "Remove_from_aura") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "destructive_tendencies_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an aura to remove all counters from", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "TOKENAURAS", 1);
+      }
+      if ($lastResult == "Both" || $lastResult == "Remove_from_item") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "destructive_tendencies_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an item to remove all counters from", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "TOKENITEMS", 1);
+      }
+      break;
+    case "PILFERTHETOMB":
+      if ($lastResult == "Both" || $lastResult == "Banish_Yellow") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "pilfer_the_tomb_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a yellow card to banish", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "YELLOWDISCARD", 1);
+      }
+      if ($lastResult == "Both" || $lastResult == "Banish_Instant") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "pilfer_the_tomb_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an instant card to banish", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "INSTANTDISCARD", 1);
+      }
+      break;
+    case "SHATTERSORCERY":
+      if ($lastResult == "Both" || $lastResult == "Destroy_Sigil") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "shatter_sorcery_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Sigil to destroy", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "SIGILAURAS", 1);
+      }
+      break;
     case "ALLURINGINDUCEMENT":
       //this is broken for now
       global $combatChain, $combatChainState, $CCS_LinkBasePower;

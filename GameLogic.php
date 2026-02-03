@@ -327,6 +327,71 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "TOKENAURAS":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer, $player] as $p) {
+            $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
+            $Auras = new Auras($p);
+            for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+              $Aura = $Auras->Card($i, true);
+              if (TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) array_push($rv, "$prefix-" . $Aura->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
+        case "TOKENITEMS":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer, $player] as $p) {
+            $prefix = $p == $player ? "MYITEMS" : "THEIRITEMS";
+            $Items = new Items($p);
+            for ($i = 0; $i < $Items->NumItems(); ++$i) {
+              $Item = $Items->Card($i, true);
+              if (TypeContains($Item->CardID(), "T") ) array_push($rv, "$prefix-" . $Item->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
+        case "SIGILAURAS":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer, $player] as $p) {
+            $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
+            $Auras = new Auras($p);
+            for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+              $Aura = $Auras->Card($i, true);
+              if (CardNameContains($Aura->CardID(), "Sigil", $player, true)) array_push($rv, "$prefix-" . $Aura->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
+        case "INSTANTDISCARD":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer] as $p) {
+            $prefix = "THEIRDISCARD";
+            $Graveyard = new Discard($p);
+            for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+              $Card = $Graveyard->Card($i, true);
+              if (TypeContains($Card->ID(), "I") ) array_push($rv, "$prefix-" . $Card->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
+        case "YELLOWDISCARD":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer] as $p) {
+            $prefix = "THEIRDISCARD";
+            $Graveyard = new Discard($p);
+            for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+              $Card = $Graveyard->Card($i, true);
+              if (ColorContains($Card->ID(), "2", $p) ) array_push($rv, "$prefix-" . $Card->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;
@@ -347,6 +412,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $targPlayer = explode("|", $parameter)[0];
       $currentTargets = explode(",", explode("|", $parameter)[1]);
       $search = "$targPlayer:maxCost=0&LAYER:subtype=Aura;maxCost=0";
+      $rvOrig = explode(",", SearchMultizone($player, $search));
+      $rv = [];
+      //remove any choices that have already been targeted
+      foreach ($rvOrig as $ind) {
+        if (!in_array($ind, $currentTargets)) array_push($rv, $ind);
+      }
+      $rv = implode(",", $rv);
+      return $rv == "" ? "PASS" : $rv;
+    case "ALLYINDICES":
+      $currentTargets = explode(",", $parameter);
+      $search = "THEIRALLY&MYALLY";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
       //remove any choices that have already been targeted
@@ -528,6 +604,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDHAND":
       AddPlayerHand($lastResult, $player, "-");
+      return $lastResult;
+    case "CREATECARD":
+      WriteLog("JERE: $lastResult");
+      $params = explode(",", $parameter);
+      switch($params[0]) {
+        case "HAND":
+          AddPlayerHand($lastResult, $player, "-", created:true);
+          break;
+        default:
+          break;
+      }
       return $lastResult;
     case "ADDHANDOWNER":
       $otherPlayer = $player == 1 ? 2 : 1;
@@ -781,6 +868,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               $GraveCard = new DiscardCard($mzArr[1], $player);
               $GraveCard->Flip("DOWN");
               break;
+            case "MYCHAR":
+              $Card = new CharacterCard($mzArr[1], $player);
+              $Card->Flip("DOWN");
             default:
               break;
           }
@@ -1886,6 +1976,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($targetArr[0] == "MYAURAS") {
             $auras = GetAuras($player);
             $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+          }
+          if ($targetArr[0] == "THEIRITEMS") {
+            $items = GetItems($otherPlayer);
+            $cleanTarget = "THEIRITEMSUID-" . $items[$targetArr[1] + 4];
+          }
+          if ($targetArr[0] == "MYITEMS") {
+            $items = GetItems($player);
+            $cleanTarget = "MYITEMSUID-" . $items[$targetArr[1] + 4];
           }
           if ($targetArr[0] == "THEIRCHAR") {
             $char = GetPlayerCharacter($otherPlayer);
@@ -3097,7 +3195,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "nettling_shot_red":
         case "sigil_of_aether_blue":
           $targetLoc = explode("-", $target)[0];
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
           break;
         case "decimator_great_axe":
           $location = explode("-", $target)[0];
@@ -3128,7 +3226,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
           break;
         default:
-          AddLayer("TRIGGER", $player, $params[0], $target);
+          AddLayer("TRIGGER", $player, $params[0], $target, $additional);
           break;
       }
       return $lastResult;

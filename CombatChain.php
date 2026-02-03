@@ -1293,7 +1293,6 @@ function OnBlockResolveEffects($cardID = "")
         case "sunkwater_pincers":
         case "sunkwater_scalers":
         case "call_for_backup_red":
-        case "valahai_riven_yellow":
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
           break;
         case "scowling_flesh_bag":
@@ -1688,6 +1687,8 @@ function IsDominateActive()
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("unflinching_foothold", $mainPlayer)) return false;
+
   $characterEffects = GetCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
@@ -2038,7 +2039,7 @@ function CacheCombatResult()
 function CachedTotalPower()
 {
   global $combatChainState, $CCS_CachedTotalPower;
-  return $combatChainState[$CCS_CachedTotalPower];
+  return $combatChainState[$CCS_CachedTotalPower] ?? 0;
 }
 
 function CachedTotalBlock()
@@ -2148,10 +2149,10 @@ function IsLayerStep()
   global $layers, $CombatChain, $mainPlayer;
   if ($CombatChain->HasCurrentLink()) return false;
   $layerInd = count($layers) - LayerPieces();
+  if (!isset($layers[$layerInd])) return false;
   // account for transitioning from resolution step to layerstep
   if ($layers[$layerInd] == "RESOLUTIONSTEP" && isset($layers[$layerInd - LayerPieces()])) $layerInd -= LayerPieces();
   $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN"];
-  if (!isset($layers[$layerInd])) return false;
   if (in_array($layers[$layerInd], $nonCardLayers)) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2])[0];

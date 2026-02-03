@@ -4229,12 +4229,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
         break;
-      case "valahai_riven_yellow":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-        AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
-        AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("SPECIFICCARD", $player, "VALAHAIRIVEN,$parameter", 1);
-        break;
       case "base_of_the_mountain":
         $search = "MYHAND:type=AA&MYHAND:type=A";
         $fromMod = "Hand,MOUNTAIN";
@@ -4701,6 +4695,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   else if ($cardID == "spectral_procession_red") $power = CountAura("spectral_shield", $player);
   else if ($cardID == "diabolic_offering_blue") $power = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
   else if ($cardID == "tough_as_a_rok_blue") $power = PlayerHasLessHealth($player) ? 6 : 0;
+  else if ($cardID == "rockyard_rodeo_blue") $power = GetHighestBaseWeaponPower($player);
   
   if ($index != -1) {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
@@ -4757,6 +4752,9 @@ function ModifiedBlockValue($cardID, $player, $from, $source="", $uniqueID=-1)
         default:
           break;
       }
+    }
+    if (SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA")) {
+      $block = ceil($block / 2);
     }
   }
   if ($uniqueID != -1) {
@@ -4903,6 +4901,7 @@ function HasDoomCounters($cardID)
   switch ($cardID) {
     case "looming_doom_blue":
     case "chains_of_mephetis_blue":
+    case "doomsaying_red":
       return true;
     default:
       return false;
@@ -4930,6 +4929,9 @@ function HasFlowCounters($cardID)
     case "channel_lightning_valley_yellow":
     case "channel_mount_isen_blue":
     case "channel_the_tranquil_domain_yellow":
+    case "channel_the_skybreaker_yellow":
+    case "channel_iceloch_glaze_blue":
+    case "channel_galcia's_cradle_blue":
       return true;
     default:
       return false;
@@ -4971,6 +4973,16 @@ function HasStainCounters($cardID)
 {
   switch ($cardID) {
     case "blood_splattered_vest":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function HasStormCounters($cardID)
+{
+  switch ($cardID) {
+    case "haboob_red":
       return true;
     default:
       return false;

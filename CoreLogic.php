@@ -2504,6 +2504,8 @@ function RemoveCharacter($player, $index)
   }
   $char = &GetPlayerCharacter($player);
   $ret = $char[$index];
+  $card = GetClass($ret, $player);
+  if ($card != "-") $card->LeavesPlayAbility($index, $char[$index+11], "CHAR", true);
   for ($i = 0; $i < CharacterPieces(); ++$i) {
     unset($char[$index + $i]);
   }
@@ -2753,6 +2755,9 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
           if (GetClassState($player, $CS_NumWateryGrave) == 1 && HasWateryGrave($cardID) && $from=="GY") {
             $hasGoAgain = true;
           }
+          break;
+        case "shield_beater":
+          if (CardNameContains($cardID, "Visit Anvilheim", $player)) $hasGoAgain = true;
           break;
         default:
           break;
