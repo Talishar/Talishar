@@ -6514,10 +6514,14 @@ class blessing_of_bellona_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "SOUL")
+      PlayAura("courage", $this->controller);
+    else {
       AddSoul($this->cardID, $this->controller, "AURAS", false);
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
       $AuraCard->Remove();
+    }
   }
 }
 
