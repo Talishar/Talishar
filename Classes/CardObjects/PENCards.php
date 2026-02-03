@@ -6630,3 +6630,42 @@ class monolith_of_galcia_blue extends Card {
     }
   }
 }
+
+class sense_weakness_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sense_weakness_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function DoesEffectGrantDominate() {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $combatChainState, $CCS_DamageDealt, $defPlayer;
+    $Allies = new Allies($defPlayer);
+    $damage = $combatChainState[$CCS_DamageDealt];
+    for ($i = $Allies->NumAllies()-1; $i >= 0; --$i) {
+      $AllyCard = $Allies->Card($i, true);
+      $AllyCard->Damage($damage);
+    }
+  }
+}

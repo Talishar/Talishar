@@ -1467,17 +1467,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $type = $parameters[2] ?? "DAMAGE";
       $playerSource = $parameters[3] ?? $player; //!! Important for end games stats
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
-        $allies = &GetAllies($targetPlayer);
-        if ($allies[$target[1] + 6] > 0) {
-          $damage -= 3;
-          if ($damage < 0) $damage = 0;
-          --$allies[$target[1] + 6];
-        }
-        $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, $type);
-        $allies[$target[1] + 2] -= $damage;
-        if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $target[1]);
-        if ($allies[$target[1] + 2] <= 0) DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
-        return $damage;
+        return DamageAlly($targetPlayer, $target[1], $damage, $type);
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);

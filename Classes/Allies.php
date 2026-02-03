@@ -64,6 +64,12 @@ class AllyCard {
     return $this->pieces[$this->index+2] ?? 0;
   }
 
+  function Damage($damage, $type="DAMAGE") {
+    if (isset($this->pieces[$this->index+2]))
+      return DamageAlly($this->controller, $this->index, $damage, $type);
+    else return 0;
+  }
+
   function Frozen() {
     return $this->pieces[$this->index+3] ?? 0;
   }

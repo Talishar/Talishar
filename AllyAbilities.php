@@ -558,3 +558,17 @@ function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
   }
   $srcAlly = array_values($srcAlly);
 }
+
+function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
+  $allies = &GetAllies($targetPlayer);
+  if ($allies[$targetInd + 6] > 0) {
+    $damage -= 3;
+    if ($damage < 0) $damage = 0;
+    --$allies[$targetInd + 6];
+  }
+  $damage = AllyDamagePrevention($targetPlayer, $targetInd, $damage, $type);
+  $allies[$targetInd + 2] -= $damage;
+  if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $targetInd);
+  if ($allies[$targetInd + 2] <= 0) DestroyAlly($targetPlayer, $targetInd, uniqueID: $allies[$targetInd + 5]);
+  return $damage;
+}
