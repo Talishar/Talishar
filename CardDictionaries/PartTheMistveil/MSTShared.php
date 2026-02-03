@@ -407,11 +407,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYDISCARD-" . $index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST099_inner_chi_blue," . $from);
-      } else {
-        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
-        return "FAILED";
       }
+      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST099_inner_chi_blue," . $from);
       return "";
     case "rising_sun_setting_moon_blue":
       Draw($currentPlayer);
