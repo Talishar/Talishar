@@ -2229,6 +2229,7 @@ function LinkBasePower()
     //substage 4
     if ($attackCard != "-") $basePower = ceil($basePower / $attackCard->DivideBasePower());
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+      if ($currentTurnEffects[$i+1] != $mainPlayer) continue;
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
       if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
