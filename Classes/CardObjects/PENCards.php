@@ -6134,3 +6134,39 @@ class destructive_tendencies_blue extends Card {
     }
   }
 }
+
+class kimono_of_layered_lessons extends Card {
+  function __construct($controller) {
+    $this->cardID = "kimono_of_layered_lessons";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $character = GetPlayerCharacter($this->controller);
+    $charIndex = FindCharacterIndex($this->controller, $this->cardID);
+    return $character[$charIndex + 12] != "DOWN";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function EquipPayAdditionalCosts($cardIndex = '-') {
+    $character = GetPlayerCharacter($this->controller);
+    $character[$cardIndex + 12] = "UP";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $phase == "B";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $character = GetPlayerCharacter($this->controller);
+    $charIndex = FindCharacterIndex($this->controller, $this->cardID);
+    $character[$charIndex + 4] += 1;
+  }
+}

@@ -3985,6 +3985,7 @@ function CharacterDefaultActiveState($cardID)
     case "gravy_bones_shipwrecked_looter":
     case "dead_threads":
     case "voltic_vanguard":
+    case "kimono_of_layered_lessons":
       return 1;
     default:
       return 2;
@@ -4693,6 +4694,7 @@ function CardCareAboutChiPitch($cardID)
     case "zen":
     case "twelve_petal_kasaya":
     case "enigma_new_moon":
+    case "kimono_of_layered_lessons":
       return true;
     default:
       return false;
