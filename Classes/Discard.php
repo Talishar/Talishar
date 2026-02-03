@@ -14,6 +14,11 @@ class Discard {
   }
 
   // Methods
+  function Card($index, $cardNumber=false) {
+    if($cardNumber) $index = $index * DiscardPieces();
+    return new DiscardCard($index, $this->playerID);
+  }
+
   function Empty() {
     return count($this->discard) == 0;
   }

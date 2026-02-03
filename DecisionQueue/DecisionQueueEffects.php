@@ -734,6 +734,22 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PrependDecisionQueue("FINDINDICES", $player, "TOKENITEMS", 1);
       }
       break;
+    case "PILFERTHETOMB":
+      if ($lastResult == "Both" || $lastResult == "Banish_Yellow") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "pilfer_the_tomb_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a yellow card to banish", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "YELLOWDISCARD", 1);
+      }
+      if ($lastResult == "Both" || $lastResult == "Banish_Instant") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "pilfer_the_tomb_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an instant card to banish", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "INSTANTDISCARD", 1);
+      }
+      break;
     case "ALLURINGINDUCEMENT":
       //this is broken for now
       global $combatChain, $combatChainState, $CCS_LinkBasePower;

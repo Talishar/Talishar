@@ -6135,6 +6135,74 @@ class destructive_tendencies_blue extends Card {
   }
 }
 
+class pilfer_the_tomb_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "pilfer_the_tomb_blue";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $otherPlayer = $this->controller == 2 ? 1 : 2;
+    foreach ([$otherPlayer] as $player) {
+      $Graveyard = new Discard($player);
+      if ($Graveyard->NumCards() == 0) return False;
+      for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+        $Card = $Graveyard->Card($i, true);
+        if (TypeContains($Card->ID(), "I", $otherPlayer) || ColorContains($Card->ID(), "2", $otherPlayer)) return False;
+      }
+    }
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    $modalities = [];
+    $otherPlayer = $this->controller == 2 ? 1 : 2;
+
+    foreach ([$otherPlayer] as $player) {
+      $Graveyard = new Discard($player);
+      if ($Graveyard->NumCards() == 0) return False;
+      for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+        $Card = $Graveyard->Card($i, true);
+        if (TypeContains($Card->ID(), "I", $player) && !in_array("Banish_Instant", $modalities)) 
+          array_push($modalities, "Banish_Instant");
+        if (ColorContains($Card->ID(), "2", $player) && !in_array("Banish_Yellow", $modalities))
+          array_push($modalities, "Banish_Yellow");
+      }
+    }
+    if (count($modalities) == 2) array_push($modalities, "Both");
+    $modalities = implode(",", $modalities);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
+    AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "PILFERTHETOMB", 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targets = explode(",", $target);
+    foreach($targets as $targ) {
+      WriteLog("Processing target: " . $targ);
+      $targArray = explode("-", $targ);
+      $zone = match($targArray[0]) {
+        "THEIRDISCARDUID" => new Discard($otherPlayer),
+        "MYDISCARDUID" => new Discard($this->controller),
+        default => "-"
+      };
+      if ($zone != "-") {
+        $index = SearchdiscardForUniqueID($targArray[1], $otherPlayer);
+        if ($index != -1) {
+          AddDecisionQueue("PASSPARAMETER", $this->controller, "THEIRDISCARD-" . $index, 1);
+          AddDecisionQueue("MZADDZONE", $this->controller, "THEIRBANISH,GY,-," . $this->cardID, 1);
+          AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+        } 
+        return "";
+      }
+    }
+  }
+}
+
 class kimono_of_layered_lessons extends Card {
   function __construct($controller) {
     $this->cardID = "kimono_of_layered_lessons";

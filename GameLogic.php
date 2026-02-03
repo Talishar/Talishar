@@ -353,6 +353,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "INSTANTDISCARD":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer] as $p) {
+            $prefix = "THEIRDISCARD";
+            $Graveyard = new Discard($p);
+            for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+              $Card = $Graveyard->Card($i, true);
+              if (TypeContains($Card->ID(), "I") ) array_push($rv, "$prefix-" . $Card->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
+        case "YELLOWDISCARD":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer] as $p) {
+            $prefix = "THEIRDISCARD";
+            $Graveyard = new Discard($p);
+            for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+              $Card = $Graveyard->Card($i, true);
+              if (ColorContains($Card->ID(), "2", $p) ) array_push($rv, "$prefix-" . $Card->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;
