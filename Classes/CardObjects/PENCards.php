@@ -2768,17 +2768,39 @@ class distant_rumbling_blue extends Card {
 }
 
 class rainbow_goo_trap_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rainbow_goo_trap_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
   function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
     if (HasIncreasedAttack() && IsDominateActive() && DoesAttackHaveGoAgain())
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    global $CombatChain, $mainPlayer;
+    global $CombatChain, $mainPlayer, $combatChain;
+    //It's still not blocked from gaining abilities, but it's a start
     $CombatChain->Card(0)->ModifyPower(-2);
     AddCurrentTurnEffect("rainbow_goo_trap_red", $mainPlayer);
+    AddCurrentTurnEffect("rainbow_goo_trap_red-BLIND", $mainPlayer);
     TrapTriggered($this->cardID);
-    // should probably do something with blind card here, and then remember to unblind it when it goes to graveyard
+    $combatChain[0] = BlindCard($combatChain[0]);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function ResolutionStepEffectTriggers($parameter) {
+    global $combatChain;
+    if ($parameter == "BLIND") {
+      $combatChain[0] = BlindCard($combatChain[0], unblind:true);
+    }
   }
 }
 

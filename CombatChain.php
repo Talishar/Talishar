@@ -1688,6 +1688,7 @@ function IsDominateActive()
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("unflinching_foothold", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("rainbow_goo_trap_red", $mainPlayer)) return false;
 
   $characterEffects = GetCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
