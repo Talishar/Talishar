@@ -57,6 +57,7 @@ function JSONRenderedCard(
   $goldCounters = NULL,
   $bindCounters = NULL,
   $stainCounters = NULL,
+  $stormCounters = NULL,
   $suspenseCounters = NULL,
   $sandCounters = NULL,
   $lightningPlayed = NULL,
@@ -120,6 +121,9 @@ function JSONRenderedCard(
   $stainCounters = property_exists($countersMap, 'stain') ? $stainCounters->stain : $stainCounters;
   if($stainCounters != NULL) $countersMap->stain = $stainCounters;
 
+  $stormCounters = property_exists($countersMap, 'storm') ? $stormCounters->storm : $stormCounters;
+  if($stormCounters != NULL) $countersMap->storm = $stormCounters;
+
   $goldCounters = property_exists($countersMap, 'gold') ? $goldCounters->gold : $goldCounters;
   if($goldCounters != NULL) $countersMap->gold = $goldCounters;
 
@@ -182,6 +186,10 @@ function JSONRenderedCard(
     }
     else if(HasStainCounters($cardNumber)) {
       $countersMap->stain = $countersMap->counters;
+      $countersMap->counters = 0;
+    }
+    else if(HasStormCounters($cardNumber)) {
+      $countersMap->storm = $countersMap->counters;
       $countersMap->counters = 0;
     }
     else if(HasGoldCounters($cardNumber)) {

@@ -4929,6 +4929,9 @@ function HasFlowCounters($cardID)
     case "channel_lightning_valley_yellow":
     case "channel_mount_isen_blue":
     case "channel_the_tranquil_domain_yellow":
+    case "channel_the_skybreaker_yellow":
+    case "channel_iceloch_glaze_blue":
+    case "channel_galcia's_cradle_blue":
       return true;
     default:
       return false;
@@ -4970,6 +4973,16 @@ function HasStainCounters($cardID)
 {
   switch ($cardID) {
     case "blood_splattered_vest":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function HasStormCounters($cardID)
+{
+  switch ($cardID) {
+    case "haboob_red":
       return true;
     default:
       return false;
