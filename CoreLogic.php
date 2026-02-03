@@ -2752,7 +2752,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     $hasGoAgain = AbilityHasGoAgain($cardID, $from);
     if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
   } else {
-    $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID);
+    $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID, $from);
     if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
