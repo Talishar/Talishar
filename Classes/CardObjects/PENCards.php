@@ -6279,7 +6279,7 @@ class kimono_of_layered_lessons extends Card {
   }
 
   function EquipPayAdditionalCosts($cardIndex = '-') {
-    $character = GetPlayerCharacter($this->controller);
+    $character = &GetPlayerCharacter($this->controller);
     $character[$cardIndex + 12] = "UP";
   }
 
