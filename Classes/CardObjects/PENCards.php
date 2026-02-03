@@ -6383,3 +6383,26 @@ class solforge_gauntlet extends Card {
     AddSoul($this->cardID, $this->controller, "CC");
   }
 }
+
+class blessing_of_bellona_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_bellona_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+      AddSoul($this->cardID, $this->controller, "AURAS", false);
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Remove();
+  }
+}
