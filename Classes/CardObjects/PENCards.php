@@ -735,13 +735,17 @@ class predatory_plating extends Card {
     if (LayerStepPower() >= 6) return false;
     for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
       $Card = $CombatChain->Card($i, true);
-      if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA") && $Card->TotalPower() >= 6) return false;
+      if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA")) {
+        if ($i == 0 && CachedTotalPower() >= 6) return false;
+        if ($Card->TotalPower() >= 6) return false;
+      }
     }
     for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
       $ChainLink = $ChainLinks->GetLink($i);
       for ($j = 0; $j < $ChainLink->NumCards(); ++$j) {
         $Card = $ChainLink->GetLinkCard($j, true);
-        if ($Card->PlayerID() == $this->controller && $Card->PowerModifier() >= 6) return false;
+        $power = $Card->PowerModifier() + ModifiedPowerValue($Card->ID(), $Card->PlayerID(), "CC", "-", $Card->Index());
+        if ($Card->PlayerID() == $this->controller && $power >= 6) return false;
       }
     }
     $Character = new PlayerCharacter($this->controller);

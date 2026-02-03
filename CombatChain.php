@@ -2040,7 +2040,7 @@ function CacheCombatResult()
 function CachedTotalPower()
 {
   global $combatChainState, $CCS_CachedTotalPower;
-  return $combatChainState[$CCS_CachedTotalPower];
+  return $combatChainState[$CCS_CachedTotalPower] ?? 0;
 }
 
 function CachedTotalBlock()
