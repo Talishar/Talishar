@@ -3598,6 +3598,10 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     WriteLog("Draw prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
   }
+  if ($mainPhase && (SearchAurasForCard("by_the_book_blue", $otherPlayer) != "" || SearchAurasForCard("by_the_book_blue", $player) != "")) {
+    WriteLog("Draw prevented by " . CardLink("by_the_book_blue"));
+    return "";
+  }
   if ($effectSource == "gold" && SearchCurrentTurnEffects("not_so_fast_yellow", $player, true)){
     $player = $otherPlayer;
   }

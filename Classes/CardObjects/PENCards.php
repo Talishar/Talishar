@@ -6813,3 +6813,25 @@ class tome_of_pandemonium_yellow extends Card {
     if($deckCard != "") BanishCardForPlayer($deckCard, $otherPlayer, "THEIRDECK", "TTFromOtherPlayer", $this->cardID);
   }
 }
+
+class by_the_book_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "by_the_book_blue";
+    $this->controller = $controller;
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    return PlayerHasLessHealth($this->controller);
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    $AuraCard->Destroy();
+  }
+}
