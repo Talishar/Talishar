@@ -83,8 +83,8 @@ function SuperFrozen($player, $MZIndex) {
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player || $Effect->EffectID() != "channel_galcias_cradle_blue") continue;
-    $mzUID = MZIndexToMZUID($player, $MZIndex);
-    if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[1] ?? "-")) return true;
+    $mzUID = CleanTarget($player, $MZIndex);
+    if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[0] ?? "-")) return true;
   }
   return false;
 }

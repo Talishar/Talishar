@@ -953,7 +953,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       type: $type,
       sType: $sType,
       gem: $gem,
-      label: $label));
+      label: $label,
+      isFrozen:$theirAuras[$i + 11] == 1));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -1054,6 +1055,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     elseif (!TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1) {
       $label = "Token Copy";
     }
+    else $label = "";
     array_push($myAurasOutput, JSONRenderedCard(
       cardNumber: $myAuras[$i],
       overlay: $myAuras[$i + 1] != 2 ? 1 : 0,
@@ -1066,7 +1068,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       actionDataOverride: strval($i),
       sType: $sType,
       gem: $gem,
-      label: $label
+      label: $label,
+      isFrozen: $myAuras[$i + 11] == 1,
     ));
   }
   $response->playerAuras = $myAurasOutput;

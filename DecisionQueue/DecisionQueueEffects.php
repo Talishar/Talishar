@@ -236,6 +236,38 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         }
       }
       return $lastResult;
+    case "MONOLITH":
+      if(!is_array($lastResult)) return $lastResult;
+      for($i = 0; $i < count($lastResult); ++$i) {
+        switch($lastResult[$i]) {
+          case "Target_ally":
+            $type = "ally";
+            $search = "THEIRALLY:frozenOnly=1&MYALLY:frozenOnly=1";
+            break;
+          case "Target_aura":
+            $type = "aura";
+            $search = "THEIRAURAS:frozenOnly=1&MYAURAS:frozenOnly=1";
+            break;
+          case "Target_equipment":
+            $type = "equipment";
+            $search = "THEIRCHAR:frozenOnly=1;type=E&MYCHAR:frozenOnly=1;type=E";
+            break;
+          case "Target_item":
+            $type = "item";
+            $search = "THEIRITEMS:frozenOnly=1&MYITEMS:frozenOnly=1";
+            break;
+          default:
+            $type = "";
+            $search = "";
+            break;
+        }
+        PrependDecisionQueue("SETLAYERTARGET", $player, "monolith_of_galcia_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Target frozen $type to destroy", 1);
+        PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
+      }
+      return $lastResult;
     case "captains_call_red": case "captains_call_yellow": case "captains_call_blue":
       switch($lastResult) {
         case "Buff_Power": AddCurrentTurnEffect("$card-1", $player); return 1;

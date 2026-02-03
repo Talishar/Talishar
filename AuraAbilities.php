@@ -104,7 +104,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       $myHoldState, // 7: My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
       $theirHoldState, // 8: Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
       $from, // 9: Where it's played from
-      "-" // 10: modalities
+      "-", // 10: modalities
+      0 // frozen, (0 = no, 1 = yes)
     );
   }
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);

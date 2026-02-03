@@ -465,6 +465,14 @@ function FrozenOffsetMZ($zone)
     case "MYCHAR":
     case "THEIRCHAR":
       return 8;
+    case "AURAS":
+    case "MYAURAS":
+    case "THEIRAURAS":
+      return 11;
+    case "ITEMS":
+    case "MYITEMS":
+    case "THEIRITEMS":
+      return 7;
     default:
       return -1;
   }
@@ -662,6 +670,26 @@ function MZSwitchPlayer($zoneStr)
   return $zoneStr;
 }
 
+function GetZoneObject($player,  $zone) {
+  global $Stack, $CombatChain;
+  $otherPlayer = $player == 1 ? 2 : 1;
+  return match($zone) {
+    "LAYER" => $Stack,
+    "MYDISCARD" => new Discard($player),
+    "THEIRDISCARD" => new Discard($otherPlayer),
+    "MYAURAS" => new Auras($player),
+    "THEIRAURAS" => new Auras($otherPlayer),
+    "MYCHAR" => new PlayerCharacter($player),
+    "THEIRCHAR" => new PlayerCharacter($otherPlayer),
+    "COMBATCHAIN" => $CombatChain,
+    "MYALLY" => new Allies($player),
+    "THEIRALLY" => new Allies($otherPlayer),
+    "MYITEMS" => new Items($player),
+    "THEIRITEMS" => new Items($otherPlayer),
+    default => ""
+  };
+}
+
 function CleanTarget($player, $lastResult) { //converts a target to use unique ids
   global $layers, $CombatChain;
   $targetArr = explode("-", $lastResult);
@@ -721,6 +749,25 @@ function CleanTarget($player, $lastResult) { //converts a target to use unique i
   if ($targetArr[0] == "COMBATCHAINLINK") {
     $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
   }
+  if ($targetArr[0] == "MYITEMS") {
+    $items = GetItems($player);
+    $cleanTarget = "MYITEMS-" . $items[$targetArr[1] + 4];
+  }
+  if ($targetArr[0] == "THEIRITEMS") {
+    $items = GetPermanents($otherPlayer);
+    $cleanTarget = "THEIRITEMS-" . $items[$targetArr[1] + 4];
+  }
   $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
   return $target;
+}
+
+function CleanTargetToIndex($player, $target) {
+  $targetArr = explode("-", $target);
+  $zone = $targetArr[0];
+  $uid = $targetArr[1];
+  if (str_contains($zone, "UID")) $zone = substr($zone, 0, -3);
+  $Zone = GetZoneObject($player, $zone);
+  $Card = $Zone->FindCardUID($uid);
+  if ($Card == "") return "";
+  return "$zone-" . $Card->Index();
 }

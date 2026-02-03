@@ -3855,7 +3855,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PlayerLoseHealth(1, $player);
       return $lastResult;
     case "GALCIASCRADLE":
-      $target = MZIndexToMZUID($player, $lastResult);
+      $target = CleanTarget($player, $lastResult);
       AddLayer("TRIGGER", $player, "channel_galcias_cradle_blue", $target, "-", $parameter);
       return $lastResult;
     default:

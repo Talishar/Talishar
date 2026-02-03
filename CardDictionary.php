@@ -1677,6 +1677,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $otherPlayer = $player == 1 ? 2 : 1;
   $myArsenal = &GetArsenal($player);
   $myAllies = &GetAllies($player);
+  $myAuras = &GetAuras($player);
   $character = &GetPlayerCharacter($player);
   $CharacterCard = new CharacterCard($index, $player);
   $myHand = &GetHand($player);
@@ -1720,7 +1721,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") {
     $restriction = "Frozen";
     return false;
-  }if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 1]) && $myAllies[$index + 1] == "1") {
+  }
+  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 1]) && $myAllies[$index + 1] == "1") {
     switch ($cardID) {
       case "cutty_shark_quick_clip_yellow":
         //has a once per turn and a non-once per turn ability
@@ -1729,6 +1731,10 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         $restriction = "Already used";
         return false;
     }
+  }
+  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && $phase != "B" && isset($myAuras[$index + 11]) && $myAuras[$index + 1] == "1") {
+    $restriction = "Frozen";
+    return false;
   }
   if ($from == "ARS" && $phase != "B") {
     if ($myArsenal[$index + 4] == "1") {
