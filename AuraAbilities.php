@@ -289,7 +289,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
       if (count($aurasArray) <= 1) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "sigil_of_brilliance_yellow":
-      AddDecisionQueue("DRAW", $player, "-", 0);
+      AddLayer("TRIGGER", $player, $cardID, "-", "LEAVES");
       break;
     case "sigil_of_sanctuary_blue":
       WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("embodiment_of_earth", "embodiment_of_earth"));

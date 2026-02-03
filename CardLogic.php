@@ -2659,7 +2659,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "sigil_of_protection_red":
       case "sigil_of_protection_yellow":
       case "sigil_of_protection_blue":
-      case "sigil_of_brilliance_yellow":
       case "sigil_of_earth_blue":
       case "sigil_of_lightning_blue":
       case "sigil_of_the_arknight_blue":
@@ -2676,6 +2675,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $mod = DelimStringContains(CardType($newCardID), "A") ? "INST" : "-";
           BanishCardForPlayer($newCardID, $player, "DECK", $mod);
           $deck->Remove(0);
+        }
+        else DestroyAuraUniqueID($player, $uniqueID);
+        break;
+      case "sigil_of_brilliance_yellow":
+        if ($additionalCosts ==  "LEAVES") {
+          Draw($player, effectSource:$parameter);
         }
         else DestroyAuraUniqueID($player, $uniqueID);
         break;
