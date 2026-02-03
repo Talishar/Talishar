@@ -6141,6 +6141,15 @@ class haboob_red extends Card {
       return -1;
     }
   }
+
+  function AuraPowerModifiers($index, &$powerModifiers) { //Applies to own cards
+    global $CombatChain;
+    if (TypeContains($CombatChain->CurrentAttack(), "AA")) {
+      array_push($powerModifiers, $this->cardID);
+      array_push($powerModifiers, -1);
+      return -1;
+    }
+  }
 }
 
 class valahai_riven_yellow extends Card {
