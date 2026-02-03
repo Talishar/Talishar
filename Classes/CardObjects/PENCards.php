@@ -6442,6 +6442,10 @@ class mistborn_protector_blue extends Card {
     $this->controller = $controller;
   }
 
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
   function CardBlockModifier($from, $resourcesPaid, $index) {
     global $CS_CreatedCardsThisTurn;
     return GetClassState($this->controller, $CS_CreatedCardsThisTurn) > 0 ? 1 : 0;
@@ -6864,5 +6868,22 @@ class by_the_book_blue extends Card {
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->FindCardUID($uniqueID);
     $AuraCard->Destroy();
+  }
+}
+
+class astravolt_elemental_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "astravolt_elemental_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller, may:true);
+    AddDecisionQueue("DRAW", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PLAYAURA", $this->controller, "embodiment_of_lightning-1-" . $this->cardID);
   }
 }

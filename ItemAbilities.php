@@ -3,7 +3,7 @@
 
 function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
 {
-  global $EffectContext, $CS_NumGoldCreated;
+  global $EffectContext, $CS_NumGoldCreated, $CS_CreatedCardsThisTurn;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "") $effectController = $player;
   if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
@@ -53,6 +53,8 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
       AddLayer("TRIGGER", $player, $hero);
     }
   }
+  if ($isToken) 
+    IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
   //enters the arena triggers
   switch ($cardID) {
     case "stasis_cell_blue":
