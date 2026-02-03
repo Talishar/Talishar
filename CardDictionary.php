@@ -882,7 +882,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
 {
   global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
-  if (!$cardID) return "";
+  if (!$cardID) return 0;
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
@@ -970,6 +970,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   // Lyath ability is handled elsewhere while attacking
   if ($lyathActive && !$attacking) $basePower = ceil($basePower / 2);
   if ($lyathShoes && !$attacking) $basePower = ceil($basePower / 2);
+  if (!is_numeric($basePower)) return -1;
   return $basePower;
 }
 
