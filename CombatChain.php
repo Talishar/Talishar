@@ -1926,6 +1926,7 @@ function CombatChainClosedTriggers()
           // This will exit early if No
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=deep_recesses_of_existence_blue", 1);
+          AddDecisionQueue("CHOOSEONE", $mainPlayer, "<-", 1);
           AddDecisionQueue("MZBANISH", $mainPlayer, "MYDISCARD,DOWN," . $mainPlayer, 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {

@@ -2521,6 +2521,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "CHOOSEONE":
+      return explode(",", $lastResult)[0] ?? "-";
     case "MZDESTROY":
       return MZDestroy($player, $lastResult, allArsenal: $parameter);
     case "MZUNDESTROY":
