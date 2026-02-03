@@ -6324,3 +6324,44 @@ class blunten_yellow extends Card {
     PummelHit($this->controller == 1 ? 2 : 1);
   }
 }
+
+class swordmasters_shine_red extends card {
+  function __construct($controller) {
+    $this->cardID = "swordmasters_shine_red";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if (TypeContains($CombatChain->CurrentAttack(), "W")) return false;
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (TypeContains($CombatChain->CurrentAttack(), "W")) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 5;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->CurrentAttack(), "W");
+  }
+
+  function SelfCostModifier($from) {
+    $indices = SearchCharacterAllIndexSubtype($this->controller, "Sword");
+    $totalPowerCounters = 0;
+    if ($indices != "") {
+      foreach ($indices as $index) {
+        $weaponCard = new CharacterCard($index, $this->controller);
+        $totalPowerCounters += $weaponCard->NumPowerCounters();
+      }
+    }
+    return -$totalPowerCounters;
+  }
+}

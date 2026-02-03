@@ -528,6 +528,18 @@ function SearchCharacterIndexSubtype($player, $subtype)
   return -1;
 }
 
+function SearchCharacterAllIndexSubtype($player, $subtype)
+{
+  $character = &GetPlayerCharacter($player);
+  $count = count($character);
+  $pieces = CharacterPieces();
+  $indices = [];
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (SubtypeContains($character[$i], $subtype, $player)) $indices[] = $i;
+  }
+  return $indices;
+}
+
 function FindCharacterIndex($player, $cardID)
 {
   $character = &GetPlayerCharacter($player);
