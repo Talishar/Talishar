@@ -1413,8 +1413,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         return $damage;
       }
       break;
-    case "soulbond_resolve":
-      return 1;
     default:
       break;
   }
@@ -1438,13 +1436,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     if ($remove) RemoveCurrentTurnEffect($index);
   }
   switch ($effects[0]) {
-    case "soulbond_resolve":
-      $char = &GetPlayerCharacter($player);
-      if ($preventable) $preventedDamage += 1;
-      $charIndex = FindCharacterIndex($player, $effects[0]);
-      --$char[$charIndex + 5];
-      RemoveCurrentTurnEffect($index);
-      break;
     case "dissipation_shield_yellow":
       if ($preventable) $preventedDamage += intval($effects[1]);
       RemoveCurrentTurnEffect($index);
