@@ -2664,11 +2664,20 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "sigil_of_lightning_blue":
       case "sigil_of_the_arknight_blue":
       case "sigil_of_deadwood_blue":
-      case "sigil_of_temporal_manipulation_blue":
       case "sigil_of_forethought_blue":
       case "sigil_of_cycles_blue":
       case "sigil_of_fyendal_blue":
         DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
+        break;
+      case "sigil_of_temporal_manipulation_blue":
+        if ($additionalCosts ==  "LEAVES") {
+          $deck = new Deck($player);
+          $newCardID = $deck->Top();
+          $mod = DelimStringContains(CardType($newCardID), "A") ? "INST" : "-";
+          BanishCardForPlayer($newCardID, $player, "DECK", $mod);
+          $deck->Remove(0);
+        }
+        else DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "dracona_optimai":
         $deck = new Deck($player);

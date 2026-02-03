@@ -330,11 +330,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
       // AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
       break;
     case "sigil_of_temporal_manipulation_blue":
-      $deck = new Deck($player);
-      $newCardID = $deck->Top();
-      $mod = DelimStringContains(CardType($newCardID), "A") ? "INST" : "-";
-      BanishCardForPlayer($newCardID, $player, "DECK", $mod);
-      $deck->Remove(0);
+      AddLayer("TRIGGER", $player, $cardID, "-", "LEAVES");
       break;
     case "sigil_of_forethought_blue":
       PlayAura("ponder", $player);
