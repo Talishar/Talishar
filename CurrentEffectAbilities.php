@@ -2763,11 +2763,10 @@ function EffectDefenderPowerModifiers($cardID)
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1, $overrideType = "-")
 {
   global $mainPlayer, $currentTurnEffects, $p2IsAI;
-  $powerValue = PowerValue($cardID, $mainPlayer, "LAYER", $index);
+  $powerValue = PowerValue($cardID, $mainPlayer, "LAYER", $index, base:true);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = $overrideType == "-" ? GetResolvedAbilityType($cardID) : $overrideType;
   $abilityType = GetAbilityType($cardID, from: $from);
-
   if ($p2IsAI) return false;
   $restrictedBy = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -2782,7 +2781,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
           break;
         case "crush_the_weak_red":
           if ($hasNoAbilityTypes || $resolvedAbilityType == "AA") {
-            if (TypeContains($cardID, "AA") && PowerValue($cardID, $mainPlayer, "LAYER") <= 3) $restrictedBy = $effectID;
+            if (TypeContains($cardID, "AA") && $powerValue <= 3) $restrictedBy = $effectID;
           }
           break;
         case "WarmongersPeace":
