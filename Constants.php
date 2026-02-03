@@ -783,6 +783,7 @@ function ResetCardPlayed($cardID, $from="-")
   }
   if(DelimStringContains($type, "A") && (GetResolvedAbilityType($cardID) == "A" || GetResolvedAbilityType($cardID) == "") && GetClassState($currentPlayer, $CS_NextNAAInstant) == 1) {
     SetClassState($currentPlayer, $CS_NextNAAInstant, 0);
+    SearchCurrentTurnEffects("tempest_dancers", $currentPlayer, true);
     $effectRemoved = true;
   }
   //You may use this effect on any one non-attack action card this chain link, not just the next non-attack action card you play this chain link.

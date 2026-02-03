@@ -6703,3 +6703,20 @@ class doomsaying_red extends Card {
     }
   }
 }
+
+// class tempest_dancers extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "tempest_dancers";
+//     $this->controller = $controller;
+//   }
+
+//   function DestroyEffect() {
+//     AddLayer("TRIGGER", $this->controller, $this->cardID);
+//   }
+
+//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+//     global $CS_NextNAAInstant;
+//     SetClassState($this->controller, $CS_NextNAAInstant, 1);
+//     AddCurrentTurnEffect($this->cardID, $this->controller);
+//   }
+// }
