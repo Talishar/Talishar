@@ -1197,6 +1197,19 @@ function SearchItemForModalities($modality, $player, $cardID)
   return -1;
 }
 
+function SearchAuraForModalities($modality, $player, $cardID)
+{
+  $auras = &GetAuras($player);
+  $count = count($auras);
+  $pieces = AuraPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($auras[$i] == $cardID && DelimStringContains($auras[$i + 10], $modality)) {
+      return $i;
+    }
+  }
+  return -1;
+}
+
 function SearchInventoryForCard($player, $cardID)
 {
   $inventory = &GetInventory($player);

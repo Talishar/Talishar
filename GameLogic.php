@@ -3673,6 +3673,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "ADDAURAMODE":
+      $params = explode(",", $parameter);
+      $AuraCard = new AuraCard($params[0], $player);
+      $AuraCard->AddModality($params[1]);
+      return $lastResult;
     case "MZTAP":
       $parameter != 0 ? $parameter = 1 : $parameter = 0;
       WriteLog("HERE: $lastResult");

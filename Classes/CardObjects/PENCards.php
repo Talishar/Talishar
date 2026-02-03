@@ -6755,3 +6755,44 @@ class vestige_of_flagellation extends Card {
     $this->controller = $controller;
   }
 }
+
+class leave_em_speechless_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "leave_em_speechless_blue";
+    $this->controller = $controller;
+  }
+
+  function CanPlayAsInstant($index = -1, $from = '') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    return PlayerHasLessHealth($otherPlayer);
+  }
+
+  function EntersArenaAbility() {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "-", $AuraCard->UniqueID());
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    switch ($additionalCosts) {
+      case "STARTTURN":
+        $Auras = new Auras($this->controller);
+        $AuraCard = $Auras->FindCardUID($uniqueID);
+        $AuraCard->Destroy();
+        break;
+      default:
+        $Auras = new Auras($this->controller);
+        $AuraCard = $Auras->FindCardUID($uniqueID);
+        AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+        AddDecisionQueue("SETDQVAR", $this->controller, "0");
+        AddDecisionQueue("WRITELOG", $this->controller, "📣<b>{0}</b> was chosen");
+        AddDecisionQueue("ADDAURAMODE", $this->controller, $AuraCard->Index().",{0}");
+        break;
+    }
+  }
+}

@@ -932,11 +932,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAurasOutput = [];
   $theirAurasCount = count($theirAuras);
   $auraPieces = AuraPieces();
+  $labeledAuras = ["blessing_of_themis_yellow", "leave_em_speechless_blue"];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
-    if($theirAuras[$i] == "blessing_of_themis_yellow") {
+    if(in_array($myAuras[$i], $labeledAuras)) {
       $label = GamestateUnsanitize($theirAuras[$i + 10]);
     }
     elseif (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1) {
@@ -1049,7 +1050,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
-    if($myAuras[$i] == "blessing_of_themis_yellow") {
+    if(in_array($myAuras[$i], $labeledAuras)) {
       $label = GamestateUnsanitize($myAuras[$i + 10]);
     }
     elseif (!TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1) {

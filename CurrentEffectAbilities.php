@@ -2862,10 +2862,10 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
       }
     }
   }
-  $foundNullTime = FindNullTime(GamestateSanitize(NameOverride($cardID)));
+  $nameBlocked = NameBlocked($cardID, 0, $from);
   // handle discarded modal cards elsewhere
-  if($foundNullTime && $from == "HAND" && GetAbilityTypes($cardID, from:$from) == ""){
-    $restrictedBy = "null_time_zone_blue";
+  if($nameBlocked && GetAbilityTypes($cardID, from:$from) == ""){
+    $restrictedBy = "Name Blocked";
     return true;
   }
   if ($revertNeeded && $restrictedBy != "") {

@@ -1303,17 +1303,28 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
   };
 }
 
+function NameBlocked($cardID, $index, $from, $pitch=false) {
+  global $mainPlayer, $defPlayer;
+  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime && $from == "HAND";
+
+  $foundSpeechless = SearchAuraForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "leave_em_speechless_blue") != -1;
+  $foundSpeechless = $foundSpeechless || SearchAuraForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "leave_em_speechless_blue") != -1;
+  $foundSpeechless = $foundSpeechless && $from == "HAND" && !$pitch;
+  return $foundNullTime || $foundSpeechless;
+}
+
 function GetEasyAbilityNames($cardID, $index, $from) {
   global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
   $layerCount = count($layers);
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  $nameBlocked = NameBlocked($cardID, $index, $from);
   switch ($abilityTypes) {
     case "I,AA":
       if (IsResolutionStep()) $layerCount -= LayerPieces();
       $names = "Ability";
-      if($foundNullTime && $from == "HAND") return $names;
+      if($nameBlocked) return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
@@ -1334,14 +1345,13 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
   $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  $nameBlocked = NameBlocked($cardID, $index, $from);
   $layerCount = count($layers);
   //don't count resolution step as a layer blocking actions
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
+  if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing);
   switch ($cardID) {
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
@@ -1382,7 +1392,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "bam_bam_yellow":
     case "outside_interference_blue":
       $names = "Ability";
-      if($foundNullTime && $from == "HAND") return $names;
+      if($nameBlocked) return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
@@ -1394,7 +1404,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "under_the_trap_door_blue":
       // can't use the ability if there are no traps in graveyard
       $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "") ? "Ability" : "-";
-      if($foundNullTime && $from == "HAND") return $names;
+      if($nameBlocked) return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
         $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
@@ -1445,7 +1455,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       return implode(",", $names);
     case "shelter_from_the_storm_red":
       $names = "Ability";
-      if($foundNullTime && $from == "HAND") return $names;
+      if($nameBlocked) return $names;
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
       $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
@@ -1456,7 +1466,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       return $names;
     case "war_cry_of_bellona_yellow":
       $names = "Ability";
-      if($foundNullTime && $from == "HAND") return $names;
+      if($nameBlocked) return $names;
       $hasRaydn = false;
       $char = GetPlayerCharacter($currentPlayer);
       $countCharacter = count($char);
@@ -1525,7 +1535,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
     case "fearless_confrontation_blue":
-      if($foundNullTime && $from == "HAND") return "Ability";
+      if($nameBlocked) return "Ability";
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep())) {
@@ -1596,9 +1606,8 @@ function CanPlayNAA($cardID, $from, $index=-1)
   global $currentPlayer, $mainPlayer, $CS_NextWizardNAAInstant, $defPlayer, $combatChainState, $CCS_EclecticMag, $combatChain, $actionPoints, $layers;
   //check for overall blockers
   if (SearchCurrentTurnEffects("WarmongersWar", $currentPlayer)) return false;
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
-  if($foundNullTime && $from == "HAND") return false;
+  $nameBlocked = NameBlocked($cardID, $from, $index);
+  if($nameBlocked) return false;
   $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
   if ($underEdict) return false;
   if (SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) && !SearchCurrentTurnEffects("fealty", $currentPlayer)) return false;
@@ -1629,9 +1638,8 @@ function CanBlock($cardID, $from)
 function CanPitch($cardID, $from)
 {
   global $mainPlayer, $defPlayer;
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
-  if ($foundNullTime) return false;
+  $nameBlocked = NameBlocked($cardID, "-", $from, true);
+  if ($nameBlocked) return false;
   return true;
 }
 
@@ -2238,9 +2246,9 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     return true;
   }
   if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
-  $foundNullTime = FindNullTime(GamestateSanitize(NameOverride($cardID)));
-  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && $foundNullTime){
-    $restrictedBy = "null_time_zone_blue";
+  $nameBlocked = NameBlocked($cardID, 0, $from, true);
+  if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && $nameBlocked){
+    $restrictedBy = "Name Blocked";
     return true;
   }
   return false;
