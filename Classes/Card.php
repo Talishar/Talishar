@@ -536,4 +536,8 @@ class Card {
   function StaticPowerModifier($index, &$powerModifiers) {
     return 0;
   }
+
+  function HasGoAgain($from) {
+    return GeneratedGoAgain($this->cardID);
+  }
 }

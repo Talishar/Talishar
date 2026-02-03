@@ -6724,3 +6724,34 @@ class doomsaying_red extends Card {
 //     AddCurrentTurnEffect($this->cardID, $this->controller);
 //   }
 // }
+
+class embalm_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "embalm_yellow";
+    $this->controller = $controller;
+  }
+
+  function HasGoAgain($from) {
+    return $from == "BANISH";
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:type=AA;bloodDebtOnly=1");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put an attack action card with blood debt on the bottom of your deck", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("WRITELOGCARDLINK", $this->controller, "<-", 1);
+    AddDecisionQueue("ADDBOTDECK", $this->controller, "<-", 1);
+  }
+}
+
+class vestige_of_flagellation extends Card {
+  function __construct($controller) {
+    $this->cardID = "vestige_of_flagellation";
+    $this->controller = $controller;
+  }
+}

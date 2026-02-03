@@ -976,6 +976,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
 
 function HasGoAgain($cardID, $from="-"): bool|int
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasGoAgain($from);
   switch ($cardID) { //cards that may have missed go again in the generated script
     case "spiders_bite":
     case "nerve_scalpel":

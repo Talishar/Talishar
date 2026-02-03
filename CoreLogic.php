@@ -995,6 +995,12 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     LoseHealth($amount, $player);
     return false;
   }
+  if ((SearchCharacterActive($otherPlayer, "vestige_of_flagellation", setInactive:true)) && $preventable) {
+    WriteLog("<span style='color:red;'>🩸 My pain gives me vigor!</span>");
+    LoseHealth($amount, $otherPlayer);
+    PlayAura("vigor", $otherPlayer, $amount);
+    return false;
+  }
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
