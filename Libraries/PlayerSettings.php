@@ -231,6 +231,7 @@ function GetCardBack($player)
     case 126: return "CBOllinTogether";
     case 127: return "CBSnapDragons";
     case 128: return "CBFabDads";
+    case 129: return "CBFablazing";
     default: return "CardBack";
   };
 }
