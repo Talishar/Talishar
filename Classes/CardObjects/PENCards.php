@@ -6365,3 +6365,21 @@ class swordmasters_shine_red extends card {
     return -$totalPowerCounters;
   }
 }
+
+class solforge_gauntlet extends Card {
+  function __construct($controller) {
+    $this->cardID = "solforge_gauntlet";
+    $this->controller = $controller;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    global $CombatChain;
+    $ChainCard = $CombatChain->Card($chainLink, true);
+    $ChainCard->Remove();
+    AddSoul($this->cardID, $this->controller, "CC");
+  }
+}

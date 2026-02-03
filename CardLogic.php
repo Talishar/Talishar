@@ -4901,6 +4901,7 @@ function HasDoomCounters($cardID)
   switch ($cardID) {
     case "looming_doom_blue":
     case "chains_of_mephetis_blue":
+    case "doomsaying_red":
       return true;
     default:
       return false;
