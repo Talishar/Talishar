@@ -750,6 +750,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PrependDecisionQueue("FINDINDICES", $player, "INSTANTDISCARD", 1);
       }
       break;
+    case "SHATTERSORCERY":
+      if ($lastResult == "Both" || $lastResult == "Destroy_Sigil") {
+        PrependDecisionQueue("SETLAYERTARGET", $player, "shatter_sorcery_blue", 1);
+        PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a Sigil to destroy", 1);
+        PrependDecisionQueue("FINDINDICES", $player, "SIGILAURAS", 1);
+      }
+      break;
     case "ALLURINGINDUCEMENT":
       //this is broken for now
       global $combatChain, $combatChainState, $CCS_LinkBasePower;

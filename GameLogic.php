@@ -353,6 +353,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           $rv = implode(",", $rv);
           break;
+        case "SIGILAURAS":
+          $rv = [];
+          $otherPlayer = $player == 1 ? 2 : 1;
+          foreach ([$otherPlayer, $player] as $p) {
+            $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
+            $Auras = new Auras($p);
+            for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+              $Aura = $Auras->Card($i, true);
+              if (CardNameContains($Aura->CardID(), "Sigil", $player, true)) array_push($rv, "$prefix-" . $Aura->Index());
+            }
+          }
+          $rv = implode(",", $rv);
+          break;
         case "INSTANTDISCARD":
           $rv = [];
           $otherPlayer = $player == 1 ? 2 : 1;

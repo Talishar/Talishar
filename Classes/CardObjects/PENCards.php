@@ -6183,7 +6183,6 @@ class pilfer_the_tomb_blue extends Card {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $targets = explode(",", $target);
     foreach($targets as $targ) {
-      WriteLog("Processing target: " . $targ);
       $targArray = explode("-", $targ);
       $zone = match($targArray[0]) {
         "THEIRDISCARDUID" => new Discard($otherPlayer),
@@ -6197,8 +6196,64 @@ class pilfer_the_tomb_blue extends Card {
           AddDecisionQueue("MZADDZONE", $this->controller, "THEIRBANISH,GY,-," . $this->cardID, 1);
           AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
         } 
-        return "";
       }
+    }
+    return "";
+  }
+}
+
+class shatter_sorcery_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shatter_sorcery_blue";
+    $this->controller = $controller;
+  }
+
+    function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    $modalities = [];
+    $otherPlayer = $this->controller == 2 ? 1 : 2;
+    foreach ([$otherPlayer, $this->controller] as $player) {
+      $Auras = new Auras($player);
+      for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+        $Aura = $Auras->Card($i, true);
+        if (CardNameContains($Aura->CardID(), "Sigil", $player, true) && !in_array("Destroy_Sigil", $modalities))
+          array_push($modalities, "Destroy_Sigil");
+      }
+    }
+    array_push($modalities, "Prevent_1_Arcane");
+    if (count($modalities) == 2) array_push($modalities, "Both");
+    $modalities = implode(",", $modalities);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
+    AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "SHATTERSORCERY", 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if(DelimStringContains($additionalCosts, "Prevent_1_Arcane") || DelimStringContains($additionalCosts, "Both")) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    $targets = explode(",", $target);
+    foreach($targets as $targ) {
+      $targArray = explode("-", $targ);
+      $zone = match($targArray[0]) {
+        "THEIRAURASUID" => new Auras($otherPlayer),
+        "MYAURASUID" => new Auras($this->controller),
+        default => "-"
+      };
+      if ($zone != "-") {
+        $Card = $zone->FindCardUID($targArray[1]);
+        if ($Card != "") $Card->Destroy();
+      }
+    }
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    if ($type == "ARCANE") {
+      $remove = true;
+      return 1;
     }
   }
 }
