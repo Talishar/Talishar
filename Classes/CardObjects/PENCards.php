@@ -6170,3 +6170,15 @@ class kimono_of_layered_lessons extends Card {
     $character[$charIndex + 4] += 1;
   }
 }
+
+class mistborn_protector_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "mistborn_protector_blue";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_CreatedCardsThisTurn;
+    return GetClassState($this->controller, $CS_CreatedCardsThisTurn) > 0 ? 1 : 0;
+  }
+}
