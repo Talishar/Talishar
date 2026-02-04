@@ -450,7 +450,7 @@ class Card {
   }
 
   function ArcaneBarrier() {
-    return 0;
+    return GeneratedArcaneBarrierAmount($this->cardID);
   }
 
   function PlayCardAbility($cardID, $from) {
