@@ -3246,10 +3246,8 @@ class sigil_of_voltaris_blue extends Card {
       if ($AuraCard != "") $AuraCard->Destroy();
     }
     else {
-      AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-      AddDecisionQueue("DEALARCANE", $this->controller, 1, 1);
-      AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
-      AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
+      DealArcane(1, 0, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget:$target);
+      SetClassState($this->controller, $CS_ArcaneTargetsSelected, "-");
     }
   }
 }
