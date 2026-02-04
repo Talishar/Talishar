@@ -1548,7 +1548,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
       if ($damage > 0 && $CharacterCard->NumUses() > 0 && $undamaged && GetClassState($player, $CS_NumCharged) > 0) {
         $CharacterCard->AddUse(-1);
         $CharacterCard->SetUsed();
-        $preventedDamage += 1;
+        if ($preventable) $preventedDamage += 1;
       }
       break;
     default:
