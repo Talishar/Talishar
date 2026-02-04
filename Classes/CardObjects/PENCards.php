@@ -6976,3 +6976,25 @@ class crown_of_everbloom extends Card {
     AddDecisionQueue("PLAYAURA", $this->controller, "spellbane_aegis", 1);
   }
 }
+
+class crown_of_frozen_thoughts extends Card {
+  function __construct($controller) {
+    $this->cardID = "crown_of_frozen_thoughts";
+    $this->controller = $controller;
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    MZFreeze("THEIRCHAR-0", $this->controller);
+    //used to keep them frozen and thaw at the start of their next turn
+    AddNextTurnEffect($this->cardID, $mainPlayer);
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    MZFreeze("MYCHAR-0", $this->controller, 0);
+  }
+}

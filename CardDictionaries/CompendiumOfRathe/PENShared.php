@@ -82,9 +82,18 @@ function SuperFrozen($player, $MZIndex) {
   global $CurrentTurnEffects;
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
-    if ($Effect->PlayerID() != $player || $Effect->EffectID() != "channel_galcias_cradle_blue") continue;
-    $mzUID = CleanTarget($player, $MZIndex);
-    if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[0] ?? "-")) return true;
+    if ($Effect->PlayerID() != $player) continue;
+    switch ($Effect->EffectID()) {
+      case "channel_galcias_cradle_blue":
+        $mzUID = CleanTarget($player, $MZIndex);
+        if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[0] ?? "-")) return true;
+        break;
+      case "crown_of_frozen_thoughts":
+        if ($MZIndex == "MYCHAR-0")
+          return true;
+      default:
+        break;
+    }
   }
   return false;
 }
