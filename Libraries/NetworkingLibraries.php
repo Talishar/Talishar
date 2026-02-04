@@ -4147,8 +4147,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         break;
     }
     if (!$isBlock && CardType($cardID) == "AR") {
-      if (substr($from, 0, 5) == "THEIR") AddGraveyard($cardID, $otherPlayer, $from, $currentPlayer);
-      else AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
+      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
+      ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
       if ($target != "-") {
         $missingTarget = false;
         switch ($cardID) {
@@ -4159,16 +4159,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           default:
             break;
         }
-        if ($missingTarget) {
-          WriteLog(CardLink($cardID, $cardID) . " fails to resolve because the target is gone.");
-          return;
-        }
       }
-      // We need to handle fizzling in the the card's play ability, not here.
-      // if (IsPlayRestricted($cardID, $restriction, $from, resolutionCheck: true) && $additionalCosts == "-") {
-      //   WriteLog(CardLink($cardID, $cardID) . " fails to resolve because the target is no longer a legal target.");
-      //   return;
-      // }
     }
     if ($resourcesPaid != "Skipped") {
       switch ($cardID) {

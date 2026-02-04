@@ -3209,6 +3209,12 @@ class roaring_beam_yellow extends Card {
       Charge(false, $this->controller);
     }
   }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    // this is called before the card finishes resolving. If this ever gets fixed, will need to adress this
+    $soul = GetSoul($this->controller);
+    return count($soul) == 0 ? "-" : "GY";
+  }
 }
 
 class pound_of_flesh_blue extends Card {
