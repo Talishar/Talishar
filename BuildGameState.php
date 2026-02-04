@@ -381,7 +381,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layer = new stdClass();
     $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" || $layers[$i] == "ABILITY" ? $layers[$i + 2] : $layers[$i];
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP");
+    $borderColor = null;
+    if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 2;
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);
     $layer->layerID = $i;
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;
