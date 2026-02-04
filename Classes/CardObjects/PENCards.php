@@ -2412,6 +2412,13 @@ class mbrio_base_cortex extends Card {
   }
 }
 
+class mbrio_base_walkers extends Card {
+  function __construct($controller) {
+    $this->cardID = "mbrio_base_walkers";
+    $this->controller = $controller;
+  }
+}
+
 class blast_rig_red extends Card
 {
   function __construct($controller)
