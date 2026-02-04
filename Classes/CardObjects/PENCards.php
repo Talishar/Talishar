@@ -502,9 +502,6 @@ class aetherstorm_wellingtons extends Card {
     $this->controller = $controller;
   }
 
-  function ArcaneBarrier() {
-    return 2;
-  }
 }
 
 class double_cross_strap extends Card {
@@ -512,10 +509,6 @@ class double_cross_strap extends Card {
   {
     $this->cardID = "double_cross_strap";
     $this->controller = $controller;
-  }
-
-  function ArcaneBarrier() {
-    return 1;
   }
 
   function AbilityType($index = -1, $from = '-') {
@@ -568,10 +561,6 @@ class mask_of_the_swarming_claw extends Card {
   {
     $this->cardID = "mask_of_the_swarming_claw";
     $this->controller = $controller;
-  }
-
-  function ArcaneBarrier() {
-    return 1;
   }
 
   function SpellVoidAmount() {
@@ -880,20 +869,12 @@ class enclosed_firemind extends Card {
     $this->cardID = "enclosed_firemind";
     $this->controller = $controller;
   }
-
-  function ArcaneBarrier() {
-    return 1;
-  }
 }
 
 class topsy_turvy extends Card {
   function __construct($controller) {
     $this->cardID = "topsy_turvy";
     $this->controller = $controller;
-  }
-
-  function ArcaneBarrier() {
-    return 1;
   }
 
   function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
@@ -1438,10 +1419,6 @@ class runebleed_robe extends Card {
   function __construct($controller) {
     $this->cardID = "runebleed_robe";
     $this->controller = $controller;
-  }
-
-  function ArcaneBarrier() {
-    return 1;
   }
 
   function AbilityType($index = -1, $from = '-') {
@@ -4909,10 +4886,6 @@ class scuttle_toes extends Card {
     $TargetAlly->Destroy();
     $remove = true;
   }
-
-  function ArcaneBarrier() {
-    return 1;
-  }
 }
 
 class beneath_the_surface_yellow extends Card {
@@ -5785,10 +5758,6 @@ class shamanic_shinbones extends Card {
     $this->cardID = "shamanic_shinbones";
     $this->controller = $controller;
   }
-
-  function ArcaneBarrier() {
-    return 1;
-  }
 }
 
 class put_on_ice extends BaseCard {
@@ -6544,10 +6513,6 @@ class solforge_gauntlet extends Card {
     $this->controller = $controller;
   }
 
-  function ArcaneBarrier() {
-    return 1;
-  }
-
   function CombatChainCloseAbility($chainLink) {
     global $CombatChain;
     $ChainCard = $CombatChain->Card($chainLink, true);
@@ -6987,10 +6952,6 @@ class crown_of_everbloom extends Card {
 
   function AbilityType($index = -1, $from = '-') {
     return "I";
-  }
-
-  function ArcaneBarrier() {
-    return 2;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
