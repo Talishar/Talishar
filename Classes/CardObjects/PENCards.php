@@ -6924,3 +6924,55 @@ class glyph_destruction_nodes_yellow extends Card {
     }
   }
 }
+
+class channel_the_skybreaker_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_the_skybreaker_yellow";
+    $this->controller = $controller;
+  }
+
+  function EntersArenaAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function StartTurnAbility($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $AuraCard->CardID(), "-", "CHANNEL", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "CHANNEL")
+      ChannelTalent($uniqueID, "EARTH");
+    else
+      PlayAura("might", $this->controller, 2, true);
+  }
+}
+
+class crown_of_everbloom extends Card {
+  function __construct($controller) {
+    $this->cardID = "crown_of_everbloom";
+    $this->controller = $controller;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("FINDINDICES", $this->controller, "ARSENAL");
+    AddDecisionQueue("MAYCHOOSEARSENAL", $this->controller, "<-", 1);
+    AddDecisionQueue("REMOVEARSENAL", $this->controller, "-", 1);
+    AddDecisionQueue("ADDBOTDECK", $this->controller, "-", 1);
+    AddDecisionQueue("DRAW", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("PLAYAURA", $this->controller, "spellbane_aegis", 1);
+  }
+}
