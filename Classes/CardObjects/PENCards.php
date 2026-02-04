@@ -5206,13 +5206,6 @@ class chain_of_brutality_red extends Card {
   }
 }
 
-class mbrio_base_walkers extends Card {
-  function __construct($controller) {
-    $this->cardID = "mbrio_base_walkers";
-    $this->controller = $controller;
-  }
-}
-
 class mbrio_base_digits extends Card {
   function __construct($controller) {
     $this->cardID = "mbrio_base_digits";
