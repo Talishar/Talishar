@@ -577,8 +577,8 @@ class mask_of_the_swarming_claw extends Card {
   function SpellVoidAmount() {
     global $mainPlayer, $ChainLinks, $CombatChain;
     if ($this->controller != $mainPlayer) return 0;
-    elseif (!$CombatChain->HasCurrentLink()) return 0;
     elseif (IsLayerStep()) return $ChainLinks->NumLinks();
+    elseif (!$CombatChain->HasCurrentLink()) return 0;
     else return $ChainLinks->NumLinks() + 1;
   }
 
