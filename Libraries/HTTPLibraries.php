@@ -71,6 +71,7 @@ function SetHeaders()
     "~^https?://[0-9a-z\-]*\.talishar\.net$~i",
     "~^https?://talishar\.net$~i",
     "~^https?://[0-9a-z\-]*\.talishar-fe\.pages\.dev$~i",
+    "~^https?://[0-9a-z\-]*\.talishar-fe-temp\.pages\.dev$~i",
     "~^https?://talishar\.surge\.sh$~i",
     "~^https?://localhost(:[0-9]+)?$~i",
     "~^https?://127\.0\.0\.1(:[0-9]+)?$~i"
