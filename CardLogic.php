@@ -1971,6 +1971,12 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "light_up_the_leaves_red":
       AddCurrentTurnEffect($parameter, $player, uniqueID:$target);
       break;
+    case "war_cry_of_bellona_yellow":
+      $params = explode("-", $target);
+      $uniqueID = $params[1] ?? "";
+      if ($uniqueID == "") WriteLog("Something went wrong with Warcry of Bellona, please submit a bug report", highlight: true);
+      else AddCurrentTurnEffect($parameter."-DMG,".$additionalCosts.",".$uniqueID, $player);
+      break;
     default:
       break;
   }

@@ -934,12 +934,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetResolvedAbilityType($cardID, $from) == "AR") {
         AddCurrentTurnEffect($cardID."-BUFF", $currentPlayer);
       }
-      else {
-        $params = explode("-", $target);
-        $uniqueID = $params[1] ?? "";
-        if ($uniqueID == "") WriteLog("Something went wrong with Warcry of Bellona, please submit a bug report", highlight: true);
-        else AddCurrentTurnEffect($cardID."-DMG,".$additionalCosts.",".$uniqueID, $currentPlayer);
-      }
       break;
     case "cull_red":
       MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");

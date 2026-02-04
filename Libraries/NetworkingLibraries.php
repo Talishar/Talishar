@@ -3992,6 +3992,9 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+        AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
       }  
       break;
     case "skyward_serenade_yellow":
