@@ -3653,6 +3653,7 @@ class become_the_bottle extends BaseCard {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card for the bottle to become", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $this->controller, "BOTTLE", 1);
     }
   }
@@ -5195,6 +5196,13 @@ class chain_of_brutality_red extends Card {
 
   function EffectSetBasePower($basePower) {
     return 6;
+  }
+}
+
+class mbrio_base_walkers extends Card {
+  function __construct($controller) {
+    $this->cardID = "mbrio_base_walkers";
+    $this->controller = $controller;
   }
 }
 
