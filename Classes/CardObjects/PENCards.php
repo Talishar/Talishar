@@ -5204,10 +5204,6 @@ class mbrio_base_digits extends Card {
     $this->controller = $controller;
   }
 
-  function GoesOnCombatChain($phase, $from) {
-    return $phase == "B";
-  }
-
   function AbilityType($index = -1, $from = '-') {
     return "I";
   }
