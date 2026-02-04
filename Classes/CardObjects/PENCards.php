@@ -2694,9 +2694,13 @@ class rip_off_the_top_yellow extends Card {
 }
 
 class distant_rumbling extends BaseCard {
+  
+  function EntersAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "ENTERS");
+  }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    Draw($this->controller);
-    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", silent:true);
+    return "";
   }
 
   function StartTurnAbility($index, $number=1) {
@@ -2711,6 +2715,15 @@ class distant_rumbling extends BaseCard {
       $AuraCard->Destroy();
       PlayAura("seismic_surge", $this->controller, $target);
     }
+    else {
+      Draw($this->controller);
+      $hand = GetHand($this->controller);
+      if (count($hand) == HandPieces()) {
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, "You drew and are about to put it 5th from the top", 1);
+        AddDecisionQueue("OK", $this->controller, "-", 1);
+      }
+      MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", silent:true);
+    }
   }
 }
 
@@ -2722,7 +2735,7 @@ class distant_rumbling_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
   function StartTurnAbility($index) {
@@ -2731,6 +2744,10 @@ class distant_rumbling_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger($uniqueID, 3, $additionalCosts, $from);
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->EntersAbility();
   }
 }
 
