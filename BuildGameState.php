@@ -1368,6 +1368,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->fullRematchAccepted = $turnPhase == "REMATCH";
 
+  $response->opponentActivity = intval(GetCachePiece($gameName, 12));
+
   // Build player input popup
   $response->playerInputPopUp = BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName);
 
