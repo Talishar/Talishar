@@ -3479,7 +3479,7 @@ function PitchAbility($cardID, $from="HAND")
     }
     if (ColorContains($cardID, 1, $currentPlayer)) {
       $char = GetPlayerCharacter($currentPlayer);
-      if ($char[2] < 3) {
+      if ($char[1] < 3) {
         switch ($char[0]) {
           case "dromai_ash_artist":
           case "dromai":
