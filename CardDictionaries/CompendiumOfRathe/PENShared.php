@@ -97,3 +97,14 @@ function SuperFrozen($player, $MZIndex) {
   }
   return false;
 }
+
+function IcelochActive($player) {
+  $otherPlayer = $player == 1 ? 2 : 1;
+  if (SearchAurasForCard("channel_iceloch_glaze_blue", $otherPlayer) == "") return false;
+  if (SearchAurasForCard("frostbite", $player) != "") return true;
+  if (SearchCharacterForCard($player, "frostbite")) return true;
+  if (SearchCharacter($player, frozenOnly:true) != "") return true;
+  if (SearchItems($player, frozenOnly:true) != "") return true;
+  if (SearchAura($player, frozenOnly:true) != "") return true;
+  return false;
+}

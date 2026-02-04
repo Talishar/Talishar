@@ -1725,11 +1725,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase != "B" && $from == "CHAR" && isset($character[$index + 1]) && $character[$index + 1] != "2") return false;
   // I don't remember why this line was here, removing for now as it's causing problems
   // if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0 && (ManualTunicSetting($player) == 0 && $cardID != "fyendals_spring_tunic")) return false;
-  if ($from == "CHAR" && $phase != "B" && isset($character[$index + 8]) && $character[$index + 8] == "1") {
+  if ($from == "CHAR" && $phase != "B" && IsFrozenMZ($character, "CHAR", $index, $player)) {
     $restriction = "Frozen";
     return false;
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") {
+  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && IsFrozenMZ($myAllies, "ALLY", $index, $player)) {
     $restriction = "Frozen";
     return false;
   }
@@ -1743,12 +1743,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         return false;
     }
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && $phase != "B" && isset($myAuras[$index + 11]) && $myAuras[$index + 1] == "1") {
+  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && $phase != "B" && IsFrozenMZ($myAuras, "AURAS", $index, $player)) {
     $restriction = "Frozen";
     return false;
   }
   if ($from == "ARS" && $phase != "B") {
-    if ($myArsenal[$index + 4] == "1") {
+    if (IsFrozenMZ($myArsenal, "ARS", $index, $player)) {
       $restriction = "Frozen";
       return false;
     }

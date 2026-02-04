@@ -550,7 +550,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         controller: $otherPlayer,
         type: $type,
         sType: $sType,
-        isFrozen: $theirCharacter[$i + 8] == 1,
+        isFrozen: IsFrozenMZ($theirCharacter, "CHAR", $i, $otherPlayer),
         onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($theirCharacter[$i], $otherPlayer) != -1 ? 0 : $theirCharacter[$i + 6] == 1,
         isBroken: $theirCharacter[$i + 1] == 0,
         label: $label,
@@ -823,7 +823,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           controller: $playerID == 1 ? 2 : 1,
           facing: $theirArsenal[$i + 1],
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
-          isFrozen: $theirArsenal[$i + 4] == 1,
+          isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
           actionDataOverride: strval($i),
           powerCounters: $theirArsenal[$i + 6] ?? 0,
           uniqueID: $theirArsenal[$i + 5]
@@ -833,7 +833,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         controller: $playerID == 1 ? 2 : 1,
         facing: $theirArsenal[$i + 1],
         countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
-        isFrozen: $theirArsenal[$i + 4] == 1,
+        isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
         uniqueID: $theirArsenal[$i + 5]
       ));
     }
@@ -853,7 +853,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           controller: 2,
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
-          isFrozen: $myArsenal[$i + 4] == 1,
+          isFrozen: IsFrozenMZ($myArsenal, "ARS", $i, $playerID),
           uniqueID: $myArsenal[$i + 5]
         ));
       } else {
@@ -871,7 +871,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           restriction: $restriction,
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
-          isFrozen: $myArsenal[$i + 4] == 1,
+          isFrozen: IsFrozenMZ($myArsenal, "ARS", $i, $playerID),
           powerCounters: $myArsenal[$i + 6] ?? 0,
           uniqueID: $myArsenal[$i + 5]
         ));
@@ -919,7 +919,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         controller: $otherPlayer,
         type: $type,
         sType: $sType,
-        isFrozen: $theirAllies[$i + 3] == 1,
+        isFrozen: IsFrozenMZ($theirAllies, "ALLY", $i, $otherPlayer),
         subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL,
         powerCounters:$theirAllies[$i+9],
         label: $label,
@@ -955,7 +955,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       sType: $sType,
       gem: $gem,
       label: $label,
-      isFrozen:$theirAuras[$i + 11] == 1));
+      isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer)));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -980,7 +980,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       controller: $otherPlayer,
       type: $type,
       sType: $sType,
-      isFrozen: $theirItems[$i + 7] == 1,
+      isFrozen: IsFrozenMZ($theirItems, "ITEMS", $i, $otherPlayer),
       gem: $gem,
       label: $label,
       tapped: $theirItems[$i + 10] == 1));
@@ -1027,7 +1027,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       controller: $playerID,
       type: $type,
       sType: $sType,
-      isFrozen: $myAllies[$i+3] == 1,
+      isFrozen:IsFrozenMZ($myAllies, "ALLY", $i, $playerID),
       subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
       powerCounters: $myAllies[$i+9],
       label: $label,
@@ -1070,7 +1070,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       sType: $sType,
       gem: $gem,
       label: $label,
-      isFrozen: $myAuras[$i + 11] == 1,
+      isFrozen: IsFrozenMZ($myAuras, "AURAS", $i, $playerID),
     ));
   }
   $response->playerAuras = $myAurasOutput;
@@ -1110,7 +1110,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       controller: $playerID,
       type: $type,
       sType: $sType,
-      isFrozen: $myItems[$i + 7] == 1,
+      isFrozen: IsFrozenMZ($myItems, "ITEMS", $i, $playerID),
       gem: $gem,
       restriction: $restriction,
       label: $label,

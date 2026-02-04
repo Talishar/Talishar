@@ -7025,3 +7025,20 @@ class crown_of_frozen_thoughts extends Card {
     MZFreeze("MYCHAR-0", $this->controller, 0);
   }
 }
+
+class channel_iceloch_glaze_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_iceloch_glaze_blue";
+    $this->controller = $controller;
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $AuraCard->CardID(), "-", "CHANNEL", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "CHANNEL")
+      ChannelTalent($uniqueID, "ICE");
+  }
+}
