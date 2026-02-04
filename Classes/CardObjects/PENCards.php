@@ -7006,6 +7006,10 @@ class crown_of_everbloom extends Card {
     AddDecisionQueue("DRAW", $this->controller, $this->cardID, 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "spellbane_aegis", 1);
   }
+
+  function DefaultActiveState() {
+    return 0;
+  }
 }
 
 class crown_of_frozen_thoughts extends Card {
