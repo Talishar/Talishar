@@ -6989,6 +6989,10 @@ class crown_of_everbloom extends Card {
     return "I";
   }
 
+  function ArcaneBarrier() {
+    return 2;
+  }
+
   function PayAdditionalCosts($from, $index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Destroy();
