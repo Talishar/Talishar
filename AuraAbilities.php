@@ -940,7 +940,7 @@ function AuraBeginningActionPhaseAbilities(){
       case "promising_terrain_blue":
       case "escalate_bloodshed_red":
       case "surface_shaking_blue":
-        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "-", $auras[$i + 6]);
+        AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", "DESTROY", $auras[$i + 6]);
         break;
       default:
         break;

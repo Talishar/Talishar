@@ -1498,7 +1498,7 @@ function CharacterModifiesPlayAura($player, $isToken, $effectController)
 }
 
 function CharacterDamagePreventionAmount($player, $index, $damage, $preventable) {
-  global $CS_DamageDealt, $CS_ArcaneDamageDealt, $CS_NumCharged;
+  global $CS_DamageTaken, $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   $CharacterCard = new CharacterCard($index, $player);
   switch ($char[$index]) {
@@ -1509,7 +1509,7 @@ function CharacterDamagePreventionAmount($player, $index, $damage, $preventable)
       if ($char[$index + 9] == 0) return 0;
       return 2;
     case "soulbond_resolve":
-      $undamaged = GetClassState($player, $CS_DamageDealt) <= 0 && GetClassState($player, $CS_ArcaneDamageDealt) <= 0;
+      $undamaged = GetClassState($player, $CS_DamageTaken) <= 0;
       if ($damage > 0 && $CharacterCard->NumUses() > 0 && $undamaged && GetClassState($player, $CS_NumCharged) > 0) {
         return 1;
       }
@@ -1522,7 +1522,7 @@ function CharacterDamagePreventionAmount($player, $index, $damage, $preventable)
 //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced
 function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
 {
-  global $CS_DamageDealt, $CS_ArcaneDamageDealt, $CS_NumCharged;
+  global $CS_DamageTaken, $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   $remove = false;
   $preventedDamage = 0;
@@ -1544,7 +1544,7 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
       }
       break;
     case "soulbond_resolve":
-      $undamaged = GetClassState($player, $CS_DamageDealt) <= 0 && GetClassState($player, $CS_ArcaneDamageDealt) <= 0;
+      $undamaged = GetClassState($player, $CS_DamageTaken) <= 0;
       if ($damage > 0 && $CharacterCard->NumUses() > 0 && $undamaged && GetClassState($player, $CS_NumCharged) > 0) {
         $CharacterCard->AddUse(-1);
         $CharacterCard->SetUsed();
