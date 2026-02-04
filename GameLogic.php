@@ -423,6 +423,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
+    case "MULTITARGETINDICES":
+      $currentTargets = explode(",", $lastResult);
+      $rvOrig = explode(",", SearchMultizone($player, $parameter));
+      $rv = [];
+      //remove any choices that have already been targeted
+      foreach ($rvOrig as $ind) {
+        if (!in_array(CleanTarget($player, $ind), $currentTargets)) array_push($rv, $ind);
+      }
+      $rv = implode(",", $rv);
+      return $rv == "" ? "PASS" : $rv;
     case "ALLYINDICES":
       $currentTargets = explode(",", $parameter);
       $search = "THEIRALLY&MYALLY";
@@ -2033,7 +2043,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           else {// already has a target, add another one
             $layers[$i + 3] .= ",$target";
           }
-          return $cleanTarget;
+          return $layers[$i + 3];
         }
       }
       return $cleanTarget;

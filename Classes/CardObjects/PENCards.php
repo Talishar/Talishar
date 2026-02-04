@@ -5768,23 +5768,22 @@ class put_on_ice extends BaseCard {
   function PlayAbility($from, $target) {
     if ($from == "ARS") Draw($this->controller);
     //this card's targeting is a mess right now that I don't want to deal with anymore, this works and I'm happy
-    $targetArr = explode("~", $target);
-    $targerArr = explode(",", $targetArr[count($targetArr) - 1]);
-    for ($i = 1; $i < count($targetArr); ++$i) {
-      MZFreeze($targerArr[$i]);
+    $targetArr = explode(",", $target);
+    for ($i = 0; $i < count($targetArr); ++$i) {
+      $targ = CleanTargetToIndex($this->controller, $targetArr[$i]);
+      MZFreeze($targ);
     }
   }
 
   function SetTargets($N) {
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "~");
-    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-    for($i=0; $i<$N; ++$i) {
-      AddDecisionQueue("ALLYINDICES", $this->controller, "{0}", 1);
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose " . $N - 1 . " allies(s) to freeze", 1);
+    $search = "THEIRALLY";
+    if (!ShouldAutotargetOpponent($this->controller)) $search .= "MYALLY";
+    for ($i = 0; $i < $N; ++$i) {
+      $nLeft = $N - $i;
+      AddDecisionQueue("MULTITARGETINDICES", $this->controller, $search, 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose up to $nLeft more target(s)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "{0},", 1);
-      AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     }
   }
@@ -6743,22 +6742,22 @@ class doomsaying_red extends Card {
   }
 }
 
-// class tempest_dancers extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "tempest_dancers";
-//     $this->controller = $controller;
-//   }
+class tempest_dancers extends Card {
+  function __construct($controller) {
+    $this->cardID = "tempest_dancers";
+    $this->controller = $controller;
+  }
 
-//   function DestroyEffect() {
-//     AddLayer("TRIGGER", $this->controller, $this->cardID);
-//   }
+  function DestroyEffect() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
 
-//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-//     global $CS_NextNAAInstant;
-//     SetClassState($this->controller, $CS_NextNAAInstant, 1);
-//     AddCurrentTurnEffect($this->cardID, $this->controller);
-//   }
-// }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_NextNAAInstant;
+    SetClassState($this->controller, $CS_NextNAAInstant, 1);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
 
 class embalm_yellow extends Card {
   function __construct($controller) {
@@ -6885,5 +6884,43 @@ class astravolt_elemental_red extends Card {
     MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller, may:true);
     AddDecisionQueue("DRAW", $this->controller, $this->cardID, 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "embodiment_of_lightning-1-" . $this->cardID);
+  }
+}
+
+class glyph_destruction_nodes_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "glyph_destruction_nodes_yellow";
+    $this->controller = $controller;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $numTargets = SearchCount(SearchMultizone($this->controller, "MYAURAS:nameIncludes=Sigil"));
+    $search = "THEIRCHAR:type=C&THEIRALLY";
+    if (!ShouldAutotargetOpponent($this->controller)) $search .= "&MYCHAR:type=C&MYALLY";
+    for ($i = 0; $i < $numTargets; ++$i) {
+      $nLeft = $numTargets - $i;
+      AddDecisionQueue("MULTITARGETINDICES", $this->controller, $search, 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose up to $nLeft more target(s)", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targArr = explode(",", $target);
+    $damage = ArcaneDamage($this->cardID) + ConsumeArcaneBonus($this->controller);
+    foreach ($targArr as $targ) {
+      DealArcane($damage, player:$this->controller, resolvedTarget:$targ);
+      // we need to handle this not killing allies until after everything resolves, low priority
+    }
   }
 }
