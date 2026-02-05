@@ -1551,9 +1551,9 @@ function PlayerHasLessHealth($player)
   $playerHasLineCrossers = FindCharacterIndex($player, "line_crossers") != -1;
   $otherPlayerHasLineCrossers = FindCharacterIndex($otherPlayer, "line_crossers") != -1;
   if ($playerHealth == $otherPlayerHealth) {
+    if ($playerHasLineCrossers && $otherPlayerHasLineCrossers) return true;
     if ($playerHasLineCrossers && !$otherPlayerHasLineCrossers) return false;
     if (!$playerHasLineCrossers && $otherPlayerHasLineCrossers) return true;
-    if ($playerHasLineCrossers && $otherPlayerHasLineCrossers) return false;
   }
   return GetHealth($player) < GetHealth($otherPlayer);
 }
