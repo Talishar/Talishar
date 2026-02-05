@@ -755,7 +755,7 @@ function CleanTarget($player, $lastResult) { //converts a target to use unique i
     $cleanTarget = "MYITEMS-" . $items[$targetArr[1] + 4];
   }
   if ($targetArr[0] == "THEIRITEMS") {
-    $items = GetPermanents($otherPlayer);
+    $items = GetItems($otherPlayer);
     $cleanTarget = "THEIRITEMS-" . $items[$targetArr[1] + 4];
   }
   $target = $cleanTarget != "" ? $cleanTarget : $lastResult;

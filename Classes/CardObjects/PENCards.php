@@ -1627,6 +1627,10 @@ class hyper_inflation_yellow extends Card {
   function CurrentEffectCostModifier($cardID, $from, &$remove) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
+
+  function SpecialPower() {
+    return 3;
+  }
 }
 
 class hyper_inflation_blue extends Card {
@@ -1646,6 +1650,10 @@ class hyper_inflation_blue extends Card {
 
   function CurrentEffectCostModifier($cardID, $from, &$remove) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
+  }
+
+  function SpecialPower() {
+    return 2;
   }
 }
 
