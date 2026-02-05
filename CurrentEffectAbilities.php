@@ -671,6 +671,8 @@ function EffectBlockModifier($cardID, $index, $from)
 {
   global $CombatChain, $defPlayer, $mainPlayer;
   $blockModifier = 0;
+  $card = GetClass($cardID, $defPlayer);
+  if ($card != "-") $blockModifier += $card->EffectBlockModifier($index, $from);
   switch ($cardID) {
     case "phantasmal_footsteps":
       if ($CombatChain->Card($index)->ID() == $cardID) $blockModifier += 1;
@@ -718,7 +720,6 @@ function EffectBlockModifier($cardID, $index, $from)
     case "heavy_industry_surveillance":
     case "heavy_industry_ram_stop":
     case "breaker_helm_protos":
-    case "mbrio_base_digits":
       $blockModifier += 1;
       break;
     default:

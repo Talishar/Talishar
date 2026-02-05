@@ -316,7 +316,6 @@ function StartTurnAbilities()
   $defCharacterCount = count($defCharacter);
   for ($i = 0; $i < $defCharacterCount; $i += CharacterPieces()) {
     if ($defCharacter[$i+8] == "1" && !SuperFrozen($mainPlayer, "THEIRCHAR-$i") && !SuperFrozen($defPlayer, "MYCHAR-$i")) {
-      WriteLog("HERE unfreezing $defCharacter[$i]");
       $defCharacter[$i + 8] = "0";//Reset Frozen
     }
   }

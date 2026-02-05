@@ -5225,9 +5225,11 @@ class mbrio_base_digits extends Card {
   }
 
   function EquipPayAdditionalCosts($cardIndex = '-') {
-      Tap("MYCHAR-$cardIndex", $this->controller);
-      $inds = GetUntapped($this->controller, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $this->controller);
+    Tap("MYCHAR-$cardIndex", $this->controller);
+    $inds = GetUntapped($this->controller, "MYITEMS", "subtype=Cog");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Tap a cog you control");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $inds, 1);
+    AddDecisionQueue("MZTAP", $this->controller, "<-", 1);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {

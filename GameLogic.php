@@ -3705,7 +3705,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZTAP":
       $parameter != 0 ? $parameter = 1 : $parameter = 0;
-      WriteLog("HERE: $lastResult");
       Tap($lastResult, $player, $parameter);
       return $lastResult;
     case "ADDCOUNTERLANDMARK":

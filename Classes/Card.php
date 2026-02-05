@@ -540,4 +540,8 @@ class Card {
   function HasGoAgain($from) {
     return GeneratedGoAgain($this->cardID);
   }
+
+  function EffectBlockModifier($index, $from) {
+    return 0;
+  }
 }
