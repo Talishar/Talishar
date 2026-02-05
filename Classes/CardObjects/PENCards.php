@@ -5251,6 +5251,10 @@ class mbrio_base_vizier extends Card {
     $this->cardID = "mbrio_base_vizier";
     $this->controller = $controller;
   }
+
+  function DefaultActiveState() {
+    return 0;
+  }
 }
 
 class ion_charged_yellow extends Card {

@@ -2729,7 +2729,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               case "hyper_driver_red":
               case "hyper_driver_yellow":
               case "hyper_driver_blue":
-                if ($items[$mzIndex[1] + 1] == 0)
+                if ($items[$mzIndex[1] + 1] <= 0)
                   DestroyItemForPlayer($player, $mzIndex[1]);
                 break;
               default:
