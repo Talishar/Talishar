@@ -1600,9 +1600,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
         CheckSpellvoid($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        $Character = new PlayerCharacter($targetPlayer);
         if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier") && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
+        $Solray = $Character->FindCardID("solray_plating");
+        if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
         DoQuell($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
@@ -2721,6 +2724,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $items = &GetItems($player);
             $items[$mzIndex[1] + 1] -= 1;
             WriteLog(CardLink($items[$mzIndex[1]], $items[$mzIndex[1]]) . " lost a steam counter.");
+            switch ($items[$mzIndex[1]]) { 
+              case "hyper_driver":
+              case "hyper_driver_red":
+              case "hyper_driver_yellow":
+              case "hyper_driver_blue":
+                if ($items[$mzIndex[1] + 1] == 0)
+                  DestroyItemForPlayer($player, $mzIndex[1]);
+                break;
+              default:
+                break;
+            }
             break;
           default:
             break;
