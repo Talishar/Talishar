@@ -1887,3 +1887,15 @@ function AuraBlockModifier($cardID, $from)
   }
   return $totalBlockModifier;
 }
+
+// function AuraPowerModifiers($cardID) {
+//   global $mainPlayer;
+//   $mod = 0;
+//   $Auras = new Auras($mainPlayer);
+//   for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+//     $AuraCard = $Auras->Card($i, true);
+//     $card = GetClass($AuraCard->CardID(), $mainPlayer);
+//     if ($card != "-") $mod += $card->StaticPowerModifier($cardID);
+//   }
+//   return $mod;
+// }

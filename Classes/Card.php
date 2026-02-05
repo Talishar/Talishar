@@ -548,4 +548,12 @@ class Card {
   function EffectAttackYouControlModifiers($cardID) {
     return 0;
   }
+
+  function EffectDefenderPowerModifier($cardID)  {
+    return 0;
+  }
+
+  function StaticDefenderPowerModifier($cardID)  {
+    return 0;
+  }
 }

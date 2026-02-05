@@ -2731,6 +2731,8 @@ function EffectDefenderPowerModifiers($cardID)
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
+      $card = GetClass($currentTurnEffects[$i], $defPlayer);
+      if ($card != "-") $mod += $card->EffectDefenderPowerModifier($cardID);
       switch ($currentTurnEffects[$i]) {
         case "herald_of_triumph_red":
         case "herald_of_triumph_yellow":

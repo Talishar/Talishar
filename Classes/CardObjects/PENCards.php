@@ -6148,22 +6148,23 @@ class haboob_red extends Card {
     $this->Maintenence($index);
   }
 
-  function StaticPowerModifier($index, &$powerModifiers) { //applies to opponent's cards
+  private
+  function PowerMod($index, &$powerModifier) {
     global $CombatChain;
-    if (TypeContains($CombatChain->CurrentAttack(), "AA")) {
+    $cardID = $CombatChain->Card($index)->ID();
+    if (TypeContains($cardID, "AA")) {
       array_push($powerModifiers, $this->cardID);
       array_push($powerModifiers, -1);
       return -1;
     }
   }
 
+  function StaticPowerModifier($index, &$powerModifiers) { //applies to opponent's cards
+    $this->PowerMod($index, $powerModifiers);
+  }
+
   function AuraPowerModifiers($index, &$powerModifiers) { //Applies to own cards
-    global $CombatChain;
-    if (TypeContains($CombatChain->CurrentAttack(), "AA")) {
-      array_push($powerModifiers, $this->cardID);
-      array_push($powerModifiers, -1);
-      return -1;
-    }
+    $this->PowerMod($index, $powerModifiers);
   }
 }
 
