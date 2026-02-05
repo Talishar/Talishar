@@ -476,12 +476,13 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
     }
     if ($player == $mainPlayer)
       if (SearchCharacterAlive($player, "empyrean_rapture") && !SearchCurrentTurnEffects("empyrean_rapture", $player) && CardNameContains($cardID, "Herald", $player, true)) AddCurrentTurnEffect("empyrean_rapture", $player);
+    $Auras = new Auras($player);
+    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      if ($Auras->Card($i, true)->CardID() == "blessing_of_bellona_yellow")
+        AddLayer("TRIGGER", $player, "blessing_of_bellona_yellow", "-", "SOUL");
+    }
   }
-  $Auras = new Auras($player);
-  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
-    if ($Auras->Card($i, true)->CardID() == "blessing_of_bellona_yellow")
-      AddLayer("TRIGGER", $player, "blessing_of_bellona_yellow", "-", "SOUL");
-  }
+  
 }
 
 function AddSpecificSoul($cardID, &$soul, $from)
