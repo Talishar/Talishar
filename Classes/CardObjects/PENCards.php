@@ -2754,6 +2754,10 @@ class distant_rumbling_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger($uniqueID, 2, $additionalCosts, $from);
   }
+
+  function EntersArenaAbility() {
+    $this->baseCard->EntersAbility();
+  }
 }
 
 class distant_rumbling_blue extends Card {
@@ -2773,6 +2777,10 @@ class distant_rumbling_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger($uniqueID, 1, $additionalCosts, $from);
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->EntersAbility();
   }
 }
 
