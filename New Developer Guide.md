@@ -35,6 +35,7 @@ The decision queue has 4 primary arguments:
 1. the command to be executed
 2. the player who will be making any decisions
 3. a parameter to be passed as an argument to the command. This can either be pre-set before the decision queue begins executing, or dynamic with a few special characters.
-4. subsequent, a 0/1 bit where if set will cause the decision queue to be skipped if a previous decision queue failed/was declined.  
+4. subsequent, a 0/1 bit where if set will cause the decision queue to be skipped if a previous decision queue failed/was declined.
+
 What ties decision queues together is the `$lastResult` variable, which will always store whatever the previous decision returned.  
 For example, if I run `AddDecisionQueue("FINDINDICES", $this->controller, "ARSENAL");` this will return indices that point out all cards in a players arsenal. If I follow this up with `AddDecisionQueue("MAYCHOOSEARSENAL", $this->controller, "<-", 1);`, the player is given the optional ability to choose a card from the list returned . the "<-" parameter is a special parameter that is replaced by the value of `$lastResult`. If we follow this with `AddDecisionQueue("REMOVEARSENAL", $this->controller, "-", 1);`, the choice from the last decisionqueue is stored as the $lastResult, and gets passed to the REMOVEARSENAL command which then removes the chosen arsenalled card. Because this command has `$subsequent` set to 1, if the player declined the previous MAYCHOOSEARSENAL, this decision queue (and all subsequent queues) will be skipped.
