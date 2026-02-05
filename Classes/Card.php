@@ -544,4 +544,8 @@ class Card {
   function EffectBlockModifier($index, $from) {
     return 0;
   }
+
+  function EffectAttackYouControlModifiers($cardID) {
+    return 0;
+  }
 }

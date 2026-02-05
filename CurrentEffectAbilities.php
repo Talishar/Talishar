@@ -2903,6 +2903,8 @@ function EffectsAttackYouControlModifiers($cardID, $player)
   $powerModifier = 0;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $player) {
+      $card = GetClass($currentTurnEffects[$i], $player);
+      if ($card != "-") $powerModifier += $card->EffectAttackYouControlModifiers($cardID);
       switch ($currentTurnEffects[$i]) {
         case "art_of_war_yellow-1":
           if (CardType($cardID) == "AA") $powerModifier += 1;

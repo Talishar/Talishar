@@ -7023,3 +7023,46 @@ class channel_iceloch_glaze_blue extends Card {
       ChannelTalent($uniqueID, "ICE");
   }
 }
+
+class art_of_the_phoenix_war_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "art_of_the_phoenix_war_red";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return SearchCount(SearchMultizone($this->controller, "MYHAND:isSameName=phoenix_flame_red")) == 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYHAND:isSameName=phoenix_flame_red");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red", "phoenix_flame_red"), 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    Draw($this->controller, num:2);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    return TypeContains($attackCard, "AA") && TalentContains($attackCard, "DRACONIC", $this->controller);
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function EffectAttackYouControlModifiers($cardID) {
+    if (TypeContains($cardID, "AA") && TalentContains($cardID, "DRACONIC", $this->controller)) return 1;
+    else return 0;
+  }
+}
