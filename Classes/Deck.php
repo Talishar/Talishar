@@ -69,7 +69,7 @@ class Deck {
     return $rv;
   }
 
-  function BanishTop($modifier = "-", $banishedBy = "", $amount=1) {
+  function BanishTop($modifier = "-", $banishedBy = "", $amount=1, $banisher="-") {
     global $currentPlayer;
     if($this->Empty()) return "";
     if($banishedBy == "") $banishedBy = $currentPlayer;
@@ -79,7 +79,7 @@ class Deck {
       $cardType = CardType($cardID);
       if($modifier == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($cardID)) $modifier = "-";
       WriteLog(CardLink($cardID, $cardID). " was banished.");
-      BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy);
+      BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy, $banisher);
     }
     return $cardID;
   }

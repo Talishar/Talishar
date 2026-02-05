@@ -689,7 +689,7 @@ function MSTHitEffect($cardID, $from): void
     case "bonds_of_attraction_blue":
       if (IsHeroAttackTarget()) {
         $deck->BanishTop("Source-" . $CombatChain->AttackCard()->ID(), banishedBy: $attackCard);
-        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-" . $attackCard . "," . $attackCard, silent: true);
+        if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-$attackCard,$attackCard,$mainPlayer", silent: true);
       }
       break;
     case "double_trouble_red":
