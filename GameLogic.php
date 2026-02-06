@@ -1652,7 +1652,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $playerSource = $parameters[2];
-      if ($player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage-$lastResult);
       if($playerSource != $player) LogDamageStats($player, $damage, 0); //Log arcane damageThreatened before it's prevented
 
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;

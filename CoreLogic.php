@@ -664,7 +664,7 @@ function AddDamagePreventionSelection($player, $damage, $type, $preventable, $so
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $playerSource)
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
-  global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain;
+  global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -711,6 +711,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   }
   if($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
+  if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   PlayerLoseHealth($damage, $player);
   return $damage;
 }
