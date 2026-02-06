@@ -65,7 +65,6 @@ class savage_claw extends Card
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
-    WriteLog("HER: $additionalCosts");
     if (SearchCardList($additionalCosts, $this->controller, minAttack: 6) != "")
       AddCurrentTurnEffect($this->cardID, $this->controller);
   }
@@ -7091,6 +7090,25 @@ class art_of_the_phoenix_war_red extends Card {
     if (TypeContains($cardID, "AA") && TalentContains($cardID, "DRACONIC", $this->controller)) return 1;
     else return 0;
   }
+}
+
+class cheating_scoundrel_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cheating_scoundrel_red";
+    $this->controller = $controller;
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddOnWagerEffects();
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return CardType($CombatChain->AttackCard()->ID()) == "AA";
+  }
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  } 
 }
 
 class seeker_kunai_red extends Card {
