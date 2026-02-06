@@ -3757,6 +3757,9 @@ function EvoHandling($cardID, $player, $from)
         $char[$i + 8] = 0;//Should not be frozen
         $char[$i + 9] = CharacterDefaultActiveState($char[$i]);
         $char[$i + 11] = GetUniqueId($char[$i], $player);//new object, so old effects shouldn't track it
+        $char[$i + 12] = "UP"; // should be faceup
+        $char[$i + 13] = 0; // removes mark
+        $char[$i + 14] = 0; // untaps
         $dqVars[1] = $i;
         EvoTransformAbility($char[$i], $fromCardID, $player);
         $replaced = 1;
