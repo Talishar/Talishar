@@ -235,7 +235,7 @@ class Card {
   }
 
   function HasSuspense() {
-    return false;
+    return GeneratedHasSuspense($this->cardID);
   }
 
   function HasAmbush() {
@@ -283,7 +283,7 @@ class Card {
   }
 
   function HasCombo() {
-    return false;
+    return GeneratedHasCombo($this->cardID);
   }
 
   function ComboActive($lastAttackName) {
@@ -291,7 +291,7 @@ class Card {
   }
 
   function HasTower() {
-    return false;
+    return GeneratedHasTower($this->cardID);
   }
 
   function AddTowerHitTrigger() {
@@ -303,7 +303,7 @@ class Card {
   }
 
   function HasCrush() {
-    return false;
+    return GeneratedHasCrush($this->cardID);
   }
 
   function AddCrushEffectTrigger() {
@@ -418,7 +418,7 @@ class Card {
   }
 
   function HasBeatChest() {
-    return false;
+    return GeneratedHasBeatChest($this->cardID);
   }
 
   function CurrentEffectCostModifier($cardID, $from, &$remove) {
