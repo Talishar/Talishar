@@ -743,7 +743,7 @@ class predatory_plating extends Card {
     }
     $Allies = new Allies($this->controller);
     for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
-      if (PowerValue($Allies->Card($i, true), $this->controller, "ALLIES") >= 6) return false;
+      if (PowerValue($Allies->Card($i, true)->CardID(), $this->controller, "ALLIES") >= 6) return false;
     }
     return true;
   }
@@ -7302,3 +7302,14 @@ class tigrine_reflex_red extends Card {
     return true;
   }
 }
+
+// class temporal_wobble_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "temporal_wobble_red";
+//     $this->controller = $controller;
+//   }
+
+//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+//     $cost = 
+//   }
+// }
