@@ -4966,8 +4966,7 @@ class lighten_the_load extends BaseCard {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYITEMS&MYHAND", 1);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Destroy an item or discard a card?", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
-    AddDecisionQueue("ADDDISCARD", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
     AddDecisionQueue("OP", $this->controller, "GIVEATTACKGOAGAIN", 1);
   }
 }
