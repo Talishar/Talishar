@@ -6153,8 +6153,8 @@ class haboob_red extends Card {
     global $CombatChain;
     $cardID = $CombatChain->Card($index)->ID();
     if (TypeContains($cardID, "AA")) {
-      array_push($powerModifiers, $this->cardID);
-      array_push($powerModifiers, -1);
+      array_push($powerModifier, $this->cardID);
+      array_push($powerModifier, -1);
       return -1;
     }
   }
