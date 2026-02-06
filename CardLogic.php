@@ -983,9 +983,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "bonds_of_attraction_red":
     case "bonds_of_attraction_yellow":
     case "bonds_of_attraction_blue":
-    case "double_trouble_red":
-    case "double_trouble_yellow":
-    case "double_trouble_blue":
     case "bonds_of_memory_red":
     case "bonds_of_memory_yellow":
     case "bonds_of_memory_blue":
@@ -1084,6 +1081,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "slay_the_scholars_yellow":
     case "slay_the_scholars_blue":
       if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      break;
+    case "double_trouble_red":
+    case "double_trouble_yellow":
+    case "double_trouble_blue":
+      if (IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }

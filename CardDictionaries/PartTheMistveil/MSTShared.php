@@ -695,10 +695,8 @@ function MSTHitEffect($cardID, $from): void
     case "double_trouble_red":
     case "double_trouble_yellow":
     case "double_trouble_blue":
-      if (IsHeroAttackTarget() && NumAttackReactionsPlayed() > 1) {
-        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
-        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
-      }
+      $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
+      $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
       break;
     case "bonds_of_memory_red":
     case "bonds_of_memory_yellow":
