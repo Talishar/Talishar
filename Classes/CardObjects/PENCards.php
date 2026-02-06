@@ -1585,7 +1585,7 @@ class hyper_inflation extends BaseCard {
   }
 
   function CurrentEffectCostModifier($cardID, $from) {
-    return IsStaticType(CardType($cardID), $from, $cardID) ? 0 : 1;
+    return IsActivated($cardID, $from) ? 0 : 1;
   }
 }
 
