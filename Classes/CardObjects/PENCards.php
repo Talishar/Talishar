@@ -7100,11 +7100,12 @@ class cheating_scoundrel_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddOnWagerEffects();
     AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect($this->cardID . "-WAGER", $this->controller);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return CardType($CombatChain->AttackCard()->ID()) == "AA";
+    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter !=  "WAGER";
   }
   function EffectPowerModifier($param, $attached = false) {
     return 3;

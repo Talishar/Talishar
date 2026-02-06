@@ -2038,6 +2038,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   elseif ($additionalCosts == "ATTACKTRIGGER") {
     ProcessAttackTrigger($parameter, $player, $target, $uniqueID);
   }
+  elseif ($additionalCosts == "WAGER") {
+    ProcessWager($parameter, $player, $target, $uniqueID);
+    return;
+  }
   else {
     if (class_exists($parameter)) {
       $card = new $parameter($player);

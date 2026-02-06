@@ -2669,6 +2669,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       GainResources($player, 1);
       if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
       return $lastResult;
+    case "WINWAGER":
+      ProcessWager($parameter, $player, $player, "-");
+      return $lastResult;
     case "MZADDCOUNTERANDEFFECT":
       $lastResultArr = explode(",", $lastResult);
       $otherPlayer = $player == 1 ? 2 : 1;
