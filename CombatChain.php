@@ -1921,13 +1921,15 @@ function CombatChainClosedTriggers()
           if ($numEloquence > 0) PlayAura("eloquence", $mainPlayer);
           break;
         case "deep_recesses_of_existence_blue":
+          $from = $chainLinks[$i][$j+3];
+          $whoseGY = str_contains($from, "MY") ? "MYDISCARD" : "THEIRDISCARD";
           // Do you want to banish this card face-down, and banish a card from each player who lost life this turn?
           AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
           // This will exit early if No
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=deep_recesses_of_existence_blue", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "$whoseGY:cardID=deep_recesses_of_existence_blue", 1);
           AddDecisionQueue("CHOOSEONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $mainPlayer, "MYDISCARD,DOWN," . $mainPlayer, 1);
+          AddDecisionQueue("MZBANISH", $mainPlayer, "$whoseGY,DOWN," . $mainPlayer, 1);
           AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
             AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your Graveyard to banish", 1);
