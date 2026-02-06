@@ -384,7 +384,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $index = SearchdiscardForUniqueID($params[1], $otherPlayer);
       if ($index != -1) {
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDISCARD-" . $index, 1);
-        AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-," . $cardID, 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,$cardID,$currentPlayer", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST097_inner_chi_blue," . $from);
       } else {
