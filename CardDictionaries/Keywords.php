@@ -360,9 +360,19 @@
     $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $lostWager = $wonWager == $mainPlayer ? $defPlayer : $mainPlayer;
     $numWagersWon = 0;
+    $hand = GetHand($mainPlayer);
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     if(SearchCurrentTurnEffects("double_down_red", $wonWager)) $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
+    if(count($hand) > 0 && $lostWager == $mainPlayer && SearchCurrentTurnEffects("cheating_scoundrel_red", $mainPlayer)) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You're about to lose a wager! Discard a card to win it instead?");
+      AddDecisionQueue("YESNO", $mainPlayer, "-");
+      AddDecisionQueue("NOPASS", $mainPlayer, "-");
+      PummelHit(player: $mainPlayer);
+      // $wonWager = $mainPlayer;
+      // $lostWager = $defPlayer;
+    }
+    
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = $chainClosed ? false : true;
       if(isset($currentTurnEffects[$i])) {
@@ -465,6 +475,12 @@
             if (!$chainClosed) {
               Draw($wonWager);
               PummelHit($lostWager);
+            }
+            break;
+          case "cheating_scoundrel_red":
+            RemoveCurrentTurnEffect($i);
+            if (!$chainClosed) {
+              PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
             }
             break;
           default:
