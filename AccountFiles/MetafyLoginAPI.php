@@ -60,7 +60,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     SaveMetafyTokens($access_token, $refresh_token);
     
     // Fetch user's communities
-    FetchAndSaveMetafyCommunities($access_token);
+    FetchAndSaveMetafyCommunities($access_token, $response);
   } else {
     $error_msg = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
     $error_description = isset($tokens['error_description']) ? $tokens['error_description'] : 'No description';
@@ -92,7 +92,7 @@ function SaveMetafyTokens($accessToken, $refreshToken)
   mysqli_close($conn);
 }
 
-function FetchAndSaveMetafyCommunities($access_token)
+function FetchAndSaveMetafyCommunities($access_token, &$response)
 {
   if (!isset($_SESSION['userid'])) {
     return;
@@ -103,7 +103,8 @@ function FetchAndSaveMetafyCommunities($access_token)
   
   $all_communities = array();
   
-  // List of paid tier names for Talishar
+  // List of paid tier names - ONLY used for Talishar community restrictions
+  $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
   $paid_tier_names = array(
     'Fyendal Supporters',
     'Seers of Ophidia',
@@ -164,7 +165,7 @@ function FetchAndSaveMetafyCommunities($access_token)
   
   $memberships_data = json_decode($memberships_response, true);
   
-  // Process all joined communities, but filter for paid subscriptions only
+  // Process all joined communities (memberships)
   if ($memberships_http_code === 200 && isset($memberships_data['communities'])) {
     foreach ($memberships_data['communities'] as $community) {
       $community_id = $community['id'] ?? null;
@@ -173,90 +174,65 @@ function FetchAndSaveMetafyCommunities($access_token)
         continue;
       }
       
-      // Check if user has an active paid subscription to this community
-      $purchase_url = 'https://metafy.gg/irk/api/v1/me/purchases/communities/' . urlencode($community_id);
+      // For each community, determine if it's a supporter community
+      // If the user is in the memberships list, they have access
+      $community_type = 'supported'; // All communities from memberships are supporter communities
       
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $purchase_url);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Authorization: Bearer ' . $access_token,
-        'Content-Type: application/json'
-      ));
-      curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-      
-      $purchase_response = curl_exec($ch);
-      $purchase_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-      curl_close($ch);
-      
-      $purchase_data = json_decode($purchase_response, true);
-      
-      // Only include if user has active access (paid subscription)
-      if ($purchase_http_code === 200 && isset($purchase_data['community']['has_access']) && $purchase_data['community']['has_access'] === true) {
-      //if ($purchase_http_code === 200 && isset($purchase_data['community']['has_access'])) {
-        // Extract the user's subscription tier from the purchase data
-        $subscription_tier = null;
-        $tier_id = $purchase_data['community']['tier_id'] ?? null;
-        $is_paid_subscription = false;
-        $community_type = 'member'; // Default to free member
-        
-        // Find community in the memberships list - it already has all community details including tiers
-        $community_data = null;
-        if (isset($memberships_data['communities']) && is_array($memberships_data['communities'])) {
-          foreach ($memberships_data['communities'] as $comm) {
-            if (isset($comm['id']) && $comm['id'] === $community_id) {
-              $community_data = $comm;
-              break;
-            }
-          }
-        }
-        
-        // Match the tier_id from purchase data with the tiers array in the community data
-        if ($community_data !== null && isset($community_data['tiers']) && is_array($community_data['tiers'])) {
-          if ($tier_id) {
-            foreach ($community_data['tiers'] as $tier) {
-              if (isset($tier['id']) && $tier['id'] === $tier_id) {
-                $subscription_tier = $tier;
-                // Check if tier is a paid tier by checking its name against the list of paid tiers
-                $tier_name = $tier['name'] ?? '';
-                
-                if (in_array($tier_name, $paid_tier_names, true)) {
-                  $is_paid_subscription = true;
-                  $community_type = 'supported';
-                }
-                break;
-              }
-            }
-          }
-        }
-        
-        // Add community to list (both paid and free, but marked appropriately)
-        $community_info = array(
-          'id' => $community_id,
-          'title' => $community['title'] ?? null,
-          'description' => $community['description'] ?? null,
-          'logo_url' => $community['logo_url'] ?? null,
-          'cover_url' => $community['cover_url'] ?? null,
-          'url' => $community['url'] ?? null,
-          'tiers' => $community['tiers'] ?? [],
-          'subscription_tier' => $subscription_tier,
-          'type' => $community_type
-        );
-        $all_communities[] = $community_info;
+      // Get the subscription tier if available
+      $subscription_tier = null;
+      if (isset($community['tiers']) && is_array($community['tiers']) && count($community['tiers']) > 0) {
+        // Use the first tier as the subscription tier (Metafy doesn't specify which tier the user has in memberships)
+        $subscription_tier = $community['tiers'][0];
       }
+      
+      // ONLY apply tier name restrictions for Talishar community
+      if ($community_id === $talishar_community_id) {
+        $tier_name = '';
+        if ($subscription_tier && isset($subscription_tier['name'])) {
+          $tier_name = $subscription_tier['name'];
+        }
+        if (!empty($tier_name) && !in_array($tier_name, $paid_tier_names, true)) {
+          // Not a paid Talishar tier, skip this community
+          continue;
+        }
+        // If no tier_name found for Talishar, skip it (not a paid supporter)
+        if (empty($tier_name)) {
+          continue;
+        }
+      }
+      
+      // Add community to list
+      $community_info = array(
+        'id' => $community_id,
+        'title' => $community['title'] ?? null,
+        'description' => $community['description'] ?? null,
+        'logo_url' => $community['logo_url'] ?? null,
+        'cover_url' => $community['cover_url'] ?? null,
+        'url' => $community['url'] ?? null,
+        'tiers' => $community['tiers'] ?? [],
+        'subscription_tier' => $subscription_tier,
+        'type' => $community_type
+      );
+      $all_communities[] = $community_info;
     }
   }
   
   // Save all communities to database
-  if (count($all_communities) > 0) {
-    $communities_json = json_encode($all_communities);
-    $sql = 'UPDATE users SET metafyCommunities=? WHERE usersid=?';
-    $stmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
-      $result = mysqli_stmt_execute($stmt);
-      mysqli_stmt_close($stmt);
-    }
+  $communities_json = json_encode($all_communities);
+  $response->debug_metafy = array(
+    'communities_count' => count($all_communities),
+    'communities_list' => array_map(function($c) { return array('id' => $c['id'], 'title' => $c['title'], 'type' => $c['type']); }, $all_communities)
+  );
+  
+  $sql = 'UPDATE users SET metafyCommunities=? WHERE usersid=?';
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
+    $result = mysqli_stmt_execute($stmt);
+    $response->debug_metafy['sql_result'] = $result ? 'success' : 'failed';
+    mysqli_stmt_close($stmt);
+  } else {
+    $response->debug_metafy['sql_result'] = 'prepare_failed: ' . mysqli_error($conn);
   }
   
   mysqli_close($conn);
