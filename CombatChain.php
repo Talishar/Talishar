@@ -1923,7 +1923,6 @@ function CombatChainClosedTriggers()
         case "deep_recesses_of_existence_blue":
           $from = $chainLinks[$i][$j+3];
           $whoseGY = str_contains($from, "THEIR") ? "THEIRDISCARD" : "MYDISCARD";
-          WriteLog("HERE: $from - $whoseGY");
           // Do you want to banish this card face-down, and banish a card from each player who lost life this turn?
           AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
           // This will exit early if No
