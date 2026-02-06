@@ -758,7 +758,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "THEIRCHAR":
           if ($character[$lrArr[1] + 5] < 2 && SearchCurrentTurnEffects("blood_on_her_hands_yellow", $player, returnUniqueID: true) != $character[$lrArr[1] + 11]) {
             $uniqueID = $character[$lrArr[1] + 11];
-            $otherFlurry = $CurrentTurnEffects->FindSpecificEffect("flurry", $target);
+            $otherFlurry = $CurrentTurnEffects->FindSpecificEffect("flurry", $uniqueID);
             if ($otherFlurry == "") {
               AddCurrentTurnEffect("blood_on_her_hands_yellow", $player, uniqueID: $uniqueID);
               AddCharacterUses($player, $lrArr[1], $parameter);
