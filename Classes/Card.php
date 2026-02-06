@@ -556,4 +556,12 @@ class Card {
   function StaticDefenderPowerModifier($cardID)  {
     return 0;
   }
+
+  function DiscardStartTurnTrigger($index) {
+    return;
+  }
+
+  function CurrentEffectBeginningActionPhaseAbility($i) {
+    return;
+  }
 }

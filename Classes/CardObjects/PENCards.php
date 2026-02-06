@@ -4388,23 +4388,41 @@ class graven_cowl extends Card {
     $this->cardID = "graven_cowl";
     $this->controller = $controller;
   }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
 }
 class graven_vestment extends Card {
   function __construct($controller) {
     $this->cardID = "graven_vestment";
     $this->controller = $controller;
   }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
 }
+
 class graven_gloves extends Card {
   function __construct($controller) {
     $this->cardID = "graven_gloves";
     $this->controller = $controller;
   }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
 }
+
 class graven_walkers extends Card {
   function __construct($controller) {
     $this->cardID = "graven_walkers";
     $this->controller = $controller;
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
   }
 }
 
@@ -7072,5 +7090,120 @@ class art_of_the_phoenix_war_red extends Card {
   function EffectAttackYouControlModifiers($cardID) {
     if (TypeContains($cardID, "AA") && TalentContains($cardID, "DRACONIC", $this->controller)) return 1;
     else return 0;
+  }
+}
+
+class seeker_kunai_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeker_kunai_red";
+    $this->controller = $controller;
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if ($from == "PLAY") {
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller)) return true;
+      if (!TypeContains($CombatChain->AttackCard()->ID(), "AA")) return true;
+    }
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $Item = new ItemCard($index, $this->controller);
+      $Item->Destroy();
+    }
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY") {
+      AddEffectToCurrentAttack($this->cardID);
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    if (CountItem("silver", $this->controller) >= 2) {
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_recur_" . CardLink($this->cardID));
+      AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-2", 1);
+      AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
+      AddDecisionQueue("PLAYITEM", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYDISCARD-$index", 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    }
+  }
+}
+
+class lobotomy_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "lobotomy_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $weapons = "";
+    $inventory = &GetInventory($this->controller);
+    $numHands = NumOccupiedHands($this->controller);
+    if ($numHands < 2) { //Only Equip if there is a broken weapon/off-hand
+      foreach ($inventory as $cardID) {
+        if (NameOverride($cardID) == "Orbitoclast") {
+          if ($weapons != "") $weapons .= ",";
+          $weapons .= $cardID;
+        };
+      }
+      if ($weapons == "") {
+        WriteLog("Player " . $this->controller . " doesn't have any " . CardLink("orbitoclast") . " in their inventory");
+        return;
+      }
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an " . CardLink("orbitoclast") . " to equip");
+      AddDecisionQueue("MAYCHOOSECARD", $this->controller, $weapons);
+      AddDecisionQueue("APPENDLASTRESULT", $this->controller, "-INVENTORY");
+      AddDecisionQueue("EQUIPCARDINVENTORY", $this->controller, "<-");
+    }
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget() && SearchCharacterForCard($this->controller, "orbitoclast")) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    AddNextTurnEffect($this->cardID, $otherPlayer);
+  }
+
+  function CurrentEffectBeginningActionPhaseAbility($i) {
+    $HeroCard = new CharacterCard(0, $this->controller);
+    $HeroCard->Sleep();
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    $HeroCard = new CharacterCard(0, $this->controller);
+    $HeroCard->Sleep(wake:true);
+    $remove = true;
   }
 }

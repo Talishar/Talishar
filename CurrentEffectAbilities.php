@@ -2338,6 +2338,16 @@ function CurrentEffectStartTurnAbilities() {
   }
 }
 
+function CurrentEffectBeginningActionPhaseAbilities() {
+  global $CurrentTurnEffects, $mainPlayer;
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() != $mainPlayer) continue;
+    $card = GetClass($Effect->EffectID(), $mainPlayer);
+    if ($card != "-") $card->CurrentEffectBeginningActionPhaseAbility($i);
+  }
+}
+
 function CurrentEffectEndTurnAbilities()
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;

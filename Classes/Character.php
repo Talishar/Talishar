@@ -73,6 +73,12 @@ class CharacterCard {
     return $this->pieces[$this->index+1] ?? 0;
   }
 
+  function Sleep($wake=false) {
+    $status = $wake ? 2 : 3;
+    if (isset($this->pieces[$this->index+1]))
+      $this->pieces[$this->index+1] = $status;
+  }
+
   function SetUsed($status=1) {
     if (isset($this->pieces[$this->index+1])) $this->pieces[$this->index+1] = $status;
   }

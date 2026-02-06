@@ -704,8 +704,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $char[0] = $cardID;
         }
         elseif (CardType($cardID) == "E" || CardType($cardID) == "W"){
-          WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
-          EquipEquipment($playerID, $cardID);
+          if ($num == "inv") {
+            WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
+            $inventory = &GetInventory($playerID);
+            array_push($inventory, $cardID);
+          }
+          else {
+            WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
+            EquipEquipment($playerID, $cardID);
+          }
         }
         elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
           if ($num == "banish") {

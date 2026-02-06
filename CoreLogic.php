@@ -340,6 +340,7 @@ function StartTurnAbilities()
 }
 
 function StartActionPhaseAbilities() {
+  CurrentEffectBeginningActionPhaseAbilities();
   AuraBeginningActionPhaseAbilities();
   ItemBeginningActionPhaseAbilities();
 }
@@ -359,6 +360,8 @@ function MZStartTurnIndices()
   $graveyard = &GetDiscard($mainPlayer);
   $cards = "";
   for ($i = count($graveyard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
+    $card = GetClass($graveyard[$i], $mainPlayer);
+    if ($card != "-") $card->DiscardStartTurnTrigger($i);
     switch ($graveyard[$i]) {
       case "thaw_red":
         if (ThawIndices($mainPlayer) != "") $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
@@ -367,24 +370,7 @@ function MZStartTurnIndices()
       case "mask_of_perdition":
       case "redback_shroud":
       case "shriek_razors":
-      case "graven_cowl":
-      case "graven_vestment":
-      case "graven_gloves":
-      case "graven_walkers":
-        $emptyEquipmentSlots = explode(",", FindEmptyEquipmentSlots($mainPlayer));
-        $discardIndex = SearchDiscardForCard($mainPlayer, $graveyard[$i]);
-        $foundSlot = in_array(CardSubType($graveyard[$i]), $emptyEquipmentSlots);
-        if (CountItem("silver", $mainPlayer) >= 2 && $discardIndex != "" && $foundSlot) {
-          AddDecisionQueue("COUNTITEM", $mainPlayer, "silver");
-          AddDecisionQueue("LESSTHANPASS", $mainPlayer, "2");
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_equip_" . CardLink($graveyard[$i], $graveyard[$i]), 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "silver-2", 1);
-          AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
-          AddDecisionQueue("EQUIPCARD", $mainPlayer, $graveyard[$i]."-".CardSubType($graveyard[$i])."-MYDISCARD-MYDISCARD", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYDISCARD-" . $discardIndex, 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        }
+        SilverBuyback($mainPlayer, $i);
         break;
       case "loyalty_beyond_the_grave_red":
         $foundLoyalties = SearchDiscard($mainPlayer, nameIncludes:"Loyalty,Beyond,the,Grave");

@@ -115,4 +115,8 @@ class ItemCard {
         $this->pieces[$this->index + $i] = 0;
     }
   }
+
+  function Destroy($skipDestroy=false) {
+    DestroyItemForPlayer($this->controller, $this->index, $skipDestroy);
+  }
 }
