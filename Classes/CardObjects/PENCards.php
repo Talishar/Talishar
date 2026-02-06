@@ -7184,7 +7184,7 @@ class lobotomy_red extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    if (IsHeroAttackTarget() && SearchCharacterForCard($this->controller, "orbitoclast")) {
+    if (IsHeroAttackTarget() && SearchCharacterByName($this->controller, "orbitoclast")) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
     }

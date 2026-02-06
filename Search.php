@@ -494,6 +494,17 @@ function SearchCharacterForCard($player, $cardID)
   return false;
 }
 
+function SearchCharacterByName($player, $cardID) {
+  $name = CardName($cardID);
+  $character = &GetPlayerCharacter($player);
+  $count = count($character);
+  $pieces = CharacterPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (isset($character[$i]) && NameOverride($character[$i], $player) == $name && $character[$i + 12] != "DOWN" && $character[$i + 1] != 0) return true;
+  }
+  return false;
+}
+
 function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false, $excludeAuras=false)
 {
   global $currentTurnEffects, $combatChain;
