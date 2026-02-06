@@ -614,7 +614,11 @@ enum PatreonCampaign : string
           "seasoned_saviour=DYN026-T", "shifting_tides_blue=SEA148-T", "singularity_red=EVO010-T", "surgent_aethertide=DYN192-T", "swindlers_grift_red=SEA169-T", 
           "swindlers_grift_yellow=SEA170-T", "swindlers_grift_blue=SEA171-T", "thievn_varmints_red=SEA172-T", "throw_caution_to_the_wind_blue=SEA150-T", "electrify_blue=ELE200-T",
           "goliath_gauntler=WTR153-T", "hidden_agenda=AAZ005-T", "goldkiss_rum=SEA245-T", "command_and_conquer_red=ANQ009-T", "crown_of_providence=ANQ005-T", "enlightened_strike_red=PEN320-T", 
-          "fyendals_spring_tunic=ANQ006-T", "heart_of_fyendal_blue=ANQ001-T", "quickdodge_flexors=ANQ008-T", "riches_of_tropal_dhani_yellow=ANQ003-T", "stonewall_gauntlet=ANQ007-T"
+          "fyendals_spring_tunic=ANQ006-T", "heart_of_fyendal_blue=ANQ001-T", "quickdodge_flexors=ANQ008-T", "riches_of_tropal_dhani_yellow=ANQ003-T", "stonewall_gauntlet=ANQ007-T",
+          "astravolt_elemental_red=PEN241-T", "blessing_of_bellona_yellow=PEN181-T", "blunten_yellow=PEN049-T", "boo_resident_spook_yellow=PEN156-T", "bubba_lubba_run_aground_yellow=PEN157-T", 
+          "channel_iceloch_glaze_blue=PEN229-T", "channel_the_skybreaker_yellow=PEN217-T", "cheating_scoundrel_red=PEN169-T", "evo_beta_base_arms_blue=PEN070-T", "evo_beta_base_chest_blue=PEN069-T", 
+          "evo_beta_base_head_blue=PEN068-T", "evo_beta_base_legs_blue=PEN071-T", "gentle_breeze_red=PEN034-T", "lay_down_the_challenge_yellow=PEN007-T", "mind_meets_might_red=PEN128-T", 
+          "sense_weakness_blue=PEN021-T", "sigil_of_silphidae_blue=PEN099-T", "tome_of_pandemonium_yellow=PEN277-T", "whispering_mist_blue=PEN267-T"
       ];
 
         break;
