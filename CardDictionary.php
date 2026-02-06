@@ -963,6 +963,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
+    "teklovossen_the_mechropotentb" => 6,
     default => $basePower,
   };
   $card = GetClass($cardID, $player);
