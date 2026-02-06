@@ -7207,3 +7207,79 @@ class lobotomy_red extends Card {
     $remove = true;
   }
 }
+
+class tigrine_reflex_red extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "tigrine_reflex_red";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    if (ClassContains($attackCard, "NINJA", $this->controller)) 
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddPlayerHand("crouching_tiger", $this->controller, $this->cardID, created:true);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "AR,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+    global $mainPlayer, $combatChain, $actionPoints, $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    $names = (IsReactionPhase()) ? "Ability" : "-";
+    $nameBlocked = NameBlocked($this->cardID, $index, $from);
+    if($nameBlocked) return $names;
+    if (IsResolutionStep()) $layerCount -= LayerPieces();
+    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+      $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $this->controller);
+      $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($this->cardID)), $this->controller);
+      if (!$warmongersPeace && !$underEdict && CanAttack($this->cardID, $from, $index, type:"AA")) {
+        if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $this->controller) || SearchCurrentTurnEffects("fealty", $this->controller)) $names .= ",Attack";
+      }
+    }
+    return $names;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return true;
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    global $CombatChain;
+    $search = SearchCombatChainAttacks($this->controller, class:"NINJA");
+    return ($from == "HAND" && IsReactionPhase() && SearchCount($search) > 0);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->archetype->AddPrePitchDecisionQueue($from, $index, $facing);
+  }
+
+  function ComboActive($lastAttackName) {
+    return $lastAttackName == "Crouching Tiger";
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return ComboActive() ? 1 : 0;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return ComboActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
