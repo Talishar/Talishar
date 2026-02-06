@@ -2289,15 +2289,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "rockslide_trap_blue":
         TrapTriggered($parameter);
-        if (!IsAllyAttacking()) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
-          AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
-          AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
-          AddDecisionQueue("ELSE", $mainPlayer, "-");
-          AddDecisionQueue("POWERMODIFIER", $player, "-2", 1);
-        } else {
-          AddDecisionQueue("POWERMODIFIER", $mainPlayer, "-2", 1);
-        }
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
+        AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
+        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
+        AddDecisionQueue("ELSE", $mainPlayer, "-");
+        AddDecisionQueue("POWERMODIFIER", $player, "-2", 1);
         break;
       case "dread_triptych_blue":
         if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("runechant", $player);
