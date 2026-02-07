@@ -7380,41 +7380,42 @@ class tiger_trap_red extends Card{
   }
 }
 
-class temporal_wobble_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "temporal_wobble_red";
-    $this->controller = $controller;
-  }
+// class temporal_wobble_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "temporal_wobble_red";
+//     $this->controller = $controller;
+//   }
 
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-    return SearchCount(SearchLayer(0, maxCost:$cost, type:"A")) > 0;
-  }
+//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+//     if ($cost == -1) return true;
+//     return SearchCount(SearchLayer(0, maxCost:$cost, type:"A")) == 0;
+//   }
 
-  function PayAdditionalCosts($from, $index = '-') {
-    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "LAYER:maxCost=$cost;type=A");
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Negate a non attack action layer with cost $cost or less", 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-  }
+//   function PayAdditionalCosts($from, $index = '-') {
+//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+//     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "LAYER:maxCost=$cost;type=A");
+//     // AddDecisionQueue("SETDQCONTEXT", $this->controller, "Negate a non attack action layer with cost $cost or less", 1);
+//     // AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+//     // AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+//     // AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+//   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $Stack;
-    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-    $targetUID = explode("-", $target)[1] ?? "-";
-    $TargetLayer = $Stack->FindCardUID($targetUID);
-    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-    if ($TargetLayer != "") {
-      // It should do this even if the target is gone, use LKI to find the owner
-      // low priority to fix
-      GainActionPoints(1, $TargetLayer->PlayerID());
-      if (CardCost($TargetLayer->ID(), "LAYER") < $cost)
-        $TargetLayer->Negate();
-    }
-  }
-}
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     global $Stack;
+//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+//     $targetUID = explode("-", $target)[1] ?? "-";
+//     $TargetLayer = $Stack->FindCardUID($targetUID);
+//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+//     if ($TargetLayer != "") {
+//       // It should do this even if the target is gone, use LKI to find the owner
+//       // low priority to fix
+//       GainActionPoints(1, $TargetLayer->PlayerID());
+//       if (CardCost($TargetLayer->ID(), "LAYER") < $cost)
+//         $TargetLayer->Negate();
+//     }
+//   }
+// }
 
 class templar_spellbane extends Card {
   function __construct($controller) {
