@@ -161,4 +161,9 @@ class LinkCard {
 	function NumTimesUsed() {
 		return $this->link[$this->index+9] ?? 0;
 	}
+
+	function Remove() {
+		if (isset($this->link[$this->index+2]))
+			$this->link[$this->index+2] = 0;
+	}
 }

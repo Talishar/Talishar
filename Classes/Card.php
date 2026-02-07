@@ -580,4 +580,8 @@ class Card {
   function HasMirage() {
     return GeneratedHasMirage($this->cardID);
   }
+
+  function CardCareAboutChiPitch() {
+    return false;
+  }
 }

@@ -1166,7 +1166,7 @@ function UnsetAllyModifier($player, $modifier, $newMod = "-") {
     }
 }
 
-function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false)
+function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $color = "")
 {
   global $combatChain;
   $pieces = "";
@@ -1176,6 +1176,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
     $thisType = CardType($combatChain[$i]);
     $thisSubType = CardSubType($combatChain[$i]);
+    if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
     if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || TypeContains($combatChain[$i], $cardType, $playerID)) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
       $excluded = false;
       for ($j = 0; $j < count($exclCardTypeArray); ++$j) {
@@ -1193,7 +1194,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   return $pieces;
 }
 
-function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "") {
+function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "") {
   global $chainLinks, $defPlayer, $mainPlayer;
   $ret = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
@@ -1204,17 +1205,18 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
       $cardID = $chainLinks[$i][$j];
       $thisType = CardType($cardID);
       $thisSubType = CardSubType($cardID);
+      if ($color != "" && !ColorContains($cardID, $color, $chainLinks[$i][$j + 1])) continue;
       if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
-      $excluded = false;
-      for ($k = 0; $k < count($exclCardTypeArray); ++$k) {
-        if ($thisType == $exclCardTypeArray[$k]) $excluded = true;
-      }
-      for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
-        if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
-      }
-      if ($excluded) continue;
-      if (!$asMZInd) $ret[] = "$j-$i";
-      else $ret[] = "PASTCHAINLINK-$j-$i";
+        $excluded = false;
+        for ($k = 0; $k < count($exclCardTypeArray); ++$k) {
+          if ($thisType == $exclCardTypeArray[$k]) $excluded = true;
+        }
+        for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
+          if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+        }
+        if ($excluded) continue;
+        if (!$asMZInd) $ret[] = "$j-$i";
+        else $ret[] = "PASTCHAINLINK-$j-$i";
       }
     }
   }

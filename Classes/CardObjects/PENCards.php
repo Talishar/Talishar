@@ -6467,6 +6467,10 @@ class kimono_of_layered_lessons extends Card {
     $Kimono = $Character->FindCardID($this->cardID);
     $Kimono->AddDefenseCounters(1);
   }
+
+  function CardCareAboutChiPitch() {
+    return true;
+  }
 }
 
 class mistborn_protector_blue extends Card {
@@ -7845,5 +7849,51 @@ class bubba_lubba_run_aground_yellow extends Card {
   function AbilityHasGoAgain($from) {
     if ($from == "PLAY" && GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") return true;
     return false;
+  }
+}
+
+class rippling_wave extends Card {
+  function __construct($controller) {
+    $this->cardID = "rippling_wave";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain, $mainPlayer, $defPlayer;
+    $pastChoices = GetPastChainLinkCards($defPlayer, cardType: "AA", asMZInd: true, color: 3);
+    $currentChoices =  GetChainLinkCards($defPlayer, cardType: "AA", asMZInd: true, color: 3);
+    if ($currentChoices == "") $choices = $pastChoices;
+    elseif ($pastChoices == "") $choices = $currentChoices;
+    else $choices = "$pastChoices,$currentChoices";
+    if ($choices != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Return a defending blue card to the owner's hand", 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $this->controller, "RIPPLINGWAVE", 1);
+    }
+    return "";
+  }
+
+  function CardCareAboutChiPitch() {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Char = new PlayerCharacter($this->controller);
+    $CharCard = $Char->FindCardID($this->cardID);
+    return $CharCard->Facing() != "DOWN";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Flip("UP");
   }
 }

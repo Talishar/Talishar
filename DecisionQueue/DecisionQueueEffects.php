@@ -1326,6 +1326,36 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $Ally = new AllyCard($lastResult, $player);
       AddCurrentTurnEffect("bone_puppetry", $player, "", $Ally->UniqueID());
       break;
+    case "RIPPLINGWAVE":
+      $lastResultArr = explode("-", $lastResult);
+      $zone = $lastResultArr[0];
+      $ind = $lastResultArr[1] ?? "-";
+      if ($ind == "-") return;
+      switch ($zone) {
+        case "COMBATCHAINLINK":
+          $from = $CombatChain->Card($ind)->From();
+          $cardID = $CombatChain->Card($ind)->ID();
+          $CombatChain->Remove($ind);
+          break;
+        case "PASTCHAINLINK":
+          $linkNum = $lastResultArr[2] ?? "-";
+          if ($linkNum == "-") {
+            WriteLog("Something went wrong with rippling wave, please submit a bug report", highlight:true);
+          }
+          $Link = new ChainLink($linkNum);
+          $LinkCard = $Link->GetLinkCard($ind);
+          $from = $LinkCard->From();
+          $cardID = $LinkCard->ID();
+          $LinkCard->Remove();
+          break;
+        default:
+          break;
+      }
+      if (str_contains($from, "THEIR"))
+        AddPlayerHand($cardID, $mainPlayer, "CC");
+      else
+        AddPlayerHand($cardID, $defPlayer, "CC");
+      break;
     default: return "";
   }
 

@@ -4718,6 +4718,8 @@ function IsEquipment($cardID, $player = "")
 function CardCareAboutChiPitch($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->CardCareAboutChiPitch();
   switch ($cardID) {
     case "nuu_alluring_desire":
     case "nuu":
@@ -4729,7 +4731,6 @@ function CardCareAboutChiPitch($cardID)
     case "zen":
     case "twelve_petal_kasaya":
     case "enigma_new_moon":
-    case "kimono_of_layered_lessons":
       return true;
     default:
       return false;
