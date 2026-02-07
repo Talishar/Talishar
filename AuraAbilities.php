@@ -62,7 +62,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
       return;
     }
-    // SearchCurrentTurnEffects("smoldering_scales", $player, true);
     $steelIndex = SearchDiscardForCard($player, "smoldering_steel_red");
     if ($steelIndex != "" && !SearchCurrentTurnEffects("smoldering_steel_red", $player)) {
       $index = explode(",", $steelIndex)[0];
@@ -73,6 +72,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       AddDecisionQueue("MZBANISH", $player, "-", 1);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       AddDecisionQueue("WRITELOG", $player, $message, 1);
+      //need to remove this if its there
       AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales", 1);
       AddDecisionQueue("ELSE", $player, "-");
       // track whether to skip this check next time
