@@ -387,9 +387,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,$cardID,$currentPlayer", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST097_inner_chi_blue," . $from);
-      } else {
-        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect and this card does not transcend.");
-        return "FAILED";
       }
       return "";
     case "path_well_traveled_blue":
