@@ -7448,6 +7448,10 @@ class templar_spellbane extends Card {
   function GoesOnCombatChain($phase, $from) {
     return $phase == "B";
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class farflight_longbow extends Card {

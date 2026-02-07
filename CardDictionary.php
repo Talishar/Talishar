@@ -786,6 +786,8 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       $block = 2;
       break;
     case "gallow_end_of_the_line_yellow":
+    case "boo_resident_spook_yellow":
+    case "bubba_lubba_run_aground_yellow":
       $block = -1;
       break;
     default:
@@ -963,6 +965,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
     "wrenchtastic" => 4, // AI custom weapon
+    "teklovossen_the_mechropotentb" => 6,
     default => $basePower,
   };
   $card = GetClass($cardID, $player);
@@ -1725,11 +1728,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase != "B" && $from == "CHAR" && isset($character[$index + 1]) && $character[$index + 1] != "2") return false;
   // I don't remember why this line was here, removing for now as it's causing problems
   // if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0 && (ManualTunicSetting($player) == 0 && $cardID != "fyendals_spring_tunic")) return false;
-  if ($from == "CHAR" && $phase != "B" && isset($character[$index + 8]) && $character[$index + 8] == "1") {
+  if ($from == "CHAR" && $phase != "B" && IsFrozenMZ($character, "CHAR", $index, $player)) {
     $restriction = "Frozen";
     return false;
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 3]) && $myAllies[$index + 3] == "1") {
+  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && IsFrozenMZ($myAllies, "ALLY", $index, $player)) {
     $restriction = "Frozen";
     return false;
   }
@@ -3490,6 +3493,8 @@ function HasBladeBreak($cardID)
       return $char[$index + 12] == "UP";
     case "mask_of_malicious_manifestations":
       return true;
+    case "glove_of_azure_waves":
+      return HighTideConditionMet($defPlayer);
     default:
       return GeneratedHasBladeBreak($cardID);
   }
@@ -3900,6 +3905,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
     case "mbrio_base_digits":
+    case "farflight_longbow":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  
@@ -4546,6 +4552,8 @@ function WardAmount($cardID, $player, $index = -1)
 
 function HasWard($cardID, $player)
 {
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->HasWard();
   switch ($cardID) {
     case "empyrean_rapture":
       return SearchCurrentTurnEffects("empyrean_rapture-1", $player);
@@ -4700,6 +4708,8 @@ function IsEquipment($cardID, $player = "")
 function CardCareAboutChiPitch($cardID)
 {
   $cardID = ShiyanaCharacter($cardID);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->CardCareAboutChiPitch();
   switch ($cardID) {
     case "nuu_alluring_desire":
     case "nuu":
@@ -4711,7 +4721,6 @@ function CardCareAboutChiPitch($cardID)
     case "zen":
     case "twelve_petal_kasaya":
     case "enigma_new_moon":
-    case "kimono_of_layered_lessons":
       return true;
     default:
       return false;
