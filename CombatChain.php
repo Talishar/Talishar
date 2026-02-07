@@ -2130,15 +2130,22 @@ function ActiveOnHits(): bool
   global $CombatChain, $currentTurnEffects, $mainPlayer, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return false;
   if (AddOnHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
+  $target = IsHeroAttackTarget() ? $defPlayer : "-";
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectsPieces();
   for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
     if (IsCombatEffectActive($currentTurnEffects[$i])) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-        if (AddEffectHitTrigger($currentTurnEffects[$i], source:$CombatChain->AttackCard()->ID(), target:$defPlayer, check:true)) return true;
+        if (AddEffectHitTrigger($currentTurnEffects[$i], source:$CombatChain->AttackCard()->ID(), target:$target, check:true)) return true;
       }
     }
-  } 
+  }
+  foreach(explode(",", $CombatChain->AttackCard()->StaticBuffs()) as $effectSetID) {
+    $effect = ConvertToCardID($effectSetID);
+    if (IsCombatEffectActive($effect)) {
+      if (AddEffectHitTrigger($effect, source:$CombatChain->AttackCard()->ID(), target:$target, check:true)) return true;// Effects that do gives their effect to the attack
+    }
+  }
   return false;
 }
 

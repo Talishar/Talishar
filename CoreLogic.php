@@ -4151,3 +4151,7 @@ function TurnArsenalFaceUp($player) {
     }
   }
 }
+
+function SetTargets() {
+  
+}
