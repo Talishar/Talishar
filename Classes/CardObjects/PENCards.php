@@ -7981,13 +7981,28 @@ class helm_of_safe_haven extends Card {
   }
 }
 
-// class high_current_currency_blue extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "high_current_currency_blue";
-//     $this->controller = $controller;
-//   }
+class high_current_currency_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "high_current_currency_blue";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Target = CleanTargetToObject($this->controller, $target);
+    if ($Target != "") {
+      $num = $Target->NumCounters();
+      PutItemIntoPlayForPlayer("gold", $this->controller, number:$num);
+      $Target->AddCounters(-$num);
+    }
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("FINDINDICES", $this->controller, "OPPSENERGYPERMANENTS");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("ELSE", $this->controller, $this->cardID);
+    AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " targeted something without energy counters", 1);
+  }
+}

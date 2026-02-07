@@ -87,6 +87,11 @@ class CharacterCard {
     return $this->pieces[$this->index+2] ?? 0;
   }
 
+  function AddCounters($num) {
+    if (isset($this->pieces[$this->index + 2]))
+      $this->pieces[$this->index + 2] += $num;
+  }
+
   function NumPowerCounters() {
     return $this->pieces[$this->index+3] ?? 0;
   }

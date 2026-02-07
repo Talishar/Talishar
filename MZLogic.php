@@ -697,7 +697,7 @@ function CleanTargetToObject($player, $cleanTarget) {
   $targArr = explode("-", $cleanTarget);
   $zone = GetZoneObject($player, $targArr[0]);
   $uid = $targArr[1] ?? "-";
-  return $zone->FindCardUID($uid);
+  return $zone != "" ? $zone->FindCardUID($uid) : "";
 }
 
 function CleanTarget($player, $lastResult) { //converts a target to use unique ids

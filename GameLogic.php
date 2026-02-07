@@ -396,6 +396,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SPELLVOID":
           $rv = SearchSpellvoidIndices($player, $subparam);
           break;
+        case "OPPSENERGYPERMANENTS":
+          $rv = [];
+          $playerID = $player == 1 ? 2 : 1;
+          $prefix = "THEIR";
+          $character = GetPlayerCharacter($playerID);
+          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+            if (HasEnergyCounters($character, $i)) array_push($rv, $prefix."CHAR-$i");
+          }
+          $auras = GetAuras($playerID);
+          for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+            if (HasEnergyCounters($auras, $i)) array_push($rv, $prefix."AURAS-$i");
+          }
+          $rv = implode(",", $rv);
+          break;
         default:
           $rv = "";
           break;

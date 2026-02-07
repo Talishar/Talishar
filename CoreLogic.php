@@ -4153,5 +4153,5 @@ function TurnArsenalFaceUp($player) {
 }
 
 function SetTargets() {
-  
+  //TODO
 }
