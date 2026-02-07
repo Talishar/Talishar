@@ -7526,3 +7526,15 @@ class sigil_of_gravespawning_blue extends Card {
     }
   }
 }
+
+class glove_of_azure_waves extends Card {
+  function __construct($controller) {
+    $this->cardID = "glove_of_azure_waves";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index)
+  {
+    return HighTideConditionMet($this->controller) ? 3 : 0;
+  }
+}

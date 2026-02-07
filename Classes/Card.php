@@ -564,4 +564,8 @@ class Card {
   function CurrentEffectBeginningActionPhaseAbility($i) {
     return;
   }
+
+  function HasHightide() {
+    return GeneratedHasHightide($this->cardID);
+  }
 }

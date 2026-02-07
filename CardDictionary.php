@@ -3498,6 +3498,8 @@ function HasBladeBreak($cardID)
       return $char[$index + 12] == "UP";
     case "mask_of_malicious_manifestations":
       return true;
+    case "glove_of_azure_waves":
+      return HighTideConditionMet($defPlayer);
     default:
       return GeneratedHasBladeBreak($cardID);
   }
