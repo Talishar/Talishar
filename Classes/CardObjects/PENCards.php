@@ -7969,3 +7969,14 @@ class helm_of_safe_haven extends Card {
     }
   }
 }
+
+// class high_current_currency_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "high_current_currency_blue";
+//     $this->controller = $controller;
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
