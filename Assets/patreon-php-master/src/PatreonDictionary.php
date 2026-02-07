@@ -618,7 +618,14 @@ enum PatreonCampaign : string
           "astravolt_elemental_red=PEN241-T", "blessing_of_bellona_yellow=PEN181-T", "blunten_yellow=PEN049-T", "boo_resident_spook_yellow=PEN156-T", "bubba_lubba_run_aground_yellow=PEN157-T", 
           "channel_iceloch_glaze_blue=PEN229-T", "channel_the_skybreaker_yellow=PEN217-T", "cheating_scoundrel_red=PEN169-T", "evo_beta_base_arms_blue=PEN070-T", "evo_beta_base_chest_blue=PEN069-T", 
           "evo_beta_base_head_blue=PEN068-T", "evo_beta_base_legs_blue=PEN071-T", "gentle_breeze_red=PEN034-T", "lay_down_the_challenge_yellow=PEN007-T", "mind_meets_might_red=PEN128-T", 
-          "sense_weakness_blue=PEN021-T", "sigil_of_silphidae_blue=PEN099-T", "tome_of_pandemonium_yellow=PEN277-T", "whispering_mist_blue=PEN267-T"
+          "sense_weakness_blue=PEN021-T", "sigil_of_silphidae_blue=PEN099-T", "tome_of_pandemonium_yellow=PEN277-T", "whispering_mist_blue=PEN267-T","amnesia_red=ANQ011-T", "azalea=PEN340-T", 
+        "benji_the_piercing_wind=PEN335-T", "call_to_the_grave_blue=ANQ019-T", "censor_red=ANQ012-T", "chane=PEN344-T", "cut_through_the_facade_red=ANQ013-T", "dash=PEN338-T", 
+        "dash_database=PEN337-T", "dromai=PEN347-T", "enlightened_strike_red=ANQ000-T", "fai=PEN348-T", "fate_foreseen_red=ANQ033-T", "fiddlers_green_red=ANQ037-T", "gorganian_tome=ANQ020-T", 
+        "hold_the_line_blue=ANQ017-T", "kano=PEN342-T", "kassai_cintari_sellsword=PEN336-T", "lexi=PEN346-T", "looking_for_a_scrap_red=ANQ028-T", "midas_touch_yellow=ANQ021-T", 
+        "oasis_respite_red=ANQ035-T", "oldhim=PEN345-T", "premeditate_red=ANQ022-T", "prism=PEN343-T", "pummel_red=ANQ032-T", "ravenous_rabble_red=ANQ029-T", "remembrance_yellow=ANQ026-T", 
+        "rhinar=PEN334-T", "ripple_away_blue=ANQ014-T", "riptide=PEN341-T", "rusted_relic_blue=ANQ023-T", "scar_for_a_scar_red=ANQ030-T", "seduce_secrets_yellow=ANQ027-T", 
+        "sigil_of_gravespawning_blue=PEN098-T", "sigil_of_solace_red=ANQ036-T", "sink_below_red=ANQ034-T", "snatch_red=ANQ031-T", "teklovossen=PEN339-T", "tenacity_yellow=ANQ015-T", 
+        "that_all_you_got_yellow=ANQ018-T", "the_weakest_link_red=ANQ016-T", "this_rounds_on_me_blue=ANQ024-T", "truce_blue=ANQ025-T"
       ];
 
         break;

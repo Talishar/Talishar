@@ -1305,12 +1305,14 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
 function HasWateryGrave($cardID): bool
 {
   $card = GetClass($cardID, 0);
-  if ($card != "-")  return $card->HasWateryGrave();
+  if ($card != "-") return $card->HasWateryGrave();
   return GeneratedHasWateryGrave($cardID);
 }
 
 function HasHighTide($cardID): bool
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasHighTide();
   return GeneratedHasHighTide($cardID);
 }
 

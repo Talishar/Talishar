@@ -1319,6 +1319,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "FELLINGSONG":
       DealArcane(1, $lastResult, "PLAYCARD", $CombatChain->AttackCard()->ID());
       break;
+    case "SIGILOFGRAVESPAWNING":
+      DealArcane(1, $lastResult, "PLAYCARD", "sigil_of_gravespawning_blue");
+      break;
     default: return "";
   }
 

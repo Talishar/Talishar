@@ -7317,7 +7317,7 @@ class wind_cutter extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:subtype=Shuriken;subtype=Item");
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:subtype=Shuriken&subtype=Item");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a Shuriken to play", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
@@ -7380,38 +7380,198 @@ class tiger_trap_red extends Card{
   }
 }
 
-// class temporal_wobble_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "temporal_wobble_red";
-//     $this->controller = $controller;
-//   }
+class temporal_wobble_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "temporal_wobble_red";
+    $this->controller = $controller;
+  }
 
-//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-//     return SearchCount(SearchLayer(0, maxCost:$cost, type:"A")) > 0;
-//   }
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+    return SearchCount(SearchLayer(0, maxCost:$cost, type:"A")) > 0;
+  }
 
-//   function PayAdditionalCosts($from, $index = '-') {
-//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-//     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "LAYER:maxCost=$cost;type=A");
-//     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Negate a non attack action layer with cost $cost or less", 1);
-//     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-//     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-//     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-//   }
+  function PayAdditionalCosts($from, $index = '-') {
+    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "LAYER:maxCost=$cost;type=A");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Negate a non attack action layer with cost $cost or less", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     global $Stack;
-//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-//     $targetUID = explode("-", $target)[1] ?? "-";
-//     $TargetLayer = $Stack->FindCardUID($targetUID);
-//     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-//     if ($TargetLayer != "") {
-//       // It should do this even if the target is gone, use LKI to find the owner
-//       // low priority to fix
-//       GainActionPoints(1, $TargetLayer->PlayerID());
-//       if (CardCost($TargetLayer->ID(), "LAYER") < $cost)
-//         $TargetLayer->Negate();
-//     }
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $Stack;
+    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+    $targetUID = explode("-", $target)[1] ?? "-";
+    $TargetLayer = $Stack->FindCardUID($targetUID);
+    $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
+    if ($TargetLayer != "") {
+      // It should do this even if the target is gone, use LKI to find the owner
+      // low priority to fix
+      GainActionPoints(1, $TargetLayer->PlayerID());
+      if (CardCost($TargetLayer->ID(), "LAYER") < $cost)
+        $TargetLayer->Negate();
+    }
+  }
+}
+
+class templar_spellbane extends Card {
+  function __construct($controller) {
+    $this->cardID = "templar_spellbane";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_ArcaneDamagePrevention, $CS_AttacksWithWeapon;
+      if(GetClassState($this->controller, $CS_AttacksWithWeapon) > 0 || SearchAurasForCard("seismic_surge", $this->controller) != "") $prevent = 2;
+      else $prevent = 1;
+      IncrementClassState($this->controller, $CS_ArcaneDamagePrevention, $prevent);
+      return CardLink($this->cardID, $this->cardID) . " prevent your next arcane damage by " . $prevent;
+  }
+
+  function EquipPayAdditionalCosts($index = '-') {
+    DestroyCharacter($this->controller, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $phase == "B";
+  }
+}
+
+class farflight_longbow extends Card {
+  function __construct($controller) {
+    $this->cardID = "farflight_longbow";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    CheckTapped("MYCHAR-$index", $this->controller);
+  }
+
+  function EquipPayAdditionalCosts($index = '-') {
+    Tap("MYCHAR-$index", $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    LoadArrow($this->controller);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+}
+
+class rune_snare_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rune_snare_red";
+    $this->controller = $controller;
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CS_NumAuras, $mainPlayer;
+    if (GetClassState($mainPlayer, $CS_NumAuras) >= 2) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
+    TrapTriggered($this->cardID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Arrow");
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
+
+class sigil_of_gravespawning_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_gravespawning_blue";
+    $this->controller = $controller;
+  }
+
+  function StartTurnAbility($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_NumAuras;
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard != "") $AuraCard->Destroy();
+    }
+    else {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+      AddDecisionQueue("SPECIFICCARD", $this->controller, "SIGILOFGRAVESPAWNING", 1);
+    }
+  }
+}
+
+class glove_of_azure_waves extends Card {
+  function __construct($controller) {
+    $this->cardID = "glove_of_azure_waves";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index)
+  {
+    return HighTideConditionMet($this->controller) ? 3 : 0;
+  }
+}
+
+class whispering_mist_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "whispering_mist_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return HasEphemeral($CombatChain->AttackCard()->ID()) || ColorContains($CombatChain->AttackCard()->ID(), "Blue", $this->controller);
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class glory_plate extends Card {
+  function __construct($controller) {
+    $this->cardID = "glory_plate";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index)
+  {
+    global $CS_NumToughnessDestroyed;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed);
+  }
+}

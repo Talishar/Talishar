@@ -3498,6 +3498,8 @@ function HasBladeBreak($cardID)
       return $char[$index + 12] == "UP";
     case "mask_of_malicious_manifestations":
       return true;
+    case "glove_of_azure_waves":
+      return HighTideConditionMet($defPlayer);
     default:
       return GeneratedHasBladeBreak($cardID);
   }
@@ -3908,6 +3910,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
     case "mbrio_base_digits":
+    case "farflight_longbow":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  
@@ -4011,6 +4014,7 @@ function CharacterDefaultActiveState($cardID)
     case "dead_threads":
     case "voltic_vanguard":
     case "kimono_of_layered_lessons":
+    case "templar_spellbane":
       return 1;
     default:
       return 2;
