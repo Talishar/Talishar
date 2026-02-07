@@ -1369,6 +1369,11 @@ function SearchArcaneReplacement($player, $zone, $damage)
       $count = count($array);
       $pieces = AuraPieces();
       break;
+    case "MYALLY":
+      $array = &GetAllies($player);
+      $count = count($array);
+      $pieces = AllyPieces();
+      break;
     default:
       return "";
   }
@@ -1860,7 +1865,9 @@ function SearchSpellvoidIndices($player, $damage)
   $search = SearchArcaneReplacement($player, "MYAURAS", $damage);
   $auraIndices = SearchMultizoneFormat($search, "MYAURAS");
   $indices = CombineSearches($indices, $auraIndices);
-
+  $search = SearchArcaneReplacement($player, "MYALLY", $damage);
+  $allyIndices = SearchMultizoneFormat($search, "MYALLY");
+  $indices = CombineSearches($indices, $allyIndices);
   return $indices;
 }
 
@@ -2094,4 +2101,16 @@ function GetGoldIndices($player) {
     if (IsGold($char[$i]) && $char[$i+1] > 1) array_push($indices, "MYCHAR-$i");
   }
   return implode(",", $indices);
+}
+
+function GetAllyCounterIndices($player) {
+  $choices = [];
+  $Allies = new Allies($player);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $Ally = $Allies->Card($i, true);
+    if ($Ally->PowerCounters() > 0) {
+      array_push($choices, "MYALLY-" . $Ally->Index());
+    }
+  }
+  return implode(",", $choices);
 }

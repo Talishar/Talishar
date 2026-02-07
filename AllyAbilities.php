@@ -25,7 +25,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
     array_push($allies, 0); //Life Counters
     array_push($allies, 1); //Ability/effect uses
-    array_push($allies, 0); //Power Counters
+    array_push($allies, AllyPowerCounters($cardID)); //Power Counters
     array_push($allies, 0); //Damage dealt to the opponent
     array_push($allies, $tapped); //tapped
     array_push($allies, AllySteamCounters($cardID)); //steam counters
@@ -122,6 +122,8 @@ function AllyHealth($cardID)
     "polly_cranka_ally" => 1,
     "sticky_fingers_ally" => 2,
     "gallow_end_of_the_line_yellow" => 3, //missing from fabcube
+    "boo_resident_spook_yellow" => 2, //missing from fabcube
+    "bubba_lubba_run_aground_yellow" => 5, //missing from fabcube
     default => GeneratedCharacterHealth($cardID)
   };
 }
@@ -172,6 +174,16 @@ function AllyEnduranceCounters($cardID)
 {
   switch ($cardID) {
     case "yendurai":
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+function AllyPowerCounters($cardID)
+{
+  switch ($cardID) {
+    case "bubba_lubba_run_aground_yellow":
       return 1;
     default:
       return 0;
@@ -476,8 +488,8 @@ function AllyPayAdditionalCosts($cardIndex, $from)
   global $currentPlayer;
   $ally = &GetAllies($currentPlayer);
   $cardID = $ally[$cardIndex];
-  $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") $card->PayAdditionalCosts($from, $cardIndex);
+  // $card = GetClass($cardID, $currentPlayer);
+  // if ($card != "-") $card->PayAdditionalCosts($from, $cardIndex);
   switch ($cardID) {
     case "chum_friendly_first_mate_yellow":
     case "riggermortis_yellow":

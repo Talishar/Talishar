@@ -2474,7 +2474,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "cutty_shark_quick_clip_yellow",
         "kelpie_tangled_mess_yellow",
         "shelly_hardened_travleer",
-        "gallow_end_of_the_line_yellow" => $CS_PlayIndex,
+        "gallow_end_of_the_line_yellow",
+        "boo_resident_spook_yellow",
+        "bubba_lubba_run_aground_yellow" => $CS_PlayIndex,
         default => $CS_CharacterIndex
       };
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);
@@ -2746,6 +2748,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               default:
                 break;
             }
+            break;
+          case "MYALLY":
+            $Ally = new AllyCard($mzIndex[1], $player);
+            $Ally->AddPowerCounters(-1);
             break;
           default:
             break;

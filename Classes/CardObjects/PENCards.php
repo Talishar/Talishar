@@ -7675,7 +7675,6 @@ class mind_meets_might_red extends Card {
       $num = SearchCount(SearchMultizone($defPlayer, "MYHAND:minAttack=6"));
       for ($i = 0; $i < $num; ++$i) {
         $index = explode(",", SearchMultizone($defPlayer, "MYHAND:minAttack=6"))[0];
-        WriteLog("HERE: $index");
         DiscardCard($defPlayer, explode("-", $index)[1], $this->cardID, $this->controller);
       }
       Draw($defPlayer, effectSource:$this->cardID, num:$num);
@@ -7753,5 +7752,98 @@ class dynastic_diadem extends Card {
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
     return CountAura("fealty", $this->controller) < 3 ? 0 : 1;
+  }
+}
+
+class boo_resident_spook_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "boo_resident_spook_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $allies = &GetAllies($this->controller);
+      Tap("MYALLY-$index", $this->controller);
+      $ally[$index + 1] = 2;//Not once per turn effects
+    }
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $from == "PLAY" ? "AA" : "A";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if($from == "PLAY") return CheckTapped("MYALLY-$index", $this->controller);
+    return false;
+  }
+}
+
+class bubba_lubba_run_aground_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "bubba_lubba_run_aground_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY" && GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:isToken=true&MYAURAS:isToken=true");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Destroy an aura token", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+    }
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      if(GetResolvedAbilityType($this->cardID, $from, $this->controller) == "AA")
+        Tap("MYALLY-$index", $this->controller);
+      elseif(GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") {
+        $choices = GetAllyCounterIndices($this->controller);
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Remove a +1 counter from an ally");
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $choices, 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $choices, 1);
+        AddDecisionQueue("MZREMOVECOUNTER", $this->controller, "-", 1);
+      }
+      $Ally = new AllyCard($index, $this->controller);
+      $Ally->SetStatus(2);
+    }
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return ($from != "PLAY") ? "" : "A,AA";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+    $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
+    $allies = &GetAllies($this->controller);
+    $names = "";
+    if (GetAllyCounterIndices($this->controller) != "") $names = "Ability";
+    if (CheckTapped("MYALLY-$index", $this->controller)) return "Ability";
+    if (SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $canAttack) return "-,Attack";
+    if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
+    return $names;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function AbilityCost() {
+    return GetResolvedAbilityType($this->cardID, "PLAY") == "AA" ? 1 : 0;
+  }
+
+  function AbilityHasGoAgain($from) {
+    if ($from == "PLAY" && GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") return true;
+    return false;
   }
 }

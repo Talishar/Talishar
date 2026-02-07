@@ -99,6 +99,11 @@ class AllyCard {
     return $this->pieces[$this->index+9] ?? 0;
   }
 
+  function AddPowerCounters($num=1) {
+    if (isset($this->pieces[$this->index+9]))
+      $this->pieces[$this->index+9] += $num;
+  }
+
 	function DamageDealtToOpponent() {
     return $this->pieces[$this->index+10] ?? 0;
   }

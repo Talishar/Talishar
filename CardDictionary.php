@@ -786,6 +786,8 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       $block = 2;
       break;
     case "gallow_end_of_the_line_yellow":
+    case "boo_resident_spook_yellow":
+    case "bubba_lubba_run_aground_yellow":
       $block = -1;
       break;
     default:
