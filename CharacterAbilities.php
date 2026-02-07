@@ -120,6 +120,8 @@ function CharacterStartTurnAbility($index)
   if ($char->status != 2) return;
   $cardID = $char->cardID;
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") $card->StartTurnAbility($index);
   switch ($cardID) {
     case "fyendals_spring_tunic":
       if (!ManualTunicSetting($mainPlayer)) {
@@ -719,6 +721,8 @@ function CharacterCostModifier($cardID, $from, $cost)
     if ($char[$i + 1] >= 3 || $char[$i + 1] == 0) continue;
     if (CardType($char[$i]) == "C") $thisChar = ShiyanaCharacter($char[$i]);
     else $thisChar = $char[$i];
+    $card = GetClass($thisChar, $currentPlayer);
+    if ($card != "-") $modifier += $card->StaticCostModifier($cardID, $from, $cost);
     switch ($thisChar) {
       case "kassai_cintari_sellsword":
         if (CardSubtype($cardID) == "Sword" && GetClassState($currentPlayer, $CS_NumSwordAttacks) == 1) --$modifier;
@@ -777,6 +781,13 @@ function CharacterCostModifier($cardID, $from, $cost)
        default:
         break;
     }
+  }
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $OtherChar = new PlayerCharacter($otherPlayer);
+  for ($i = 0; $i < $OtherChar->NumCards(); ++$i) {
+    $CharCard = $OtherChar->Card($i, true);
+    $card = GetClass($CharCard->CardID(), $otherPlayer);
+    if ($card != "-") $modifier += $card->StaticCostModifier($cardID, $from, $cost);
   }
   return CostCantBeModified($cardID) ? 0 : $modifier;
 }
