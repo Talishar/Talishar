@@ -7538,3 +7538,27 @@ class glove_of_azure_waves extends Card {
     return HighTideConditionMet($this->controller) ? 3 : 0;
   }
 }
+
+class whispering_mist_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "whispering_mist_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return HasEphemeral($CombatChain->AttackCard()->ID()) || ColorContains($CombatChain->AttackCard()->ID(), "Blue", $this->controller);
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
