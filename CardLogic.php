@@ -4007,7 +4007,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($char[$target + 4] < 0) ++$char[$target + 4];
         break;
       case "fist_pump":
-        if ($target == "LAYER-0") {
+        if (str_contains($target, "LAYER")) {
           AddCurrentTurnEffect("$parameter-ATTACK", $player);
         }
         else {

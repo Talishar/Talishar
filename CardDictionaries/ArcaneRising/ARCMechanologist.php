@@ -190,19 +190,11 @@ function DoBoost($player, $cardID, $boostCount=1)
             break;
           case "fist_pump":
             if (CardNameContains($boostedCardID, "Hyper Driver", $player)) {
-              // there should only ever be one wrench equipped
-              $choices = [];
-              $wrenchInd = SearchCharacter($player, subtype:"Wrench");
-              if ($wrenchInd != "") array_push($choices, "MYCHAR-$wrenchInd");
-              if (IsLayerStep() && SubtypeContains($Stack->BottomLayer()->ID(), "Wrench"))
-                array_push($choices, "LAYER-" .$Stack->BottomLayer()->Index());
-              if (count($choices) > 0) {
-                AddDecisionQueue("PASSPARAMETER", $player, implode(",", $choices));
-                AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Wrench to " . CardLink("fist_pump"));
-                AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-                AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-                AddDecisionQueue("ADDTRIGGER", $player, $char[$j], 1);
-              }
+              AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Wrench&LAYER:subtype=Wrench");
+              AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Wrench to " . CardLink("fist_pump"));
+              AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+              AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+              AddDecisionQueue("ADDTRIGGER", $player, $char[$j], 1);
             }
             break;
           default:
