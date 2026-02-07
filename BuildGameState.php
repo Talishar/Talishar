@@ -958,7 +958,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       sType: $sType,
       gem: $gem,
       label: $label,
-      isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer)));
+      isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer),
+      tapped: $theirAuras[$i+12] == "1"));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -1074,6 +1075,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       gem: $gem,
       label: $label,
       isFrozen: IsFrozenMZ($myAuras, "AURAS", $i, $playerID),
+      tapped: $myAuras[$i + 12] == 1,
     ));
   }
   $response->playerAuras = $myAurasOutput;

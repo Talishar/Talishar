@@ -88,9 +88,10 @@ function CombatChainPieces()
 //9 - Where it's played from
 //10 - Modalities (eg. blessing of themis)
 //11 - Frozen (1 = yes, 0 = no)
+//12 - Tapped (1 = yes, 0 = no)
 function AuraPieces()
 {
-  return 12;
+  return 13;
 }
 
 //0 - Item ID

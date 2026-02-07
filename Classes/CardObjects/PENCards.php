@@ -7682,3 +7682,25 @@ class mind_meets_might_red extends Card {
     }
   }
 }
+
+class seismic_shift_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "seismic_shift_red";
+    $this->controller = $controller;
+  }
+  
+  function PayAdditionalCosts($from, $index = '-') {
+    global $layers;
+    $maxTargets = CountAura("seismic_surge", $this->controller);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "How many " . CardLink("seismic_surge") . "s to tap?");
+    AddDecisionQueue("CHOOSENUMBER", $this->controller, implode(",", range(0,$maxTargets)), 1);
+    AddDecisionQueue("SEISMICSHIFT", $this->controller, $layers[5], 1);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    foreach(explode(",", $target) as $targ) {
+      $Target = CleanTargetToObject($this->controller, $targ);
+      $Target->Destroy();
+    }
+  }
+}

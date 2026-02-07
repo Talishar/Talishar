@@ -155,4 +155,12 @@ class AuraCard {
         $this->pieces[$this->index + $i] = 0;
     }
   }
+
+  function IsTapped() {
+    return $this->pieces[$this->index+12] ?? "-";
+  }
+
+  function Tap($tapState=1, $endStepUntap=false) {
+    Tap("MYAURAS-" . $this->index, $this->controller, $tapState, $endStepUntap);
+  }
 }

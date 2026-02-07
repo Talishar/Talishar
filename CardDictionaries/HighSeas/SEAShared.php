@@ -1190,6 +1190,15 @@ function GetUntapped($player, $zone, $cond="-")
     case "THEIRITEMS":
       $arr = GetItems($otherPlayer);
       $count = ItemPieces();
+      break;
+    case "MYAURAS":
+      $arr = GetAuras($player);
+      $count = AuraPieces();
+      break;
+    case "THEIRAURAS":
+      $arr = GetAuras($otherPlayer);
+      $count = AuraPieces();
+      break;
     default:
       return "";
   }
@@ -1255,7 +1264,7 @@ function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
   
   $zone = &GetMZZone($targetPlayer, $zoneName);
   if (!isset(explode("-", $MZindex)[1])) {
-    WriteLog("Something odd happened, please submit a bug report");
+    WriteLog("Something odd happened with tapping, please submit a bug report: $MZindex", highlight:true);
     return;
   }
   $index = intval(explode("-", $MZindex)[1]);
@@ -1265,12 +1274,14 @@ function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
     elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
     elseif (str_contains($zoneName, "ITEM")) $zone[$index + 10] = $tapState;
+    elseif (str_contains($zoneName, "AURAS")) $zone[$index + 12] = $tapState;
   }
   //Tap
   elseif ($tapState == 1) {
     if (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
     elseif (str_contains($zoneName, "ITEM")) $zone[$index + 10] = $tapState;
+    elseif (str_contains($zoneName, "AURAS")) $zone[$index + 12] = $tapState;
   }
 }
 
@@ -1282,6 +1293,7 @@ function CheckTapped($MZindex, $player): bool
   if (str_contains($zoneName, "CHAR")) return isset($zone[$index + 14]) && $zone[$index + 14] == 1;
   elseif (str_contains($zoneName, "ALLY")) return isset($zone[$index + 11]) && $zone[$index + 11] == 1;
   elseif (str_contains($zoneName, "ITEM")) return isset($zone[$index + 10]) && $zone[$index + 10] == 1;
+  elseif (str_contains($zoneName, "AURAS")) return isset($zone[$index + 12]) && $zone[$index + 12] == 1;
   return false;
 }
 

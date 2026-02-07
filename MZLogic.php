@@ -674,6 +674,8 @@ function MZSwitchPlayer($zoneStr)
 function GetZoneObject($player,  $zone) {
   global $Stack, $CombatChain;
   $otherPlayer = $player == 1 ? 2 : 1;
+  if (str_contains($zone, "UID"))
+    $zone = substr($zone, 0, -3);
   return match($zone) {
     "LAYER" => $Stack,
     "MYDISCARD" => new Discard($player),
@@ -689,6 +691,13 @@ function GetZoneObject($player,  $zone) {
     "THEIRITEMS" => new Items($otherPlayer),
     default => ""
   };
+}
+
+function CleanTargetToObject($player, $cleanTarget) {
+  $targArr = explode("-", $cleanTarget);
+  $zone = GetZoneObject($player, $targArr[0]);
+  $uid = $targArr[1] ?? "-";
+  return $zone->FindCardUID($uid);
 }
 
 function CleanTarget($player, $lastResult) { //converts a target to use unique ids

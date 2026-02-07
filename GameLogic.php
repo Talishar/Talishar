@@ -3883,6 +3883,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $target = CleanTarget($player, $lastResult);
       AddLayer("TRIGGER", $player, "channel_galcias_cradle_blue", $target, "-", $parameter);
       return $lastResult;
+    case "SEISMICSHIFT":
+      $numTargets = intval($lastResult);
+      $search = "THEIRAURAS:isToken=true&MYAURAS:isToken=true";
+      for ($i = 0; $i < $numTargets; ++$i) {
+        $ind = explode(",", GetUntapped($player, "MYAURAS", "isSameName=seismic_surge"))[0];
+        Tap($ind, $player);
+        $nLeft = $numTargets - $i;
+        AddDecisionQueue("MULTITARGETINDICES", $player, $search, 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose up to $nLeft more target(s)", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $player, "seismic_shift_red", 1);
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }
