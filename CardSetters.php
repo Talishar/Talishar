@@ -103,7 +103,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     } else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
-  
+  WriteLog("HERE: $banisher, $cardID, $banishedBy");
   if ($banishedBy != "") CheckContracts($banisher, $cardID);
   $rv = BanishByEffect($cardID, $player, $banishedBy, $rv);
   return $rv;

@@ -4501,7 +4501,7 @@ class descend_into_madness_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    BanishRandom($otherPlayer, $this->cardID);
+    BanishRandom($otherPlayer, $this->cardID, $this->controller);
     Draw($otherPlayer, effectSource:$this->cardID);
   }
 }

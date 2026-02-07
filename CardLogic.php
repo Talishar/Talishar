@@ -4594,7 +4594,7 @@ function PlayerOpt($player, $amount, $optKeyword = true)
   if ($optKeyword && $heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
 }
 
-function BanishRandom($player, $source)
+function BanishRandom($player, $source, $playerSource)
 {
   $hand = &GetHand($player);
   if (count($hand) == 0) return "";
@@ -4602,7 +4602,7 @@ function BanishRandom($player, $source)
   $banished = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
-  BanishCardForPlayer($banished, $player, "HAND");
+  BanishCardForPlayer($banished, $player, "HAND", banishedBy:$source, banisher:$playerSource);
   return $banished;
 }
 
