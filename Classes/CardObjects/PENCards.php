@@ -7562,3 +7562,16 @@ class whispering_mist_blue extends Card {
     return 1;
   }
 }
+
+class glory_plate extends Card {
+  function __construct($controller) {
+    $this->cardID = "glory_plate";
+    $this->controller = $controller;
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index)
+  {
+    global $CS_NumToughnessDestroyed;
+    return GetClassState($this->controller, $CS_NumToughnessDestroyed);
+  }
+}
