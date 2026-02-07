@@ -199,9 +199,11 @@ while (true) {
       WriteLog("Opponent has left the game.");
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");
+      SetCachePiece($gameName, 12, "2"); // Mark opponent as inactive to enable claim victory button
     } else if ($timeSinceOppLastConnection < 3000 && $oppStatus > 0) {
       // Opponent reconnected
       SetCachePiece($gameName, $otherP + 3, "0");
+      SetCachePiece($gameName, 12, "0"); // Reset inactivity status when opponent reconnects
     }
 
     // Handle server timeout (60 seconds of no game updates)
