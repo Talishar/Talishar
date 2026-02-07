@@ -466,11 +466,15 @@ function &GetAurasLocation($player, $location)
 
 function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true)
 {
-  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer;
+  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer, $currentPlayer;
   $auras = &GetAurasLocation($player, $location);
   $isToken = ($location == "EQUIP") ? true : $auras[$index + 4] == 1;
   if ($uniqueID != "") {
     $index = $location == "AURAS" ? SearchAurasForUniqueID($uniqueID, $player) : SearchCharacterForUniqueID($uniqueID, $player);
+  }
+  if ($auras[$index] == "fealty" && SearchCharacterActive($player, "dynastic_diadem") && $player != $currentPlayer) {
+    WriteLog("<b style='color:red;'>🐉My " . CardLink("fealty") . " cannot be quenched!🐉</b>");
+    return;
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";

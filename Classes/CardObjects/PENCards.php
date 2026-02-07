@@ -7740,3 +7740,18 @@ class bone_puppetry extends Card {
     $remove = true;
   }
 }
+
+class dynastic_diadem extends Card {
+  function __construct($controller) {
+    $this->cardID = "dynastic_diadem";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return CountAura("fealty", $this->controller) < 3 ? 0 : 1;
+  }
+}
