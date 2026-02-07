@@ -111,9 +111,10 @@ class rage_baiters extends Card {
 		}
 	}
 
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = "-") {
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = "-", $check = false) {
     if (IsHeroAttackTarget()) {
-			if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+			if (!$check) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+      		return true;
 		}
 		return false;
 	}
@@ -189,9 +190,12 @@ class horrors_of_the_past_yellow extends Card {
 		return true;
 	}
 
-	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
 		$copiedText = explode("-", $parameter)[1] ?? "-";
-		if ($copiedText != "-") AddOnHitTrigger($copiedText, $this->cardID, $target);
+		if ($copiedText != "-") {
+			if (!$check) AddOnHitTrigger($copiedText, $this->cardID, $target);
+			return true;
+		}
 		return false;
 	}
 

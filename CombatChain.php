@@ -2127,9 +2127,18 @@ function IsHighTideActive()
 
 function ActiveOnHits(): bool
 {
-  global $CombatChain;
+  global $CombatChain, $currentTurnEffects, $mainPlayer, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return false;
   if (AddOnHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectsPieces();
+  for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+    if (IsCombatEffectActive($currentTurnEffects[$i])) {
+      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+        if (AddEffectHitTrigger($currentTurnEffects[$i], source:$CombatChain->AttackCard()->ID(), target:$defPlayer, check:true)) return true;
+      }
+    }
+  } 
   return false;
 }
 
