@@ -3908,6 +3908,7 @@ function CharacterNumUsesPerTurn($cardID)
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
     case "mbrio_base_digits":
+    case "farflight_longbow":
       return 999;
     case "voltaire_strike_twice":
     case "barbed_castaway":  

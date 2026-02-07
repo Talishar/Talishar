@@ -7442,3 +7442,30 @@ class templar_spellbane extends Card {
     return $phase == "B";
   }
 }
+
+class farflight_longbow extends Card {
+  function __construct($controller) {
+    $this->cardID = "farflight_longbow";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    CheckTapped("MYCHAR-$index", $this->controller);
+  }
+
+  function EquipPayAdditionalCosts($index = '-') {
+    Tap("MYCHAR-$index", $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    LoadArrow($this->controller);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+}
