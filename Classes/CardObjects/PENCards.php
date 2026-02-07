@@ -7351,6 +7351,35 @@ class gentle_breeze_red extends Card{
   }
 }
 
+class tiger_trap_red extends Card{
+  function __construct($controller) {
+    $this->cardID = "tiger_trap_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    global $ChainLinks, $CombatChain;
+    $numBuffedLinks = 0;
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      if ($Link->TotalAttack() > $Link->ModifiedBaseAttack()) ++$numBuffedLinks;
+    }
+    if (CachedTotalPower() > LinkBasePower()) ++$numBuffedLinks;
+    if ($numBuffedLinks >= 3) AddLayer("TRIGGER", $this->controller, $this->cardID);
+    return;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    TrapTriggered($this->cardID);
+    AddCurrentTurnEffect($this->cardID, $mainPlayer);
+  }
+}
+
 // class temporal_wobble_red extends Card {
 //   function __construct($controller) {
 //     $this->cardID = "temporal_wobble_red";
