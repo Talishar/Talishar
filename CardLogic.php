@@ -4598,8 +4598,9 @@ function PlayerOpt($player, $amount, $optKeyword = true)
   if ($optKeyword && $heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
 }
 
-function BanishRandom($player, $source, $playerSource)
+function BanishRandom($player, $source, $playerSource="-")
 {
+  $playerSource = $playerSource == "-" ? $player : $playerSource;
   $hand = &GetHand($player);
   if (count($hand) == 0) return "";
   $index = GetRandom() % count($hand);
