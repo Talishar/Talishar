@@ -6432,6 +6432,7 @@ class shatter_sorcery_blue extends Card {
       $remove = true;
       return 1;
     }
+    return 0;
   }
 }
 
@@ -8004,5 +8005,80 @@ class high_current_currency_blue extends Card {
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     AddDecisionQueue("ELSE", $this->controller, $this->cardID);
     AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " targeted something without energy counters", 1);
+  }
+}
+
+class stormweavers_aegis extends Card {
+  function __construct($controller) {
+    $this->cardID = "stormweavers_aegis";
+    $this->controller = $controller;
+  }
+  
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from == "CHAR") return false;
+    return SearchCount(SearchMultiZone($this->controller, "MYHAND:type=I")) == 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      if(SearchCount(SearchMultiZone($this->controller, "MYHAND:type=I")) == 0) {
+        WriteLog("No instant card in hand pay the discard cost of " . CardLink($this->cardID, $this->cardID) . ". Reverting the gamestate.", highlight:true);
+        RevertGamestate();
+      }
+      MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller);
+    }
+    else {
+      $CharacterCard = new CharacterCard($index, $this->controller);
+      $CharacterCard->Destroy();
+    }
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "EQUIP") {
+      PutPermanentIntoPlay($this->controller, $this->cardID);
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    else {
+      AddCurrentTurnEffect($this->cardID . "-PREVENT", $this->controller);
+    }
+    return "";
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "-";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->Effect($index);
+    if (!str_contains($Effect->EffectID(), "PREVENT")) return 0;
+    if ($damage >= $Effect->NumUses()) {
+      $remove = true;
+      return $Effect->NumUses();
+    }
+    else {
+      if (!$amount) $Effect->AddUses(-$damage);
+      return $damage;
+    }
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    $Perms = new Permanents($this->controller);
+    for ($i = 0; $i < $Perms->NumPermanents(); ++$i) {
+      $PermCard = $Perms->Card($i, true);
+      if ($PermCard->CardID() == $this->cardID) $PermCard->Destroy();
+    }
+  }
+
+  function DefaultActiveState() {
+    return 0;
   }
 }
