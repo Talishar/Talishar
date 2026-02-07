@@ -584,4 +584,8 @@ class Card {
   function CardCareAboutChiPitch() {
     return false;
   }
+
+  function StaticCostModifier($cardID, $from, $cost) {
+    return 0;
+  }
 }

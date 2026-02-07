@@ -1311,6 +1311,7 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   }
   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
   elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ? $untapPrevented = true : $untapPrevented = false;
+  if (GetMZCard($player, $MZindex) == "havoc_wrap") $untapPrevented = true;
   return $untapPrevented;
 }
 
