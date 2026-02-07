@@ -6173,14 +6173,15 @@ class haboob_red extends Card {
       array_push($powerModifier, -1);
       return -1;
     }
+    return 0;
   }
 
   function StaticPowerModifier($index, &$powerModifiers) { //applies to opponent's cards
-    $this->PowerMod($index, $powerModifiers);
+    return $this->PowerMod($index, $powerModifiers);
   }
 
   function AuraPowerModifiers($index, &$powerModifiers) { //Applies to own cards
-    $this->PowerMod($index, $powerModifiers);
+    return $this->PowerMod($index, $powerModifiers);
   }
 }
 

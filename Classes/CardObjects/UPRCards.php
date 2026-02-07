@@ -1391,17 +1391,23 @@
 // }
 
 
-// class inflame_red extends Card {
+class inflame_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "inflame_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "inflame_red";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $CS_NumRedPlayed;
+    if(GetClassState($this->controller, $CS_NumRedPlayed) > 1) MZMoveCard($this->controller, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND");
+  }
+}
 
 
 // class insidious_chill_blue extends Card {

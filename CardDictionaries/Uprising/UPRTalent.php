@@ -49,9 +49,6 @@
       case "flamecall_awakening_red":
         AddLayer("TRIGGER", $currentPlayer, $cardID);
         return "";
-      case "inflame_red":
-        if(GetClassState($currentPlayer, $CS_NumRedPlayed) > 1) MZMoveCard($currentPlayer, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND");
-        return "";
       case "searing_touch_red":
         if(RuptureActive()) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);

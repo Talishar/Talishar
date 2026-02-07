@@ -3159,9 +3159,11 @@ function IsCardNamed($player, $cardID, $name)
   if (CardName($cardID) == $name) return true;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
+    $givenNames = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
+    $givenNames = explode(",", $givenNames);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
-    if ($name != "" && $currentTurnEffects[$i + 1] == $player) return true;
+    foreach($givenNames as $givenName)
+      if ($name == $givenName && $currentTurnEffects[$i + 1] == $player) return true;
   }
   return false;
 }
