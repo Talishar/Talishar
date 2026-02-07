@@ -4036,10 +4036,12 @@ class rend_flesh_blue extends Card {
     }
   }
   
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
     global $CombatChain;
-    if (IsHeroAttackTarget() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
-      AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT");
+    if (IsHeroAttackTarget() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
     return false;
   }
 }
@@ -6618,9 +6620,11 @@ class smoldering_steel_red extends Card {
     return 1;
   }
 
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-    if (IsHeroAttackTarget())
-      AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+      return true;
+    }
     return false;
   }
 
@@ -6723,8 +6727,11 @@ class sense_weakness_blue extends Card {
     return true;
   }
 
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-    if (IsHeroAttackTarget()) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
     return false;
   }
 

@@ -167,10 +167,10 @@ class blood_follows_blade_yellow extends Card {
     return true;
   }
 
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = "-") {
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = "-", $check = false) {
     global $mainPlayer;
-    AddLayer("TRIGGER", $mainPlayer, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
-    return false;
+    if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+    return true;
   }
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-") {

@@ -1482,7 +1482,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   }
 }
 
-function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
+function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-", $check=false): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
@@ -1492,8 +1492,9 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   $effectID = ExtractCardID($cardID);
   if (class_exists($effectID)) {
     $card = new $effectID($mainPlayer);
-    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID);
+    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, $check);
   }
+  WriteLog($effects[0]);
   switch ($effects[0]) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
@@ -1573,18 +1574,21 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "kassai_of_the_golden_sand":
     case "kassai":
     case "hood_of_red_sand":
-      AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      break;
+      if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      return true;
     case "talk_a_big_game_blue":
     case "lace_with_bloodrot_red":
     case "lace_with_frailty_red":
     case "lace_with_inertia_red":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      break;
+      if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
+      }
+      return false;
     case "just_a_nick_red-HIT":
     case "maul_yellow-HIT":
-      AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      return true;
     case "two_sides_to_the_blade_red-ATTACK":
     case "long_whisker_loyalty_red-MARK":
     case "twist_and_turn_red":
@@ -1596,27 +1600,39 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "sworn_vengeance_red":
     case "sworn_vengeance_yellow":
     case "sworn_vengeance_blue":
-      AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      return true;
     case "searing_gaze_red":
     case "stabbing_pain_red":
-      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        return true;
+      }
+      return false;
     case "gold_baited_hook":
     case "avast_ye_blue":
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
     case "bam_bam_yellow":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        return true;
+      }
+      return false;
     case "drop_the_anchor_red":
-      if ($target == "HERO") AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if ($target == "HERO") {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        return true;
+      }
+      return false;
     case "take_a_stab_red":
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
-      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        return true;
+      }
+      return false;
     case "scar_tissue_red": //should trigger when attacking a hero or flicking at a hero
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
@@ -1627,32 +1643,41 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "spike_with_frailty_red":
     case "spike_with_inertia_red":
     case "mask_of_perdition":
-      if (IsHeroAttackTarget() || $target == $defPlayer) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      break;  
+      if (IsHeroAttackTarget() || $target == $defPlayer) { 
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
+      }
+      return false;
     case "arakni_black_widow-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || IsHeroAttackTarget() && $fromCombat) {
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
       }
-      break;
+      return false;
     case "arakni_funnel_web-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || IsHeroAttackTarget() && $fromCombat) {
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
       }
-      break;
+      return false;
     case "big_game_trophy_shot_yellow":
       if (CardNameContains($combatChain[0], "Harpoon", $mainPlayer, true) && IsHeroAttackTarget()){
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        return true;
       }
-      break;
+      return false;
     case "loot_the_hold_blue":
     case "loot_the_arsenal_blue":
-      if (IsHeroAttackTarget()) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if (IsHeroAttackTarget()) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+        return true;
+      }
+      return false;
     case "legacy_of_ikaru_blue":
-      AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      break;
+      if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
+      return true;
     default:
       break;
   }
