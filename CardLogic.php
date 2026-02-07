@@ -1494,7 +1494,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     $card = new $effectID($mainPlayer);
     return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, $check);
   }
-  WriteLog($effects[0]);
   switch ($effects[0]) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":
