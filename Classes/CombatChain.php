@@ -82,6 +82,11 @@ class ChainCard {
       return $this->chain[$this->index];
     }
 
+    function Become($cardID) {
+      if (isset($this->chain[$this->index]))
+        $this->chain[$this->index] = $cardID;
+    }
+
     function PlayerID() {
       return isset($this->chain[$this->index+1]) ? $this->chain[$this->index+1] : null;
     }

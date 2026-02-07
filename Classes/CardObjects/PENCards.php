@@ -7622,3 +7622,31 @@ class touch_of_reality extends Card {
     return 0;
   }
 }
+
+class lunar_mirage_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "lunar_mirage_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AttackGetsBlockedEffect($start) {
+    global $combatChain, $defPlayer;
+    for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+      if ($combatChain[$i + 1] != $defPlayer) continue;
+      if (ModifiedPowerValue($combatChain[$i], $defPlayer, "CC", "", $i) >=6) {
+        AddLayer("TRIGGER", $this->controller, $combatChain[$i], $combatChain[$i+7], "LUNARMIRAGE");
+      }
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $TargetCard = $CombatChain->FindCardUID($target);
+    $CombatChain->AttackCard()->Become($TargetCard->ID());
+    ReEvalCombatChain();
+  }
+}

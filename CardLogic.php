@@ -2042,6 +2042,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     ProcessWager($parameter, $player, $target, $uniqueID);
     return;
   }
+  elseif ($additionalCosts == "LUNARMIRAGE") {
+    $card = new lunar_mirage_red($player);
+    return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+  }
   else {
     if (class_exists($parameter)) {
       $card = new $parameter($player);
