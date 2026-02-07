@@ -7305,6 +7305,41 @@ class tigrine_reflex_red extends Card {
   }
 }
 
+class wind_cutter extends Card {
+  function __construct($controller) {
+    $this->cardID = "wind_cutter";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer;
+    return HitsInCombatChain() < 2 || $this->controller != $mainPlayer;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:subtype=Shuriken;subtype=Item");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a Shuriken to play", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("PLAYITEM", $this->controller, "<-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Tap();
+  }
+}
+
 // class temporal_wobble_red extends Card {
 //   function __construct($controller) {
 //     $this->cardID = "temporal_wobble_red";

@@ -174,4 +174,8 @@ class CharacterCard {
   function Destroy($skipDestroy = false, $wasBanished = false) {
     DestroyCharacter($this->controller, $this->index, $skipDestroy, $wasBanished);
   }
+
+  function Tap($tapState=1, $endStepUntap=false) {
+    Tap("MYCHAR-" . $this->index, $this->controller, $tapState, $endStepUntap);
+  }
 }
