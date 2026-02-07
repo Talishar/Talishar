@@ -7502,3 +7502,27 @@ class rune_snare_red extends Card {
     return 3;
   }
 }
+
+class sigil_of_gravespawning_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_gravespawning_blue";
+    $this->controller = $controller;
+  }
+
+  function StartTurnAbility($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_NumAuras;
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard != "") $AuraCard->Destroy();
+    }
+    else {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
+      AddDecisionQueue("SPECIFICCARD", $this->controller, "SIGILOFGRAVESPAWNING", 1);
+    }
+  }
+}

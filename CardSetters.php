@@ -811,6 +811,14 @@ function RemoveGraveyard($player, $index, $resetGraveyard=true)
   $cardID = "";
   if (isset($discard[$index])) {
     $cardID = $discard[$index];
+    $count = CountAura("sigil_of_gravespawning_blue", $player);
+    if($count > 0) {
+      for($i = 0; $i < $count; ++$i) {
+        SetArcaneTarget($player, "sigil_of_gravespawning_blue", 0);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $player, "sigil_of_gravespawning_blue", 1);
+      }
+    }
     for ($i = DiscardPieces() - 1; $i >= 0; --$i) {
       unset($discard[$index + $i]);
     }
