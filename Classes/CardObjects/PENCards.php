@@ -7469,3 +7469,36 @@ class farflight_longbow extends Card {
     return 1;
   }
 }
+
+class rune_snare_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rune_snare_red";
+    $this->controller = $controller;
+  }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CS_NumAuras, $mainPlayer;
+    if (GetClassState($mainPlayer, $CS_NumAuras) >= 2) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
+    TrapTriggered($this->cardID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Arrow");
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
