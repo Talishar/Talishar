@@ -1155,17 +1155,36 @@ class alpha_rampage_red extends Card {
 // }
 
 
-// class hope_merchants_hood extends Card {
+class hope_merchants_hood extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "hope_merchants_hood";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "hope_merchants_hood";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("FINDINDICES", $this->controller, "MULTIHAND");
+    AddDecisionQueue("MULTICHOOSEHAND", $this->controller, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
+    AddDecisionQueue("MULTIADDDECK", $this->controller, "-", 1);
+    AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "HOPEMERCHANTHOOD", 1);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+}
 
 
 // class hurricane_technique_yellow extends Card {

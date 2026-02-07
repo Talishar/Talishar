@@ -7575,3 +7575,54 @@ class glory_plate extends Card {
     return GetClassState($this->controller, $CS_NumToughnessDestroyed);
   }
 }
+
+class touch_of_reality extends Card {
+  function __construct($controller) {
+    $this->cardID = "touch_of_reality";
+    $this->controller = $controller;
+  }
+
+  function DynamicCost() {
+    return implode(",", range(0,15));
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Character = new CharacterCard($index, $this->controller);
+    return $Character->Tapped();
+  }
+
+  function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
+    $Character = new CharacterCard($index, $this->controller);
+    $Character->Tap();
+    $Character->SetUsed(2);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID . "-$resourcesPaid", $this->controller);
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardID($this->cardID);
+    $CharacterCard->FlagDestroy();
+  }
+
+  function HasWard() {
+    $ind = SearchCurrentTurnEffectsForIndex($this->cardID, $this->controller);
+    return $ind != -1;
+  }
+
+  function WardAmount($index) {
+    global $currentTurnEffects;
+    $ind = SearchCurrentTurnEffectsForIndex($this->cardID, $this->controller);
+    if ($ind != -1) {
+      return intval(explode("-", $currentTurnEffects[$ind])[1] ?? 0);
+    }
+    return 0;
+  }
+}

@@ -4530,6 +4530,8 @@ function WardAmount($cardID, $player, $index = -1)
 {
   global $mainPlayer;
   $auras = &GetAuras($player);
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->WardAmount($index);
   switch ($cardID) {
     case "empyrean_rapture":
       if (SearchCurrentTurnEffects("empyrean_rapture-1", $player)) return 1;
@@ -4558,6 +4560,8 @@ function WardAmount($cardID, $player, $index = -1)
 
 function HasWard($cardID, $player)
 {
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->HasWard();
   switch ($cardID) {
     case "empyrean_rapture":
       return SearchCurrentTurnEffects("empyrean_rapture-1", $player);

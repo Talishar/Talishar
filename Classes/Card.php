@@ -568,4 +568,12 @@ class Card {
   function HasHightide() {
     return GeneratedHasHightide($this->cardID);
   }
+
+  function WardAmount($index) {
+    return 0;
+  }
+
+  function HasWard() {
+    return GeneratedHasWard($this->cardID);
+  }
 }

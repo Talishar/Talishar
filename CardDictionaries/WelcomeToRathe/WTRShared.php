@@ -31,7 +31,6 @@
       case "dawnblade": return "AA";
       case "braveforge_bracers": return "A";
       case "fyendals_spring_tunic": return "I";
-      case "hope_merchants_hood": return "I";
       case "heartened_cross_strap": return "A";
       case "snapdragon_scalers": return "AR";
       case "goliath_gauntlet": return "A";
@@ -309,14 +308,6 @@
         return "";
       case "fyendals_spring_tunic":
         GainResources($currentPlayer, 1);
-        return "";
-      case "hope_merchants_hood":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHAND");
-        AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "HOPEMERCHANTHOOD", 1);
         return "";
       case "heartened_cross_strap":
         AddCurrentTurnEffect($cardID, $mainPlayer);

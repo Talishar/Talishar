@@ -1072,7 +1072,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "barkbone_strapping":
     case "helm_of_isens_peak":
     case "breaking_scales":
-    case "hope_merchants_hood":
     case "heartened_cross_strap":
     case "goliath_gauntlet":
     case "snapdragon_scalers":
@@ -1526,11 +1525,12 @@ function CharacterTakeDamageAbility($player, $index, $damage, $preventable)
   $char = &GetPlayerCharacter($player);
   $remove = false;
   $preventedDamage = 0;
+  $CharacterCard = new CharacterCard($index, $player);
   if ($damage > 0 && HasWard($char[$index], $player)) {
     if ($preventable) $preventedDamage += WardAmount($char[$index], $player);
     $remove = true;
+    
   }
-  $CharacterCard = new CharacterCard($index, $player);
   switch ($char[$index]) {
     case "shroud_of_darkness":
     case "cloak_of_darkness":

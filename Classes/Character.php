@@ -123,6 +123,11 @@ class CharacterCard {
     return $this->pieces[$this->index+7] ?? 0;
   }
 
+  function FlagDestroy($state=1) {
+    if (isset($this->pieces[$this->index + 7]))
+      $this->pieces[$this->index+7] = $state;
+  }
+
   function Frozen() {
     // 1 = yes, 0 = no
     return $this->pieces[$this->index+8] ?? 0;
