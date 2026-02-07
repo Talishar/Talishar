@@ -7940,3 +7940,32 @@ class havoc_wrap extends Card {
     if ($CharacterCard->Tapped() && $this->controller == $mainPlayer) $CharacterCard->Destroy();
   }
 }
+
+class helm_of_safe_haven extends Card {
+  function __construct($controller) {
+    $this->cardID = "helm_of_safe_haven";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Deck = new Deck($this->controller);
+    $topCard = $Deck->Top();
+    if (RevealCards($topCard)) {
+      if (TypeContains($topCard, "AA")) {
+        if (CanBlock($topCard, "DECK")) {
+          $Deck->Top(true);
+          AddCombatChain($topCard, $this->controller, "DECK", 0, "-", defending:true);
+        }
+        PummelHit($this->controller);
+      }
+    }
+  }
+}
