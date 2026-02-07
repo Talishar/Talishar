@@ -2174,7 +2174,7 @@ function AfterDamage()
 
 function LinkBasePower()
 {
-  global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan;
+  global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan, $ChainLinks;
   if ($CombatChain->HasCurrentLink()) {
     $attackID = $CombatChain->AttackCard()->ID();
     $attackUID = $CombatChain->AttackCard()->UniqueID();
@@ -2186,6 +2186,17 @@ function LinkBasePower()
     $basePower = PowerValue($attackID, $mainPlayer, 'CC', $index, true, true);
     $attackCard = GetClass($attackID, $mainPlayer);
     //substage 2
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      $linkAttack = $Link->GetLinkCard(0)->ID();
+      switch ($linkAttack) {
+        case "gentle_breeze_red":
+          $basePower = 1;
+          break;
+        default:
+          break;
+      }
+    }
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
       if ($card != "-") $basePower = $card->EffectSetBasePower($basePower);

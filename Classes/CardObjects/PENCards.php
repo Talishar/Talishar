@@ -7340,6 +7340,17 @@ class wind_cutter extends Card {
   }
 }
 
+class gentle_breeze_red extends Card{
+  function __construct($controller) {
+    $this->cardID = "gentle_breeze_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
+
 // class temporal_wobble_red extends Card {
 //   function __construct($controller) {
 //     $this->cardID = "temporal_wobble_red";
