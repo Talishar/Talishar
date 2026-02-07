@@ -4011,6 +4011,7 @@ function CharacterDefaultActiveState($cardID)
     case "dead_threads":
     case "voltic_vanguard":
     case "kimono_of_layered_lessons":
+    case "templar_spellbane":
       return 1;
     default:
       return 2;
