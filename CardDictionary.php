@@ -3476,6 +3476,13 @@ function IsStaticType($cardType, $from = "", $cardID = "")
   return false;
 }
 
+function IsActivated($cardID, $from) {
+  $cardType = CardType($cardID, $from);
+  if (IsStaticType($cardType, $from, $cardID)) return true;
+  if (GetAbilityTypes($cardID, -1, $from) == "") return false;
+  else return GetResolvedAbilityType($cardID, $from) != $cardType;
+}
+
 function HasBladeBreak($cardID)
 {
   global $defPlayer, $CID_TekloHead, $CID_TekloChest, $CID_TekloArms, $CID_TekloLegs;
