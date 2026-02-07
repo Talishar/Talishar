@@ -7650,3 +7650,35 @@ class lunar_mirage_red extends Card {
     ReEvalCombatChain();
   }
 }
+
+class mind_meets_might_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mind_meets_might_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    if (RevealHand($defPlayer)) {
+      $num = SearchCount(SearchMultizone($defPlayer, "MYHAND:minAttack=6"));
+      for ($i = 0; $i < $num; ++$i) {
+        $index = explode(",", SearchMultizone($defPlayer, "MYHAND:minAttack=6"))[0];
+        WriteLog("HERE: $index");
+        DiscardCard($defPlayer, explode("-", $index)[1], $this->cardID, $this->controller);
+      }
+      Draw($defPlayer, effectSource:$this->cardID, num:$num);
+    }
+  }
+}

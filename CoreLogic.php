@@ -2068,6 +2068,20 @@ function RevealCards($cards, $player = "", $look=false)
   return true;
 }
 
+function RevealHand($player) {
+  $hand = &GetHand($player);
+  $cards = "";
+  if (empty($hand)) return true;
+  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+    if (isset($hand[$i])) { 
+      if ($cards != "") $cards .= ",";
+      $cards .= $hand[$i];
+    } 
+  }
+  $revealed = RevealCards($cards, $player);
+  return $revealed;
+}
+
 function DoesAttackHaveGoAgain()
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
