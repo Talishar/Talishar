@@ -46,10 +46,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     }
   }
   if ($cardID == "frostbite") {
-    $Character = new PlayerCharacter($player);
-    $Scales = $Character->FindCardID("smoldering_scales");
-    $scaleIndex = $Scales->Index();
     if (SearchCharacterActive($player, "smoldering_scales") && !SearchCurrentTurnEffects("smoldering_scales", $player)) {
+      $Character = new PlayerCharacter($player);
+      $Scales = $Character->FindCardID("smoldering_scales");
+      $scaleIndex = $Scales != "" ? $Scales->Index() : -1;
       $message = "The heat of your " . CardLink("smoldering_scales") . " melts the frostbites!";
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink("smoldering_scales") . "_to_melt_the_frostbites");
       AddDecisionQueue("NOPASS", $player, "-", 1);
