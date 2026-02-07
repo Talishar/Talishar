@@ -570,7 +570,7 @@ class Card {
   }
 
   function WardAmount($index) {
-    return 0;
+    return GeneratedWardAmount($this->cardID);
   }
 
   function HasWard() {
