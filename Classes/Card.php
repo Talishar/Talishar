@@ -118,7 +118,7 @@ class Card {
     return false; //return whether to remove the effect
   }
 
-  function AddEffectHitTrigger($source="-", $fromCombat=true, $target="-", $parameter="-") {
+  function AddEffectHitTrigger($source="-", $fromCombat=true, $target="-", $parameter="-", $check=false) {
     return false;
   }
 
