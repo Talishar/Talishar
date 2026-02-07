@@ -6631,10 +6631,6 @@ class smoldering_scales extends Card {
     $this->cardID = "smoldering_scales";
     $this->controller = $controller;
   }
-
-  function DefaultActiveState() {
-    return 0;
-  }
 }
 
 class recede_to_mistform_blue extends Card {
