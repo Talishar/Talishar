@@ -107,7 +107,7 @@ $gamestateLines = array_merge($gamestateLines, [
   implode(" ", $p2Inventory),
   $p1IsAI,
   $p2IsAI,
-  $AIHasInfiniteHP ? "1" : "0",
+  $AIHasInfiniteHP == "1" ? "1" : "0",
 ]);
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
