@@ -1322,6 +1322,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "SIGILOFGRAVESPAWNING":
       DealArcane(1, $lastResult, "PLAYCARD", "sigil_of_gravespawning_blue");
       break;
+    case "BONEPUPPETRY":
+      $Ally = new AllyCard($lastResult, $player);
+      AddCurrentTurnEffect("bone_puppetry", $player, "", $Ally->UniqueID());
+      break;
     default: return "";
   }
 

@@ -1061,6 +1061,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (isset($params[1])) PlayAura($cardID, $player, $num, effectSource:$effectSource, effectController:$effectController);
       else PlayAura($params[0], $player);
       break;
+    case "PLAYALLY":
+      $params = explode("-", $parameter);
+      $cardID = $params[0];
+      $num = $params[1] ?? 1;
+      $effectSource = $params[2] ?? "-";
+      $effectController = $params[3] ?? "-";
+      return PlayAlly($params[0], $player, number:$num, playerSource:$effectController);
     case "DESTROYALLY":
       DestroyAlly($player, $lastResult);
       break;

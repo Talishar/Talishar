@@ -7704,3 +7704,39 @@ class seismic_shift_red extends Card {
     }
   }
 }
+
+class bone_puppetry extends Card {
+  function __construct($controller) {
+    $this->cardID = "bone_puppetry";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Ally");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Reanimate a fallen ally", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("PLAYALLY", $this->controller, "<-", 1);
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "BONEPUPPETRY", 1);
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    $Effect = new CurrentEffect($i);
+    $Allies = new Allies($this->controller);
+    $Ally = $Allies->FindCardUID($Effect->AppliestoUniqueID());
+    $Ally->Destroy();
+    $hand = GetHand($this->controller);
+    for ($i = count($hand) - 1; $i >=0; --$i) {
+      DiscardCard($this->controller, $i);
+    }
+    $remove = true;
+  }
+}
