@@ -576,4 +576,8 @@ class Card {
   function HasWard() {
     return GeneratedHasWard($this->cardID);
   }
+
+  function HasMirage() {
+    return GeneratedHasMirage($this->cardID);
+  }
 }
