@@ -205,7 +205,8 @@ while (true) {
     }
 
     // Handle server timeout (60 seconds of no game updates)
-    if ($currentTime - $lastUpdateTime > 60000 && $playerInactiveStatus != "1") {
+    $noUpdates = $currentTime - $lastUpdateTime;
+    if ($noUpdates > 60000 && $playerInactiveStatus != "1") {
       SetCachePiece($gameName, 12, "1");
       // Trigger a game state update to reflect inactivity
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
