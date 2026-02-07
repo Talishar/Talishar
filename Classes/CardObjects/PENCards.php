@@ -7411,7 +7411,7 @@ class temporal_wobble_red extends Card {
       // low priority to fix
       GainActionPoints(1, $TargetLayer->PlayerID());
       if (CardCost($TargetLayer->ID(), "LAYER") <= $cost)
-        $TargetLayer->Negate();
+        $TargetLayer->Negate("GY");
     }
   }
 }
