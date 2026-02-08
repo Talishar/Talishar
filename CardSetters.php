@@ -109,14 +109,14 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
 }
 
 function BanishByEffect($cardID, $player, $banisher, &$rv) {
-  global $mainPlayer, $CombatChain;
+  global $mainPlayer, $CombatChain, $ChainLinks;
 
   $otherPlayer = $player == 1 ? 2 : 1;
   $banish = GetBanish($player);
   // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
   // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
   $extraText = GetHorrorsBuff();
-  $attackCard = $CombatChain->AttackCard()->ID();
+  $attackCard = IsResolutionStep() ? $ChainLinks->LastLink()->AttackCard()->ID() : $CombatChain->AttackCard()->ID();
   $banishEffects = [$banisher];
   if ($banisher == $attackCard) array_push($banishEffects, $extraText);
 

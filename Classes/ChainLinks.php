@@ -64,6 +64,10 @@ class ChainLink {
 		return new LinkCard($this->linkNum, $index);
 	}
 
+	function AttackCard() {
+		return $this->GetLinkCard(0);
+	}
+
 	function DamageDealt() {
 		return $this->linkSummary[0] ?? 0;
 	}
