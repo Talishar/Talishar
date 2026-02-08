@@ -54,7 +54,7 @@ function CombatDummyAI()
 if (!function_exists('IsPlayerAI')) {
 	function IsPlayerAI($playerID) {
 		global $p2IsAI;
-		if($playerID == 2 && $p2IsAI == "1") return true;
+		if($playerID == 2 && ($p2IsAI == "1" || !isset($p2IsAI))) return true;
 		return false;
 	}
 }
