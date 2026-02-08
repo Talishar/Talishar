@@ -2666,8 +2666,10 @@ function BeginEndPhaseEffectTriggers()
     $defChar[1] = 2;
   }
   $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
-  if (!IsImmuneToBloodDebt($mainPlayer) && $numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
+  
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card != "-") $card->CurrentEffectBeginEndPhaseAbility($i);
     switch ($currentTurnEffects[$i]) {
       case "seek_and_destroy_red-1": 
         AddLayer("TRIGGER", $defPlayer, "seek_and_destroy_red", $currentTurnEffects[$i + 1], "-", "-");
@@ -2682,6 +2684,7 @@ function BeginEndPhaseEffectTriggers()
         break;
     }
   }
+  if (!IsImmuneToBloodDebt($mainPlayer) && $numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
 }
 
 function ActivateAbilityEffects()

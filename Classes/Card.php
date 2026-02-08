@@ -588,4 +588,8 @@ class Card {
   function StaticCostModifier($cardID, $from, $cost) {
     return 0;
   }
+
+  function CurrentEffectBeginEndPhaseAbility($i) {
+    return ;
+  }
 }

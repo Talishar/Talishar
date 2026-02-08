@@ -7235,7 +7235,7 @@ class lobotomy_red extends Card {
     $HeroCard->Sleep();
   }
 
-  function CurrentEffectEndTurnAbilities($i, &$remove) {
+  function CurrentEffectBeginEndPhaseAbility($i) {
     $HeroCard = new CharacterCard(0, $this->controller);
     $HeroCard->Sleep(wake:true);
     $remove = true;
