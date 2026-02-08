@@ -253,10 +253,8 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "barbed_castaway":
-        $abilityName = GetResolvedAbilityName($cardID);
-        SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $currentPlayer, true);
-        if($abilityName == "Load") LoadArrow($currentPlayer);
-        else if($abilityName == "Aim") {
+        if($additionalCosts == "Load") LoadArrow($currentPlayer);
+        else if($additionalCosts == "Aim") {
           if(ArsenalHasArrowCardFacing($currentPlayer, "DOWN")) {
             SetArsenalFacing("UP", $currentPlayer);
             $arsenal = &GetArsenal($currentPlayer);

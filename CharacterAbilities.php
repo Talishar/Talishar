@@ -1088,6 +1088,12 @@ function EquipPayAdditionalCosts($cardIndex)
     case "nitro_mechanoida":
       --$character[$cardIndex + 2];
       break;
+    case "barbed_castaway":
+      $abilityName = GetResolvedAbilityName($cardID);
+      SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $currentPlayer, true);
+      --$character[$cardIndex + 5];
+      SetClassState($currentPlayer, $CS_AdditionalCosts, $abilityName);
+      break;
     case "barkbone_strapping":
     case "helm_of_isens_peak":
     case "breaking_scales":
