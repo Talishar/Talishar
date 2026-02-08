@@ -274,6 +274,7 @@ function StartTurnAbilities()
   $defCharacter = &GetPlayerCharacter($defPlayer);
   if($mainCharacter[13]) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns
   if($defCharacter[13]) AddCurrentTurnEffect("marked", $defPlayer); //Marked stays between turns
+  CurrentEffectStartTurnAbilities();
   for ($i = count($mainCharacter) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
     CharacterStartTurnAbility($i);
   }
@@ -282,7 +283,6 @@ function StartTurnAbilities()
   AuraStartTurnAbilities();
   AllyStartTurnAbilities($mainPlayer); 
   LandmarkStartTurnAbilities();
-  CurrentEffectStartTurnAbilities();
 
   $mainItems = &GetItems($mainPlayer);
   for ($i = count($mainItems) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
