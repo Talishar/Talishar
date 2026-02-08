@@ -210,7 +210,7 @@ while (true) {
     $noUpdates = $currentTime - $lastUpdateTime;
     // Re-read cache piece 12 to avoid race condition with external updates
     $playerInactiveStatus = GetCachePiece($gameName, 12);
-    if ($noUpdates > 60000 && $playerInactiveStatus != "1") {
+    if ($noUpdates > 60000 && $playerInactiveStatus == "0") {
       SetCachePiece($gameName, 12, "1");
       // Trigger a game state update to reflect inactivity
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
