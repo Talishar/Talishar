@@ -7176,7 +7176,9 @@ class seeker_kunai_red extends Card {
 
   function DiscardStartTurnTrigger($index) {
     if (CountItem("silver", $this->controller) >= 2) {
-      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_recur_" . CardLink($this->cardID));
+      AddDecisionQueue("COUNTITEM", $this->controller, "silver");
+      AddDecisionQueue("LESSTHANPASS", $this->controller, "2");
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_recur_" . CardLink($this->cardID), 1);
       AddDecisionQueue("NOPASS", $this->controller, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-2", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
