@@ -24,6 +24,7 @@ class Deck {
   }
 
   function Remove($indices) {
+    if ($indices == "") return "";
     $indexArr = explode(",", $indices);
     $cardIDs = "";
     for($i=count($indexArr)-1; $i>= 0; --$i) {

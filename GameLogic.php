@@ -700,6 +700,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = array_values($arsenal);
       return $cardToReturn;
     case "MULTIADDHAND":
+      if ($lastResult == "") return "";
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
       $log = "";
@@ -716,6 +717,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIREMOVEHAND":
       $cards = "";
       $hand = &GetHand($player);
+      if ($lastResult == "") return "";
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for ($i = 0; $i < count($lastResult); ++$i) {
         if ($cards != "") $cards .= ",";
