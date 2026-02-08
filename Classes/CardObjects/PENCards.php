@@ -3673,7 +3673,6 @@ class become_the_bottle extends BaseCard {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card for the bottle to become", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $this->controller, "BOTTLE", 1);
     }
   }

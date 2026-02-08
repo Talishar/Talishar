@@ -1298,6 +1298,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $Character->Become(explode("-", $lastResult)[1] ?? $Character->CardID());
       return $lastResult;
     case "BOTTLE":
+      $attackID = $CombatChain->AttackCard()->ID();
       $params = explode("-", $lastResult);
       $linkNum = $params[2] ?? "-";
       $ind = $params[1] ?? "-";
@@ -1306,7 +1307,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $LinkCard = $Link->GetLinkCard($ind);
         if ($ind == 0) $names = $Link->ListofNames();
         else $names = GamestateSanitize(NameOverride($LinkCard->ID(), $player));
-        AddCurrentTurnEffect("become_the_bottle_red-$names", $player);
+        WriteLog(CardLink($attackID) . " . gains the name(s) " . GamestateUnsanitize($names));
+        AddCurrentTurnEffect("$attackID-$names", $player);
       }
       return $lastResult;
     case "BECOMETHECUP":
