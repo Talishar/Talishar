@@ -197,9 +197,9 @@ while (true) {
     } else if ($timeSinceOppLastConnection > 60000 && $oppStatus == 1) {
       // Opponent confirmed left (more than 60 seconds since last activity)
       WriteLog("Opponent has left the game.");
-      GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "2");
       SetCachePiece($gameName, 12, "1"); // Mark opponent as inactive to enable claim victory button
+      GamestateUpdated($gameName);
     } else if ($timeSinceOppLastConnection < 3000 && $oppStatus > 0) {
       // Opponent reconnected
       SetCachePiece($gameName, $otherP + 3, "0");
