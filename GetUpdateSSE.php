@@ -198,7 +198,7 @@ while (true) {
       // Opponent confirmed left (more than 60 seconds since last activity)
       WriteLog("Opponent has left the game.");
       SetCachePiece($gameName, $otherP + 3, "2");
-      SetCachePiece($gameName, 12, "1"); // Mark opponent as inactive to enable claim victory button
+      SetCachePiece($gameName, 12, "2"); // Mark opponent as inactive to enable claim victory button
       GamestateUpdated($gameName);
     } else if ($timeSinceOppLastConnection < 3000 && $oppStatus > 0) {
       // Opponent reconnected
@@ -211,7 +211,7 @@ while (true) {
     // Re-read cache piece 12 to avoid race condition with external updates
     $playerInactiveStatus = GetCachePiece($gameName, 12);
     if ($noUpdates > 60000 && $playerInactiveStatus == "0") {
-      SetCachePiece($gameName, 12, "1");
+      SetCachePiece($gameName, 12, "2");
       // Trigger a game state update to reflect inactivity
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
       if (!is_string($gameState)) {
