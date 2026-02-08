@@ -40,22 +40,42 @@ The decision queue has 4 primary arguments:
 What ties decision queues together is the `$lastResult` variable, which will always store whatever the previous decision returned.  
 For example, if I run `AddDecisionQueue("FINDINDICES", $this->controller, "ARSENAL");` this will return indices that point out all cards in a players arsenal. If I follow this up with `AddDecisionQueue("MAYCHOOSEARSENAL", $this->controller, "<-", 1);`, the player is given the optional ability to choose a card from the list returned . the "<-" parameter is a special parameter that is replaced by the value of `$lastResult`. If we follow this with `AddDecisionQueue("REMOVEARSENAL", $this->controller, "-", 1);`, the choice from the last decisionqueue is stored as the $lastResult, and gets passed to the REMOVEARSENAL command which then removes the chosen arsenalled card. Because this command has `$subsequent` set to 1, if the player declined the previous MAYCHOOSEARSENAL, this decision queue (and all subsequent queues) will be skipped.
 
+Notably DQs are at their core _ASYNCHRONOUS_ which means that if you have a block of DQs followed by a block of regular code, the DQs will be executed *after* all regular code. If you want to execute a block of regular code after a DQ, then you need to put that code inside a DQ command, commonly by extending the SPECIFICCARD DQ command. See the function SpecificCardLogic for many such examples.
+
+DQs effectively only take in 2 arguments, the `$lastResult` and `$parameter`. DQ commands that use multiple commands will store them within the `$parameter` string, separated by some delimiter, usually "," and "-", but we haven't been the most consistent about which delimiter to use.
+
 ### Common DQ Commands
-TODO
 #### MULTIZONEINDICES
+A DQ command that wraps the SearchMultizone function. This is used to search for objects that match certain parameters. It returns a comma separated list (string) of MultiZone Indices which can then be used as `$lastResult` in a subsequent DQ. See the Search Syntax section for documentation on how to search.
 #### (MAY)CHOOSEMULTIZONE
+A DQ command that takes in a comma separated list of MultiZone indices and presents them to the player to choose one. It returns the MultiZone Index of the chosen object. MAYCHOOSEMULTIZONE will allow the player to pass on the decision.
 #### SETDQCONTEXT
+When a DQ shows up offering a decision, there will be a text box to describe what action the player is taking. By calling SETDQCONTEXT before such a DQ, it will set the text box to whatever parameter is passed to SETDQCONTEXT.
 #### MZREMOVE
+Takes in a MultiZone Index, clears the object from its location, and returns the `$cardID` of the object. This will NOT put the object into the graveyard, you need to follow it up with a DQ such as ADDDISCARD to put the object in its new zone.
 #### SETLAYERTARGET
+Takes in a MultiZone Index and assigns it as the target to the topmost layer on the stack that has the same `$cardID` as the parameter. In most cases it will automatically convert the target to a unique identifier. This command has a lot of spaghetti in it right now, but you probably won't need to tangle with its inner workings much.
 #### ELSE
+Used to encode conditional logic with only DQs. If you add an ELSE DQ (with the `$subsequent` argument set to false) after a DQ block, then if at any point in the DQ block a PASS was returned, such as by players declining a MAYCHOOSEMULTIZONE, a DQ block after ELSE will be executed. If PASS is never returned by the above block, the below block will be skipped.
+#### SPECIFICCARD
+Used to execute regular code after a DQ, typically for cards with specific logic that they are the only card that uses. The parameter is a string that identifies which card's logic to use.
+#### PASSPARAMETER
+Takes in the `$parameter` argument and returns it unchanged as the `$lastResult` for the next DQ.
+
+## MultiZone Indices
+A common way to reference cards is with a a MultiZone Index (MZIndex). These indices are formated as a location followed by either an index in that location or a unique id. MZIndices are always *relative* to a player. So MYCHAR-0 for player 1 will refer to player1's hero, and THEIRCHAR-0 will refer to their opponents. Any zone that can be owned by a player has both a "MY" and a "THEIR" version. If the MZIndex will be used immediately after being identified, directly using the index is fine. If there is a priority window between the MZIndex being generated and being used, it is important to convert it to use a unique ID instead of a numerical index. You can convert between the two formats with `CleanTarget` and `CleanTargetToIndex`.
 
 ## Generated Code
 A large part of the process of coding new cards is handled automatically by the script zzCardCodeGenerator.php. This script pulls down a json dataset from fabcube and automatically populates a card's stats, types, subtypes, color, cost, name, and many keywords such as blade break, go again, and arcane barrier. Most of the time you won't need to code any of these.
 
 Note: sometimes a card is simple enough that every part of it gets automatically generated. In these cases, we still recommend creating an object that only has the `__construct` method defined. When a player loads a deck, it will check for each card in their deck if the card has been implemented by checking if it has a name generated by zzCardCodeGenerator.php and if a class exists for it. This check is only done for cards from unreleased sets.
 
-## MultiZone Indices
-A common way to reference cards is with a a MultiZone Index (MZIndex). These indices are formated as a location followed by either an index in that location or a unique id. MZIndices are always *relative* to a player. So MYCHAR-0 for player 1 will refer to player1's hero, and THEIRCHAR-0 will refer to their opponents. Any zone that can be owned by a player has both a "MY" and a "THEIR" version. If the MZIndex will be used immediately after being identified, directly using the index is fine. If there is a priority window between the MZIndex being generated and being used, it is important to convert it to use a unique ID instead of a numerical index. You can convert between the two formats with `CleanTarget` and `CleanTargetToIndex`.
+## Searching
+Most Searching is done with the `SearchMultizone` function (or equivalently MULTIZONEINDICES for DQs), and this function's argument has its own syntax to learn.
+
+example: `"MYDISCARD:cost<2;type=AA&THEIRDISCARD:cost<2;type=AA"`. This search will find all attack action cards in either players' graveyard with cost less than 2.
+
+All searches start with a zone to search, encoded the same as the zone in a MultiZone index. Conditions on searches in this zone can be added after a ":", and you can encode multiple conditions that must all be satisfied in that zone by separating them with a ";". An "&" can connect an additional search, and the results of all searches will be appended together.
 
 ### Zones
 - CHAR
