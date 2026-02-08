@@ -7952,7 +7952,6 @@ class havoc_wrap extends Card {
 
   function StartTurnAbility($index) {
     global $mainPlayer;
-    WriteLog("HERE!!!!!");
     $CharacterCard = new CharacterCard($index, $this->controller);
     if ($CharacterCard->Tapped() && $this->controller == $mainPlayer) $CharacterCard->Destroy();
   }

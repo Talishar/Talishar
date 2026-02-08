@@ -405,7 +405,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack;
   
   for ($player = 1; $player < 3; ++$player) {
     $health = &GetHealth($player);
@@ -425,7 +425,8 @@ function ContinueDecisionQueue($lastResult = "")
     }
     if (count($decisionQueue) == 0 && count($layers) > 0) {
       $priorityHeld = 0;
-      if ($mainPlayer == 1) {
+      $prioPlayer = $Stack->CountTrueLayers() > 0 ? $currentPlayer : $mainPlayer;
+      if ($prioPlayer == 1) {
         if (ShouldHoldPriorityNow(1)) {
           AddDecisionQueue("INSTANT", 1, "-");
           $priorityHeld = 1;

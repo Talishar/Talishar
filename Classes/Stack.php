@@ -72,6 +72,14 @@ class Stack {
   function NumLayers() {
     return intdiv(count($this->layers), LayerPieces());
   }
+
+  function CountTrueLayers() {
+    $count = 0;
+    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+      if (!isPriorityStep($this->layers[$i])) ++$count;
+    }
+    return $count;
+  }
 }
 
 class Layer {
