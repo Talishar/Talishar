@@ -467,9 +467,14 @@
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
           case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
-          case "cheating_scoundrel_red":
             if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
             RemoveCurrentTurnEffect($i);
+            break;
+          case "cheating_scoundrel_red":
+            if (IsCombatEffectActive($currentTurnEffects[$i])) {
+              if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
+              RemoveCurrentTurnEffect($i);
+            }
             break;
           default:
             $hasWager = false;

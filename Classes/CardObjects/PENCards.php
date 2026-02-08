@@ -7116,7 +7116,6 @@ class cheating_scoundrel_red extends Card {
     $this->controller = $controller;
   }
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddOnWagerEffects();
     AddCurrentTurnEffect($this->cardID, $this->controller);
     AddCurrentTurnEffect($this->cardID . "-WAGER", $this->controller);
   }
