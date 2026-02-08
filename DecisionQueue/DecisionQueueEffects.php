@@ -1071,7 +1071,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "AERONOUGHT":
       global $chainLinks;
       $type = CardType($lastResult);
-      //AddGraveyard($lastResult, $defPlayer, "CC", $player);
       $ind = -1;
       for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
         if ($combatChain[$i] == $lastResult) $ind = $i;
@@ -1098,8 +1097,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       //current chain link
       else {
-        $targetCard = $combatChain[$ind];
-        if (TypeContains($targetCard, "E")) {
+        $TargetCard = $CombatChain->Card($ind);
+        $targetCard = $TargetCard->ID();
+        if (TypeContains($targetCard, "E") && $TargetCard->From() == "EQUIP") {
           $defChar = GetPlayerCharacter($defPlayer);
           for ($i = 0; $i < count($defChar); $i += CharacterPieces()) {
             if ($defChar[$i + 11] == $combatChain[$ind + 8]) {
