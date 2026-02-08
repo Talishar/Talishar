@@ -2646,13 +2646,13 @@ function HaveUnblockedEquip($player)
   return false;
 }
 
-function NumEquipBlock()
+function NumEquipBlock($from="-")
 {
   global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredEquipmentBlock;
   $numEquipBlock = 0;
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     $Card = new ChainCard($i);
-    if ($Card->From() != "EQUIP") continue;
+    if ($from != "-" && $Card->From() != $from) continue;
     if (DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i + 1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] < 1) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
     else if (TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i + 1] == $defPlayer) ++$numEquipBlock;
   }
@@ -2692,7 +2692,7 @@ function NumNegCounterEquipBlock()
 function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
-  if ($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock() < $combatChainState[$CCS_RequiredEquipmentBlock]) {
+  if ($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock("EQUIP") < $combatChainState[$CCS_RequiredEquipmentBlock]) {
     return false;
   }
   if ($phase == "B" && HaveUnblockedNegCounterEquip($currentPlayer) && NumNegCounterEquipBlock() < $combatChainState[$CCS_RequiredNegCounterEquipmentBlock]) {
