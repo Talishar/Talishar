@@ -2401,6 +2401,10 @@ class mbrio_base_walkers extends Card {
     $this->cardID = "mbrio_base_walkers";
     $this->controller = $controller;
   }
+
+  function DefaultActiveState() {
+    return 0;
+  }
 }
 
 class blast_rig_red extends Card
