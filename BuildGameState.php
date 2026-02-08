@@ -1357,7 +1357,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         break;
       default:
         $currentPlayerActivity = intval(GetCachePiece($gameName, 12));
-        if ($currentPlayerActivity == 1 && $playerID != 3) {
+        if ($currentPlayerActivity == 2 && $playerID != 3) {
           $helpText .= " — Opponent is inactive";
           array_push($promptButtons, CreateButtonAPI($playerID, "Leave Game", 100007, 0, "16px"));
         }

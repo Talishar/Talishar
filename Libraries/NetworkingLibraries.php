@@ -877,7 +877,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation) return;
-      if ($currentPlayerActivity == 2) {
+      // Check cache piece 12 directly, as $currentPlayerActivity from gamestate may be stale
+      if (intval(GetCachePiece($gameName, 12)) == 2) {
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
         $otherPlayer = $playerID == 1 ? 2 : 1;
