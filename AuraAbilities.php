@@ -46,40 +46,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     }
   }
   if ($cardID == "frostbite") {
-    if (SearchCharacterActive($player, "smoldering_scales") && !SearchCurrentTurnEffects("smoldering_scales", $player)) {
-      $Character = new PlayerCharacter($player);
-      $Scales = $Character->FindCardID("smoldering_scales");
-      $scaleIndex = $Scales != "" ? $Scales->Index() : -1;
-      $message = "The heat of your " . CardLink("smoldering_scales") . " melts the frostbites!";
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink("smoldering_scales") . "_to_melt_the_frostbites");
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$scaleIndex", 1);
-      AddDecisionQueue("MZDESTROY", $player, "-", 1);
-      AddDecisionQueue("WRITELOG", $player, $message, 1);
-      AddDecisionQueue("ELSE", $player, "-");
-      // track whether to skip this check next time
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "smoldering_scales", 1);
-      AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
+    if (Smoldering($player, "smoldering_scales", number:$number, effectSource:$effectSource, effectController:$effectController))
       return;
-    }
-    $steelIndex = SearchDiscardForCard($player, "smoldering_steel_red");
-    if ($steelIndex != "" && !SearchCurrentTurnEffects("smoldering_steel_red", $player)) {
-      $index = explode(",", $steelIndex)[0];
-      $message = "The heat of your " . CardLink("smoldering_steel_red") . " melts the frostbites!";
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_banish_" . CardLink("smoldering_steel_red") . "_to_melt_the_frostbites");
-      AddDecisionQueue("NOPASS", $player, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $player, "MYDISCARD-$index", 1);
-      AddDecisionQueue("MZBANISH", $player, "-", 1);
-      AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("WRITELOG", $player, $message, 1);
-      //need to remove this if its there
-      AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales", 1);
-      AddDecisionQueue("ELSE", $player, "-");
-      // track whether to skip this check next time
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "smoldering_steel_red", 1);
-      AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
+    if (Smoldering($player, "smoldering_steel_red", number:$number, effectSource:$effectSource, effectController:$effectController))
       return;
-    }
     SearchCurrentTurnEffects("smoldering_scales", $player, true);
     SearchCurrentTurnEffects("smoldering_steel_red", $player, true);
   }

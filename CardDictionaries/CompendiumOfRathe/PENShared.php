@@ -108,3 +108,51 @@ function IcelochActive($player) {
   if (SearchAura($player, frozenOnly:true) != "") return true;
   return false;
 }
+
+function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource="", $effectController="", $slot="") {
+  switch ($cardID) {
+    case "smoldering_scales":
+      $Character = new PlayerCharacter($player);
+      $Scales = $Character->FindCardID($cardID);
+      $scaleIndex = $Scales != "" ? $Scales->Index() : -1;
+      if (!SearchCharacterActive($player, $cardID) || SearchCurrentTurnEffects($cardID, $player))
+        return false;
+      break;
+    case "smoldering_steel_red":
+      $steelIndex = SearchDiscardForCard($player, $cardID);
+      $index = explode(",", $steelIndex)[0];
+      if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red", $player))
+        return false;
+      break;
+    default:
+      return false;
+  }
+  $message = "The heat of your " . CardLink($cardID) . " melts the frostbites!";
+  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID) . "_to_melt_the_frostbites");
+  AddDecisionQueue("NOPASS", $player, "-", 1);
+  switch ($cardID) {
+    case "smoldering_scales":
+      AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$scaleIndex", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+      break;
+    case "smoldering_steel_red":
+      AddDecisionQueue("PASSPARAMETER", $player, "MYDISCARD-$index", 1);
+      AddDecisionQueue("MZBANISH", $player, "-", 1);
+      AddDecisionQueue("MZREMOVE", $player, "-", 1);
+      //need to remove this if its there, always call smoldering steel replacement last
+      //add more REMOVECURRENTTURNEFFECT if we get more smoldering effects
+      AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales", 1);
+      break;
+    default:
+      break;
+  }
+  AddDecisionQueue("WRITELOG", $player, $message, 1);
+  AddDecisionQueue("ELSE", $player, "-");
+  // track whether to skip this check next time
+  AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
+  if ($zone == "AURAS")
+    AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
+  elseif ($zone == "EQUIP")
+    AddDecisionQueue("EQUIPCARD", $player, "frostbite-$slot", 1);
+  return true;
+}

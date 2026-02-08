@@ -807,6 +807,14 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
       return;
     }
   }
+  if ($cardID == "frostbite") {
+    if (Smoldering($player, "smoldering_scales", "EQUIP", slot:$slot))
+      return;
+    if (Smoldering($player, "smoldering_steel_red", "EQUIP", slot:$slot))
+      return;
+    SearchCurrentTurnEffects("smoldering_scales", $player, true);
+    SearchCurrentTurnEffects("smoldering_steel_red", $player, true);
+  }
   $char = &GetPlayerCharacter($player);
   $uniqueID = GetUniqueId($cardID, $player);
   $replaced = 0;
