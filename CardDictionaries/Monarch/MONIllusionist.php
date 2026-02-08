@@ -209,3 +209,20 @@
     Draw($player);
     if($arsenal[$index+3] == 3) MentorTrigger($player, $index);
   }
+
+  function MercifulTriggers($player, $cardID) {
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    if (SubtypeContains($cardID, "Aura") || TypeContains($cardID, "AA")) {
+      $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $player));
+      if ($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
+        AddGraveyard($cardID, $player, "COMBATCHAIN");
+        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+        $grave = GetDiscard($player);
+        $uid = $grave[count($grave) - DiscardPieces() + 1];
+      }
+
+      for ($i = 0; $i < $numMercifulRetribution; ++$i) {
+        AddLayer("TRIGGER", $player, "merciful_retribution_yellow", additionalCosts: $uid);
+      }
+    }
+  }

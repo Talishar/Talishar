@@ -2382,12 +2382,14 @@ function DestroyCurrentWeapon()
 
 function BlockCardDestroyed($cardID, $player)
 {
+  global $defPlayer;
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->BlockCardDestroyed();
   switch ($cardID) {
     default:
       break;
   }
+  MercifulTriggers($defPlayer, $cardID);
 }
 
 function AttackDestroyed($attackID)
@@ -2422,18 +2424,7 @@ function AttackDestroyed($attackID)
   }
   AttackDestroyedEffects($attackID);
   CharacterAttackDestroyedAbilities($attackID);
-  $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $mainPlayer));
-  if ($numMercifulRetribution > 0 && TalentContains($attackID, "LIGHT", $mainPlayer)) {
-    AddGraveyard($attackID, $mainPlayer, "COMBATCHAIN");
-    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-    $grave = GetDiscard($mainPlayer);
-    $uid = $grave[count($grave) - DiscardPieces() + 1];
-  }
-
-  for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-    AddLayer("TRIGGER", $mainPlayer, "merciful_retribution_yellow", additionalCosts: $uid);
-    // AddDecisionQueue("ADDTRIGGER", $mainPlayer, "merciful_retribution_yellow," . $attackID, 1);
-  }
+  MercifulTriggers($mainPlayer, $attackID);
 }
 
 function AttackDestroyedEffects($attackID)
