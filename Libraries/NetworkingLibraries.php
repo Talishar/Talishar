@@ -877,13 +877,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation) return;
-      if ($currentPlayerActivity == 2) {
-        include_once "./includes/dbh.inc.php";
-        include_once "./includes/functions.inc.php";
-        $otherPlayer = $playerID == 1 ? 2 : 1;
-        if (!IsGameOver()) PlayerWon($playerID);
-        WriteLog("🚩The opponent forfeit due to inactivity.");
-      }
+      // WriteLog("JERE: $currentPlayerActivity");
+      // if ($currentPlayerActivity == 1) {
+      include_once "./includes/dbh.inc.php";
+      include_once "./includes/functions.inc.php";
+      $otherPlayer = $playerID == 1 ? 2 : 1;
+      if (!IsGameOver()) PlayerWon($playerID);
+      WriteLog("🚩The opponent forfeit due to inactivity.");
+      // }
       break;
     case 100010: //Grant badge
       if ($isSimulation) return;
