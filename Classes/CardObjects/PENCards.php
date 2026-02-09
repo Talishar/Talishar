@@ -2700,7 +2700,7 @@ class distant_rumbling extends BaseCard {
     if ($additionalCosts == "DESTROY") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
-      $AuraCard->Destroy();
+      if ($AuraCard != "") $AuraCard->Destroy();
       PlayAura("seismic_surge", $this->controller, $target);
     }
     else {
@@ -3389,7 +3389,7 @@ class rites_of_earthlore extends BaseCard {
     if ($additionalCosts == "DESTROY") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
-      $AuraCard->Destroy();
+      if ($AuraCard != "") $AuraCard->Destroy();
       AddCurrentTurnEffect($this->cardID, $this->controller);
     }
   }
