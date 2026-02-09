@@ -1727,7 +1727,7 @@ class sigil_of_fate extends Card {
     if ($additionalCosts == "DESTROY") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardUID($uniqueID);
-      if ($AuraCard != "") $AuraCard->Destroy();
+      $AuraCard->Destroy();
     }
     else {
       PlayerOpt($this->controller, 1);

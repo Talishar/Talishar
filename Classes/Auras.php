@@ -23,7 +23,8 @@ class Auras {
     for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
       if ($this->auras[$i + 6] == $uid) return new AuraCard($i, $this->player);
     }
-    return "";
+    // return a null object AuraCard that has all the methods, but they do nothing
+    return new AuraCard(-1, $this->player);
   }
 
   function SearchAurasForModality($mode) {
@@ -43,7 +44,8 @@ class Auras {
     for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
       if ($this->auras[$i] == $cardID) return new AuraCard($i, $this->player);
     }
-    return "";
+    // return a null object AuraCard that has all the methods, but they do nothing
+    return new AuraCard(-1, $this->player);
   }
 }
 
@@ -55,7 +57,8 @@ class AuraCard {
 
   // Constructor
   function __construct($index, $player) {
-    $this->pieces = &GetAuras($player);
+    if ($index != -1) $this->pieces = &GetAuras($player);
+    else $this->pieces = [];
     $this->index = $index;
 		$this->controller = $player;
   }
@@ -132,11 +135,13 @@ class AuraCard {
   }
 
 	function Remove($skipTrigger = false, $skipClose = false, $mainPhase = true, $destinationUID = "-") { //don't call this for removing auras in the equipment
-		return RemoveAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase, $destinationUID);
+		if ($this->index != -1)
+      return RemoveAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase, $destinationUID);
 	}
 
 	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true) { //don't call this for removing auras in the equipment
-    return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase);
+    if ($this->index != -1)
+      return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase);
 	}
 
   function GetModalities() {
@@ -144,9 +149,11 @@ class AuraCard {
   }
 
   function AddModality($mode) {
-    if ($this->pieces[$this->index+10] == "-")
-      $this->pieces[$this->index+10] = $mode;
-    else $this->pieces[$this->index+10] .= ",$mode";
+    if (isset($this->pieces[$this->index+10])) {
+      if ($this->pieces[$this->index+10] == "-")
+        $this->pieces[$this->index+10] = $mode;
+      else $this->pieces[$this->index+10] .= ",$mode";
+    }
   }
 
   function RemoveAllCounters() {
@@ -161,6 +168,7 @@ class AuraCard {
   }
 
   function Tap($tapState=1, $endStepUntap=false) {
-    Tap("MYAURAS-" . $this->index, $this->controller, $tapState, $endStepUntap);
+    if ($this->index != -1)
+      Tap("MYAURAS-" . $this->index, $this->controller, $tapState, $endStepUntap);
   }
 }
