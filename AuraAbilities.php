@@ -163,6 +163,9 @@ function CreatesAuraForOpponent($cardID)
     "wither_red" => true,
     "wither_yellow" => true,
     "wither_blue" => true,
+    "codex_of_frailty_yellow" => true,
+    "codex_of_bloodrot_yellow" => true,
+    "codex_of_inertia_yellow" => true,
     default => false
   };
 }
