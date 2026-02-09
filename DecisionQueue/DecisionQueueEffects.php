@@ -202,10 +202,13 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             AddCurrentTurnEffect("fabricate_red", $player);
             break;
           case "Put_this_under_an_Evo_permanent":
-            AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Evo");
-            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-            AddDecisionQueue("MZOP", $player, "ADDSUBCARD,fabricate_red", 1);
-            $GoesToGraveyard = false;
+            $indices = SearchMultizone($player, "MYCHAR:subtype=Evo");
+            if ($indices != "") {
+              AddDecisionQueue("PASSPARAMETER", $player, $indices);
+              AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+              AddDecisionQueue("MZOP", $player, "ADDSUBCARD,fabricate_red", 1);
+              $GoesToGraveyard = false;
+            }
             break;
           case "Banish_an_Evo_and_draw_a_card":
             MZChooseAndBanish($player, "MYHAND:subtype=Evo", "HAND,-", may:true);
