@@ -2126,7 +2126,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       AddCurrentTurnEffect("lightning_greaves", $currentPlayer, "", $cardID);
     }
     $hero = GetPlayerCharacter($currentPlayer)[0];
-    if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && IsCharacterActive($currentPlayer, 0)) {
+    $HeroCard = new CharacterCard(0, $currentPlayer);
+    if ($cardID == "goldkiss_rum" && $hero == "scurv_stowaway" && $HeroCard->Status() == 2) {
       AddLayer("TRIGGER", $currentPlayer, $hero);
     }
     $activeAttackID = $CombatChain->HasCurrentLink() ? $CombatChain->AttackCard()->ID() : "";
