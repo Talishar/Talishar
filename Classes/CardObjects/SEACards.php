@@ -3023,17 +3023,45 @@ class blue_fin_harpoon_blue extends GoFishCard {
 // }
 
 
-// class tit_for_tat_blue extends Card {
+class tit_for_tat_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "tit_for_tat_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "tit_for_tat_blue";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targetArr = explode(",", $target);
+    $tapTarg = CleanTargetToIndex($this->controller, $targetArr[0]);
+    $untapTarg = CleanTargetToIndex($this->controller, $targetArr[1]);
+    WriteLog("HERE: $untapTarg");
+    Tap($tapTarg, $this->controller);
+    Tap($untapTarg, $this->controller, 0);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if (ShouldAutotargetOpponent($this->controller)) {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "THEIRCHAR-0");
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYCHAR-0", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+    else {
+      $messages = ["Choose a hero to tap (no effect on an tapped hero)", "Choose a hero to untap (no effect on an untapped hero)"];
+      $search = "MYCHAR:type=C&THEIRCHAR:type=C";
+      for ($i = 0; $i < 2; ++$i) {
+        AddDecisionQueue("MULTITARGETINDICES", $this->controller, $search, 1);
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, $messages[$i], 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+      }
+    }
+  }
+}
 
 
 // class tough_old_wrench_red extends Card {

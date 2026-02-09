@@ -27,11 +27,14 @@ class hala_bladesaint_of_the_vow extends Card {
 	function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
 		Tap("MYCHAR-$index", $this->controller);
 		$search = "MYCHAR:subtype=Sword";
-		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen");
 		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen", 1);
 		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
 		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->AddUse();
+		$CharacterCard->SetUsed(2);
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
