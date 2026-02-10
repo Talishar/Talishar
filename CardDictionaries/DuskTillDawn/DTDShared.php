@@ -584,11 +584,12 @@ function DoesAttackTriggerMirage()
 
 function ProcessMirageOnBlock($index)
 {
-  global $defPlayer;
-  if(IsMirageActive($index) && DoesAttackTriggerMirage() && (SearchLayersForCardID("MIRAGE") == -1))
+  global $defPlayer, $Stack;
+  if(IsMirageActive($index) && DoesAttackTriggerMirage())
   {
     $ChainCard = new ChainCard($index);
-    AddLayer("TRIGGER", $defPlayer, "MIRAGE", $ChainCard->UniqueID());
+    $notAlreadyTriggered = $Stack->FindLayer("TRIGGER", $defPlayer, target:$ChainCard->UniqueID()) == "";
+    if ($notAlreadyTriggered) AddLayer("TRIGGER", $defPlayer, "MIRAGE", $ChainCard->UniqueID());
   }
 }
 

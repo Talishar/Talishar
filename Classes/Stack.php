@@ -62,11 +62,24 @@ class Stack {
   }
 
   function FindTrigger($cardID) {
-	if ($this->StackEmpty()) return "";
+    if ($this->StackEmpty()) return "";
     for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
-      if ($this->layers[$i] == "TRIGGER" && $this->layers[$i+2]) return new Layer($i);
+      if ($this->layers[$i] == "TRIGGER" && $this->layers[$i+2] == $cardID) return new Layer($i);
     }
     return "";
+  }
+
+  function FindLayer($cardID, $player="-", $parameter="-", $target="-") {
+    if ($this->StackEmpty()) return "";
+    $rv = [];
+    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+      if ($this->layers[$i] != $cardID) continue;
+      if ($player != "-" && $this->layers[$i + 1] != $player) continue;
+      if ($parameter != "-" && $this->layers[$i + 2] != $parameter) continue;
+      if ($target != "-" && $this->layers[$i + 3] != $target) continue;
+      array_push($rv, $i);
+    }
+    return implode(",", $rv);
   }
 
   function NumLayers() {
