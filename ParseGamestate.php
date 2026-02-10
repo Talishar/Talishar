@@ -460,7 +460,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 }
 
 function SaveReplay() {
-  return true;
+  return !IsDevEnvironment();
 }
 
 function MakeStartTurnBackup()
