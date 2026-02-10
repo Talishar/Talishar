@@ -386,8 +386,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRDISCARD-" . $index, 1);
         AddDecisionQueue("MZADDZONE", $currentPlayer, "THEIRBANISH,GY,-,$cardID,$currentPlayer", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST097_inner_chi_blue," . $from);
       }
+      if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST097_inner_chi_blue," . $from);
       return "";
     case "path_well_traveled_blue":
       if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) GiveAttackGoAgain();
