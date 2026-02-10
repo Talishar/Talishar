@@ -2638,9 +2638,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (GetClassState($player, $CS_DamageTaken) > 0) MZMoveCard($player, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", may: true);
         break;
       case "flamecall_awakening_red":
-        if (GetClassState($player, $CS_NumRedPlayed) > 1 && CanRevealCards($player)) {
-          MZMoveCard($player, "MYDECK:isSameName=phoenix_flame_red", "MYHAND", may: true);
-          AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        if (GetClassState($player, $CS_NumRedPlayed) > 1) {
+          MaySearchDeck($player, "isSameName=phoenix_flame_red", "MYHAND");
         }
         return "";
       case "insidious_chill_blue":
@@ -3843,16 +3842,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         FrostBiteExposed($otherPlayer, $player);
         break;
       case "unforgetting_unforgiving_red":
-        if(!IsAllyAttacking() && SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
-          $search = "MYDECK:cardID=mangle_red";
-          $fromMod = "Deck,NT"; //pull it out of the deck, playable "Next Turn"
-          AddDecisionQueue("YESNO", $player, "if_you_want_to_search_for_a_".CardLink("mangle_red", "mangle_red") ."_and_banish_it");
-          AddDecisionQueue("NOPASS", $player, "-");
-          AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-          AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
-          AddDecisionQueue("MZREMOVE", $player, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        if(SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
+          $search = "isSameName=mangle_red";
+          $mod = "NT"; //playable "Next Turn"
+          MaySearchDeck($player, $search, "MYBANISH", 0, $mod);
         }
         break;
       case "crumble_to_eternity_blue":

@@ -3414,6 +3414,42 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("🚫Proto Equipments not found in your inventory");
         return "PASS";
       } else return $equipments;
+    case "MAYSEARCHDECK":
+      if ($lastResult == "Search") {
+        $paramArr = explode(",", $parameter);
+        $search = $paramArr[0] ?? "-";
+        $dest = $paramArr[1] ?? "MYHAND";
+        $isReveal = isset($paramArr[2]) ? ($paramArr == 1) : true;
+        $mod = $paramArr[3] ?? "-";
+        switch($dest) {
+          case "MYHAND":
+            $isReveal = isset($paramArr[2]) ? ($paramArr == 1) : true;
+            MZMoveCard($player, "MYDECK:$search", $dest, may:true, isReveal:$isReveal);
+            break;
+          case "MYBANISH":
+            AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:$search", 1);
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+            AddDecisionQueue("MZBANISH", $player, "Deck,$mod", 1);
+            AddDecisionQueue("MZREMOVE", $player, "-", 1);
+            break;
+          case "TOPDECK":
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:$search", 1);
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+            if ($isReveal) AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
+            AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
+            AddDecisionQueue("ELSE", $player, "-");
+            AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+            return $lastResult;
+          default:
+            break;
+        }
+        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+        AddDecisionQueue("ELSE", $player, "-");
+        AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+      }
+      return $lastResult;
     case "VISITTHEGOLDENANVIL":
       $equipments = "";
       $char = &GetPlayerCharacter($currentPlayer);

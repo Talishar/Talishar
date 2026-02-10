@@ -816,13 +816,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
         if ($foundAreact) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:type=DR", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-          AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
-          if (!$foundDreact) {
+          if ($foundDreact) MaySearchDeck($currentPlayer, "type=DR", "TOPDECK");
+          else {
             AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
             AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You have no defense reactions to search for.", 1);

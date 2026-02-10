@@ -930,3 +930,10 @@ function IsAltCard($cardID)
   }
   return false;
 }
+
+function MaySearchDeck($player, $search, $dest, $isReveal=1, $mod="-") {
+  if ($isReveal & !CanRevealCards($player)) return false;
+  AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search");
+  AddDecisionQueue("MAYSEARCHDECK", $player, "$search,$dest,$isReveal,$mod", 1);
+  return true;
+}
