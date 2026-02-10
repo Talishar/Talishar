@@ -446,7 +446,9 @@
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
-    if(SearchCurrentTurnEffects("double_down_red", $wonWager)) $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
+    if(SearchCurrentTurnEffects("double_down_red", $wonWager)) {
+      $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
+    }
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = $chainClosed ? false : true;
       if(isset($currentTurnEffects[$i])) {
@@ -467,12 +469,19 @@
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
           case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
-            if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
+            for($j = 0; $j < $amount; ++$j) {
+              if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
+            }
             RemoveCurrentTurnEffect($i);
             break;
           case "cheating_scoundrel_red":
+            for($j = 0; $j < $amount; ++$j) {
+              if (IsCombatEffectActive($currentTurnEffects[$i])) {
+                if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
+        
+              }
+            }
             if (IsCombatEffectActive($currentTurnEffects[$i])) {
-              if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
               RemoveCurrentTurnEffect($i);
             }
             break;
