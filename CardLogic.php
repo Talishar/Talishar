@@ -2586,8 +2586,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($deck->Reveal()) {
           $cardID = $deck->Top(true);
           if (ModifiedPowerValue($cardID, $player, "DECK", source: "pack_call_yellow") < 6) {
-            $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-            WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+            $deck->AddBottom($cardID, "DECK");
+            WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($cardID, $cardID) . " on the bottom of your deck");
           }
           else $deck->AddTop($cardID); // the card gets "put" on top
         }
@@ -3376,9 +3376,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "pack_call_red":
       case "pack_call_blue":
         $deck = new Deck($player);
-        if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: $parameter) < 6) {
-          $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-          WriteLog(CardLink($parameter, $parameter) . " put " . CardLink($card, $card) . " on the bottom of your deck");
+        if ($deck->Reveal()) {
+          $cardID = $deck->Top(true);
+          if (ModifiedPowerValue($cardID, $player, "DECK", source: "pack_call_yellow") < 6) {
+            $deck->AddBottom($cardID, "DECK");
+            WriteLog(CardLink($parameter, $parameter) . " put " . CardLink($cardID, $cardID) . " on the bottom of your deck");
+          }
+          else $deck->AddTop($cardID); // the card gets "put" on top
         }
         break;
       case "stonewall_impasse":
