@@ -3221,10 +3221,18 @@ class pound_of_flesh_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    MZChooseAndBanish($this->controller, "MYHAND", "HAND,-");
-    AddDecisionQueue("POUNDOFFLESHCHOICE", $this->controller, "<-", 1);
-    MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
-    AddDecisionQueue("POUNDOFFLESHCHOICE", $otherPlayer, "<-", 1);
+    $myHand = GetHand($this->controller);
+    if (count($myHand) > 0) {
+      MZChooseAndBanish($this->controller, "MYHAND", "HAND,-");
+      AddDecisionQueue("POUNDOFFLESHCHOICE", $this->controller, "<-", 1);
+    }
+    else PlayerLoseHealth(1, $this->controller);
+    $theirHand = GetHand($otherPlayer);
+    if (count($theirHand) > 0) {
+      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
+      AddDecisionQueue("POUNDOFFLESHCHOICE", $otherPlayer, "<-", 1);
+    }
+    else PlayerLoseHealth(1, $otherPlayer);
   }
 }
 
