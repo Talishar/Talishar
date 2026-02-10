@@ -86,10 +86,10 @@ class Stack {
     return intdiv(count($this->layers), LayerPieces());
   }
 
-  function CountTrueLayers() {
+  function CountPlayedLayers() {
     $count = 0;
     for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
-      if (!isPriorityStep($this->layers[$i])) ++$count;
+      if (!isPriorityStep($this->layers[$i]) && $this->layers[$i] != "TRIGGER") ++$count;
     }
     return $count;
   }
