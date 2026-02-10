@@ -6044,6 +6044,10 @@ class helm_of_might_and_magic extends Card {
     $this->cardID = "helm_of_might_and_magic";
     $this->controller = $controller;
   }
+
+  function DefaultActiveState() {
+    return 0;
+  }
 }
 
 class serpents_kiss_blue extends Card {
