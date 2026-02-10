@@ -563,6 +563,7 @@
           AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
         }
+        if ($specificCardDQ == "SOWINGTHORNS") AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search", 1);
         AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
       }
       else WriteLog("Insufficient cards to decompose");

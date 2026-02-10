@@ -933,7 +933,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PlayAura("embodiment_of_earth", $player);
       return $lastResult;
     case "SOWINGTHORNS":
-      if (CanRevealCards($player)) {
+      if (CanRevealCards($player) && $lastResult == "Search") {
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:talent=EARTH;subtype=Aura");
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an earth aura to put on top of deck", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
