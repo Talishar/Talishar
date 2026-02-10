@@ -244,15 +244,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "pearl_amulet_blue":
       if($from == "PLAY") {
-        $indsChar = explode(",", GetTapped($currentPlayer, "MYCHAR"));  
-        $indsItems = explode(",", GetTapped($currentPlayer, "MYITEMS"));  
-        $indsAllies = explode(",", GetTapped($currentPlayer, "MYALLY"));  
-        $inds = CombineSearches(implode(",", $indsChar), implode(",", $indsItems));
-        $inds = CombineSearches($inds, implode(",", $indsAllies));
-        if(empty($inds)) break; 
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Untap a permanent", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
-        AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
+        $targ = CleanTargetToIndex($currentPlayer, $target);
+        Tap($targ, $currentPlayer, 0);
       }    
       break;
     case "platinum_amulet_blue":
@@ -1256,7 +1249,7 @@ function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
   }
   $index = intval(explode("-", $MZindex)[1]);
   //Untap
-  if($tapState == 0 && !isUntappedPrevented($MZindex, $zoneName, $targetPlayer)) {
+  if($tapState == 0 && !isUntappedPrevented($MZindex, $zoneName, $targetPlayer, $endStepUntap)) {
     if($endStepUntap && $zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1 && SearchCharacterAlive($player, $zone[$index])) DestroyCharacter($player, $index);
     elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
@@ -1284,7 +1277,7 @@ function CheckTapped($MZindex, $player): bool
   return false;
 }
 
-function isUntappedPrevented($MZindex, $zoneName, $player): bool
+function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false): bool
 {
   $untapPrevented = false;
   $zoneName = explode("-", $MZindex)[0];
@@ -1298,7 +1291,7 @@ function isUntappedPrevented($MZindex, $zoneName, $player): bool
   }
   if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
   elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ? $untapPrevented = true : $untapPrevented = false;
-  if (GetMZCard($player, $MZindex) == "havoc_wrap") $untapPrevented = true;
+  if (GetMZCard($player, $MZindex) == "havoc_wrap" && $endStepUntap) $untapPrevented = true;
   return $untapPrevented;
 }
 

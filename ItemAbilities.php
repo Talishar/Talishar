@@ -129,12 +129,24 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "amethyst_amulet_blue":
     case "onyx_amulet_blue":
     case "opal_amulet_blue":
-    case "pearl_amulet_blue":
     case "platinum_amulet_blue":
     case "pounamu_amulet_blue":
     case "ruby_amulet_blue":
     case "sapphire_amulet_blue":
       DestroyItemForPlayer($currentPlayer, $index);
+      break;
+    case "pearl_amulet_blue":
+      DestroyItemForPlayer($currentPlayer, $index);
+      $indsChar = explode(",", GetTapped($currentPlayer, "MYCHAR"));  
+      $indsItems = explode(",", GetTapped($currentPlayer, "MYITEMS"));  
+      $indsAllies = explode(",", GetTapped($currentPlayer, "MYALLY"));  
+      $inds = CombineSearches(implode(",", $indsChar), implode(",", $indsItems));
+      $inds = CombineSearches($inds, implode(",", $indsAllies));
+      if(empty($inds)) break; 
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Untap a permanent", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "amulet_of_echoes_blue":
       DestroyItemForPlayer($currentPlayer, $index);
