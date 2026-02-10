@@ -270,7 +270,7 @@ enum MetafyCommunity : string
         "oasis_respite_red=ANQ035-T", "oldhim=PEN345-T", "premeditate_red=ANQ022-T", "prism=PEN343-T", "pummel_red=ANQ032-T", "ravenous_rabble_red=ANQ029-T", "remembrance_yellow=ANQ026-T", 
         "rhinar=PEN334-T", "ripple_away_blue=ANQ014-T", "riptide=PEN341-T", "rusted_relic_blue=ANQ023-T", "scar_for_a_scar_red=ANQ030-T", "seduce_secrets_yellow=ANQ027-T", 
         "sigil_of_gravespawning_blue=PEN098-T", "sigil_of_solace_red=ANQ036-T", "sink_below_red=ANQ034-T", "snatch_red=ANQ031-T", "teklovossen=PEN339-T", "tenacity_yellow=ANQ015-T", 
-        "that_all_you_got_yellow=ANQ018-T", "the_weakest_link_red=ANQ016-T", "this_rounds_on_me_blue=ANQ024-T", "truce_blue=ANQ025-T"
+        "that_all_you_got_yellow=ANQ018-T", "the_weakest_link_red=ANQ016-T", "this_rounds_on_me_blue=ANQ024-T", "truce_blue=ANQ025-T", "stir_the_wildwood_red=FAB047-T"
     ];
     return $altArts;
   }
