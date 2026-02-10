@@ -3034,7 +3034,6 @@ class tit_for_tat_blue extends Card {
     $targetArr = explode(",", $target);
     $tapTarg = CleanTargetToIndex($this->controller, $targetArr[0]);
     $untapTarg = CleanTargetToIndex($this->controller, $targetArr[1]);
-    WriteLog("HERE: $untapTarg");
     Tap($tapTarg, $this->controller);
     Tap($untapTarg, $this->controller, 0);
     return "";
