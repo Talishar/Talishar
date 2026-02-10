@@ -819,7 +819,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "kyloria":
     case "nekria":
     case "vynserakai":
-    case "phoenix_form_red":
     case "engulfing_flamewave_red":
     case "engulfing_flamewave_yellow":
     case "engulfing_flamewave_blue":
@@ -959,6 +958,12 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "bittering_thorns_blue":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "phoenix_form_red":
+      if(IsHeroAttackTarget() && NumChainLinksWithName("Phoenix Flame") >= 3) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      return false;
     case "dawnblade":
       //checking whether dawnblade *will* trigger is a little trickier
       if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 2) {
