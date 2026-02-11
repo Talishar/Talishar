@@ -588,7 +588,8 @@ function ProcessMirageOnBlock($index)
   if(IsMirageActive($index) && DoesAttackTriggerMirage())
   {
     $ChainCard = new ChainCard($index);
-    $notAlreadyTriggered = $Stack->FindLayer("TRIGGER", $defPlayer, target:$ChainCard->UniqueID()) == "";
+    $notAlreadyTriggered = $Stack->FindLayer("PRETRIGGER", $defPlayer, target:$ChainCard->UniqueID()) == "";
+    $notAlreadyTriggered = $notAlreadyTriggered && $Stack->FindLayer("TRIGGER", $defPlayer, target:$ChainCard->UniqueID()) == "";
     if ($notAlreadyTriggered) AddLayer("TRIGGER", $defPlayer, "MIRAGE", $ChainCard->UniqueID());
   }
 }
