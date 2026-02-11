@@ -777,6 +777,7 @@ function CleanTargetToIndex($player, $target) {
   $uid = $targetArr[1];
   if (str_contains($zone, "UID")) $zone = substr($zone, 0, -3);
   $Zone = GetZoneObject($player, $zone);
+  if ($Zone == "") return  "";
   $Card = $Zone->FindCardUID($uid);
   if ($Card == "") return "";
   return "$zone-" . $Card->Index();
