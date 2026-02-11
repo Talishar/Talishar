@@ -477,7 +477,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
 {
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects, $CS_NumBluePlayed, $CS_NumRedPlayed;
-  global $combatChainState, $CCS_LinkBasePower, $ChainLinks, $Stack;
+  global $combatChainState, $CCS_LinkBasePower, $ChainLinks, $Stack, $CS_HealthGained;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch($params[0])
@@ -934,7 +934,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "SOWINGTHORNS":
       if (CanRevealCards($player) && $lastResult == "Search") {
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:talent=EARTH;subtype=Aura");
+        $lifeGained = GetClassState($player, $CS_HealthGained);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:talent=EARTH;subtype=Aura;maxCost=$lifeGained");
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose an earth aura to put on top of deck", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
