@@ -39,10 +39,8 @@
         Draw($mainPlayer, num:2);
         break;
       case "herald_of_judgment_yellow":
-        if(IsHeroAttackTarget()) {
-          AddCurrentTurnEffect($cardID, $defPlayer);
-          AddNextTurnEffect($cardID, $defPlayer);
-        }
+        AddCurrentTurnEffect($cardID, $defPlayer);
+        AddNextTurnEffect($cardID, $defPlayer);
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
         AddSoul($cardID, $mainPlayer, "CC");
