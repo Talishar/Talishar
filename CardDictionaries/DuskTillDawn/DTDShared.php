@@ -619,7 +619,7 @@ function MirageLayer($target)
   if(DoesAttackTriggerMirage())
   {
     $ChainCard = $CombatChain->FindCardUID($target);
-    if($ChainCard != "" & IsMirageActive($ChainCard->Index())) {
+    if($ChainCard != "" && IsMirageActive($ChainCard->Index())) {
       $cardID = $ChainCard->Remove();
       BlockCardDestroyed($cardID, $defPlayer);
       AddGraveyard($cardID, $defPlayer, "CC");
