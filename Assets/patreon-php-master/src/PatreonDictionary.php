@@ -591,7 +591,7 @@ enum PatreonCampaign : string
           "trot_along_blue=FAB327-T", "truce_blue=ROS219-T", "tuffnut=SUP002-T", "tuffnut_bumbling_hulkster=SUP001-T", "turning_point_blue=GEM086-T",
           "twelve_petal_kasaya=MST048-T", "twinning_blade_yellow=CRU082-T", "unmovable_red=FAB306-T", "uplifting_performance_blue=LGS419-T", "ursur_the_soul_reaper=FAB022-T",
           "vantom_banshee_red=LGS157-T", "vantom_banshee_yellow=LGS158-T",
-          "vantom_banshee_blue=LGS159-T", "verdance=ROS414-T", "verdance_thorn_of_the_rose=ROS413-T", "vexing_malice_red=LGS057-T", "vexing_malice_yellow=LGS058-T",
+          "vantom_banshee_blue=LGS159-T", "vexing_malice_red=LGS057-T", "vexing_malice_yellow=LGS058-T",
           "vexing_malice_blue=LGS059-T", "victoria_archangel_of_triumph=DTD411-T",
           "vigor=FAB288-T", "villainous_pose_red=GEM097-T", "voltic_bolt_red=LGS016-T", "voltic_bolt_yellow=LGS042-T",
           "voltic_bolt_blue=LGS043-T", "vynserakai=UPR416-T", "wage_gold_red=FAB196-T", "wage_gold_yellow=FAB197-T", "wage_gold_blue=FAB198-T",
