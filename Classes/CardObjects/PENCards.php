@@ -5202,14 +5202,13 @@ class sowing_thorns_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $Discard = new Discard($this->controller);
     $Discard->RemoveTop(); //don't let them decompose itself
+    GainHealth(1, $this->controller);
     Decompose($this->controller, "SOWINGTHORNS");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
     AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
-    AddDecisionQueue("GAINLIFE", $this->controller, "1", 1);
     AddDecisionQueue("ELSE", $this->controller, "-"); //do this if you decline decompose
     AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
     AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
-    AddDecisionQueue("GAINLIFE", $this->controller, "1", 1);
   }
 }
 

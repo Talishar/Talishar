@@ -934,14 +934,16 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "SOWINGTHORNS":
       if (CanRevealCards($player) && $lastResult == "Search") {
-        $lifeGained = GetClassState($player, $CS_HealthGained);
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:talent=EARTH;subtype=Aura;maxCost=$lifeGained");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose an earth aura to put on top of deck", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $player, "-");
-        AddDecisionQueue("REVEALCARDS", $player, "-", 1);
-        AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
+        $maxCost = GetClassState($player, $CS_HealthGained) - 1;
+        if ($maxCost > -1) {
+          AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:talent=EARTH;subtype=Aura;maxCost=$maxCost");
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an earth aura to put on top of deck", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $player, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $player, "-");
+          AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+          AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);
+        }
       }
       return $lastResult;
     case "CADAVEROUSTILLING":
