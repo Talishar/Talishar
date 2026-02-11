@@ -732,7 +732,7 @@ class predatory_plating extends Card {
       $ChainLink = $ChainLinks->GetLink($i);
       for ($j = 0; $j < $ChainLink->NumCards(); ++$j) {
         $Card = $ChainLink->GetLinkCard($j, true);
-        $power = $Card->PowerModifier() + ModifiedPowerValue($Card->ID(), $Card->PlayerID(), "CC", "-", $Card->Index());
+        $power = $ChainLink->TotalAttack();
         if ($Card->PlayerID() == $this->controller && $power >= 6) return false;
       }
     }
