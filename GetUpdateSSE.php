@@ -82,16 +82,6 @@ header('Cache-Control: no-cache');
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 
-// Track spectators so spectatorCount is accurate
-if ($playerID == 3) {
-  // Track spectators
-  $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-  $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-  $sessionKey = md5($clientIp . '|' . $userAgent);
-  $spectatorUsername = $sessionData['userName'];
-  TrackSpectator($gameName, $sessionKey, $spectatorUsername);
-}
-
 ob_start();
 
 // Send initial full game state
@@ -119,8 +109,6 @@ $fileCheckInterval = 30.0;
 $gameFileExists = true;
 $lastConnectionCheck = microtime(true);
 $connectionCheckInterval = 2.0;
-$lastSpectatorTrackTime = microtime(true);
-$spectatorTrackInterval = 25.0;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -129,15 +117,6 @@ while (true) {
   if ($currentRealTime - $lastConnectionCheck >= $connectionCheckInterval) {
     if (connection_aborted()) exit;
     $lastConnectionCheck = $currentRealTime;
-  }
-
-  if (!$isGamePlayer && $currentRealTime - $lastSpectatorTrackTime >= $spectatorTrackInterval) {
-    $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-    $sessionKey = md5($clientIp . '|' . $userAgent);
-    $spectatorUsername = $sessionData['userName'];
-    TrackSpectator($gameName, $sessionKey, $spectatorUsername);
-    $lastSpectatorTrackTime = $currentRealTime;
   }
 
   // Check if game file still exists
