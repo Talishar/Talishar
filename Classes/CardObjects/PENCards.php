@@ -1968,6 +1968,10 @@ class emboldened_by_the_crowd_yellow extends Card {
     global $CS_CheeredThisTurn;
     return GetClassState($this->controller, $CS_CheeredThisTurn) > 0 ? -3 : 0;
   }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 }
 
 class hulk_up extends BaseCard {
