@@ -37,6 +37,20 @@ class ChainLinks {
 		}
 		return implode(",", $found);
   }
+
+	function RemoveOriginUID($uid) {
+		for ($i = 0; $i < $this->NumLinks(); ++$i) {
+			$Link = $this->GetLink($i);
+			for ($j = 0; $j < $Link->NumCards(); ++$j) {
+				$Card = $Link->GetLinkCard($j, true);
+				if ($Card->OriginUniqueID() == $uid) {
+					$Card->Remove();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
 
 class ChainLink {
