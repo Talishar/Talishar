@@ -2381,7 +2381,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "merciful_retribution_yellow":
-        DealArcane(1, 0, "STATIC", $parameter, false, $player);
+        DealArcane(1, 0, "STATIC", $parameter, false, $player, resolvedTarget:$target);
         $index = SearchDiscardForUniqueID($additionalCosts, $player);
         if ($additionalCosts != "-" && $index != -1) {
           $graveyard = GetDiscard($player);

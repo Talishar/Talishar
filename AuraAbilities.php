@@ -235,7 +235,8 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   else $uid = "-";
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
     if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from " . CardLink("merciful_retribution_yellow", "merciful_retribution_yellow") . " because it is a token copy</span>");
-    AddLayer("TRIGGER", $player, "merciful_retribution_yellow", additionalCosts: $uid);
+    SetArcaneTarget($player, "merciful_retribution_yellow", 0);
+    AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
   }
   if (HasWard($cardID, $player) && !$isToken) WardPoppedAbility($player, $cardID);
   if (CardType($cardID) == "T" || $isToken) return;//Don't need to add to anywhere if it's a token

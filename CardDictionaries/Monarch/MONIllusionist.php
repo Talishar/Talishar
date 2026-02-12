@@ -220,7 +220,8 @@
       }
 
       for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-        AddLayer("TRIGGER", $player, "merciful_retribution_yellow", additionalCosts: $uid);
+        SetArcaneTarget($player, "merciful_retribution_yellow", 0);
+        AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
       }
     }
   }
