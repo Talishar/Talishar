@@ -1689,7 +1689,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
   $countTheirAuras = count($theirAuras);
   for ($i = 0; $i < $countTheirAuras; $i += $aurasPieces) {
     $card = GetClass($theirAuras[$i], $otherPlayer);
-    if ($card != "-") $modifier += $card->StaticPowerModifier($i, $powerModifiers);
+    if ($card != "-") $modifier += $card->StaticPowerModifier($index, $powerModifiers);
     switch ($theirAuras[$i]) {
       case "parable_of_humility_yellow":
         if (CardType($CombatChain->CurrentAttack()) == "AA") {
