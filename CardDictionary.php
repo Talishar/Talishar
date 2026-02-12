@@ -1311,14 +1311,15 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
   };
 }
 
-function NameBlocked($cardID, $index, $from, $pitch=false) {
+function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   global $mainPlayer, $defPlayer;
-  $foundNullTime = SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "null_time_zone_blue") != -1;
+  $cardName = $nameGiven ? $cardID : NameOverride($cardID);
+  $foundNullTime = SearchItemForModalities(GamestateSanitize($cardName), $mainPlayer, "null_time_zone_blue") != -1;
+  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize($cardName), $defPlayer, "null_time_zone_blue") != -1;
   $foundNullTime = $foundNullTime && $from == "HAND";
 
-  $foundSpeechless = SearchAuraForModalities(GamestateSanitize(NameOverride($cardID)), $mainPlayer, "leave_em_speechless_blue") != -1;
-  $foundSpeechless = $foundSpeechless || SearchAuraForModalities(GamestateSanitize(NameOverride($cardID)), $defPlayer, "leave_em_speechless_blue") != -1;
+  $foundSpeechless = SearchAuraForModalities(GamestateSanitize($cardName), $mainPlayer, "leave_em_speechless_blue") != -1;
+  $foundSpeechless = $foundSpeechless || SearchAuraForModalities(GamestateSanitize($cardName), $defPlayer, "leave_em_speechless_blue") != -1;
   $foundSpeechless = $foundSpeechless && $from == "HAND" && !$pitch;
   return $foundNullTime || $foundSpeechless;
 }

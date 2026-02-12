@@ -2720,8 +2720,8 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       }
     }
     if (!SearchCurrentTurnEffects("amnesia_red", $currentPlayer) && $from == "HAND") {
-      if (FindNullTime(GamestateSanitize($names[0]))) $names[0] = "-";
-      if (FindNullTime(GamestateSanitize($names[1]))) $names[1] = "-";
+      if (NameBlocked($names[0], $index, $from, nameGiven:true)) $names[0] = "-";
+      if (NameBlocked($names[1], $index, $from, nameGiven:true)) $names[1] = "-";
     }
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $names[0] = "-";
