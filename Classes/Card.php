@@ -40,11 +40,11 @@ class Card {
     if (SubtypeContains($this->cardID, "Aura")) return "";
     if (SubtypeContains($this->cardID, "Ally")) return "";
     if (TypeContains($this->cardID, "W")) return "";
-    else return "NOT IMPLEMENTED";
+    else return "";
   }
 
   function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
-    return "NOT IMPLEMENTED";
+    return "";
   } 
 
   function CardType($from="", $additionalCosts="-") {
