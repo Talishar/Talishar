@@ -68,6 +68,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 function IsBanned($username)
 {
 	$userData = LoadUserData($username);
+	if (!isset($userData)) return false;
 	$_SESSION["isBanned"] = $userData["isBanned"];
 	return (intval($userData["isBanned"]) == 1 ? true : false);
 }
