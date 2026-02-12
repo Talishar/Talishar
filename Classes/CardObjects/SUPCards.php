@@ -691,7 +691,7 @@ class cheap_shot_yellow extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;
-    Deal2OrDiscard($targetPlayer);
+    Deal2OrDiscard($targetPlayer, $this->cardID);
   }
 }
 

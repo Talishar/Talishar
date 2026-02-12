@@ -261,7 +261,7 @@ function SUPHitEffect($cardID): void
   }
 }
 
-function Deal2OrDiscard($targetPlayer)
+function Deal2OrDiscard($targetPlayer, $effectSource="-")
 {
   $hand = GetHand($targetPlayer);
   if (count($hand) > 0) {
@@ -272,7 +272,7 @@ function Deal2OrDiscard($targetPlayer)
     AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
     AddDecisionQueue("ELSE", $targetPlayer, "-");
   }
-  AddDecisionQueue("TAKEDAMAGE", $targetPlayer, 2, 1);
+  AddDecisionQueue("TAKEDAMAGE", $targetPlayer, "2-$effectSource", 1);
 }
 
 function BOO($player)
