@@ -194,7 +194,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $banish[$index];
       $mod = $banish[$index + 1];
       if (!IsPlayable($cardID, $turn[0], "BANISH", $index)) break;
-      if ($mod == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
+      // this line is causing issues with meld cards, I don't know what function it serves
+      // these effects seem to work without it
+      // if ($mod == "INST") SetClassState($currentPlayer, $CS_NextNAAInstant, 1);
       if ($mod == "spew_shadow_red" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("spew_shadow_red", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
