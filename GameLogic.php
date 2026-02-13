@@ -40,6 +40,7 @@ include "Classes/CardObjects/PENCards.php";
 include "Classes/CardObjects/AACCards.php";
 include "Classes/CardObjects/AHACards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
+include "DecisionQueue/DecisionQueueEffectsNew.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
 
@@ -2690,6 +2691,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameter = $parameterArr[0];
       $initiator = (count($parameterArr) > 1) ? $parameterArr[1] : "";
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
+    case "SPECIFICCARDNEW":
+      return SpecificCardLogicNew($player, $parameter, $lastResult);
     case "HYPERDRIVER":
       $index = SearchItemsForUniqueID($parameter, $player);
       $items = &GetItems($player);
