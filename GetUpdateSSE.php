@@ -76,15 +76,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
   session_write_close();
 }
 
-if ($playerID == 3) {
-  $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-  $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-  $currentTime = round(microtime(true) * 1000);
-  $sessionKey = md5($clientIp . '|' . $userAgent . '|' . $currentTime);
-  $spectatorUsername = $sessionData['userName'] ?? 'Anonymous';
-  TrackSpectator($gameName, $sessionKey, $spectatorUsername);
-}
-
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
 
