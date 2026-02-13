@@ -4544,7 +4544,7 @@ class bad_breath extends BaseCard {
   }
 
   function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-    AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT");
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {

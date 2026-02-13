@@ -65,9 +65,9 @@ $CID_TekloChest = "teklo_base_chest";
 $CID_TekloArms = "teklo_base_arms";
 $CID_TekloLegs = "teklo_base_legs";
 
-function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
+function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $index=-1)
 {
-  global $CS_AdditionalCosts, $currentPlayer;
+  global $CS_AdditionalCosts, $currentPlayer, $Stack;
   $cardID = BlindCard($cardID, true);
   $controller = $controller == "-" ? $currentPlayer : $controller;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN", "ATTACKSTEP"];
@@ -87,12 +87,18 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
 
   if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from == "ARS" || $from == "CC") return "A,I";
-    if (function_exists("GetClassState")) {      
-      $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
-      if ($additionalCosts == "Both") return "A,I";
-      if (IsMeldInstantName($additionalCosts)) return "I";
-      if (IsMeldActionName($additionalCosts)) return "A";
+    if ($index == -1) {
+      if (function_exists("GetClassState"))   
+        $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
+      else $additionalCosts = "-";
     }
+    else {
+      $Layer = $Stack->Card($index);
+      $additionalCosts = $Layer->AdditionalCosts();
+    }
+    if ($additionalCosts == "Both") return "A,I";
+    if (IsMeldInstantName($additionalCosts)) return "I";
+    if (IsMeldActionName($additionalCosts)) return "A";
     return "A,I";
   }
 
@@ -152,7 +158,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-")
   return GeneratedCardType($cardID);
 }
 
-function CardTypeExtended($cardID, $from="") // used to handle evos
+function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
 {
   $cardID = BlindCard($cardID, true);
   $evoTypes = [
@@ -219,7 +225,7 @@ function CardTypeExtended($cardID, $from="") // used to handle evos
     "evo_beta_base_chest_blue_equip" => "A,E",
   ];
 
-  return $evoTypes[$cardID] ?? CardType($cardID, $from);
+  return $evoTypes[$cardID] ?? CardType($cardID, $from, index:$index);
 }
 
 function SetID($cardID)
