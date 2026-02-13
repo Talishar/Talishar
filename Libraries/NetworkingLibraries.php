@@ -4484,6 +4484,11 @@ function ReportBug()
   copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
   copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
   copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
+  for ($i = 0; $i <= 4; $i++) {
+    if (file_exists("./Games/$gameName/gamestateBackup_{$i}.txt")) {
+      copy("./Games/$gameName/gamestateBackup_{$i}.txt", $folderName . "/gamestateBackup_{$i}.txt");
+    }
+  }
   WriteLog("🐛 Thank you for reporting a bug. Please report it on Discord with the game number as reference ($gameName).");
 }
 
