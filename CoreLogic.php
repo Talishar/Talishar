@@ -1924,9 +1924,9 @@ function PitchContains($cardID, $pitch)
   return $cardPitch == $pitch;
 }
 
-function TypeContains($cardID, $type, $player = "", $partial = false)
+function TypeContains($cardID, $type, $player = "", $partial = false, $from = "-", $index = -1)
 {
-  $cardType = CardTypeExtended($cardID);
+  $cardType = CardTypeExtended($cardID, $from, $index);
   return DelimStringContains($cardType, $type, $partial);
 }
 

@@ -2074,9 +2074,9 @@ function SearchLayersForNAA($maxCost=-1) {
     for ($i = 0; $i < $countLayers; $i += $layerPieces) {
       $playerID = $layers[$i+1];
       $from = explode("|",$layers[$i+2])[0];
-      $cardType = CardType($layers[$i], $from, $playerID);
+      $cardType = CardType($layers[$i], "LAYER", $playerID, $i);
       if ($maxCost != -1 && CardCost($layers[$i], "LAYER") > $maxCost) continue;
-      if (DelimStringContains($cardType, "A") && ($from != "PLAY" || GetResolvedAbilityType($layers[$i], $from, $playerID) == "A")) {
+      if (TypeContains($layers[$i], "A", from: "LAYER", index:$i) && ($from != "PLAY" || GetResolvedAbilityType($layers[$i], $from, $playerID) == "A")) {
         array_push($found, "LAYER-" . $i);
       }
     }
