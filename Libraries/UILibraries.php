@@ -384,7 +384,8 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-")
   if ($from == "HAND" && $isPlayable && (
     $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
     $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
-    $dqState[4] == "Choose_a_card_to_discard"
+    $dqState[4] == "Choose_a_card_to_discard" ||
+    $dqState[4] == "Choose_a_card_to_banish"
   )) return 9;
   if ($turn[0] == "B" && $from != "THEIRCHAR") return $isPlayable ? 6 : 0;
 

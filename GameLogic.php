@@ -394,7 +394,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = implode(",", $rv);
           break;
         case "SPELLVOID":
-          $rv = SearchSpellvoidIndices($player, $subparam);
+          $damage = explode("-", $dqVars[0])[0];
+          $prevention = $dqVars[1];
+          if($prevention < $damage) $rv = SearchSpellvoidIndices($player, $subparam);
           break;
         case "OPPSENERGYPERMANENTS":
           $rv = [];
