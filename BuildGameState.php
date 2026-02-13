@@ -1398,7 +1398,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   // Spectator count
   $spectatorCount = 0;
-  $spectatorNames = [];
   $currentTime = round(microtime(true) * 1000);
   $spectatorTimeout = 30000;
   $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
@@ -1411,14 +1410,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $spectatorCount = 0;
         foreach ($spectatorData as $sessionKey => $spectatorInfo) {
           $timestamp = is_array($spectatorInfo) ? $spectatorInfo['timestamp'] : $spectatorInfo;
-          $username = is_array($spectatorInfo) ? $spectatorInfo['username'] : null;
 
           $timeDiff = $currentTime - intval($timestamp);
           if ($timeDiff < $spectatorTimeout) {
             $spectatorCount++;
-            if ($username) {
-              $spectatorNames[] = $username;
-            }
           }
         }
       }
@@ -1426,7 +1421,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $response->spectatorCount = $spectatorCount;
-  $response->spectatorNames = $spectatorNames;
+  $response->spectatorNames = [];
 
   // Visibility from cache
   $cacheVisibility = GetCachePiece($gameName, 9);
