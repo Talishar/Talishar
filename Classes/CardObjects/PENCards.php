@@ -6057,7 +6057,7 @@ class helm_of_might_and_magic extends Card {
   }
 
   function DefaultActiveState() {
-    return 0;
+    return 1;
   }
 }
 
