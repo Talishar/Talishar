@@ -89,9 +89,37 @@ function SaveFile($source, $target, $file) {
 
   $gs_file_contents = stream_get_contents($gs_file);
 
+  // Extract inventory from source before regex processing
+  $source_inventory_p1 = "";
+  $source_inventory_p2 = "";
+  if ($file === "gamestate.txt") {
+    $raw_source_lines = explode("\r\n", trim($source_file_contents));
+    $numChainLinks = isset($raw_source_lines[56]) ? trim($raw_source_lines[56]) : 0;
+    if (!is_numeric($numChainLinks)) $numChainLinks = 0;
+    $source_inventory_p1 = isset($raw_source_lines[72 + $numChainLinks]) ? $raw_source_lines[72 + $numChainLinks] : "";
+    $source_inventory_p2 = isset($raw_source_lines[73 + $numChainLinks]) ? $raw_source_lines[73 + $numChainLinks] : "";
+  }
+
   $source_file_contents = preg_replace("/[a-zA-Z0-9]{64}[\s\S]*$/", '', $source_file_contents);
 
   $target_file_contents = preg_replace("/^[\s\S]*?([a-zA-Z0-9]{64})/", $source_file_contents . '$1', $gs_file_contents, 1);
+  
+  // Apply inventory from source
+  if ($file === "gamestate.txt") {
+    $target_lines = explode("\r\n", trim($target_file_contents));
+    $numChainLinks = isset($target_lines[56]) ? trim($target_lines[56]) : 0;
+    if (!is_numeric($numChainLinks)) $numChainLinks = 0;
+    
+    if ($source_inventory_p1 !== "") {
+      $target_lines[72 + $numChainLinks] = $source_inventory_p1;
+    }
+    if ($source_inventory_p2 !== "") {
+      $target_lines[73 + $numChainLinks] = $source_inventory_p2;
+    }
+    
+    $target_file_contents = implode("\r\n", $target_lines) . "\r\n";
+  }
+  
   fclose($gs_file);
 
   file_put_contents("{$target_realpath}", $target_file_contents);
