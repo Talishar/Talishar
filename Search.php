@@ -160,6 +160,7 @@ function SearchInner(
   $hasCloaked = false,
 )
 {
+  global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $cardList = "";
   if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
   $arrayCount = count($array);
@@ -167,6 +168,7 @@ function SearchInner(
     if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
     if ($zone == "DISCARD" && isFaceDownMod($array[$i + 2])) continue;
+    if ($zone == "CC" && $i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue; //the attack is already gone
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       // Check cheap conditions first: type, subtype, cost, class, talent, pitch, attack, defense, arcane damage
