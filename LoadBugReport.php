@@ -89,31 +89,11 @@ function SaveFile($source, $target, $file) {
 
   $gs_file_contents = stream_get_contents($gs_file);
 
-  // For gamestate.txt, parse and properly merge the files
-  if ($file === "gamestate.txt") {
-    $source_lines = explode("\r\n", trim($source_file_contents));
-    $target_lines = explode("\r\n", trim($gs_file_contents));
-    
-    // Extract auth keys from target (local game)
-    $p1Key = isset($target_lines[58]) ? trim($target_lines[58]) : '';
-    $p2Key = isset($target_lines[59]) ? trim($target_lines[59]) : '';
-    
-    // Use source file but replace the auth keys with local keys to preserve game identity
-    if (isset($source_lines[58])) {
-      $source_lines[58] = $p1Key;
-    }
-    if (isset($source_lines[59])) {
-      $source_lines[59] = $p2Key;
-    }
-    
-    $target_file_contents = implode("\r\n", $source_lines) . "\r\n";
-  } else {
-    // For non-gamestate files, use regex merge as before
-    $source_file_contents = preg_replace("/[a-zA-Z0-9]{64}[\s\S]*$/", '', $source_file_contents);
-    $target_file_contents = preg_replace("/^[\s\S]*?([a-zA-Z0-9]{64})/", $source_file_contents . '$1', $gs_file_contents, 1);
-  }
-  
+  $source_file_contents = preg_replace("/[a-zA-Z0-9]{64}[\s\S]*$/", '', $source_file_contents);
+
+  $target_file_contents = preg_replace("/^[\s\S]*?([a-zA-Z0-9]{64})/", $source_file_contents . '$1', $gs_file_contents, 1);
   fclose($gs_file);
+
   file_put_contents("{$target_realpath}", $target_file_contents);
 }
 
