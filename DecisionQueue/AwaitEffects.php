@@ -1,12 +1,13 @@
 <?php
 
-function Await($player, $function, $lastResultName="LASTRESULT", $subsequent=1, ...$args) {
+function Await($player, $function, $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, ...$args) {
   AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
   foreach ($args as $key => $value) {
     AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
     AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
   }
   AddDecisionQueue("AWAIT", $player, $function, $subsequent);
+  AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
 }
 
 function dummyfunction($player) {
@@ -18,7 +19,6 @@ function dummyfunction($player) {
 }
 
 function AwaitLogic($player, $function) {
-  global $dqVars;
   // does this function already exist?
   $functionAwait = $function . "Await";
   if (function_exists($functionAwait)) $functionAwait($player);
