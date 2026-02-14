@@ -47,6 +47,11 @@ SaveFile($source, $target, "gamestateBackup.txt");
 SaveFile($source, $target, "beginTurnGamestate.txt");
 SaveFile($source, $target, "lastTurnGamestate.txt");
 
+// Load undo gamestate backups
+for ($i = 0; $i <= 4; $i++) {
+  SaveFile($source, $target, "gamestateBackup_{$i}.txt");
+}
+
 // Clear the gamestate cache to force reload from file
 // Read the new gamestate file and write it to cache
 $newGamestate = file_get_contents("./Games/{$target}/gamestate.txt");
