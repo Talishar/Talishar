@@ -2691,8 +2691,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $parameter = $parameterArr[0];
       $initiator = (count($parameterArr) > 1) ? $parameterArr[1] : "";
       return SpecificCardLogic($player, $parameter, $lastResult, $initiator);
-    case "SPECIFICCARDNEW":
-      return SpecificCardLogicNew($player, $parameter, $lastResult);
+    case "AWAIT":
+      return AWAITLOGIC($player, $parameter);
     case "HYPERDRIVER":
       $index = SearchItemsForUniqueID($parameter, $player);
       $items = &GetItems($player);

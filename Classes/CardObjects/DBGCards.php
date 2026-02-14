@@ -23,7 +23,9 @@ class dummy extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddDecisionQueue("PASSPARAMETER", $this->controller, "this is the last result");
-    SpecificCard($this->controller, "DUMMY", a:"hello", b:"world");
+    Await($this->controller, $this->cardID, a:"hello", b:"world");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, 5);
+    Await($this->controller, "PlayAura", "number", cardID:"frostbite");
   }
 
   function SpecialType() {

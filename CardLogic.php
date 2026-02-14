@@ -583,18 +583,19 @@ function ContinueDecisionQueue($lastResult = "")
   $phase = array_shift($decisionQueue); 
   $player = array_shift($decisionQueue);
   $parameter = array_shift($decisionQueue);
+  // foreach($dqVars as $key => $value) WriteLog("$key => $value"); //Uncomment this to visualize decision queue variables execution
   //WriteLog($dqVars[0] . " " . $dqVars[1] . " " . $dqVars[2]);//Uncomment this to visualize decision queue variables execution
   //WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult);//Uncomment this to visualize decision queue execution
   if (count($dqVars) > 0) {
-    if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
-    if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
-    if (count($dqVars) > 1 && str_contains($parameter, "{1}")) $parameter = str_replace("{1}", $dqVars[1], $parameter);
-    if (count($dqVars) > 2 && str_contains($parameter, "{2}")) $parameter = str_replace("{2}", $dqVars[2], $parameter);
+    if (str_contains($parameter, "{0}") && isset($dqVars[0])) $parameter = str_replace("{0}", $dqVars[0], $parameter);
+    if (str_contains($parameter, "<0>") && isset($dqVars[0])) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
+    if (count($dqVars) > 1 && str_contains($parameter, "{1}") && isset($dqVars[1])) $parameter = str_replace("{1}", $dqVars[1], $parameter);
+    if (count($dqVars) > 2 && str_contains($parameter, "{2}") && isset($dqVars[2])) $parameter = str_replace("{2}", $dqVars[2], $parameter);
   }
-  if (count($dqVars) > 1) {
+  if (count($dqVars) > 1 && isset($dqVars[1])) {
     $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
   }  
-  if (count($dqVars) > 2) {
+  if (count($dqVars) > 2 && isset($dqVars[2])) {
     $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
   }  
   $subsequent = array_shift($decisionQueue);
