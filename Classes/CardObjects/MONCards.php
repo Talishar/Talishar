@@ -3151,27 +3151,27 @@ class sonata_arcanix_red extends Card {
   function __construct($controller) {
     $this->cardID = "sonata_arcanix_red";
     $this->controller = $controller;
-	}
+  }
 
-	function DynamicCost() {
-		if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $this->controller) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $this->controller))
-			$end = 100;
-		else $end = 20;
-		return implode(",", range(0, $end, 2));
-	}
+  function DynamicCost() {
+    if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $this->controller) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $this->controller))
+      $end = 100;
+    else $end = 20;
+    return implode(",", range(0, $end, 2));
+  }
 
-	function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
-		return "BANISH";
-	}
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "BANISH";
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		$inds = GetArcaneTargetIndices($this->controller, 0);
-		AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
-		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a hero to deal arcane to");
-		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);  
-		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    $inds = GetArcaneTargetIndices($this->controller, 0);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a hero to deal arcane to");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);  
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $xVal = $resourcesPaid/2;
@@ -3179,46 +3179,46 @@ class sonata_arcanix_red extends Card {
     WriteLog(CardLink($this->cardID, $this->cardID) . " reveals " . $numRevealed . " cards.");
     Await($this->controller, "DeckTopCards", "cardIDs", number:$numRevealed);
     Await($this->controller, "RevealCards");
-		Await($this->controller, $this->cardID, mode:"choose_cards");
-		Await($this->controller, "MultiChooseDeck", "indices");
-		Await($this->controller, "MultiRemoveDeck", "cardIDs");
-		Await($this->controller, "MultiAddHand");
-		Await($this->controller, $this->cardID, mode:"deal_arcane");
-		Await($this->controller, "ShuffleDeck", final:true);
+    Await($this->controller, $this->cardID, mode:"choose_cards");
+    Await($this->controller, "MultiChooseDeck", "indices");
+    Await($this->controller, "MultiRemoveDeck", "cardIDs");
+    Await($this->controller, "MultiAddHand");
+    Await($this->controller, $this->cardID, mode:"deal_arcane");
+    Await($this->controller, "ShuffleDeck", final:true);
     return "";
   }
 
-	function SpecificLogic() {
-		global $dqVars;
-		switch ($dqVars["mode"]) {
-			case "choose_cards":
-				$cards = explode(",", $dqVars["cardIDs"]);
-				$numAA = 0;
-				$numNAA = 0;
-				$AAIndices = "";
-				for ($i = 0; $i < count($cards); ++$i) {
-					$cardType = CardType($cards[$i]);
-					if (DelimStringContains($cardType, "A")) ++$numNAA;
-					else if ($cardType == "AA") {
-						++$numAA;
-						if ($AAIndices != "") $AAIndices .= ",";
-						$AAIndices .= $i;
-					}
-				}
-				$numMatch = $numAA > $numNAA ? $numNAA : $numAA;
-				if ($numMatch == 0) return "PASS";
-				$dqVars["maxNumber"] = $numMatch;
-				$dqVars["minNumber"] = $numMatch;
-				$dqVars["indices"] = $AAIndices;
-				break;
-			case "deal_arcane":
-				$numArcane = count(explode(",", $dqVars["cardIDs"]));
-      	DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$dqVars["target"]);
-				break;
-			default:
-				break;
-		}
-	}
+  function SpecificLogic() {
+    global $dqVars;
+    switch ($dqVars["mode"]) {
+      case "choose_cards":
+        $cards = explode(",", $dqVars["cardIDs"]);
+        $numAA = 0;
+        $numNAA = 0;
+        $AAIndices = "";
+        for ($i = 0; $i < count($cards); ++$i) {
+          $cardType = CardType($cards[$i]);
+          if (DelimStringContains($cardType, "A")) ++$numNAA;
+          else if ($cardType == "AA") {
+            ++$numAA;
+            if ($AAIndices != "") $AAIndices .= ",";
+            $AAIndices .= $i;
+          }
+        }
+        $numMatch = $numAA > $numNAA ? $numNAA : $numAA;
+        if ($numMatch == 0) return "PASS";
+        $dqVars["maxNumber"] = $numMatch;
+        $dqVars["minNumber"] = $numMatch;
+        $dqVars["indices"] = $AAIndices;
+        break;
+      case "deal_arcane":
+        $numArcane = count(explode(",", $dqVars["cardIDs"]));
+        DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$dqVars["target"]);
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 
