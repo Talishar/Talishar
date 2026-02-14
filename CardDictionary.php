@@ -678,11 +678,6 @@ function DynamicCost($cardID)
       return "2,6";
     case "spark_of_genius_yellow":
       return "0,2,4,6,8,10,12";
-    case "sonata_arcanix_red":
-      if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $currentPlayer) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $currentPlayer)) {
-        return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
-      }
-      return "0,2,4,6,8,10,12,14,16,18,20";
     case "imposing_visage_blue":
       return "3,4,5,6,7,8,9,10,11,12,13,14,15";
     case "scour_blue":
@@ -2102,8 +2097,6 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       return $from == "CHAINCLOSING" && $stillOnCombatChain ? "SOUL" : "GY";
     case "soul_food_yellow":
       return "SOUL";
-    case "sonata_arcanix_red":
-      return "BANISH";
     case "pulse_of_candlehold_yellow":
       return "BANISH";
     case "evergreen_red":

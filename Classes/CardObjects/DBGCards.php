@@ -25,7 +25,7 @@ class dummy extends Card {
     AddDecisionQueue("PASSPARAMETER", $this->controller, "this is the last result");
     Await($this->controller, $this->cardID, a:"hello", b:"world");
     AddDecisionQueue("PASSPARAMETER", $this->controller, 5);
-    Await($this->controller, "PlayAura", "number", cardID:"frostbite");
+    Await($this->controller, "PlayAura", lastResultName: "number", cardID:"frostbite");
   }
 
   function SpecialType() {

@@ -33,3 +33,4 @@ APIKeys/APIKeys.php
 /APIKeys
 .env
 private_messaging_errors.log
+/__pycache__

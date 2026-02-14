@@ -29,6 +29,7 @@ include "Classes/ClassState.php";
 include "Classes/CombatChainState.php";
 include "Classes/CardObjects/DBGCards.php"; //debug cards
 include "Classes/CardObjects/WTRCards.php";
+include "Classes/CardObjects/MONCards.php";
 include "Classes/CardObjects/UPRCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
@@ -40,7 +41,7 @@ include "Classes/CardObjects/PENCards.php";
 include "Classes/CardObjects/AACCards.php";
 include "Classes/CardObjects/AHACards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
-include "DecisionQueue/DecisionQueueEffectsNew.php";
+include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
 
@@ -1417,23 +1418,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain[5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();
       return $parameter;
-    case "SONATAARCANIX":
-      $cards = explode(",", $lastResult);
-      $numAA = 0;
-      $numNAA = 0;
-      $AAIndices = "";
-      for ($i = 0; $i < count($cards); ++$i) {
-        $cardType = CardType($cards[$i]);
-        if (DelimStringContains($cardType, "A")) ++$numNAA;
-        else if ($cardType == "AA") {
-          ++$numAA;
-          if ($AAIndices != "") $AAIndices .= ",";
-          $AAIndices .= $i;
-        }
-      }
-      $numMatch = $numAA > $numNAA ? $numNAA : $numAA;
-      if ($numMatch == 0) return "PASS";
-      return "$numMatch-$AAIndices-$numMatch";
     case "LOOKTOPDECK":
       $cards = explode(",", $lastResult);
       $cardsIndices = "";
@@ -1456,10 +1440,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($numMatch == 0) return "PASS";
       return "$params[0]-$indices-0";
-    case "SONATAARCANIXSTEP2":
-      $numArcane = count(explode(",", $lastResult));
-      DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$parameter);
-      return 1;
     case "CHARGE":
       DQCharge();
       return "1";
@@ -2308,6 +2288,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $dqVars[$parameter] = $lastResult;
       return $lastResult;
+    case "CLEARDQVARS":
+      global $dqVars;
+      foreach($dqVars as $key => $value) unset($dqVars[$key]);
+      $dqVars = array_values($dqVars);
+      return "";
     case "MZSETDQVAR":
       $cardID = GetMZCard($player, $lastResult);
       $dqVars[$parameter] = $cardID;

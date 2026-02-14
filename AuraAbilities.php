@@ -25,7 +25,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   return true;
 }
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", ...$args)
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated;
   if ($number == 0) return; //there is no event

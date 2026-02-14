@@ -2655,14 +2655,6 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "sonata_arcanix_red":
-      $inds = GetArcaneTargetIndices($currentPlayer, 0);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to deal arcane to");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
     default:
       break;
   }
