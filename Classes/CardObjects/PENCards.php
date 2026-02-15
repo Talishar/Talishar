@@ -7223,21 +7223,24 @@ class lobotomy_red extends Card {
     $weapons = "";
     $inventory = &GetInventory($this->controller);
     $numHands = NumOccupiedHands($this->controller);
+    $weapons = [];
     if ($numHands < 2) { //Only Equip if there is a broken weapon/off-hand
       foreach ($inventory as $cardID) {
         if (NameOverride($cardID) == "Orbitoclast") {
-          if ($weapons != "") $weapons .= ",";
-          $weapons .= $cardID;
+          array_push($weapons, "CARDID-$cardID");
         };
       }
+      $weapons = implode(",", $weapons);
       if ($weapons == "") {
         WriteLog("Player " . $this->controller . " doesn't have any " . CardLink("orbitoclast") . " in their inventory");
         return;
       }
+      WriteLog("HERE: $weapons");
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an " . CardLink("orbitoclast") . " to equip");
-      AddDecisionQueue("MAYCHOOSECARD", $this->controller, $weapons);
-      AddDecisionQueue("APPENDLASTRESULT", $this->controller, "-INVENTORY");
-      AddDecisionQueue("EQUIPCARDINVENTORY", $this->controller, "<-");
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, $weapons, 1);
+      AddDecisionQueue("REMOVETAG", $this->controller, "-", 1);
+      AddDecisionQueue("APPENDLASTRESULT", $this->controller, "-INVENTORY", 1);
+      AddDecisionQueue("EQUIPCARDINVENTORY", $this->controller, "<-", 1);
     }
   }
 

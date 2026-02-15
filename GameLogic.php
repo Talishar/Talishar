@@ -2162,6 +2162,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "$parameter$lastResult";
     case "APPENDLASTRESULT":
       return "$lastResult$parameter";
+    case "REMOVETAG":
+      $arr = explode("-", $lastResult);
+      return $arr[1] ?? $lastResult;
     case "ADDTOLASTRESULT":
       return $lastResult + $parameter;
     case "LASTRESULTPIECE":
