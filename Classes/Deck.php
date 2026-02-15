@@ -135,4 +135,24 @@ class Deck {
   function GetCard($index) {
     return $this->deck[$index];
   }
+
+  function Shuffle($parameter) {
+    $destArr = [];
+    if ($parameter == "SKIPSEED") {
+      global $randomSeeded;
+      $randomSeeded = true;
+    }
+    while (count($this->deck) > 0) {
+      $index = GetRandom(0, count($this->deck) - 1);
+      array_push($destArr, $this->deck[$index]);
+      unset($this->deck[$index]);
+      $this->deck = array_values($this->deck);
+    }
+    $this->deck = $destArr;
+    if ($parameter != "SKIPSEED") {
+      $player = $this->playerID;
+      WriteLog("🔄Player $player deck was shuffled");
+      AddEvent("SHUFFLE", $player);
+    }
+  }
 }
