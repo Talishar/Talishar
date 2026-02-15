@@ -13,14 +13,14 @@
 //   else AddDecisionQueue("SETDQVAR", $player, implode("|", $returnNames), $subsequent);
 // }
 
-function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, ...$args) {
+function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false...$args) {
   AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
   foreach ($args as $key => $value) {
     AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
     AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
   }
   AddDecisionQueue("AWAIT", $player, $function, $subsequent);
-  if ($lastResultName == "FINAL") AddDecisionQueue("CLEARDQVARs", $player, "-");
+  if ($final) AddDecisionQueue("CLEARDQVARs", $player, "-");
   else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
 }
 
