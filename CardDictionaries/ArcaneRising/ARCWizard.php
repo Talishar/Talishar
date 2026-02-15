@@ -1131,7 +1131,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       break;
     case "sigil_of_aether_blue":
       AddCurrentTurnEffect($source, $player);
-      WriteLog(CardLink($source, $source) . " <b>amp 1</b>");
+      WriteLog(CardLink($source, $source) . " Amp 1");
       break;
     default:
       break;
@@ -1229,25 +1229,25 @@ function ProcessSurge($cardID, $player, $target)
     case "etchings_of_arcana_red":
     case "etchings_of_arcana_yellow":
     case "etchings_of_arcana_blue":
-      WriteLog("Surge active, returning a sigil from graveyard to hand");
+      WriteLog(CardLink($cardID, $cardID) . " returns a sigil from graveyard to hand");
       MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may: true);
       break;
     case "open_the_flood_gates_red": 
     case "open_the_flood_gates_yellow": 
     case "open_the_flood_gates_blue":
-      WriteLog("Surge active, drawing 2 cards");
+      WriteLog(CardLink($cardID, $cardID) . " draws 2 cards");
       Draw($player, num:2);
       break;
     case "overflow_the_aetherwell_red":
     case "overflow_the_aetherwell_yellow":
     case "overflow_the_aetherwell_blue":
-      WriteLog("Surge active, gaining 2 resources");
+      WriteLog(CardLink($cardID, $cardID) . " gains 2 resources");
       GainResources($player, 2);
       break;
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":
     case "perennial_aetherbloom_blue":
-      WriteLog("Surge active, returning on the bottom of the deck");
+      WriteLog(CardLink($cardID, $cardID) . " returns on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
       $discardPieces = DiscardPieces();
@@ -1258,7 +1258,7 @@ function ProcessSurge($cardID, $player, $target)
     case "glyph_overlay_red":
     case "glyph_overlay_yellow":
     case "glyph_overlay_blue":
-      WriteLog("Surge Active, gaining 1 life and returning sigils to the deck");
+      WriteLog(CardLink($cardID, $cardID) . " gains 1 life and returns sigils to the deck");
       GainHealth(1, $player);
       $auras = &GetAuras($player);
       $sigilFound = false;

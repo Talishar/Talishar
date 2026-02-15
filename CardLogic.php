@@ -3773,7 +3773,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura("runechant", $player, $numRunechantsCreated);
         break;
       case "aether_bindings_of_the_third_age":
-        WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " <b>amp 1</b>");
+        WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . ": Amp 1");
         $index = -1;
         for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
           if (explode(",", $currentTurnEffects[$i])[0] == "aether_bindings_of_the_third_age" && $currentTurnEffects[$i + 1] == $player) $index = $i;
@@ -5112,7 +5112,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
     case "rampant_growth__life_yellow":
       $ampAmount = GetClassState($player, $CS_HealthGained);
       AddCurrentTurnEffect($parameter . "," . $ampAmount, $player, "ABILITY");
-      WriteLog(CardLink($parameter, $parameter) . " <b>amp " . $ampAmount . "</b>");
+      WriteLog(CardLink($parameter, $parameter) . " Amp " . $ampAmount);
       break;
     case "pulsing_aether__life_red":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
