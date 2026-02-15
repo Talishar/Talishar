@@ -838,7 +838,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       MarkHero($otherPlayer);
       break;
     case "calming_breeze_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      AddCurrentTurnEffect("$cardID-3", $currentPlayer);
       break;
     case "lay_low_yellow":
       if(CheckMarked($otherPlayer)) {

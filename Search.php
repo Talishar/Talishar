@@ -2068,7 +2068,7 @@ function SearchLayersCardType($type, $type2="-")
   else return implode(",", $found);
 }
 
-function SearchLayersForNAA($maxCost=-1) {
+function SearchLayersForNAACard($maxCost=-1) {
     global $layers;
     $found = [];
     $countLayers = count($layers);
@@ -2078,7 +2078,7 @@ function SearchLayersForNAA($maxCost=-1) {
       $from = explode("|",$layers[$i+2])[0];
       $cardType = CardType($layers[$i], "LAYER", $playerID, $i);
       if ($maxCost != -1 && CardCost($layers[$i], "LAYER") > $maxCost) continue;
-      if (TypeContains($layers[$i], "A", from: "LAYER", index:$i) && ($from != "PLAY" || GetResolvedAbilityType($layers[$i], $from, $playerID) == "A")) {
+      if (TypeContains($layers[$i], "A", from: "LAYER", index:$i) && (!IsActivated($layers[$i], $from))) {
         array_push($found, "LAYER-" . $i);
       }
     }

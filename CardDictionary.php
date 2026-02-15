@@ -2648,7 +2648,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "spellfire_cloak":
       return $player == $mainPlayer;
     case "rewind_blue":
-      return SearchLayersForNAA() == "";
+      return SearchLayersForNAACard() == "";
     //Invocations must target Ash
     case "silken_form":
     case "invoke_dracona_optimai_red":

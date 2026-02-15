@@ -603,7 +603,6 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   if ($damage > 0) $damage += CombatChainDamageModifiers($player, $source, $type);
-  if ($damage > 0) $damage = CurrentEffectPreventDamagePrevention($player, $damage, $source, preventable:$preventable);
   if ($preventable) {
     if (ConsumeDamagePrevention($player)) return 0;//I damage can be prevented outright, don't use up your limited damage prevention
     if ($type == "ARCANE") {
@@ -665,6 +664,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
+  global $CurrentTurnEffects;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -692,7 +692,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     }
     $classState[$CS_DamageTaken] += $damage;
     if (!IsAllyAttacking()) {
-      if ($playerSource ==  $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
+      if ($playerSource == $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
     }
     else {
       $allyInd = SearchAlliesForUniqueID($combatChain[8], $otherPlayer);
@@ -709,10 +709,28 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
   }
-  if($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
+  if ($type == "ARCANE") {
+    $playerSource != $player ? LogDamageStats($playerSource, $damageThreatened, $damage) : LogDamageStats($player, $damageThreatened, $damage);
+  }
+  elseif ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   PlayerLoseHealth($damage, $player);
+  // mark once per damage instance effects as usable again
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() != $player) continue;
+    $effectArr = explode("-", $Effect->EffectID());
+    switch ($effectArr[0]) {
+      case "shelter_from_the_storm_red":
+      case "calming_breeze_red":
+        if ($effectArr[1] == $Effect->NumUses() + 1)
+          $Effect->Replace("$effectArr[0]-" . $Effect->NumUses());
+        break;
+      default:
+        break;
+    }
+  }
   return $damage;
 }
 
@@ -3520,7 +3538,7 @@ function PitchAbility($cardID, $from="HAND")
       break;
     case "will_of_arcana_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " <b>amp 1</b>");
+      WriteLog(CardLink($cardID, $cardID) . " Amp 1");
       break;
     case "back_alley_breakline_red":
     case "back_alley_breakline_yellow":

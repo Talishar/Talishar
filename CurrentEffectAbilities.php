@@ -1165,42 +1165,12 @@ function CurrentEffectCostModifiers($cardID, $from)
   return CostCantBeModified($cardID) ? 0 : $costModifier;
 }
 
-function CurrentEffectPreventDamagePrevention($player, $damage, $source, $skip=false, $preventable=true) //$skip is used to check the damage prevention without using it. Mostly for Front-end and UI work
-{
-  global $currentTurnEffects;
-  $preventedDamage = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
-    $remove = false;
-    if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
-      switch ($currentTurnEffects[$i]) {
-        case "shelter_from_the_storm_red":
-        case "calming_breeze_red":
-          if ($preventable) $preventedDamage += 1;
-          if (!$skip) --$currentTurnEffects[$i + 3];
-          if ($currentTurnEffects[$i + 3] == 0) $remove = true;
-          break;
-        default:
-          break;
-      }
-    }
-    if ($remove) RemoveCurrentTurnEffect($i);
-  }
-  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "" && !$skip) {
-    $preventedDamage -= 1;
-    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
-  }
-  if($skip) return $preventedDamage;
-  else {
-    $damage -= $preventedDamage;
-    return $damage;  
-  }
-}
-
 function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type, $source, $preventable=true)
 {
   global $currentTurnEffects;
   $otherPlayer = $player == 1 ? 2 : 1;
   $effects = explode("-", $currentTurnEffects[$index]);
+  $Effect = new CurrentEffect($index);
   $source = explode("|", $source)[0] ?? $source;
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
@@ -1348,6 +1318,9 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "slap_happy_red":
     case "sheltered_cove":
       return 2;
+    case "shelter_from_the_storm_red":
+    case "calming_breeze_red":
+      return $Effect->NumUses() == $effects[1] ? 1 : 0;
     case "dissolving_shield_red":
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
@@ -1430,6 +1403,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   $remove = false;
   $preventedDamage = 0;
   $effects = explode("-", $currentTurnEffects[$index]);
+  $Effect = new CurrentEffect($index);
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
     $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove);
@@ -1677,6 +1651,14 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
       if ($effects[1] <= 0) RemoveCurrentTurnEffect($index);
+      break;
+    case "shelter_from_the_storm_red":
+    case "calming_breeze_red":
+      if ($Effect->NumUses() == $effects[1]) {
+        $preventedDamage += $preventable ? 1 : 0;
+        $Effect->AddUses(-1);
+      }
+      if ($Effect->NumUses() <= 0) $Effect->Remove();
       break;
     case "moon_chakra_red":
       if ($preventable) {

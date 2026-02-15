@@ -69,6 +69,10 @@ class CurrentEffect {
     return $this->pieces[$this->index] ?? "-";
   }
 
+  function Replace($effectID) {
+    $this->pieces[$this->index] = $effectID;
+  }
+
   function PlayerID() {
     return $this->pieces[$this->index+1] ?? 0;
   }

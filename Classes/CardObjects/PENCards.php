@@ -7422,12 +7422,12 @@ class temporal_wobble_red extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
     if ($cost == -1) return true;
-    return SearchLayersForNAA($cost) == "";;
+    return SearchLayersForNAACard($cost) == "";;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
-    AddDecisionQueue("FINDINDICES", $this->controller, "NAALAYER,$cost");
+    AddDecisionQueue("FINDINDICES", $this->controller, "NAACARDLAYER,$cost");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Negate a non attack action layer with cost $cost or less", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
