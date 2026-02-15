@@ -78,8 +78,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();
           break;
-        case "NAALAYER":
-          $rv = SearchLayersForNAA(maxCost:$subparam);
+        case "NAACARDLAYER":
+          $rv = SearchLayersForNAACard(maxCost:$subparam);
           break;
         case "mugenshi_release_yellow":
           $rv = SearchDeckForCard($player, "lord_of_wind_blue");
