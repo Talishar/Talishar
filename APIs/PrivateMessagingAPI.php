@@ -48,6 +48,8 @@ if (!$_POST) {
 }
 
 $userId = LoggedInUser();
+session_write_close();//Don't hold session lock and potentially get into deadlock situation
+
 global $conn;
 $conn = GetDBConnection();
 

@@ -692,7 +692,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     }
     $classState[$CS_DamageTaken] += $damage;
     if (!IsAllyAttacking()) {
-      if ($playerSource ==  $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
+      if ($playerSource == $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
     }
     else {
       $allyInd = SearchAlliesForUniqueID($combatChain[8], $otherPlayer);
@@ -709,7 +709,10 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
   }
-  if($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
+  if ($type == "ARCANE") {
+    $playerSource != $player ? LogDamageStats($playerSource, $damageThreatened, $damage) : LogDamageStats($player, $damageThreatened, $damage);
+  }
+  elseif ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   PlayerLoseHealth($damage, $player);
@@ -3520,7 +3523,7 @@ function PitchAbility($cardID, $from="HAND")
       break;
     case "will_of_arcana_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " <b>amp 1</b>");
+      WriteLog(CardLink($cardID, $cardID) . " Amp 1");
       break;
     case "back_alley_breakline_red":
     case "back_alley_breakline_yellow":
