@@ -4303,10 +4303,6 @@ class cut_n_carve_red extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
-
-  function IsCombatEffectPersistent($mode) {
-    return true;
-  }
 }
 
 class cut_n_carve_yellow extends Card {
@@ -4331,10 +4327,6 @@ class cut_n_carve_yellow extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
-
-  function IsCombatEffectPersistent($mode) {
-    return true;
-  }
 }
 
 class cut_n_carve_blue extends Card {
@@ -4357,10 +4349,6 @@ class cut_n_carve_blue extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function IsCombatEffectPersistent($mode) {
     return true;
   }
 }
