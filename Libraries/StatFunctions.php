@@ -121,11 +121,11 @@ function LogResourcesUsedStats($player, $resourcesUsed)
 function LogDamageStats($player, $damageThreatened, $damageDealt)
 {
   global $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
-  $damagerPlayer = $player === 1 ? 2 : 1;
+  $playerSource = $player == 1 ? 2 : 1;
   $turnStatPieces = TurnStatPieces();
-  $baseIndex = GetStatTurnIndex($damagerPlayer) * $turnStatPieces;
-  $damagerStats = &GetTurnStats($damagerPlayer);
-  //WriteLog("DEBUG: Logging damage for player $damagerPlayer at turn " . (GetStatTurnIndex($damagerPlayer)) . " with damage threatened $damageThreatened and damage dealt $damageDealt", highlight:true, highlightColor:"blue");
+  $baseIndex = GetStatTurnIndex($playerSource) * $turnStatPieces;
+  $damagerStats = &GetTurnStats($playerSource);
+  //WriteLog("DEBUG: Logging damage for player $playerSource at turn " . (GetStatTurnIndex($playerSource)) . " with damage threatened $damageThreatened and damage dealt $damageDealt", highlight:true, highlightColor:"blue");
   if(count($damagerStats) <= $baseIndex) StatsStartTurn();
   $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
   $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
