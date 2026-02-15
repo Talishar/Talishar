@@ -1961,7 +1961,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       MarkHero($otherPlayer);
       break;
     case "shelter_from_the_storm_red":
-      AddCurrentTurnEffect($parameter, $player);
+      AddCurrentTurnEffect("$parameter-3", $player);
       break;
     case "warcry_of_themis_yellow":
       // leave this as is for now, additional costs seem to not be tracking properly
