@@ -1,0 +1,12 @@
+function SonataArcanixQueue($cardID, $controller, $resourcesPaid) {
+    $xVal = $resourcesPaid/2;
+    $numRevealed = 3 + $xVal;
+    WriteLog(CardLink($cardID, $cardID) . " reveals " . $numRevealed . " cards.");
+    $cardIDs = await $controller.DeckTopCards(number:$numRevealed);
+    await $controller.RevealCards($cardIDs);
+    $maxNumber, $minNumber, $indices = await $controller.sonata_arcanix_red($cardIDs, mode:"choose_cards");
+    $indices = await $controller.MultiChooseDeck($maxNumber, $minNumber, $indices);
+    $cardIDs = await $controller.MultiRemoveDeck($indices);
+    await $controller.sonata_arcanix_red(mode:"deal_arcane");
+    final await $controller.ShuffleDeck();
+}

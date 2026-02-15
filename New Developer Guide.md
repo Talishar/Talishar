@@ -62,6 +62,35 @@ Used to execute regular code after a DQ, typically for cards with specific logic
 #### PASSPARAMETER
 Takes in the `$parameter` argument and returns it unchanged as the `$lastResult` for the next DQ.
 
+## Await
+Await is a wrapper around decision queues that should hopefully clean up a lot of the pain points behind writing decision queues. Notably decision queues are heavily reliant on the $lastResult variable which can sometimes be obtuse and require the developer's focus on tracking how $lastResult is changed by an executing DQ. Instead Await heavily leans on $dqVars, a global associative array that tracks any number of named variables that can be used by Awaits. Some benefits are that this won't have an enormous switch statement of DQ commands, just a series of functions, and specific card Await functions can be stored in the card object with the card's other code.
+
+`Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, ...$args)`
+
+Await takes as arguments:
+1. the `$player` who may need to make decisions or will be affected by the Await statement
+2. the `$function` to execute. This is a string that refers to a function (located for now in AwaitEffects.php). The functions here all have their name end in "Await" to indicate that they are only to be called as part of an Await execution. You don't include "Await" as part of the function name in the call to Await. Each await function is looking for specific named variables. If the function name is a cardID, it will attempt to call the `SpecificLogic` of the cards object if it exists. This replaces "SPECIFICCARD" in the old DQs
+3. `$returnName` is what to name the variable that the Await function returns, is used to make sure that the variable is named in such a way that the next Await recognizes it.
+4. `$lastResultName` is used to maintain backwards compatibility. If you precede an Await with a regular decision queue, you can use this variable to rename the `$lastResult` returned by the DQ so that the await recognizes it.
+5. `$subsequent` is the variable to set if the await can be passed through. Works the same as subsequent in DQs, just here it defaults to true rather than false.
+6. `$final` is a boolean that you set to true for the last Await in a sequence that clears the `$dqVars` to make sure future Awaits don't end up reading stale variables
+7. `...$args` is any number of keyword arguments. These take the place of `$parameter` from DQs and serve to pass values to Await functions that aren't dependant on previous Awaits
+
+### Example
+```
+$xVal = $resourcesPaid/2;
+    $numRevealed = 3 + $xVal;
+    WriteLog(CardLink($this->cardID, $this->cardID) . " reveals " . $numRevealed . " cards.");
+    Await($this->controller, "DeckTopCards", "cardIDs", number:$numRevealed, subsequent:false);
+    Await($this->controller, "RevealCards");
+    Await($this->controller, $this->cardID, mode:"choose_cards");
+    Await($this->controller, "MultiChooseDeck", "indices");
+    Await($this->controller, "MultiRemoveDeck", "cardIDs");
+    Await($this->controller, "MultiAddHand");
+    Await($this->controller, $this->cardID, mode:"deal_arcane", target:$target);
+    Await($this->controller, "ShuffleDeck", final:true);
+```
+
 ## MultiZone Indices
 A common way to reference cards is with a a MultiZone Index (MZIndex). These indices are formated as a location followed by either an index in that location or a unique id. MZIndices are always *relative* to a player. So MYCHAR-0 for player 1 will refer to player1's hero, and THEIRCHAR-0 will refer to their opponents. Any zone that can be owned by a player has both a "MY" and a "THEIR" version. If the MZIndex will be used immediately after being identified, directly using the index is fine. If there is a priority window between the MZIndex being generated and being used, it is important to convert it to use a unique ID instead of a numerical index. You can convert between the two formats with `CleanTarget` and `CleanTargetToIndex`.
 
