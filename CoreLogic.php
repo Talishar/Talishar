@@ -709,10 +709,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
   }
-  if ($type == "ARCANE") {
-    $playerSource != $player ? LogDamageStats($playerSource, $damageThreatened, $damage) : LogDamageStats($player, $damageThreatened, $damage);
-  }
-  elseif ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
+  if ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   PlayerLoseHealth($damage, $player);
