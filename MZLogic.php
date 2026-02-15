@@ -281,7 +281,6 @@ function MZBanish($player, $parameter, $lastResult)
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
   $otherPlayer = $player == 1 ? 2 : 1;
-  WriteLog("HERE in MZBanish: $lastResult");
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);

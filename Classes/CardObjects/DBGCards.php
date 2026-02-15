@@ -37,7 +37,7 @@ class dummy extends Card {
     $lastResult = GamestateUnsanitize($dqVars["LASTRESULT"]);
     $a = $dqVars["a"];
     $b = $dqVars["b"];
-    WriteLog("HERE: $lastResult - $a - $b");
+    WriteLog("DEBUG: $lastResult - $a - $b");
   }
 }
 
