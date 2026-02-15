@@ -6093,12 +6093,17 @@ class serpents_kiss_blue extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $indices = "THEIRDECK-0,THEIRDECK-1";
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $indices);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish a card", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-");
-    AddDecisionQueue("MZBANISH", $this->controller, "DECK,-," . $this->cardID . "," . $this->controller, 1);
-    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    $amount = 2 > $deck->RemainingCards() ? $deck->RemainingCards() : 2;
+    $inds = GetIndices($amount, zone:"THEIRDECK");
+    if ($inds != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish a card", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-");
+      AddDecisionQueue("MZBANISH", $this->controller, "DECK,-," . $this->cardID . "," . $this->controller, 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    }
   }
 }
 
