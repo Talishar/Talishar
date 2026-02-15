@@ -170,9 +170,26 @@ def Wrap(function_name, tab="  ", dest="./DecisionQueue/AwaitEffects.php"):
     else:
         print("Failed to find the function")
 
+def FindBlock(textlines):
+    """
+    finds a block of text contained within {}
+    
+    :param textlines: text (split into lines) to extract a block from,
+                      the first line is expected to have "{" in it
+    """
+    depth = 0
+    for j, endline in enumerate(textlines):
+        if "{" in endline and "}" not in endline:
+            depth += 1
+        elif "}" in endline:
+            depth -= 1
+        if depth == 0:
+            return j
+    return -1
+
 def Compile(function_def):
     """
-    Docstring for Compile
+    Not functional for now
     
     :param function_def: a precompiled function
     :param dest_file: the location of where to save the function
@@ -223,23 +240,6 @@ def Compile(function_def):
                 retline += "final: true, "
             retlines.append(retline[:-2] + ");")
     return "\n".join(retlines)
-
-def FindBlock(textlines):
-    """
-    finds a block of text contained within {}
-    
-    :param textlines: text (split into lines) to extract a block from,
-                      the first line is expected to have "{" in it
-    """
-    depth = 0
-    for j, endline in enumerate(textlines):
-        if "{" in endline and "}" not in endline:
-            depth += 1
-        elif "}" in endline:
-            depth -= 1
-        if depth == 0:
-            return j
-    return -1
 
 def CompileFile(in_file, out_file, tab="  "):
     pat = r".*function.+\{.*"

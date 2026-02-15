@@ -44,7 +44,6 @@ include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
-include "GeneratedCode/CompiledCode/MONFunctions.php";
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {

@@ -1,32 +1,17 @@
 <?php
 
-function Await2($player, $function, $acceptNames=[], $returnNames=["LASTRESULT"], $lastResultName="LASTRESULT", $subsequent=1, ...$args) {
-  AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
-  foreach ($args as $key => $value) {
-    AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
-    AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
-  }
-  if (count($acceptNames) > 0) AddDecisionQueue("PASSPARAMETER", $player, implode("|", $acceptNames), $subsequent);
-  AddDecisionQueue("AWAIT", $player, $function, $subsequent);
-  if ($lastResultName == "FINAL") AddDecisionQueue("CLEARDQVARs", $player, "-");
-  else AddDecisionQueue("SETDQVAR", $player, implode("|", $returnNames), $subsequent);
-}
-
-// $maxNumber, $minNumber, $indices = await $controller.sonata_arcanix_red($cardIDs, mode:"choose_cards");
-// $indices = await $controller.MultiChooseDeck($maxNumber, $minNumber, $indices);
-
-// Await($controller, "sonata_arcanix_red", ["cardID"], ["maxNumber","minNumber","indices"], mode: "choose_cards");
-// Await($controller, "MultiChooseDeck", ["maxNumber", "minNumber", "indices"], ["indices"]);
-function MultiChooseDeckAwait2($player, $lastResult) {
-  global $dqVars;
-  $paramNames = explode("|", $lastResult);
-  $maxNumber = $dqVars[$paramNames[0]] ?? 1;
-  $minNumber = $dqVars[$paramNames[1]] ?? 0;
-  $indices = $dqVars[$paramNames[2]] ?? "";
-  $subsequent = $paramNames[3] ? ($dqVars[$paramNames[3]] ?? 1) : 1;
-  $param = "$maxNumber-$indices-$minNumber";
-  PrependDecisionQueue("MULTICHOOSEDECK", $player, $param, $subsequent);
-}
+// Leaving this here for posterity, will be needed for compiled code
+// function Await2($player, $function, $acceptNames=[], $returnNames=["LASTRESULT"], $lastResultName="LASTRESULT", $subsequent=1, ...$args) {
+//   AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
+//   foreach ($args as $key => $value) {
+//     AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
+//     AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
+//   }
+//   if (count($acceptNames) > 0) AddDecisionQueue("PASSPARAMETER", $player, implode("|", $acceptNames), $subsequent);
+//   AddDecisionQueue("AWAIT", $player, $function, $subsequent);
+//   if ($lastResultName == "FINAL") AddDecisionQueue("CLEARDQVARs", $player, "-");
+//   else AddDecisionQueue("SETDQVAR", $player, implode("|", $returnNames), $subsequent);
+// }
 
 function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, ...$args) {
   AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
@@ -39,18 +24,6 @@ function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="L
   else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
 }
 
-// $this->cardID is calling a specific function that is hard-coded to set the correct dqVars
-// Await($this->controller, $this->cardID, mode:"choose_cards");
-// Await($this->controller, "MultiChooseDeck", "indices");
-function MultiChooseDeckAwait($player) {
-  global $dqVars;
-  $notSubsequent = $dqVars["notSubsequent"] ?? false;
-  $maxNumber = $dqVars["maxNumber"] ?? 1;
-  $minNumber = $dqVars["minNumber"] ?? 0;
-  $indices = $dqVars["indices"] ?? "";
-  $param = "$maxNumber-$indices-$minNumber";
-  PrependDecisionQueue("MULTICHOOSEDECK", $player, $param, !$notSubsequent);
-}
 
 function AwaitLogic($player, $function) {
   global $dqVars;
@@ -64,6 +37,16 @@ function AwaitLogic($player, $function) {
   if ($card != "-") return $card->SpecificLogic();
   WriteLog("$function does not appear to exist as an Await function yet");
   return "PASS";
+}
+
+function MultiChooseDeckAwait($player) {
+  global $dqVars;
+  $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  $maxNumber = $dqVars["maxNumber"] ?? 1;
+  $minNumber = $dqVars["minNumber"] ?? 0;
+  $indices = $dqVars["indices"] ?? "";
+  $param = "$maxNumber-$indices-$minNumber";
+  PrependDecisionQueue("MULTICHOOSEDECK", $player, $param, !$notSubsequent);
 }
 
 function SetLastResultAwait($player, $key) {

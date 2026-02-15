@@ -3183,7 +3183,7 @@ class sonata_arcanix_red extends Card {
     Await($this->controller, "MultiChooseDeck", "indices");
     Await($this->controller, "MultiRemoveDeck", "cardIDs");
     Await($this->controller, "MultiAddHand");
-    Await($this->controller, $this->cardID, mode:"deal_arcane");
+    Await($this->controller, $this->cardID, mode:"deal_arcane", target:$target);
     Await($this->controller, "ShuffleDeck", final:true);
     return "";
   }
