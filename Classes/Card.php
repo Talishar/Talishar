@@ -592,4 +592,9 @@ class Card {
   function CurrentEffectBeginEndPhaseAbility($i) {
     return ;
   }
+
+  function SpecificLogic() {
+    // handles the end of DQ stuff
+    return;
+  }
 }

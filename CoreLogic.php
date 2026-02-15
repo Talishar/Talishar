@@ -1565,14 +1565,14 @@ function PlayerHasLessHealth($player)
   return GetHealth($player) < GetHealth($otherPlayer);
 }
 
-function GetIndices($count, $add = 0, $pieces = 1)
+function GetIndices($count, $add = 0, $pieces = 1, $zone="")
 {
-  $indices = "";
+  $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($indices != "") $indices .= ",";
-    $indices .= ($i + $add);
+    $ind = $zone == "" ? $i + $add : "$zone-" . $i + $add;
+    array_push($indices, $ind);
   }
-  return $indices;
+  return implode(",", $indices);
 }
 
 function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)

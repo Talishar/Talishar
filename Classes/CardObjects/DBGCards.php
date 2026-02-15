@@ -15,6 +15,32 @@ class time_walk extends Card {
   }
 }
 
+class dummy extends Card {
+  function __construct($controller) {
+    $this->cardID = "dummy";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "this is the last result");
+    Await($this->controller, $this->cardID, a:"hello", b:"world");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, 5);
+    Await($this->controller, "PlayAura", lastResultName: "number", cardID:"frostbite");
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $lastResult = GamestateUnsanitize($dqVars["LASTRESULT"]);
+    $a = $dqVars["a"];
+    $b = $dqVars["b"];
+    WriteLog("DEBUG: $lastResult - $a - $b");
+  }
+}
+
 class fangs_a_lot_blue extends Card {
   function __construct($controller) {
     $this->cardID = "fangs_a_lot_blue";

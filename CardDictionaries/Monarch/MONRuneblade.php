@@ -59,20 +59,6 @@
       case "aether_ironweave":
         GainResources($currentPlayer, 2);
         return "";
-      case "sonata_arcanix_red":
-        $xVal = $resourcesPaid/2;
-        $numRevealed = 3 + $xVal;
-        WriteLog(CardLink($cardID, $cardID) . " reveals " . $numRevealed . " cards.");
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $numRevealed);
-        AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-        AddDecisionQueue("SONATAARCANIX", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTICHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIADDHAND", $currentPlayer, "1", 1);
-        AddDecisionQueue("SONATAARCANIXSTEP2", $currentPlayer, $target, 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        return "";
       case "vexing_malice_red": case "vexing_malice_yellow": case "vexing_malice_blue":
         DealArcane(2, 0, "PLAYCARD", $cardID);
         return "";
