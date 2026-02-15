@@ -3177,7 +3177,7 @@ class sonata_arcanix_red extends Card {
     $xVal = $resourcesPaid/2;
     $numRevealed = 3 + $xVal;
     WriteLog(CardLink($this->cardID, $this->cardID) . " reveals " . $numRevealed . " cards.");
-    Await($this->controller, "DeckTopCards", "cardIDs", number:$numRevealed);
+    Await($this->controller, "DeckTopCards", "cardIDs", number:$numRevealed, subsequent:false);
     Await($this->controller, "RevealCards");
     Await($this->controller, $this->cardID, mode:"choose_cards");
     Await($this->controller, "MultiChooseDeck", "indices");
