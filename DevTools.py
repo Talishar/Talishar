@@ -1,4 +1,5 @@
 import os
+import re
 import pandas as pd
 
 with open("./constants.php") as f:
@@ -127,7 +128,7 @@ def FindFunction(function_name, search_root="./"):
                             if line.startswith(f"function {function_name}"):
                                 return line.strip(" \n{")
                 except UnicodeDecodeError:
-                    print(f"Can't read {fpath}")
+                    pass
     return "FAILED"
                     
 def AwaitWrapper(function_def, tab="  "):
@@ -153,7 +154,7 @@ def AwaitWrapper(function_def, tab="  "):
     ret += f"{play_line};\n}}"
     return ret
 
-def Compile(function_name, tab="  ", dest="./DecisionQueue/AwaitEffects.php"):
+def Wrap(function_name, tab="  ", dest="./DecisionQueue/AwaitEffects.php"):
     function_def = FindFunction(function_name)
     if function_def != "FAILED":
         wrapper = AwaitWrapper(function_def, tab)
@@ -168,3 +169,93 @@ def Compile(function_name, tab="  ", dest="./DecisionQueue/AwaitEffects.php"):
             return
     else:
         print("Failed to find the function")
+
+def Compile(function_def):
+    """
+    Docstring for Compile
+    
+    :param function_def: a precompiled function
+    :param dest_file: the location of where to save the function
+    """
+    lines = function_def.split('\n')
+    retlines = [lines[0]]
+    first = True
+    for line in lines[1:]:
+        if "await" not in line: # no awaits to compile
+            retlines.append(line)
+        else:
+            leading_whitespace = len(line) - len(line.lstrip())
+            retline = line[:leading_whitespace]
+            if "=" in line:
+                return_var, command = line.split("=")
+            else:
+                return_var, command = "LASTRESULT", line
+            command = command.strip(" ;")
+            if command.startswith("final"):
+                final = True
+                command = command[len("final"):].strip()
+            else:
+                final = False
+            return_var = return_var.replace("$", "").replace(" ", "").replace(",", "|")
+            if not command.startswith("await"):
+                raise SyntaxError("await statement not in expected location")
+            command = command[len("await"):].strip()
+            player = command.split(".")[0]
+            command = ".".join(command.split(".")[1:])
+            function_name = command.split("(")[0]
+            arguments = (command.split("(")[1]).strip(" )").split(",")
+            awaited_args = []
+            kwargs = {}
+            for argument in arguments:
+                if ":" in argument:
+                    key, value = argument.split(":")
+                    kwargs[key.strip()] = value.strip(" ")
+                else:
+                    # do a synatax check here?
+                    awaited_args.append(argument.strip("$ "))
+            retline += f'Await({player}, "{function_name}", "{return_var}", '
+            for key in kwargs:
+                retline += f'{key}: {kwargs[key]}, '
+            if first:
+                first = False
+                retline += "subsequent: 0, "
+            if final:
+                retline += "final: true, "
+            retlines.append(retline[:-2] + ");")
+    return "\n".join(retlines)
+
+def FindBlock(textlines):
+    """
+    finds a block of text contained within {}
+    
+    :param textlines: text (split into lines) to extract a block from,
+                      the first line is expected to have "{" in it
+    """
+    depth = 0
+    for j, endline in enumerate(textlines):
+        if "{" in endline and "}" not in endline:
+            depth += 1
+        elif "}" in endline:
+            depth -= 1
+        if depth == 0:
+            return j
+    return -1
+
+def CompileFile(in_file, out_file, tab="  "):
+    pat = r".*function.+\{.*"
+    with open(in_file) as f:
+        precomp = f.readlines()
+    functions = []
+    for i, line in enumerate(precomp):
+        if (re.search(pat, line)):
+            block_end = FindBlock(precomp[i:])
+            if block_end != -1:
+                functions.append("".join(precomp[i:i+block_end+1]))
+    all_comp_functions = ["<?php"]
+    for i, function in enumerate(functions):
+        function_dec = function.split("\n")[0]
+        compiled_function = Compile(function).replace("    ", tab)
+        all_comp_functions.append(compiled_function)
+    with open(out_file, "w+") as f:
+        f.write("\n\n".join(all_comp_functions))
+            

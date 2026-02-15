@@ -44,6 +44,7 @@ include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
+include "GeneratedCode/CompiledCode/MONFunctions.php";
 
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
@@ -2287,6 +2288,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $lastResult = implode(",", $lastResult);
       }
       $dqVars[$parameter] = $lastResult;
+      return $lastResult;
+    case "SETDQVARS":
+      if (!is_array($lastResult)) {
+        $dqVars[$parameter] = $lastResult;
+        return $lastResult;
+      }
+      $keys = explode("|", $parameter);
+      $num = min(count($keys), count($lastResult));
+      for ($i = 0; $i < $num; ++$i) {
+        $dqVars[$keys[$i]] = $lastResult[$i];
+      }
       return $lastResult;
     case "CLEARDQVARS":
       global $dqVars;
