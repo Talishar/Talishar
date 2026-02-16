@@ -125,8 +125,18 @@ class Layer {
 	}
 
 	function Target() {
-		return isset($this->layers[$this->index+3]) ? $this->layers[$this->index+3] : "";
+		return isset($this->layers[$this->index+3]) ? $this->layers[$this->index+3] : "-";
 	}
+
+  function AddTarget($target) {
+    if ($this->Target() == "-") {
+      $this->layers[$this->index + 3] = $target;
+    }
+    else {// already has a target, add another one
+      $this->layers[$this->index + 3] .= ",$target";
+    }
+    return $this->layers[$this->index + 3];
+  }
 
 	function AdditionalCosts() {
 		return isset($this->layers[$this->index+4]) ? $this->layers[$this->index+4] : "-";

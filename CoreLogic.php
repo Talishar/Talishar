@@ -4161,6 +4161,23 @@ function TurnArsenalFaceUp($player) {
   }
 }
 
-function SetTargets() {
-  //TODO
+function SetTargets($player, $cardID, $search, $N=1, $may=false) {
+  for ($i = 0; $i < $N; ++$i) {
+    $nLeft = $N - $i;
+    if ($N == 1) {
+      $message = "Choose a target";
+      if ($may) $message .= " or pass";
+    }
+    elseif ($nLeft == 1) {
+      if ($may) $message = "Choose up to one more target";
+      else $message = "Choose one more target";
+    }
+    else {
+      if ($may) $message = "Choose up to $nLeft more targets";
+      else $message = "Choose $nLeft more targets";
+    }
+    Await($player, "MultiTargetIndices", "indices", search:$search, subsequent:$i != 0);
+    Await($player, "ChooseMultiZone", "index", may:$may, context:$message);
+    Await($player, "SetLayerTarget", "currentTargets", layerID:$cardID, final:$nLeft == 1);
+  }
 }

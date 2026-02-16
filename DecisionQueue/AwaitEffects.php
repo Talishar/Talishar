@@ -20,7 +20,11 @@ function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="L
     AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
   }
   AddDecisionQueue("AWAIT", $player, $function, $subsequent);
-  if ($final) AddDecisionQueue("CLEARDQVARs", $player, "-");
+  if ($final) {
+    AddDecisionQueue("CLEARDQVARS", $player, "-");
+    AddDecisionQueue("ELSE", $player, "-");
+    AddDecisionQueue("CLEARDQVARS", $player, "-");
+  }
   else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
 }
 
@@ -94,6 +98,47 @@ function ShuffleDeckAwait($player) {
   $parameter = $dqVars["parameter"] ?? "-";
   $deck = new Deck($player);
   $deck->Shuffle($parameter);
+}
+
+function MultiTargetIndicesAwait($player) {
+  global $dqVars;
+  $currentTargets = explode(",", $dqVars["currentTargets"] ?? "");
+  $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
+  $rv = [];
+  //remove any choices that have already been targeted
+  foreach ($rvOrig as $ind) {
+    if (!in_array(CleanTarget($player, $ind), $currentTargets)) array_push($rv, $ind);
+  }
+  $rv = implode(",", $rv);
+  return $rv == "" ? "PASS" : $rv;
+}
+
+function ChooseMultiZoneAwait($player) {
+  global $dqVars;
+  $may = $dqVars["may"] ?? false;
+  $indices = $dqVars["indices"] ?? "";
+  $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  if ($may)
+    PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
+  else
+    PrependDecisionQueue("CHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
+  PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
+}
+
+function SetLayerTargetAwait($player) {
+  global $dqVars, $Stack;
+  $cardID = $dqVars["layerID"] ?? "-";
+  $targ = $dqVars["index"] ?? "-";
+  if ($cardID == "-" || $targ == "-") return "PASS";
+  $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+  WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
+  $cleanTarget = CleanTarget($player, $targ);
+  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+    $Layer = $Stack->Card($i, true);
+    if ($Layer->ID() == $cardID) 
+      $Layer->AddTarget($cleanTarget);
+  }
+  return $cleanTarget;
 }
 
 function PlayAuraAwait($player) {

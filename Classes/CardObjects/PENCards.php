@@ -5819,15 +5819,8 @@ class put_on_ice extends BaseCard {
 
   function SetTargets($N) {
     $search = "THEIRALLY";
-    if (!ShouldAutotargetOpponent($this->controller)) $search .= "MYALLY";
-    for ($i = 0; $i < $N; ++$i) {
-      $nLeft = $N - $i;
-      AddDecisionQueue("MULTITARGETINDICES", $this->controller, $search, 1);
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose up to $nLeft more target(s)", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-    }
+    if (!ShouldAutotargetOpponent($this->controller)) $search .= "&MYALLY";
+    SetTargets($this->controller, $this->cardID, $search, $N, may:true);
   }
 }
 
