@@ -87,7 +87,7 @@ enum MetafyCommunity : string
         "arakni_marionette=HNT001-T", "arakni_orb_weaver=HNT005-T", "arakni_redback=HNT006-T", "arakni_tarantula=HNT007-T",
         "arakni_trap_door=HNT008-T", "arakni_web_of_deceit=HNT002-T", "arc_lightning_yellow=FAB268-T", "arcane_cussing_red=FLR012-T", "arcane_cussing_yellow=FLR018-T",
         "arcane_cussing_blue=FLR024-T", "arcane_lantern=EVR155-T", "arcanic_shockwave_red=LGS079-T", "arcanite_fortress=ROS211-T", "art_of_the_dragon_blood_red=FAB307-T",
-        "art_of_the_dragon_claw_red=FAB308-T", "art_of_the_dragon_fire_red=FAB309-T", "art_of_the_dragon_scale_red=FAB310-T", "aurora=ROS008-T", "aurora_shooting_star=ROS007-T",
+        "art_of_the_dragon_claw_red=FAB308-T", "art_of_the_dragon_fire_red=FAB309-T", "art_of_the_dragon_scale_red=FAB310-T",
         "avalon_archangel_of_rebirth=DTD409-T", "avast_ye_blue=GEM051-T", "azvolai=UPR409-T", "backspin_thrust_red=SUP254-T", "balance_of_justice=ANQ004-T",
         "banneret_of_courage_yellow=FAB161-T", "banneret_of_gallantry_yellow=FAB162-T", "banneret_of_protection_yellow=FAB163-T",
         "banneret_of_resilience_yellow=LGS179-T", "banneret_of_salvation_yellow=LGS180-T", "banneret_of_vigor_yellow=LGS181-T", "barkskin_of_the_millennium_tree=ROS028-T",
