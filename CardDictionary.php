@@ -2196,7 +2196,7 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
           }
           break;
         case "under_the_trap_door_blue":
-          if ($cardID == $currentTurnEffects[$i + 2]) {
+          if ($cardID == $currentTurnEffects[$i + 2] && $from == "CHAINCLOSING") {
             RemoveCurrentTurnEffect($i);
             return "BANISH";
           }
