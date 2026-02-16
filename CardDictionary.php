@@ -3977,8 +3977,6 @@ function CharacterDefaultActiveState($cardID)
     case "longdraw_half_glove":
     case "aether_crackers":
     case "hard_knuckle":
-    case "verdance_thorn_of_the_rose":
-    case "verdance":
     case "arcanite_fortress":
     case "widow_veil_respirator":
     case "widow_back_abdomen":
@@ -4023,6 +4021,9 @@ function CharacterDefaultActiveState($cardID)
     case "kimono_of_layered_lessons":
     case "achilles_accelerator":
       return 1;
+    case "verdance_thorn_of_the_rose":
+    case "verdance":
+      return 0;
     default:
       return 2;
   }
