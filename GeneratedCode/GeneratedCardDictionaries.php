@@ -8817,7 +8817,7 @@ return match($cardID) {
 "fire_tenet_strike_first_red" => "Fire Tenet: Strike First",
 "fire_tenet_strike_first_yellow" => "Fire Tenet: Strike First",
 "fire_tenet_strike_first_blue" => "Fire Tenet: Strike First",
-"fire_that_burns_within_red" => "Fire That Burns Within",
+"fire_that_burns_within_red" => "Fire that Burns Within",
 "fire_and_brimstone_red" => "Fire and Brimstone",
 "fire_in_the_hole_red" => "Fire in the Hole",
 "firebreathing_red" => "Firebreathing",
