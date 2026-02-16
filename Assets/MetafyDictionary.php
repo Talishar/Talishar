@@ -270,7 +270,13 @@ enum MetafyCommunity : string
         "oasis_respite_red=ANQ035-T", "oldhim=PEN345-T", "premeditate_red=ANQ022-T", "prism=PEN343-T", "pummel_red=ANQ032-T", "ravenous_rabble_red=ANQ029-T", "remembrance_yellow=ANQ026-T", 
         "rhinar=PEN334-T", "ripple_away_blue=ANQ014-T", "riptide=PEN341-T", "rusted_relic_blue=ANQ023-T", "scar_for_a_scar_red=ANQ030-T", "seduce_secrets_yellow=ANQ027-T", 
         "sigil_of_gravespawning_blue=PEN098-T", "sigil_of_solace_red=ANQ036-T", "sink_below_red=ANQ034-T", "snatch_red=ANQ031-T", "teklovossen=PEN339-T", "tenacity_yellow=ANQ015-T", 
-        "that_all_you_got_yellow=ANQ018-T", "the_weakest_link_red=ANQ016-T", "this_rounds_on_me_blue=ANQ024-T", "truce_blue=ANQ025-T", "stir_the_wildwood_red=FAB047-T"
+        "that_all_you_got_yellow=ANQ018-T", "the_weakest_link_red=ANQ016-T", "this_rounds_on_me_blue=ANQ024-T", "truce_blue=ANQ025-T", "stir_the_wildwood_red=FAB047-T",
+        "aggressive_pounce_red=GEM114-T", "blast_rig_red=GEM120-T", "conquer_the_icy_terrain_red=GEM134-T", "construct_nitro_mechanoid_yellow=GEM119-T", "crown_of_dominion=GEM112-T", 
+        "doubling_season_red=GEM133-T", "duty_bound_blitz_red=GEM136-T", "enact_vengeance_red=GEM116-T", "engulfing_shadows_yellow=GEM137-T", "feign_vengeance_blue=GEM117-T", 
+        "fire_that_burns_within_red=GEM132-T", "frost_spike_blue=GEM130-T", "future_sight_red=GEM124-T", "graven_gaslight=GEM106-T", "grimoire_of_fellingsong=GEM110-T", "hulk_up_blue=GEM138-T", 
+        "hyper_inflation_red=GEM131-T", "ion_charged_yellow=GEM135-T", "knife_through_red=GEM113-T", "man_overboard_red=GEM126-T", "maxx_the_hype_nitro=GEM105-T", "rainbow_goo_trap_red=GEM122-T",
+        "reinforce_the_line_red=GEM140-T", "roaring_beam_yellow=GEM129-T", "shallow_water_shark_harpoon_yellow=GEM127-T", "shimmering_mirage_blue=GEM125-T", "snarky_prick_red=GEM139-T",
+        "submerge_red=GEM128-T", "teklo_trebuchet_2000_blue=GEM121-T", "valahai_riven_yellow=GEM115-T", "weeping_battleground_red=GEM123-T", "elemental_strike_red=PEN205-T"
     ];
     return $altArts;
   }
