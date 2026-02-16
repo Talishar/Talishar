@@ -605,7 +605,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10001:
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
-      WriteLog("Player " . $playerID . " canceled their blocks");
       break;
     case 10002:
       WriteLog("Player " . $playerID . " manually added 1 action point", highlight: true);
