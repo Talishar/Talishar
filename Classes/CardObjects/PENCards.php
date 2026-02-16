@@ -5580,10 +5580,6 @@ class unflinching_foothold extends Card {
     return !IsLayerStep();
   }
 
-  function GoesOnCombatChain($phase, $from) {
-    return $phase == "B";
-  }
-
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddCurrentTurnEffect($this->cardID, $this->controller == 1 ? 2 : 1);
   }
