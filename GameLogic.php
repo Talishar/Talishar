@@ -388,8 +388,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           foreach ([$otherPlayer] as $p) {
             $prefix = "THEIRDISCARD";
             $Graveyard = new Discard($p);
-            for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+            for ($i = 0; $i < $Graveyard->TotalCards(); ++$i) {
               $Card = $Graveyard->Card($i, true);
+              if ($Card->Facing() == "DOWN") continue;
               if (ColorContains($Card->ID(), "2", $p) ) array_push($rv, "$prefix-" . $Card->Index());
             }
           }

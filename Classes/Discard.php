@@ -31,6 +31,10 @@ class Discard {
     return $count;
   }
 
+  function TotalCards() { //includes facedown cards in the count
+    return count($this->discard);
+  }
+
   function RemoveRandom($count=1) {
     $cards = "";
     for($i = 0; $i < $count && !$this->Empty(); $i++) {
@@ -114,5 +118,9 @@ class DiscardCard {
   function Flip($facing="DOWN") {
     if (isset($this->pieces[$this->index + 2]))
       $this->pieces[$this->index + 2] = $facing;
+  }
+
+  function Facing() {
+    return $this->pieces[$this->index + 2] ?? "UP";
   }
 }
