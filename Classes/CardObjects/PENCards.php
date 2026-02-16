@@ -297,6 +297,8 @@ class elemental_strike_red extends Card
     $myHand = &GetHand(player: $this->controller);
     if ($from == "HAND" && count($myHand) < 2)
       return true;
+    if ($from == "ARS" && count($myHand) < 1)
+      return true;
     return false;
   }
 
