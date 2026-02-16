@@ -5591,6 +5591,10 @@ class unflinching_foothold extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
+
+  function DefaultActiveState() {
+    return 0;
+  }
 }
 
 class myrkhellir_helm extends Card {
