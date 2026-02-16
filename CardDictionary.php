@@ -1564,7 +1564,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "light_up_the_leaves_red":
       $names = ["-", "-"];
       //can it ability?
-      if ($from == "HAND") $names[0] = "Ability";
+      if ($from == "HAND" && SearchCount(SearchHand($currentPlayer, talent:"EARTH")) > 0) $names[0] = "Ability";
       else return "-,Action";
       //can it be played?
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
@@ -3977,8 +3977,6 @@ function CharacterDefaultActiveState($cardID)
     case "longdraw_half_glove":
     case "aether_crackers":
     case "hard_knuckle":
-    case "verdance_thorn_of_the_rose":
-    case "verdance":
     case "arcanite_fortress":
     case "widow_veil_respirator":
     case "widow_back_abdomen":
@@ -4023,6 +4021,9 @@ function CharacterDefaultActiveState($cardID)
     case "kimono_of_layered_lessons":
     case "achilles_accelerator":
       return 1;
+    case "verdance_thorn_of_the_rose":
+    case "verdance":
+      return 0;
     default:
       return 2;
   }

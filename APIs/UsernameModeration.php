@@ -58,8 +58,8 @@ $offensivePatterns = [
     'nazi', 'kkk', 'antifa slur', 'penis', 'vagina', 'cunt',
     'n-gger', 'n-gga', 'dick', 'dickhead', 'pussy',
     'slave', 'nazi', 'jew', 'jewish', 'h-tler', 'cum', 'cock', 
-    'arab', 'israel', 'koon', 'kum', 'slayer', 'killer', 'fuck',
-    
+    'arab', 'israel', 'koon', 'kum', 'slayer', 'killer', 'fuck', 'kill', 
+    'azgul', 'omega', 'nigger'
     // Add more as needed - moderate these yourself
 ];
 
