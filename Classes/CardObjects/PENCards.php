@@ -5591,6 +5591,12 @@ class unflinching_foothold extends Card {
   function DefaultActiveState() {
     return 0;
   }
+
+  function SpecificLogic() {
+    $Character = new PlayerCharacter($this->controller);
+    $Card = $Character->FindCardID($this->cardID);
+    PlayCard($this->cardID, "EQUIP", -1, $index=$Card->Index(), $Card->UniqueID(), zone:"MYCHAR");
+  }
 }
 
 class myrkhellir_helm extends Card {

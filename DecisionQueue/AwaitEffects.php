@@ -165,6 +165,13 @@ function DealDamageAwait($player) {
   return $damage;
 }
 
+Function YesNoAwait($player) {
+  global $dqVars;
+  $context = $dqVars["context"];
+  PrependDecisionQueue("NOPASS", $player, "-", 1);
+  PrependDecisionQueue("YESNO", $player, $context);
+}
+
 function PlayAuraAwait($player) {
   global $dqVars;
   $cardID = $dqVars["cardID"];

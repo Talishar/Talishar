@@ -932,31 +932,17 @@ function OnAttackEffects($cardID)
     }
     if ($remove) RemoveCurrentTurnEffect($i);
   }
+
+  $DefChar =  new PlayerCharacter($defPlayer);
+  for ($i = 0; $i < $DefChar->NumCards(); ++$i) {
+    $CharCard = $DefChar->Card($i, true);
+    if ($CharCard->CardID() == "unflinching_foothold" && $CharCard->IsActive() && IsDominateActive()) { //special case here
+      Await($defPlayer, "YesNo", context: "if_you_want_to_activate_" . CardLink("unflinching_foothold"), subsequent:0);
+      Await($defPlayer, "unflinching_foothold", final:true);
+    }
+  }
 }
 
-// function CurrentEffectBaseAttackSet()
-// {
-//   global $currentPlayer, $currentTurnEffects;
-//   $mod = -1;
-//   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-//     if ($currentTurnEffects[$i + 1] == $currentPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
-//       switch ($currentTurnEffects[$i]) {
-//         case "transmogrify_red":
-//           if ($mod < 8) $mod = 8;
-//           break;
-//         case "transmogrify_yellow":
-//           if ($mod < 7) $mod = 7;
-//           break;
-//         case "transmogrify_blue":
-//           if ($mod < 6) $mod = 6;
-//           break;
-//         default:
-//           break;
-//       }
-//     }
-//   }
-//   return $mod;
-// }
 
 function CurrentEffectCostModifiers($cardID, $from)
 {
