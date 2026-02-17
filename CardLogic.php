@@ -2330,7 +2330,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");
-        AddDecisionQueue("TAKEDAMAGE", $mainPlayer, "2-" . $parameter, 1);
+        Await($player, "DealDamage", source:$parameter, damage:2, final:true);
         break;
       case "rockslide_trap_blue":
         TrapTriggered($parameter);

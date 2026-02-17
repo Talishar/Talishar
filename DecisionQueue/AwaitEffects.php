@@ -141,6 +141,30 @@ function SetLayerTargetAwait($player) {
   return $cleanTarget;
 }
 
+function DealDamageAwait($player) {
+  global $dqVars;
+  $target = $dqVars["target"] ?? "THEIRCHAR-0";
+  $damage = $dqVars["damage"] ?? 1;
+  $source = $dqVars["source"] ?? "-";
+  $type = $dqVars["type"] ?? "DAMAGE";
+  $playerSource = $dqVars["playerSource"] ?? $player;
+
+  $targetArr = explode("-", $target);
+  $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
+  if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
+    return DamageAlly($targetPlayer, $target[1], $damage, $type);
+  } else {
+    PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
+    if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
+    $Character = new PlayerCharacter($targetPlayer);
+    $Solray = $Character->FindCardID("solray_plating");
+    if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
+    DoQuell($targetPlayer, $damage);
+    if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
+  }
+  return $damage;
+}
+
 function PlayAuraAwait($player) {
   global $dqVars;
   $cardID = $dqVars["cardID"];
