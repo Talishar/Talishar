@@ -5876,18 +5876,11 @@ class reckless_arithmetic_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $roll = GetDieRoll($this->controller);
-    AddCurrentTurnEffect($this->cardID . "," . $roll, $this->controller);
+    AddCurrentTurnEffect($this->cardID . "-" . $roll, $this->controller);
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    global $currentTurnEffects;
-    foreach ($currentTurnEffects as $effect) {
-      $effects = explode(",", $effect);
-      if ($effects[0] == $this->cardID) {
-        return $effects[1];
-      }
-    }
-    return 0;
+    return $param != "-" ? $param : 0;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
