@@ -15,9 +15,23 @@
 include 'Libraries/APCuCache.php';
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedDomains = ['localhost', 'talishar.net', 'legacy.talishar.net', 'preview.talishar.net'];
+$isAllowed = false;
+
+foreach ($allowedDomains as $domain) {
+    if (strpos($origin, $domain) !== false) {
+        $isAllowed = true;
+        break;
+    }
+}
+
+if ($isAllowed) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Methods: GET, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+}
 
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

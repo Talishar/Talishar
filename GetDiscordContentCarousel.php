@@ -12,7 +12,24 @@
 include 'Libraries/APCuCache.php';
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+
+// CORS validation - whitelist trusted domains
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedDomains = ['localhost', 'talishar.net', 'legacy.talishar.net', 'preview.talishar.net'];
+$isAllowed = false;
+
+foreach ($allowedDomains as $domain) {
+    if (strpos($origin, $domain) !== false) {
+        $isAllowed = true;
+        break;
+    }
+}
+
+if ($isAllowed) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Methods: GET, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
