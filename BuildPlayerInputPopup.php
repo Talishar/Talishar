@@ -482,16 +482,18 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) $label = "Attacking";
           if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $playerID == $mainPlayer) $label = "Attacking";
 
-          //Add indication for attacking Allies and Auras
+          //Add indication for attacking Allies and Auras in the layer step
           $layerCheckCount = count($layers);
           if ($layerCheckCount > 0 && $layers[0] != "") {
             $searchType = $option[0] == "THEIRALLY" || $option[0] == "MYALLY" ? "Ally" : "Aura";
             $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
-            if ($index != "" && (DelimStringContains($option[0], "ALLY", true) || DelimStringContains($option[0], "AURAS", true))) {
-                $params = explode("|", $layers[intval($index[0]) + 2]);              
-                if (isset($params[2]) && $option[1] == $params[2]) {
-                  $label = "Attacking";
-                }
+            if (count($index) > 0 && (DelimStringContains($option[0], "ALLY", true) || DelimStringContains($option[0], "AURAS", true))) {
+              $params = explode("|", $layers[intval($index[0]) + 2]);
+              $originUID = $params[3] ?? "-";
+              $Card = MZIndexToObject($playerID, $options[$i]);
+              if ($originUID == $Card->UniqueID()) {
+                $label = "Attacking";
+              }
             }
           }
           //Add indication for layers targets
