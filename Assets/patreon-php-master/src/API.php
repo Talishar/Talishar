@@ -3,7 +3,7 @@ namespace Patreon;
 
 class API {
 
-	// Holds the access token
+	// Holds the access token.
 	private $access_token;
 
 	// Holds the api endpoint used
