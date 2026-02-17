@@ -795,7 +795,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $chainLinksPieces = ChainLinksPieces();
   for ($i = 0; $i < $attacksCount; $i += $chainLinksPieces) {
     $linkNum = intdiv($i, $chainLinksPieces);
-    $label = "Chain Link " . $linkNum + 1;
+    $label = "Chain Link " . ($linkNum + 1);
     $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($attacks[$i], $turnPhase, "COMBATCHAINATTACKS", $linkNum) ? 38 : 0;
     $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID);

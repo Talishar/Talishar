@@ -1569,7 +1569,7 @@ function GetIndices($count, $add = 0, $pieces = 1, $zone="")
 {
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    $ind = $zone == "" ? $i + $add : "$zone-" . $i + $add;
+    $ind = $zone == "" ? $i + $add : "$zone-" . ($i + $add);
     array_push($indices, $ind);
   }
   return implode(",", $indices);

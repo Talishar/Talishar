@@ -96,10 +96,10 @@ function EVOAbilityType($cardID, $index = -1, $from = ""): string
 {
   global $currentPlayer, $CS_NumCranked, $CS_NumBoosted;
   return match ($cardID) {
-    "maxx_the_hype_nitro", "maxx_nitro" => GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "A" : "",
-    "banksy" => GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : "",
-    "teklo_leveler" => EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : "",
-    "prismatic_lens_yellow", "quantum_processor_yellow", "fuel_injector_blue", "steam_canister_blue", "dissolving_shield_red", "backup_protocol_red_red", "backup_protocol_yel_yellow", "backup_protocol_blu_blue", "dissolving_shield_yellow", "dissolving_shield_blue" => $from == "PLAY" ? "I" : "A",
+    "maxx_the_hype_nitro", "maxx_nitro" => (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "A" : ""),
+    "banksy" => (GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : ""),
+    "teklo_leveler" => (EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : ""),
+    "prismatic_lens_yellow", "quantum_processor_yellow", "fuel_injector_blue", "steam_canister_blue", "dissolving_shield_red", "backup_protocol_red_red", "backup_protocol_yel_yellow", "backup_protocol_blu_blue", "dissolving_shield_yellow", "dissolving_shield_blue" => ($from == "PLAY" ? "I" : "A"),
     "teklovossen_the_mechropotent", "symbiosis_shot" => "AA",
     "teklovossen_esteemed_magnate", "cogwerx_base_legs", "cogwerx_base_arms", "cogwerx_base_chest", "cogwerx_base_head", "evo_thruster_yellow_equip", "evo_smoothbore_yellow_equip", "evo_engine_room_yellow_equip", "evo_command_center_yellow_equip", "evo_charging_rods_yellow_equip", "evo_cogspitter_yellow_equip", "evo_battery_pack_yellow_equip", "evo_data_mine_yellow_equip", "teklovossen" => "I",
     "stasis_cell_blue", "medkit_blue", "warband_of_bellona", "grinding_gears_blue" => "A",

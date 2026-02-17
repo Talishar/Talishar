@@ -115,7 +115,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           $target = "THEIRAURAS-" . $index;
         }
         if(GetMZCard($currentPlayer, $target) == "MELD"){
-          $target = $params[0] . "-" . $params[1]+2;
+          $target = $params[0] . "-" . ($params[1]+2);
         }
         if($target != "-") AddCurrentTurnEffect($cardID, $currentPlayer, $from, GetMZCard($currentPlayer, $target));
         if(!SearchCurrentTurnEffects($cardID . "-1", $currentPlayer)) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);  

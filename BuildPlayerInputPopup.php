@@ -560,7 +560,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
           if ($option[0] == "MYARS") $label = "Arsenal";
           //Add indication for past chain links
-          if ($option[0] == "PASTCHAINLINK") $label = "Chain link " . $option[2]+1;
+          if ($option[0] == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1);
           //Add indication for Attacking Mechanoid
           if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "nitro_mechanoida" || GetMZCard($currentPlayer, $options[$i]) == "teklovossen_the_mechropotenta")) $label = "Attacking";
 

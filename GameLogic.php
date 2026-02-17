@@ -3375,7 +3375,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "AMULETOFOBLATION":
       $params = explode("!", $parameter);
       $target = GetMZCard($mainPlayer, "$params[1]-$lastResult");
-      AddCurrentTurnEffect("$params[0]$target", GetMZCard($mainPlayer, $params[1] . "-" . $lastResult + 1), count($params) > 1 ? $params[1] : "");
+      AddCurrentTurnEffect("$params[0]$target", GetMZCard($mainPlayer, $params[1] . "-" . ($lastResult + 1)), count($params) > 1 ? $params[1] : "");
       WriteLog(CardLink("amulet_of_oblation_blue", "amulet_of_oblation_blue") . " targeted " . CardLink($target, $target));
       return $lastResult;
     case "FABRICATE":

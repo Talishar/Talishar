@@ -50,7 +50,7 @@ if(!AltArtsDisabled($playerID))
       for($i = 0; $i < count($altArts); ++$i) {
         $arr = explode("=", $altArts[$i]);
         $altArt = new stdClass();
-        $altArt->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
+        $altArt->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . ($i + 1) : "");
         $altArt->cardId = $arr[0];
         $altArt->altPath = $arr[1];
         array_push($response->altArts, $altArt);
