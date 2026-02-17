@@ -2486,6 +2486,10 @@ class weeping_battleground_yellow extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return $this->baseCard->PlayAbility($target);
   }
+
+  function SpecialBlock() {
+    return 2;
+  }
 }
 
 class weeping_battleground_blue extends Card {
@@ -2501,6 +2505,10 @@ class weeping_battleground_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return $this->baseCard->PlayAbility($target);
+  }
+
+  function SpecialBlock() {
+    return 1;
   }
 }
 
