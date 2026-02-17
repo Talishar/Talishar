@@ -4020,6 +4020,10 @@ function CharacterDefaultActiveState($cardID)
     case "voltic_vanguard":
     case "kimono_of_layered_lessons":
     case "achilles_accelerator":
+    case "lyath_goldmane":
+    case "lyath_goldmane_vile_savant":
+    case "teklovossen":
+    case "teklovossen_esteemed_magnate":
       return 1;
     case "verdance_thorn_of_the_rose":
     case "verdance":
