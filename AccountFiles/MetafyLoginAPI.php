@@ -13,7 +13,7 @@ $response = new stdClass();
 
 $client_id = $metafyClientID ?? '';
 $client_secret = $metafyClientSecret ?? '';
-$redirect_uri = 'https://talishar.net/user/profile/linkmetafy';
+$redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . '/user/profile/linkmetafy';
 
 // The below code snippet needs to be active wherever the the user is landing in $redirect_uri parameter above.
 // It will grab the auth code from Metafy and get the tokens via the OAuth client
