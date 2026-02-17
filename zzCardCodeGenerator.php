@@ -19,8 +19,6 @@
   curl_setopt($curl, CURLOPT_URL, $jsonUrl);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
   $cardData = curl_exec($curl);
-  curl_close($curl);
-
 
   $cardArray = json_decode($cardData);
 
@@ -268,16 +266,6 @@
         }
       }
       
-/*       // Also check granted_keywords if not found in card_keywords
-      if (!$hasKeyword && isset($cardArray[$i]->granted_keywords)) {
-        foreach ($cardArray[$i]->granted_keywords as $grantedKeyword) {
-          if (ExtractKeywordMatch($grantedKeyword, $keyword, $keywordAmount)) {
-            $hasKeyword = true;
-            break;
-          }
-        }
-      } */
-      
       if ($hasKeyword) {
         if(isset($cardArray[$i]->printings[0]->double_sided_card_info) && !$cardArray[$i]->printings[0]->double_sided_card_info[0]->is_front && $cardArray[$i]->printings[0]->rarity != "T") {
           if ($cardID == "inner_chi_blue") {
@@ -327,7 +315,6 @@
       }
     }
     
-    // Output the associative array
     if ($isAmountFunction) {
       foreach ($associativeArray as $cID => $amount) {
         fwrite($handler, "\"$cID\" => $amount,\r\n");
@@ -348,42 +335,32 @@
   {
     global $essenceElements;
     
-    // Trim the keyword
     $cardKeyword = trim($cardKeyword);
     
     // Handle keywords with numbers (e.g., "Ward 10", "Amp 2")
     $parts = explode(" ", $cardKeyword);
     $keywordWithoutNumber = trim(preg_replace('/\s+\d+$/', '', $cardKeyword));
     
-    // Check for exact match
     if ($keywordWithoutNumber === $keyword) {
       // Extract the number if it exists
       $amount = (count($parts) > 0 && is_numeric(end($parts))) ? intval(end($parts)) : 1;
       return true;
     }
     
-    // Check if keyword is a suffix of cardKeyword (e.g., "Specialization" in "Bravo Specialization")
-    // This handles class-prefixed keywords like "Bravo Specialization"
     if (strpos($keywordWithoutNumber, " " . $keyword) !== false || $keywordWithoutNumber === $keyword) {
       $amount = 1;
       return true;
     }
     
-    // Special handling for Essence keywords that may be composite
-    // e.g., "Essence of Earth and Ice", "Essence of Earth, Ice and Lightning"
     if (strpos($keyword, "Essence of") === 0) {
-      // Extract the element from the keyword (e.g., "Earth" from "Essence of Earth")
       $element = substr($keyword, strlen("Essence of "));
       
-      // Check if cardKeyword contains "Essence of" and the element
       if (strpos($cardKeyword, "Essence of") === 0 && strpos($cardKeyword, $element) !== false) {
         $amount = 1;
         return true;
       }
     }
     
-    // Check if keyword is part of a composite keyword (e.g., "Earth" in "Essence of Earth and Ice")
-    // Split by "and" to handle composite keywords like "Earth and Ice"
     if (strpos($cardKeyword, " and ") !== false) {
       $compositeKeywords = array_map('trim', explode(" and ", $cardKeyword));
       foreach ($compositeKeywords as $compositeKeyword) {
@@ -397,16 +374,12 @@
       }
     }
     
-    // Also handle comma-separated keywords (e.g., "Essence of Earth, Ice and Lightning")
     if (strpos($cardKeyword, ",") !== false || strpos($cardKeyword, " and ") !== false) {
-      // Replace commas with " and " for uniform splitting
       $normalized = str_replace(", ", " and ", $cardKeyword);
       $compositeKeywords = array_map('trim', explode(" and ", $normalized));
       foreach ($compositeKeywords as $compositeKeyword) {
-        // Remove any trailing numbers from composite keywords
         $compositeKeywordClean = trim(preg_replace('/\s+\d+$/', '', $compositeKeyword));
         if ($compositeKeywordClean === $keyword) { 
-          // Extract the number if it exists
           $amount = (is_numeric(substr($compositeKeyword, -1))) ? intval(substr($compositeKeyword, -1)) : 1;
           return true;
         }
