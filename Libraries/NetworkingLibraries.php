@@ -991,11 +991,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
       copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
       copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-      // Save player IPs
-      include "MenuFiles/ParseGamefile.php";
-      $ipContent = "Player 1 = " . $hostIP . "\n";
-      $ipContent .= "Player 2 = " . $joinerIP;
-      file_put_contents($folderName . "/PlayersIP.txt", $ipContent);
       WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
       break;
     case 100015: //Request to enable chat
