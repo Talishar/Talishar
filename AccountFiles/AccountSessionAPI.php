@@ -116,6 +116,7 @@
     //Also delete cookies
     if (isset($_COOKIE["rememberMeToken"])) setcookie("rememberMeToken", "", time() + 1, "/");
     if (isset($_COOKIE["lastAuthKey"])) setcookie("lastAuthKey", "", time() + 1, "/");
+    if (isset($_COOKIE["metafyRememberToken"])) setcookie("metafyRememberToken", "", time() + 1, "/");
   }
 
   function CheckSession()
@@ -133,6 +134,10 @@
       
       session_start();
       
+      if (empty($_SESSION['userid']) && isset($_COOKIE['metafyRememberToken'])) {
+        RestoreMetafySession($_COOKIE['metafyRememberToken']);
+      }
+      
       // Regenerate session ID periodically for security
       if (!isset($_SESSION['last_regeneration'])) {
         $_SESSION['last_regeneration'] = time();
@@ -141,6 +146,39 @@
         $_SESSION['last_regeneration'] = time();
       }
     }
+  }
+  
+  function RestoreMetafySession($rememberToken)
+  {
+    if (empty($rememberToken)) {
+      return;
+    }
+    
+    $conn = GetDBConnection();
+    if (!$conn) {
+      return;
+    }
+    
+    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities FROM users WHERE metafyRememberToken=?";
+    $stmt = mysqli_stmt_init($conn);
+    
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_stmt_bind_param($stmt, 's', $rememberToken);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+      $row = mysqli_fetch_assoc($result);
+      mysqli_stmt_close($stmt);
+      
+      if ($row) {
+        $_SESSION['userid'] = $row['usersid'];
+        $_SESSION['useruid'] = $row['usersUid'];
+        $_SESSION['isPatron'] = $row['isPatron'] ?? 0;
+        $_SESSION['last_activity'] = time();
+        $_SESSION['last_regeneration'] = time();
+      }
+    }
+    
+    mysqli_close($conn);
   }
   
   function SecureSessionStart()

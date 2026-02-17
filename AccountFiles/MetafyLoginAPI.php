@@ -81,13 +81,29 @@ function SaveMetafyTokens($accessToken, $refreshToken)
     return;
   }
   $userID = $_SESSION['userid'];
+  $rememberToken = bin2hex(random_bytes(32));
+  
   $conn = GetDBConnection();
-  $sql = 'UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?';
+  $sql = 'UPDATE users SET metafyAccessToken=?, metafyRefreshToken=?, metafyRememberToken=? WHERE usersid=?';
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, 'sss', $accessToken, $refreshToken, $userID);
+    mysqli_stmt_bind_param($stmt, 'ssss', $accessToken, $refreshToken, $rememberToken, $userID);
     $result = mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
+    
+    // Set the remember token as a long-lived cookie (30 days)
+    if ($result) {
+      $expiresIn = 30 * 24 * 60 * 60; // 30 days
+      $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+      setcookie('metafyRememberToken', $rememberToken, [
+        'expires' => time() + $expiresIn,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'secure' => $isSecure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+      ]);
+    }
   }
   mysqli_close($conn);
 }
@@ -103,7 +119,6 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   
   $all_communities = array();
   
-  // List of paid tier names - ONLY used for Talishar community restrictions
   $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
   $paid_tier_names = array(
     'Fyendal Supporters',
@@ -114,7 +129,6 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
     'Light of Sol Gemini Circle'
   );
   
-  // 1. Fetch the authenticated user's owned community (if they are a coach/creator)
   $community_url = 'https://metafy.gg/irk/api/v1/me/community';
   
   $ch = curl_init();
