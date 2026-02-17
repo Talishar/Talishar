@@ -48,27 +48,25 @@ if (!function_exists("GetMetafyTiersFromDatabase")) {
     }
     
     $tiers = [];
+    $talisharCommunityId = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
+    
     foreach ($communities as $community) {
       $communityId = $community['id'] ?? null;
-      if ($communityId) {
-        foreach(MetafyCommunity::cases() as $metafyCommunity) {
-          if ($metafyCommunity->value === $communityId) {
-            // Look for the user's actual subscription tier
-            $tierName = null;
-            
-            // Check subscription_tier field (from purchase data)
-            if (isset($community['subscription_tier']) && is_array($community['subscription_tier'])) {
-              $tierName = $community['subscription_tier']['name'] ?? null;
-            } elseif (isset($community['subscription_tier']) && is_string($community['subscription_tier'])) {
-              $tierName = $community['subscription_tier'];
-            }
-            
-            if ($tierName) {
-              $tiers[] = $tierName;
-            }
-            break;
-          }
+      
+      if ($communityId === $talisharCommunityId) {
+        $tierName = null;
+        
+        // Check subscription_tier field (from purchase data)
+        if (isset($community['subscription_tier']) && is_array($community['subscription_tier'])) {
+          $tierName = $community['subscription_tier']['name'] ?? null;
+        } elseif (isset($community['subscription_tier']) && is_string($community['subscription_tier'])) {
+          $tierName = $community['subscription_tier'];
         }
+        
+        if ($tierName) {
+          $tiers[] = $tierName;
+        }
+        break;
       }
     }
     
@@ -542,14 +540,14 @@ if ($matchup == "") {
   if ($playerID == 1) {
     $p1uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 1");
     $p1id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
-    $p1IsPatron = (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "");
+    $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
     $p1ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
     // Get Metafy tiers for player 1 from database
     $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
   } else if ($playerID == 2) {
     $p2uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
     $p2id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
-    $p2IsPatron = (isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"]) ? "1" : "");
+    $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
     $p2ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
     // Get Metafy tiers for player 2 from database
     $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);

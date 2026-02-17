@@ -31,7 +31,7 @@
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "PvtVoid") return true;
     
     // Check if user is a supporter
-    if(isset($_SESSION["isPatron"]) || isset($_SESSION["isPvtVoidPatron"])) {
+    if(($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false)) {
       return "1";
     }
     
