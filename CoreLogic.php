@@ -1800,8 +1800,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
       case "deny_redemption_red":
       case "bam_bam_yellow":
       case "outside_interference_blue":
-      case "light_up_the_leaves_red":
         return $from == "HAND";
+      case "light_up_the_leaves_red":
+        return $from == "HAND" && SearchCount(SearchHand($currentPlayer, talent: "EARTH")) > 1;
       case "under_the_trap_door_blue":
         return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
       case "burn_bare":
