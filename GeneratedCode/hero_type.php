@@ -1,3 +1,4 @@
+<?php
 
 function return_Hero_Type($Cardcode){
     switch($Cardcode){

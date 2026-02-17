@@ -16,7 +16,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "combustion_point_red":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . NumDraconicChainLinks()-1);
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . (NumDraconicChainLinks()-1));
         AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-type-E", 1);
         AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-subtype-evo", 1);
         AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-include-player-" . ($currentPlayer == 1 ? 2 : 1), 1);

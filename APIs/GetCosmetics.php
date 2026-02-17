@@ -40,7 +40,7 @@ if(IsUserLoggedIn()) {
       $cardBacks = explode(",", $cardBacks);
       for($i = 0; $i < count($cardBacks); ++$i) {
         $cardBack = new stdClass();
-        $cardBack->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . $i + 1 : "");
+        $cardBack->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . ($i + 1) : "");
         $cardBack->id = $cardBacks[$i];
         array_push($response->cardBacks, $cardBack);
       }

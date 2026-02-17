@@ -653,7 +653,7 @@ function MZLastIndex($player, $zone)
   switch ($zone) {
     case "MYBANISH":
       $banish = &GetBanish($player);
-      return "MYBANISH-" . count($banish) - BanishPieces();
+      return "MYBANISH-" . (count($banish) - BanishPieces());
     default:
       return "";
   }

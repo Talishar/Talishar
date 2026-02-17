@@ -6143,7 +6143,7 @@ class haboob_red extends Card {
     if (SearchCount($search) < $AuraCard->NumCounters()) $AuraCard->Destroy();
     else {
       for ($i = 0; $i < $AuraCard->NumCounters(); ++$i) {
-        $message = "Destroy " . $AuraCard->NumCounters() - $i . " ash you control to keep " . CardLink($this->cardID);
+        $message = "Destroy " . ($AuraCard->NumCounters() - $i) . " ash you control to keep " . CardLink($this->cardID);
         if ($i == 0) $message .= " or pass to destroy it";
         AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYPERM:subtype=Ash", 1);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, $message, 1);

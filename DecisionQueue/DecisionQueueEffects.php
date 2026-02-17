@@ -730,7 +730,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PrependDecisionQueue("SETDQVAR", $player, "0");
         PrependDecisionQueue("PREPENDLASTRESULT", $player, "{0},", 1);
         PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose " . $i + 1 . " aura(s) to destroy", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($i + 1) . " aura(s) to destroy", 1);
         PrependDecisionQueue("DEDUPEMULTIZONEINDS", $player, "-", 1);
         PrependDecisionQueue("SCOURINDICES", $player, "$parameter|{0}", 1);
       }
@@ -829,7 +829,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if ($effectInd == -1) AddCurrentTurnEffect($char[$index] . "-2", $player, uniqueID: $char[$index+11]);
       else {
         $prevVal = intval(explode("-", $currentTurnEffects[$effectInd])[1]);
-        $currentTurnEffects[$effectInd] = $char[$index] . "-" . $prevVal + 2;
+        $currentTurnEffects[$effectInd] = $char[$index] . "-" . ($prevVal + 2);
       }
       return $lastResult;
     case "HYPERSCRAPPER":

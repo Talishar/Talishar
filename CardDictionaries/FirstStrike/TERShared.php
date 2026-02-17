@@ -30,8 +30,8 @@ function TEREffectPowerModifier($cardID): int
   global $currentPlayer;
 
   return match ($cardID) {
-    "flourish_yellow" => SearchCurrentTurnEffects("thrive_yellow", $currentPlayer) ? 2 : 3,
-    "flourish_blue" => SearchCurrentTurnEffects("thrive_yellow", $currentPlayer) ? 1 : 2,
+    "flourish_yellow" => (SearchCurrentTurnEffects("thrive_yellow", $currentPlayer) ? 2 : 3),
+    "flourish_blue" => (SearchCurrentTurnEffects("thrive_yellow", $currentPlayer) ? 1 : 2),
     "redwood_hammer", "strong_wood_red", "strong_wood_yellow", "hard_knuckle" => 1,
     default => 0
   };
