@@ -163,10 +163,6 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
         }
 
         // Fallback: if they are a Talishar supporter (type=supported) but no specific tier name,
-        // use the lowest visible tier so they still get a badge
-        if (!$tierName && ($community['type'] ?? null) === 'supported') {
-          $tierName = 'Fyendal Supporters';
-        }
 
         if ($tierName) {
           $tiers[] = $tierName;

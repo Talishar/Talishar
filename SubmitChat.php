@@ -51,9 +51,12 @@ $displayName = ($uid != "-" ? $uid : "Player " . $playerID);
 $chatText = "";
 if (tryGet("quickChat")) {
   $chatText = parseQuickChat($_GET["quickChat"]);
-} else {
+} elseif (isset($_GET["chatText"]) && $_GET["chatText"] !== "") {
   $chatText = htmlspecialchars($_GET["chatText"]);
 }
+
+// Don't write anything if there's no actual message
+if ($chatText === "") exit;
 
 //array for contributors
 $contributors = array("sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid");
@@ -61,8 +64,19 @@ $contributors = array("sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasu
 // List of mod usernames - should match frontend list
 $modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn");
 
-// Get Metafy tiers for this player from the game file (already loaded via ParseGamefile.php)
-$metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+// Get Metafy tiers for this player live from DB so stale game file values don't affect chat badges
+$metafyTiers = [];
+if ($uid !== '-') {
+  $liveTiers = GetMetafyTiersFromDatabase($uid);
+  if (!empty($liveTiers)) {
+    $metafyTiers = $liveTiers;
+  } else {
+    // Fallback to game file value (already loaded via ParseGamefile.php)
+    $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+  }
+} else {
+  $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+}
 if (!is_array($metafyTiers)) $metafyTiers = [];
 
 // Check for Metafy badges first - if user has Metafy badges, only show those
@@ -72,7 +86,7 @@ if(!empty($metafyTiers)) {
   foreach($metafyTiers as $tier) {
     $tierImage = GetMetafyTierImage($tier);
     if($tierImage) {
-      $metafyBadgeHtml .= "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='" . $tierImage . "'/></a>";
+      $metafyBadgeHtml .= "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img alt='' title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='" . $tierImage . "'/></a>";
     }
   }
   if(!empty($metafyBadgeHtml)) {
