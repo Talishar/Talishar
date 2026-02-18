@@ -6070,6 +6070,7 @@ class serpents_kiss_blue extends Card {
     else {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Which card to create in hand?");
       AddDecisionQueue("BUTTONINPUT", $this->controller, "fang_strike,slither", 1);
+      AddDecisionQueue("WRITELOGCARDLINK", $this->controller, "<-", 1);
       AddDecisionQueue("CREATECARD", $this->controller, "HAND", 1);
     }
   }
