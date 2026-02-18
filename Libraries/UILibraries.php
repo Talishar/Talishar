@@ -44,6 +44,7 @@ function JSONRenderedCard(
   $facing = NULL,
   $numUses = NULL,
   $subcard = NULL,
+  //Fancy counters
   $steamCounters = NULL,
   $energyCounters = NULL,
   $hauntCounters = NULL,
@@ -60,6 +61,7 @@ function JSONRenderedCard(
   $stormCounters = NULL,
   $suspenseCounters = NULL,
   $sandCounters = NULL,
+  // ---------------
   $lightningPlayed = NULL,
   $showAmpAmount = false,
   $wateryGraveIcon = false,

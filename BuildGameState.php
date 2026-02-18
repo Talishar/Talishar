@@ -1197,7 +1197,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $cardID = explode("-", $currentTurnEffects[$i])[0];
       $cardID = explode(",", $cardID)[0];
-      if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2") continue;
+      if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2" || HasFancyCounters($cardID)) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
 
       if ($isFriendly) {
@@ -1513,7 +1513,7 @@ function GetPhaseHelptext()
  * Helper function for effect UI stacking
  */
 function skipEffectUIStacking($cardID) {
-  return $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
+  return !HasFancyCounters($cardID) && $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
 }
 
 /**

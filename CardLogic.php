@@ -5070,6 +5070,15 @@ function HasSandCounters($cardID)
   }
 }
 
+function HasFancyCounters($cardID)
+{
+  return IsEnergyCounters($cardID) || HasHauntCounters($cardID) || HasVerseCounters($cardID) || 
+         HasDoomCounters($cardID) || HasRustCounters($cardID) || HasFlowCounters($cardID) || 
+         HasFrostCounters($cardID) || HasBalanceCounters($cardID) || HasBindCounters($cardID) || 
+         HasStainCounters($cardID) || HasStormCounters($cardID) || HasGoldCounters($cardID) || 
+         HasSuspense($cardID) || HasSandCounters($cardID) || EquipmentsUsingSteamCounter($cardID);
+}
+
 function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
