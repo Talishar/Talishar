@@ -63,6 +63,7 @@ $modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisw
 
 // Get Metafy tiers for this player from the game file (already loaded via ParseGamefile.php)
 $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+if (!is_array($metafyTiers)) $metafyTiers = [];
 
 // Check for Metafy badges first - if user has Metafy badges, only show those
 $hasMetafyBadges = false;

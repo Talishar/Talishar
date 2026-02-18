@@ -30,7 +30,7 @@ $response->isPvtVoidPatron = ($userName == "PvtVoid" || isset($_SESSION["isPvtVo
 
 // Get Metafy info from database
 $conn = GetDBConnection();
-$sql = "SELECT metafyAccessToken, metafyCommunities FROM users WHERE usersUid=?";
+$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
 if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -40,46 +40,108 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $row = mysqli_fetch_assoc($result);
   mysqli_stmt_close($stmt);
   
-  $response->isMetafyLinked = !empty($row['metafyAccessToken']);
+  $metafyAccessToken = $row['metafyAccessToken'] ?? null;
+  $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
     
-  // Check if user is actually a paid supporter or community owner of Talishar
+  // Check if user has an active subscription to the Talishar community via Metafy API
   $response->isMetafySupporter = false;
   $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
   
-  // List of paid tier names for Talishar
-  $paid_tier_names = array(
-    'Fyendal Supporters',
-    'Seers of Ophidia',
-    'Arknight Shards',
-    'Lover of Grandeur',
-    'Sponsors of Trōpal-Dhani',
-    'Light of Sol Gemini Circle'
-  );
-  
-  if (!empty($response->metafyCommunities)) {
-    foreach ($response->metafyCommunities as $community) {
-      if (isset($community['id']) && $community['id'] === $talishar_community_id) {
-        // Check if owned (always a supporter if they own the community)
-        if (isset($community['type']) && $community['type'] === 'owned') {
+  if (!empty($metafyAccessToken)) {
+    // Get this user's metafyID — first from DB, then live from Metafy API if null
+    $user_metafy_id = $row['metafyID'] ?? null;
+    $metafy_id_source = 'db';
+
+    if (empty($user_metafy_id)) {
+      // Fetch live from Metafy /me using stored access token
+      $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
+      curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
+      curl_setopt($ch_me, CURLOPT_HTTPHEADER, array(
+        'Authorization: Bearer ' . $metafyAccessToken,
+        'Content-Type: application/json'
+      ));
+      curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
+      $me_raw = curl_exec($ch_me);
+      $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
+      curl_close($ch_me);
+      $response->debug_me_fetch = array('http_code' => $me_code, 'raw' => substr($me_raw, 0, 500));
+      if ($me_code === 200) {
+        $me_data = json_decode($me_raw, true);
+        $user_metafy_id = $me_data['user']['id'] ?? null;
+        $metafy_id_source = 'live_api';
+        // Save it to DB for future calls
+        if ($user_metafy_id) {
+          $stmt_save = mysqli_stmt_init($conn);
+          if (mysqli_stmt_prepare($stmt_save, 'UPDATE users SET metafyID=? WHERE usersUid=?')) {
+            mysqli_stmt_bind_param($stmt_save, 'ss', $user_metafy_id, $userName);
+            mysqli_stmt_execute($stmt_save);
+            mysqli_stmt_close($stmt_save);
+          }
+        }
+      }
+    }
+
+    $response->debug_metafy_id = array('id' => $user_metafy_id, 'source' => $metafy_id_source);
+
+    // Check paid Talishar subscription: use client_id as Bearer to call the community subscribers endpoint
+    // (per Metafy docs - community owner endpoints authenticate with client_id)
+    $talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
+    $subscribers_url = 'https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100';
+
+    $ch = curl_init($subscribers_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Authorization: Bearer ' . $talishar_client_id,
+      'Content-Type: application/json'
+    ));
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+
+    $api_response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    $response->debug_subscribers = array(
+      'http_code' => $http_code,
+      'user_metafy_id' => $user_metafy_id,
+      'raw' => substr($api_response, 0, 800)
+    );
+
+    if ($http_code === 200 && !empty($api_response)) {
+      $data = json_decode($api_response, true);
+      $subscriber_ids = array_column($data['subscribers'] ?? [], 'user_id');
+      $response->debug_subscribers['count'] = count($subscriber_ids);
+      $response->debug_subscribers['ids_sample'] = array_slice($subscriber_ids, 0, 5);
+      if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
+        $response->isMetafySupporter = true;
+      }
+    }
+
+    // If confirmed subscriber, make sure Talishar is in the communities list
+    if ($response->isMetafySupporter) {
+      $talishar_in_list = false;
+      foreach ($response->metafyCommunities as $c) {
+        if (($c['id'] ?? null) === $talishar_community_id) { $talishar_in_list = true; break; }
+      }
+      if (!$talishar_in_list) {
+        $response->metafyCommunities[] = array(
+          'id' => $talishar_community_id,
+          'title' => 'Talishar',
+          'description' => 'Flesh and Blood TCG — get exclusive card backs, playmats, and alt arts.',
+          'logo_url' => null,
+          'url' => 'https://talishar.net',
+          'type' => 'supported'
+        );
+      }
+    } else {
+      // Fallback: check the DB-cached communities for isMetafySupporter
+      foreach ($response->metafyCommunities as $community) {
+        if (isset($community['id']) && $community['id'] === $talishar_community_id) {
           $response->isMetafySupporter = true;
           break;
-        }
-        
-        // Check subscription tier name directly - ignore type field
-        if (isset($community['subscription_tier'])) {
-          $tier_name = '';
-          if (is_array($community['subscription_tier'])) {
-            $tier_name = $community['subscription_tier']['name'] ?? '';
-          } elseif (is_string($community['subscription_tier'])) {
-            $tier_name = $community['subscription_tier'];
-          }
-          
-          if (!empty($tier_name) && in_array($tier_name, $paid_tier_names, true)) {
-            $response->isMetafySupporter = true;
-            break;
-          }
         }
       }
     }

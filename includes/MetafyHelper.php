@@ -110,6 +110,76 @@ function FetchMetafyCommunities($accessToken)
 }
 
 /**
+ * Get Metafy tier names for a user from the database (based on stored metafyCommunities).
+ * This reads the already-saved community data — no live API call.
+ * @param string $userName The username (usersUid) to look up
+ * @return array Array of tier name strings (e.g. ['Arknight Shards'])
+ */
+if (!function_exists('GetMetafyTiersFromDatabase')) {
+  function GetMetafyTiersFromDatabase($userName)
+  {
+    $conn = GetDBConnection();
+    $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_close($conn);
+      return [];
+    }
+
+    mysqli_stmt_bind_param($stmt, 's', $userName);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+
+    if (!$row || empty($row['metafyCommunities'])) {
+      return [];
+    }
+
+    $communities = json_decode($row['metafyCommunities'], true);
+    if (!is_array($communities)) {
+      return [];
+    }
+
+    $tiers = [];
+    $talisharCommunityId = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
+
+    foreach ($communities as $community) {
+      $communityId = $community['id'] ?? null;
+
+      if ($communityId === $talisharCommunityId) {
+        $tierName = null;
+
+        // Check stored metafy_tier field (stored during FetchAndSaveMetafyCommunities)
+        if (!empty($community['metafy_tier']) && is_string($community['metafy_tier'])) {
+          $tierName = $community['metafy_tier'];
+        }
+        // Legacy: Check subscription_tier field
+        elseif (isset($community['subscription_tier']) && is_array($community['subscription_tier'])) {
+          $tierName = $community['subscription_tier']['name'] ?? null;
+        } elseif (isset($community['subscription_tier']) && is_string($community['subscription_tier'])) {
+          $tierName = $community['subscription_tier'];
+        }
+
+        // Fallback: if they are a Talishar supporter (type=supported) but no specific tier name,
+        // use the lowest visible tier so they still get a badge
+        if (!$tierName && ($community['type'] ?? null) === 'supported') {
+          $tierName = 'Fyendal Supporters';
+        }
+
+        if ($tierName) {
+          $tiers[] = $tierName;
+        }
+        break;
+      }
+    }
+
+    return $tiers;
+  }
+}
+
+/**
  * Check if a tier name is one of our supported Metafy tiers
  * @param $tierName The tier name from Metafy API
  * @return bool True if it's a supported tier

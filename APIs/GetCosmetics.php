@@ -72,8 +72,18 @@ if(IsUserLoggedIn()) {
     
     if ($row && !empty($row['metafyCommunities'])) {
       $communities = json_decode($row['metafyCommunities'], true);
-      if (is_array($communities)) {
-        foreach ($communities as $community) {
+      // Deduplicate by community ID before processing
+      $seenCommunityIds = [];
+      $uniqueCommunities = [];
+      foreach ($communities as $c) {
+        $cid = $c['id'] ?? null;
+        if ($cid && !in_array($cid, $seenCommunityIds)) {
+          $seenCommunityIds[] = $cid;
+          $uniqueCommunities[] = $c;
+        }
+      }
+      if (is_array($uniqueCommunities)) {
+        foreach ($uniqueCommunities as $community) {
           $communityId = $community['id'] ?? null;
           if ($communityId) {
             // Check if this community ID matches any Metafy community
@@ -116,6 +126,15 @@ if(IsUserLoggedIn()) {
 usort($response->playmats, function($a, $b) {
   return strcmp($a->name, $b->name);
 });
+
+// Deduplicate card backs by id (safety net for multiple sources)
+$seenCardBackIds = [];
+$response->cardBacks = array_values(array_filter($response->cardBacks, function($cb) use (&$seenCardBackIds) {
+  $id = (string)($cb->id ?? '');
+  if (in_array($id, $seenCardBackIds)) return false;
+  $seenCardBackIds[] = $id;
+  return true;
+}));
 
 session_write_close();
 echo json_encode($response);

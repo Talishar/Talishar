@@ -19,60 +19,7 @@ include_once "../Classes/CardObjects/PENCards.php";
 include_once "../Classes/CardObjects/AACCards.php";
 include_once "../Classes/CardObjects/AHACards.php";
 
-if (!function_exists("GetMetafyTiersFromDatabase")) {
-  function GetMetafyTiersFromDatabase($userName)
-  {
-    if (IsDevEnvironment()) return [];
-    $conn = GetDBConnection();
-    $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_close($conn);
-      return [];
-    }
-    
-    mysqli_stmt_bind_param($stmt, 's', $userName);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
-    
-    if (!$row || empty($row['metafyCommunities'])) {
-      return [];
-    }
-    
-    $communities = json_decode($row['metafyCommunities'], true);
-    if (!is_array($communities)) {
-      return [];
-    }
-    
-    $tiers = [];
-    $talisharCommunityId = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
-    
-    foreach ($communities as $community) {
-      $communityId = $community['id'] ?? null;
-      
-      if ($communityId === $talisharCommunityId) {
-        $tierName = null;
-        
-        // Check subscription_tier field (from purchase data)
-        if (isset($community['subscription_tier']) && is_array($community['subscription_tier'])) {
-          $tierName = $community['subscription_tier']['name'] ?? null;
-        } elseif (isset($community['subscription_tier']) && is_string($community['subscription_tier'])) {
-          $tierName = $community['subscription_tier'];
-        }
-        
-        if ($tierName) {
-          $tiers[] = $tierName;
-        }
-        break;
-      }
-    }
-    
-    return $tiers;
-  }
-}
+// GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
 
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)

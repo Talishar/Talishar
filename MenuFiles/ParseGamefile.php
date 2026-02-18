@@ -61,16 +61,10 @@
   $p1IsAI = trim(fgets($gameFileHandler));
   $p2IsAI = trim(fgets($gameFileHandler));
   $gameGUID = trim(fgets($gameFileHandler));
-  $p1MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true) ?: [];
-  $p2MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true) ?: [];
-
-  // DEV: Hardcode test Metafy tier for NewerFriend
-  if ($p1uid === "NewerFriend") {
-    $p1MetafyTiers = ["Arknight Shards"];
-  }
-  if ($p2uid === "NewerFriend") {
-    $p2MetafyTiers = ["Arknight Shards"];
-  }
+  $p1MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true);
+  $p2MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true);
+  if (!is_array($p1MetafyTiers)) $p1MetafyTiers = [];
+  if (!is_array($p2MetafyTiers)) $p2MetafyTiers = [];
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

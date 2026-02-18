@@ -111,11 +111,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
     $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
-    $initialLoad->playerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: [];
+
+    // Fetch tiers live from DB so they reflect the current state (not stale game file values)
+    $livePlayerTiers = GetMetafyTiersFromDatabase($initialLoad->playerName);
+    $liveOpponentTiers = GetMetafyTiersFromDatabase($initialLoad->opponentName);
+    $initialLoad->playerMetafyTiers = !empty($livePlayerTiers) ? $livePlayerTiers : (($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: []);
 
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
-    $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
+    $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
