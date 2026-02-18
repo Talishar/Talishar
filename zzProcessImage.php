@@ -48,9 +48,9 @@ function ProcessImage($cardID)
       if(file_exists($concatFilename)) echo("Image for " . $cardID . " successfully converted to concat.<BR>");
     }
   }
-  $cropFilename = "../crops/" . $cardID . "_cropped.png";
-  $cardCropsUploadedFolder = "../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
-  $cardCropsMissingFolder = "../CardImages/media/missing/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
+  $cropFilename = "../crops/" . $cardID . "_cropped.webp";
+  $cardCropsUploadedFolder = "../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.webp"; // !! CardImages/ to be changed for your own folder name
+  $cardCropsMissingFolder = "../CardImages/media/missing/crops/" . $cardID . "_cropped.webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($cropFilename) || !file_exists($cardCropsUploadedFolder))
   // if (!file_exists($cardCropsUploadedFolder))
   {

@@ -48,8 +48,8 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       if(!file_exists($cardSquaresUploadedFolder)) imagewebp($dest, $cardSquaresMissingFolder);
     }
   }
-  $cardCropsUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
-  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $cardID . "_cropped.png"; // !! CardImages/ to be changed for your own folder name
+  $cardCropsUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/crops/" . $cardID . "_cropped.webp"; // !! CardImages/ to be changed for your own folder name
+  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $cardID . "_cropped.webp"; // !! CardImages/ to be changed for your own folder name
   if(!file_exists($cardCropsUploadedFolder))
   {
     echo("Crop image for " . $cardID . " does not exist.<BR>");
@@ -58,7 +58,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
       echo("Attempting to convert image for " . $cardID . " to crops.<BR>");
       $image = imagecreatefromwebp($cardImagesUploadedFolder);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
-      if(!file_exists($cardCropsUploadedFolder)) imagepng($image, $cardCropsMissingFolder);
+      if(!file_exists($cardCropsUploadedFolder)) imagewebp($image, $cardCropsMissingFolder);
     }
   }
 }

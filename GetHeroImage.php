@@ -22,7 +22,7 @@ try {
     }
     
     // Construct the image URL
-    $imageUrl = "https://images.talishar.net/public/crops/{$heroName}_cropped.png";
+    $imageUrl = "https://images.talishar.net/public/crops/{$heroName}_cropped.webp";
     
     // Fetch the image with a timeout
     $context = stream_context_create([
