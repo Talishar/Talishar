@@ -102,9 +102,11 @@ def parse_gamestate(gameid):
     results['p2']['settings'] = lines[36].split(" ")
     
     results['Both']['landmarks'] = unravel(lines[38], "Landmark")
+    results['Both']['turn'] = lines[42].split(" ")
     results['Both']['combat chain'] = unravel(lines[44], "CombatChain")
     results['Both']['ccs'] = unravel(lines[45], "ccs")
     results['Both']['current turn effects'] = unravel(lines[46], "CurrentTurnEffects")
+    results['Both']['dq'] = lines[49].split(" ")
     results['Both']['layers'] = unravel(lines[52], "Layer")
     num_chain_links = int(lines[56].strip())
     for i in range(num_chain_links):

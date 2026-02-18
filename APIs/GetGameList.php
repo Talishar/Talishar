@@ -297,7 +297,7 @@ function deleteDirectory($dir) {
             }
         }
     }
-
+    if (!is_dir($dir)) return false;
     return rmdir($dir);
 }
 

@@ -1234,7 +1234,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
       $BorderColor = $isFriendly ? "blue" : "red";
 
-      $counters = $isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID];
+      $counters = $isFriendly ? $friendlyCounts[$cardID] ?? 0 : $opponentCounts[$cardID] ?? 0;
 
       if($cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red") {
         $counters = $currentTurnEffects[$i + 3];
