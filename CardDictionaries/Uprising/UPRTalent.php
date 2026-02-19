@@ -58,14 +58,7 @@
         }
         return "";
       case "coronet_peak":
-        // if(ShouldAutotargetOpponent($currentPlayer)) {
-        //   AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
-        //   AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
-        // } else {
-        //   AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-        //   AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-        if (str_contains($target, "THEIRCHAR")) $targ = "Target_Opponent";
-        else $targ = "Target_Yourself";
+        $targ = (str_contains($target, "THEIRCHAR")) ? "Target_Opponent" : "Target_Yourself";
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targ);
         AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         return "";
@@ -86,7 +79,7 @@
         if($cardID == "arctic_incarceration_red") $numFrostbites = 3;
         else if($cardID == "arctic_incarceration_yellow") $numFrostbites = 2;
         else $numFrostbites = 1;
-        PlayAura("frostbite", ($currentPlayer == 1 ? 2 : 1), $numFrostbites, effectController: $currentPlayer);
+        PlayAura("frostbite", $currentPlayer == 1 ? 2 : 1, $numFrostbites, effectController: $currentPlayer);
         return "";
       case "cold_snap_red": case "cold_snap_yellow": case "cold_snap_blue":
         if($cardID == "cold_snap_red") $cost = 3;
@@ -112,7 +105,7 @@
         if (count($hand) > 0 || $resources[0] >= 2)
         {
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff " . CardLink($cardID, $cardID), 1);
-          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0," . 2, 0, 1);
+          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
         }
         else {
@@ -289,4 +282,3 @@
     return $search;
   }
 
-?>
