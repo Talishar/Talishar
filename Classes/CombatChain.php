@@ -141,6 +141,11 @@ class ChainCard {
       return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : "";
     }
 
+    function AddBuff($effectID) {
+      if ($this->StaticBuffs() == "-") $this->chain[$this->index+10] = $effectID;
+      else $this->chain[$this->index+10] .= ",$effectID";
+    }
+
     function CardBlockValue() {
       if (CanGainBlock($this->ID())) {
         return BlockValue($this->ID()) + $this->chain[$this->index + 6];
