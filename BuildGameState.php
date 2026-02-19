@@ -129,18 +129,25 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];
 
-    if(!AltArtsDisabled($playerID))
+    // For spectators (playerID==3), resolve alt arts from the game file usernames directly.
+    // p1uid maps to the "player" (altArts) slot; p2uid maps to the "opponent" (opponentAltArts) slot.
+    $altArtsPlayerName  = $playerID == 3 ? $p1uid : $initialLoad->playerName;
+    $altArtsOpponentName = $playerID == 3 ? $p2uid : $initialLoad->opponentName;
+    $altArtsPlayerID    = $playerID == 3 ? 1 : $playerID;
+    $altArtsOpponentID  = $playerID == 3 ? 2 : $otherPlayer;
+
+    if($playerID == 3 || !AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
         $sessionID = $campaign->SessionID();
-        $isPatronOfCampaign = $sessionPatreonCampaigns[$sessionID] ?? false;
+        $isPatronOfCampaign = $playerID != 3 && ($sessionPatreonCampaigns[$sessionID] ?? false);
 
-        if ($sessionID == "isPvtVoidPatron") {
+        if ($playerID != 3 && $sessionID == "isPvtVoidPatron") {
           $isPatronOfCampaign = ($sessionUserName == "PvtVoid") || ($sessionPatreonCampaigns[$sessionID] ?? false);
         }
 
-        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($initialLoad->playerName)) {
-          $altArts = $campaign->AltArts($playerID);
+        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($altArtsPlayerName)) {
+          $altArts = $campaign->AltArts($altArtsPlayerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
           $altArtsCount = count($altArts);
@@ -157,7 +164,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
       // Add Metafy community alt arts
       // We look up by player username since session might not have login data (e.g., in SSE connections)
-      $playerUsername = $playerID == 1 ? $p1uid : $p2uid;
+      $playerUsername = $altArtsPlayerName;
       if (!empty($playerUsername) && !IsDevEnvironment()) {
         $conn = GetDBConnection();
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
@@ -204,17 +211,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
 
     // Get opponent's alt arts
-    if(!AltArtsDisabled($playerID))
+    if($playerID == 3 || !AltArtsDisabled($playerID))
     {
       foreach(PatreonCampaign::cases() as $campaign) {
-        $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($initialLoad->opponentName);
+        $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
 
         if ($campaign->SessionID() == "isPvtVoidPatron") {
-          $isOpponentSupporterOfCampaign = ($initialLoad->opponentName == "PvtVoid") || $campaign->IsTeamMember($initialLoad->opponentName);
+          $isOpponentSupporterOfCampaign = ($altArtsOpponentName == "PvtVoid") || $campaign->IsTeamMember($altArtsOpponentName);
         }
 
         if($isOpponentSupporterOfCampaign) {
-          $opponentAltArts = $campaign->AltArts($otherPlayer);
+          $opponentAltArts = $campaign->AltArts($altArtsOpponentID);
           if($opponentAltArts == "") continue;
           $opponentAltArts = explode(",", $opponentAltArts);
           $opponentAltArtsCount = count($opponentAltArts);
@@ -235,7 +242,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
         $stmt = mysqli_stmt_init($conn);
         if (mysqli_stmt_prepare($stmt, $sql)) {
-          mysqli_stmt_bind_param($stmt, 's', $initialLoad->opponentName);
+          mysqli_stmt_bind_param($stmt, 's', $altArtsOpponentName);
           mysqli_stmt_execute($stmt);
           $result = mysqli_stmt_get_result($stmt);
           $row = mysqli_fetch_assoc($result);
