@@ -667,7 +667,7 @@ enum PatreonCampaign : string
           "embodiment_of_lightning=ELE110-Promo"
         ];
         break;
-      case "17": // Scowling
+      case "14707687": // Scowling
         $altArts = [
         "rhinar_reckless_rampage=WTR001-T", "romping_club=WTR003-T"
         ];
@@ -698,7 +698,7 @@ enum PatreonCampaign : string
       case "14": return "82,83";
       case "15": return "84";
       case "16": return "87";
-      case "14707687": return "88,100";
+      case "14707687": return "88,100,130";
       case "18": return "96";
       case "19": return "105";
       case "20": return "106";
