@@ -139,7 +139,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $isPatronOfCampaign = ($sessionUserName == "PvtVoid") || ($sessionPatreonCampaigns[$sessionID] ?? false);
         }
 
-        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '')) {
+        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($initialLoad->playerName)) {
           $altArts = $campaign->AltArts($playerID);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);

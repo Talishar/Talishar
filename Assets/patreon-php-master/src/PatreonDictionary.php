@@ -211,6 +211,7 @@ enum PatreonCampaign : string
       case "14951942": return "isFatAndFuriousPatron";
       case "15323388": return "isOllinTogetherPatron";
       case "15431936": return "isFabDadsPatron";
+      case "14707687": return "isScowlingFleshBagPatron";
       default: return "";
     }
   }
