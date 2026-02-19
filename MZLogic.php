@@ -409,7 +409,7 @@ function MZFreeze($target, $player="-", $freezeState=1)
   $pieces = explode("-", $target);
   $player = (substr($pieces[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
   $zone = &GetMZZone($player, $pieces[0]);
-  if (!is_numeric($pieces[1]))
+  if (!is_numeric($pieces[1] ?? "-"))
     return;
   switch ($pieces[0]) {
     case "THEIRCHAR":
