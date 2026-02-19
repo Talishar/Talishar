@@ -125,18 +125,17 @@ try {
         } else {
           // In-game settings update - get userID from game file
           include "MenuFiles/ParseGamefile.php";
-          if ($playerID == 1) $userID = $p1id;
-          else $userID = $p2id;
+          $userID = ($playerID == 1) ? $p1id : $p2id;
         }
       }
       $countSettings = count($submission->settings);
       for ($i = 0; $i < $countSettings; ++$i) {
         $setting = $submission->settings[$i];
         $parsedId = ParseSettingsStringValueToIdInt($setting->name);
-        $setting->id = $parsedId ?? (isset($setting->id) ? $setting->id : null);
+        $setting->id = $parsedId ?? ($setting->id ?? null);
         if ($setting->id !== null) {
           ChangeSetting($playerID, $setting->id, $setting->value, $userID);
-          if (!IsReplay()) {
+          if ($playerID != 0 && !IsReplay()) {
             $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
             if ($commandFile !== false) {
               fwrite($commandFile, "$playerID SETTINGS $setting->id $setting->value 0\r\n");
@@ -281,7 +280,7 @@ try {
 }
 // Clean any accidental output before sending JSON
 ob_clean();
-echo (json_encode($response));
+echo json_encode($response);
 
 // For profile settings updates, exit here to avoid further processing
 if ($playerID == 0) {
