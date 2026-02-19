@@ -1511,7 +1511,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $numGold = min($damage, $landmarks[$treasureID + 3]);
         if ($numGold > 0) AddLayer("TRIGGER", $otherPlayer, "treasure_island", additionalCosts:$damage);  
       }
-      WriteLog("Player $player took $damage damage from " . Cardlink($source, $source));
+      WriteLog("Player $player is about to take $damage damage from " . Cardlink($source, $source));
       return $damage;
     case "AFTERQUELL":
       $maxQuell = GetClassState($player, $CS_MaxQuellUsed);

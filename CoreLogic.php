@@ -712,6 +712,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   if ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
+  WriteLog("Player $player took $damage damage");
   PlayerLoseHealth($damage, $player);
   // mark once per damage instance effects as usable again
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
