@@ -736,6 +736,10 @@ function CleanTarget($player, $lastResult) { //converts a target to use unique i
       $char = GetPlayerCharacter($player);
       $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
       break;
+    case "THEIRCHAR":
+      $char = GetPlayerCharacter($otherPlayer);
+      $cleanTarget = "THEIRCHAR-" . $char[$targetArr[1] + 11];
+      break;
     case "COMBATCHAINATTACKS":
     case "PASTCHAINLINK":
       $cleanTarget = $lastResult;
