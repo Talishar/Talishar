@@ -52,10 +52,7 @@ if (!empty($metafyApiKey)) {
   $ownerResponseBody = curl_exec($curlHandle);
   $ownerHttpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
   curl_close($curlHandle);
-  
-  error_log("Metafy API Request (Owner): " . $ownerGuidesUrl);
-  error_log("Metafy API Response Code (Owner): " . $ownerHttpCode);
-  
+    
   if ($ownerHttpCode === 200 && $ownerResponseBody) {
     $ownerResponse = json_decode($ownerResponseBody);
     if ($ownerResponse && isset($ownerResponse->guides)) {
