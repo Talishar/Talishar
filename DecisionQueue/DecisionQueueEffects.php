@@ -1313,7 +1313,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $LinkCard = $Link->GetLinkCard($ind);
         if ($ind == 0) $names = $Link->ListofNames();
         else $names = GamestateSanitize(NameOverride($LinkCard->ID(), $player));
-        WriteLog(CardLink($attackID) . " . gains the name(s) " . GamestateUnsanitize($names));
+        WriteLog(CardLink($attackID) . " gains the name(s) <b>" . GamestateUnsanitize($names) . "</b>");
         AddCurrentTurnEffect("$attackID-$names", $player);
       }
       return $lastResult;
