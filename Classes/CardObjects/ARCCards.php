@@ -1624,44 +1624,105 @@
 //   }
 // }
 
+class ravenous_rabble extends BaseCard {
+	function PlayAbility() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+	}
 
-// class ravenous_rabble_red extends Card {
+	function ProcessAttackTrigger() {
+  	$deck = new Deck($this->controller);
+		if($deck->Empty()) return CardLink($this->cardID, $this->cardID). " does not get negative power because your deck is empty";
+		if($deck->Reveal(1)) {
+			$top = $deck->Top();
+			$pitch = PitchValue($top);
+			$pitch = $pitch > -1 ? $pitch : 0;
+			AddCurrentTurnEffect($this->cardID . "-$pitch", $this->controller);
+			return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
+		}
+		return CardLink($this->cardID, $this->cardID). " does not get negative power because the reveal was prevented";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "ravenous_rabble_red";
-//     $this->controller = $controller;
-//     }
+	function EffectPowerModifier($param) {
+		return -1 * intval($param);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class ravenous_rabble_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "ravenous_rabble_red";
+    $this->controller = $controller;
+		$this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		return $this->baseCard->ProcessAttackTrigger();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param);
+	}
+}
 
 
-// class ravenous_rabble_yellow extends Card {
+class ravenous_rabble_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ravenous_rabble_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ravenous_rabble_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		return $this->baseCard->ProcessAttackTrigger();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param);
+	}
+}
 
 
-// class ravenous_rabble_blue extends Card {
+class ravenous_rabble_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ravenous_rabble_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ravenous_rabble_blue";
+    $this->controller = $controller;
+		$this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		return $this->baseCard->ProcessAttackTrigger();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param);
+	}
+}
 
 
 // class read_the_runes_red extends Card {

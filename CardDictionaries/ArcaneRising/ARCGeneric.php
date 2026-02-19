@@ -50,17 +50,6 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
     case "fervent_forerunner_red": case "fervent_forerunner_yellow": case "fervent_forerunner_blue":
       if($from == "ARS") GiveAttackGoAgain();
       return "";
-    case "ravenous_rabble_red": case "ravenous_rabble_yellow": case "ravenous_rabble_blue":
-      $deck = new Deck($currentPlayer);
-      if($deck->Empty()) return CardLink($cardID, $cardID). " does not get negative power because your deck is empty";
-      if($deck->Reveal(1)) {
-        $top = $deck->Top();
-        $pitch = PitchValue($top);
-        $pitch = $pitch > -1 ? $pitch : 0;
-        $CombatChain->AttackCard()->ModifyPower(-$pitch);
-        return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
-      }
-      return CardLink($cardID, $cardID). " does not get negative power because the reveal was prevented";
     case "fate_foreseen_red": case "fate_foreseen_yellow": case "fate_foreseen_blue":
       PlayerOpt($currentPlayer, 1);
       return "";
