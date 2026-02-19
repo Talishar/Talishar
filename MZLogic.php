@@ -712,68 +712,63 @@ function CleanTarget($player, $lastResult) { //converts a target to use unique i
   global $layers, $CombatChain;
   $targetArr = explode("-", $lastResult);
   $otherPlayer = $player == 1 ? 2 : 1;
-  if ($targetArr[0] == "LAYER") {
-    $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
-  }
-  if ($targetArr[0] == "THEIRDISCARD") {
-    $discard = GetDiscard($otherPlayer);
-    $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
-  }
-  if ($targetArr[0] == "MYDISCARD") {
-    $discard = GetDiscard($player);
-    $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
-  }
-  if ($targetArr[0] == "THEIRAURAS") {
-    $auras = GetAuras($otherPlayer);
-    $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
-  }
-  if ($targetArr[0] == "MYAURAS") {
-    $auras = GetAuras($player);
-    $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
-  }
-  if ($targetArr[0] == "THEIRCHAR") {
-    $char = GetPlayerCharacter($otherPlayer);
-    $cleanTarget = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
-  }
-  if ($targetArr[0] == "MYCHAR") {
-    $char = GetPlayerCharacter($player);
-    $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
-  }
-  if ($targetArr[0] == "COMBATCHAINATTACKS") {
-    // It's not possible for this index to get messed up before resolution
-    $cleanTarget = $lastResult;
-  }
-  if ($targetArr[0] == "COMBATCHAIN") {
-    $char = GetPlayerCharacter($otherPlayer);
-    //right now only support targetting the active chain link
-    $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
-  }
-  if ($targetArr[0] == "MYALLY") {
-    $allies = GetAllies($player);
-    $cleanTarget = "MYALLY-" . $allies[$targetArr[1] + 5];
-  }
-  if ($targetArr[0] == "THEIRALLY") {
-    $allies = GetAllies($otherPlayer);
-    $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
-  }
-  if ($targetArr[0] == "MYPERM") {
-    $permanents = GetPermanents($player);
-    $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
-  }
-  if ($targetArr[0] == "PASTCHAINLINK") {
-    // It's not possible for this index to get messed up before resolution
-    $cleanTarget = $lastResult;
-  }
-  if ($targetArr[0] == "COMBATCHAINLINK") {
-    $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
-  }
-  if ($targetArr[0] == "MYITEMS") {
-    $items = GetItems($player);
-    $cleanTarget = "MYITEMS-" . $items[$targetArr[1] + 4];
-  }
-  if ($targetArr[0] == "THEIRITEMS") {
-    $items = GetItems($otherPlayer);
-    $cleanTarget = "THEIRITEMS-" . $items[$targetArr[1] + 4];
+  switch($targetArr[0]) {
+    case "LAYER":
+      $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+      break;
+    case "THEIRDISCARD":
+      $discard = GetDiscard($otherPlayer);
+      $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
+      break;
+    case "MYDISCARD":
+      $discard = GetDiscard($player);
+      $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
+      break;
+    case "THEIRAURAS":
+      $auras = GetAuras($otherPlayer);
+      $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
+      break;
+    case "MYAURAS":
+      $auras = GetAuras($player);
+      $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
+      break;
+    case "MYCHAR":
+      $char = GetPlayerCharacter($player);
+      $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
+      break;
+    case "COMBATCHAINATTACKS":
+    case "PASTCHAINLINK":
+      $cleanTarget = $lastResult;
+      break;
+    case "COMBATCHAIN":
+      $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+      break;
+    case "MYALLY":
+      $allies = GetAllies($player);
+      $cleanTarget = "MYALLY-" . $allies[$targetArr[1] + 5];
+      break;
+    case "THEIRALLY":
+      $allies = GetAllies($otherPlayer);
+      $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
+      break;
+    case "MYPERM":
+      $permanents = GetPermanents($player);
+      $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
+      break;
+    case "COMBATCHAINLINK":
+      $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
+      break;
+    case "MYITEMS":
+      $items = GetItems($player);
+      $cleanTarget = "MYITEMS-" . $items[$targetArr[1] + 4];
+      break;
+    case "THEIRITEMS":
+      $items = GetItems($otherPlayer);
+      $cleanTarget = "THEIRITEMS-" . $items[$targetArr[1] + 4];
+      break;
+    default:
+      $cleanTarget = "";
+      break;
   }
   $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
   return $target;
