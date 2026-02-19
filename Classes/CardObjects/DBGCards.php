@@ -29,7 +29,7 @@ class dummy extends Card {
   }
 
   function SpecialType() {
-    return "A";
+    return "C";
   }
 
   function SpecificLogic() {
