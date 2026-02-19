@@ -5,9 +5,6 @@
  * Note: This file should be included after APIKeys.php and dbh.inc.php
  */
 
-/**
- * Check if running in dev environment (define only if not already defined)
- */
 if (!function_exists('IsDevEnvironment')) {
   function IsDevEnvironment() {
     $domain = getenv("DOMAIN");
@@ -17,11 +14,6 @@ if (!function_exists('IsDevEnvironment')) {
   }
 }
 
-/**
- * Get the Metafy communities for a user
- * @param $userName The username to get Metafy communities for
- * @return array Array of community tier names the user belongs to
- */
 function GetUserMetafyCommunities($userName)
 {   
   // Get access token from database
@@ -51,11 +43,6 @@ function GetUserMetafyCommunities($userName)
   return FetchMetafyCommunities($accessToken);
 }
 
-/**
- * Fetch communities from Metafy API
- * @param $accessToken The user's Metafy access token
- * @return array Array of community tier names
- */
 function FetchMetafyCommunities($accessToken)
 {
   $url = 'https://dev.metafy.gg/v1/community/list-joined-communities';
@@ -78,7 +65,6 @@ function FetchMetafyCommunities($accessToken)
   curl_close($curl);
   
   if ($httpCode !== 200) {
-    WriteLog("Metafy API Error: HTTP Code " . $httpCode . " - " . $curlError);
     return [];
   }
   
@@ -109,12 +95,6 @@ function FetchMetafyCommunities($accessToken)
   return $tiers;
 }
 
-/**
- * Get Metafy tier names for a user from the database (based on stored metafyCommunities).
- * This reads the already-saved community data — no live API call.
- * @param string $userName The username (usersUid) to look up
- * @return array Array of tier name strings (e.g. ['Arknight Shards'])
- */
 if (!function_exists('GetMetafyTiersFromDatabase')) {
   function GetMetafyTiersFromDatabase($userName)
   {
@@ -175,12 +155,6 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
     return $tiers;
   }
 }
-
-/**
- * Check if a tier name is one of our supported Metafy tiers
- * @param $tierName The tier name from Metafy API
- * @return bool True if it's a supported tier
- */
 function IsValidMetafyTier($tierName)
 {
   $supportedTiers = [

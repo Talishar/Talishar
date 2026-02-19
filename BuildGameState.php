@@ -1,31 +1,5 @@
 <?php
-
-/**
- * BuildGameState.php
- *
- * Builds the complete game state response for a given game and player.
- * This is used by both GetNextTurn.php (HTTP) and GetUpdateSSE.php (SSE).
- *
- * Session data is passed as a parameter since SSE connections cannot safely
- * start sessions (would cause deadlock).
- */
-
-/**
- * Build the game state response for a player.
- *
- * @param string $gameName The game ID/name
- * @param int $playerID The player ID (1, 2, or 3 for spectator)
- * @param string $authKey The authentication key
- * @param array $sessionData Session data (already captured and session closed)
- *   - userLoggedIn: bool
- *   - userName: string|null
- *   - isPvtVoidPatron: bool
- *   - patreonCampaigns: array (sessionID => bool)
- * @param bool $includeInitialLoad Whether to include initial load data (alt arts, etc.)
- * @return object|string Returns response object on success, error string on failure
- */
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true) {
-  // Declare global variables that are populated by ParseGamestate.php and GameLogic.php
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
   global $theirHand, $theirPitch, $theirDeck, $theirDiscard, $theirBanish, $theirArsenal, $theirCharacter;
@@ -43,7 +17,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // Variables that will be set locally and need to be accessible to BuildPlayerInputPopup
   global $MyCardBack, $TheirCardBack, $otherPlayer, $isReactFE, $isGameOver, $isCasterMode, $isReplay;
 
-  // Validate inputs
   if (!IsGameNameValid($gameName)) {
     return "Invalid game name.";
   }
@@ -52,7 +25,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     return "Invalid player ID.";
   }
 
-  // Check if game file exists
   if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
     return "Game no longer exists on the server.";
   }
@@ -76,8 +48,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $cacheVal = intval(GetCachePiece($gameName, 1));
 
   include_once "ParseGamestate.php";
-  // Re-read the game state file on each call (ParseGamestate.php only auto-parses on first include)
-  // This is critical for SSE which needs fresh state on each update
   ParseGamestate();
 
   // Auth validation
@@ -143,7 +113,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $isPatronOfCampaign = $playerID != 3 && ($sessionPatreonCampaigns[$sessionID] ?? false);
 
         if ($playerID != 3 && $sessionID == "isPvtVoidPatron") {
-          $isPatronOfCampaign = ($sessionUserName == "PvtVoid") || ($sessionPatreonCampaigns[$sessionID] ?? false);
+          $isPatronOfCampaign = $sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false);
         }
 
         if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($altArtsPlayerName)) {
@@ -154,7 +124,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           for($i = 0; $i < $altArtsCount; ++$i) {
             $arr = explode("=", $altArts[$i]);
             $altArt = new stdClass();
-            $altArt->name = $campaign->CampaignName() . ($altArtsCount > 1 ? " " . ($i + 1) : "");
+            $altArt->name = $campaign->CampaignName() . ($altArtsCount > 1 ? " " . $i + 1 : "");
             $altArt->cardId = $arr[0];
             $altArt->altPath = $arr[1];
             array_push($initialLoad->altArts, $altArt);
@@ -191,7 +161,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
                           $arr = explode("=", $metafyAltArts[$i]);
                           if (count($arr) === 2) {
                             $altArt = new stdClass();
-                            $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . ($i + 1) : "");
+                            $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
                             $altArt->cardId = trim($arr[0]);
                             $altArt->altPath = trim($arr[1]);
                             array_push($initialLoad->altArts, $altArt);
@@ -217,7 +187,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
 
         if ($campaign->SessionID() == "isPvtVoidPatron") {
-          $isOpponentSupporterOfCampaign = ($altArtsOpponentName == "PvtVoid") || $campaign->IsTeamMember($altArtsOpponentName);
+          $isOpponentSupporterOfCampaign = $altArtsOpponentName == "PvtVoid" || $campaign->IsTeamMember($altArtsOpponentName);
         }
 
         if($isOpponentSupporterOfCampaign) {
@@ -228,7 +198,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           for($i = 0; $i < $opponentAltArtsCount; ++$i) {
             $arr = explode("=", $opponentAltArts[$i]);
             $opponentAltArt = new stdClass();
-            $opponentAltArt->name = $campaign->CampaignName() . ($opponentAltArtsCount > 1 ? " " . ($i + 1) : "");
+            $opponentAltArt->name = $campaign->CampaignName() . ($opponentAltArtsCount > 1 ? " " . $i + 1 : "");
             $opponentAltArt->cardId = $arr[0];
             $opponentAltArt->altPath = $arr[1];
             array_push($initialLoad->opponentAltArts, $opponentAltArt);
@@ -263,7 +233,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
                           $arr = explode("=", $opponentMetafyAltArts[$i]);
                           if (count($arr) === 2) {
                             $opponentAltArt = new stdClass();
-                            $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . ($i + 1) : "");
+                            $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
                             $opponentAltArt->cardId = trim($arr[0]);
                             $opponentAltArt->altPath = trim($arr[1]);
                             array_push($initialLoad->opponentAltArts, $opponentAltArt);
@@ -368,7 +338,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->activeChainLink = $activeChainLink;
 
-  //Tracker state
+  //Tracker State
   $tracker = new stdClass();
   $tracker->color = $playerID == $currentPlayer ? "blue" : "red";
   $layersCount = count($layers);
@@ -379,7 +349,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   else $tracker->position = ($chainLinksCount > 0 || $layersCount > 0 && $layers[0] == "ATTACKSTEP") ? "Combat" : "Main";
   $response->tracker = $tracker;
 
-  //Display layer
+  //Display Layer
   $layerObject = new stdClass;
   $layerContents = [];
   $layerPieces = LayerPieces();
@@ -404,7 +374,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
 
-  // their hand contents
+  //Their Hand
   $theirHandContents = [];
   $theirBanishCount = count($theirBanish);
   $myBanishCount = count($myBanish);
@@ -438,9 +408,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->opponentHand = $theirHandContents;
 
-  //Their life
+  //Their Life
   $response->opponentHealth = $theirHealth;
-  //Their soul count
+  //Their Soul Count
   $response->opponentSoulCount = count($theirSoul);
 
   //Display their discard, pitch, deck, and banish
@@ -596,7 +566,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->opponentEquipment = $characterContents;
 
-  // my hand contents
+  //My Hand
   $restriction = "";
   $actionType = $turnPhase == "ARS" ? 4 : 27;
   $resourceRestrictedCard = "";
@@ -609,7 +579,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if($isCasterMode || $isGameOver) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
-      $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || ($actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "") : false;
+      $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
       $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? $actionType : 0;
       if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
@@ -619,12 +589,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerHand = $myHandContents;
 
-  //My life
+  //My Life
   $response->playerHealth = $myHealth;
-  //My soul count
+  //My Soul Count
   $response->playerSoulCount = count($mySoul);
 
-  //My discard
+  //My Discard
   $playerDiscardArr = [];
   $myDiscardCount = count($myDiscard);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
@@ -648,7 +618,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerDiscard = $playerDiscardArr;
 
-  //My pitch
+  //My Pitch
   $response->playerPitchCount = $myResources[0];
   $playerPitchArr = [];
   $myPitchCount = count($myPitch);
@@ -657,7 +627,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerPitch = $playerPitchArr;
 
-  //My deck
+  //My Deck
   $myDeckCount = count($myDeck);
   $response->playerDeckCount = $myDeckCount;
   $playerHero = ShiyanaCharacter($myCharacter[0], $playerID);
@@ -680,7 +650,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerDeck = $playerDeckArr;
 
-  //My card back
+  //My Card Back
   $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
   $bottomPlayer = $otherPlayer == 1 ? 2 : 1;
@@ -799,14 +769,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->playerEquipment = $myCharData;
 
-  // Now display any previous chain links that can be activated
+  //Now display any previous chain links that can be activated
   $playablePastLinks = [];
   $attacks = GetCombatChainAttacks();
   $attacksCount = count($attacks);
   $chainLinksPieces = ChainLinksPieces();
   for ($i = 0; $i < $attacksCount; $i += $chainLinksPieces) {
     $linkNum = intdiv($i, $chainLinksPieces);
-    $label = "Chain Link " . ($linkNum + 1);
+    $label = "Chain Link " . $linkNum + 1;
     $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($attacks[$i], $turnPhase, "COMBATCHAINATTACKS", $linkNum) ? 38 : 0;
     $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID);
@@ -815,7 +785,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerBanish = array_merge($response->playerBanish, $playablePastLinks);
 
-  // their arsenal
+  //Their Arsenal
   $theirArse = [];
   $theirArsenalCount = 0;
   $arsenalPieces = ArsenalPieces();
@@ -854,7 +824,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->opponentArse = $theirArse;
 
-  // my arsenal
+  //My Arsenal
   $myArse = [];
   $myArsenalCount = 0;
   if ($myArsenal != "") {
@@ -894,7 +864,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerArse = $myArse;
 
-  // Chain Links
+  //Chain Links
   $chainLinkOutput = [];
   $chainLinkSummaryCount = count($chainLinkSummary);
   $chainLinkSummaryPieces = ChainLinkSummaryPieces();
@@ -909,7 +879,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->combatChainLinks = $chainLinkOutput;
 
-  // their allies
+  //Their Allies
   $theirAlliesOutput = [];
   $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
   $theirAlliesCount = count($theirAllies);
@@ -942,7 +912,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->opponentAllies = $theirAlliesOutput;
 
-  //their auras
+  //Their Auras
   $theirAurasOutput = [];
   $theirAurasCount = count($theirAuras);
   $auraPieces = AuraPieces();
@@ -974,7 +944,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->opponentAuras = $theirAurasOutput;
 
-  //their items
+  //Their Items
   $theirItemsOutput = [];
   $theirItemsCount = count($theirItems);
   $itemPieces = ItemPieces();
@@ -1002,7 +972,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->opponentItems = $theirItemsOutput;
 
-  //their permanents
+  //Their Permanents
   $theirPermanentsOutput = [];
   $theirPermanents = GetPermanents($playerID == 1 ? 2 : 1);
   $theirPermanentsCount = count($theirPermanents);
@@ -1015,7 +985,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->opponentPermanents = $theirPermanentsOutput;
 
-  //my allies
+  //My Allies
   $myAlliesOutput = [];
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   $myAlliesCount = count($myAllies);
@@ -1052,7 +1022,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerAllies = $myAlliesOutput;
 
-  //my auras
+  //My Auras
   $myAurasOutput = [];
   $myAurasCount = count($myAuras);
   for ($i = 0; $i + $auraPieces - 1 < $myAurasCount; $i += $auraPieces) {
@@ -1091,7 +1061,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerAuras = $myAurasOutput;
 
-  //my items
+  //My Items
   $myItemsOutput = [];
   $myItemsCount = count($myItems);
   for ($i = 0; $i + $itemPieces - 1 < $myItemsCount; $i += $itemPieces) {
@@ -1137,7 +1107,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->playerItems = $myItemsOutput;
 
-  //my permanents
+  //My Permanents
   $myPermanentsOutput = [];
   $myPermanents = GetPermanents($playerID == 1 ? 1 : 2);
   $myPermanentsCount = count($myPermanents);
@@ -1185,7 +1155,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->landmarks = $landmarksOutput;
 
-  // Chat Log
   $response->chatLog = JSONLog($gameName, $playerID);
 
   // Current turn effects
@@ -1316,7 +1285,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   // opponent and player Action Points
-  if ($mainPlayer == $playerID || ($playerID == 3 && $mainPlayer != $otherPlayer)) {
+  if ($mainPlayer == $playerID || $playerID == 3 && $mainPlayer != $otherPlayer) {
     $response->opponentAP = 0;
     $response->playerAP = $actionPoints;
   } else {
@@ -1331,19 +1300,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     JSONRenderedCard($lastPlayed[0], controller: $lastPlayed[1]);
   // is the player the active player (is it their turn?)
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
-  // who's turn it is
+
   $response->turnPlayer = $mainPlayer;
-
-  // who is the other playerID
   $response->otherPlayer = $playerID == 1 ? 2 : 1;
-
-  // who is the starting player
   $response->firstPlayer = $firstPlayer;
-
-  //Turn number
   $response->turnNo = $currentTurn;
-
-  //Clock
   $response->clock = $p1TotalTime + $p2TotalTime;
 
   $playerPrompt = new StdClass();
@@ -1407,7 +1368,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $chatPiece16 = intval(GetCachePiece($gameName, 16));
   $response->chatEnabled = $chatPiece15 == 1 && $chatPiece16 == 1 ? true : false;
 
-  // Spectator count
   $spectatorCount = 0;
   $currentTime = round(microtime(true) * 1000);
   $spectatorTimeout = 30000;
@@ -1434,15 +1394,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->spectatorCount = $spectatorCount;
   $response->spectatorNames = [];
 
-  // Visibility from cache
   $cacheVisibility = GetCachePiece($gameName, 9);
   $response->isPrivate = ($cacheVisibility !== "1");
 
-  // Replay flag from cache
   $isReplayFlag = GetCachePiece($gameName, 10);
   $response->isReplay = ($isReplayFlag === "1");
 
-  // AI infinite HP state
   $response->aiHasInfiniteHP = $AIHasInfiniteHP;
 
   // Opponent typing indicator
@@ -1468,9 +1425,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   return $response;
 }
 
-/**
- * Build the player input popup structure
- */
 function BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName) {
   global $myHand, $myPitch, $myDeck, $theirDeck, $myDiscard, $theirDiscard;
   global $myBanish, $theirBanish, $myArsenal, $theirArsenal;
@@ -1497,17 +1451,11 @@ function BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName) {
   return $playerInputPopup;
 }
 
-/**
- * Helper function for item overlay
- */
 function ItemOverlay($item, $isReady, $numUses)
 {
   return $item == "micro_processor_blue" && $numUses < 3 || $isReady != 2 ? 1 : 0;
 }
 
-/**
- * Helper function for phase helptext
- */
 function GetPhaseHelptext()
 {
   global $turn;
@@ -1516,16 +1464,11 @@ function GetPhaseHelptext()
   return $DQText != "-" ? GamestateUnsanitize($DQText) : $defaultText;
 }
 
-/**
- * Helper function for effect UI stacking
- */
 function skipEffectUIStacking($cardID) {
   return !HasFancyCounters($cardID) && $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
 }
 
-/**
- * Helper function for dev environment detection
- */
+
 if (!function_exists('IsDevEnvironment')) {
   function IsDevEnvironment() {
     $domain = getenv("DOMAIN");

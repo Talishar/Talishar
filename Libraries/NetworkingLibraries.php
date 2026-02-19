@@ -4538,16 +4538,31 @@ function ReportBug()
     WriteLog("⚠️ Bug report file is full for this game. Please use Discord to report further bugs.", highlight: true);
   }
   mkdir($folderName, 0700, true);
-  copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
-  copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
-  copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
-  copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
-  copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-  for ($i = 0; $i <= 4; $i++) {
-    if (file_exists("./Games/$gameName/gamestateBackup_{$i}.txt")) {
-      copy("./Games/$gameName/gamestateBackup_{$i}.txt", $folderName . "/gamestateBackup_{$i}.txt");
+  
+  // Copy main game files
+  $filesToCopy = [
+    "gamestate.txt",
+    "gamestateBackup.txt",
+    "gamelog.txt",
+    "beginTurnGamestate.txt",
+    "lastTurnGamestate.txt"
+  ];
+  
+  foreach ($filesToCopy as $file) {
+    $sourcePath = "./Games/$gameName/$file";
+    if (file_exists($sourcePath)) {
+      copy($sourcePath, "$folderName/$file");
     }
   }
+  
+  // Copy numbered backup files
+  for ($i = 0; $i <= 4; $i++) {
+    $sourcePath = "./Games/$gameName/gamestateBackup_{$i}.txt";
+    if (file_exists($sourcePath)) {
+      copy($sourcePath, "$folderName/gamestateBackup_{$i}.txt");
+    }
+  }
+  
   WriteLog("🐛 Thank you for reporting a bug. Please report it on Discord with the game number as reference ($gameName).");
 }
 

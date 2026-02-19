@@ -82,10 +82,7 @@ if (!empty($metafyApiKey)) {
   $teamResponseBody = curl_exec($curlHandle);
   $teamHttpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
   curl_close($curlHandle);
-  
-  error_log("Metafy API Request (Team): " . $teamGuidesUrl);
-  error_log("Metafy API Response Code (Team): " . $teamHttpCode);
-  
+    
   if ($teamHttpCode === 200 && $teamResponseBody) {
     $teamResponse = json_decode($teamResponseBody);
     if ($teamResponse && isset($teamResponse->guides)) {

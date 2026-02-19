@@ -298,6 +298,6 @@ function deleteDirectory($dir) {
         }
     }
     if (!is_dir($dir)) return false;
-    return rmdir($dir);
+    return @rmdir($dir) || !is_dir($dir); // Gracefully handle race condition where directory was already deleted
 }
 
