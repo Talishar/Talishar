@@ -8,12 +8,12 @@ SetHeaders();
 
 $gameName = $_GET["gameName"];
 if (!IsGameNameValid($gameName)) {
-  echo ("Invalid game name.");
+  echo "Invalid game name.";
   exit;
 }
 $playerID = intval($_GET["playerID"]);
 if($playerID !== 1 && $playerID !== 2) {
-  echo ("Invalid player ID.");
+  echo "Invalid player ID.";
   exit;
 }
 
@@ -36,7 +36,7 @@ $sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
 // Release session lock NOW - before file operations
 session_write_close();
 
-if ($authKey == "") $authKey = isset($_COOKIE["lastAuthKey"]) ? $_COOKIE["lastAuthKey"] : "";
+if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"] ?? "";
 
 $targetAuthKey = "";
 if ($playerID == 1 && $sessionP1AuthKey !== null) $targetAuthKey = $sessionP1AuthKey;
@@ -59,10 +59,10 @@ if (tryGet("quickChat")) {
 if ($chatText === "") exit;
 
 //array for contributors
-$contributors = array("sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid");
+$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid"];
 
 // List of mod usernames - should match frontend list
-$modUsernames = array("OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn");
+$modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn"];
 
 // Get Metafy tiers for this player live from DB so stale game file values don't affect chat badges
 $metafyTiers = [];
@@ -103,7 +103,7 @@ if(!$hasMetafyBadges) {
   }
 
   //This is the code for PvtVoid Patreon
-  if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, array("PvtVoid"))) {
+  if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, ["PvtVoid"])) {
     $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
   }
 }
@@ -158,14 +158,14 @@ function parseQuickChat($inputEnum)
 }
 
 function GetMetafyTierImage($tierName) {
-  $tierImages = array(
+  $tierImages = [
     'Fyendal Supporters' => './images/fyendal.webp',
     'Seers of Ophidia' => './images/ophidia.webp',
     'Arknight Shards' => './images/arknight.webp',
     'Lover of Grandeur' => './images/grandeur.webp',
     'Sponsors of Trōpal-Dhani' => './images/tropal.webp',
     'Light of Sol Gemini Circle' => './images/lightofsol.webp'
-  );
-  return isset($tierImages[$tierName]) ? $tierImages[$tierName] : null;
+  ];
+  return $tierImages[$tierName] ?? null;
 }
 

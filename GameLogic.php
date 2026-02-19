@@ -1076,8 +1076,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "PLAYAURA":
       $params = explode("-", $parameter);
       $cardID = $params[0];
-      $num = isset($params[1]) ? $params[1] : 1;
-      $effectSource = isset($params[2]) ? $params[2] : "-";
+      $num = $params[1] ?? 1;
+      $effectSource = $params[2] ?? "-";
       $effectController = $params[3] ?? "-";
       if (isset($params[1])) PlayAura($cardID, $player, $num, effectSource:$effectSource, effectController:$effectController);
       else PlayAura($params[0], $player);
@@ -1473,7 +1473,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
-      if ((CardType($EffectContext) == "AA" || (isset($layers[0]) && CardType($layers[0]) == "AA")) && $parameter != "NOTCOST") ++$combatChainState[$CCS_AttackNumCharged];
+      if ((CardType($EffectContext) == "AA" || isset($layers[0]) && CardType($layers[0]) == "AA") && $parameter != "NOTCOST") ++$combatChainState[$CCS_AttackNumCharged];
       return $lastResult;
     case "DEALDAMAGE":
       $target = is_array($parameter) ? $parameter : explode("-", $parameter);
@@ -1578,7 +1578,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           return "";
         }
-        elseif (($target[0] == "THEIRCHARUID" || $target[0] == "MYCHARUID")) { //perched allies
+        elseif ($target[0] == "THEIRCHARUID" || $target[0] == "MYCHARUID") { //perched allies
           $index = SearchCharacterForUniqueID($target[1], $targetPlayer);
           $dqVars[0] = $damage;
           if ($damage > 0 && $index > 0) {
@@ -1590,7 +1590,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             return "";
           }
         }
-        elseif (($target[0] == "THEIRCHAR" || $target[0] == "MYCHAR")) { //perched allies targeted without UID
+        elseif ($target[0] == "THEIRCHAR" || $target[0] == "MYCHAR") { //perched allies targeted without UID
           $index = $target[1];
           $dqVars[0] = $damage;
           if ($damage > 0 && $index > 0) {
@@ -1644,7 +1644,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $shouldAddCounter = true;
             if ($lastResult == 2 && $arrayOfArcaneBarrierChoices[1] < 2) { 
               $shouldAddCounter = false;
-            } elseif ($lastResult == 3 && ($arrayOfArcaneBarrierChoices[1] < 3 && $arrayOfArcaneBarrierChoices[2] < 1)) {
+            } elseif ($lastResult == 3 && $arrayOfArcaneBarrierChoices[1] < 3 && $arrayOfArcaneBarrierChoices[2] < 1) {
               $shouldAddCounter = false;
             }
             if ($shouldAddCounter) {
@@ -3008,7 +3008,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
-      if ((CardType($params[0]) == "AA" && (GetResolvedAbilityType($params[0], $params[1]) == "") || GetResolvedAbilityType($params[0], $params[1]) == "AA")) GetTargetOfAttack($params[0]);
+      if (CardType($params[0]) == "AA" && GetResolvedAbilityType($params[0], $params[1]) == "" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0]);
       return $lastResult;
     case "INTIMIDATE":
       $otherPlayer = $player == 1 ? 2 : 1;
@@ -3289,7 +3289,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $ind = explode("-", $lastResult)[1] ?? "-";
       if ($ind == "FIRST") {
         for ($i = count($layers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
-          if (($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player)) {
+          if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) {
             $pretrigger = array_slice($layers, $i, LayerPieces());
             $pretrigger[0] = "TRIGGER";
             for ($j = $i + LayerPieces() - 1; $j >= $i; --$j) {
@@ -3375,7 +3375,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "AMULETOFOBLATION":
       $params = explode("!", $parameter);
       $target = GetMZCard($mainPlayer, "$params[1]-$lastResult");
-      AddCurrentTurnEffect("$params[0]$target", GetMZCard($mainPlayer, $params[1] . "-" . ($lastResult + 1)), count($params) > 1 ? $params[1] : "");
+      AddCurrentTurnEffect("$params[0]$target", GetMZCard($mainPlayer, $params[1] . "-" . $lastResult + 1), count($params) > 1 ? $params[1] : "");
       WriteLog(CardLink("amulet_of_oblation_blue", "amulet_of_oblation_blue") . " targeted " . CardLink($target, $target));
       return $lastResult;
     case "FABRICATE":
@@ -3462,7 +3462,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numHands = NumOccupiedHands($currentPlayer);
       foreach ($inventory as $cardID) {
         if (TypeContains($cardID, "W", $currentPlayer)) {
-          if ($numHands == 0 || (Is1H($cardID) && $numHands == 1)) {
+          if ($numHands == 0 || Is1H($cardID) && $numHands == 1) {
             if ($equipments != "") $equipments .= ",";
             $equipments .= $cardID;
           }

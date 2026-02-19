@@ -11,22 +11,23 @@ class OAuth {
   }
 
   public function get_tokens($code, $redirect_uri) {
-    return $this->__update_token(array(
-        "grant_type" => "authorization_code",
-        "code" => $code,
-        "client_id" => $this->client_id,
-        "client_secret" => $this->client_secret,
-        "redirect_uri" => $redirect_uri
-    ));
+    return $this->__update_token([
+      "grant_type" => "authorization_code",
+      "code" => $code,
+      "client_id" => $this->client_id,
+      "client_secret" => $this->client_secret,
+      "redirect_uri" => $redirect_uri
+    ]);
   }
 
-  public function refresh_token($refresh_token, $redirect_uri) {
-    return $this->__update_token(array(
-        "grant_type" => "refresh_token",
-        "refresh_token" => $refresh_token,
-        "client_id" => $this->client_id,
-        "client_secret" => $this->client_secret
-    ));
+  public function refresh_token($refresh_token, $redirect_uri)
+  {
+    return $this->__update_token([
+      "grant_type" => "refresh_token",
+      "refresh_token" => $refresh_token,
+      "client_id" => $this->client_id,
+      "client_secret" => $this->client_secret
+    ]);
   }
 
   private function __update_token($params) {

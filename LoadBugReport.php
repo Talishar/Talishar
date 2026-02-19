@@ -21,7 +21,7 @@ $target = $data['target'];
 
 if (!$source || !$target) {
   http_response_code(400);
-  echo json_encode(array('error' => 'Missing source or target parameter'));
+  echo json_encode(['error' => 'Missing source or target parameter']);
   exit();
 }
 
@@ -38,7 +38,7 @@ curl_close($ch);
 
 if ($http_code != 200) {
   http_response_code(404);
-  echo json_encode(array('error' => "Bug report {$source} does not exist"));
+  echo json_encode(['error' => "Bug report {$source} does not exist"]);
   exit();
 }
 
@@ -62,9 +62,10 @@ if ($newGamestate !== false) {
 // Update gamestate to trigger SSE refresh
 GamestateUpdated($target);
 
-echo json_encode(array('success' => true));
+echo json_encode(['success' => true]);
 
-function SaveFile($source, $target, $file) {
+function SaveFile($source, $target, $file)
+{
   $source_path = "https://legacy.talishar.net/game/BugReports/{$source}/{$file}";
   $target_path = "./Games/{$target}/{$file}";
   $target_realpath = "./$target_path";
@@ -73,7 +74,7 @@ function SaveFile($source, $target, $file) {
   $gs_file = fopen("{$gs_path}", 'r+');
   if (!$gs_file) {
     http_response_code(500);
-    echo json_encode(array('error' => 'Failed to open target file on local'));
+    echo json_encode(['error' => 'Failed to open target file on local']);
     exit();
   }
 
@@ -96,8 +97,8 @@ function SaveFile($source, $target, $file) {
     $raw_source_lines = explode("\r\n", trim($source_file_contents));
     $numChainLinks = isset($raw_source_lines[56]) ? trim($raw_source_lines[56]) : 0;
     if (!is_numeric($numChainLinks)) $numChainLinks = 0;
-    $source_inventory_p1 = isset($raw_source_lines[72 + $numChainLinks]) ? $raw_source_lines[72 + $numChainLinks] : "";
-    $source_inventory_p2 = isset($raw_source_lines[73 + $numChainLinks]) ? $raw_source_lines[73 + $numChainLinks] : "";
+    $source_inventory_p1 = $raw_source_lines[72 + $numChainLinks] ?? "";
+    $source_inventory_p2 = $raw_source_lines[73 + $numChainLinks] ?? "";
   }
 
   $source_file_contents = preg_replace("/[a-zA-Z0-9]{64}[\s\S]*$/", '', $source_file_contents);
@@ -125,4 +126,3 @@ function SaveFile($source, $target, $file) {
   file_put_contents("{$target_realpath}", $target_file_contents);
 }
 
-?>

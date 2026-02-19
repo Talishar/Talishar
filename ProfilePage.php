@@ -55,7 +55,7 @@ if (isset($_SESSION["isPatron"])) {
     //$redirect_uri = "https://www.talishar.net/game/PatreonLogin.php";
     $redirect_uri = "https://legacy.talishar.net/game/PatreonLogin.php";
     $href = 'https://www.patreon.com/oauth2/authorize?response_type=code&client_id=' . $client_id . '&redirect_uri=' . urlencode($redirect_uri);
-    $state = array();
+    $state = [];
     $state['final_page'] = 'http://fleshandbloodonline.com/FaBOnline/MainMenu.php';
     $state_parameters = '&state=' . urlencode(base64_encode(json_encode($state)));
     $href .= $state_parameters;

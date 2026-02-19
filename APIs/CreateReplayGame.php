@@ -13,7 +13,7 @@ SetHeaders();
 $userId = "";
 if (isset($_SESSION["userid"])) $userId = $_SESSION["useruid"];
 if ($userId == "") {
-  echo ("You must be logged in to use this feature.");
+  echo "You must be logged in to use this feature.";
   exit;
 }
 $response = new stdClass();
@@ -51,11 +51,11 @@ if (!file_exists($replayPath)) {
   $availableList = !empty($availableReplays) ? "\n\nAvailable replays: " . implode(", ", array_values($availableReplays)) : "\n\nNo replay directories found yet.";
   
   $response->error = "Replay directory not found at: $replayPath_display" . $availableList;
-  $response->debug = array(
+  $response->debug = [
     "requestedReplayNumber" => $replayNumber,
     "availableReplays" => array_values($availableReplays),
     "replaysDirectory" => realpath("../Replays/") ?: "../Replays/"
-  );
+  ];
   http_response_code(404);
   echo json_encode($response);
   exit;
@@ -79,18 +79,18 @@ if (!empty($missingFiles)) {
   foreach ($missingFiles as $file => $description) {
     $missingFilesList .= "  • $file ($description)\n";
   }
-  
-  $filesInDir = array_values(array_filter(scandir($replayPath) ?? [], function($item) {
+
+  $filesInDir = array_values(array_filter(scandir($replayPath) ?? [], function ($item) {
     return $item !== '.' && $item !== '..';
   }));
   $filesList = !empty($filesInDir) ? "\n\nFiles found in directory:\n  " . implode(", ", $filesInDir) : "\n\nDirectory is empty!";
-  
+
   $response->error = "Replay directory exists but missing required files." . $missingFilesList . $filesList;
   $response->missingFiles = $missingFiles;
-  $response->debug = array(
+  $response->debug = [
     "replayPath" => realpath($replayPath) ?: $replayPath,
     "filesInDirectory" => $filesInDir
-  );
+  ];
   http_response_code(400);
   echo json_encode($response);
   exit;
@@ -106,11 +106,11 @@ $gameName = GetGameCounter("../");
 
 if (!file_exists("../Games/$gameName") && !mkdir("../Games/$gameName", 0700, true)) {
   $response->error = "Failed to create game directory at: ../Games/$gameName";
-  $response->debug = array(
+  $response->debug = [
     "gameID" => $gameName,
     "attemptedPath" => realpath("../Games/") . "/$gameName",
     "parentDirExists" => file_exists("../Games/")
-  );
+  ];
   http_response_code(500);
   echo json_encode($response);
   exit;
@@ -143,7 +143,8 @@ for ($i = count($gamestateLine) - 1; $i >= 0; $i--) {
   if (strlen($line) === 64 && ctype_xdigit($line)) {
     if ($p2Key === "") {
       $p2Key = $line;
-    } elseif ($p1Key === "") {
+    }
+    elseif ($p1Key === "") {
       $p1Key = $line;
       break; // Found both keys
     }
@@ -217,15 +218,15 @@ for ($player = 1; $player < 3; ++$player) {
 if (!empty($copyErrors)) {
   $response->error = "Failed to copy replay files to game directory.";
   $response->copyErrors = $copyErrors;
-  $response->debug = array(
+  $response->debug = [
     "gameID" => $gameName,
     "sourcePath" => realpath($replayPath) ?: $replayPath,
     "destPath" => realpath("../Games/$gameName") ?: "../Games/$gameName",
-    "sourceFilesExist" => array(
+    "sourceFilesExist" => [
       "origGamestate.txt" => file_exists($origGamestateSource),
       "commandfile.txt" => file_exists($commandFileSource)
-    )
-  );
+    ]
+  ];
   http_response_code(500);
   echo json_encode($response);
   exit;
@@ -239,10 +240,10 @@ file_put_contents($commandFileDest, $commandFile);
 $gamestate = file_get_contents("../Games/" . $gameName . "/gamestate.txt");
 if ($gamestate === false) {
   $response->error = "Failed to read gamestate file after copying.";
-  $response->debug = array(
+  $response->debug = [
     "gameID" => $gameName,
     "gamestateFilePath" => realpath("../Games/$gameName/gamestate.txt") ?: "../Games/$gameName/gamestate.txt"
-  );
+  ];
   http_response_code(500);
   echo json_encode($response);
   exit;
@@ -256,7 +257,7 @@ $response->authKey = $p1Key;
 $response->message = "Replay game created successfully!";
 $response->success = true;
 
-echo (json_encode($response));
+echo json_encode($response);
 
 // // header("Location: NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 // header("Location: http://127.0.0.1/:5173/game/play?gameName=$gameName&playerID=1&authKey=$p1Key");

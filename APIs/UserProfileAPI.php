@@ -11,7 +11,7 @@ include_once "../Libraries/HTTPLibraries.php";
 SetHeaders();
 
 if (!IsUserLoggedIn()) {
-  echo (json_encode(new stdClass()));
+  echo json_encode(new stdClass());
   exit;
 }
 
@@ -26,7 +26,7 @@ $response->isPatreonLinked = isset($_SESSION["patreonAuthenticated"]);
 // Check if user is contributor or PvtVoid patron
 $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
 $response->isContributor = in_array($userName, $contributors);
-$response->isPvtVoidPatron = ($userName == "PvtVoid" || isset($_SESSION["isPvtVoidPatron"]));
+$response->isPvtVoidPatron = $userName == "PvtVoid" || isset($_SESSION["isPvtVoidPatron"]);
 
 // Get Metafy info from database
 $conn = GetDBConnection();
@@ -59,15 +59,15 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
       $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
       curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
-      curl_setopt($ch_me, CURLOPT_HTTPHEADER, array(
+      curl_setopt($ch_me, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $metafyAccessToken,
         'Content-Type: application/json'
-      ));
+      ]);
       curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
       $me_raw = curl_exec($ch_me);
       $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
       curl_close($ch_me);
-      $response->debug_me_fetch = array('http_code' => $me_code, 'raw' => substr($me_raw, 0, 500));
+      $response->debug_me_fetch = ['http_code' => $me_code, 'raw' => substr($me_raw, 0, 500)];
       if ($me_code === 200) {
         $me_data = json_decode($me_raw, true);
         $user_metafy_id = $me_data['user']['id'] ?? null;
@@ -84,7 +84,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
       }
     }
 
-    $response->debug_metafy_id = array('id' => $user_metafy_id, 'source' => $metafy_id_source);
+    $response->debug_metafy_id = ['id' => $user_metafy_id, 'source' => $metafy_id_source];
 
     // Check paid Talishar subscription: use client_id as Bearer to call the community subscribers endpoint
     // (per Metafy docs - community owner endpoints authenticate with client_id)
@@ -94,21 +94,21 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     $ch = curl_init($subscribers_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
       'Authorization: Bearer ' . $talishar_client_id,
       'Content-Type: application/json'
-    ));
+    ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
 
     $api_response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    $response->debug_subscribers = array(
+    $response->debug_subscribers = [
       'http_code' => $http_code,
       'user_metafy_id' => $user_metafy_id,
       'raw' => substr($api_response, 0, 800)
-    );
+    ];
 
     if ($http_code === 200 && !empty($api_response)) {
       $data = json_decode($api_response, true);
@@ -124,19 +124,23 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     if ($response->isMetafySupporter) {
       $talishar_in_list = false;
       foreach ($response->metafyCommunities as $c) {
-        if (($c['id'] ?? null) === $talishar_community_id) { $talishar_in_list = true; break; }
+        if (($c['id'] ?? null) === $talishar_community_id) {
+          $talishar_in_list = true;
+          break;
+        }
       }
       if (!$talishar_in_list) {
-        $response->metafyCommunities[] = array(
+        $response->metafyCommunities[] = [
           'id' => $talishar_community_id,
           'title' => 'Talishar',
           'description' => 'Flesh and Blood TCG — get exclusive card backs, playmats, and alt arts.',
           'logo_url' => null,
           'url' => 'https://talishar.net',
           'type' => 'supported'
-        );
+        ];
       }
-    } else {
+    }
+    else {
       // Fallback: check the DB-cached communities for isMetafySupporter
       foreach ($response->metafyCommunities as $community) {
         if (isset($community['id']) && $community['id'] === $talishar_community_id) {
@@ -146,7 +150,8 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
       }
     }
   }
-} else {
+}
+else {
   $response->isMetafyLinked = false;
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = [];
@@ -161,13 +166,16 @@ exit;
 function PatreonLink()
 {
   global $patreonClientID, $patreonClientSecret;
+  if (empty($patreonClientID) || empty($patreonClientSecret)) {
+    return null;
+  }
   $client_id = $patreonClientID;
   $client_secret = $patreonClientSecret;
 
   //$redirect_uri = "https://www.talishar.net/game/PatreonLogin.php";
   $redirect_uri = "https://legacy.talishar.net/game/PatreonLogin.php";
   $href = 'https://www.patreon.com/oauth2/authorize?response_type=code&client_id=' . $client_id . '&redirect_uri=' . urlencode($redirect_uri);
-  $state = array();
+  $state = [];
   $state['final_page'] = 'http://fleshandbloodonline.com/FaBOnline/MainMenu.php';
   $state_parameters = '&state=' . urlencode(base64_encode(json_encode($state)));
   $href .= $state_parameters;
@@ -179,8 +187,11 @@ function PatreonLink()
 function MetafyLink()
 {
   global $metafyClientID;
+  if (empty($metafyClientID)) {
+    return null;
+  }
   $client_id = $metafyClientID;
-  
+
   // Check environment variable first, then fall back to detecting by host
   $metafy_dev_mode = getenv('METAFY_DEV_MODE');
   $use_dev = $metafy_dev_mode === 'true' || $metafy_dev_mode === '1';
@@ -188,19 +199,19 @@ function MetafyLink()
     $is_local = $_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === 'localhost:8000' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false;
     $use_dev = $is_local;
   }
-  
+
   // Use new Metafy OAuth endpoint
   $oauth_host = 'https://metafy.gg/auth/authorize';
-  
+
   // Set appropriate redirect URI based on environment
   $redirect_uri = $use_dev ? 'http://localhost:5173/user/profile/linkmetafy' : 'https://talishar.net/user/profile/linkmetafy';
   $response_type = 'code';
   $scope = 'profile community products purchases';
-  
+
   // Create state parameter with redirect URL
-  $state = array(
+  $state = [
     'redirect_uri' => $redirect_uri
-  );
+  ];
   $state_json = json_encode($state);
   $state_encoded = base64_encode($state_json);
   

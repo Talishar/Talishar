@@ -26,22 +26,22 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   $token_url = 'https://metafy.gg/irk/oauth/token';
   
   // Per Metafy docs: client_id and client_secret go in the POST body as JSON
-  $post_fields = array(
+  $post_fields = [
     'grant_type' => 'authorization_code',
     'code' => $code,
     'redirect_uri' => $redirect_uri,
     'client_id' => $client_id,
     'client_secret' => $client_secret
-  );
+  ];
   
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $token_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_fields));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
   
   $token_response = curl_exec($ch);
@@ -61,8 +61,8 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     // Fetch user's communities
     FetchAndSaveMetafyCommunities($access_token, $response);
   } else {
-    $error_msg = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
-    $error_description = isset($tokens['error_description']) ? $tokens['error_description'] : 'No description';
+    $error_msg = $tokens['error'] ?? 'Failed to get access token';
+    $error_description = $tokens['error_description'] ?? 'No description';
     $response->error = $error_msg;
     $response->error_description = $error_description;
   }
@@ -72,7 +72,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   $response->error = 'no code set';
 }
 
-echo (json_encode($response));
+echo json_encode($response);
 
 function SaveMetafyTokensAndID($accessToken, $refreshToken)
 {
@@ -85,10 +85,10 @@ function SaveMetafyTokensAndID($accessToken, $refreshToken)
   $metafyUserID = null;
   $ch = curl_init('https://metafy.gg/irk/api/v1/me');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $accessToken,
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
   $profileResponse = curl_exec($ch);
   $profileHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -120,17 +120,17 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   $userID = $_SESSION['userid'];
   $conn = GetDBConnection();
   
-  $all_communities = array();
+  $all_communities = [];
   
   $community_url = 'https://metafy.gg/irk/api/v1/me/community';
   
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $community_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $access_token,
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
   
   $community_response = curl_exec($ch);
@@ -141,7 +141,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   
   // Add owned community if user has one
   if ($http_code === 200 && isset($community_data['community'])) {
-    $community_info = array(
+    $community_info = [
       'id' => $community_data['community']['id'] ?? null,
       'title' => $community_data['community']['title'] ?? null,
       'description' => $community_data['community']['description'] ?? null,
@@ -150,7 +150,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
       'url' => $community_data['community']['url'] ?? null,
       'tiers' => $community_data['community']['tiers'] ?? [],
       'type' => 'owned'
-    );
+    ];
     $all_communities[] = $community_info;
   }
   
@@ -160,10 +160,10 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $memberships_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $access_token,
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
   
   $memberships_response = curl_exec($ch);
@@ -187,7 +187,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
       $added_community_ids[] = $community_id;
 
       // Build a tier_id → name lookup from the membership object's tiers list
-      $tier_map = array();
+      $tier_map = [];
       foreach (($community['tiers'] ?? []) as $tier) {
         if (!empty($tier['id']) && !empty($tier['name'])) {
           $tier_map[$tier['id']] = $tier['name'];
@@ -198,16 +198,16 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
       $purchase_url = 'https://metafy.gg/irk/api/v1/me/purchases/communities/' . urlencode($community_id);
       $ch_pur = curl_init($purchase_url);
       curl_setopt($ch_pur, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch_pur, CURLOPT_HTTPHEADER, array(
+      curl_setopt($ch_pur, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $access_token,
         'Content-Type: application/json'
-      ));
+      ]);
       curl_setopt($ch_pur, CURLOPT_USERAGENT, 'Talishar-App');
       $pur_response = curl_exec($ch_pur);
       $pur_http_code = curl_getinfo($ch_pur, CURLINFO_HTTP_CODE);
       curl_close($ch_pur);
 
-      $community_info = array(
+      $community_info = [
         'id' => $community_id,
         'title' => $community['title'] ?? null,
         'description' => $community['description'] ?? null,
@@ -215,7 +215,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
         'cover_url' => $community['cover_url'] ?? null,
         'url' => $community['url'] ?? null,
         'type' => 'supported'
-      );
+      ];
 
       if ($pur_http_code === 200 && !empty($pur_response)) {
         $pur_data = json_decode($pur_response, true);
@@ -244,4 +244,3 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   mysqli_close($conn);
 }
 
-?>

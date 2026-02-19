@@ -113,7 +113,7 @@ function ParseGamestate()
   $lastPlayed = GetStringArray($gamestateContent[55]);
   $numChainLinks = isset($gamestateContent[56]) ? trim($gamestateContent[56]) : 0;
   if (!is_numeric($numChainLinks)) $numChainLinks = 0;
-  $chainLinks = array();
+  $chainLinks = [];
   for ($i = 0; $i < $numChainLinks; ++$i) {
     $chainLink = GetStringArray($gamestateContent[57+$i]);
     array_push($chainLinks, $chainLink);

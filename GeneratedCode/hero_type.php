@@ -877,16 +877,16 @@ function return_Hero_Type($Cardcode){
 		return Young;
 		break;
 	case "terra":
-		return Young
+		return Young;
 		break;
 	case "aurora":
-		return Young
+		return Young;
 		break;
 	case "jarl_vetreidi":
-		return Adult
+		return Adult;
 		break;		
 	case "aurora":
-		return Young
+		return Young;
 		break;
         default:
             return False;}

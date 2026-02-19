@@ -41,18 +41,19 @@ class API {
 		return $this->get_data('identity?include=memberships.currently_entitled_tiers,memberships.campaign&fields'.urlencode('[member]').'=last_charge_status,patron_status,last_charge_date,pledge_relationship_start&fields'.urlencode('[campaign]').'=creation_name');
 	}
 
-	public function get_data( $suffix, $args = array() ) {
+	public function get_data( $suffix, $args = [])
+	{
 
 		// Construct request:
 		$api_request = $this->api_endpoint . $suffix;
 
 		// This identifies a unique request
-		$api_request_hash = md5( $this->access_token . $api_request );
+		$api_request_hash = md5($this->access_token . $api_request);
 
 		// Check if this request exists in the cache and if so, return it directly - avoids repeated requests to API in the same page run for same request string
 
-		if ( !isset( $args['skip_read_from_cache'] ) ) {
-			if ( isset( $this->request_cache[$api_request_hash] ) ) {
+		if (!isset($args['skip_read_from_cache'])) {
+			if (isset($this->request_cache[$api_request_hash])) {
 				return $this->request_cache[$api_request_hash];
 			}
 		}
@@ -65,27 +66,27 @@ class API {
 		curl_close($ch);
 
 		// don't try to parse a 500-class error, as it's likely not JSON
-		if ( $info['http_code'] >= 500 ) {
-		  return $this->add_to_request_cache($api_request_hash, $json_string);
+		if ($info['http_code'] >= 500) {
+			return $this->add_to_request_cache($api_request_hash, $json_string);
 		}
 
 		// don't try to parse a 400-class error, as it's likely not JSON
-		if ( $info['http_code'] >= 400 ) {
-		  return $this->add_to_request_cache($api_request_hash, $json_string);
+		if ($info['http_code'] >= 400) {
+			return $this->add_to_request_cache($api_request_hash, $json_string);
 		}
 
 		// Parse the return according to the format set by api_return_format variable
 
-		if( $this->api_return_format == 'array' ) {
-		  $return = json_decode($json_string, true);
+		if ($this->api_return_format == 'array') {
+			$return = json_decode($json_string, true);
 		}
 
-		if( $this->api_return_format == 'object' ) {
-		  $return = json_decode($json_string);
+		if ($this->api_return_format == 'object') {
+			$return = json_decode($json_string);
 		}
 
-		if( $this->api_return_format == 'json' ) {
-		  $return = $json_string;
+		if ($this->api_return_format == 'json') {
+			$return = $json_string;
 		}
 
 		// Add this new request to the request cache and return it
@@ -93,7 +94,8 @@ class API {
 
 	}
 
-	private function __create_ch($api_request) {
+	private function __create_ch($api_request)
+	{
 
 		// This function creates a cURL handler for a given URL. In our case, this includes entire API request, with endpoint and parameters
 
@@ -101,21 +103,21 @@ class API {
 		curl_setopt($ch, CURLOPT_URL, $api_request);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-		if ( $this->api_request_method != 'GET' AND $this->curl_postfields ) {
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, $this->curl_postfields );
+		if ($this->api_request_method != 'GET' AND $this->curl_postfields) {
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->curl_postfields);
 		}
 
 		// Set the cURL request method - works for all of them
 
-		curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $this->api_request_method );
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->api_request_method);
 
 		// Below line is for dev purposes - remove before release
 		// curl_setopt($ch, CURLOPT_HEADER, 1);
 
-		$headers = array(
+		$headers = [
 			'Authorization: Bearer ' . $this->access_token,
-			'User-Agent: Patreon-PHP, version 1.0.2, platform ' . php_uname('s') . '-' . php_uname( 'r' ),
-		);
+			'User-Agent: Patreon-PHP, version 1.0.2, platform ' . php_uname('s') . '-' . php_uname('r'),
+		];
 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		return $ch;
@@ -128,7 +130,7 @@ class API {
 
 		// If the cache array is larger than 50, snip the first item. This may be increased in future
 
-		if ( !empty($this->request_cache) && (count( $this->request_cache ) > 50)  ) {
+		if ( !empty($this->request_cache) && count( $this->request_cache ) > 50  ) {
 			array_shift( $this->request_cache );
 		}
 

@@ -9,7 +9,7 @@ include_once "../Libraries/HTTPLibraries.php";
 SetHeaders();
 
 if (!IsUserLoggedIn()) {
-  echo (json_encode(new stdClass()));
+  echo json_encode(new stdClass());
   exit;
 }
 
@@ -60,9 +60,9 @@ function MetafyLink()
   $scope = 'profile community products purchases';
   
   // Create state parameter with redirect URL
-  $state = array(
+  $state = [
     'redirect_uri' => $redirect_uri
-  );
+  ];
   $state_json = json_encode($state);
   $state_encoded = base64_encode($state_json);
   
@@ -76,4 +76,3 @@ function MetafyLink()
   return $href;
 }
 
-?>

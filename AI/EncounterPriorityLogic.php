@@ -89,70 +89,70 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
   switch($zone) {
     case "Hand":
       for($i = 0; $i < count($zoneArr); ++$i) {
-        array_push($priorityArray, array(
-          $zoneArr[$i], 
-          "Hand", 
-          $i, 
+        array_push($priorityArray, [
+          $zoneArr[$i],
+          "Hand",
+          $i,
           GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ));
+        ]);
       }
       return $priorityArray;
-      
+
     case "Arsenal":
-      for($i = 0; $i < count($zoneArr); $i += ArsenalPieces()) {
-        array_push($priorityArray, array(
-          $zoneArr[$i], 
-          "Arsenal", 
-          $i, 
+      for ($i = 0; $i < count($zoneArr); $i += ArsenalPieces()) {
+        array_push($priorityArray, [
+          $zoneArr[$i],
+          "Arsenal",
+          $i,
           GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ));
+        ]);
       }
       return $priorityArray;
-      
+
     case "Character":
-      for($i = 0; $i < count($zoneArr); $i += CharacterPieces()) {
-        array_push($priorityArray, array(
-          $zoneArr[$i], 
-          "Character", 
-          $i, 
+      for ($i = 0; $i < count($zoneArr); $i += CharacterPieces()) {
+        array_push($priorityArray, [
+          $zoneArr[$i],
+          "Character",
+          $i,
           GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ));
+        ]);
       }
       return $priorityArray;
-      
+
     case "Items":
-      for($i = 0; $i < count($zoneArr); $i += ItemPieces()) {
-        array_push($priorityArray, array(
-          $zoneArr[$i], 
-          "Item", 
-          $i, 
+      for ($i = 0; $i < count($zoneArr); $i += ItemPieces()) {
+        array_push($priorityArray, [
+          $zoneArr[$i],
+          "Item",
+          $i,
           GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ));
+        ]);
       }
       return $priorityArray;
-      
+
     case "Allies":
-      for($i = 0; $i < count($zoneArr); $i += AllyPieces()) {
-        array_push($priorityArray, array(
-          $zoneArr[$i], 
-          "Ally", 
-          $i, 
+      for ($i = 0; $i < count($zoneArr); $i += AllyPieces()) {
+        array_push($priorityArray, [
+          $zoneArr[$i],
+          "Ally",
+          $i,
           GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ));
+        ]);
       }
       return $priorityArray;
-      
+
     case "Banish":
-      for($i = 0; $i < count($zoneArr); ++$i) {
-        array_push($priorityArray, array(
-          $zoneArr[$i], 
-          "Banish", 
-          $i, 
+      for ($i = 0; $i < count($zoneArr); ++$i) {
+        array_push($priorityArray, [
+          $zoneArr[$i],
+          "Banish",
+          $i,
           GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ));
+        ]);
       }
       return $priorityArray;
-      
+
     default:
       return $priorityArray;
   }
@@ -167,9 +167,9 @@ function SortPriorityArray($priorityArray)
 {
   do {
     $swapped = false;
-    for($i = 0, $c = count($priorityArray) - 1; $i < $c; ++$i) {
-      if($priorityArray[$i][3] > $priorityArray[$i + 1][3]) {
-        list($priorityArray[$i + 1], $priorityArray[$i]) = array($priorityArray[$i], $priorityArray[$i + 1]);
+    for ($i = 0, $c = count($priorityArray) - 1; $i < $c; ++$i) {
+      if ($priorityArray[$i][3] > $priorityArray[$i + 1][3]) {
+        [$priorityArray[$i + 1], $priorityArray[$i]] = [$priorityArray[$i], $priorityArray[$i + 1]];
         $swapped = true;
       }
     }
@@ -257,4 +257,3 @@ function FirstTurnResolution($priorityArray, $character)
   return $priorityArray;
 }
 
-?>

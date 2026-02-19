@@ -64,7 +64,7 @@ function TransformMatchupsWithTurnOrder($matchups) {
         return $matchups;
     }
     
-    $transformed = array();
+    $transformed = [];
     foreach ($matchups as $matchup) {
         $transformed[] = ExtractTurnOrderPreference($matchup);
     }
@@ -72,4 +72,3 @@ function TransformMatchupsWithTurnOrder($matchups) {
     return $transformed;
 }
 
-?>

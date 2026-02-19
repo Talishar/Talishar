@@ -24,42 +24,42 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
   // Exchange the code for tokens using the correct Metafy endpoint
   $token_url = 'https://metafy.gg/irk/oauth/token';
   
-  $post_fields = array(
+  $post_fields = [
     'grant_type' => 'authorization_code',
     'code' => $code,
     'redirect_uri' => $redirect_uri
-  );
-  
+  ];
+
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $token_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/x-www-form-urlencoded'
-  ));
+  ]);
   // Use HTTP Basic Authentication for client credentials (Metafy requirement)
   curl_setopt($ch, CURLOPT_USERPWD, $client_id . ':' . $client_secret);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-  
+
   $token_response = curl_exec($ch);
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   $curl_error = curl_error($ch);
   curl_close($ch);
-  
+
   $tokens = json_decode($token_response, true);
-  
+
   if (isset($tokens['access_token'])) {
     $access_token = $tokens['access_token'];
     $refresh_token = $tokens['refresh_token'] ?? '';
-    
+
     // Fetch user profile from Metafy API to get email/username
     $user_profile = GetMetafyUserProfile($access_token);
-    
+
     if ($user_profile && isset($user_profile['id'])) {
       // Create or find user account
       $userID = CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token);
-      
+
       if ($userID) {
         // Log the user in
         $_SESSION['userid'] = $userID;
@@ -67,26 +67,30 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $existingUsername = GetExistingUsername($userID);
         $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
-        
+
         $response->message = 'ok';
         $response->redirect = '/game/MainMenu.php';
         $response->isUserLoggedIn = true;
         $response->loggedInUserID = $userID;
         $response->loggedInUserName = $_SESSION['useruid'];
         $response->isPatron = $_SESSION['isPatron'];
-      } else {
+      }
+      else {
         $response->error = 'Failed to create or update user account';
       }
-    } else {
+    }
+    else {
       $response->error = 'Failed to fetch user profile from Metafy';
     }
-  } else {
-    $error_msg = isset($tokens['error']) ? $tokens['error'] : 'Failed to get access token';
-    $error_description = isset($tokens['error_description']) ? $tokens['error_description'] : 'No description';
+  }
+  else {
+    $error_msg = $tokens['error'] ?? 'Failed to get access token';
+    $error_description = $tokens['error_description'] ?? 'No description';
     $response->error = $error_msg;
     $response->error_description = $error_description;
   }
-} else {
+}
+else {
   $response->error = 'No authorization code provided';
 }
 
@@ -100,21 +104,21 @@ exit;
 function GetMetafyUserProfile($access_token)
 {
   $url = 'https://metafy.gg/irk/api/v1/me';
-  
+
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $access_token,
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-  
+
   $response = curl_exec($ch);
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   $curl_error = curl_error($ch);
   curl_close($ch);
-  
+
   if ($http_code === 200) {
     $profile = json_decode($response, true);
     // Metafy API returns user data nested under 'user' key
@@ -123,15 +127,17 @@ function GetMetafyUserProfile($access_token)
       // Prefer 'name' field for proper capitalization, fall back to 'slug' if not available
       if (isset($user_data['name']) && !empty($user_data['name'])) {
         $user_data['username'] = $user_data['name'];
-      } elseif (isset($user_data['slug']) && !isset($user_data['username'])) {
+      }
+      elseif (isset($user_data['slug']) && !isset($user_data['username'])) {
         $user_data['username'] = $user_data['slug'];
       }
       return $user_data;
-    } else {
+    }
+    else {
       return null;
     }
   }
-  
+
   return null;
 }
 
@@ -141,12 +147,12 @@ function GetMetafyUserProfile($access_token)
 function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
 {
   $conn = GetDBConnection();
-  
+
   // Try to find existing user by email
   $email = $user_profile['email'] ?? '';
   $username = $user_profile['username'] ?? 'metafy_user_' . substr($user_profile['id'], 0, 8);
   $metafy_id = $user_profile['id'] ?? '';
-  
+
   // Check if user exists by email
   if (!empty($email)) {
     $sql = "SELECT usersid FROM users WHERE usersEmail=?";
@@ -157,7 +163,7 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
       $result = mysqli_stmt_get_result($stmt);
       $row = mysqli_fetch_assoc($result);
       mysqli_stmt_close($stmt);
-      
+
       if ($row) {
         // User exists, update Metafy tokens
         $userID = $row['usersid'];
@@ -168,7 +174,7 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
       }
     }
   }
-  
+
   // Check if username already exists, generate unique one if needed
   $base_username = $username;
   $counter = 1;
@@ -176,31 +182,32 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
     $username = $base_username . $counter;
     $counter++;
   }
-  
+
   // Create new user account
   $hashedPassword = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
-  
+
   $sql = "INSERT INTO users (usersUid, usersEmail, usersPwd, metafyAccessToken, metafyRefreshToken, metafyID) 
           VALUES (?, ?, ?, ?, ?, ?)";
   $stmt = mysqli_stmt_init($conn);
-  
+
   if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_bind_param($stmt, 'ssssss', $username, $email, $hashedPassword, $access_token, $refresh_token, $metafy_id);
-    
+
     if (mysqli_stmt_execute($stmt)) {
       $userID = mysqli_insert_id($conn);
       mysqli_stmt_close($stmt);
-      
+
       // Fetch and save communities for new user
       FetchAndSaveMetafyCommunities($userID, $access_token);
-      
+
       mysqli_close($conn);
       return $userID;
-    } else {
+    }
+    else {
       mysqli_stmt_close($stmt);
     }
   }
-  
+
   mysqli_close($conn);
   return null;
 }
@@ -231,13 +238,13 @@ function UpdateMetafyTokens($userID, $access_token, $refresh_token, $metafy_id)
   $conn = GetDBConnection();
   $sql = "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=?, metafyID=? WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
-  
+
   if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_bind_param($stmt, 'ssss', $access_token, $refresh_token, $metafy_id, $userID);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
   }
-  
+
   mysqli_close($conn);
 }
 
@@ -248,30 +255,30 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
 {
   // Reuse the logic from MetafyLoginAPI.php
   include_once '../includes/dbh.inc.php';
-  
+
   $conn = GetDBConnection();
-  $all_communities = array();
-  
+  $all_communities = [];
+
   // 1. Fetch the authenticated user's owned community (if they are a coach/creator)
   $community_url = 'https://metafy.gg/irk/api/v1/me/community';
-  
+
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $community_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $access_token,
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-  
+
   $community_response = curl_exec($ch);
   $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
-  
+
   $community_data = json_decode($community_response, true);
-  
+
   if ($http_code === 200 && isset($community_data['community'])) {
-    $community_info = array(
+    $community_info = [
       'id' => $community_data['community']['id'] ?? null,
       'title' => $community_data['community']['title'] ?? null,
       'description' => $community_data['community']['description'] ?? null,
@@ -280,56 +287,56 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
       'url' => $community_data['community']['url'] ?? null,
       'tiers' => $community_data['community']['tiers'] ?? [],
       'type' => 'owned'
-    );
+    ];
     $all_communities[] = $community_info;
   }
-  
+
   // 2. Fetch all joined communities (memberships)
   $memberships_url = 'https://metafy.gg/irk/api/v1/me/community/memberships?per_page=100';
-  
+
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $memberships_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $access_token,
     'Content-Type: application/json'
-  ));
+  ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-  
+
   $memberships_response = curl_exec($ch);
   $memberships_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
-  
+
   $memberships_data = json_decode($memberships_response, true);
-  
+
   if ($memberships_http_code === 200 && isset($memberships_data['communities'])) {
     foreach ($memberships_data['communities'] as $community) {
       $community_id = $community['id'] ?? null;
-      
+
       if (!$community_id) {
         continue;
       }
-      
+
       // Check if user has an active paid subscription to this community
       $purchase_url = 'https://metafy.gg/irk/api/v1/me/purchases/communities/' . urlencode($community_id);
-      
+
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $purchase_url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $access_token,
         'Content-Type: application/json'
-      ));
+      ]);
       curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-      
+
       $purchase_response = curl_exec($ch);
       $purchase_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
       curl_close($ch);
-      
+
       $purchase_data = json_decode($purchase_response, true);
-      
+
       if ($purchase_http_code === 200 && isset($purchase_data['community']['has_access']) && $purchase_data['community']['has_access'] === true) {
-        $community_info = array(
+        $community_info = [
           'id' => $community_id,
           'title' => $community['title'] ?? null,
           'description' => $community['description'] ?? null,
@@ -338,7 +345,7 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
           'url' => $community['url'] ?? null,
           'tiers' => $community['tiers'] ?? [],
           'type' => 'supported'
-        );
+        ];
         $all_communities[] = $community_info;
       }
     }
@@ -418,4 +425,3 @@ function GetExistingUsername($userID)
   return null;
 }
 
-?>

@@ -61,10 +61,10 @@ if ($isFaBDB) {
   $slug = $decklinkArr[count($decklinkArr) - 1];
   $apiLink = "https://api.fabdb.net/decks/" . $slug;
 } else if (str_contains($decklink, "fabrary")) {
-  $headers = array(
+  $headers = [
     "x-api-key: " . $FaBraryKey,
     "Content-Type: application/json",
-  );
+  ];
   curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
   // Extract slug: https://fabrary.net/decks/SLUG or https://fabrary.net/decks/SLUG?matchupId=...
   $urlWithoutQuery = explode("?", $decklink)[0];
@@ -178,4 +178,3 @@ $response->message = "Deck added to favorites successfully!";
 
 echo json_encode($response);
 
-?>

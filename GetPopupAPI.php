@@ -90,7 +90,7 @@ switch ($popupType) {
     $totalPower = 0;
     $totalDefense = 0;
     $powerModifiers = [];
-    $response->Cards = array();
+    $response->Cards = [];
     EvaluateCombatChain($totalPower, $totalDefense, $powerModifiers);
     for ($i = 0; $i < count($powerModifiers); $i += 2) {
       $thisModifier = new stdClass();
@@ -172,7 +172,7 @@ switch ($popupType) {
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode, $SET_AlwaysShowCounters;
     global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout;
     
-    $response->Settings = array();
+    $response->Settings = [];
     
     // For profile settings (playerID == 0), load from database
     if ($playerID == 0) {
@@ -272,7 +272,7 @@ function AddSetting(&$response, $name, $setting)
 
 function JSONPopup($response, $zone, $zonePieces)
 {
-  $response->cards = array();
+  $response->cards = [];
   for($i=0; $i<count($zone); $i+=$zonePieces)
   {
     array_push($response->cards, JSONRenderedCard($zone[$i]));
@@ -283,7 +283,7 @@ function ChainLinkObject($link)
 {
   global $chainLinks, $mainPlayer, $defPlayer;
   $chainLink = new stdClass();
-  $chainLink->Cards = array();
+  $chainLink->Cards = [];
   if (!is_array($chainLinks) || empty($chainLinks[$link])) {
     return $chainLink;
   }

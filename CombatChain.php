@@ -1450,7 +1450,7 @@ function OnBlockResolveEffects($cardID = "")
 function GetDefendingCardsFromCombatChainLink($chainLink, $defPlayer)
 {
   // returns array of equipments played by the defending hero which is still on the chain
-  $defendingCardIndices = array();
+  $defendingCardIndices = [];
   for ($i = 0; $i < count($chainLink); $i += ChainLinksPieces()) {
     if ($chainLink[$i + 2] == 1 && $chainLink[$i + 1] == $defPlayer) {
       array_push($defendingCardIndices, $i);

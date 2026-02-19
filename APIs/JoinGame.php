@@ -66,7 +66,7 @@ if (!isset($gameName)) {
 }
 if (!IsGameNameValid($gameName)) {
   $response->error = "Invalid game name.";
-  echo (json_encode($response));
+  echo json_encode($response);
   exit;
 }
 if (!isset($playerID)) $playerID = intval($_POST["playerID"]);
@@ -80,7 +80,7 @@ $starterDeck = false;
 
 if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
-  echo (json_encode($response));
+  echo json_encode($response);
   exit;
 }
 
@@ -113,9 +113,9 @@ $preconDecklinks = [
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
-if ($deck == "" && !IsDeckLinkValid($decklink)) {
+if ($deck == "") {
   $response->error = "Deck URL is not valid: " . $decklink;
-  echo (json_encode($response));
+  echo json_encode($response);
   exit;
 }
 
@@ -124,383 +124,417 @@ include "../CardDictionary.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$joinerName = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
-if(($playerID == 3 && $joinerName == "starmorgs") || (($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs") || ($p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890"))) {
-  $response->error = "Unable to join this game.";
-  WriteGameFile();
-  echo (json_encode($response));
-  exit;
-}
+$joinerName = ($_SESSION["useruid"] ?? "Player 2");
+ if ($playerID == 3 && $joinerName == "starmorgs" || ($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs" || $p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890")) {
+   $response->error = "Unable to join this game.";
+   WriteGameFile();
+   echo json_encode($response);
+   exit;
+ }
 
-// Check if the joiner has blocked the game creator
-if (IsUserLoggedIn() && $playerID != 3) {
-  $joinerId = LoggedInUser();
-  $creatorName = $p1uid;
-  $creatorUser = FindUserByUsername($creatorName);
-  
-  if ($creatorUser) {
-    $creatorId = $creatorUser['usersId'];
-    
-    // Check if joiner has blocked the creator - if so, they can't join
-    if (IsUserBlocked($joinerId, $creatorId)) {
-      $response->error = "Unable to join this game.";
-      WriteGameFile();
-      echo (json_encode($response));
-      exit;
-    }
-  }
-}
+ // Check if the joiner has blocked the game creator
+ if (IsUserLoggedIn() && $playerID != 3) {
+   $joinerId = LoggedInUser();
+   $creatorName = $p1uid;
+   $creatorUser = FindUserByUsername($creatorName);
 
-if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
-  if ($gameStatus >= $MGS_GameStarted) {
-    $response->gameStarted = true;
-  } else {
-    $response->error = "Another player has already joined the game.";
-  }
-  WriteGameFile();
-  echo (json_encode($response));
-  exit;
-}
+   if ($creatorUser) {
+     $creatorId = $creatorUser['usersId'];
 
-$deckLoaded = false;
+     // Check if joiner has blocked the creator - if so, they can't join
+     if (IsUserBlocked($joinerId, $creatorId)) {
+       $response->error = "Unable to join this game.";
+       WriteGameFile();
+       echo json_encode($response);
+       exit;
+     }
+   }
+ }
 
-if ($decklink != "") {
-  if ($playerID == 1) $p1DeckLink = $decklink;
-  else if ($playerID == 2) $p2DeckLink = $decklink;
-  $curl = curl_init();
-  $isFaBDB = str_contains($decklink, "fabdb");
-  $isFaBMeta = str_contains($decklink, "fabmeta");
-  $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
-  if ($isFaBDB) {
-    $decklinkArr = explode("/", $decklink);
-    $slug = $decklinkArr[count($decklinkArr) - 1];
-    $apiLink = "https://api.fabdb.net/decks/" . $slug;
-  } else if ($isFaBTCGMeta) {
-    $parsedUrl = parse_url($decklink);
-    parse_str($parsedUrl['query'], $queryParams);
-    $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
-    $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
-  } else if (str_contains($decklink, "fabrary")) {
-    $headers = array(
-      "x-api-key: " . $FaBraryKey,
-      "Content-Type: application/json",
-    );
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    $decklinkArr = explode("/", $decklink);
-    $decklinkArr = explode("?", $decklinkArr[count($decklinkArr) - 1]);
-    $slug = $decklinkArr[0];
-    $apiLink = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/decks/" . $slug;
-    if ($matchup != "") $apiLink .= "?matchupId=" . $matchup;
-  } else {
-    $decklinkArr = explode("/", $decklink);
-    $slug = $decklinkArr[count($decklinkArr) - 1];
-    $apiLink = "https://api.fabmeta.net/deck/" . $slug;
-  }
-  $response->apiLink = $apiLink;
-  curl_setopt($curl, CURLOPT_URL, $apiLink);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  $apiDeck = curl_exec($curl);
-  $apiInfo = curl_getinfo($curl);
-  curl_close($curl);
+ if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
+   if ($gameStatus >= $MGS_GameStarted) {
+     $response->gameStarted = true;
+   }
+   else {
+     $response->error = "Another player has already joined the game.";
+   }
+   WriteGameFile();
+   echo json_encode($response);
+   exit;
+ }
 
-  if ($apiDeck === FALSE) {
-    WriteGameFile();
-    if(is_array($decklink)) $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
-    else $response->error = "Deckbuilder API for this deck returns no data: " . $decklink;
-    echo (json_encode($response));
-    exit;
-  }
-  $deckObj = json_decode($apiDeck);
-  // if has message forbidden error out.
-  if ($apiInfo['http_code'] == 403) {
-    $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
-    echo (json_encode($response));
-    die();
-  }
-  if ($deckObj == null) {
-    $response->error = 'Deck object is null. Failed to retrieve deck from API.';
-    echo (json_encode($response));
-    exit;
-  }
-  if(!isset($deckObj->{'name'}))
-  {
-    $response->error = 'Deck is invalid. Failed to retrieve deck from API.';
-    echo (json_encode($response));
-    exit;
-  }
-  $deckName = $deckObj->{'name'};
-  if (isset($deckObj->{'matchups'})) {
-    $matchups = $deckObj->{'matchups'};
-    // Transform matchups to standardize turn order preferences
-    $matchups = TransformMatchupsWithTurnOrder($matchups);
-    if ($playerID == 1) $p1Matchups = $matchups;
-    else if ($playerID == 2) $p2Matchups = $matchups;
-  }
-  $deckFormat = (isset($deckObj->{'format'}) ? $deckObj->{'format'} : "");
-  $cards = $deckObj->{'cards'};
-  $deckCards = "";
-  $sideboardCards = "";
-  $headSideboard = "";
-  $chestSideboard = "";
-  $armsSideboard = "";
-  $legsSideboard = "";
-  $offhandSideboard = "";
-  $quiverSideboard = "";
-  $modularSideboard = "";
-  $unsupportedCards = "";
-  $bannedCard = "";
-  $restrictedCard = "";
-  $isDeckLegal = "";
-  $character = "";
-  $head = "";
-  $chest = "";
-  $arms = "";
-  $legs = "";
-  $offhand = "";
-  $quiver = "";
-  $weapon1 = "";
-  $weapon2 = "";
-  $weaponSideboard = "";
-  $totalCards = 0;
-  $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP"];
+ $deckLoaded = false;
 
-  if (is_countable($cards)) {
-    // need to get the character first to check legality
-    for ($i = 0; $i < count($cards); ++$i) {
-      $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
-      if (TypeContains($id, "C")) $character = $id;
-    }
-    for ($i = 0; $i < count($cards); ++$i) {
-      $count = $cards[$i]->{'total'};
-      $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
-      $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
-      if($id == "" && isset($cards[$i]->{'cardIdentifier'})) {
-        $id = $cards[$i]->{'cardIdentifier'};
-      }
-      if ($id == "") continue;   
-      ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards);
+ if ($decklink != "") {
+   if ($playerID == 1)
+     $p1DeckLink = $decklink;
+   else if ($playerID == 2)
+     $p2DeckLink = $decklink;
+   $curl = curl_init();
+   $isFaBDB = str_contains($decklink, "fabdb");
+   $isFaBMeta = str_contains($decklink, "fabmeta");
+   $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
+   if ($isFaBDB) {
+     $decklinkArr = explode("/", $decklink);
+     $slug = $decklinkArr[count($decklinkArr) - 1];
+     $apiLink = "https://api.fabdb.net/decks/" . $slug;
+   }
+   else if ($isFaBTCGMeta) {
+     $parsedUrl = parse_url($decklink);
+     parse_str($parsedUrl['query'], $queryParams);
+     $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
+     $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
+   }
+   else if (str_contains($decklink, "fabrary")) {
+     $headers = [
+       "x-api-key: " . $FaBraryKey,
+       "Content-Type: application/json",
+     ];
+     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+     $decklinkArr = explode("/", $decklink);
+     $decklinkArr = explode("?", $decklinkArr[count($decklinkArr) - 1]);
+     $slug = $decklinkArr[0];
+     $apiLink = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/decks/" . $slug;
+     if ($matchup != "")
+       $apiLink .= "?matchupId=" . $matchup;
+   }
+   else {
+     $decklinkArr = explode("/", $decklink);
+     $slug = $decklinkArr[count($decklinkArr) - 1];
+     $apiLink = "https://api.fabmeta.net/deck/" . $slug;
+   }
+   $response->apiLink = $apiLink;
+   curl_setopt($curl, CURLOPT_URL, $apiLink);
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+   $apiDeck = curl_exec($curl);
+   $apiInfo = curl_getinfo($curl);
+   curl_close($curl);
 
-      if (IsCardBanned($id, $format, $character) && $format != "draft") {
-        if ($bannedCard != "") $bannedCard .= ", ";
-        $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-      }
-      if (!isCardLegalinHero($id, $character, $format)) {
-        if ($bannedCard != "") $bannedCard .= ", ";
-        $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-      }
+   if ($apiDeck === FALSE) {
+     WriteGameFile();
+     if (is_array($decklink))
+       $response->error = "Deckbuilder API for this deck returns no data: " . implode("/", $decklink);
+     else
+       $response->error = "Deckbuilder API for this deck returns no data: " . $decklink;
+     echo json_encode($response);
+     exit;
+   }
+   $deckObj = json_decode($apiDeck);
+   // if has message forbidden error out.
+   if ($apiInfo['http_code'] == 403) {
+     $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
+     echo json_encode($response);
+     die();
+   }
+   if ($deckObj == null) {
+     $response->error = 'Deck object is null. Failed to retrieve deck from API.';
+     echo json_encode($response);
+     exit;
+   }
+   if (!isset($deckObj->{'name'})) {
+     $response->error = 'Deck is invalid. Failed to retrieve deck from API.';
+     echo json_encode($response);
+     exit;
+   }
+   $deckName = $deckObj->{'name'};
+   if (isset($deckObj->{'matchups'})) {
+     $matchups = $deckObj->{'matchups'};
+     // Transform matchups to standardize turn order preferences
+     $matchups = TransformMatchupsWithTurnOrder($matchups);
+     if ($playerID == 1)
+       $p1Matchups = $matchups;
+     else if ($playerID == 2)
+       $p2Matchups = $matchups;
+   }
+   $deckFormat = (isset($deckObj->{'format'}) ? $deckObj->{'format'} : "");
+   $cards = $deckObj->{'cards'};
+   $deckCards = "";
+   $sideboardCards = "";
+   $headSideboard = "";
+   $chestSideboard = "";
+   $armsSideboard = "";
+   $legsSideboard = "";
+   $offhandSideboard = "";
+   $quiverSideboard = "";
+   $modularSideboard = "";
+   $unsupportedCards = "";
+   $bannedCard = "";
+   $restrictedCard = "";
+   $isDeckLegal = "";
+   $character = "";
+   $head = "";
+   $chest = "";
+   $arms = "";
+   $legs = "";
+   $offhand = "";
+   $quiver = "";
+   $weapon1 = "";
+   $weapon2 = "";
+   $weaponSideboard = "";
+   $totalCards = 0;
+   $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP"];
 
-      // Track the count of each card ID
-      $cardName = CardName($id);
-      if (!isset($cardCounts[$id])) {
-        $cardCounts[$id] = 0;
-      }
-      if (!isset($cardNameCounts[$cardName])) {
-        $cardNameCounts[$cardName] = 0;
-      }
-      $cardCounts[$id] += $count;
-      $cardNameCounts[$cardName] += $count;
-      if(isCardRestricted($cardName, $format, $cardNameCounts[CardName($id)])) {
-        if ($restrictedCard != "") $restrictedCard .= ", ";
-        $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-      }
+   if (is_countable($cards)) {
+     // need to get the character first to check legality
+     for ($i = 0; $i < count($cards); ++$i) {
+       $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
+       if (TypeContains($id, "C"))
+         $character = $id;
+     }
+     for ($i = 0; $i < count($cards); ++$i) {
+       $count = $cards[$i]->{'total'};
+       $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
+       $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
+       if ($id == "" && isset($cards[$i]->{'cardIdentifier'})) {
+         $id = $cards[$i]->{'cardIdentifier'};
+       }
+       if ($id == "")
+         continue;
+       ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards);
 
-      if($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
-        // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
-        if (($format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
-          if ($isDeckLegal != "") $isDeckLegal .= ", ";
-          $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-        }
-        // Deck Check for singleton blitz
-        elseif ($format == "blitz" && !hasUnlimited($id) && $cardCounts[$id] > 1) {
-          if ($isDeckLegal != "") $isDeckLegal .= ", ";
-          $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-        }
-      }
-      // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
-      if (($format == "cc" || $format == "compcc"|| $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
-        if ($isDeckLegal != "") $isDecisDeckLegalkCCLegal .= ", ";
-        $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-      }
-      if((($format != "draft" && $format != "open") && hasLegendary($id) ) && $cardCounts[$id] > 1) {
-        if ($isDeckLegal != "") $isDeckLegal .= ", ";
-        $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
-      }
-    }
-    $deckLoaded = true;
-  }
+       if (IsCardBanned($id, $format, $character) && $format != "draft") {
+         if ($bannedCard != "")
+           $bannedCard .= ", ";
+         $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+       }
+       if (!isCardLegalinHero($id, $character, $format)) {
+         if ($bannedCard != "")
+           $bannedCard .= ", ";
+         $bannedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+       }
 
-  if(!$deckLoaded) {
-    $response->error = "⚠️ Error retrieving deck. Decklist link invalid.";
-    echo(json_encode($response));
-    exit;
-  }
+       // Track the count of each card ID
+       $cardName = CardName($id);
+       if (!isset($cardCounts[$id])) {
+         $cardCounts[$id] = 0;
+       }
+       if (!isset($cardNameCounts[$cardName])) {
+         $cardNameCounts[$cardName] = 0;
+       }
+       $cardCounts[$id] += $count;
+       $cardNameCounts[$cardName] += $count;
+       if (isCardRestricted($cardName, $format, $cardNameCounts[CardName($id)])) {
+         if ($restrictedCard != "")
+           $restrictedCard .= ", ";
+         $restrictedCard .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+       }
 
-  if($isDeckLegal != "") {
-    $response->error = "⚠️ The deck isn't legal because it contains extra copies of the following cards: " . $isDeckLegal . ".";
-    echo (json_encode($response));
-    exit;
-  }
+       if ($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
+         // Deck Check to make sure players don't run more than 2 copies of cards in Young Hero formats
+         if (($format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
+           if ($isDeckLegal != "")
+             $isDeckLegal .= ", ";
+           $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+         }
+         // Deck Check for singleton blitz
+         elseif ($format == "blitz" && !hasUnlimited($id) && $cardCounts[$id] > 1) {
+           if ($isDeckLegal != "")
+             $isDeckLegal .= ", ";
+           $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+         }
+       }
+       // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
+       if (($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
+         if ($isDeckLegal != "")
+           $isDecisDeckLegalkCCLegal .= ", ";
+         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+       }
+       if ($format != "draft" && $format != "open" && hasLegendary($id) && $cardCounts[$id] > 1) {
+         if ($isDeckLegal != "")
+           $isDeckLegal .= ", ";
+         $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
+       }
+     }
+     $deckLoaded = true;
+   }
 
-  if($unsupportedCards != "") {
-    $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards . ".";
-    echo (json_encode($response));
-    exit;
-  }
+   if (!$deckLoaded) {
+     $response->error = "⚠️ Error retrieving deck. Decklist link invalid.";
+     echo json_encode($response);
+     exit;
+   }
 
-  if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "futurecc")) {
-    $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
-    echo (json_encode($response));
-    exit;
-  }
+   if ($isDeckLegal != "") {
+     $response->error = "⚠️ The deck isn't legal because it contains extra copies of the following cards: " . $isDeckLegal . ".";
+     echo json_encode($response);
+     exit;
+   }
 
-  if (CharacterHealth($character) >= 30 && ($format == "blitz"  || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
-    $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
-    echo (json_encode($response));
-    exit;
-  }
+   if ($unsupportedCards != "") {
+     $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards . ".";
+     echo json_encode($response);
+     exit;
+   }
 
-  if ($bannedCard != "") {
-    $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard . ".";
-    echo (json_encode($response));
-    exit;
-  }
+   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "futurecc")) {
+     $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
+     echo json_encode($response);
+     exit;
+   }
 
-  if ($restrictedCard != "") {
-    $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard . ".";
-    echo (json_encode($response));
-    exit;
-  }
+   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
+     $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
+     echo json_encode($response);
+     exit;
+   }
 
-  if ($totalCards < 60  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
-    $response->error = "⚠️ The deck link you have entered has too few cards (" . $totalCards . ") and is likely for the blitz/commoner format. Please double-check your decklist link and try again.";
-    echo (json_encode($response));
-    exit;
-  }
+   if ($bannedCard != "") {
+     $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard . ".";
+     echo json_encode($response);
+     exit;
+   }
 
-  if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "commoner" || $format == "clash")) {
-    $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
-    echo (json_encode($response));
-    exit;
-  }
+   if ($restrictedCard != "") {
+     $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard . ".";
+     echo json_encode($response);
+     exit;
+   }
 
-  if (($totalCards < 40 || $totalCards > 55) && ($format == "sage" || $format == "compsage" || $format == "futuresage")) {
-    $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
-    echo (json_encode($response));
-    exit;
-  }
+   if ($totalCards < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
+     $response->error = "⚠️ The deck link you have entered has too few cards (" . $totalCards . ") and is likely for the blitz/commoner format. Please double-check your decklist link and try again.";
+     echo json_encode($response);
+     exit;
+   }
 
-  if ($totalCards > 80  && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
-    $response->error = "⚠️ The deck link you have entered has too many cards (" . $totalCards . "). Please double-check your decklist link and try again.";
-    echo (json_encode($response));
-    exit;
-  }
+   if (($totalCards < 40 || $totalCards > 52) && ($format == "blitz" || $format == "commoner" || $format == "clash")) {
+     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
+     echo json_encode($response);
+     exit;
+   }
 
-  if ($format == "precon" && !in_array($decklink, $preconDecklinks)) {
-    $response->error = "⚠️ Please use an armory deck from Fabrary";
-    echo (json_encode($response));
-    exit;
-  }
+   if (($totalCards < 40 || $totalCards > 55) && ($format == "sage" || $format == "compsage" || $format == "futuresage")) {
+     $response->error = "⚠️ The deck link you have entered does not have 40 cards (" . $totalCards . ") and is likely for CC. Please double-check your decklist link and try again.";
+     echo json_encode($response);
+     exit;
+   }
 
-  //We have the decklist, now write to file
-  $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
-  $origFilename = "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt";
-  
-  // Ensure any old deck files are removed before writing new ones
-  if (file_exists($filename)) unlink($filename);
-  if (file_exists($origFilename)) unlink($origFilename);
-  
-  $deckFile = fopen($filename, "w");
-  $charString = $character;
-  if ($weapon1 != "") $charString .= " " . $weapon1;
-  if ($weapon2 != "") $charString .= " " . $weapon2;
-  if ($offhand != "") $charString .= " " . $offhand;
-  if ($quiver != "") $charString .= " " . $quiver;
-  if ($head != "") $charString .= " " . $head;
-  if ($chest != "") $charString .= " " . $chest;
-  if ($arms != "") $charString .= " " . $arms;
-  if ($legs != "") $charString .= " " . $legs;
-  fwrite($deckFile, $charString . "\r\n");
-  fwrite($deckFile, $deckCards . "\r\n");
-  fwrite($deckFile, $headSideboard . "\r\n");
-  fwrite($deckFile, $chestSideboard . "\r\n");
-  fwrite($deckFile, $armsSideboard . "\r\n");
-  fwrite($deckFile, $legsSideboard . "\r\n");
-  fwrite($deckFile, $offhandSideboard . "\r\n");
-  fwrite($deckFile, $weaponSideboard . "\r\n");
-  fwrite($deckFile, $sideboardCards . "\r\n");
-  fwrite($deckFile, $quiverSideboard . "\r\n");
-  fwrite($deckFile, $modularSideboard);
-  fclose($deckFile);
-  copy($filename, "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
+   if ($totalCards > 80 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
+     $response->error = "⚠️ The deck link you have entered has too many cards (" . $totalCards . "). Please double-check your decklist link and try again.";
+     echo json_encode($response);
+     exit;
+   }
 
-  if (isset($_SESSION["userid"])) {
-    include_once '../includes/functions.inc.php';
-    include_once "../includes/dbh.inc.php";
-    $deckbuilderID = GetDeckBuilderId($_SESSION["userid"], $decklink);
-    if ($deckbuilderID != "") {
-      if ($playerID == 1) $p1deckbuilderID = $deckbuilderID;
-      else $p2deckbuilderID = $deckbuilderID;
-    }
-  }
+   if ($format == "precon" && !in_array($decklink, $preconDecklinks)) {
+     $response->error = "⚠️ Please use an armory deck from Fabrary";
+     echo json_encode($response);
+     exit;
+   }
 
-  if ($favoriteDeck && isset($_SESSION["userid"])) {
-    //Save deck
-    include_once '../includes/functions.inc.php';
-    include_once "../includes/dbh.inc.php";
-    addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, SetID($character), $deckFormat);
-  }
-}
+   //We have the decklist, now write to file
+   $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+   $origFilename = "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt";
 
-if (!isset($character) || $character == "") {
-  $response->error = "There is no character. Something went wrong with parsing your deck.";
-  echo (json_encode($response));
-  exit;
-}
+   // Ensure any old deck files are removed before writing new ones
+   if (file_exists($filename))
+     unlink($filename);
+   if (file_exists($origFilename))
+     unlink($origFilename);
 
-if ($matchup == "") {
-  if ($playerID == 2) {
+   $deckFile = fopen($filename, "w");
+   $charString = $character;
+   if ($weapon1 != "")
+     $charString .= " " . $weapon1;
+   if ($weapon2 != "")
+     $charString .= " " . $weapon2;
+   if ($offhand != "")
+     $charString .= " " . $offhand;
+   if ($quiver != "")
+     $charString .= " " . $quiver;
+   if ($head != "")
+     $charString .= " " . $head;
+   if ($chest != "")
+     $charString .= " " . $chest;
+   if ($arms != "")
+     $charString .= " " . $arms;
+   if ($legs != "")
+     $charString .= " " . $legs;
+   fwrite($deckFile, $charString . "\r\n");
+   fwrite($deckFile, $deckCards . "\r\n");
+   fwrite($deckFile, $headSideboard . "\r\n");
+   fwrite($deckFile, $chestSideboard . "\r\n");
+   fwrite($deckFile, $armsSideboard . "\r\n");
+   fwrite($deckFile, $legsSideboard . "\r\n");
+   fwrite($deckFile, $offhandSideboard . "\r\n");
+   fwrite($deckFile, $weaponSideboard . "\r\n");
+   fwrite($deckFile, $sideboardCards . "\r\n");
+   fwrite($deckFile, $quiverSideboard . "\r\n");
+   fwrite($deckFile, $modularSideboard);
+   fclose($deckFile);
+   copy($filename, "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt");
 
-    $gameStatus = $MGS_Player2Joined;
-    if (file_exists("../Games/" . $gameName . "/gamestate.txt")) unlink("../Games/" . $gameName . "/gamestate.txt");
+   if (isset($_SESSION["userid"])) {
+     include_once '../includes/functions.inc.php';
+     include_once "../includes/dbh.inc.php";
+     $deckbuilderID = GetDeckBuilderId($_SESSION["userid"], $decklink);
+     if ($deckbuilderID != "") {
+       if ($playerID == 1)
+         $p1deckbuilderID = $deckbuilderID;
+       else
+         $p2deckbuilderID = $deckbuilderID;
+     }
+   }
 
-    $firstPlayerChooser = 1;
-    $p1roll = 0;
-    $p2roll = 0;
-    $tries = 10;
-    
-    // Create a fresh gamelog file to clear old messages
-    $gamelogPath = "../Games/" . $gameName . "/gamelog.txt";
-    file_put_contents($gamelogPath, "");
-    
-    while ($p1roll == $p2roll && $tries > 0) {
-      $p1roll = rand(1, 6) + rand(1, 6);
-      $p2roll = rand(1, 6) + rand(1, 6);
-      WriteLog("🎲 Player 1 rolled $p1roll and Player 2 rolled $p2roll.", path: "../");
-      --$tries;
-    }
-    $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
-    WriteLog("Player $firstPlayerChooser chooses who goes first.", path: "../");
-    $gameStatus = $MGS_ChooseFirstPlayer;
-    $joinerIP = $_SERVER['REMOTE_ADDR'];
-  }
+   if ($favoriteDeck && isset($_SESSION["userid"])) {
+     //Save deck
+     include_once '../includes/functions.inc.php';
+     include_once "../includes/dbh.inc.php";
+     addFavoriteDeck($_SESSION["userid"], $decklink, $deckName, SetID($character), $deckFormat);
+   }
+ }
 
-  if ($playerID == 1) {
-    $p1uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 1");
-    $p1id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
-    $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
-    $p1ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
-    // Get Metafy tiers for player 1 from database
-    $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
-  } else if ($playerID == 2) {
-    $p2uid = (isset($_SESSION["useruid"]) ? $_SESSION["useruid"] : "Player 2");
-    $p2id = (isset($_SESSION["userid"]) ? $_SESSION["userid"] : "");
-    $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
-    $p2ContentCreatorID = (isset($_SESSION["patreonEnum"]) ? $_SESSION["patreonEnum"] : "");
-    // Get Metafy tiers for player 2 from database
-    $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
-  }
+ if (!isset($character) || $character == "") {
+   $response->error = "There is no character. Something went wrong with parsing your deck.";
+   echo json_encode($response);
+   exit;
+ }
 
-  if ($playerID == 2) $p2Key = hash("sha256", rand() . rand() . rand());
+ if ($matchup == "") {
+   if ($playerID == 2) {
+
+     $gameStatus = $MGS_Player2Joined;
+     if (file_exists("../Games/" . $gameName . "/gamestate.txt"))
+       unlink("../Games/" . $gameName . "/gamestate.txt");
+
+     $firstPlayerChooser = 1;
+     $p1roll = 0;
+     $p2roll = 0;
+     $tries = 10;
+
+     // Create a fresh gamelog file to clear old messages
+     $gamelogPath = "../Games/" . $gameName . "/gamelog.txt";
+     file_put_contents($gamelogPath, "");
+
+     while ($p1roll == $p2roll && $tries > 0) {
+       $p1roll = rand(1, 6) + rand(1, 6);
+       $p2roll = rand(1, 6) + rand(1, 6);
+       WriteLog("🎲 Player 1 rolled $p1roll and Player 2 rolled $p2roll.", path: "../");
+       --$tries;
+     }
+     $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
+     WriteLog("Player $firstPlayerChooser chooses who goes first.", path: "../");
+     $gameStatus = $MGS_ChooseFirstPlayer;
+     $joinerIP = $_SERVER['REMOTE_ADDR'];
+   }
+
+   if ($playerID == 1) {
+     $p1uid = ($_SESSION["useruid"] ?? "Player 1");
+     $p1id = ($_SESSION["userid"] ?? "");
+     $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
+     $p1ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
+     // Get Metafy tiers for player 1 from database
+     $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
+   }
+   else if ($playerID == 2) {
+     $p2uid = ($_SESSION["useruid"] ?? "Player 2");
+     $p2id = ($_SESSION["userid"] ?? "");
+     $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
+     $p2ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
+     // Get Metafy tiers for player 2 from database
+     $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
+   }
+
+   if ($playerID == 2)
+     $p2Key = hash("sha256", rand() . rand() . rand());
 
   WriteGameFile();
   SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
@@ -514,13 +548,13 @@ if ($matchup == "") {
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
   $domain = (!empty(getenv("DOMAIN")) ? getenv("DOMAIN") : "talishar.net");
-  $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+  $isSecure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
   
   if ($playerID == 1) {
     $_SESSION["p1AuthKey"] = $p1Key;
     // Enhanced cookie: 7 days expiration, Secure, HttpOnly, and SameSite=Strict
     setcookie("lastAuthKey", $p1Key, [
-      'expires' => time() + (86400 * 7), // 7 days instead of 1 day
+      'expires' => time() + 86400 * 7, // 7 days instead of 1 day
       'path' => "/",
       'domain' => $domain,
       'secure' => $isSecure,
@@ -531,7 +565,7 @@ if ($matchup == "") {
     $_SESSION["p2AuthKey"] = $p2Key;
     // Enhanced cookie: 7 days expiration, Secure, HttpOnly, and SameSite=Strict
     setcookie("lastAuthKey", $p2Key, [
-      'expires' => time() + (86400 * 7), // 7 days instead of 1 day
+      'expires' => time() + 86400 * 7, // 7 days instead of 1 day
       'path' => "/",
       'domain' => $domain,
       'secure' => $isSecure,
@@ -545,7 +579,7 @@ $response->message = "success";
 $response->gameName = $gameName;
 $response->playerID = $playerID;
 $response->authKey = $playerID == 1 ? $p1Key : ($playerID == 2 ? $p2Key : '');
-echo (json_encode($response));
+echo json_encode($response);
 
 session_write_close();
 
