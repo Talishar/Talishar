@@ -113,12 +113,6 @@ $preconDecklinks = [
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
-if ($deck == "") {
-  $response->error = "Deck URL is not valid: " . $decklink;
-  echo json_encode($response);
-  exit;
-}
-
 include "../HostFiles/Redirector.php";
 include "../CardDictionary.php";
 include "./APIParseGamefile.php";
