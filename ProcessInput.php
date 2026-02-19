@@ -21,7 +21,7 @@ include_once "APIKeys/APIKeys.php";
 include_once "./Libraries/ValidationLibraries.php";
 
 //We should always have a player ID as a URL parameter
-$gameName = isset($_GET["gameName"]) ? $_GET["gameName"] : "";
+$gameName = $_GET["gameName"] ?? "";
 if (!IsGameNameValid($gameName)) {
   echo "Invalid game name.";
   exit;
@@ -42,11 +42,13 @@ if (!validateInteger($mode, 1, 999999)) {
   exit;
 }
 
-if($mode == 100015)
-{
-  if($playerID == 1 && intval(GetCachePiece($gameName, 15)) == 1) exit;
-  else if($playerID == 2 && intval(GetCachePiece($gameName, 16)) == 1) exit;
-  else if($playerID != 1 && $playerID != 2) exit;
+if ($mode == 100015) {
+  if ($playerID == 1 && intval(GetCachePiece($gameName, 15)) == 1)
+    exit;
+  else if ($playerID == 2 && intval(GetCachePiece($gameName, 16)) == 1)
+    exit;
+  else if ($playerID != 1 && $playerID != 2)
+    exit;
 }
 
 //We should also have some information on the type of command
@@ -69,7 +71,8 @@ if ($chkCount < 0 || $chkCount > 100) {
 $chkInput = [];
 for ($i = 0; $i < $chkCount; ++$i) {
   $chk = isset($_GET[("chk" . $i)]) ? sanitizeString($_GET[("chk" . $i)]) : "";
-  if ($chk != "") $chkInput[] = $chk;
+  if ($chk != "")
+    $chkInput[] = $chk;
 }
 $inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : "";
 
@@ -79,38 +82,35 @@ $numPass = 0;
 //First we need to parse the game state from the file
 include "ParseGamestate.php";
 
-if(IsReplay() && $mode == 99)
-{
+if (IsReplay() && $mode == 99) {
   $filename = "./Games/$gameName/replayCommands.txt";
   $commands = file($filename);
   $pointer = intval(trim($commands[0])) + 1;
-  $line = isset($commands[$pointer]) ? $commands[$pointer] : "";
+  $line = $commands[$pointer] ?? "";
   $params = explode(" ", $line);
-  $playerID = isset($params[0]) ? $params[0] : "";
-  $mode = isset($params[1]) ? $params[1] : "";
-  $buttonInput = isset($params[2]) ? $params[2] : "";
-  $cardID = isset($params[3]) ? $params[3] : "";
-  $chkCount = isset($params[4]) ? $params[4] : "0";
+  $playerID = $params[0] ?? "";
+  $mode = $params[1] ?? "";
+  $buttonInput = $params[2] ?? "";
+  $cardID = $params[3] ?? "";
+  $chkCount = $params[4] ?? "0";
   $chkInput = isset($params[5]) ? explode("|", $params[5]) : [];
   $chkInputCount = count($chkInput);
-  for($i=0; $i<$chkInputCount; ++$i)
-  {
+  for ($i = 0; $i < $chkInputCount; ++$i) {
     $chkInput[$i] = trim($chkInput[$i]);
   }
   //skip any inputs where the non-active player tries something
   if ($mode == "StartTurn" || $playerID != $currentPlayer) {
     ++$pointer;
-    $line = isset($commands[$pointer]) ? $commands[$pointer] : "";
+    $line = $commands[$pointer] ?? "";
     $params = explode(" ", $line);
-    $playerID = isset($params[0]) ? $params[0] : "";
-    $mode = isset($params[1]) ? $params[1] : "";
-    $buttonInput = isset($params[2]) ? $params[2] : "";
-    $cardID = isset($params[3]) ? $params[3] : "";
-    $chkCount = isset($params[4]) ? $params[4] : "0";
+    $playerID = $params[0] ?? "";
+    $mode = $params[1] ?? "";
+    $buttonInput = $params[2] ?? "";
+    $cardID = $params[3] ?? "";
+    $chkCount = $params[4] ?? "0";
     $chkInput = isset($params[5]) ? explode("|", $params[5]) : [];
     $chkInputCount = count($chkInput);
-    for($i=0; $i<$chkInputCount; ++$i)
-    {
+    for ($i = 0; $i < $chkInputCount; ++$i) {
       $chkInput[$i] = trim($chkInput[$i]);
     }
   }
