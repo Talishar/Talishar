@@ -203,31 +203,32 @@ function MZAddZone($player, $parameter, $lastResult)
     switch ($params[0]) {
       case "MYBANISH":
         if (count($params) < 4) array_push($params, $player);
-        BanishCardForPlayer($cardIDs[$i], $player, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "", isset($params[4]) ? $params[4] : "");
+        BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
-        if (count($params) < 4) array_push($params, $player);
-        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], isset($params[2]) ? $params[2] : "-", isset($params[3]) ? $params[3] : "", isset($params[4]) ? $params[4] : "");
+        if (count($params) < 4)
+          array_push($params, $player);
+        BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "MYHAND":
-        AddPlayerHand($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "-");
+        AddPlayerHand($cardIDs[$i], $player, $params[1] ?? "-");
         break;
       case "MYTOPDECK":
-        AddTopDeck($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "-", $deckIndexModifier);
+        AddTopDeck($cardIDs[$i], $player, $params[1] ?? "-", $deckIndexModifier);
         break;
       case "MYBOTDECK":
-        AddBottomDeck($cardIDs[$i], $player,  isset($params[1]) ? $params[1] : "-");
+        AddBottomDeck($cardIDs[$i], $player, $params[1] ?? "-");
         break;
       case "THEIRBOTDECK":
-        AddBottomDeck($cardIDs[$i], $otherPlayer,  isset($params[1]) ? $params[1] : "-");
+        AddBottomDeck($cardIDs[$i], $otherPlayer, $params[1] ?? "-");
         break;
       case "MYDISCARD":
-        AddGraveyard($cardIDs[$i], $player, isset($params[1]) ? $params[1] : "-", $player);
+        AddGraveyard($cardIDs[$i], $player, $params[1] ?? "-", $player);
         break;
       case "THEIRDISCARD":
-        AddGraveyard($cardIDs[$i], $otherPlayer, isset($params[1]) ? $params[1] : "-", $player);
+        AddGraveyard($cardIDs[$i], $otherPlayer, $params[1] ?? "-", $player);
         break;
       case "MYARS":
         AddArsenal($cardIDs[$i], $player, $params[1], $params[2], isset($params[3]) && is_numeric($params[3]) ? $params[3] : "0");
@@ -492,13 +493,13 @@ function MZPlayerID($me, $MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
   if (substr($indexArr[0], 0, 6) == "MYCHAR") return $me;
-  if (substr($indexArr[0], 0, 9) == "THEIRCHAR") return ($me == 1 ? 2 : 1);
+  if (substr($indexArr[0], 0, 9) == "THEIRCHAR") return $me == 1 ? 2 : 1;
   return -1;
 }
 
 function GetMZCard($player, $MZIndex)
 {
-  $params = explode("-", ($MZIndex ?? ""));
+  $params = explode("-", $MZIndex ?? "");
   if (count($params) < 2) return "";
   if (substr($params[0], 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
   if (str_contains($params[0], "UID")) {
@@ -517,7 +518,7 @@ function GetMZCard($player, $MZIndex)
     $index = $params[1];
     $index2 = $params[2] ?? 0;
     if (isset($zoneDS[$index]) && ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD" || $zoneDS[$index] == "ABILITY")) $index += 2;
-    if ($index == "" || (!isset($zoneDS[$index]) && $params[0] != "PASTCHAINLINK")) return "";
+    if ($index == "" || !isset($zoneDS[$index]) && $params[0] != "PASTCHAINLINK") return "";
     if ($params[0] == "PASTCHAINLINK") return $zoneDS[$index2][$index];
     else return $zoneDS[$index];
   }
@@ -600,7 +601,7 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
   }
-  AddDecisionQueue("MULTIZONEINDICES", $player, $search, ($isSubsequent ? 1 : 0));
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search, $isSubsequent ? 1 : 0);
   if ($DQContext != "") AddDecisionQueue("SETDQCONTEXT", $player, $DQContext);
   if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
@@ -653,7 +654,7 @@ function MZLastIndex($player, $zone)
   switch ($zone) {
     case "MYBANISH":
       $banish = &GetBanish($player);
-      return "MYBANISH-" . (count($banish) - BanishPieces());
+      return "MYBANISH-" . count($banish) - BanishPieces();
     default:
       return "";
   }

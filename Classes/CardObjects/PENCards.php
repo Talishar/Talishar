@@ -6158,7 +6158,7 @@ class haboob_red extends Card {
     if (SearchCount($search) < $AuraCard->NumCounters()) $AuraCard->Destroy();
     else {
       for ($i = 0; $i < $AuraCard->NumCounters(); ++$i) {
-        $message = "Destroy " . ($AuraCard->NumCounters() - $i) . " ash you control to keep " . CardLink($this->cardID);
+        $message = "Destroy " . AuraCard->NumCounters() - $i . " ash you control to keep " . CardLink($this->cardID);
         if ($i == 0) $message .= " or pass to destroy it";
         AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYPERM:subtype=Ash", 1);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, $message, 1);
@@ -7309,7 +7309,7 @@ class tigrine_reflex_red extends Card {
     global $CombatChain;
     $search = SearchCombatChainAttacks($this->controller, class:"NINJA");
     $activeAttack = $CombatChain->HasCurrentLink() && ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $this->controller);
-    return ($from == "HAND" && IsReactionPhase() && (SearchCount($search) > 0 || $activeAttack));
+    return $from == "HAND" && IsReactionPhase() && (SearchCount($search) > 0 || $activeAttack);;
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
