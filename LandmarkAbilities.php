@@ -2,10 +2,10 @@
 
 function PlayLandmark($cardID, $player, $from="-")
 {
-  global $landmarks, $mainPlayer;
+  global $landmarks;
   if (count($landmarks) > 0) DestroyLandmark(0); //Right now, playing a new landmark destroys the old landmark
   if (!SubtypeContains($cardID, "Landmark")) {
-    WriteError($cardID . " was tried to play as a landmark, but is not a landmark.");
+    WriteLog($cardID . " was tried to play as a landmark, but is not a landmark.", highlight: true);
     return;
   }
   array_push($landmarks, $cardID);

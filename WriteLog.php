@@ -40,12 +40,6 @@ function ClearLog($n=30)
   $handle = fopen($filename, "w");
   fwrite($handle, implode("", $lines));
   fclose($handle);
-
-}
-
-function WriteError($text)
-{
-  WriteLog("ERROR: $text");
 }
 
 function WriteSystemMessage($text, $path="./")
