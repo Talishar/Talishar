@@ -5541,7 +5541,6 @@ class channel_galcias_cradle_blue extends Card {
       }
       else {
         $mzIndex = CleanTargetToIndex($this->controller, $target);
-        WriteLog("HERE: $mzIndex, $target");
         MZFreeze($mzIndex, $this->controller);
         AddCurrentTurnEffect($this->cardID, $this->controller, "-", "$target," . $AuraCard->UniqueID());
       }
@@ -7228,7 +7227,6 @@ class lobotomy_red extends Card {
         WriteLog("Player " . $this->controller . " doesn't have any " . CardLink("orbitoclast") . " in their inventory");
         return;
       }
-      WriteLog("HERE: $weapons");
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an " . CardLink("orbitoclast") . " to equip");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, $weapons, 1);
       AddDecisionQueue("REMOVETAG", $this->controller, "-", 1);

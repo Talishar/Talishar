@@ -2759,7 +2759,7 @@ function EndTurnPitchHandling($player)
   }
 }
 
-function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
+function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqueID="-")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumWateryGrave;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
@@ -2767,7 +2767,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID, $from);
-    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
+    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID) || $hasGoAgain;
   } else {
     $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID, $from);
     if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
@@ -2800,7 +2800,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-")
     }
     if ($cardType == "AA" && SearchCurrentTurnEffects("blizzard_blue", $player)) $hasGoAgain = false;
     if ($cardType == "AA" && SearchCurrentTurnEffects("rainbow_goo_trap_red", $player)) $hasGoAgain = false;
-    if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from) || $hasGoAgain;
+    if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID) || $hasGoAgain;
     if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
     if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){
       $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;

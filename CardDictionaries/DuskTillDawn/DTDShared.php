@@ -99,9 +99,6 @@ function DTDEffectPowerModifier($cardID)
     case "putrid_stirrings_red": return 5;
     case "putrid_stirrings_yellow": return 4;
     case "putrid_stirrings_blue": return 3;
-    case "beseech_the_demigon_red": return 3;
-    case "beseech_the_demigon_yellow": return 2;
-    case "beseech_the_demigon_blue": return 1;
     case "anthem_of_spring_blue": return 1;//Anthem of Spring
     case "chorus_of_ironsong_yellow": return 1;
     case "runic_reckoning_red": return 3;
@@ -146,10 +143,6 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "putrid_stirrings_red": case "putrid_stirrings_yellow": case "putrid_stirrings_blue": return $combatChainState[$CCS_WasRuneGate] == 1;
     case "anthem_of_spring_blue": return CardType($attackID) == "AA";//Anthem of Spring
     case "call_down_the_lightning_yellow": return true;//Call Down the Lightning
-    case "beseech_the_demigon_red": case "beseech_the_demigon_yellow": case "beseech_the_demigon_blue":
-    case "tear_through_the_portal_red": case "tear_through_the_portal_yellow": case "tear_through_the_portal_blue":
-      if (count($params) == 1) return true; // this is for after its already associated with the attack
-      return ($params[1] ?? "-") == $attackID && $CombatChain->AttackCard()->From() == "BANISH";
     case "ironsong_versus": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
     case "chorus_of_ironsong_yellow": return CardNameContains($attackID, "Dawnblade", $mainPlayer);
     case "runic_reckoning_red": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
@@ -403,12 +396,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "soul_cleaver_red": case "soul_cleaver_yellow": case "soul_cleaver_blue":
       $theirSoul = &GetSoul($otherPlayer);
       if(count($theirSoul) > 0) GiveAttackGoAgain();
-      return "";
-    case "beseech_the_demigon_red": case "beseech_the_demigon_yellow": case "beseech_the_demigon_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULTNEXTATTACK", $currentPlayer, $cardID . ",", 1);
       return "";
     case "tear_through_the_portal_red": case "tear_through_the_portal_yellow": case "tear_through_the_portal_blue":
       $pitch = "";

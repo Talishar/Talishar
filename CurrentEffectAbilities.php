@@ -1922,7 +1922,7 @@ function CurrentEffectGrantsInstantGoAgain($cardID, $from)
   return $hasGoAgain;
 }
 
-function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
+function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 {
   global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts;
   $hasGoAgain = false;
@@ -1931,6 +1931,11 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
+      $effectArr = explode("-", $turnEffects[0]);
+      $effectID = $effectArr[0];
+      $parameter = $effectArr[1] ?? "-";
+      $card = GetClass($effectID, $currentPlayer);
+      if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, $remove) || $hasGoAgain;
       switch ($turnEffects[0]) {
         case "bloodrush_bellow_yellow-GOAGAIN":
           $hasGoAgain = true;
@@ -1967,14 +1972,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from)
           break;
         case "moon_wish_red-GA":
           $hasGoAgain = ($cardID == "sun_kiss_red" || $cardID == "sun_kiss_yellow" || $cardID == "sun_kiss_blue");
-          break;
-        case "tear_through_the_portal_red":
-        case "tear_through_the_portal_yellow":
-        case "tear_through_the_portal_blue":
-          if (SearchCurrentTurnEffects($turnEffects[0] . "," . $cardID, $currentPlayer) && $from == "BANISH") {
-            $hasGoAgain = true;
-            $remove = true;
-          }
           break;
         case "fasting_carcass_red":
           if (ColorContains($cardID, 1, $currentPlayer)) {

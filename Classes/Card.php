@@ -597,4 +597,8 @@ class Card {
     // handles the end of DQ stuff
     return;
   }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return false;
+  }
 }

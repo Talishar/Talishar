@@ -350,44 +350,104 @@
 //   }
 // }
 
+class beseech_the_demigon extends BaseCard {
+	function PlayAbility() {
+		$search = "MYBANISH:type=AA";
+		$message = "a card in banish to get +3 power";
+		Await($this->controller, "MultiTargetIndices", "indices", search:$search, subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "index", context:$message);
+		Await($this->controller, $this->cardID, final:true);
+	}
 
-// class beseech_the_demigon_red extends Card {
+	function SpecificLogic() {
+		global $dqVars;
+		$index = $dqVars["index"] ?? "";
+		$choice = explode("-", CleanTarget($this->controller, $index))[1] ?? "";
+		AddCurrentTurnEffect("$this->cardID-$choice", $this->controller);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "beseech_the_demigon_red";
-//     $this->controller = $controller;
-//     }
+	function CombatEffectActive($parameter) {
+		global $CombatChain;
+		return $parameter == $CombatChain->AttackCard()->OriginUniqueID();
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class beseech_the_demigon_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "beseech_the_demigon_red";
+    $this->controller = $controller;
+		$this->baseCard = new beseech_the_demigon($this->cardID, $this->controller);
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	return $this->baseCard->PlayAbility();
+  }
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}
 
 
-// class beseech_the_demigon_yellow extends Card {
+class beseech_the_demigon_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "beseech_the_demigon_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "beseech_the_demigon_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new beseech_the_demigon($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	return $this->baseCard->PlayAbility();
+  }
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}
 
 
-// class beseech_the_demigon_blue extends Card {
+class beseech_the_demigon_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "beseech_the_demigon_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "beseech_the_demigon_blue";
+    $this->controller = $controller;
+    $this->baseCard = new beseech_the_demigon($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	return $this->baseCard->PlayAbility();
+  }
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}
 
 
 // class blasmophet_levia_consumed extends Card {
@@ -2352,44 +2412,125 @@
 //   }
 // }
 
+class tear_through_the_portal extends BaseCard {
 
-// class tear_through_the_portal_red extends Card {
+	function PlayAbility($pitch) {
+		$search = "MYBANISH:type=A;pitch=$pitch&MYBANISH:type=AA;pitch=$pitch";
+		$message = "Choose a card in banish to get go again";
+		Await($this->controller, "MultiTargetIndices", "indices", search:$search, subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "index", context:$message);
+		Await($this->controller, $this->cardID, final:true);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "tear_through_the_portal_red";
-//     $this->controller = $controller;
-//     }
+	function SpecificLogic() {
+		global $dqVars;
+		$index = $dqVars["index"] ?? "";
+		$choice = explode("-", CleanTarget($this->controller, $index))[1] ?? "";
+		AddCurrentTurnEffect("$this->cardID-$choice", $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function CombatEffectActive($parameter) {
+		global $CombatChain;
+		return $parameter == $CombatChain->AttackCard()->OriginUniqueID();
+	}
+
+	function GrantsNAAGoAgain($uniqueID, $parameter, &$remove) {
+		if ($uniqueID == $parameter) {
+			$remove = true;
+			return true;
+		}
+		return false;
+	}
+}
+
+class tear_through_the_portal_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "tear_through_the_portal_red";
+    $this->controller = $controller;
+		$this->baseCard = new tear_through_the_portal($this->cardID, $this->controller);
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(1);
+  }
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+		return $this->baseCard->GrantsNAAGoAgain($uniqueID, $parameter, $remove);
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+}
 
 
-// class tear_through_the_portal_yellow extends Card {
+class tear_through_the_portal_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "tear_through_the_portal_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "tear_through_the_portal_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new tear_through_the_portal($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(2);
+  }
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+		return $this->baseCard->GrantsNAAGoAgain($uniqueID, $parameter, $remove);
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+}
 
 
-// class tear_through_the_portal_blue extends Card {
+class tear_through_the_portal_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "tear_through_the_portal_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "tear_through_the_portal_blue";
+    $this->controller = $controller;
+    $this->baseCard = new tear_through_the_portal($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(3);
+  }
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+		return $this->baseCard->GrantsNAAGoAgain($uniqueID, $parameter, $remove);
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+}
 
 
 // class themis_archangel_of_judgment extends Card {

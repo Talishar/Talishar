@@ -727,6 +727,14 @@ function CleanTarget($player, $lastResult) { //converts a target to use unique i
       $discard = GetDiscard($player);
       $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
       break;
+    case "THEIRBANISH":
+      $BanishCard= new BanishCard($otherPlayer, $targetArr[1]);
+      $cleanTarget = "THEIRBANISH-" . $BanishCard->UniqueID();
+      break;
+    case "MYBANISH":
+      $BanishCard= new BanishCard($player, $targetArr[1]);
+      $cleanTarget = "MYBANISH-" . $BanishCard->UniqueID();
+      break;
     case "THEIRAURAS":
       $auras = GetAuras($otherPlayer);
       $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
