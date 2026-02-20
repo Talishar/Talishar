@@ -124,8 +124,14 @@ try {
           }
         } else {
           // In-game settings update - get userID from game file
+          $preservedP1IsAI = $p1IsAI ?? "0";
+          $preservedP2IsAI = $p2IsAI ?? "0";
+          $preservedAIHasInfiniteHP = $AIHasInfiniteHP ?? "0";
           include "MenuFiles/ParseGamefile.php";
           $userID = ($playerID == 1) ? $p1id : $p2id;
+          $p1IsAI = $preservedP1IsAI;
+          $p2IsAI = $preservedP2IsAI;
+          $AIHasInfiniteHP = $preservedAIHasInfiniteHP;
         }
       }
       $countSettings = count($submission->settings);

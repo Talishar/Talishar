@@ -846,13 +846,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10019:
-      $targetPlayer = $playerID == 1 ? 2 : 1;
-      if (IsPlayerAI($targetPlayer)) {
-        global $AIHasInfiniteHP;
-        $infiniteMode = ($numMode == 1) ? true : false;
-        $AIHasInfiniteHP = $infiniteMode;
-        WriteLog("AI infinite HP toggled to " . ($infiniteMode ? "ON" : "OFF"), highlight: true);
-      }
+      global $AIHasInfiniteHP;
+      $infiniteMode = ($numMode == 1) ? "1" : "0";
+      $AIHasInfiniteHP = $infiniteMode;
+      WriteLog("AI infinite HP toggled to " . ($infiniteMode ? "ON" : "OFF"), highlight: true);
       break;
     case 100000: //Quick Rematch
       if ($isSimulation)
