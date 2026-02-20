@@ -283,7 +283,9 @@ function deleteDirectory($dir) {
         return unlink($dir);
     }
 
-    foreach (scandir($dir) as $item) {
+    $dirContents = scandir($dir);
+    if ($dirContents === false) return false;
+    foreach ($dirContents as $item) {
         if ($item == '.' || $item == '..') {
             continue;
         }

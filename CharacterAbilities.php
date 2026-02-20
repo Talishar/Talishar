@@ -821,6 +821,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
   //Replace the first destroyed weapon; if none you can't re-equip
   $charCount = count($char);
   $characterPieces = CharacterPieces();
+  $negativeCounters = 0;
   for ($i = $characterPieces; $i < $charCount && !$replaced; $i += $characterPieces) {
     $negativeCounters = 0;
     if ($from != "MYDISCARD" && ($cardID == "graven_cowl" || $cardID == "graven_vestment" || $cardID == "graven_gloves" || $cardID == "graven_walkers")) {

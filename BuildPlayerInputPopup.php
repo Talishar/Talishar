@@ -1,12 +1,5 @@
 <?php
 
-/**
- * BuildPlayerInputPopup.php
- *
- * Builds the player input popup structure for the game state.
- * Extracted from GetNextTurn.php for reuse in both HTTP and SSE contexts.
- */
-
 function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $myHand, $myPitch, $myDeck, $theirDeck, $myDiscard, $theirDiscard;
   global $myBanish, $theirBanish, $myArsenal, $theirArsenal;
@@ -593,7 +586,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $powerCounters = $option[0] == "MYCHAR" ? $myCharacter[$index + 3] : $theirCharacter[$index + 3];
           }
 
-          if (($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN") || ($option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN")) {
+          if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN" || $option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN") {
             $card = $TheirCardBack;
             switch ($option[0]) {
               case "THEIRARS":

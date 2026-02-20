@@ -824,6 +824,7 @@ function AuraStartTurnAbilities()
   $countAuras = count($defPlayerAuras);
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
+    if (!isset($defPlayerAuras[$i])) continue;
     $EffectContext = $defPlayerAuras[$i];
     $card = GetClass($defPlayerAuras[$i], $defPlayer);
     if ($card != "-") $card->OppStartTurnAbility($i);
@@ -961,7 +962,7 @@ function AuraBeginningActionPhaseAbilities(){
   for ($i = $countTheirAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     switch ($theirAuras[$i]) {
       case "escalate_bloodshed_red":
-        AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $auras[$i + 6]);
+        AddLayer("TRIGGER", $mainPlayer, $theirAuras[$i], "-", "-", $theirAuras[$i + 6]);
         break;
       default:
         break;

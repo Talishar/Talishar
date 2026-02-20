@@ -154,6 +154,7 @@ function MZDiscard($player, $parameter, $lastResult)
   $params = explode(",", $parameter);
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
+    if (!isset($mzIndex[1])) continue;
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]];
@@ -170,6 +171,7 @@ function MZReveal($player, $parameter, $lastResult)
   $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
+    if (!isset($mzIndex[1])) continue;
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]];
@@ -302,10 +304,10 @@ function MZBanish($player, $parameter, $lastResult)
         $params[0] = $mzIndex[0];
       }
     }
-    if (!isset($mzIndex[1])) WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+    if (!isset($mzIndex[1])) { WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true); continue; }
     BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
   }
-  if (count($params) <= 3) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
+  if (count($params) <= 3 && isset($mzIndex[1])) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
   return $lastResult;
 }
 

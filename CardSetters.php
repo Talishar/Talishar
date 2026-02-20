@@ -679,7 +679,7 @@ function ConsumeDamagePrevention($player)
 
 function IncrementClassState($player, $piece, $amount = 1)
 {
-  SetClassState($player, $piece, (GetClassState($player, $piece) + $amount));
+  SetClassState($player, $piece, (GetClassState($player, $piece) + intval($amount)));
 }
 
 function AppendClassState($player, $piece, $value)

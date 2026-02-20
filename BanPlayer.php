@@ -50,7 +50,7 @@ if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function TryPOSTData($key, $default = "", $data = []) {
-    return isset($data[$key]) ? $data[$key] : $default;
+    return $data[$key] ?? $default;
 }
 
 $playerToBan = trim(TryPOSTData("playerToBan", "", $postData));

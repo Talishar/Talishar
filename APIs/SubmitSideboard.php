@@ -128,11 +128,13 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
 
   //Player 1
   $p1DeckHandler = fopen("../Games/" . $gameName . "/p1Deck.txt", "r");
+  if (!$p1DeckHandler) { fclose($handler); die(json_encode(["error" => "Game deck files not found"])); }
   initializePlayerState($handler, $p1DeckHandler, 1);
   fclose($p1DeckHandler);
 
   //Player 2
   $p2DeckHandler = fopen("../Games/" . $gameName . "/p2Deck.txt", "r");
+  if (!$p2DeckHandler) { fclose($handler); die(json_encode(["error" => "Game deck files not found"])); }
   initializePlayerState($handler, $p2DeckHandler, 2);
   fclose($p2DeckHandler);
 

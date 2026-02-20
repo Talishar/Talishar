@@ -22,7 +22,7 @@ function ProcessMacros()
       else if ($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if ($turn[0] == "CHOOSETHEIRCHARACTER" && strlen($turn[2]) <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if ($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
-      else if ($turn[0] == "CHOOSEMULTIZONE" && GetMZCard($currentPlayer, explode(",", $turn[2])[0]) == "phoenix_flame_red" && ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion")) { $somethingChanged = true; ContinueDecisionQueue(explode(",", $turn[2])[0]); }
+      else if ($turn[0] == "CHOOSEMULTIZONE" && GetMZCard($currentPlayer, explode(",", $turn[2])[0]) == "phoenix_flame_red" && ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red")) { $somethingChanged = true; ContinueDecisionQueue(explode(",", $turn[2])[0]); }
       else if ((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < LayerPieces() * 3) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }

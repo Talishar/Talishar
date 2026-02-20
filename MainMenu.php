@@ -28,8 +28,7 @@ if (isset($_SESSION["userid"])) {
   if (isset($settingArray[$SET_GameVisibility])) $defaultVisibility = $settingArray[$SET_GameVisibility];
 }
 $_SESSION['language'] = $language;
-if (isset($_SESSION["isPatron"])) $isPatron = $_SESSION["isPatron"];
-else $isPatron = false;
+$isPatron = (isset($_SESSION["isPatron"])) ? $_SESSION["isPatron"] : false;
 
 $canSeeQueue = isset($_SESSION["useruid"]);
 ?>
