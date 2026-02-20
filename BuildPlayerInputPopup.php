@@ -632,6 +632,42 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $label = $option[0] == "THEIRITEMS" && $theirItems[$index + 8] != "" && $theirItems[$index + 8] != "-" ? GamestateUnsanitize($theirItems[$index + 8]) : "";
             $label = $option[0] == "MYITEMS" && $myItems[$index + 8] != "" && $myItems[$index + 8] != "-" ? GamestateUnsanitize($myItems[$index + 8]) : "";
           }
+
+          if ($option[0] == "MYBANISH") {
+            $index = intval($option[1]);
+            $cardID = GetMZCard($currentPlayer, $option[0]."-".$option[1]);
+            $uniqueID = $myBanish[$index + 2];
+            $effectIndex = -1;
+            $effectsCount = count($currentTurnEffects);
+            for ($j = 0; $j < $effectsCount; ++$j) {
+              $effectParts = explode("-", $currentTurnEffects[$j]);
+              if (count($effectParts) >= 2) {
+                $targetUID = $effectParts[1];
+                if ($targetUID == $uniqueID) {
+                  $effectIndex = $j;
+                  break;
+                }
+              }
+            }
+            
+            if ($effectIndex != -1) {
+              $effectName = explode("-", $currentTurnEffects[$effectIndex])[0];
+              switch ($effectName) {
+                case "beseech_the_demigon_red":
+                case "beseech_the_demigon_yellow":
+                case "beseech_the_demigon_blue":
+                  $label = "Power +" . EffectPowerModifier($effectName);
+                  break;
+                case "tear_through_the_portal_red":
+                case "tear_through_the_portal_yellow":
+                case "tear_through_the_portal_blue":
+                  $label = "Go Again";
+                  break;
+                default:
+                   break;
+              }
+            }
+          }
           
           //Show Subtitles on MyDeck
           if(substr($turnData, 0, 6) === "MYDECK" && $turnData != "MYDECK-0"){

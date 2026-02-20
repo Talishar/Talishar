@@ -351,11 +351,11 @@
 // }
 
 class beseech_the_demigon extends BaseCard {
-	function PlayAbility() {
+	function PlayAbility($value) {
 		$search = "MYBANISH:type=AA";
-		$message = "a card in banish to get +3 power";
+		$message = "Choose an Attack Action in your banish to get +$value power";
 		Await($this->controller, "MultiTargetIndices", "indices", search:$search, subsequent:0);
-    Await($this->controller, "ChooseMultiZone", "index", context:$message);
+    	Await($this->controller, "ChooseMultiZone", "index", context:$message);
 		Await($this->controller, $this->cardID, final:true);
 	}
 
@@ -381,7 +381,7 @@ class beseech_the_demigon_red extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-	return $this->baseCard->PlayAbility();
+	return $this->baseCard->PlayAbility(3);
   }
 
 	function SpecificLogic() {
@@ -407,7 +407,7 @@ class beseech_the_demigon_yellow extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-	return $this->baseCard->PlayAbility();
+	return $this->baseCard->PlayAbility(2);
   }
 
 	function SpecificLogic() {
@@ -433,7 +433,7 @@ class beseech_the_demigon_blue extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-	return $this->baseCard->PlayAbility();
+	return $this->baseCard->PlayAbility(1);
   }
 
 	function SpecificLogic() {
@@ -2414,9 +2414,9 @@ class beseech_the_demigon_blue extends Card {
 
 class tear_through_the_portal extends BaseCard {
 
-	function PlayAbility($pitch) {
+	function PlayAbility($pitch, $color) {
 		$search = "MYBANISH:type=A;pitch=$pitch&MYBANISH:type=AA;pitch=$pitch";
-		$message = "Choose a card in banish to get go again";
+		$message = "Choose a $color action card in your banish to get go again";
 		Await($this->controller, "MultiTargetIndices", "indices", search:$search, subsequent:0);
     Await($this->controller, "ChooseMultiZone", "index", context:$message);
 		Await($this->controller, $this->cardID, final:true);
@@ -2452,7 +2452,7 @@ class tear_through_the_portal_red extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(1);
+    return $this->baseCard->PlayAbility(1, "red");
   }
 
 	function SpecificLogic() {
@@ -2482,7 +2482,7 @@ class tear_through_the_portal_yellow extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(2);
+    return $this->baseCard->PlayAbility(2, "yellow");
   }
 
 	function SpecificLogic() {
@@ -2512,7 +2512,7 @@ class tear_through_the_portal_blue extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(3);
+    return $this->baseCard->PlayAbility(3, "blue");
   }
 
 	function SpecificLogic() {
