@@ -175,7 +175,7 @@ function loginFromCookie()
                 
                 try {
                     PatreonLogin($patreonAccessToken);
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     // Handle exception (if any)
                 }
             } else {
@@ -324,8 +324,11 @@ function logCompletedGameStats($conceded = false)
 	$loser = ($winner == 1 ? 2 : 1);
 	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
 	$values = "?, ?, ?, ?, ?, ?, ?";
-	$winnerDeck = file_get_contents("./Games/" . $gameName . "/p" . $winner . "Deck.txt");
-	$loserDeck = file_get_contents("./Games/" . $gameName . "/p" . $loser . "Deck.txt");
+	$winnerDeckFile = "./Games/" . $gameName . "/p" . $winner . "Deck.txt";
+	$loserDeckFile = "./Games/" . $gameName . "/p" . $loser . "Deck.txt";
+	if (!file_exists($winnerDeckFile) || !file_exists($loserDeckFile)) return;
+	$winnerDeck = file_get_contents($winnerDeckFile);
+	$loserDeck = file_get_contents($loserDeckFile);
 	$winHero = &GetPlayerCharacter($winner);
 	$loseHero = &GetPlayerCharacter($loser);
 
@@ -1039,7 +1042,7 @@ function AwardBadge($userID, $badgeID)
 
 function SaveSetting($playerId, $settingNumber, $value)
 {
-	if($playerId == "") return;
+	if($playerId == "" || $playerId == "-" || !is_numeric($playerId)) return;
 	$conn = GetDBConnection();
 	if (!$conn) {
 		return;

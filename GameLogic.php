@@ -2697,8 +2697,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HYPERDRIVER":
       $index = SearchItemsForUniqueID($parameter, $player);
       $items = &GetItems($player);
-      --$items[$index + 1];
       GainResources($player, 1);
+      if ($index == -1) return $lastResult;
+      --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
       return $lastResult;
     case "WINWAGER":

@@ -791,6 +791,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   $prevented = 0;
   $params = explode("-", $cardMZIndex);
   $zone = $params[0];
+  if (!isset($params[1])) return $prevented;
   $index = $params[1];
   switch ($zone) {
     case "MYCHAR":

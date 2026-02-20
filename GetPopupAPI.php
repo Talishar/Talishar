@@ -139,7 +139,9 @@ switch ($popupType) {
         }
       }
     }
-    echo(SerializeGameResult($playerID, "", file_get_contents("./Games/" . $gameName . "/p" . $playerID . "Deck.txt"), $gameName, $opponentHero, "", "", includeFullLog:true));
+    $myDeckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+    $myDeckContents = file_exists($myDeckFile) ? file_get_contents($myDeckFile) : "";
+    echo(SerializeGameResult($playerID, "", $myDeckContents, $gameName, $opponentHero, "", "", includeFullLog:true));
     exit;
   case "mySoulPopup":
     JSONPopup($response, $mySoul, SoulPieces());

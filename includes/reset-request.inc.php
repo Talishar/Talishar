@@ -12,7 +12,10 @@ if (isset($_POST['reset-request-submit'])) {
 
   $expires = date("U") + 1800;
 
-  require 'dbh.inc.php';
+  $conn = GetDBConnection();
+  if (!$conn) {
+    die("Database connection failed.");
+  }
 
   // Then we grab the e-mail the user submitted from the form.
   $userEmail = $_POST["email"];

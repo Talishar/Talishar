@@ -65,6 +65,7 @@ function JSONLog($gameName, $playerID, $path="./")
   $response = "";
   $filename = "{$path}Games/$gameName/gamelog.txt";
   clearstatcache(true, $filename); // Clear file stat cache to get fresh file size
+  if (!file_exists($filename)) return "";
   $filesize = filesize($filename);
   if ($filesize > 0) {
     $handler = fopen($filename, "r");
