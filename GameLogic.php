@@ -3574,7 +3574,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
       elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
       else $chainLinks[count($chainLinks)-1][2] = 0;
-      AddPlayerHand("gone_in_a_flash_red", $mainPlayer, "CC");
+      $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
+      AddPlayerHand("gone_in_a_flash_red", $destPlayer, "CC");
       if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) {
         //only close the chain if removed before the resolution step
         CloseCombatChain();
