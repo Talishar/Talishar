@@ -419,7 +419,7 @@ class beseech_the_demigon_yellow extends Card {
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
-		return 3;
+		return 2;
 	}
 }
 
@@ -445,7 +445,7 @@ class beseech_the_demigon_blue extends Card {
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
-		return 3;
+		return 1;
 	}
 }
 
