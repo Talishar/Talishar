@@ -1917,7 +1917,7 @@ function CombatChainClosedTriggers()
           $numEloquence = 0;
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numEloquence;
           if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numEloquence;
-          if ($numEloquence > 0) PlayAura("eloquence", $mainPlayer);
+          if ($numEloquence > 0) PlayAura("eloquence", $mainPlayer, effectSource: $chainLinks[$i][$j]);
           break;
         case "deep_recesses_of_existence_blue":
           $from = $chainLinks[$i][$j+3];
