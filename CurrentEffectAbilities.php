@@ -1463,6 +1463,8 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
           "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue", "reckless_stampede_red" => true,
           "runic_fellingsong_red", "runic_fellingsong_yellow", "runic_fellingsong_blue" => true,
+          "arcanic_shockwave_red", "arcanic_shockwave_yellow", "arcanic_shockwave_blue" => true,
+          "arcanic_crackle_red", "arcanic_crackle_yellow", "arcanic_crackle_blue" => true,
           default => false,
         };
         if (SubtypeContains($source, "Dagger")) $multiAttack = true;
