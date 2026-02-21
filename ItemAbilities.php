@@ -1,11 +1,12 @@
 <?php
 
 
-function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-")
+function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-", $effectAgent = "")
 {
   global $EffectContext, $CS_NumGoldCreated, $CS_CreatedCardsThisTurn;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "") $effectController = $player;
+  if ($effectAgent == "") $effectAgent = $effectController;
   if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
@@ -54,7 +55,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     }
   }
   if ($isToken) 
-    IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
+    IncrementClassState($effectAgent, $CS_CreatedCardsThisTurn, $number);
   //enters the arena triggers
   switch ($cardID) {
     case "stasis_cell_blue":

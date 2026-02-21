@@ -242,7 +242,7 @@
         PlayAura("vigor", $playerID);
         break;
       case "test_of_strength_red":
-        PutItemIntoPlayForPlayer("gold", $playerID, effectController:$effectController);
+        PutItemIntoPlayForPlayer("gold", $playerID, effectController:$effectController, effectAgent:$playerID);
         break;
       case "clash_of_bravado_yellow":
         AddDecisionQueue("MULTIZONEINDICES", $playerID, "THEIRAURAS");
