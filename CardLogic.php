@@ -4404,6 +4404,9 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
+    case "first_tenet_of_chi_moon_blue":
+      Draw($player);
+      break;
     case "phantasmaclasm_red":
       AddDecisionQueue("SHOWHANDWRITELOG", $defPlayer, "<-", 1);
       AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");

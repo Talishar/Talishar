@@ -908,10 +908,11 @@ function OnAttackEffects($cardID)
           }
           break;
         case "first_tenet_of_chi_moon_blue":
-          if (PitchValue($cardID) == 3) {
-            Draw($mainPlayer);
+          if (ColorContains($cardID, 3, $mainPlayer)) {
+            AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], additionalCosts:"ATTACKTRIGGER");
             $remove = true;
           }
+          break;
         case "unsheathed_red":
           if (IsCombatEffectActive($currentTurnEffects[$i])){
             AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], additionalCosts:"ATTACKTRIGGER");
