@@ -1,13 +1,21 @@
 <?php
 
+include "../HostFiles/Redirector.php";
+include "../Libraries/HTTPLibraries.php";
+SetHeaders();
+
+// Handle CORS preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(200);
+  exit;
+}
+
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include_once "../Libraries/UILibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
-include_once "../Libraries/HTTPLibraries.php";
-
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -18,10 +26,6 @@ if (!IsUserLoggedIn()) {
   exit;
 }
 $userName = LoggedInUserName();
-
-session_write_close();
-
-SetHeaders();
 
 $response = new stdClass();
 
@@ -166,7 +170,9 @@ else {
 }
 
 mysqli_close($conn);
+session_write_close();
 
+header('Content-Type: application/json');
 echo json_encode($response);
 exit;
 
