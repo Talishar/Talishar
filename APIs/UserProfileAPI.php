@@ -8,11 +8,18 @@ include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once "../Libraries/HTTPLibraries.php";
 
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+
 if (!IsUserLoggedIn()) {
   echo json_encode(new stdClass());
   exit;
 }
 $userName = LoggedInUserName();
+
+session_write_close();
 
 SetHeaders();
 
