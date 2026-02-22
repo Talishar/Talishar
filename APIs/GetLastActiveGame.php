@@ -106,7 +106,7 @@ $response->opponentDisconnected = ($opponentStatus == "-1" || $opponentStatus ==
 
 if ($playerID != 3) {
     $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-    if ($authKey != $targetAuth) {
+    if ($authKey !== $targetAuth) {
         // Auth key mismatch - don't allow recovery
         $response->gameInProgress = false;
         $response->authKeyMismatch = true;

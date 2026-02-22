@@ -27,7 +27,7 @@ include "MenuFiles/ParseGamefile.php";
 include "MenuFiles/WriteGamefile.php";
 
 $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey != $targetAuth) {
+if ($authKey !== $targetAuth) {
   // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
   $authKey = $targetAuth;
 }

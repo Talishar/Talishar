@@ -52,7 +52,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
-  if ($playerID != 3 && $authKey != $targetAuth) {
+  if ($playerID != 3 && $authKey !== $targetAuth) {
     return "Invalid Authkey";
   }
 

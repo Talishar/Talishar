@@ -144,7 +144,7 @@ if(!IsReplay()) {
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
-  if ($playerID != 3 && $authKey != $targetAuth) {
+  if ($playerID != 3 && $authKey !== $targetAuth) {
     // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
     $authKey = $targetAuth;
   }
