@@ -579,18 +579,20 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "evo_mach_breaker_red":
       // I'm assuming we'll never have multiple copies of the same evo breaker equipped
       $searchResult = SearchCharacterForCards($cardID . "_equip", $currentPlayer);
-      $index = intval(explode(",", $searchResult)[0]);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $index);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-      $maxRepeats = SearchCount(SearchItemsForCardName("Hyper Driver", $currentPlayer));
-      for ($i = 0; $i < $maxRepeats; $i++) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to transform (or pass)", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER", 1);
+      if ($searchResult != "") {
+        $index = intval(explode(",", $searchResult)[0]);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $index);
+        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
+        $maxRepeats = SearchCount(SearchItemsForCardName("Hyper Driver", $currentPlayer));
+        for ($i = 0; $i < $maxRepeats; $i++) {
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Hyper Driver to transform (or pass)", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+          AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVOBREAKER", 1);
+        }
+        return "Light up the gem under the equipment when you want to use the conditional effect❗";
       }
-      return "Light up the gem under the equipment when you want to use the conditional effect❗";
     case "demolition_protocol_red":
       if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
