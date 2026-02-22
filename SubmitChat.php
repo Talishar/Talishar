@@ -36,6 +36,19 @@ $sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
 // Release session lock NOW - before file operations
 session_write_close();
 
+$allowedOrigins = ['https://talishar.net'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    // If it's a cross-origin request from an unauthorized site
+    if (!empty($origin)) {
+        http_response_code(403);
+        die("CORS policy: Origin not allowed.");
+    }
+}
+
 if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"] ?? "";
 
 $targetAuthKey = "";
