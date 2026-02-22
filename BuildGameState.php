@@ -574,7 +574,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   if (strpos($turnPhase, "CHOOSEHAND") !== false && ($turnPhase != "MULTICHOOSEHAND" || $turnPhase != "MAYMULTICHOOSEHAND")) $actionType = 16;
   $myHandContents = [];
   $myHandCount = count($myHand);
-  for ($i = 0; $i < $myHandCount; ++$i) {
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     if ($playerID == 3) {
       if($isCasterMode || $isGameOver) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
@@ -584,7 +585,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? $actionType : 0;
       if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
       $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i];
-      array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction));
+      
+      if (isset($myHand[$i + $handPieces - 1])) {
+        $label = GetCardEffectLabel($myHand[$i + $handPieces - 1], $currentTurnEffects);
+      }
+      
+      array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction, label: $label));
     }
   }
   $response->playerHand = $myHandContents;
@@ -671,6 +677,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if ($mod == "INT") {
       $overlay = 1;
       $label = "Intimidated";
+    }
+    if (isset($myBanish[$i + 2])) {
+      $label = GetCardEffectLabel($myBanish[$i + 2], $currentTurnEffects);
     }
     $playerBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
   }
@@ -1462,6 +1471,41 @@ function GetPhaseHelptext()
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   $DQText = GetDQHelpText();
   return $DQText != "-" ? GamestateUnsanitize($DQText) : $defaultText;
+}
+
+if (!function_exists('GetCardEffectLabel')) {
+  function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
+    if ($uniqueID == "" || $uniqueID == "-") return "";
+    
+    $effectIndex = -1;
+    $effectsCount = count($currentTurnEffects);
+    for ($j = 0; $j < $effectsCount; ++$j) {
+      $effectParts = explode("-", $currentTurnEffects[$j]);
+      if (count($effectParts) >= 2) {
+        $targetUID = $effectParts[1];
+        if ($targetUID == $uniqueID) {
+          $effectIndex = $j;
+          break;
+        }
+      }
+    }
+    
+    if ($effectIndex == -1) return "";
+    
+    $effectName = explode("-", $currentTurnEffects[$effectIndex])[0];
+    switch ($effectName) {
+      case "beseech_the_demigon_red":
+      case "beseech_the_demigon_yellow":
+      case "beseech_the_demigon_blue":
+        return "Power +" . EffectPowerModifier($effectName);
+      case "tear_through_the_portal_red":
+      case "tear_through_the_portal_yellow":
+      case "tear_through_the_portal_blue":
+        return "Go Again";
+      default:
+        return "";
+    }
+  }
 }
 
 function skipEffectUIStacking($cardID) {

@@ -1,5 +1,40 @@
 <?php
 
+if (!function_exists('GetCardEffectLabel')) {
+  function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
+    if ($uniqueID == "" || $uniqueID == "-") return "";
+    
+    $effectIndex = -1;
+    $effectsCount = count($currentTurnEffects);
+    for ($j = 0; $j < $effectsCount; ++$j) {
+      $effectParts = explode("-", $currentTurnEffects[$j]);
+      if (count($effectParts) >= 2) {
+        $targetUID = $effectParts[1];
+        if ($targetUID == $uniqueID) {
+          $effectIndex = $j;
+          break;
+        }
+      }
+    }
+    
+    if ($effectIndex == -1) return "";
+    
+    $effectName = explode("-", $currentTurnEffects[$effectIndex])[0];
+    switch ($effectName) {
+      case "beseech_the_demigon_red":
+      case "beseech_the_demigon_yellow":
+      case "beseech_the_demigon_blue":
+        return "Power +" . EffectPowerModifier($effectName);
+      case "tear_through_the_portal_red":
+      case "tear_through_the_portal_yellow":
+      case "tear_through_the_portal_blue":
+        return "Go Again";
+      default:
+        return "";
+    }
+  }
+}
+
 function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $myHand, $myPitch, $myDeck, $theirDeck, $myDiscard, $theirDiscard;
   global $myBanish, $theirBanish, $myArsenal, $theirArsenal;
@@ -637,36 +672,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $index = intval($option[1]);
             $cardID = GetMZCard($currentPlayer, $option[0]."-".$option[1]);
             $uniqueID = $myBanish[$index + 2];
-            $effectIndex = -1;
-            $effectsCount = count($currentTurnEffects);
-            for ($j = 0; $j < $effectsCount; ++$j) {
-              $effectParts = explode("-", $currentTurnEffects[$j]);
-              if (count($effectParts) >= 2) {
-                $targetUID = $effectParts[1];
-                if ($targetUID == $uniqueID) {
-                  $effectIndex = $j;
-                  break;
-                }
-              }
-            }
-            
-            if ($effectIndex != -1) {
-              $effectName = explode("-", $currentTurnEffects[$effectIndex])[0];
-              switch ($effectName) {
-                case "beseech_the_demigon_red":
-                case "beseech_the_demigon_yellow":
-                case "beseech_the_demigon_blue":
-                  $label = "Power +" . EffectPowerModifier($effectName);
-                  break;
-                case "tear_through_the_portal_red":
-                case "tear_through_the_portal_yellow":
-                case "tear_through_the_portal_blue":
-                  $label = "Go Again";
-                  break;
-                default:
-                   break;
-              }
-            }
+            $label = GetCardEffectLabel($uniqueID, $currentTurnEffects);
           }
           
           //Show Subtitles on MyDeck
