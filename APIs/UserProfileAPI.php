@@ -1,23 +1,36 @@
 <?php
 
+include "../HostFiles/Redirector.php";
+include "../Libraries/HTTPLibraries.php";
+SetHeaders();
+
+// Handle CORS preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(200);
+  exit;
+}
+
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include_once "../Libraries/UILibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
-include_once "../Libraries/HTTPLibraries.php";
 
-SetHeaders();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
 
 if (!IsUserLoggedIn()) {
-  echo json_encode(new stdClass());
-  exit;
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
 }
+
+$userName = LoggedInUserName();
 
 $response = new stdClass();
 
-$userName = LoggedInUserName();
 $response->userName = $userName;
 
 $response->patreonInfo = PatreonLink();
@@ -159,7 +172,9 @@ else {
 }
 
 mysqli_close($conn);
+session_write_close();
 
+header('Content-Type: application/json');
 echo json_encode($response);
 exit;
 

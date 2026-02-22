@@ -7,6 +7,7 @@ function GetStringArray($line)
   return explode(" ", $line);
 }
 
+if(!is_numeric($gameName)) exit;
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
 

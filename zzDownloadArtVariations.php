@@ -56,9 +56,6 @@ if (!is_array($cardArray) && !is_object($cardArray)) {
 
 echo "Decoded " . (is_array($cardArray) ? count($cardArray) : "unknown") . " cards<BR>";
 
-if (!is_dir(__DIR__ . "/WebpImages/en/altarts")) {
-  mkdir(__DIR__ . "/WebpImages/en/altarts", 0777, true);
-}
 
 $altArtsArray = [];
 $newDownloads = [];  // Track only newly downloaded images
@@ -200,7 +197,7 @@ foreach ($cardArray as $card) {
 
     // Build filename: SET + number + "-T"
     $filename = $set . str_pad($number, 3, "0", STR_PAD_LEFT) . "-T";
-    $filepath = __DIR__ . "/WebpImages/en/altarts/" . $filename . ".webp";
+    $filepath = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $filename . ".webp";
 
     // Track if this is the best variant for this card (only download the fanciest)
     // Allow download if: not yet tracked, OR better priority, OR manual override
@@ -274,9 +271,7 @@ if (count($altArtsArray) > 0) {
  */
 function RegenerateImageVariations($filepath, $filename)
 {
-  $concatFilename = __DIR__ . "/concat/en/" . $filename . ".webp";
   $cardSquaresMissingFolder = __DIR__ . "/../CardImages/media/missing/cardsquares/english/" . $filename . ".webp";
-  $cropFilename = __DIR__ . "/crops/" . $filename . "_cropped.webp";
   $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $filename . "_cropped.webp";
   
   // Load the main image
@@ -300,9 +295,6 @@ function RegenerateImageVariations($filepath, $filename)
         @imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
         @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
         
-        CreateDirIfNotExists(dirname($concatFilename));
-        @imagewebp($dest, $concatFilename, 80);
-        
         CreateDirIfNotExists(dirname($cardSquaresMissingFolder));
         @imagewebp($dest, $cardSquaresMissingFolder, 80);
         
@@ -316,9 +308,6 @@ function RegenerateImageVariations($filepath, $filename)
     // Create and save crop image
     $cropImage = @imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
     if ($cropImage !== false) {
-      CreateDirIfNotExists(dirname($cropFilename));
-      @imagepng($cropImage, $cropFilename);
-      
       CreateDirIfNotExists(dirname($cardCropsMissingFolder));
       @imagepng($cropImage, $cardCropsMissingFolder);
       
@@ -335,22 +324,21 @@ function RegenerateImageVariations($filepath, $filename)
 
 function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride = false)
 {
-  // Define paths like zzImageConverter.php
+  // Only use CardImages paths, not backend folders
   $cardImagesUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardimages/english/" . $filename . ".webp";
   $cardImagesMissingFolder = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $filename . ".webp";
-  $concatFilename = __DIR__ . "/concat/en/" . $filename . ".webp";
   $cardSquaresUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardsquares/english/" . $filename . ".webp";
   $cardSquaresMissingFolder = __DIR__ . "/../CardImages/media/missing/cardsquares/english/" . $filename . ".webp";
-  $cropFilename = __DIR__ . "/crops/" . $filename . "_cropped.webp";
   $cardCropsUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/crops/" . $filename . "_cropped.webp";
   $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $filename . "_cropped.webp";
   
-  // Check if file already exists in any location
-  if (file_exists($filepath) && file_exists($cardImagesUploadedFolder)) {
+  // Check if file already exists in CardImages location
+  if (file_exists($filepath) || file_exists($cardImagesUploadedFolder)) {
     // If manual override, still regenerate concat/crops
     if ($isManualOverride) {
       echo "Regenerating concat/crops for manual override: " . $filename . "<BR>";
-      RegenerateImageVariations($filepath, $filename);
+      $sourceFile = file_exists($cardImagesUploadedFolder) ? $cardImagesUploadedFolder : $filepath;
+      RegenerateImageVariations($sourceFile, $filename);
     }
     return "exists";  // File already exists, return "exists" instead of true
   }
@@ -447,24 +435,19 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
   // Save processed image to all locations
   if ($success && $processedImage !== false) {
     try {
-      // Create directories if they don't exist
+      // Create directories if they don't exist (CardImages only)
       CreateDirIfNotExists(dirname($filepath));
       CreateDirIfNotExists(dirname($cardImagesUploadedFolder));
       CreateDirIfNotExists(dirname($cardImagesMissingFolder));
-      CreateDirIfNotExists(dirname($concatFilename));
       CreateDirIfNotExists(dirname($cardSquaresUploadedFolder));
       CreateDirIfNotExists(dirname($cardSquaresMissingFolder));
-      CreateDirIfNotExists(dirname($cropFilename));
       CreateDirIfNotExists(dirname($cardCropsUploadedFolder));
       CreateDirIfNotExists(dirname($cardCropsMissingFolder));
       
-      // Save main card image
+      // Save main card image to CardImages missing folder
       $webpResult = @imagewebp($processedImage, $filepath, 80);
       if (!$webpResult) {
         error_log("Warning: Failed to save webp for $filename to $filepath");
-      }
-      if (!file_exists($cardImagesUploadedFolder)) {
-        @imagewebp($processedImage, $cardImagesMissingFolder, 80);
       }
       
       // Create and save concat image (like zzImageConverter.php)
@@ -479,14 +462,7 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
             @imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
             @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
             
-            $concatResult = @imagewebp($dest, $concatFilename, 80);
-            if (!$concatResult) {
-              error_log("Failed to save concat to $concatFilename");
-            }
-            
-            if (!file_exists($cardSquaresUploadedFolder)) {
-              @imagewebp($dest, $cardSquaresMissingFolder, 80);
-            }
+            @imagewebp($dest, $cardSquaresMissingFolder, 80);
             
             @imagedestroy($dest);
           }
@@ -505,14 +481,7 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
       try {
         $cropImage = @imagecrop($processedImage, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
         if ($cropImage !== false) {
-          $cropResult = @imagepng($cropImage, $cropFilename);
-          if (!$cropResult) {
-            error_log("Failed to save crop to $cropFilename");
-          }
-          
-          if (!file_exists($cardCropsUploadedFolder)) {
-            @imagepng($cropImage, $cardCropsMissingFolder);
-          }
+          @imagepng($cropImage, $cardCropsMissingFolder);
           @imagedestroy($cropImage);
         } else {
           error_log("Failed to create crop image for: " . $filename);

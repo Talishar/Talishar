@@ -83,7 +83,7 @@ try {
     if (($playerID == 1 || $playerID == 2) && $authKey == "") {
       if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
     }
-    if ($playerID != 3 && $authKey != $targetAuth) exit;
+    if ($playerID != 3 && $authKey !== $targetAuth) exit;
     if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
     if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
       $currentTime = round(microtime(true) * 1000);

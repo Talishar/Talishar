@@ -22,7 +22,7 @@ if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"];
 $targetAuthKey = "";
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $targetAuthKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SESSION["p2AuthKey"];
-if ($targetAuthKey != "" && $authKey != $targetAuthKey) exit;
+if ($targetAuthKey != "" && $authKey !== $targetAuthKey) exit;
 
 // Write system message for inactivity - simple one-liner using WriteSystemMessage
 WriteSystemMessage("⌛Player " . intval($inactivePlayer) . " is inactive.");
