@@ -8,16 +8,16 @@ include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once "../Libraries/HTTPLibraries.php";
 
-SetHeaders();
-
 if (!IsUserLoggedIn()) {
   echo json_encode(new stdClass());
   exit;
 }
+$userName = LoggedInUserName();
+
+SetHeaders();
 
 $response = new stdClass();
 
-$userName = LoggedInUserName();
 $response->userName = $userName;
 
 $response->patreonInfo = PatreonLink();
