@@ -21,6 +21,9 @@ if($playerID !== 1 && $playerID !== 2) {
 include "MenuFiles/ParseGamefile.php";
 
 $authKey = $_GET["authKey"];
+if ($authKey === "" && ($playerID == 1 || $playerID == 2)) {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
 
 session_start();
 
