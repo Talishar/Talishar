@@ -22,9 +22,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 if (!IsUserLoggedIn()) {
-  echo json_encode(new stdClass());
-  exit;
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
 }
+
 $userName = LoggedInUserName();
 
 $response = new stdClass();
