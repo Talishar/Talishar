@@ -138,13 +138,9 @@
         RestoreMetafySession($_COOKIE['metafyRememberToken']);
       }
       
-      // Regenerate session ID periodically for security
-      if (!isset($_SESSION['last_regeneration'])) {
-        $_SESSION['last_regeneration'] = time();
-      } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
-        session_regenerate_id(true);
-        $_SESSION['last_regeneration'] = time();
-      }
+      // Note: session ID regeneration is done explicitly at login time only,
+      // not periodically here, to avoid losing the new ID when Set-Cookie is
+      // stripped by a reverse proxy (Cloudflare, nginx, etc.).
     }
   }
   
