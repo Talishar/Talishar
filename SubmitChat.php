@@ -58,8 +58,8 @@ if (in_array($origin, $allowedOrigins)) {
 }
 
 $targetAuthKey = "";
-if ($playerID == 1 && $sessionP1AuthKey !== null) $targetAuthKey = $sessionP1AuthKey;
-else if ($playerID == 2 && $sessionP2AuthKey !== null) $targetAuthKey = $sessionP2AuthKey;
+if ($playerID == 1 && $p1Key !== null) $targetAuthKey = $p1Key;
+else if ($playerID == 2 && $p2Key !== null) $targetAuthKey = $p2Key;
 if ($authKey !== $targetAuthKey) {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   if ($authKey !== $targetAuthKey) {
