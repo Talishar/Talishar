@@ -171,6 +171,7 @@ try {
             $content = str_replace('<@695767191022338070>', '@hoodwill', $content);
             $content = str_replace('<@214191542292840448>', '@looseleaftea', $content);
             $content = str_replace('<@242811065878970368>', '@Zandrenel', $content);
+            $content = str_replace('<@405057789002776578>', '@Buford (Dan)', $content);
 
             // Preserve line breaks - normalize to \n first, then convert to HTML
             $content = preg_replace('/\r\n|\r/', "\n", $content);
