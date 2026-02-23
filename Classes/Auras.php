@@ -19,7 +19,7 @@ class Auras {
   }
 
   function FindCardUID($uid) {
-    if (count($this->auras) == 0) return "";
+    if (count($this->auras) == 0) return new AuraCard(-1, $this->player);
     for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
       if ($this->auras[$i + 6] == $uid) return new AuraCard($i, $this->player);
     }
