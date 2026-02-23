@@ -8,8 +8,6 @@ include_once '../Libraries/HTTPLibraries.php';
 
 CheckSession();
 
-SetHeaders();
-
 $response = new stdClass();
 
 // Use the "Talishar Login" app credentials for signup/login flow
@@ -61,7 +59,11 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
       $userID = CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token);
 
       if ($userID) {
-        // Log the user in
+        // Log the user in — regenerate session ID once at login to prevent fixation.
+        // Must be done BEFORE writing session data so the new ID carries the data.
+        // Do NOT pass true (delete old file); keep old file so the browser continuing
+        // to use the old ID (e.g. if Set-Cookie is stripped by a proxy) still works.
+        session_regenerate_id(false);
         $_SESSION['userid'] = $userID;
         // Get the actual username from database (prefer existing username over Metafy username)
         $existingUsername = GetExistingUsername($userID);
@@ -94,7 +96,10 @@ else {
   $response->error = 'No authorization code provided';
 }
 
+session_write_close();
+
 // Return JSON response for frontend to handle
+SetHeaders();
 echo json_encode($response);
 exit;
 
