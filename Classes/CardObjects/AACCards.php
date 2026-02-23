@@ -231,6 +231,10 @@ class nights_embrace_blue extends Card {
 	function SpecialBlock() {
 		return 3;
 	}
+
+	function SpecialCost() {
+		return 0;
+	}
 }
 
 class stalkers_steps extends Card {
