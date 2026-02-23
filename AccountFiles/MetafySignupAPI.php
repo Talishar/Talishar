@@ -8,8 +8,6 @@ include_once '../Libraries/HTTPLibraries.php';
 
 CheckSession();
 
-SetHeaders();
-
 $response = new stdClass();
 
 // Use the "Talishar Login" app credentials for signup/login flow
@@ -94,7 +92,10 @@ else {
   $response->error = 'No authorization code provided';
 }
 
+session_write_close();
+
 // Return JSON response for frontend to handle
+SetHeaders();
 echo json_encode($response);
 exit;
 
