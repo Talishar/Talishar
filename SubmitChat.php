@@ -61,8 +61,11 @@ $targetAuthKey = "";
 if ($playerID == 1 && $sessionP1AuthKey !== null) $targetAuthKey = $sessionP1AuthKey;
 else if ($playerID == 2 && $sessionP2AuthKey !== null) $targetAuthKey = $sessionP2AuthKey;
 if ($authKey !== $targetAuthKey) {
-  http_response_code(403);
-  die("Invalid auth key: " . htmlspecialchars($authKey));
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+  if ($authKey !== $targetAuthKey) {
+    http_response_code(403);
+    die("Invalid auth key: " . htmlspecialchars($authKey));
+  }
 }
 
 $uid = "-";
