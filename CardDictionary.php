@@ -1758,7 +1758,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     return false;
   }
   if ($from == "ARS" && $phase != "B") {
-    if ($myArsenal[$index + 4] == "1") {
+    if (IsFrozenMZ($myArsenal, "ARS", $index, $currentPlayer)) {
       $restriction = "Frozen";
       return false;
     }
