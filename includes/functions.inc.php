@@ -662,6 +662,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$deck["totalDamageThreatened"] = $totalDamageThreatened;
 	$deck["totalDamageDealt"] = $totalDamageDealt;
 	$deck["totalLifeGained"] = $totalLifeGained;
+	$deck["totalDamageBlocked"] = $totalBlocked;
 	$deck["totalDamagePrevented"] = $totalDamagePrevented;
 	$deck["totalLifeLost"] = $totalLifeLost;
 	$deck["averageDamageThreatenedPerTurn"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened]) / $numTurnsCount, 2);
@@ -705,6 +706,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$deck["totalDamageThreatened_NoLast"] = $totalDamageThreatened_NoLast;
 	$deck["totalDamageDealt_NoLast"] = $totalDamageDealt_NoLast;
 	$deck["totalLifeGained_NoLast"] = $totalLifeGained_NoLast;
+	$deck["totalDamageBlocked_NoLast"] = $totalBlocked_NoLast;
 	$deck["totalDamagePrevented_NoLast"] = $totalDamagePrevented_NoLast;
 	$deck["totalLifeLost_NoLast"] = $totalLifeLost_NoLast;
 	$deck["averageDamageThreatenedPerTurn_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened]) / $numTurns_NoLast, 2);
@@ -985,6 +987,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["totalDamageThreatened"]);
 		unset($deck["totalDamageDealt"]);
 		unset($deck["totalLifeGained"]);
+		unset($deck["totalDamageBlocked"]);
 		unset($deck["totalDamagePrevented"]);
 		unset($deck["totalLifeLost"]);
 		unset($deck["averageDamageThreatenedPerTurn"]);
@@ -997,6 +1000,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["totalDamageThreatened_NoLast"]);
 		unset($deck["totalDamageDealt_NoLast"]);
 		unset($deck["totalLifeGained_NoLast"]);
+		unset($deck["totalDamageBlocked_NoLast"]);
 		unset($deck["totalDamagePrevented_NoLast"]);
 		unset($deck["totalLifeLost_NoLast"]);
 		unset($deck["averageDamageThreatenedPerTurn_NoLast"]);
