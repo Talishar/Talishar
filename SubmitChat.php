@@ -48,7 +48,7 @@ if (in_array($origin, $allowedOrigins)) {
     // If it's a cross-origin request from an unauthorized site
     if (!empty($origin)) {
         http_response_code(403);
-        die("CORS policy: Origin not allowed.");
+        die("CORS policy: Origin not allowed: $origin");
     }
 }
 
