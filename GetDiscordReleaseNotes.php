@@ -162,6 +162,7 @@ try {
             $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
             $content = str_replace('<#865423689976774656>', '#bug-reports', $content);
             $content = str_replace('<#971928581267664936>', '#feature-requests', $content);
+            $content = str_replace('<#865412150125789217>', '#general', $content);
 
             // Replace user mentions with usernames
             $content = str_replace('<@387720067640459275>', '@THESPIRITOFLIFE', $content);
@@ -169,6 +170,7 @@ try {
             $content = str_replace('<@478621285786845196>', '@PvtVoid', $content);
             $content = str_replace('<@695767191022338070>', '@hoodwill', $content);
             $content = str_replace('<@214191542292840448>', '@looseleaftea', $content);
+            $content = str_replace('<@242811065878970368>', '@Zandrenel', $content);
 
             // Preserve line breaks - normalize to \n first, then convert to HTML
             $content = preg_replace('/\r\n|\r/', "\n", $content);
