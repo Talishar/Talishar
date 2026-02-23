@@ -1731,16 +1731,19 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       break;
     case "light_up_the_leaves_red":
       if ($source == $currentTurnEffects[$index + 2]) {
+        $remove = false;
         if ($preventable && $type == "ARCANE") {
           $preventedDamage += $currentTurnEffects[$index + 3];
           $currentTurnEffects[$index + 3] -= $damage;
-          if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
-          elseif ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
-          elseif (!IsStaticType(CardType($source))) $remove = true;
         }
-        elseif (!$preventable) {
-          $remove = true;
-        }
+        else $remove = true;
+        if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
+        $multiPing = match($source) {
+          "comet_storm__shock_red" => true,
+          default => false,
+        };
+        if (!IsStaticType(CardType($source)) && !$multiPing) $remove = true;
+        elseif ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
       }
       if ($remove) RemoveCurrentTurnEffect($index);
       break;
