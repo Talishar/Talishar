@@ -26,7 +26,7 @@ if (!$source || !$target) {
 }
 
 // Validate that the bug report exists on the remote server
-$test_url = "https://legacy.talishar.net/game/BugReports/{$source}/gamestate.txt";
+$test_url = "https://api.talishar.net/game/BugReports/{$source}/gamestate.txt";
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $test_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -66,7 +66,7 @@ echo json_encode(['success' => true]);
 
 function SaveFile($source, $target, $file)
 {
-  $source_path = "https://legacy.talishar.net/game/BugReports/{$source}/{$file}";
+  $source_path = "https://api.talishar.net/game/BugReports/{$source}/{$file}";
   $target_path = "./Games/{$target}/{$file}";
   $target_realpath = "./$target_path";
   $gs_path = "./Games/{$target}/gamestate.txt";
