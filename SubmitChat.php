@@ -1,29 +1,9 @@
 <?php
 
-include "Libraries/HTTPLibraries.php";
-include "Libraries/SHMOPLibraries.php";
-include_once "includes/dbh.inc.php";
-include_once "includes/MetafyHelper.php";
-SetHeaders();
+error_reporting(E_ALL);
 
-$gameName = $_GET["gameName"];
-if (!IsGameNameValid($gameName)) {
-  echo "Invalid game name.";
-  exit;
-}
-$playerID = intval($_GET["playerID"]);
-if($playerID !== 1 && $playerID !== 2) {
-  echo "Invalid player ID.";
-  exit;
-}
-
-// Load game file to get Metafy tiers - this populates $p1MetafyTiers and $p2MetafyTiers
-include "MenuFiles/ParseGamefile.php";
-
-$authKey = $_GET["authKey"];
-if ($authKey === "" && ($playerID == 1 || $playerID == 2)) {
-  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
-}
+// Start output buffering to catch any accidental output
+ob_start();
 
 session_start();
 
@@ -36,8 +16,33 @@ $sessionUserUid = $_SESSION['useruid'] ?? null;
 $sessionIsPatron = isset($_SESSION["isPatron"]);
 $sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
 
-// Release session lock NOW - before file operations
+// Release session lock NOW - before any file operations
 session_write_close();
+
+include "Libraries/HTTPLibraries.php";
+include "Libraries/SHMOPLibraries.php";
+include_once "includes/dbh.inc.php";
+include_once "includes/MetafyHelper.php";
+SetHeaders();
+
+$gameName = $_GET["gameName"];
+if (!IsGameNameValid($gameName)) {
+  http_response_code(400);
+  die("Invalid game name.");
+}
+$playerID = intval($_GET["playerID"]);
+if($playerID !== 1 && $playerID !== 2) {
+  http_response_code(400);
+  die("Invalid player ID.");
+}
+
+$authKey = $_GET["authKey"] ?? "";
+if ($authKey === "" && ($playerID == 1 || $playerID == 2)) {
+  if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+}
+
+// Load game file to get Metafy tiers - this populates $p1MetafyTiers and $p2MetafyTiers
+include "MenuFiles/ParseGamefile.php";
 
 $allowedOrigins = ['https://talishar.net'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -52,14 +57,12 @@ if (in_array($origin, $allowedOrigins)) {
     }
 }
 
-if ($authKey == "") $authKey = $_COOKIE["lastAuthKey"] ?? "";
-
 $targetAuthKey = "";
 if ($playerID == 1 && $sessionP1AuthKey !== null) $targetAuthKey = $sessionP1AuthKey;
 else if ($playerID == 2 && $sessionP2AuthKey !== null) $targetAuthKey = $sessionP2AuthKey;
 if ($authKey !== $targetAuthKey) {
   http_response_code(403);
-  die("Invalid auth key.");
+  die("Invalid auth key: " . htmlspecialchars($authKey));
 }
 
 $uid = "-";
