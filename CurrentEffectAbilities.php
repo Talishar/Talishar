@@ -655,11 +655,6 @@ function EffectHasBlockModifier($cardID)
     case "defender_of_daybreak_blue":
     case "lay_down_the_law_red":
     case "stonewall_impasse":
-    case "headliner_helm":
-    case "stadium_centerpiece":
-    case "ticket_puncher":
-    case "grandstand_legplates":
-    case "bloodied_oval":
     case "graven_call":
       return true;
     default:
@@ -708,12 +703,6 @@ function EffectBlockModifier($cardID, $index, $from)
     case "ratchet_up_yellow":
     case "ratchet_up_blue":
       $blockModifier += IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;break;
-    case "headliner_helm":
-    case "stadium_centerpiece":
-    case "ticket_puncher":
-    case "grandstand_legplates":
-    case "bloodied_oval":
-      $blockModifier += $CombatChain->Card($index)->ID() == $cardID && PlayerHasLessHealth($defPlayer) ? 1 : 0;break;
     case "wide_blue_yonder_blue":
       $blockModifier += SearchPitchForColor($mainPlayer, 3);
       break;

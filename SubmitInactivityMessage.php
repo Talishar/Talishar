@@ -29,5 +29,3 @@ WriteSystemMessage("⌛Player " . intval($inactivePlayer) . " is inactive.");
 
 // Do NOT call GamestateUpdated here as it resets the inactivity timer
 // The message will be included in the next natural GetNextTurn poll
-
-?>

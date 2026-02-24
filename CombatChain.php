@@ -1595,13 +1595,6 @@ function OnBlockEffects($index, $from)
       break;
   }
   switch ($CombatChain->Card($index)->ID()) {
-    case "headliner_helm":
-    case "stadium_centerpiece":
-    case "ticket_puncher":
-    case "grandstand_legplates":
-    case "bloodied_oval":
-      AddCurrentTurnEffect($CombatChain->Card($index)->ID(), $defPlayer);
-      break;
     default:
       break;
   }
