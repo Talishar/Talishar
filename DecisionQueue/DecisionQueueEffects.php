@@ -1283,21 +1283,37 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "BFB":
       if(!is_array($lastResult)) $modes = $lastResult == "PASS" ? [] : explode(",", $lastResult);
       else $modes = $lastResult;
+      $modeCounts = ["courage" => 0, "toughness" => 0, "vigor" => 0];
       for ($i = 0; $i < count($modes); ++$i) {
         switch($modes[$i]) {
           case "Create_a_Courage_token":
+            $modeCounts["courage"]++;
             PlayAura("courage", $player, isToken:true, effectController:$player, effectSource:$initiator);
             break;
           case "Create_a_Toughness_token":
+            $modeCounts["toughness"]++;
             PlayAura("toughness", $player, isToken:true, effectController:$player, effectSource:$initiator);
             break;
           case "Create_a_Vigor_token":
+            $modeCounts["vigor"]++;
             PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$initiator);
             break;
           default:
             break;
         }
       }
+      $selectedModes = [];
+      if ($modeCounts["courage"] > 0) {
+        $selectedModes[] = $modeCounts["courage"] . "x Create a " . CardLink("courage", "courage") . " token";
+      }
+      if ($modeCounts["toughness"] > 0) {
+        $selectedModes[] = $modeCounts["toughness"] . "x Create a " . CardLink("toughness", "toughness") . " token";
+      }
+      if ($modeCounts["vigor"] > 0) {
+        $selectedModes[] = $modeCounts["vigor"] . "x Create a " . CardLink("vigor", "vigor") . " token";
+      }
+      $logMessage = "Selected modes for " . CardLink("battlefield_beacon_yellow", "battlefield_beacon_yellow") . " are: " . implode(", ", $selectedModes) . ".";
+      WriteLog($logMessage);
       return "";
     case "EMBODYGREATNESS":
       $Character = new CharacterCard(0, $player);

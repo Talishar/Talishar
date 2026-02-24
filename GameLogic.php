@@ -1472,7 +1472,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           break;
       }
-      WriteLog("This card was charged: " . CardLink($lastResult, $lastResult));
+      WriteLog(CardLink($lastResult, $lastResult) . " was charged.");
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
       if ((CardType($EffectContext) == "AA" || isset($layers[0]) && CardType($layers[0]) == "AA") && $parameter != "NOTCOST") ++$combatChainState[$CCS_AttackNumCharged];
