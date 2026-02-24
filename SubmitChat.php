@@ -70,6 +70,7 @@ if ($authKey !== $targetAuthKey) {
 
 $uid = "-";
 if ($sessionUserUid !== null) $uid = $sessionUserUid;
+else $uid = $playerID == 1 ? $p1uid : $p2uid;
 if($uid == "starmorgs") exit;
 $displayName = ($uid != "-" ? $uid : "Player " . $playerID);
 

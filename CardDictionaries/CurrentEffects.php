@@ -99,7 +99,7 @@ function HVYCombatEffectActive($cardID, $attackID)
     "coercive_tendency_blue" => ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer),
     "betsy_skin_in_the_game", "betsy", "primed_to_fight_red", "stonewall_impasse", "gauntlets_of_iron_will", "good_time_chapeau-PAID", "the_golden_son_yellow", "big_bop_red", "big_bop_yellow", "big_bop_blue", "bigger_than_big_red",
     "bigger_than_big_yellow", "bigger_than_big_blue", "hood_of_red_sand", "talk_a_big_game_blue", "wage_might_red", "wage_might_yellow", "wage_might_blue", "wage_agility_red", "wage_agility_yellow", "wage_agility_blue", "wage_vigor_red", "wage_vigor_yellow",
-    "wage_vigor_blue", "headliner_helm", "stadium_centerpiece", "ticket_puncher", "grandstand_legplates", "bloodied_oval", "standing_order_red", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "wage_gold_red", "wage_gold_yellow",
+    "wage_vigor_blue", "standing_order_red", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "wage_gold_red", "wage_gold_yellow",
     "wage_gold_blue", "tenacity_yellow", "money_where_ya_mouth_is_red-BUFF", "money_where_ya_mouth_is_yellow-BUFF", "money_where_ya_mouth_is_blue-BUFF", "agility", "might", "cut_the_deck_red", "cut_the_deck_yellow", "cut_the_deck_blue",
     "fatal_engagement_red", "fatal_engagement_yellow", "fatal_engagement_blue", "agile_engagement_red", "agile_engagement_yellow", "agile_engagement_blue", "vigorous_engagement_red", "vigorous_engagement_yellow", "vigorous_engagement_blue" => true,
     default => false

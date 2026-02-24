@@ -444,18 +444,21 @@ class windup {
 //   }
 // }
 
+class bloodied_oval extends Card {
 
-// class bloodied_oval extends Card {
+  function __construct($controller) {
+    $this->cardID = "bloodied_oval";
+    $this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "bloodied_oval";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return PlayerHasLessHealth($this->controller) ? 1 : 0;
+  }
+}
 
 
 // class boast_blue extends Card {
@@ -1186,17 +1189,21 @@ class windup {
 // }
 
 
-// class grandstand_legplates extends Card {
+class grandstand_legplates extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "grandstand_legplates";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "grandstand_legplates";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return PlayerHasLessHealth($this->controller) ? 1 : 0;
+  }
+}
 
 
 // class graven_call extends Card {
@@ -1212,17 +1219,21 @@ class windup {
 // }
 
 
-// class headliner_helm extends Card {
+class headliner_helm extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "headliner_helm";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "headliner_helm";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return PlayerHasLessHealth($this->controller) ? 1 : 0;
+  }
+}
 
 
 // class hearty_block_red extends Card {
@@ -2304,17 +2315,21 @@ class windup {
 // }
 
 
-// class stadium_centerpiece extends Card {
+class stadium_centerpiece extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "stadium_centerpiece";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "stadium_centerpiece";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return PlayerHasLessHealth($this->controller) ? 1 : 0;
+  }
+}
 
 
 // class stand_ground extends Card {
@@ -2551,17 +2566,21 @@ class windup {
 // }
 
 
-// class ticket_puncher extends Card {
+class ticket_puncher extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ticket_puncher";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ticket_puncher";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return PlayerHasLessHealth($this->controller) ? 1 : 0;
+  }
+}
 
 
 // class trounce_red extends Card {

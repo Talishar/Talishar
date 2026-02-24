@@ -707,15 +707,18 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   return $playerInputPopup;
 }
 
-/**
- * Helper for checkbox default state
- */
+
 function CheckboxDefaultState($options, $minNumber = 0, $maxNumber = 0) {
   static $presets = [
     "blood_on_her_hands" => [
       "min" => 0,
       "max" => 6,
       "options" => ["Buff_Weapon", "Buff_Weapon", "Go_Again", "Go_Again", "Attack_Twice", "Attack_Twice"]
+    ],
+    "battlefield_beacon_yellow" => [
+      "min" => 9,
+      "max" => 9,
+      "options" => ["Create_a_Courage_token", "Create_a_Courage_token", "Create_a_Courage_token", "Create_a_Toughness_token", "Create_a_Toughness_token", "Create_a_Toughness_token", "Create_a_Vigor_token", "Create_a_Vigor_token", "Create_a_Vigor_token"]
     ],
   ];
 
