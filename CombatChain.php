@@ -2319,20 +2319,21 @@ function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
   }
 }
 
-function LayerStepPower() { //calculates the modified power of an attack in the layer step
+function LayerStepPower($player="") { //calculates the modified power of an attack in the layer step
   global $currentTurnEffects, $Stack, $mainPlayer;
   if (!IsLayerStep()) return 0;
+  if ($player == "") $player = $mainPlayer;
   $power = 0;
   $cardID = $Stack->BottomLayer()->ID();
   // account for transitioning from resolution step to layerstep
   if ($cardID == "RESOLUTIONSTEP" && $Stack->NumLayers() > 1) $cardID = $Stack->BottomLayer(1)->ID();
   for ($j = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $j >= 0; $j -= CurrentTurnEffectsPieces()) {
     if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
-      if ($currentTurnEffects[$j + 1] == $mainPlayer) {
+      if ($currentTurnEffects[$j + 1] == $player) {
         $power += EffectPowerModifier($currentTurnEffects[$j]);
       }
     }
   }  
-  $power += ModifiedPowerValue($cardID, $mainPlayer, "LAYER");
+  $power += ModifiedPowerValue($cardID, $player, "LAYER");
   return $power;
 }
