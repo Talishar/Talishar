@@ -703,7 +703,15 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "clash") return !isClashLegal($cardID, $character);
   if ($format == "sage" || $format == "compsage" || $format == "futuresage") {
     $rarity = Rarity($cardID);
-    if ($format == "futuresage" && $cardID == "blaze_firemind") return false;
+    if ($format == "futuresage") { //future downshifts
+      switch($cardID) {
+        case "blaze_firemind":
+        case "raydn_duskbane":
+          return false;
+        default:
+          break;
+      }
+    }
     if ($rarity != "R" && $rarity != "C" && $rarity != "T" && $rarity != "B") return true;
   }
 

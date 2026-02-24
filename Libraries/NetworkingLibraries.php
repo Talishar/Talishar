@@ -2097,12 +2097,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $dynCost = "";
       $isNuu = SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer);
       $nuuActive = $isNuu && ColorContains($cardID, 3, $otherPlayer);
-      if ($playingCard && substr($from, 0, 5) == "THEIR" && $nuuActive) {
-        $dynCost = ($cardID == "staunch_response_red" || $cardID == "staunch_response_yellow" || $cardID == "staunch_response_blue") ? "0,4" : 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
-        SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
-        $cachedLastDynCost = $dynCost;
-      }
-      elseif ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
+      if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index, $facing); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "" || $dynCost == 0 && substr($from, 0, 5) != "THEIR") {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);

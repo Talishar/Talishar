@@ -2500,44 +2500,103 @@ class hope_merchants_hood extends Card {
 //   }
 // }
 
+class staunch_response extends BaseCard {
+  function PayAdditionalCosts() {
+    Await($this->controller, "YesNo", context:"Pay 4 resources to gain +3 block?", subsequent:0);
+    Await($this->controller, "PayResources", amount:4);
+    Await($this->controller, $this->cardID, final:true);
+  }
 
-// class staunch_response_red extends Card {
+  function SpecificLogic() {
+    global $CS_AdditionalCosts;
+    SetClassState($this->controller, $CS_AdditionalCosts, 4);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "staunch_response_red";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($additionalCosts) {
+    global $CombatChain;
+    if ($additionalCosts == 4) {
+      $ChainCard = $CombatChain->LastCard();
+      $ChainCard->ModifyDefense(3);
+    }
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class staunch_response_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "staunch_response_red";
+    $this->controller = $controller;
+    $this->baseCard = new staunch_response($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($additionalCosts);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function EffectBlockModifier($index, $from) {
+    return $this->baseCard->EffectBlockModifier($index);
+  }
+}
 
 
-// class staunch_response_yellow extends Card {
+class staunch_response_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "staunch_response_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "staunch_response_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new staunch_response($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($additionalCosts);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function EffectBlockModifier($index, $from) {
+    return $this->baseCard->EffectBlockModifier($index);
+  }
+}
 
 
-// class staunch_response_blue extends Card {
+class staunch_response_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "staunch_response_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "staunch_response_blue";
+    $this->controller = $controller;
+    $this->baseCard = new staunch_response($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($additionalCosts);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function EffectBlockModifier($index, $from) {
+    return $this->baseCard->EffectBlockModifier($index);
+  }
+}
 
 
 // class steelblade_shunt_red extends Card {

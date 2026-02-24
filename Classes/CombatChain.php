@@ -59,6 +59,10 @@ class CombatChain {
     if(!$this->HasCurrentLink()) return "";
     return $this->chain[0];
   }
+
+  function LastCard() {
+    return new ChainCard(count($this->chain) - CombatChainPieces());
+  }
 }
 
 class ChainCard {

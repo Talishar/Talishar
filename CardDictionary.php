@@ -672,10 +672,6 @@ function DynamicCost($cardID)
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->DynamicCost();
   switch ($cardID) {
-    case "staunch_response_red":
-    case "staunch_response_yellow":
-    case "staunch_response_blue":
-      return "2,6";
     case "spark_of_genius_yellow":
       return "0,2,4,6,8,10,12";
     case "imposing_visage_blue":
