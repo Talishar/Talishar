@@ -2679,7 +2679,7 @@ class battlefield_beacon_yellow extends Card {
     }
     
     $modes = $count . "-" . implode(",", $options) . "-" . $count;
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose $count " . ($count == 1 ? "mode" : "modes"));
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose up to $count " . ($count == 1 ? "mode" : "modes"));
     AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $modes, 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BATTLEFIELDBEACON," . $this->cardID, 1);
   }
