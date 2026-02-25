@@ -657,7 +657,6 @@ class construct_nitro_mechanoid_yellow extends Card {
 		// We don't want function calls in every iteration check
 		$mechanoidIndex = $Items->NumItems() - 1; // we pushed it, so should be the last element
 		$Mechanoid = $Items->Card($mechanoidIndex, true);
-		WriteLog("HERE: " . $Mechanoid->CardID());
 		//Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
 		$Character = new PlayerCharacter($this->controller);
 		for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {

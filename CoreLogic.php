@@ -1391,12 +1391,10 @@ function CombatChainClosedItemEffects() {
       $LinkCard = $Link->GetLinkCard($j, true);
       if ($LinkCard->PlayerID() != $defPlayer) continue;
       if (!$nervesOfSteelActive) {
-        WriteLog("HERE about to check temper: " . $LinkCard->ID());
         if (HasTemper($LinkCard->ID())) {
           // there will be issues if nitromechanoid is blocking on the combat chain and gets stolen
           $defItems = new Items($defPlayer);
           $blockingItem = $defItems->FindCardUID($LinkCard->OriginUniqueID());
-          WriteLog("HERE: " . $blockingItem->CardID() . " - " . $LinkCard->OriginUniqueID());
           $blockingItem->AddDefCounters(-1);
           $blockingItem->ToggleOnChain(0);
           if ((ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $LinkCard->DefenseModifier()) <= 0) {
@@ -1435,13 +1433,11 @@ function CombatChainClosedCharacterEffects()
         BanishCardForPlayer($chainLinks[$i][$j], $defPlayer, "EQUIP", "NA");
       }
       if (!$nervesOfSteelActive) {
-        WriteLog("HERE about to check temper: " . $chainLinks[$i][$j]);
         if (HasTemper($chainLinks[$i][$j])) {
           if (SubtypeContains($chainLinks[$i][$j], "Item")) {
             // there will be issues if nitromechanoid is blocking on the combat chain and gets stolen
             $defItems = new Items($defPlayer);
             $blockingItem = $defItems->FindCardUID($chainLinks[$i][$j + 8]);
-            WriteLog("HERE: " . $blockingItem->CardID() . " - " . $chainLinks[$i][$j + 8]);
             $blockingItem->AddDefCounters(-1);
             $blockingItem->ToggleOnChain(0);
             if ((ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
