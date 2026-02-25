@@ -65,21 +65,26 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   if ($combatChainState[$CCS_WeaponIndex] != -1) {
     $power = 0;
     if (DelimStringContains($attackType, "W")) {
-      $ItemCard = new ItemCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
-      $power = 0;
-      // check buffs from subcards
-      $subcards = $ItemCard->SubCards();
-      if ($subcards != "-") {
-        $subcards = explode(",", $subcards);
-        foreach ($subcards as $subcard) {
-          switch ($subcard) {
-            case "galvanic_bender":
-              ++$power;
-              break;
-            default:
-              break;
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Item")) {
+        $ItemCard = new ItemCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
+        // check buffs from subcards
+        $subcards = $ItemCard->SubCards();
+        if ($subcards != "-") {
+          $subcards = explode(",", $subcards);
+          foreach ($subcards as $subcard) {
+            switch ($subcard) {
+              case "galvanic_bender":
+                ++$power;
+                break;
+              default:
+                break;
+            }
           }
         }
+      }
+      else {
+        $CharacterCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
+        $power += $CharacterCard->NumPowerCounters();
       }
       if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
     } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
