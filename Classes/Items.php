@@ -19,7 +19,7 @@ class Items {
   }
 
   function FindCardUID($uid) {
-    if (count($this->items) == 0) return "";
+    if (count($this->items) == 0) return new ItemCard(-1, $this->player);
     for ($i = 0; $i < count($this->items); $i += ItemPieces()) {
       if ($this->items[$i + 4] == $uid) return new ItemCard($i, $this->player);
     }
@@ -27,7 +27,7 @@ class Items {
   }
 
   function FindCard($id) {
-    if (count($this->items) == 0) return "";
+    if (count($this->items) == 0) return new ItemCard(-1, $this->player);
     for ($i = 0; $i < count($this->items); $i += ItemPieces()) {
       if ($this->items[$i] == $id) return new ItemCard($i, $this->player);
     }
