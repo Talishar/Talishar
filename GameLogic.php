@@ -2568,6 +2568,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CHOOSEONE":
       return explode(",", $lastResult)[0] ?? "-";
+    case "MZSWAP":
+      if (str_contains($lastResult, "MY"))
+        return str_replace("MY", "THEIR", $lastResult);
+      elseif (str_contains($lastResult, "THEIR"))
+        return str_replace("THEIR", "MY", $lastResult);
+      else
+        return $lastResult;
     case "MZDESTROY":
       return MZDestroy($player, $lastResult, allArsenal: $parameter);
     case "MZUNDESTROY":
