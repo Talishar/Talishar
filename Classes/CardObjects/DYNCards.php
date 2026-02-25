@@ -637,18 +637,87 @@
 // }
 
 
-// class construct_nitro_mechanoid_yellow extends Card {
+class construct_nitro_mechanoid_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "construct_nitro_mechanoid_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "construct_nitro_mechanoid_yellow";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return CheckIfConstructNitroMechanoidConditionsAreMet($this->controller) != "";
+	}
 
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
+		if ($conditionsMet != "") return $conditionsMet;
+		$Items = new Items($this->controller);
+		// Add the new item so we can put cards under it
+		PutItemIntoPlayForPlayer("nitro_mechanoidc", $this->controller);
+		// We don't want function calls in every iteration check
+		$mechanoidIndex = $Items->NumItems() - 1; // we pushed it, so should be the last element
+		$Mechanoid = $Items->Card($mechanoidIndex, true);
+		WriteLog("HERE: " . $Mechanoid->CardID());
+		//Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
+		$Character = new PlayerCharacter($this->controller);
+		for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
+			$CharCard = $Character->Card($i, true);
+			if(CardType($CharCard->CardID()) != "C" && CardType($CharCard->CardID()) != "Companion") {
+				$Mechanoid->AddSubcard($CharCard->CardID());
+				$CharCard->Destroy(true);
+			}
+		}
+
+		$hyperDrivers = SearchMultizone($this->controller, "MYITEMS:isSameName=hyper_driver_red");
+		$hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
+		AddDecisionQueue("MULTICHOOSEITEMS", $this->controller, "3-" . $hyperDrivers. "-3");
+		AddDecisionQueue("SPECIFICCARD", $this->controller, "CONSTRUCTNITROMECHANOID,$mechanoidIndex", 1);
+		return "";
+  }
+}
+
+// the item produced, named for backwards compatibility
+class nitro_mechanoidc extends Card {
+	function __construct($controller) {
+    $this->cardID = "nitro_mechanoidc";
+    $this->controller = $controller;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		$Mechanoid = new ItemCard($index, $this->controller);
+		return $Mechanoid->SubCards() == "-";
+	}
+
+	function SpecialType() {
+		return "W,E";
+	}
+
+	function GoesOnCombatChain($phase, $from) {
+		return true;
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
+	}
+
+	function SpecialBlock() {
+		return 5;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$Mechanoid = new ItemCard($index, $this->controller);
+		$Mechanoid->SetStatus(2);
+		$Mechanoid->AddUses();
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		$destPlayer = str_contains($Mechanoid->From(), "THEIR") ? $otherPlayer : $this->controller;
+		ItemChooseaAndRemoveSubcard($this->controller, $index, count: 1);
+		AddDecisionQueue("MULTIBANISH", $destPlayer, "EQUIP,-", 1);
+	}
+
+	function HasTemper() {
+		return true;
+	}
+}
 
 // class crankshaft_red extends Card {
 

@@ -4173,6 +4173,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
   }
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
+  if ($isBlock && $cardID == "nitro_mechanoidc") {
+    $Items = new Items($currentPlayer);
+    $Mechanoid = $Items->FindCard($cardID);
+    $Mechanoid->ToggleOnChain(1);
+  }
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
     if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {

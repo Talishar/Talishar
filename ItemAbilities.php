@@ -37,6 +37,9 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     array_push($items, ItemModalities($cardID));
     array_push($items, $from);
     array_push($items, 0); //enters untapped
+    array_push($items, "-"); //subcards
+    array_push($items, 0); //def counters
+    array_push($items, 0); //on chain
     if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
   }
 
@@ -266,17 +269,18 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
       else $destPlayer = $player;
       if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
         AddGraveyard($items[$index], $destPlayer, "PLAY");
+      if ($items[$index] == "nitro_mechanoidc") AddGraveyard("construct_nitro_mechanoid_yellow", $destPlayer, "PLAY");
       IncrementClassState($player, $CS_NumItemsDestroyed);
     }
     $cardID = $items[$index];
     $itemPieces = ItemPieces();
+    $subCards = $items[$index + 11];
+    if ($subCards != "-") {
+      $subCards = explode(",", $subCards);
+      foreach($subCards as $subCard)
+        AddGraveyard($subCard, $player, "PLAY");
+    }
     for ($i = $index + $itemPieces - 1; $i >= $index; --$i) {
-      if ($items[$i] == "nitro_mechanoidc") {
-        $indexWeapon = FindCharacterIndex($player, "nitro_mechanoida");
-        DestroyCharacter($player, $indexWeapon);
-        $indexEquipment = FindCharacterIndex($player, "nitro_mechanoidb");
-        DestroyCharacter($player, $indexEquipment, true);
-      }
       unset($items[$i]);
     }
     $items = array_values($items);

@@ -962,7 +962,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     $basePower = $basePower == -1 ? GeneratedPowerValue($cardID) : $basePower;
   }
   $basePower = match ($cardID) {
-    "nitro_mechanoida" => 5,
+    "nitro_mechanoidc" => 5,
     "suraya_archangel_of_knowledge" => 4,
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
@@ -1797,7 +1797,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
   }
   if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
-  if ($from != "PLAY" && $from != "GY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
+  if ($phase == "B" && $cardID == "nitro_mechanoidc") {
+    $ItemCard = new ItemCard($index, $defPlayer);
+    return !$ItemCard->OnChain();
+  }
+  if (($from != "PLAY") && $from != "GY" && $phase == "B" && $cardType != "DR") return BlockValue($cardID) > -1;
   if (($phase == "P" || $phase == "CHOOSEHANDCANCEL") && IsPitchRestricted($cardID, $restriction, $from, $index, $pitchRestriction, phase:$phase)) return false;
   elseif ($phase == "CHOOSEHANDCANCEL" && $from == "HAND") {
     if (count($layers) > 0) {
@@ -3531,7 +3535,6 @@ function HasTemper($cardID)
   if ($card != "-") return $card->HasTemper();
   switch ($cardID) {
     case "trampling_trackers":
-    case "nitro_mechanoidb":
       return true;
   }
   return GeneratedHasTemper($cardID);

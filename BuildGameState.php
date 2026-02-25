@@ -977,7 +977,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       isFrozen: IsFrozenMZ($theirItems, "ITEMS", $i, $otherPlayer),
       gem: $gem,
       label: $label,
-      tapped: $theirItems[$i + 10] == 1));
+      tapped: $theirItems[$i + 10] == 1,
+      subcard: $theirItems[$i+11] != "-" ? $theirItems[$i+11] : NULL,
+      defCounters: $theirItems[$i + 12],
+      onChain: $theirItems[$i + 13] == 1));
   }
   $response->opponentItems = $theirItemsOutput;
 
@@ -1112,7 +1115,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       rustCounters: $rustCounters,
       verseCounters: $verseCounters,
       flowCounters: $flowCounters,
-      tapped: $myItems[$i + 10] == 1));
+      tapped: $myItems[$i + 10] == 1,
+      subcard: $myItems[$i+11] != "-" ? $myItems[$i+11] : NULL,
+      defCounters: $myItems[$i + 12],
+      onChain: $myItems[$i + 13] == 1));
   }
   $response->playerItems = $myItemsOutput;
 

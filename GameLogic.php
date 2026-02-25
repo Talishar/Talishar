@@ -32,6 +32,7 @@ include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/ARCCards.php";
 include "Classes/CardObjects/MONCards.php";
 include "Classes/CardObjects/UPRCards.php";
+include "Classes/CardObjects/DYNCards.php";
 include "Classes/CardObjects/DTDCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
@@ -3050,6 +3051,32 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char[$parameter + 10] = implode(",", $subcards);
       UpdateSubcardCounterCount($currentPlayer, $parameter);
       if ($char[$parameter + 10] == "") $char[$parameter + 10] = "-";
+      return $cardID;
+    case "REMOVEITEMSUBCARD":
+      $ItemCard = new ItemCard($parameter, $player);
+      $subcards = explode(",", $ItemCard->SubCards());
+      $subcardsCount = count($subcards);
+      $cardID = "";
+      for ($i = 0; $i < $subcardsCount; $i++) {
+        if (is_array($lastResult)) {
+          if (in_array($subcards[$i], $lastResult)) {
+            $cardID = ($cardID == "") ? $subcards[$i] : $cardID . "," . $subcards[$i];
+            array_splice($lastResult, array_search($subcards[$i], $lastResult), 1);
+            array_splice($subcards, $i, 1);
+            $i--;
+            $subcardsCount--;
+            if (count($lastResult) == 0) break;
+          }
+        } else {
+          if ($subcards[$i] == $lastResult) {
+            $cardID = $subcards[$i];
+            array_splice($subcards, $i, 1);
+            break;
+          }
+        }
+      }
+      $subcards = count($subcards) == 0 ? "-" : implode(",", $subcards);
+      $ItemCard->SetSubcards($subcards);
       return $cardID;
     case "REMOVESOUL":
       $char = &GetPlayerCharacter($player);

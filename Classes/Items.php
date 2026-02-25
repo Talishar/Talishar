@@ -23,7 +23,15 @@ class Items {
     for ($i = 0; $i < count($this->items); $i += ItemPieces()) {
       if ($this->items[$i + 4] == $uid) return new ItemCard($i, $this->player);
     }
-    return "";
+    return new ItemCard(-1, $this->player);
+  }
+
+  function FindCard($id) {
+    if (count($this->items) == 0) return "";
+    for ($i = 0; $i < count($this->items); $i += ItemPieces()) {
+      if ($this->items[$i] == $id) return new ItemCard($i, $this->player);
+    }
+    return new ItemCard(-1, $this->player);
   } 
 
   function NumItems() {
@@ -40,7 +48,10 @@ class ItemCard {
   // Constructor
   function __construct($index, $player) {
     $this->controller = $player;
-    $this->pieces = &GetItems($player);
+    if ($index == -1)
+      $this->pieces = [];
+    else
+      $this->pieces = &GetItems($player);
     $this->index = $index;
   }
 
@@ -70,6 +81,11 @@ class ItemCard {
 
   function NumUses() {
     return $this->pieces[$this->index+3] ?? 0;
+  }
+
+  function AddUses($n=1) {
+    if (isset($this->pieces[$this->index + 3]))
+      $this->pieces[$this->index + 3] += $n;
   }
 
   function UniqueID() {
@@ -118,5 +134,42 @@ class ItemCard {
 
   function Destroy($skipDestroy=false) {
     DestroyItemForPlayer($this->controller, $this->index, $skipDestroy);
+  }
+
+  function SubCards() {
+    return $this->pieces[$this->index + 11] ?? "-";
+  }
+
+  function AddSubcard($cardID) {
+    if (!isset($this->pieces[$this->index + 11])) return "";
+    elseif ($this->pieces[$this->index + 11] == "-")
+      $this->pieces[$this->index + 11] = $cardID;
+    else {
+      $this->pieces[$this->index + 11] .= ",$cardID";
+    }
+    return $cardID;
+  }
+
+  function SetSubcards($subcards) {
+    if (!isset($this->pieces[$this->index + 11])) return "";
+    $this->pieces[$this->index+11] = $subcards;
+  }
+
+  function NumDefCounters() {
+    return $this->pieces[$this->index + 12] ?? 0;
+  }
+
+  function AddDefCounters($n) {
+    if (isset($this->pieces[$this->index + 12]))
+      $this->pieces[$this->index + 12] += $n;
+  }
+
+  function OnChain() {
+    return $this->pieces[$this->index + 13] ?? 0;
+  }
+
+  function ToggleOnChain($val) {
+    if (isset($this->pieces[$this->index + 13]))
+      $this->pieces[$this->index + 13] = $val;
   }
 }

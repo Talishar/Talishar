@@ -105,9 +105,12 @@ function AuraPieces()
 //8 - Modalities (eg. Micro-Processor)
 //9 - Where it's played from
 //10 - Tapped (0 = no, 1 = yes)
+//11 - Subcards (, delimited)
+//12 - Num defense counters
+//13 - On Chain (1 = yes, 0 = no)
 function ItemPieces()
 {
-  return 11;
+  return 14;
 }
 
 function PitchPieces()
@@ -532,12 +535,18 @@ function ResetCombatChainState()
   UnsetCombatChainBanish();
   CombatChainClosedTriggers();
   CombatChainClosedCharacterEffects();
+  CombatChainClosedItemEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsFromCombatChain();
   RemoveThisLinkEffects();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $defCharacter[$i + 6] = 0;
+  }
+  $defItems = new Items($defPlayer);
+  for ($i = 0; $i < $defItems->NumItems(); ++$i) {
+    $ItemCard = $defItems->Card($i, true);
+    $ItemCard->ToggleOnChain(0);
   }
   $chainLinks = [];
   $chainLinkSummary = [];
