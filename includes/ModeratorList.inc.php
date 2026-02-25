@@ -12,7 +12,8 @@ function GetModeratorList() {
     "LaustinSpayce",
     "Tower",
     "PvtVoid",
-    "Aegisworn"
+    "Aegisworn",
+    "Bluffkin"
   ];
 }
 
@@ -23,7 +24,8 @@ function GetCardEditorList() {
     "Tower",
     "PvtVoid",
     "thatzachary",
-    "DKGaming"
+    "DKGaming",
+    "Bluffkin"
   ];
 }
 
