@@ -88,10 +88,10 @@ if ($chatText === "") {
 }
 
 //array for contributors
-$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid"];
+$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid", "Bluffkin"];
 
 // List of mod usernames - should match frontend list
-$modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn"];
+$modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"];
 
 // Get Metafy tiers for this player live from DB so stale game file values don't affect chat badges
 $metafyTiers = [];
