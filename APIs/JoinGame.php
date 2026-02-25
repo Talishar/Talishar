@@ -688,6 +688,7 @@ function isClashLegal($cardID, $character) {
 
 function IsCardBanned($cardID, $format, $character)
 {
+  global $benched;
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
   if ($format == "commoner") {
@@ -704,6 +705,7 @@ function IsCardBanned($cardID, $format, $character)
   if ($format == "sage" || $format == "compsage" || $format == "futuresage") {
     $rarity = Rarity($cardID);
     if ($format == "futuresage") { //future downshifts
+      if (in_array($cardID, $benched)) return false;
       switch($cardID) {
         case "blaze_firemind":
         case "raydn_duskbane":
@@ -763,7 +765,7 @@ function isUnimplemented($cardID) {
 }
 
 function isBannedInFormat($cardID, $format) {
-  global $livingLegends;
+  global $livingLegends, $benched;
   if ($format == "compblitz") $format = "blitz";
   if ($format == "compcc" || $format == "futurecc") $format = "cc";
   if ($format == "compllcc" || $format == "futurell") $format = "llcc";
@@ -792,7 +794,7 @@ function isBannedInFormat($cardID, $format) {
       "llcc" => [
           "kraken's_aethervein", "crown_of_seeds", "carrion_husk", "zephyr_needle", "rosetta_thorn"
       ],
-      "sage" => [
+      "sage" => array_merge([
         "fiddlers_green_red", "fiddlers_green_yellow", "fiddlers_green_blue",
         "honing_hood", "nimby_red", "nimby_yellow", "nimby_blue",
         "old_knocker", "reality_refractor", "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue",
@@ -813,8 +815,8 @@ function isBannedInFormat($cardID, $format) {
         "rosetta_thorn", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
-        "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle", "chane"
-      ]
+        "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
+      ], $benched)
   ];
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
