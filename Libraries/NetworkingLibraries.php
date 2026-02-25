@@ -2204,7 +2204,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     // Cached card cost
     $cardCost = CardCost($cardID, $from);
 
-    if (IsStaticType($cardType, $from, $cardID)) {
+    if (IsActivated($cardID, $from)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, $cachedAbilityIndex, $from, $index);
