@@ -107,7 +107,7 @@ function GetUserFriends($userId) {
   $result = $stmt->get_result();
   
   // List of contributors
-  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid"];
+  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
   
   $friends = [];
   while ($row = $result->fetch_assoc()) {

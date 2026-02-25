@@ -4769,13 +4769,13 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
       }
     }
   }
-  else if ($cardID == "nitro_mechanoidb") {
-    $ind = SearchCharacterForCards($player, "nitro_mechanoida");
+  else if ($cardID == "nitro_mechanoidc") {
+    $Items = new Items($player);
+    $Mechanoid = $Items->FindCard("nitromechanoidc");
     $power = 5;
-    if ($ind != "") {
-      $char = GetPlayerCharacter($player);
-      $subcards = $char[$ind+10];
-      foreach($subcards as $subcard) {
+    $subcards = $Mechanoid->SubCards();
+    if ($subcards != "-") {
+      foreach(explode(",", $subcards) as $subcard) {
         switch ($subcard) {
           case "galvanic_bender":
             ++$power;

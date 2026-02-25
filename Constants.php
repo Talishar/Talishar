@@ -105,9 +105,12 @@ function AuraPieces()
 //8 - Modalities (eg. Micro-Processor)
 //9 - Where it's played from
 //10 - Tapped (0 = no, 1 = yes)
+//11 - Subcards (, delimited)
+//12 - Num defense counters
+//13 - On Chain (1 = yes, 0 = no)
 function ItemPieces()
 {
-  return 11;
+  return 14;
 }
 
 function PitchPieces()
@@ -532,12 +535,18 @@ function ResetCombatChainState()
   UnsetCombatChainBanish();
   CombatChainClosedTriggers();
   CombatChainClosedCharacterEffects();
+  CombatChainClosedItemEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsFromCombatChain();
   RemoveThisLinkEffects();
   $defCharacter = &GetPlayerCharacter($defPlayer);
   for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
     $defCharacter[$i + 6] = 0;
+  }
+  $defItems = new Items($defPlayer);
+  for ($i = 0; $i < $defItems->NumItems(); ++$i) {
+    $ItemCard = $defItems->Card($i, true);
+    $ItemCard->ToggleOnChain(0);
   }
   $chainLinks = [];
   $chainLinkSummary = [];
@@ -904,3 +913,5 @@ function CCOffset($piece)
 $livingLegends = ["chane_bound_by_shadow", "bravo_star_of_the_show", "aurora_shooting_star", "azalea_ace_in_the_hole", "briar_warden_of_thorns", "dash_inventor_extraordinaire", "dromai_ash_artist", "enigma_ledger_of_ancestry",
                   "florian_rotwood_harbinger", "iyslander_stormbind", "kano_dracai_of_aether", "lexi_livewire", "nuu_alluring_desire", "oldhim_grandfather_of_eternity", "prism_sculptor_of_arc_light",
                   "viserai_rune_blood", "zen_tamer_of_purpose"];
+
+$benched = ["chane"];

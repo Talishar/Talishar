@@ -172,6 +172,13 @@ Function YesNoAwait($player) {
   PrependDecisionQueue("YESNO", $player, $context);
 }
 
+function PayResourcesAwait($player) {
+  global $dqVars;
+  $amount = $dqVars["amount"];
+  PrependDecisionQueue("PAYRESOURCES", $player, $amount, 1);
+  PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
+}
+
 function PlayAuraAwait($player) {
   global $dqVars;
   $cardID = $dqVars["cardID"];

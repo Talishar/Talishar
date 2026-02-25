@@ -142,6 +142,10 @@ class Layer {
 		return isset($this->layers[$this->index+4]) ? $this->layers[$this->index+4] : "-";
 	}
 
+  function SetAdditionalCosts($costs) {
+    $this->layers[$this->index+4] = $costs;
+  }
+
 	function UniqueID() { //(the unique ID of the object that created the layer)
 		return $this->layers[$this->index+5] ?? "-";
 	}

@@ -772,11 +772,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "unmovable_blue":
       $blockModifier += $from == "ARS" ? 1 : 0;
       break;
-    case "staunch_response_red":
-    case "staunch_response_yellow":
-    case "staunch_response_blue":
-      $blockModifier += ($resourcesPaid >= 6 ? 3 : 0);
-      break;
     case "arcanite_skullcap":
       $blockModifier += (PlayerHasLessHealth($defPlayer) ? 1 : 0);
       break;

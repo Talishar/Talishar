@@ -828,8 +828,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "CONSTRUCTNITROMECHANOID":
       sort($lastResult);
+      $Items = new Items($player);
+      $Mechanoid = $Items->Card($initiator, true);
       for ($i = count($lastResult) - 1; $i >= 0; --$i) {
-        RemoveItemAndAddAsSubcardToCharacter($player, $lastResult[$i], $initiator);
+        $ItemCard = new ItemCard($lastResult[$i], $player);
+        $Mechanoid->AddSubcard($ItemCard->CardID());
+      }
+      for ($i = count($lastResult) - 1; $i >= 0; --$i) { // go through again to avoid re-indexing too early
+        $ItemCard = new ItemCard($lastResult[$i], $player);
+        $ItemCard->Destroy(true);
       }
       return $lastResult;
     case "SYSTEMRESET":

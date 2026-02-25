@@ -277,31 +277,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
       return "";
-    case "construct_nitro_mechanoid_yellow":
-      $conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer);
-      if ($conditionsMet != "") return $conditionsMet;
-      $char = &GetPlayerCharacter($currentPlayer);
-      // Add the new weapon stuff so we can put cards under it
-      PutCharacterIntoPlayForPlayer("nitro_mechanoida", $currentPlayer);
-      // We don't want function calls in every iteration check
-      $charCount = count($char);
-      $charPieces = CharacterPieces();
-      $mechanoidIndex = $charCount - $charPieces; // we pushed it, so should be the last element
-      //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
-      for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if(CardType($char[$i]) != "C" && CardType($char[$i]) != "Companion" && $char[$i] != "nitro_mechanoida") {
-          RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechanoidIndex);
-        }
-      }
-
-      $hyperDrivers = SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver_red");
-      $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
-      AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-" . $hyperDrivers. "-3");
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID," . $mechanoidIndex, 1);
-      //Now add the remaining new stuff
-      PutCharacterIntoPlayForPlayer("nitro_mechanoidb", $currentPlayer);//Armor
-      PutItemIntoPlayForPlayer("nitro_mechanoidc", $currentPlayer);//Item
-      return "";
     case "scramble_pulse_red": case "scramble_pulse_yellow": case "scramble_pulse_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "pay_day_blue":
       if(GetClassState($currentPlayer, $CS_NumContractsCompleted) > 0) {

@@ -2097,12 +2097,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $dynCost = "";
       $isNuu = SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer);
       $nuuActive = $isNuu && ColorContains($cardID, 3, $otherPlayer);
-      if ($playingCard && substr($from, 0, 5) == "THEIR" && $nuuActive) {
-        $dynCost = ($cardID == "staunch_response_red" || $cardID == "staunch_response_yellow" || $cardID == "staunch_response_blue") ? "0,4" : 0; //If you are playing a card without paying its {r} cost, and part of that cost involves X, then you can only choose X=0.
-        SetClassState($currentPlayer, $CS_LastDynCost, $dynCost);
-        $cachedLastDynCost = $dynCost;
-      }
-      elseif ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
+      if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index, $facing); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "" || $dynCost == 0 && substr($from, 0, 5) != "THEIR") {
         AddDecisionQueue("DYNPITCH", $currentPlayer, $dynCost);
@@ -2209,7 +2204,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     // Cached card cost
     $cardCost = CardCost($cardID, $from);
 
-    if (IsStaticType($cardType, $from, $cardID)) {
+    if (IsActivated($cardID, $from)) {
       $playType = GetResolvedAbilityType($cardID, $from);
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, $cachedAbilityIndex, $from, $index);
@@ -4178,6 +4173,11 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $combatChainState[$CCS_AttackTargetUID] = count($uidArr) > 0 ? implode(",", $uidArr) : "-";
   }
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
+  if ($isBlock && $cardID == "nitro_mechanoidc") {
+    $Items = new Items($currentPlayer);
+    $Mechanoid = $Items->FindCard($cardID);
+    $Mechanoid->ToggleOnChain(1);
+  }
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
     if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {

@@ -64,25 +64,27 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   }
   if ($combatChainState[$CCS_WeaponIndex] != -1) {
     $power = 0;
-    if ($attackType == "W") {
-      $char = &GetPlayerCharacter($mainPlayer);
-      $weaponIdx = $combatChainState[$CCS_WeaponIndex] + 3;
-      if (isset($char[$weaponIdx])) {
-        $power = $char[$weaponIdx];
-      }
-      // check buffs from subcards
-      $subcardIdx = $combatChainState[$CCS_WeaponIndex] + 10;
-      if (isset($char[$subcardIdx]) && $char[$subcardIdx] != "-") {
-        $subcards = explode(",", $char[$subcardIdx]);
-        foreach ($subcards as $subcard) {
-          switch ($subcard) {
-            case "galvanic_bender":
-              ++$power;
-              break;
-            default:
-              break;
+    if (DelimStringContains($attackType, "W")) {
+      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Item")) {
+        $ItemCard = new ItemCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
+        // check buffs from subcards
+        $subcards = $ItemCard->SubCards();
+        if ($subcards != "-") {
+          $subcards = explode(",", $subcards);
+          foreach ($subcards as $subcard) {
+            switch ($subcard) {
+              case "galvanic_bender":
+                ++$power;
+                break;
+              default:
+                break;
+            }
           }
         }
+      }
+      else {
+        $CharacterCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
+        $power += $CharacterCard->NumPowerCounters();
       }
       if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
     } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
@@ -191,7 +193,13 @@ function BlockingCardDefense($index)
     if (isset($combatChain[$index + 6]) && ($combatChain[$index + 6] < 0 || $canGainBlock)) $defense += $combatChain[$index + 6];
     $defense += intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
   }
-  if (TypeContains($cardID, "E", $defPlayer)) {
+  if (SubtypeContains($cardID, "Item", $defPlayer)) {
+    $DefItems = new Items($defPlayer);
+    $ItemCard = $DefItems->FindCardUID($combatChain[$index + 8]);
+    $counters = $ItemCard->NumDefCounters();
+    if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
+  }
+  elseif (TypeContains($cardID, "E", $defPlayer)) {
     $defCharacter = &GetPlayerCharacter($defPlayer);
     $charIndex = isset($combatChain[$index + 8]) ? SearchCharacterForUniqueID($combatChain[$index + 8], $defPlayer) : null;
     $counters = $defCharacter[$charIndex + 4];
@@ -1378,6 +1386,31 @@ function CombatChainClosedMainCharacterEffects()
   }
 }
 
+function CombatChainClosedItemEffects() {
+  global $ChainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
+  
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
+    $Link = $ChainLinks->GetLink($i);
+    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+      $LinkCard = $Link->GetLinkCard($j, true);
+      if ($LinkCard->PlayerID() != $defPlayer) continue;
+      if (!$nervesOfSteelActive) {
+        if (HasTemper($LinkCard->ID())) {
+          // there will be issues if nitromechanoid is blocking on the combat chain and gets stolen
+          $defItems = new Items($defPlayer);
+          $blockingItem = $defItems->FindCardUID($LinkCard->OriginUniqueID());
+          $blockingItem->AddDefCounters(-1);
+          $blockingItem->ToggleOnChain(0);
+          if ((ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $LinkCard->DefenseModifier()) <= 0) {
+            $blockingItem->Destroy();
+          }
+        }
+      }
+    }
+  }
+}
+
 function CombatChainClosedCharacterEffects()
 {
   global $chainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
@@ -1406,12 +1439,24 @@ function CombatChainClosedCharacterEffects()
       }
       if (!$nervesOfSteelActive) {
         if (HasTemper($chainLinks[$i][$j])) {
-          if ($equipCharacter[$charIndex + 1] != 0 && $equipCharacter[$charIndex + 6] != 0) {
-            $equipCharacter[$charIndex + 4] -= 1; //Add -1 block counter
-            $equipCharacter[$charIndex + 6] = 0;
+          if (SubtypeContains($chainLinks[$i][$j], "Item")) {
+            // there will be issues if nitromechanoid is blocking on the combat chain and gets stolen
+            $defItems = new Items($defPlayer);
+            $blockingItem = $defItems->FindCardUID($chainLinks[$i][$j + 8]);
+            $blockingItem->AddDefCounters(-1);
+            $blockingItem->ToggleOnChain(0);
+            if ((ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
+              $blockingItem->Destroy();
+            }
           }
-          if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
-            DestroyCharacter($equipPlayer, $charIndex);
+          else {
+            if ($equipCharacter[$charIndex + 1] != 0 && $equipCharacter[$charIndex + 6] != 0) {
+              $equipCharacter[$charIndex + 4] -= 1; //Add -1 block counter
+              $equipCharacter[$charIndex + 6] = 0;
+            }
+            if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
+              DestroyCharacter($equipPlayer, $charIndex);
+            }
           }
         }
         elseif (HasBattleworn($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
@@ -3838,6 +3883,30 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
       AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index);
       AddDecisionQueue("REMOVESUBCARD", $player, $index);
+    }
+  }
+}
+
+function ItemChooseaAndRemoveSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish", $isSubsequent=false) {
+  $ItemCard = new ItemCard($index, $player);
+  $subcards = explode(",", $ItemCard->SubCards());
+  $subcardsCount = count($subcards);
+  $chooseMultizoneData = "";
+  for ($i = 0; $i < $subcardsCount; $i++) {
+    if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
+    else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
+  }
+  if ($chooseMultizoneData != "") {
+    if ($count == 1) {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to $actionName from " . CardName($ItemCard->CardID()), $isSubsequent);
+      if ($isMandatory) AddDecisionQueue("CHOOSEMULTIZONE", $player, $chooseMultizoneData, $isSubsequent);
+      else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData, $isSubsequent);
+      AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
+      AddDecisionQueue("REMOVEITEMSUBCARD", $player, $index, 1);
+    } else {
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to $actionName from " . CardName($ItemCard->CardID()));
+      AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
+      AddDecisionQueue("REMOVEITEMSUBCARD", $player, $index);
     }
   }
 }
