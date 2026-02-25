@@ -3986,7 +3986,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SEISMICSHIFT":
       $numTargets = intval($lastResult);
-      $search = "THEIRAURAS:isToken=true&MYAURAS:isToken=true";
+      $search = "THEIRAURAS:type=T&MYAURAS:type=T";
       for ($i = 0; $i < $numTargets; ++$i) {
         $ind = explode(",", GetUntapped($player, "MYAURAS", "isSameName=seismic_surge"))[0];
         Tap($ind, $player);
