@@ -839,6 +839,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $ItemCard->Destroy(true);
       }
       return $lastResult;
+    case "CONSTRUCTBANKBREAKER":
+      sort($lastResult);
+      $BankBreaker = new CharacterCard($initiator, $player);
+      for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+        $ItemCard = new ItemCard($lastResult[$i], $player);
+        $BankBreaker->AddSubcard($ItemCard->CardID());
+        $ItemCard->Destroy(true);
+      }
+      return $lastResult;
     case "SYSTEMRESET":
       $destroyedItems = [];
       for ($i = count($lastResult) - 1; $i >= 0; --$i) {

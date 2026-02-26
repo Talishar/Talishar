@@ -2568,6 +2568,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CHOOSEONE":
       return explode(",", $lastResult)[0] ?? "-";
+    case "MZSWAP":
+      if (str_contains($lastResult, "MY"))
+        return str_replace("MY", "THEIR", $lastResult);
+      elseif (str_contains($lastResult, "THEIR"))
+        return str_replace("THEIR", "MY", $lastResult);
+      else
+        return $lastResult;
     case "MZDESTROY":
       return MZDestroy($player, $lastResult, allArsenal: $parameter);
     case "MZUNDESTROY":
@@ -3797,7 +3804,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $Banish = new Banish($playerID);
         for ($i = 0; $i < $Banish->NumCards(); ++$i) {
           $BanishCard = $Banish->Card($i, true);
-          if (GamestateSanitize(NameOverride($BanishCard->ID(), $playerID)) == $params[1]) {
+          $banishName = NameOverride($BanishCard->ID(), $playerID);
+          if (ShareName($banishName, GamestateUnsanitize($params[1]))) {
             $BanishCard->Modify("DOWN");
           }
         }
@@ -3986,7 +3994,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SEISMICSHIFT":
       $numTargets = intval($lastResult);
-      $search = "THEIRAURAS:isToken=true&MYAURAS:isToken=true";
+      $search = "THEIRAURAS:type=T&MYAURAS:type=T";
       for ($i = 0; $i < $numTargets; ++$i) {
         $ind = explode(",", GetUntapped($player, "MYAURAS", "isSameName=seismic_surge"))[0];
         Tap($ind, $player);

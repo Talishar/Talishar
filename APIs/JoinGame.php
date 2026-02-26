@@ -1,4 +1,4 @@
- <?php
+<?php
 
 include_once "../WriteLog.php";
 include_once "../Libraries/HTTPLibraries.php";
@@ -986,3 +986,4 @@ function ProcessEquipment($id, $numMainBoard, $numSideboard, &$head, &$headSideb
       }
   }
 }
+?>

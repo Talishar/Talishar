@@ -160,6 +160,7 @@ function MZDiscard($player, $parameter, $lastResult)
     $cardID = $zone[$mzIndex[1]];
     $effectController = $params[1] ?? $player;
     AddGraveyard($cardID, $cardOwner, $params[0], $effectController);
+    if ($player == $cardOwner) CardDiscarded($player, $cardID);
     WriteLog(CardLink($cardID, $cardID) . " was discarded");
   }
   return $lastResult;

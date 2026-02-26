@@ -30,11 +30,15 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($characterID == "blasmophet_levia_consumed" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);
     if ($mod != "INT") $mod = "blasmophet_levia_consumed";
-  }$Auras1 = new Auras(1);
+  }
+  $Auras1 = new Auras(1);
   $Auras2 = new Auras(2);
-  $name = GamestateSanitize(NameOverride($cardID, $player));
-  $foundThemis = $Auras1->SearchAurasForModality($name);
-  if ($foundThemis == "") $foundThemis = $Auras2->SearchAurasForModality($name);
+  $names = NameOverride($cardID, $player);
+  $foundThemis = "";
+  foreach (explode(" // ", $names) as $name) {
+    if ($foundThemis == "") $foundThemis = $Auras1->SearchAurasForModality(GamestateSanitize($name), "blessing_of_themis_yellow");
+    if ($foundThemis == "") $foundThemis = $Auras2->SearchAurasForModality(GamestateSanitize($name), "blessing_of_themis_yellow");
+  }
   //Do effects that change where it goes, or banish it if not
   if (str_contains($from, "DECK") && (SearchCharacterActive($player, "data_doll_mkii") || SearchCurrentTurnEffects("data_doll_mkii-SHIYANA", $player)) && SubtypeContains($cardID, "Item", $player) && CardCost($cardID, $from) <= 2) {
     $character = &GetPlayerCharacter($player);

@@ -6025,8 +6025,9 @@ class two_faced extends Card {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a card from your opponent's hand", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->cardID, 1);
-    AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZSWAP", $mainPlayer, "-", 1); // the attacking player is the one who performs the discard
+    AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND,$this->cardID,$this->controller", 1);
+    AddDecisionQueue("MZREMOVE", $mainPlayer, "<-", 1);
   }
 }
 

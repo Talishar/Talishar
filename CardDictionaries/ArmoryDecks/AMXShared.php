@@ -84,7 +84,7 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Select 3 Hyper Driver to put under " . CardLink("bank_breaker", "bank_breaker"));
       AddDecisionQueue("MULTICHOOSEITEMS", $currentPlayer, "3-$hyperDrivers-3");
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTNITROMECHANOID,$bankBreakerIndex", 1);
+      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "CONSTRUCTBANKBREAKER,$bankBreakerIndex", 1);
       return "";
     case "twintek_charging_station_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

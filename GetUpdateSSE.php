@@ -27,8 +27,12 @@ include_once "Libraries/PlayerSettings.php";
 include_once "BuildGameState.php";
 include_once "BuildPlayerInputPopup.php";
 
-ob_implicit_flush(true);
-ob_end_flush();
+// Close any buffers that php.ini may have opened (e.g. output_buffering=On).
+// Then immediately open our own buffer so every ob_flush() call below is safe.
+while (ob_get_level() > 0) {
+  ob_end_clean();
+}
+ob_start();
 SetHeaders();
 
 $response = new stdClass();
@@ -81,8 +85,6 @@ header('Cache-Control: no-cache');
 
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
-
-ob_start();
 
 // Send initial full game state
 $cacheVal = intval(GetCachePiece($gameName, 1));
