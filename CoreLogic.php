@@ -1086,6 +1086,9 @@ function PlayerWon($playerID, $conceded = false)
   $winner = $playerID;
   if ($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . $p1uid . ") won! 🎉", $playerID);
   else if ($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . $p2uid . ") won! 🎉", $playerID);
+  elseif ($playerID == 0) {
+    WriteLog("The game is a draw! no match stats reported");
+  }
   else WriteLog("Player " . $winner . " won! 🎉");
   if (isPlayerAI(2)) return;
   try {

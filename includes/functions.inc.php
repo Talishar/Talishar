@@ -321,91 +321,93 @@ function logCompletedGameStats($conceded = false)
 	global $winner, $currentTurn, $gameName; //gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
 	global $p1deckbuilderID, $p2deckbuilderID, $gameGUID;
-	$loser = ($winner == 1 ? 2 : 1);
-	$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
-	$values = "?, ?, ?, ?, ?, ?, ?";
-	$winnerDeckFile = "./Games/" . $gameName . "/p" . $winner . "Deck.txt";
-	$loserDeckFile = "./Games/" . $gameName . "/p" . $loser . "Deck.txt";
-	if (!file_exists($winnerDeckFile) || !file_exists($loserDeckFile)) return;
-	$winnerDeck = file_get_contents($winnerDeckFile);
-	$loserDeck = file_get_contents($loserDeckFile);
-	$winHero = &GetPlayerCharacter($winner);
-	$loseHero = &GetPlayerCharacter($loser);
+	if ($winner != 0) {
+		$loser = ($winner == 1 ? 2 : 1);
+		$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
+		$values = "?, ?, ?, ?, ?, ?, ?";
+		$winnerDeckFile = "./Games/" . $gameName . "/p" . $winner . "Deck.txt";
+		$loserDeckFile = "./Games/" . $gameName . "/p" . $loser . "Deck.txt";
+		if (!file_exists($winnerDeckFile) || !file_exists($loserDeckFile)) return;
+		$winnerDeck = file_get_contents($winnerDeckFile);
+		$loserDeck = file_get_contents($loserDeckFile);
+		$winHero = &GetPlayerCharacter($winner);
+		$loseHero = &GetPlayerCharacter($loser);
 
-	$winHeroID = SetID($winHero[0]);
-	$loseHeroID = SetID($loseHero[0]);
-	$winIDDeck = ConvertDeck($winnerDeck);
-	$loseIDDeck = ConvertDeck($loserDeck);
+		$winHeroID = SetID($winHero[0]);
+		$loseHeroID = SetID($loseHero[0]);
+		$winIDDeck = ConvertDeck($winnerDeck);
+		$loseIDDeck = ConvertDeck($loserDeck);
 
-	$countWinnerDeck = count(GetDeck($winner));
-	$countLoserDeck = count(GetDeck($loser));
+		$countWinnerDeck = count(GetDeck($winner));
+		$countLoserDeck = count(GetDeck($loser));
 
-	$conn = GetDBConnection();
+		$conn = GetDBConnection();
 
-	// Build parameterized query safely
-	$params = [$winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer];
-	$paramTypes = "sssssss";
-	
-	if ($p1id != "" && $p1id != "-") {
-		$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
-		$values .= ", ?";
-		$params[] = $p1id;
-		$paramTypes .= "s";
-	}
-	if ($p2id != "" && $p2id != "-") {
-		$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
-		$values .= ", ?";
-		$params[] = $p2id;
-		$paramTypes .= "s";
-	}
+		// Build parameterized query safely
+		$params = [$winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer];
+		$paramTypes = "sssssss";
+		
+		if ($p1id != "" && $p1id != "-") {
+			$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
+			$values .= ", ?";
+			$params[] = $p1id;
+			$paramTypes .= "s";
+		}
+		if ($p2id != "" && $p2id != "-") {
+			$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
+			$values .= ", ?";
+			$params[] = $p2id;
+			$paramTypes .= "s";
+		}
 
-	$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
-	$stmt = mysqli_stmt_init($conn);
-	
-	$gameResultID = 0;
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
-		mysqli_stmt_execute($stmt);
-		$gameResultID = mysqli_insert_id($conn);
-		mysqli_stmt_close($stmt);
-	}
+		$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
+		$stmt = mysqli_stmt_init($conn);
+		
+		$gameResultID = 0;
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
+			mysqli_stmt_execute($stmt);
+			$gameResultID = mysqli_insert_id($conn);
+			mysqli_stmt_close($stmt);
+		}
 
-	if ($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, $winner == 1 ? 1 : 0);
-	if ($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, $winner == 2 ? 1 : 0);
+		if ($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, $winner == 1 ? 1 : 0);
+		if ($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, $winner == 2 ? 1 : 0);
 
-	$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
-	$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
-	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
-	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
+		$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
+		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
+		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
+		$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
 
-	if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
-		WriteLog("📊Sending game result to <b>Fabrary</b>", highlight:true, highlightColor:"green");
-		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
+		if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
+			WriteLog("📊Sending game result to <b>Fabrary</b>", highlight:true, highlightColor:"green");
+			SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
+		}
+		elseif (AreStatsDisabled(1) && !AreStatsDisabled(2)) {
+			WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 2", highlight:true, highlightColor:"green");
+			SendFullFabraryResults($gameResultID, "-", $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
+		}
+		elseif (!AreStatsDisabled(1) && AreStatsDisabled(2)) {
+			WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 1", highlight:true, highlightColor:"green");
+			SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, "-", $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
+		}
+		else WriteLog("No results sent to <b>Fabrary</b> as both players disabled stats", highlight:true);
+		// Sends data to FabInsights DB
+		$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
+		$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
+		if (!$p1StatsDisabled && !$p2StatsDisabled) {
+			WriteLog("📊Sending game stats to <b>FaBInsights</b>", highlight:true, highlightColor:"green");
+		}
+		elseif ($p1StatsDisabled && !$p2StatsDisabled) {
+			WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 2", highlight:true, highlightColor:"green");
+		}
+		elseif (!$p1StatsDisabled && $p2StatsDisabled) {
+			WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1", highlight:true, highlightColor:"green");
+		}
+		else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
+		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+		mysqli_close($conn);
 	}
-	elseif (AreStatsDisabled(1) && !AreStatsDisabled(2)) {
-		WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 2", highlight:true, highlightColor:"green");
-		SendFullFabraryResults($gameResultID, "-", $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
-	}
-	elseif (!AreStatsDisabled(1) && AreStatsDisabled(2)) {
-		WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 1", highlight:true, highlightColor:"green");
-		SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, "-", $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
-	}
-	else WriteLog("No results sent to <b>Fabrary</b> as both players disabled stats", highlight:true);
-	// Sends data to FabInsights DB
-	$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
-	$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
-	if (!$p1StatsDisabled && !$p2StatsDisabled) {
-		WriteLog("📊Sending game stats to <b>FaBInsights</b>", highlight:true, highlightColor:"green");
-	}
-	elseif ($p1StatsDisabled && !$p2StatsDisabled) {
-		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 2", highlight:true, highlightColor:"green");
-	}
-	elseif (!$p1StatsDisabled && $p2StatsDisabled) {
-		WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1", highlight:true, highlightColor:"green");
-	}
-	else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
-	SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
-	mysqli_close($conn);
 }
 
 function LogChallengeResult($conn, $gameResultID, $playerID, $result)

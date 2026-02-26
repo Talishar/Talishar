@@ -407,14 +407,17 @@ function ContinueDecisionQueue($lastResult = "")
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack;
   
-  for ($player = 1; $player < 3; ++$player) {
-    $health = &GetHealth($player);
-    if ($health <= 0 && !IsGameOver()) {
-      PlayerWon($player == 1 ? 2 : 1);
-    }
-  }
 
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
+    $p1Health = GetHealth(1);
+    $p2Health = GetHealth(2);
+    if ($p1Health <= 0 && $p2Health > 0)
+      PlayerWon(2);
+    elseif ($p2Health <= 0 && $p1Health > 0)
+      PlayerWon(1);
+    elseif ($p2Health <= 0 && $p1Health <= 0)
+      PlayerWon(0);
+
     if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
     }
     $preLayers = GetPreLayers();
