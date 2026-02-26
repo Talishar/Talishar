@@ -224,6 +224,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $numBlue = SearchPitchForColor($defPlayer, 3);
       $CombatChain->LastCard()->ModifyDefense($numBlue);
       return "";
+    case "wash_away_blue":
+      if (GetClassState($defPlayer, $CS_NumBluePlayed) > 1) $CombatChain->LastCard()->ModifyDefense(2);
+      return "";
     case "enigma_ledger_of_ancestry":
     case "enigma":
       PlayAura("spectral_shield", $currentPlayer, 1, numPowerCounters: 1);
