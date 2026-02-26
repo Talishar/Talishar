@@ -7457,7 +7457,7 @@ class templar_spellbane extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_ArcaneDamagePrevention, $CS_AttacksWithWeapon;
-      if(GetClassState($this->controller, $CS_AttacksWithWeapon) > 0 || SearchAurasForCard("seismic_surge", $this->controller) != "") $prevent = 2;
+      if(GetClassState($this->controller, $CS_AttacksWithWeapon) > 0) $prevent = 2;
       else $prevent = 1;
       IncrementClassState($this->controller, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($this->cardID, $this->cardID) . " prevent your next arcane damage by " . $prevent;
