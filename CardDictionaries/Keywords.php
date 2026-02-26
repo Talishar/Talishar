@@ -102,7 +102,7 @@
     for($i=1; $i<=2; ++$i) {
       $playerID = $switched ? 3 - $i : $i;
       $deck = new Deck($playerID);
-      if($deck->Reveal(1, $switched)) {
+      if($deck->Reveal(1, $switched, true)) {
         $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $playerID, "DECK", source:$cardID);
         if(!TypeContains($deck->Top(), "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
         if($i == 1) $p1Power = $power;
