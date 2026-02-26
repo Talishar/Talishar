@@ -131,7 +131,7 @@ class LinkCard {
 	// Constructor
 	function __construct($linkNum, $index) {
 		global $chainLinks, $chainLinkSummary;
-		$this->link = &$chainLinks[$linkNum];
+		$this->link = &$chainLinks[$linkNum] ?? [];
 		$this->index = $index;
 	}
 
@@ -140,7 +140,7 @@ class LinkCard {
 	}
 
 	function ID() {
-		if (!isset($this->link) || count($this->link) == 0) return "-";
+		if (count($this->link) == 0) return "-";
 		return $this->link[$this->index] ?? "-";
 	}
 
