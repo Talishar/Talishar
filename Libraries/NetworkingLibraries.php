@@ -4264,7 +4264,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
     }
-    if (!$skipDRResolution && $target != "") {
+    if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       if ($index == 0) {//if adding an attacking card
         $count = count($currentTurnEffects);

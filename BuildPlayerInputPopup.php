@@ -506,9 +506,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $uniqueIDIndex = -1;
           $label = "";
           $tapped = false;
-
-          if (($option[0] == "THEIRALLY" || $option[0] == "THEIRAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) $label = "Attacking";
-          if (($option[0] == "MYALLY" || $option[0] == "MYAURAS") && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $playerID == $mainPlayer) $label = "Attacking";
+          
+          //Add indication for attacking Allies and Auras with an open combat chain
+          $attackingPermanents = ["THEIRALLY", "THEIRAURAS", "MYALLY", "MYAURAS"];
+          if ((in_array($option[0], $attackingPermanents)) && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) {
+            $AttackingCard = $CombatChain->AttackCard();
+            $Card = MZIndexToObject($playerID, $options[$i]);
+            if ($AttackingCard->OriginUniqueID() == $Card->UniqueID())
+              $label = "Attacking";
+          }
 
           //Add indication for attacking Allies and Auras in the layer step
           $layerCheckCount = count($layers);
