@@ -39,7 +39,7 @@ class Deck {
     return $cardIDs;
   }
 
-  function Reveal($revealCount=1, $switched=false) {
+  function Reveal($revealCount=1, $switched=false, $isClash=false) {
     // Code the reveal x number of cards from the top of the deck
     if(CanRevealCards($this->playerID)) {
       if($this->RemainingCards() > 0) {
@@ -47,7 +47,8 @@ class Deck {
         for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
           if (!$switched) WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
           else WriteLog("👁️‍🗨️Player " . $otherPlayer . " reveals " . CardLink($this->deck[$revealedCards] , $this->deck[$revealedCards]) . " from their opponent's deck!");
-          AddEvent("REVEAL", $this->deck[$revealedCards]);
+          if ($isClash) AddEvent("CLASH", $this->playerID . ":" . $this->deck[$revealedCards]);
+          else AddEvent("REVEAL", $this->deck[$revealedCards]);
         }
         if(SearchLandmark("korshem_crossroad_of_elements")) KorshemRevealAbility($this->playerID);
         return true;
