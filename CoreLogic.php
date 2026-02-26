@@ -3811,7 +3811,10 @@ function BanishHand($player)
 
 function EvoOnPlayHandling($player)
 {
-  if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $player, true) || SearchCurrentTurnEffects("teklovossen", $player, true)) Draw($player);
+  $Hero = new CharacterCard(0, $player);
+  if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $player, true) || SearchCurrentTurnEffects("teklovossen", $player, true)) {
+    AddLayer("TRIGGER", $player, $Hero->CardID());
+  }
 }
 
 function EvoHandling($cardID, $player, $from)
