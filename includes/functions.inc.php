@@ -378,7 +378,6 @@ function logCompletedGameStats($conceded = false)
 		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
 		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
 		$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
-
 		$p1FabraryDisabled = AreStatsDisabled(1);
 		$p2FabraryDisabled = AreStatsDisabled(2);
 		$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
