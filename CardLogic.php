@@ -417,7 +417,7 @@ function ContinueDecisionQueue($lastResult = "")
       PlayerWon(1);
     elseif ($p2Health <= 0 && $p1Health <= 0)
       PlayerWon(0);
-
+    if (IsGameOver()) return; // Prevent multiple winner logs
     if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
     }
     $preLayers = GetPreLayers();
