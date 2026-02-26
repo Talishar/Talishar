@@ -27,9 +27,10 @@ class Auras {
     return new AuraCard(-1, $this->player);
   }
 
-  function SearchAurasForModality($mode) {
+  function SearchAurasForModality($mode, $cardID="-") {
     if (count($this->auras) == 0) return "";
     for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+      if ($cardID != "-" && $this->auras[$i] != $cardID) continue;
       if (DelimStringContains($this->auras[$i + 10], $mode)) return new AuraCard($i, $this->player);
     }
     return "";

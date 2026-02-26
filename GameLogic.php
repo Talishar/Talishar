@@ -3804,7 +3804,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $Banish = new Banish($playerID);
         for ($i = 0; $i < $Banish->NumCards(); ++$i) {
           $BanishCard = $Banish->Card($i, true);
-          if (GamestateSanitize(NameOverride($BanishCard->ID(), $playerID)) == $params[1]) {
+          $banishName = NameOverride($BanishCard->ID(), $playerID);
+          if (ShareName($banishName, GamestateUnsanitize($params[1]))) {
             $BanishCard->Modify("DOWN");
           }
         }
