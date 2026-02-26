@@ -38,7 +38,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
     "longdraw_half_glove" => CardSubType($attackID) == "Arrow",
     "tide_chakra_red-1", "tide_chakra_yellow-1", "tide_chakra_blue-1", "tide_chakra_red-2", "tide_chakra_yellow-2", "tide_chakra_blue-2", "hiss_red", "hiss_yellow", "hiss_blue", "intimate_inducement_red-BUFF",
     "intimate_inducement_yellow-BUFF", "intimate_inducement_blue-BUFF", "venomous_bite_red", "venomous_bite_yellow", "venomous_bite_blue", "fang_strike", "slither", "tooth_and_claw_red-BUFF", "waves_of_aqua_marine", "attune_with_cosmic_vibrations_blue",
-    "levels_of_enlightenment_blue", "dense_blue_mist_blue-HITPREVENTION", "dense_blue_mist_blue-DEBUFF", "deep_blue_sea_blue", "wide_blue_yonder_blue", "big_blue_sky_blue", "a_drop_in_the_ocean_blue", "the_grain_that_tips_the_scale_blue", "just_a_nick_red-BUFF",
+    "levels_of_enlightenment_blue", "dense_blue_mist_blue-HITPREVENTION", "dense_blue_mist_blue-DEBUFF", "deep_blue_sea_blue", "wide_blue_yonder_blue", "a_drop_in_the_ocean_blue", "the_grain_that_tips_the_scale_blue", "just_a_nick_red-BUFF",
     "just_a_nick_red-HIT", "maul_yellow-BUFF", "maul_yellow-HIT", "stonewall_gauntlet", "emissary_of_tides_red", "murky_water_red", "shadowrealm_horror_red-1", "shadowrealm_horror_red-2" => true,
     "cosmic_awakening_blue-1", "cosmic_awakening_blue-2", "cosmic_awakening_blue-3" => true,
     default => false,
@@ -214,12 +214,15 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "waves_of_aqua_marine":
     case "deep_blue_sea_blue":
     case "wide_blue_yonder_blue":
-    case "big_blue_sky_blue":
     case "first_tenet_of_chi_moon_blue":
     case "first_tenet_of_chi_tide_blue":
     case "first_tenet_of_chi_wind_blue":
     case "tiger_taming_khakkara":
       AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
+    case "big_blue_sky_blue":
+      $numBlue = SearchPitchForColor($defPlayer, 3);
+      $CombatChain->LastCard()->ModifyDefense($numBlue);
       return "";
     case "enigma_ledger_of_ancestry":
     case "enigma":
