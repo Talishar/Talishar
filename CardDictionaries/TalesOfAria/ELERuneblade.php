@@ -51,6 +51,7 @@
         GiveAttackGoAgain();
         return "";
       case "sigil_of_suffering_red": case "sigil_of_suffering_yellow": case "sigil_of_suffering_blue":
+        WriteLog(CardLink($cardID) . " only checks for arcane damage when it resolves.");
         DealArcane(1, 1, "PLAYCARD", $cardID);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIGILOFSUFFERING", 1);
         return "";
