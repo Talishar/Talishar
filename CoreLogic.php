@@ -23,7 +23,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         else AddPower($totalPower, $power);
       }
       $power = PowerModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->PowerValue();
-      if (($canGainAttack && !$snagActive) || $power < 0) {
+      if ($canGainAttack && !$snagActive || $power < 0) {
         $powerModifiers[] = $chainCard->ID();
         $powerModifiers[] = $power;
         AddPower($totalPower, $power);
@@ -124,7 +124,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         $combatChainCount = count($combatChain);
         for ($i = CombatChainPieces(); $i < $combatChainCount; $i += CombatChainPieces()) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
-          $blockVal = (intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6]);
+          $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
@@ -925,12 +925,12 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "blossoming_spellblade_red":
         if ($source == "blossoming_spellblade_red" && (IsHeroAttackTarget() || $type != "COMBAT"))
-          MZMoveCard(($target == 1 ? 2 : 1), "MYDISCARD:type=A", "MYBANISH,GY,blossoming_spellblade_red", may: true);
+          MZMoveCard($target == 1 ? 2 : 1, "MYDISCARD:type=A", "MYBANISH,GY,blossoming_spellblade_red", may: true);
         break;
       case "sigil_of_permafrost_red":
       case "sigil_of_permafrost_yellow":
       case "sigil_of_permafrost_blue":
-        if ((IsHeroAttackTarget() || (IsHeroAttackTarget() == "" && $source != "frostbite")) && $type == "ARCANE") {
+        if ((IsHeroAttackTarget() || IsHeroAttackTarget() == "" && $source != "frostbite") && $type == "ARCANE") {
           PlayAura("frostbite", $target, $damage, effectController:$otherPlayer);
           $remove = 1;
         }
@@ -1405,7 +1405,7 @@ function CombatChainClosedItemEffects() {
           $blockingItem = $defItems->FindCardUID($LinkCard->OriginUniqueID());
           $blockingItem->AddDefCounters(-1);
           $blockingItem->ToggleOnChain(0);
-          if ((ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $LinkCard->DefenseModifier()) <= 0) {
+          if (ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $LinkCard->DefenseModifier() <= 0) {
             $blockingItem->Destroy();
           }
         }
@@ -1448,7 +1448,7 @@ function CombatChainClosedCharacterEffects()
             $blockingItem = $defItems->FindCardUID($chainLinks[$i][$j + 8]);
             $blockingItem->AddDefCounters(-1);
             $blockingItem->ToggleOnChain(0);
-            if ((ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
+            if (ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5] <= 0) {
               $blockingItem->Destroy();
             }
           }
@@ -1457,7 +1457,7 @@ function CombatChainClosedCharacterEffects()
               $equipCharacter[$charIndex + 4] -= 1; //Add -1 block counter
               $equipCharacter[$charIndex + 6] = 0;
             }
-            if ((ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]) <= 0) {
+            if (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5] <= 0) {
               DestroyCharacter($equipPlayer, $charIndex);
             }
           }
@@ -1468,7 +1468,7 @@ function CombatChainClosedCharacterEffects()
       }
       if (HasGuardwell($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
 
-        $blockModifier = (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5]);//Add -block value counter
+        $blockModifier = ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5];//Add -block value counter
         $bladeBeckoner = ["blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots"];
         if (IsWeapon($chainLinks[$i][0], "PLAY") && in_array($chainLinks[$i][$j], $bladeBeckoner)) {
           $blockModifier += 1;
@@ -1619,7 +1619,7 @@ function GetIndices($count, $add = 0, $pieces = 1, $zone="")
 {
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    $ind = $zone == "" ? $i + $add : "$zone-" . ($i + $add);
+    $ind = $zone == "" ? $i + $add : "$zone-" . $i + $add;
     array_push($indices, $ind);
   }
   return implode(",", $indices);
@@ -1776,7 +1776,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     if ($index > -1 && $index < count($banish)) {
       if ($banish[$index + 1] !== null) {
         $mod = explode("-", $banish[$index + 1])[0];
-        if ((DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red"))) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
+        if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
       }
     }
   }
@@ -1786,7 +1786,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer) || SearchCurrentTurnEffects("teklovossen", $currentPlayer)) return true;
     if (SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_blue", $currentPlayer)) return true;
   }
-  if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "iyslander") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0])))) return true;
+  if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0]))) return true;
   if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer ) {
     $crArsenal = &GetArsenal($currentPlayer);
     for ($i = 0; $i < count($crArsenal); $i += ArsenalPieces()) {
@@ -1803,8 +1803,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   $abilityType = "-";
   if ($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
-  if (($cardType == "AR" || ($abilityType == "AR" && $isStaticType)) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
-  if (($cardType == "DR" || ($abilityType == "DR" && $isStaticType)) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  if (($cardType == "AR" || $abilityType == "AR" && $isStaticType) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
+  if (($cardType == "DR" || $abilityType == "DR" && $isStaticType) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) return true;
 
   if (!$secondCheck || $layers[0] == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used
@@ -2029,7 +2029,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   $cardName = NameOverride($cardID, $player);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $modName = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
+    $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player);
     if ($partial) {
       $modName = explode(" ", $modName);
       $modName = implode(",", $modName);
@@ -2308,7 +2308,7 @@ function DoesAttackHaveGoAgain()
       return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
     case "soul_reaping_red":
     case "ursur_the_soul_reaper":
-      return (count(GetSoul($defPlayer)) > 0 && IsHeroAttackTarget());
+      return count(GetSoul($defPlayer)) > 0 && IsHeroAttackTarget();
     case "pulping_red":
     case "pulping_yellow":
     case "pulping_blue":
@@ -2352,7 +2352,7 @@ function DoesAttackHaveGoAgain()
     case "pouncing_qi_red":
     case "pouncing_qi_yellow":
     case "pouncing_qi_blue":
-      return (ComboActive($attackID));
+      return ComboActive($attackID);
     case "quicksilver_dagger":
     case "quicksilver_dagger_r":
       return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
@@ -3085,9 +3085,9 @@ function SelfCostModifier($cardID, $from)
     case "rune_flash_red":
     case "rune_flash_yellow":
     case "rune_flash_blue":
-      return (-1 * NumRunechants($currentPlayer));
+      return -1 * NumRunechants($currentPlayer);
     case "bolting_blade_yellow":
-      return (-1 * (2 * GetClassState($currentPlayer, $CS_NumCharged)));
+      return -1 * (2 * GetClassState($currentPlayer, $CS_NumCharged));
     case "blinding_beam_red":
     case "blinding_beam_yellow":
     case "blinding_beam_blue":
@@ -3099,27 +3099,27 @@ function SelfCostModifier($cardID, $from)
     case "bonds_of_ancestry_red":
     case "bonds_of_ancestry_yellow":
     case "bonds_of_ancestry_blue":
-      return (ComboActive($cardID) ? -2 : 0);
+      return ComboActive($cardID) ? -2 : 0;
     case "descendent_gustwave_red":
     case "descendent_gustwave_yellow":
     case "descendent_gustwave_blue":
-      return (ComboActive($cardID) ? -1 : 0);
+      return ComboActive($cardID) ? -1 : 0;
     case "bleed_out_red":
     case "bleed_out_yellow":
     case "bleed_out_blue":
-      return (-1 * DamageDealtBySubtype("Dagger"));
+      return -1 * DamageDealtBySubtype("Dagger");
     case "dimenxxional_vortex":
-      return ($from == "BANISH" ? -2 : 0);
+      return $from == "BANISH" ? -2 : 0;
     case "grim_feast_red":
     case "grim_feast_yellow":
     case "grim_feast_blue":
-      return ($from == "BANISH" ? -2 : 0);
+      return $from == "BANISH" ? -2 : 0;
     case "vile_inquisition_red":
     case "vile_inquisition_yellow":
     case "vile_inquisition_blue":
-      return ($from == "BANISH" ? -2 : 0);
+      return $from == "BANISH" ? -2 : 0;
     case "runic_reckoning_red":
-      return (-1 * NumRunechants($currentPlayer));
+      return -1 * NumRunechants($currentPlayer);
     case "liquid_cooled_mayhem_red":
     case "liquid_cooled_mayhem_yellow":
     case "liquid_cooled_mayhem_blue":
@@ -3146,24 +3146,24 @@ function SelfCostModifier($cardID, $from)
     case "rising_energy_red":
     case "rising_energy_yellow":
     case "rising_energy_blue":
-      return (GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0 ? -1 : 0);
+      return GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0 ? -1 : 0;
     case "sonata_galaxia_red":
-      return (-1 * NumRunechants($currentPlayer));
+      return -1 * NumRunechants($currentPlayer);
     case "wrath_of_retribution_red":
     case "blood_drop_red":
     case "blood_line_red":
     case "blood_runs_deep_red":
-      return (-1 * NumDraconicChainLinks());
+      return -1 * NumDraconicChainLinks();
     case "fire_and_brimstone_red":
     case "dynastic_dedication_red":
     case "imperial_intent_red":
-      return (-1 * NumDraconicChainLinks());
+      return -1 * NumDraconicChainLinks();
     case "compounding_anger_red":
     case "bubble_to_the_surface_red":
     case "drop_of_dragon_blood_red":
       return $currentPlayer == $mainPlayer ? (-1 * NumDraconicChainLinks()) : 0;
     case "solid_ground_blue":
-      return (-1 * NumSeismicSurge($currentPlayer));
+      return -1 * NumSeismicSurge($currentPlayer);
     case "gold_hunter_ketch_yellow":
       $myNumGold = CountItem("gold", $currentPlayer);
       $theirNumGold = CountItem("gold", $otherPlayer);
@@ -3238,7 +3238,7 @@ function IsCardNamed($player, $cardID, $name)
   if (CardName($cardID) == $name) return true;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $givenNames = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $player);
+    $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player);
     $givenNames = explode(",", $givenNames);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     foreach($givenNames as $givenName)
@@ -3256,7 +3256,7 @@ function GetCurrentAttackNames()
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $name = CurrentEffectNameModifier($effectArr[0], (count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A"), $mainPlayer);
+    $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
       if (str_contains($name, ","))
@@ -3720,11 +3720,11 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     }
   }
   //triggers for whenever you draw "one or more cards"
-  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || (SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) {
+  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_brightaxe") || SearchCurrentTurnEffects("valda_brightaxe-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini"))) {
     AddLayer("TRIGGER", $player, "valda_brightaxe", additionalCosts:$num);
     // PlayAura("seismic_surge", $otherPlayer, $num, effectSource:"valda_brightaxe");
   }
-  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || (SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini")))) {
+  if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini"))) {
     AddLayer("TRIGGER", $player, "valda_seismic_impact", additionalCosts:$num);
     // PlayAura("seismic_surge", $otherPlayer, $num, effectSource:"valda_seismic_impact");
   }
