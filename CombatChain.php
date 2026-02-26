@@ -836,12 +836,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "standing_order_red":
       if (SearchCurrentTurnEffects($cardID, $defPlayer, true)) $blockModifier += 2;
       break;
-    case "big_blue_sky_blue":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += SearchPitchForColor($defPlayer, 3);
-      break;
-    case "wash_away_blue":
-      if (GetClassState($defPlayer, $CS_NumBluePlayed) > 1) $blockModifier += 2;
-      break;
     case "territorial_domain_blue":
       if (GetClassState($defPlayer, $CS_NumCrouchingTigerCreatedThisTurn) > 0) $blockModifier += 3;
       break;
