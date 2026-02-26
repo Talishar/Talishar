@@ -2101,6 +2101,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $AuraCard = $Auras->FindCardUID($uniqueID);
         $AuraCard->Destroy();
         break;
+      case "teklovossen":
+      case "teklovossen_esteemed_magnate":
+        Draw($player);
+        break;
       case "heart_of_fyendal_blue":
         if (PlayerHasLessHealth($player)) GainHealth(1, $player);
         break;
