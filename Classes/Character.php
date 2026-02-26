@@ -156,6 +156,15 @@ class CharacterCard {
     return $this->pieces[$this->index+10] ?? "-";
   }
   
+  function AddSubcard($cardID) {
+    if (!isset($this->pieces[$this->index + 10])) return "";
+    elseif ($this->pieces[$this->index + 10] == "-")
+      $this->pieces[$this->index + 10] = $cardID;
+    else {
+      $this->pieces[$this->index + 10] .= ",$cardID";
+    }
+    return $cardID;
+  }
 
   function UniqueID() {
     return $this->pieces[$this->index+11] ?? "-";
