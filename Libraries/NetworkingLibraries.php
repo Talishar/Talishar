@@ -1567,7 +1567,7 @@ function FinalizeChainLink($chainClosed = false)
   array_push($chainLinkSummary, $numHitsOnLink);
   array_push($chainLinkSummary, LinkBasePower());
   array_push($chainLinkSummary, GetClassState($mainPlayer, $CS_ModalAbilityChoosen));
-  array_push($chainLinkSummary, ColorOverride($combatChain[0], $mainPlayer));
+  array_push($chainLinkSummary, ColorOverride($combatChain[0] ?? "", $mainPlayer));
   
   ResolveWagers($chainClosed);
   if (!$chainClosed) {
