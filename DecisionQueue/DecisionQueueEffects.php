@@ -1462,7 +1462,8 @@ function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAN
 }
 
 function MeldCards($player, $cardID, $lastResult, $target="-"){
-  global $CS_ResolvingLayerUniqueID;
+  global $CS_ResolvingLayerUniqueID, $CS_AdditionalCosts;
+  if (GetClassState($player, $CS_AdditionalCosts) == "CHAINCLOSING") return;
   if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
   else $names[] = GamestateUnsanitize($lastResult);
   if($lastResult == "Both") {

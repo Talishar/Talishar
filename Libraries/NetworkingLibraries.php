@@ -2779,15 +2779,18 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     }
     if (DelimStringContains($cardType, "A") && SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
       $names[0] = "-";
-      // $option = $names[1];
     } elseif (
-      !IsInstantMod($mod) 
-      && $cardType != "I"
-      && (!$combatChainState[$CCS_EclecticMag]
-      && (GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $currentPlayer))
-      && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
-      && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A" || SearchLayersForPhase("RESOLUTIONSTEP") != -1)
-      || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
+      // Main phase with available action point as the main player: always allow the Action half.
+      !($turn[0] == "M" && $actionPoints >= 1 && $currentPlayer == $mainPlayer)
+      && (
+        !IsInstantMod($mod)
+        && $cardType != "I"
+        && (!$combatChainState[$CCS_EclecticMag]
+        && (GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $currentPlayer))
+        && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
+        && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A" || SearchLayersForPhase("RESOLUTIONSTEP") != -1)
+        || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer)
+      ))
     ) {
         $names[0] = "-";
     }
@@ -2800,6 +2803,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     else $option = $names[0].",".$names[1].",Both";
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which halves to activate");
     AddDecisionQueue("BUTTONINPUT", $currentPlayer, $option);
+    AddDecisionQueue("CHECKMELDABILITYCLOSED", $currentPlayer, $cardID.",".$index);
     AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
     AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
     AddDecisionQueue("MELDTARGETTING", $currentPlayer, $cardID, 1);
