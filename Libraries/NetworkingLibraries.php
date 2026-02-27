@@ -1988,7 +1988,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         // Return card to its zone since it can't be played without paying
         switch ($from) {
           case "HAND":
-            AddPlayerHand($cardID, $currentPlayer, "HAND");
+            AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1));
             break;
           case "ARS":
             AddArsenal($cardID, $currentPlayer, "ARS", $facing);
@@ -1999,7 +1999,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         return "";
       }
       elseif (GetResolvedAbilityType($cardID, $from) == "A" && !$blockShortcut) {
-        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND"); //card is still getting removed from hand, just put it back
+        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1)); //card is still getting removed from hand, just put it back
         if ($from == "PLAY") {
           // reset the status
           if (SubtypeContains($cardID, "Ally")) {
