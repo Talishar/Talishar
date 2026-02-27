@@ -2904,29 +2904,29 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += 1;
           break;
         case "rampart_of_the_rams_head":
-          $blockModifier += ($CombatChain->Card($index)->ID() == $cardID ? 1 : 0);
+          $blockModifier += ($blockCard->ID() == $Effect->EffectID() ? 1 : 0);
           break;
         case "fletch_a_red_tail_red":
-          $blockModifier += (PitchValue($CombatChain->Card($index)->ID()) == 1 && HasAimCounter() ? -1 : 0);
+          $blockModifier += (PitchValue($blockCard->ID()) == 1 && HasAimCounter() ? -1 : 0);
           break;
         case "fletch_a_yellow_tail_yellow":
-          $blockModifier += (PitchValue($CombatChain->Card($index)->ID()) == 2 && HasAimCounter() ? -1 : 0);
+          $blockModifier += (PitchValue($blockCard->ID()) == 2 && HasAimCounter() ? -1 : 0);
           break;
         case "fletch_a_blue_tail_blue":
-          $blockModifier += (PitchValue($CombatChain->Card($index)->ID()) == 3 && HasAimCounter() ? -1 : 0);
+          $blockModifier += (PitchValue($blockCard->ID()) == 3 && HasAimCounter() ? -1 : 0);
           break;
         case "defender_of_daybreak_red":
         case "defender_of_daybreak_yellow":
         case "defender_of_daybreak_blue":
-          $blockModifier += (CardType($CombatChain->Card($index)->ID()) != "E" && TalentContains($CombatChain->Card($index)->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
+          $blockModifier += (CardType($blockCard->ID()) != "E" && TalentContains($blockCard->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
           break;
         case "lay_down_the_law_red":
-          $blockModifier += (CachedTotalPower() >= 13 && !TypeContains($CombatChain->Card($index)->ID(), "E") && !DelimStringContains(CardSubType($CombatChain->Card($index)->ID()), "Evo")) ? -1 : 0;
+          $blockModifier += (CachedTotalPower() >= 13 && !TypeContains($blockCard->ID(), "E") && !DelimStringContains(CardSubType($blockCard->ID()), "Evo")) ? -1 : 0;
           break;
         case "ratchet_up_red":
         case "ratchet_up_yellow":
         case "ratchet_up_blue":
-          $blockModifier += IsActionCard($CombatChain->Card($index)->ID()) ? -1 : 0;break;
+          $blockModifier += IsActionCard($blockCard->ID()) ? -1 : 0;break;
         case "wide_blue_yonder_blue":
           $blockModifier += SearchPitchForColor($mainPlayer, 3);
           break;

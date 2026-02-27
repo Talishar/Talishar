@@ -189,9 +189,9 @@ function BlockingCardDefense($index)
   $uid = $combatChain[$index + 2] == "EQUIP" ? $combatChain[$index + 8] : $combatChain[$index + 7];
   $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC", "", $uid));
   if (!BlockCantBeModified($cardID)) {
-    // $defense += $combatChain[$index + 6];
     if (isset($combatChain[$index + 6]) && ($combatChain[$index + 6] < 0 || $canGainBlock)) $defense += $combatChain[$index + 6];
-    $defense += intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
+    $blockModifier = intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
+    $defense += $blockModifier;
   }
   if (SubtypeContains($cardID, "Item", $defPlayer)) {
     $DefItems = new Items($defPlayer);
