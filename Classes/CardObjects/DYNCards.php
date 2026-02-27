@@ -663,6 +663,11 @@ class construct_nitro_mechanoid_yellow extends Card {
 			$CharCard = $Character->Card($i, true);
 			if(CardType($CharCard->CardID()) != "C" && CardType($CharCard->CardID()) != "Companion") {
 				$Mechanoid->AddSubcard($CharCard->CardID());
+				$characterSubCards = $CharCard->Subcards();
+				if ($characterSubCards != "-") {
+					foreach (explode(",", $characterSubCards) as $subcard) 
+						$Mechanoid->AddSubcard($subcard);
+				}
 				$CharCard->Destroy(true);
 			}
 		}

@@ -1786,7 +1786,7 @@ function IsOverpowerActive()
     case "spectral_rider_yellow":
     case "spectral_rider_blue":
       return SearchCurrentTurnEffects("spectral_rider_red", $mainPlayer);
-    case "nitro_mechanoida":
+    case "nitro_mechanoidc":
       return true;
     case "glaring_impact_red":
     case "glaring_impact_yellow":
