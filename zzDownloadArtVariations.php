@@ -12,9 +12,9 @@ $manualArtVariationOverrides = [
   // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
   //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
 
-  //"elemental_strike_red" => [
-  //  "artVariation" => "FA",
-  //  "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/FAB425.webp"
+  //"oldhim" => [
+  // "artVariation" => "FA",
+  // "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/PEN345-CF.webp"
   //],
 ];
 
