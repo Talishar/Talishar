@@ -100,6 +100,7 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
   {
     if (IsDevEnvironment()) return [];
     $conn = GetDBConnection();
+    if(!$conn) return [];
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
