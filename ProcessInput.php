@@ -206,6 +206,9 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   $currentPlayer = 1;
+  // Clear events to prevent infinite event loops when game is over
+  global $events;
+  $events = [];
 }
 
 CombatDummyAI(); //Only does anything if applicable
