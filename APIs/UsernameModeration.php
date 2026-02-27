@@ -123,7 +123,13 @@ if ($action === 'getOffensiveUsernames') {
         return strtolower(str_replace(['-', '1', '0', '3', '5', '7', '!', '@'], '', $pattern));
     }, $offensivePatterns);
 
-    while ($row = mysqli_fetch_assoc($result)) {
+    // CRITICAL FIX: Fetch all rows into memory FIRST, then free the result
+    // This prevents "Packets out of order" errors when calling nested queries on the same connection
+    $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    mysqli_free_result($result);
+
+    // Now process the rows - it's safe to execute additional queries
+    foreach ($rows as $row) {
         $username = strtolower($row['usersUid']);
         $cleanUsername = str_replace(['-', '_', '1', '0', '3', '5', '7', '!', '@'], '', $username);
 

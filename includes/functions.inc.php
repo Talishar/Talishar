@@ -54,9 +54,11 @@ function uidExists($conn, $username)
 	$resultData = mysqli_stmt_get_result($stmt);
 
 	if ($row = mysqli_fetch_assoc($resultData)) {
+		mysqli_free_result($resultData);
 		return $row;
 	}
 	else {
+		mysqli_free_result($resultData);
 		$result = false;
 		return $result;
 	}
@@ -84,9 +86,11 @@ function emailExists($conn, $email)
 	$resultData = mysqli_stmt_get_result($stmt);
 
 	if ($row = mysqli_fetch_assoc($resultData)) {
+		mysqli_free_result($resultData);
 		return $row;
 	}
 	else {
+		mysqli_free_result($resultData);
 		$result = false;
 		return $result;
 	}
@@ -155,6 +159,7 @@ function loginFromCookie()
             mysqli_stmt_execute($stmt);
             $data = mysqli_stmt_get_result($stmt);
             $row = mysqli_fetch_array($data, MYSQLI_NUM);
+            mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
             mysqli_stmt_close($stmt);
 
             if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -252,6 +257,7 @@ function GetDeckBuilderId($uid, $decklink)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		$row = mysqli_fetch_array($data, MYSQLI_NUM);
+		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
@@ -294,6 +300,7 @@ function LoadFavoriteDecks($userID)
 		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
 			for ($i = 0; $i < 4; ++$i) array_push($output, $row[$i]);
 		}
+		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
@@ -1088,6 +1095,7 @@ function LoadSavedSettings($playerId)
 			array_push($output, $row[0]);
 			array_push($output, $row[1]);
 		}
+		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);

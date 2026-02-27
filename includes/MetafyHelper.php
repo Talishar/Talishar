@@ -16,12 +16,12 @@ if (!function_exists('IsDevEnvironment')) {
 
 function GetUserMetafyCommunities($userName)
 {   
-  // Get access token from database
   $conn = GetDBConnection();
   $sql = "SELECT metafyAccessToken FROM users WHERE usersUid=?";
   $stmt = mysqli_stmt_init($conn);
   
   if (!mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_close($stmt);
     mysqli_close($conn);
     return [];
   }
@@ -30,6 +30,7 @@ function GetUserMetafyCommunities($userName)
   mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
   $row = mysqli_fetch_assoc($result);
+  mysqli_free_result($result);
   mysqli_stmt_close($stmt);
   mysqli_close($conn);
   
@@ -100,6 +101,7 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
   {
     if (IsDevEnvironment()) return [];
     $conn = GetDBConnection();
+    if(!$conn) return [];
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -111,6 +113,7 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 
