@@ -2926,14 +2926,15 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
         case "ratchet_up_red":
         case "ratchet_up_yellow":
         case "ratchet_up_blue":
-          $blockModifier += IsActionCard($blockCard->ID()) ? -1 : 0;break;
+          $blockModifier += IsActionCard($blockCard->ID()) ? -1 : 0;
+          break;
         case "wide_blue_yonder_blue":
           $blockModifier += SearchPitchForColor($mainPlayer, 3);
           break;
         case "heavy_industry_surveillance":
         case "heavy_industry_ram_stop":
         case "breaker_helm_protos":
-          $blockModifier += 1;
+          $blockModifier += ($blockCard->ID() == $Effect->EffectID() ? 1 : 0);
           break;
         default:
           break;
