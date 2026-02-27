@@ -406,6 +406,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack;
+  
 
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     $p1Health = GetHealth(1);
@@ -557,23 +558,6 @@ function ContinueDecisionQueue($lastResult = "")
       $player = $decisionQueue[1];
       $params = explode("-", $decisionQueue[2]); //Parameter
       if ($lastResult == "") $lastResult = 0;
-      // If a meld card was returned to hand (action mode chosen during resolution step)
-      if (GetClassState($player, $CS_AdditionalCosts) == "CHAINCLOSING") {
-        $layerPlayIndex = GetClassState($player, $CS_LayerPlayIndex);
-        $layerStartIndex = count($layers) - $layerPlayIndex;
-        if ($layerStartIndex >= 0 && count($layers) >= LayerPieces()) {
-          array_splice($layers, $layerStartIndex, LayerPieces());
-        }
-        CloseDecisionQueue(); // restores $turn[0] to the pre-play phase
-        if ($currentPlayer != $player) {
-          $currentPlayer = $player;
-          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
-          BuildMyGamestate($currentPlayer);
-        }
-        $layerPriority[$player - 1] = "0";
-        ProcessInput($player, 99, "", $params[0], 0, "");
-        return;
-      }
       CloseDecisionQueue();
       if ($currentPlayer != $player) {
         $currentPlayer = $player;
