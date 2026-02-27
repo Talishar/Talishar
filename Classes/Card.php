@@ -23,7 +23,7 @@ class Card {
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
-    $this->BaseCard = new BaseCard($cardID, $controller);
+    $this->baseCard = new BaseCard($cardID, $controller);
   }
 
   function IsType($types) {
