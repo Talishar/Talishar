@@ -1147,6 +1147,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Destroyed " . CardLink($deck->Top(), $deck->Top()) . " on top of Player " . $player . " deck");
       AddGraveyard($deck->Top(remove: true), $player, "DECK");
       return $lastResult;
+    case "CHECKMELDABILITYCLOSED":
+      $params = explode(",", $parameter);
+      $cardID = $params[0];
+      $index = $params[1] ?? -1;
+      // Check if the selected mode is an Action (should close the chain/resolution step).
+      // We only flag CHAINCLOSING here;
+      if (IsMeldActionName($lastResult) || ($lastResult == "Both" && TypeContains($cardID, "A", $player))) {
+        global $CS_AdditionalCosts;
+        AddPlayerHand($cardID, $player, "HAND", index: $index);
+        SetClassState($player, $CS_AdditionalCosts, "CHAINCLOSING");
+        return "PASS";
+      }
+      return $lastResult;
     case "SHOWMODES":
       $modes = (is_array($lastResult)) ? $lastResult : explode(",", $lastResult);
       $text = "";
