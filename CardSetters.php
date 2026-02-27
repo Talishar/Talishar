@@ -398,8 +398,10 @@ function SetArsenalFacing($facing, $player)
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     if ($facing == "UP" && $arsenal[$i + 1] != "UP") {
       $arsenal[$i + 1] = "UP";
-      ArsenalTurnFaceUpAbility($arsenal[$i], $player);
-      return $arsenal[$i];
+      $cardID = $arsenal[$i];
+      AddEvent("TURNARSENALFACEUP", $player . ":" . $cardID);
+      ArsenalTurnFaceUpAbility($cardID, $player);
+      return $cardID;
     }
   }
   return "";
