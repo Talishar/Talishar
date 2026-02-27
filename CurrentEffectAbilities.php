@@ -2966,6 +2966,5 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
     }
     if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
   }
-  WriteLog("HERE: $totalBlockModifier");
   return $totalBlockModifier;
 }
