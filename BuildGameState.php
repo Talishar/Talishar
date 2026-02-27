@@ -1272,12 +1272,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Events
   $newEvents = new stdClass();
   $newEvents->eventArray = [];
-  $eventsCount = count($events);
-  for ($i = 0; $i < $eventsCount; $i += EventPieces()) {
-    $thisEvent = new stdClass();
-    $thisEvent->eventType = $events[$i];
-    $thisEvent->eventValue = $events[$i + 1] ?? null;
-    array_push($newEvents->eventArray, $thisEvent);
+  if (!$isGameOver) {
+    $eventsCount = count($events);
+    for ($i = 0; $i < $eventsCount; $i += EventPieces()) {
+      $thisEvent = new stdClass();
+      $thisEvent->eventType = $events[$i];
+      $thisEvent->eventValue = $events[$i + 1] ?? null;
+      array_push($newEvents->eventArray, $thisEvent);
+    }
   }
   $response->newEvents = $newEvents;
 
