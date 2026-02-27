@@ -683,7 +683,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID);
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
-  
+
   $blockModifier += AuraBlockModifier($cardID, $from);
   $blockModifier += ItemBlockModifier($cardID);
   $blockModifier += CurrentEffectBlockModifiers($cardID, $from, $index);
@@ -798,12 +798,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "helm_of_lignum_vitae":
       if (SearchCount(SearchBanish($defPlayer, talent: "EARTH")) >= 4) $blockModifier += 1;
       break;
-    case "heavy_industry_surveillance":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
-      break;
-    case "heavy_industry_ram_stop":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
-      break;
     case "red_alert_visor":
     case "red_alert_vest":
     case "red_alert_gloves":
@@ -815,9 +809,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "blade_beckoner_gauntlets":
     case "blade_beckoner_boots":
       if (IsWeaponAttack()) $blockModifier += 1;
-      break;
-    case "breaker_helm_protos":
-      if (SearchCurrentTurnEffects($cardID, $defPlayer)) $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
       break;
     case "testament_of_valahai":
       $countSeismic = CountAura("seismic_surge", $defPlayer);
