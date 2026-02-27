@@ -378,34 +378,41 @@ function logCompletedGameStats($conceded = false)
 		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
 		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
 		$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
-
-		if (!AreStatsDisabled(1) && !AreStatsDisabled(2)) {
-			WriteLog("📊Sending game result to <b>Fabrary</b>", highlight:true, highlightColor:"green");
-			SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
-		}
-		elseif (AreStatsDisabled(1) && !AreStatsDisabled(2)) {
-			WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 2", highlight:true, highlightColor:"green");
-			SendFullFabraryResults($gameResultID, "-", $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
-		}
-		elseif (!AreStatsDisabled(1) && AreStatsDisabled(2)) {
-			WriteLog("📊Sending game result to <b>Fabrary</b> for only Player 1", highlight:true, highlightColor:"green");
-			SendFullFabraryResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, "-", $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID, $conceded);
-		}
-		else WriteLog("No results sent to <b>Fabrary</b> as both players disabled stats", highlight:true);
-		// Sends data to FabInsights DB
+		$p1FabraryDisabled = AreStatsDisabled(1);
+		$p2FabraryDisabled = AreStatsDisabled(2);
 		$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
 		$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
-		if (!$p1StatsDisabled && !$p2StatsDisabled) {
-			WriteLog("📊Sending game stats to <b>FaBInsights</b>", highlight:true, highlightColor:"green");
+
+		if (!$p1FabraryDisabled || !$p2FabraryDisabled) {
+			SendFullFabraryResults(
+				$gameResultID,
+				$p1FabraryDisabled ? "-" : $p1DeckLink,
+				$p1Deck, $p1Hero, $p1deckbuilderID,
+				$p2FabraryDisabled ? "-" : $p2DeckLink,
+				$p2Deck, $p2Hero, $p2deckbuilderID,
+				$gameGUID, $conceded
+			);
 		}
-		elseif ($p1StatsDisabled && !$p2StatsDisabled) {
-			WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 2", highlight:true, highlightColor:"green");
-		}
-		elseif (!$p1StatsDisabled && $p2StatsDisabled) {
-			WriteLog("📊Sending game stats to <b>FaBInsights</b> for only Player 1", highlight:true, highlightColor:"green");
-		}
-		else WriteLog("No game stats sent to <b>FaBInsights</b> as both players disabled stats", highlight:true);
 		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+
+		if (!$p1FabraryDisabled && !$p2FabraryDisabled)  $fabraryDesc = "<b>Fabrary</b>";
+		elseif (!$p1FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 1 only)";
+		elseif (!$p2FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 2 only)";
+		else                                             $fabraryDesc = null;
+
+		if (!$p1StatsDisabled && !$p2StatsDisabled)      $insightsDesc = "<b>FaBInsights</b>";
+		elseif (!$p1StatsDisabled)                       $insightsDesc = "<b>FaBInsights</b> (Player 1 only)";
+		elseif (!$p2StatsDisabled)                       $insightsDesc = "<b>FaBInsights</b> (Player 2 only)";
+		else                                             $insightsDesc = null;
+
+		if ($fabraryDesc !== null && $insightsDesc !== null)
+			WriteLog("📊 Sending game result to $fabraryDesc and $insightsDesc", highlight:true, highlightColor:"green");
+		elseif ($fabraryDesc !== null)
+			WriteLog("📊 Sending game result to $fabraryDesc", highlight:true, highlightColor:"green");
+		elseif ($insightsDesc !== null)
+			WriteLog("📊 Sending game stats to $insightsDesc", highlight:true, highlightColor:"green");
+		else
+			WriteLog("No game stats sent as both players have disabled stats", highlight:true);
 		mysqli_close($conn);
 	}
 }
