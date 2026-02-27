@@ -1153,7 +1153,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = $params[1] ?? -1;
       // Check if the selected mode is an Action (should close the chain/resolution step).
       // We only flag CHAINCLOSING here;
-      if (IsMeldActionName($lastResult) || ($lastResult == "Both" && TypeContains($cardID, "A", $player)) && ($CombatChain->HasCurrentLink() || isResolutionStep())) {
+      if ((IsMeldActionName($lastResult) || ($lastResult == "Both" && TypeContains($cardID, "A", $player))) && ($CombatChain->HasCurrentLink() || isResolutionStep())) {
         global $CS_AdditionalCosts;
         AddPlayerHand($cardID, $player, "HAND", index: $index);
         SetClassState($player, $CS_AdditionalCosts, "CHAINCLOSING");
