@@ -2844,17 +2844,19 @@ function AdministrativeEffect($effectID)
 }
 
 function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
-  global $CurrentTurnEffects, $defPlayer, $CombatChain, $chainLinks, $mainPlayer;
+  global $CurrentTurnEffects, $defPlayer, $CombatChain, $chainLinks, $mainPlayer, $ChainLinks;
   $noGain = !CanGainBlock($cardID);
   $totalBlockModifier = 0;
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
   $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
   $isAction = TypeContains($cardID, "A", $defPlayer) || TypeContains($cardID, "AA", $defPlayer);
   if ($blockCard == "-" && str_contains($index, ",")) {
-      $i = explode(",", $index)[0];
-      $j = explode(",", $index)[1];
-      $originUniqueID = $chainLinks[$i][$j + 8];
-    }
+    $i = explode(",", $index)[0];
+    $j = explode(",", $index)[1];
+    $Link = $ChainLinks->GetLink($i);
+    $blockCard = $Link->GetLinkCard($j);
+    $originUniqueID = $blockCard->OriginUniqueID();
+  }
 
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $blockModifier = 0;
