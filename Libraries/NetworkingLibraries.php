@@ -2044,7 +2044,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from the top of their deck", $turn[0] != "P" ? $currentPlayer : 0);
     }
     else if ($turn[0] != "B") WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0], $from, $cardID) . " " . CardLink($cardID, $cardID), $turn[0] != "P" ? $currentPlayer : 0);
-    if ($turn[0] == "B" && TypeContains($cardID, "E", $currentPlayer)) {
+    if ($turn[0] == "B") {
       SetClassState($currentPlayer, $CS_PlayUniqueID, $uniqueID);
       $cachedPlayUniqueID = $uniqueID;
     }
