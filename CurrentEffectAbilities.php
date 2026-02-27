@@ -2898,3 +2898,72 @@ function AdministrativeEffect($effectID)
       return false;
   }
 }
+
+function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
+  global $CurrentTurnEffects, $defPlayer, $CombatChain, $chainLinks;
+  $noGain = !CanGainBlock($cardID);
+  $totalBlockModifier = 0;
+  $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
+  $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
+  $isAction = TypeContains($cardID, "A", $defPlayer) || TypeContains($cardID, "AA", $defPlayer);
+  if ($blockCard == "-" && str_contains($index, ",")) {
+      $i = explode(",", $index)[0];
+      $j = explode(",", $index)[1];
+      $originUniqueID = $chainLinks[$i][$j + 8];
+    }
+
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $card = GetClass(ExtractCardID($Effect->EffectID()), $Effect->PlayerID());
+    if ($card != "-") $blockModifier += $card->CurrentEffectBlockModifiers($cardID, $from, $i, $index);
+    if ($Effect->PlayerID() == $defPlayer) {
+      switch ($Effect->EffectID()) { // effects on the def player
+        case "art_of_war_yellow-1":
+        case "potion_of_ironhide_blue":
+          $blockModifier += TypeContains($cardID, "AA", $defPlayer) ? 1 : 0;
+          break;
+        case "lyath_goldmane":
+        case "lyath_goldmane_vile_savant":
+          $blockModifier += $isAction ? 1 : 0;
+          break;
+        case "will_of_the_crowd_blue":
+          $blockModifier += $isAction ? 3 : 0;
+          break;
+        case "shred_red":
+          $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 4 : 0;
+          break;
+        case "shred_yellow":
+          $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 3 : 0;
+          break;
+        case "shred_blue":
+          $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 2 : 0;
+          break;
+        case "tarantula_toxin_red-SHRED":
+          $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 3 : 0;
+          break;
+        case "pulse_of_isenloft_blue":
+          $talentCheck = TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer);
+          $blockModifier += $isAction && $talentCheck ? 1 : 0;
+          break;
+        case "fabricate_red":
+          $blockModifier += SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC") ? 1 : 0;
+          break;
+        default:
+          break;
+      }
+    }
+    else {
+      switch($Effect->EffectID()) { //effects on the attacking player
+        case "scramble_pulse_red":
+        case "scramble_pulse_yellow";
+        case "scramble_pulse_blue":
+          $blockModifier -= TypeContains($cardID, "E", $defPlayer) || SubtypeContains($cardID, "Evo", $defPlayer) ? 1 : 0;
+          break;
+        default:
+          break;
+      }
+    }
+    if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
+  }
+  return $totalBlockModifier;
+}

@@ -682,55 +682,11 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   global $CS_NumBluePlayed, $currentTurnEffects, $combatChain, $combatChainState, $CCS_CachedTotalPower;
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID);
-  $cardType = CardType($cardID);
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
-  // should probably refactor this as an EffectBlockModifier function
-  if (!$noGain) {
-    if ($cardType == "AA") {
-      $blockModifier += CountCurrentTurnEffects("art_of_war_yellow-1", $defPlayer);
-      $blockModifier += CountCurrentTurnEffects("potion_of_ironhide_blue", $defPlayer);
-    }
-    if ($cardType == "AA" || $cardType == "A") {
-      $blockModifier += CountCurrentTurnEffects("lyath_goldmane", $defPlayer);
-      $blockModifier += CountCurrentTurnEffects("lyath_goldmane_vile_savant", $defPlayer);
-      $blockModifier += CountCurrentTurnEffects("will_of_the_crowd_blue", $defPlayer) * 3;
-    }
-  }
-  if ($cardType == "E") {
-    $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
-    if ($blockCard == "-" && str_contains($index, ",")) {
-      $i = explode(",", $index)[0];
-      $j = explode(",", $index)[1];
-      $originUniqueID = $chainLinks[$i][$j + 8];
-    }
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-      switch ($currentTurnEffects[$i]) {
-        case "shred_red":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 4;
-          break;
-        case "shred_yellow":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 3;
-          break;
-        case "shred_blue":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 2;
-          break;
-        case "tarantula_toxin_red-SHRED":
-          if ($currentTurnEffects[$i+1] == $defPlayer && $currentTurnEffects[$i+2] == $originUniqueID) $blockModifier -= 3;
-          break;
-      }
-    }
-  }
-  if ((DelimStringContains($cardType, "E") || SubtypeContains($cardID, "Evo")) && (SearchCurrentTurnEffects("scramble_pulse_red", $mainPlayer) || SearchCurrentTurnEffects("scramble_pulse_yellow", $mainPlayer) || SearchCurrentTurnEffects("scramble_pulse_blue", $mainPlayer))) {
-    $countScramblePulse = 0 + CountCurrentTurnEffects("scramble_pulse_red", $mainPlayer);
-    $countScramblePulse += CountCurrentTurnEffects("scramble_pulse_yellow", $mainPlayer);
-    $countScramblePulse += CountCurrentTurnEffects("scramble_pulse_blue", $mainPlayer);
-    $blockModifier -= 1 * $countScramblePulse;
-  }
-  if (SearchCurrentTurnEffects("pulse_of_isenloft_blue", $defPlayer) && ($cardType == "AA" || DelimStringContains($cardType, "A")) && (TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer))) $blockModifier += 1;
-  if (SearchCurrentTurnEffects("fabricate_red", $defPlayer) && SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC")) $blockModifier += CountCurrentTurnEffects("fabricate_red", $defPlayer);
-  // Effect Block Modifier ends here
+  
   $blockModifier += AuraBlockModifier($cardID, $from);
   $blockModifier += ItemBlockModifier($cardID);
+  $blockModifier += CurrentEffectBlockModifiers($cardID, $from, $index);
   $totalPower = $combatChainState[$CCS_CachedTotalPower];
 
   $defAuras = &GetAuras($defPlayer);
