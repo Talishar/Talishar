@@ -601,8 +601,4 @@ class Card {
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     return false;
   }
-
-  function CurrentEffectBlockModifiers($cardID, $from, $cardNumber, $blockIndex) {
-    return 0;
-  }
 }
