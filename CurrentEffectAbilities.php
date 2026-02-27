@@ -2913,6 +2913,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
     }
 
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $blockModifier = 0;
     $Effect = $CurrentTurnEffects->Effect($i, true);
     $card = GetClass(ExtractCardID($Effect->EffectID()), $Effect->PlayerID());
     if ($card != "-") $blockModifier += $card->CurrentEffectBlockModifiers($cardID, $from, $i, $index);
@@ -2965,5 +2966,6 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
     }
     if ($blockModifier < 0 || !$noGain) $totalBlockModifier += $blockModifier;
   }
+  WriteLog("HERE: $totalBlockModifier");
   return $totalBlockModifier;
 }
