@@ -2896,8 +2896,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC") ? 1 : 0;
           break;
         case "phantasmal_footsteps":
-          if ($CombatChain->Card($index)->ID() == $cardID) $blockModifier += 1;
-          $blockModifier += 0;
+          if ($blockCard->ID() == $Effect->EffectID()) $blockModifier += 1;
           break;
         case "korshem_crossroad_of_elements-2":
           $blockModifier += 1;
