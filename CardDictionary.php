@@ -4033,6 +4033,7 @@ function CharacterDefaultActiveState($cardID)
     case "fai":
     case "fai_rising_rebellion":
     case "tearing_shuko":
+    case "blood_scent":
       return 1;
     case "verdance_thorn_of_the_rose":
     case "verdance":
