@@ -497,10 +497,6 @@ function ArcaneModifierAmount($source, $player, $index)
 {
   global $currentTurnEffects;
     $effectArr = explode(",", $currentTurnEffects[$index]);
-    $effectParams = explode("-", $effectArr[0]);
-    if($effectParams[0] == "blaze_firemind") {
-        return $effectParams[1];
-    }
     if ($currentTurnEffects[$index + 1] != $player || $source != $effectArr[0]) return 0;
     switch ($effectArr[0]) {
       case "crucible_of_aetherweave":
