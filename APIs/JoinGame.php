@@ -284,6 +284,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
        }
        if ($id == "")
          continue;
+      if($id == "goldfin_harpoon") $id = "goldfin_harpoon_yellow";
        ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards);
 
        if (IsCardBanned($id, $format, $character) && $format != "draft") {
@@ -986,4 +987,3 @@ function ProcessEquipment($id, $numMainBoard, $numSideboard, &$head, &$headSideb
       }
   }
 }
-?>
