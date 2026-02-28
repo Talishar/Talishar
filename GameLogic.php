@@ -3598,6 +3598,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BLAZEPAYCOST":
       $character = &GetPlayerCharacter($player);
       $character[2] -= $lastResult;
+      WriteLog("Player $player removed $lastResult counter to activate ".CardLink("blaze_firemind")." ability");
       return $lastResult;
     case "LOGPLAYCARDSTATS":
       $param = explode(",", $parameter);
