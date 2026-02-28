@@ -26,3 +26,6 @@ $prodServerPassword = "op://$APP_ENV/Production Server/password";
 // Metafy
 $metafyClientID = "op://$APP_ENV/Metafy/username";
 $metafyClientSecret = "op://$APP_ENV/Metafy/credential";
+
+// FaB Bazaar
+$FaBBazaarKey = "op://$APP_ENV/FaBBazaar/credential";

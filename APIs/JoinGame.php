@@ -179,6 +179,23 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
      $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
    }
+   else if (str_contains($decklink, "fabbazaar.app")) {
+     preg_match('/fabbazaar\.app\/decks\/([a-zA-Z0-9_-]+)/', $decklink, $matches);
+     if (!isset($matches[1])) {
+       $response->error = "Invalid FaB Bazaar deck URL format. Expected: https://fabbazaar.app/decks/DECK_ID";
+       echo (json_encode($response));
+       exit;
+     }
+     $deckId = $matches[1];
+     $headers = array(
+       "x-api-key: " . $FaBBazaarKey,
+       "Content-Type: application/json",
+       "User-Agent: Talishar"
+     );
+     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+     $apiLink = "https://fabbazaar.app/api/decks/" . $deckId . "/talishar";
+     if ($matchup != "") $apiLink .= "?matchupId=" . $matchup;
+   }
    else if (str_contains($decklink, "fabrary")) {
      $headers = [
        "x-api-key: " . $FaBraryKey,
@@ -214,6 +231,19 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      exit;
    }
    $deckObj = json_decode($apiDeck);
+   if ($apiInfo['http_code'] == 401 && str_contains($decklink, "fabbazaar.app")) {
+     $response->error = "API UNAUTHORIZED! FaB Bazaar API key is missing. Contact site administrator.";
+     echo (json_encode($response));
+     die();
+   } elseif ($apiInfo['http_code'] == 404 && str_contains($decklink, "fabbazaar.app")) {
+     $response->error = "Deck not found on FaB Bazaar. The deck may be private, deleted, or the URL is incorrect.";
+     echo (json_encode($response));
+     die();
+   } elseif ($apiInfo['http_code'] == 429 && str_contains($decklink, "fabbazaar.app")) {
+     $response->error = "FaB Bazaar rate limit exceeded. Please wait a minute and try again.";
+     echo (json_encode($response));
+     die();
+   }
    // if has message forbidden error out.
    if ($apiInfo['http_code'] == 403) {
      $response->error = "API FORBIDDEN! Invalid or missing token to access API: " . $apiLink . " The response from the deck hosting service was: " . $apiDeck;
