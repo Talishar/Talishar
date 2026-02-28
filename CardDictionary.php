@@ -73,7 +73,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN", "ATTACKSTEP"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
   
-  // Handle meld cards
+  // Handle meld cards that have an action on the left
   $meldCards = [
     "thistle_bloom__life_yellow",
     "arcane_seeds__life_red",
@@ -84,7 +84,13 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     "everbloom__life_blue",
     "consign_to_cosmos__shock_yellow"
   ];
-
+  if ($cardID == "MELD") {
+    if ($index == -1) return "I"; // safest bet if the index isn't provided
+    $LayerCard = new Layer($index);
+    $sourceID = $LayerCard->Parameter();
+    if (in_array($sourceID, $meldCards)) return "A,I";
+    else return "I";
+  }
   if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from == "ARS" || $from == "CC") return "A,I";
     if ($index == -1) {
@@ -2562,7 +2568,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $countLayers = count($layers);
       $layerPieces = LayerPieces();
       for ($i = 0; $i < $countLayers; $i += $layerPieces) {
-        if (CardType($layers[$i]) == "AA" && CardCost($layers[$i]) <= 1) return false;
+        $layer = new Layer($i);
+        if (CardType($layer->ID(), "LAYERS", $layer->PlayerID(), $layer->AdditionalCosts(), $i) == "AA" && CardCost($layers[$i]) <= 1) return false;
       }
       return true;
     case "shock_striker_red":
@@ -4023,6 +4030,10 @@ function CharacterDefaultActiveState($cardID)
     case "lyath_goldmane_vile_savant":
     case "teklovossen":
     case "teklovossen_esteemed_magnate":
+    case "fai":
+    case "fai_rising_rebellion":
+    case "tearing_shuko":
+    case "blood_scent":
       return 1;
     case "verdance_thorn_of_the_rose":
     case "verdance":

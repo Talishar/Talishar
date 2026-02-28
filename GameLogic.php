@@ -586,7 +586,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return CombatChainDefenseModifier($lastResult, intval($parameter));
     case "PUTCOMBATCHAINDEFENSE0":
       //look at making this set base defense
-      $index = GetCombatChainIndex($lastResult, $player);
+      $index = count($combatChain) - CombatChainPieces();
       $combatChain[$index + 6] -= ModifiedBlockValue($lastResult, $defPlayer, "CC");
       return $lastResult;
     case "PUTINANYORDER":
