@@ -113,6 +113,7 @@ if($handler) {
       }
       else if(HasPerched($cardID)) {
         $numHands = 0;
+        $handItem->isCompanion = true;
         $handItem->isOffhand = true;
       }
       else if(DelimStringContains($subtype, "Off-Hand")) {
@@ -172,6 +173,7 @@ if($handler) {
     }
     else if(HasPerched($handItem->id)) {
       $numHands = 0;
+      $handItem->isCompanion = true;
       $handItem->isOffhand = true;
     }
     else if(DelimStringContains($subtype, "Off-Hand")) {
