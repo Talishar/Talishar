@@ -54,7 +54,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_NumCharged, $otherPlayer, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NextNAACardGoAgain, $CCS_AttackTarget;
   global $dqVars, $mainPlayer, $lastPlayed, $dqState, $CS_AbilityIndex, $CS_CharacterIndex, $CS_AdditionalCosts, $CS_AlluvionUsed, $CS_MaxQuellUsed;
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
-  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects;
+  global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -1153,7 +1153,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $index = $params[1] ?? -1;
       // Check if the selected mode is an Action (should close the chain/resolution step).
       // We only flag CHAINCLOSING here;
-      if ((IsMeldActionName($lastResult) || ($lastResult == "Both" && TypeContains($cardID, "A", $player))) && ($CombatChain->HasCurrentLink() || isResolutionStep())) {
+      if ((IsMeldActionName($lastResult) || ($lastResult == "Both" && TypeContains($cardID, "A", $player))) && ($CombatChain->HasCurrentLink() || isResolutionStep())
+        && !IsInstantMod($mod)
+        && $cardType != "I"
+        && (!$combatChainState[$CCS_EclecticMag]
+        && (GetClassState($player, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $player))
+        && GetClassState($player, $CS_NextNAAInstant) == 0
+        && ($actionPoints < 1 || $player != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A" || SearchLayersForPhase("RESOLUTIONSTEP") != -1)
+        || SearchCurrentTurnEffects("WarmongersWar", $player)))
+        {
         global $CS_AdditionalCosts;
         AddPlayerHand($cardID, $player, "HAND", index: $index);
         SetClassState($player, $CS_AdditionalCosts, "CHAINCLOSING");
