@@ -175,7 +175,16 @@ try {
 
             // Preserve line breaks - normalize to \n first, then convert to HTML
             $content = preg_replace('/\r\n|\r/', "\n", $content);
+            // Remove Discord hyperlink markdown (< and >) - handle both < and &lt; variants
+            $content = preg_replace('/<(https?:\/\/[^>]+)>/i', '$1', $content);
+            $content = preg_replace('/&lt;(https?:\/\/[^&]+)&gt;/i', '$1', $content);
             $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+            // Convert URLs to clickable links
+            $content = preg_replace(
+                '/(https?:\/\/[^\s<>"{}|\\^`\[\]]*)/i',
+                '<a href="$1" target="_blank">$1</a>',
+                $content
+            );
             $content = nl2br($content, false);
             
             $data[] = [

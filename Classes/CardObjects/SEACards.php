@@ -1307,17 +1307,18 @@ class blue_fin_harpoon_blue extends GoFishCard {
 // }
 
 
-// class goldfin_harpoon extends Card {
+class goldfin_harpoon_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "goldfin_harpoon";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "goldfin_harpoon_yellow";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
+
 
 
 // class goldkiss_rum extends Card {
