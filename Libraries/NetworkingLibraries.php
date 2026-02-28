@@ -2034,10 +2034,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     }
     //CR 5.1.2 Announce (CR 2.0)
-    if ($from == "ARS") {
+    if ($from == "ARS" && $turn[0] != "B") {
       WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     }
-    else if ($from == "THEIRARS") {
+    else if ($from == "THEIRARS" && $turn[0] != "B") {
       WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from their opponnent's arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     }
     else if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) {
