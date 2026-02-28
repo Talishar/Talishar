@@ -443,6 +443,9 @@
   function ResolveWagers($chainClosed=false, $wonWager="-") {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     if ($wonWager == "-") $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
+    $MainHero = new CharacterCard(0, $mainPlayer);
+    if ($MainHero->CardID() == "olympia" || $MainHero->CardID() == "olympia_prized_fighter") //ability is once per attack, not once per turn
+      $MainHero->SetUsed(2);
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
