@@ -110,6 +110,10 @@ class CharacterCard {
       $this->pieces[$this->index + 4] += $num;
   }
 
+  function AddDefCounters($num) { //alias
+    $this->AddDefenseCounters($num);
+  }
+
   function NumUses() {
     return $this->pieces[$this->index+5] ?? 0;
   }
