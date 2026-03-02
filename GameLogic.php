@@ -1307,7 +1307,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult != $parameter) return "PASS";
       return 1;
     case "NOTEQUALNAMEPASS":
-      if (!ShareName(GamestateUnsanitize($lastResult), GamestateUnsanitize($parameter))) return "PASS";
+      $name1 = strtolower(GamestateUnsanitize($lastResult));
+      $name2 = strtolower(GamestateUnsanitize($parameter));
+      if (!ShareName($name1, $name2)) return "PASS";
       return $parameter;
     case "MODENOTCHOSENPASS":
       foreach($lastResult as $mode) {
