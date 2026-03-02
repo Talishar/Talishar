@@ -2043,7 +2043,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
-  global $chainLinks, $currentTurnEffects, $Stack;
+  global $chainLinks, $currentTurnEffects, $ChainLinks;
   global $landmarks;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -2943,13 +2943,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $cardsToBanish = [];
         $chainLinksCount = count($chainLinks);
         for ($i = 0; $i < $chainLinksCount; $i++) {
+          $Link = $ChainLinks->GetLink($i);
           if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
           $defendingCardIndices = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
           if (count($defendingCardIndices) > 0) {
             $randKeys = array_rand($defendingCardIndices, 1);
             $index = $defendingCardIndices[$randKeys];
+            $chosenCard = $Link->GetLinkCard($index);
             $chainLinks[$i][$index + 2] = "0";
-            $cardsToBanish[] = $chainLinks[$i][$index];
+            $cardsToBanish[] = $chosenCard->ID();
           }
         }
         $defendingCards = GetChainLinkCards($defPlayer);

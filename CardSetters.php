@@ -57,7 +57,11 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       for ($i = 0; $i < $amount; ++$i) {
         $uid = GetUniqueId($cardID, $player);
         $rv = count($banish);
-        array_push($banish, $cardID);
+        $splitCard = explode("_", $cardID);
+        if ($splitCard[count($splitCard) - 1] == "equip")
+          $toBanish = GetCardIDBeforeTransform($cardID);
+        else $toBanish = $cardID;
+        array_push($banish, $toBanish);
         array_push($banish, $mod);
         array_push($banish, $uid);
         if ($foundThemis != "") 

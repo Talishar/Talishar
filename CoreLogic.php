@@ -2551,7 +2551,12 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   if (!isSubcardEmpty($char, $index)) {
     $subcards = explode(',', $char[$index + 10]);
     $subcardsCount = count($subcards);
-    for ($i = 0; $i < $subcardsCount; $i++) AddGraveyard($subcards[$i], $player, "CHAR");
+    for ($i = 0; $i < $subcardsCount; $i++) {
+      if ($wasBanished)
+        BanishCardForPlayer($subcards[$i], $player, "CHAR");
+      else
+        AddGraveyard($subcards[$i], $player, "CHAR");
+    }
   }
   $char[$index + 10] = "-";
   if (!$skipDestroy) {
