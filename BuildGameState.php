@@ -41,7 +41,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
   $friendListFromSession = $sessionData['friendList'] ?? [];
-  if (empty($friendListFromSession) && $playerID == 3 && $sessionUserLoggedIn && !empty($sessionUserName)) {
+  if (empty($friendListFromSession) && $playerID == 3 && !empty($sessionUserName)) {
     $dbConn = GetDBConnection();
     if ($dbConn) {
       $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
