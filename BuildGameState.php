@@ -82,6 +82,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
     $spectatorIsFriendOfP2 = in_array($p2uid, $friendList);
   }
+  
+  // Debug logging
+  $response->debugFriendsBackend = [
+    'friendList' => $friendList,
+    'p1uid' => $p1uid,
+    'p2uid' => $p2uid,
+    'spectatorIsFriendOfP1' => $spectatorIsFriendOfP1,
+    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2
+  ];
 
   $response->lastUpdate = $cacheVal;
 
