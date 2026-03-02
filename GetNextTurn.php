@@ -91,10 +91,6 @@ if ($sessionData['userLoggedIn'] && !empty($sessionData['userName'])) {
   }
 }
 
-if (count($sessionData['friendList']) > 0) {
-  WriteLog("DEBUG: Friend list loaded for spectator, count: " . count($sessionData['friendList']));
-}
-
 // Release the session lock NOW - before any file I/O or processing
 if (session_status() === PHP_SESSION_ACTIVE) {
   session_write_close();
