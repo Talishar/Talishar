@@ -95,6 +95,10 @@ if ($sessionData['userLoggedIn'] && !empty($sessionData['userName'])) {
   }
 }
 
+if (count($sessionData['friendList']) > 0) {
+  WriteLog("DEBUG: Friend list loaded for spectator, count: " . count($sessionData['friendList']));
+}
+
 // Release session lock BEFORE SSE loop to prevent deadlock
 if (session_status() === PHP_SESSION_ACTIVE) {
   session_write_close();
