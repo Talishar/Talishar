@@ -60,6 +60,10 @@ if (in_array($origin, $allowedOrigins)) {
 $targetAuthKey = "";
 if ($playerID == 1 && $p1Key !== null) $targetAuthKey = $p1Key;
 else if ($playerID == 2 && $p2Key !== null) $targetAuthKey = $p2Key;
+if($targetAuthKey === "" || $targetAuthKey === null) {
+  http_response_code(400);
+  die("Game does not exist.");
+}
 if ($authKey !== $targetAuthKey) {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   if ($authKey !== $targetAuthKey) {
