@@ -111,6 +111,10 @@ class grimoire_of_fellingsong extends Card
   {
     DestroyCharacter($this->controller, $cardIndex);
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class boltn_boots extends Card
@@ -5403,6 +5407,10 @@ class voltic_vanguard extends Card {
     if ($effects[1] <= 0) $remove = true;
     return $prevented;
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class solray_plating extends Card {
@@ -6489,6 +6497,10 @@ class kimono_of_layered_lessons extends Card {
 
   function CardCareAboutChiPitch() {
     return true;
+  }
+
+  function DefaultActiveState() {
+    return 1;
   }
 }
 

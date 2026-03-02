@@ -15,7 +15,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $p1TotalTime, $p2TotalTime;
 
   // Variables that will be set locally and need to be accessible to BuildPlayerInputPopup
-  global $MyCardBack, $TheirCardBack, $otherPlayer, $isReactFE, $isGameOver, $isCasterMode, $isReplay;
+  global $MyCardBack, $TheirCardBack, $otherPlayer, $isReactFE, $isGameOver, $isCasterMode, $isReplay, $isHideHandFromFriends, $viewerIsFriendOfOpponent;
 
   if (!IsGameNameValid($gameName)) {
     return "Invalid game name.";
@@ -40,6 +40,27 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $sessionIsPvtVoidPatron = $sessionData['isPvtVoidPatron'] ?? false;
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
+  $friendListFromSession = $sessionData['friendList'] ?? [];
+  if (empty($friendListFromSession) && $playerID == 3 && !empty($sessionUserName)) {
+    $dbConn = GetDBConnection();
+    if ($dbConn) {
+      $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
+      $stmt = $dbConn->prepare($query);
+      if ($stmt) {
+        $stmt->bind_param("s", $sessionUserName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+          $friendListFromSession[] = $row['usersUid'];
+        }
+        $stmt->close();
+      }
+      mysqli_close($dbConn);
+    }
+  }
+  
+  $sessionData['friendList'] = $friendListFromSession;
+
   $response = new stdClass();
   $response->playerInventory = [];
 
@@ -49,6 +70,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   include_once "ParseGamestate.php";
   ParseGamestate();
+
+  if (empty($p1uid) || empty($p2uid)) {
+    $gameFileLines = @file("./Games/" . $gameName . "/GameFile.txt", FILE_IGNORE_NEW_LINES);
+    if ($gameFileLines !== false && count($gameFileLines) >= 11) {
+      if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
+      if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
+    }
+  }
+  error_log("DEBUG: After ParseGamestate - p1uid=$p1uid, p2uid=$p2uid");
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
@@ -68,7 +98,38 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $isCasterMode = IsCasterMode();
   $isReplay = IsReplay();
 
+  // Determine friend-based hand visibility using pre-loaded friend list from sessionData
+  $isHideHandFromFriends = IsHideHandFromFriends($otherPlayer);
+  $viewerIsFriendOfOpponent = false;
+  $spectatorIsFriendOfP1 = false;
+  $spectatorIsFriendOfP2 = false;
+  
+  $friendList = $sessionData['friendList'] ?? [];
+  if ($playerID == 1 || $playerID == 2) {
+    $opponentUID = $playerID == 1 ? $p2uid : $p1uid;
+    $viewerIsFriendOfOpponent = in_array($opponentUID, $friendList);
+  } else if ($playerID == 3) {
+    $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
+    $spectatorIsFriendOfP2 = in_array($p2uid, $friendList);
+  }
+  
+  // Debug logging
+  $response->debugFriendsBackend = [
+    'friendList' => $friendList,
+    'p1uid' => $p1uid,
+    'p2uid' => $p2uid,
+    'spectatorIsFriendOfP1' => $spectatorIsFriendOfP1,
+    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2,
+    'sessionUserLoggedIn' => $sessionUserLoggedIn,
+    'sessionUserName' => $sessionUserName,
+  ];
+
   $response->lastUpdate = $cacheVal;
+
+  // Spectator count/names
+  $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];
+  $response->spectatorCount = $spectatorData['count'];
+  $response->spectatorNames = $spectatorData['names'];
 
   // send initial on-load information if requested
   if ($includeInitialLoad) {
@@ -401,7 +462,20 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $theirHandCount = count($theirHand);
-  $showTheirHand = $playerID == 3 && $isCasterMode || $isGameOver || $isReplay;
+  // For spectators, theirHand = P2's hand; show it if caster mode, game over, replay, or spectator is P2's friend
+  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2)));
+  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP2 && !IsHideHandFromFriends(2));
+  
+  // Send debug info for front-end logging
+  $response->debugFriendHand = [
+    'playerID' => $playerID,
+    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2,
+    'p2HideHandFromFriends' => IsHideHandFromFriends(2),
+    'showTheirHand' => $showTheirHand,
+    'isGameOver' => $isGameOver,
+    'isReplay' => $isReplay
+  ];
+  
   for ($i = 0; $i < $theirHandCount; ++$i) {
     $theirHandContents[] = JSONRenderedCard($showTheirHand ? $theirHand[$i] : $TheirCardBack);
   }
@@ -577,7 +651,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $handPieces = HandPieces();
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     if ($playerID == 3) {
-      if($isCasterMode || $isGameOver) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
+      // For spectators, myHand = P1's hand; show it if caster mode, game over, replay, or spectator is P1's friend
+      $spectatorCanSeeP1Hand = $isCasterMode || $isGameOver || ($spectatorIsFriendOfP1 && !IsHideHandFromFriends(1));
+      if($spectatorCanSeeP1Hand) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
@@ -1384,32 +1460,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $chatPiece15 = intval(GetCachePiece($gameName, 15));
   $chatPiece16 = intval(GetCachePiece($gameName, 16));
   $response->chatEnabled = $chatPiece15 == 1 && $chatPiece16 == 1 ? true : false;
-
-  $spectatorCount = 0;
-  $currentTime = round(microtime(true) * 1000);
-  $spectatorTimeout = 30000;
-  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
-
-  if (file_exists($spectatorFile)) {
-    $content = file_get_contents($spectatorFile);
-    if (!empty($content)) {
-      $spectatorData = json_decode($content, true);
-      if (is_array($spectatorData)) {
-        $spectatorCount = 0;
-        foreach ($spectatorData as $sessionKey => $spectatorInfo) {
-          $timestamp = is_array($spectatorInfo) ? $spectatorInfo['timestamp'] : $spectatorInfo;
-
-          $timeDiff = $currentTime - intval($timestamp);
-          if ($timeDiff < $spectatorTimeout) {
-            $spectatorCount++;
-          }
-        }
-      }
-    }
-  }
-
-  $response->spectatorCount = $spectatorCount;
-  $response->spectatorNames = [];
 
   $cacheVisibility = GetCachePiece($gameName, 9);
   $response->isPrivate = ($cacheVisibility !== "1");

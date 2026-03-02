@@ -71,6 +71,17 @@ foreach(PatreonCampaign::cases() as $campaign) {
   $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
 }
 
+// Load friend list if user is logged in (for friend hand visibility checks)
+$sessionData['friendList'] = [];
+$friendsListParam = TryGet("friendsList", "");
+if (!empty($friendsListParam)) {
+  try {
+    $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
+  } catch (Exception $e) {
+    // friendsList parameter parsing failed
+  }
+}
+
 // Release the session lock NOW - before any file I/O or processing
 if (session_status() === PHP_SESSION_ACTIVE) {
   session_write_close();
@@ -79,7 +90,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
 
-// Track player/spectator connection status
+// Track player connection status
 if ($isGamePlayer) {
   $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
   if ($playerStatus == "-1") WriteLog("🔌Player $playerID has connected.");
@@ -89,13 +100,11 @@ if ($isGamePlayer) {
     WriteLog("🔌Player $playerID has reconnected.");
     SetCachePiece($gameName, $playerID + 3, "0");
   }
-} else if ($playerID == 3) {
-  // Track spectators
-  $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-  $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-  $sessionKey = md5($clientIp . '|' . $userAgent);
-  $spectatorUsername = $sessionData['userName'];
-  TrackSpectator($gameName, $sessionKey, $spectatorUsername);
+}
+
+if ($playerID == 3) {
+  $spectatorName = $sessionData['userName'] ?? 'anonymous';
+  UpdateSpectatorPresence($gameName, $spectatorName);
 }
 
 // Check if game file exists

@@ -40,6 +40,7 @@ $SET_DisableHeroIntro = 29; //Did the player disable hero intro animation
 $SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout (opponent)
 $SET_MirroredPlayerBoardLayout = 31; //Did the player enable mirrored board layout (player)
 $SET_AlwaysShowCounters = 32; //Always show counters on cards
+$SET_HideHandFromFriends = 33; //Hide your hand content from friends
 
 function HoldPrioritySetting($player)
 {
@@ -345,6 +346,14 @@ function IsCasterMode()
   return $settings1[$SET_CasterMode] == "1" && $settings2[$SET_CasterMode] == "1";
 }
 
+function IsHideHandFromFriends($player)
+{
+  global $SET_HideHandFromFriends;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return isset($settings[$SET_HideHandFromFriends]) && $settings[$SET_HideHandFromFriends] == "1";
+}
+
 function IsStreamerMode($player)
 {
   global $SET_StreamerMode;
@@ -398,6 +407,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "MirroredBoardLayout" => 30,
     "MirroredPlayerBoardLayout" => 31,
     "AlwaysShowCounters" => 32,
+    "HideHandFromFriends" => 33,
   ];
   return $settingsToId[$value];
 }
@@ -432,7 +442,7 @@ function SaveSettingInDatabase($setting)
   global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
   global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
   global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
-  global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout;
+  global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
   switch($setting) {
     case $SET_DarkMode:
     case $SET_ColorblindMode:
@@ -456,6 +466,7 @@ function SaveSettingInDatabase($setting)
     case $SET_MirroredBoardLayout:
     case $SET_MirroredPlayerBoardLayout:
     case $SET_AlwaysShowCounters:
+    case $SET_HideHandFromFriends:
       return true;
     default: return false;
   }

@@ -73,60 +73,6 @@ function InvalidateGamestateCache($gameName) {
 }
 
 /**
- * Track spectators in memory instead of file
- * Reduces I/O on every spectator update
- */
-function TrackSpectator($gameName, $sessionKey, $username = null) {
-  // Track spectators in file for reliable cross-request spectator counting
-  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
-  
-  // Create directory if it doesn't exist
-  $gameDir = "./Games/" . $gameName;
-  if (!is_dir($gameDir)) {
-    @mkdir($gameDir, 0755, true);
-  }
-  
-  // Read existing spectators
-  $spectators = [];
-  if (file_exists($spectatorFile)) {
-    $content = file_get_contents($spectatorFile);
-    if (!empty($content)) {
-      $spectators = json_decode($content, true) ?? [];
-    }
-  }
-  
-  // Current timestamp in milliseconds (matching GetNextTurn.php format)
-  $currentTime = round(microtime(true) * 1000);
-  
-  // Add/update this spectator session with optional username
-  $spectators[$sessionKey] = [
-    'timestamp' => $currentTime,
-    'username' => $username ?? 'Anonymous'
-  ];
-  
-  // Write back to file
-  @file_put_contents($spectatorFile, json_encode($spectators));
-}
-
-/**
- * Get spectator count from cache
- */
-function GetSpectatorCount($gameName) {
-  if (!extension_loaded('apcu') || !ini_get('apc.enabled')) {
-    return 0;
-  }
-  
-  if (!function_exists('apcu_fetch')) {
-    return 0;
-  }
-  
-  $cacheKey = "spectators_" . md5($gameName);
-  $spectators = @apcu_fetch($cacheKey) ?? [];
-  
-  return count($spectators);
-}
-
-/**
  * Buffer write operations instead of immediate writes
  * Reduces file I/O by batching operations
  */
@@ -237,4 +183,73 @@ function LogCacheStats() {
   error_log("[APCu Cache] Hits: {$stats['hits']}, Misses: {$stats['misses']}, Hit Rate: {$hitRate}%, Memory: " . 
     round($stats['memory_used'] / 1024 / 1024, 2) . "MB / " .
     round($stats['memory_available'] / 1024 / 1024, 2) . "MB");
+}
+
+function UpdateSpectatorPresence($gameName, $spectatorName) {
+  $now = time();
+  $spectatorName = trim($spectatorName);
+  if ($spectatorName === '') $spectatorName = 'anonymous';
+
+  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    $key = 'spectators_' . $gameName;
+    $spectators = @apcu_fetch($key);
+    if (!is_array($spectators)) $spectators = [];
+    $spectators[$spectatorName] = $now;
+    foreach ($spectators as $name => $lastSeen) {
+      if ($now - $lastSeen > 60) unset($spectators[$name]);
+    }
+    @apcu_store($key, $spectators, 120);
+    return;
+  }
+
+  $file = './Games/' . $gameName . '/spectators.txt';
+  $fh = @fopen($file, 'c+');
+  if (!$fh) return;
+  flock($fh, LOCK_EX);
+  $lines = [];
+  while (!feof($fh)) {
+    $line = trim(fgets($fh));
+    if ($line === '') continue;
+    $parts = explode(':', $line, 2);
+    if (count($parts) === 2 && ($now - intval($parts[1])) < 60) {
+      $lines[$parts[0]] = intval($parts[1]);
+    }
+  }
+  $lines[$spectatorName] = $now;
+  ftruncate($fh, 0);
+  rewind($fh);
+  foreach ($lines as $name => $ts) {
+    fwrite($fh, $name . ':' . $ts . "\n");
+  }
+  flock($fh, LOCK_UN);
+  fclose($fh);
+}
+
+function GetActiveSpectators($gameName) {
+  $now = time();
+  $threshold = 45;
+
+  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    $key = 'spectators_' . $gameName;
+    $spectators = @apcu_fetch($key);
+    if (!is_array($spectators)) return ['count' => 0, 'names' => []];
+    $activeNames = [];
+    foreach ($spectators as $name => $lastSeen) {
+      if ($now - $lastSeen <= $threshold) $activeNames[] = $name;
+    }
+    return ['count' => count($activeNames), 'names' => array_values($activeNames)];
+  }
+
+  $file = './Games/' . $gameName . '/spectators.txt';
+  if (!file_exists($file)) return ['count' => 0, 'names' => []];
+  $lines = @file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  if (!is_array($lines)) return ['count' => 0, 'names' => []];
+  $activeNames = [];
+  foreach ($lines as $line) {
+    $parts = explode(':', $line, 2);
+    if (count($parts) === 2 && ($now - intval($parts[1])) <= $threshold) {
+      $activeNames[] = $parts[0];
+    }
+  }
+  return ['count' => count($activeNames), 'names' => $activeNames];
 }
