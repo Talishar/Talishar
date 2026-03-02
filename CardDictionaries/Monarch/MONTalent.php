@@ -216,8 +216,8 @@ function MONTalentHitEffect($cardID)
     global $mainPlayer;
     AddDecisionQueue("DECKCARDS", $mainPlayer, "0");
     AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose if you want to banish <0> with ".CardLink("shadow_puppetry_red", "shadow_puppetry_red"), 1);
-    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_the_card", 1);
+    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to banish <0> with " . CardLink("shadow_puppetry_red") . " effect?", 1);
+    AddDecisionQueue("YESNO", $mainPlayer, "-", 1);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("PARAMDELIMTOARRAY", $mainPlayer, "0", 1);
     AddDecisionQueue("MULTIREMOVEDECK", $mainPlayer, "0", 1);
