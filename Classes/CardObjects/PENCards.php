@@ -8011,6 +8011,7 @@ class helm_of_safe_haven extends Card {
         if (CanBlock($topCard, "DECK")) {
           $Deck->Top(true);
           AddCombatChain($topCard, $this->controller, "DECK", 0, "-", defending:true);
+          OnBlockResolveEffects($topCard); //This should probably be wrapped into AddCombatChain
         }
         PummelHit($this->controller);
       }
