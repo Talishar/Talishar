@@ -160,8 +160,7 @@ function CharacterStartTurnAbility($index)
     case "vynnset_iron_maiden":
     case "vynnset":
       if ($character[1] < 3) {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to banish for Vynnset");
-        MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-");
+        MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-", DQContext:"Choose a card to banish for ".CardLink($cardID, $cardID));
         // this is a little messy, but vynnset's effect context can get messed up inside PlayAura
         if (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") {
           WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
