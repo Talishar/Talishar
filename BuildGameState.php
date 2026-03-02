@@ -71,14 +71,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   include_once "ParseGamestate.php";
   ParseGamestate();
 
-  if ($playerID == 3 && (empty($p1uid) || empty($p2uid))) {
-    $gameFileContent = file_get_contents("./Games/" . $gameName . "/GameFile.txt");
-    if ($gameFileContent) {
-      $lines = explode("\n", $gameFileContent);
-      if (count($lines) >= 2) {
-        if (empty($p1uid)) $p1uid = trim($lines[0]);
-        if (empty($p2uid)) $p2uid = trim($lines[1]);
-      }
+  if (empty($p1uid) || empty($p2uid)) {
+    $gameFileLines = @file("./Games/" . $gameName . "/GameFile.txt", FILE_IGNORE_NEW_LINES);
+    if ($gameFileLines !== false && count($gameFileLines) >= 11) {
+      if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
+      if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
     }
   }
   error_log("DEBUG: After ParseGamestate - p1uid=$p1uid, p2uid=$p2uid");
