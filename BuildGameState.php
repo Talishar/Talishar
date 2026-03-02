@@ -119,7 +119,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     'p1uid' => $p1uid,
     'p2uid' => $p2uid,
     'spectatorIsFriendOfP1' => $spectatorIsFriendOfP1,
-    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2
+    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2,
+    'sessionUserLoggedIn' => $sessionUserLoggedIn,
+    'sessionUserName' => $sessionUserName,
   ];
 
   $response->lastUpdate = $cacheVal;
