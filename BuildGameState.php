@@ -424,6 +424,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // For spectators, theirHand = P2's hand; show it if caster mode, game over, replay, or spectator is P2's friend
   $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2)));
   $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP2 && !IsHideHandFromFriends(2));
+  
+  // Send debug info for front-end logging
+  $response->debugFriendHand = [
+    'playerID' => $playerID,
+    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2,
+    'p2HideHandFromFriends' => IsHideHandFromFriends(2),
+    'showTheirHand' => $showTheirHand,
+    'isGameOver' => $isGameOver,
+    'isReplay' => $isReplay
+  ];
+  
   for ($i = 0; $i < $theirHandCount; ++$i) {
     $theirHandContents[] = JSONRenderedCard($showTheirHand ? $theirHand[$i] : $TheirCardBack);
   }
