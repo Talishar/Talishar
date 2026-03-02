@@ -294,22 +294,14 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeChe
   }
 
   $parameter = str_replace(" ", "_", $parameter);
-  array_splice($decisionQueue, $insertIndex, 0, $phase);
-  array_splice($decisionQueue, $insertIndex + 1, 0, $player);
-  array_splice($decisionQueue, $insertIndex + 2, 0, $parameter);
-  array_splice($decisionQueue, $insertIndex + 3, 0, $subsequent);
-  array_splice($decisionQueue, $insertIndex + 4, 0, $makeCheckpoint);
+  array_splice($decisionQueue, $insertIndex, 0, [$phase, $player, $parameter, $subsequent, $makeCheckpoint]);
 }
 
 function PrependDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
 {
   global $decisionQueue;
   $parameter = str_replace(" ", "_", $parameter);
-  array_unshift($decisionQueue, $makeCheckpoint);
-  array_unshift($decisionQueue, $subsequent);
-  array_unshift($decisionQueue, $parameter);
-  array_unshift($decisionQueue, $player);
-  array_unshift($decisionQueue, $phase);
+  $decisionQueue = array_merge([$phase, $player, $parameter, $subsequent, $makeCheckpoint], $decisionQueue);
 }
 
 function IsDecisionQueueActive()
