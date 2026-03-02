@@ -77,10 +77,8 @@ foreach(PatreonCampaign::cases() as $campaign) {
 
 // Load friend list if user is logged in (for friend hand visibility checks)
 $sessionData['friendList'] = [];
-WriteLog("DEBUG: userLoggedIn=" . ($sessionData['userLoggedIn'] ? 'true' : 'false') . ", userName=" . ($sessionData['userName'] ?? 'null'));
 if ($sessionData['userLoggedIn'] && !empty($sessionData['userName'])) {
   $dbConn = GetDBConnection();
-  WriteLog("DEBUG: dbConn=" . ($dbConn ? 'connected' : 'failed'));
   if ($dbConn) {
     $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
     $stmt = $dbConn->prepare($query);
@@ -97,7 +95,9 @@ if ($sessionData['userLoggedIn'] && !empty($sessionData['userName'])) {
   }
 }
 
-WriteLog("DEBUG: friendList count: " . count($sessionData['friendList']));
+if (count($sessionData['friendList']) > 0) {
+  WriteLog("DEBUG: Friend list loaded for spectator, count: " . count($sessionData['friendList']));
+}
 
 // Release session lock BEFORE SSE loop to prevent deadlock
 if (session_status() === PHP_SESSION_ACTIVE) {
