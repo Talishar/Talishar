@@ -40,6 +40,27 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $sessionIsPvtVoidPatron = $sessionData['isPvtVoidPatron'] ?? false;
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
+  $friendListFromSession = $sessionData['friendList'] ?? [];
+  if (empty($friendListFromSession) && $playerID == 3 && $sessionUserLoggedIn && !empty($sessionUserName)) {
+    $dbConn = GetDBConnection();
+    if ($dbConn) {
+      $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
+      $stmt = $dbConn->prepare($query);
+      if ($stmt) {
+        $stmt->bind_param("s", $sessionUserName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+          $friendListFromSession[] = $row['usersUid'];
+        }
+        $stmt->close();
+      }
+      mysqli_close($dbConn);
+    }
+  }
+  
+  $sessionData['friendList'] = $friendListFromSession;
+
   $response = new stdClass();
   $response->playerInventory = [];
 
@@ -49,6 +70,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   include_once "ParseGamestate.php";
   ParseGamestate();
+
+  if ($playerID == 3 && (empty($p1uid) || empty($p2uid))) {
+    $gameFileContent = file_get_contents("./Games/" . $gameName . "/GameFile.txt");
+    if ($gameFileContent) {
+      $lines = explode("\n", $gameFileContent);
+      if (count($lines) >= 2) {
+        if (empty($p1uid)) $p1uid = trim($lines[0]);
+        if (empty($p2uid)) $p2uid = trim($lines[1]);
+      }
+    }
+  }
+  error_log("DEBUG: After ParseGamestate - p1uid=$p1uid, p2uid=$p2uid");
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
