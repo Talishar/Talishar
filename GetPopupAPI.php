@@ -172,7 +172,7 @@ switch ($popupType) {
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
     global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode, $SET_AlwaysShowCounters;
-    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout;
+    global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     
     $response->Settings = [];
     
@@ -217,6 +217,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "MirroredBoardLayout", 30, $dbSettings);
       AddSettingFromDB($response->Settings, "MirroredPlayerBoardLayout", 31, $dbSettings);
       AddSettingFromDB($response->Settings, "AlwaysShowCounters", 32, $dbSettings);
+      AddSettingFromDB($response->Settings, "HideHandFromFriends", 33, $dbSettings);
     } else {
       // Normal game settings
       AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
@@ -244,6 +245,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "MirroredBoardLayout", $SET_MirroredBoardLayout);
       AddSetting($response->Settings, "MirroredPlayerBoardLayout", $SET_MirroredPlayerBoardLayout);
       AddSetting($response->Settings, "AlwaysShowCounters", $SET_AlwaysShowCounters);
+      AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
