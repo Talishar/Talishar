@@ -431,6 +431,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (strpos($parameter, "THEIRALLY") !== false) {
         $parameter = "THEIRCHAR:subtype=Ally&$parameter";
       }
+      if (strpos($parameter, "THEIRCHAR:type=E") !== false) {
+        $parameter = "THEIRITEMS:type=E&$parameter";
+      }
+      if (strpos($parameter, "MYCHAR:type=E") !== false) {
+        $parameter = "MYITEMS:type=E&$parameter";
+      }
       $rv = SearchMultizone($player, $parameter);
       // we may want to dedupe this eventually, not pressing issue
       return $rv == "" ? "PASS" : $rv;
@@ -2245,20 +2251,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$index + 9] += $parameter;
       return $lastResult;
     case "MODDEFCOUNTER":
-      if ($lastResult == "") return $lastResult;
-      if (substr($lastResult, 0, 5) == "THEIR") {
-        $index = intval(explode("-", $lastResult)[1]); 
-        $player = $player == 1 ? 2 : 1;
-      }
-      elseif(substr($lastResult, 0, 2) == "MY") {
-        $index = intval(explode("-", $lastResult)[1]);
-      }
-      else {
-        $index = intval($lastResult);
-      }
-      $character = &GetPlayerCharacter($player);
-      $character[$index + 4] = intval($character[$index + 4]) + $parameter;
-      if ($parameter < 0) WriteLog(CardLink($character[$index], $character[$index]) . " gets a -1 counter.");
+      if (is_numeric($lastResult))
+        $object = new CharacterCard($lastResult, $player);
+      else
+        $object = MZIndexToObject($player, $lastResult);
+      $object->AddDefCounters(-1);
+      if ($parameter < 0) WriteLog(CardLink($object->CardID()) . " gets a -1 counter.");
       return $lastResult;
     case "REMOVEDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
