@@ -4017,14 +4017,11 @@ function CharacterDefaultActiveState($cardID)
     case "radiant_touch":
     case "radiant_view":
     case "tremorshield_sabatons":
-    case "grimoire_of_fellingsong":
     case "sealace_sarong":
     case "talismanic_lense":
     case "gravy_bones":
     case "gravy_bones_shipwrecked_looter":
     case "dead_threads":
-    case "voltic_vanguard":
-    case "kimono_of_layered_lessons":
     case "achilles_accelerator":
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
