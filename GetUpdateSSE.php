@@ -77,21 +77,12 @@ foreach(PatreonCampaign::cases() as $campaign) {
 
 // Load friend list if user is logged in (for friend hand visibility checks)
 $sessionData['friendList'] = [];
-if ($sessionData['userLoggedIn'] && !empty($sessionData['userName'])) {
-  $dbConn = GetDBConnection();
-  if ($dbConn) {
-    $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
-    $stmt = $dbConn->prepare($query);
-    if ($stmt) {
-      $stmt->bind_param("s", $sessionData['userName']);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      while ($row = $result->fetch_assoc()) {
-        $sessionData['friendList'][] = $row['usersUid'];
-      }
-      $stmt->close();
-    }
-    mysqli_close($dbConn);
+$friendsListParam = TryGet("friendsList", "");
+if (!empty($friendsListParam)) {
+  try {
+    $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
+  } catch (Exception $e) {
+    // friendsList parameter parsing failed
   }
 }
 
