@@ -85,6 +85,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->lastUpdate = $cacheVal;
 
+  // Spectator count/names
+  $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];
+  $response->spectatorCount = $spectatorData['count'];
+  $response->spectatorNames = $spectatorData['names'];
+
   // send initial on-load information if requested
   if ($includeInitialLoad) {
     include "MenuFiles/ParseGamefile.php";
@@ -1403,32 +1408,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $chatPiece15 = intval(GetCachePiece($gameName, 15));
   $chatPiece16 = intval(GetCachePiece($gameName, 16));
   $response->chatEnabled = $chatPiece15 == 1 && $chatPiece16 == 1 ? true : false;
-
-  $spectatorCount = 0;
-  $currentTime = round(microtime(true) * 1000);
-  $spectatorTimeout = 30000;
-  $spectatorFile = "./Games/" . $gameName . "/spectators.txt";
-
-  if (file_exists($spectatorFile)) {
-    $content = file_get_contents($spectatorFile);
-    if (!empty($content)) {
-      $spectatorData = json_decode($content, true);
-      if (is_array($spectatorData)) {
-        $spectatorCount = 0;
-        foreach ($spectatorData as $sessionKey => $spectatorInfo) {
-          $timestamp = is_array($spectatorInfo) ? $spectatorInfo['timestamp'] : $spectatorInfo;
-
-          $timeDiff = $currentTime - intval($timestamp);
-          if ($timeDiff < $spectatorTimeout) {
-            $spectatorCount++;
-          }
-        }
-      }
-    }
-  }
-
-  $response->spectatorCount = $spectatorCount;
-  $response->spectatorNames = [];
 
   $cacheVisibility = GetCachePiece($gameName, 9);
   $response->isPrivate = ($cacheVisibility !== "1");

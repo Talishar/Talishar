@@ -100,6 +100,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
   session_write_close();
 }
 
+if ($playerID == 3) {
+  $spectatorName = $sessionData['userName'] ?? 'anonymous';
+  UpdateSpectatorPresence($gameName, $spectatorName);
+}
+
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
 
@@ -131,6 +136,8 @@ $fileCheckInterval = 30.0;
 $gameFileExists = true;
 $lastConnectionCheck = microtime(true);
 $connectionCheckInterval = 2.0;
+$lastSpectatorRefresh = microtime(true);
+$spectatorRefreshInterval = 30.0;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -139,6 +146,11 @@ while (true) {
   if ($currentRealTime - $lastConnectionCheck >= $connectionCheckInterval) {
     if (connection_aborted()) exit;
     $lastConnectionCheck = $currentRealTime;
+  }
+
+  if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
+    UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'anonymous');
+    $lastSpectatorRefresh = $currentRealTime;
   }
 
   // Check if game file still exists

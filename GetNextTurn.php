@@ -99,7 +99,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
 
-// Track player/spectator connection status
+// Track player connection status
 if ($isGamePlayer) {
   $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
   if ($playerStatus == "-1") WriteLog("🔌Player $playerID has connected.");
@@ -109,13 +109,11 @@ if ($isGamePlayer) {
     WriteLog("🔌Player $playerID has reconnected.");
     SetCachePiece($gameName, $playerID + 3, "0");
   }
-} else if ($playerID == 3) {
-  // Track spectators
-  $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-  $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-  $sessionKey = md5($clientIp . '|' . $userAgent);
-  $spectatorUsername = $sessionData['userName'];
-  TrackSpectator($gameName, $sessionKey, $spectatorUsername);
+}
+
+if ($playerID == 3) {
+  $spectatorName = $sessionData['userName'] ?? 'anonymous';
+  UpdateSpectatorPresence($gameName, $spectatorName);
 }
 
 // Check if game file exists
