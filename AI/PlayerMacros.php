@@ -14,6 +14,10 @@ function ProcessMacros()
       if ($lastPhase != $turn[0]) $i = 0;
       $lastPhase = $turn[0];
       $somethingChanged = false;
+
+      //Debug
+      //WriteLog($turn[0] . " - " . $turn[2]);
+
       if ($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "B" && !IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
@@ -26,6 +30,7 @@ function ProcessMacros()
       else if ((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < LayerPieces() * 3) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }
+      else if ($turn[0] == "DYNPITCH" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if ($turn[0] == "INSTANT" || $turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))
       {
         if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
