@@ -1376,7 +1376,8 @@ class sigil_of_silphidae_blue extends Card {
       if ($AuraCard != "") $AuraCard->Destroy();
     }
     else {
-      $search = explode(",", SearchMultizone($this->controller, "MYDISCARD:subtype=Aura"));
+      $searchResult = SearchMultizone($this->controller, "MYDISCARD:subtype=Aura");
+      $search = $searchResult !== "" ? explode(",", $searchResult) : [];      
       $Discard = new Discard($this->controller);
       if ($Discard->TopCard() == $this->cardID && $additionalCosts != "ENTERS") { //it can't banish itself
         array_pop($search);
