@@ -36,6 +36,7 @@ if (!IsUserModerator($useruid)) {
 }
 
 // Validate CSRF token for POST requests (optional for API - credentials in cookies provide protection)
+/*
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
     if (!validateCSRFToken($_POST['csrf_token'])) {
         header('Content-Type: application/json');
@@ -44,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
         exit;
     }
 }
+    */
 
 // Handle both form-encoded and JSON POST data
 $postData = $_POST;
