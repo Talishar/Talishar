@@ -78,7 +78,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
     }
   }
-  error_log("DEBUG: After ParseGamestate - p1uid=$p1uid, p2uid=$p2uid");
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
@@ -136,26 +135,26 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
     $initialLoad->gameGUID = $gameGUID;
-    $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
-    $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
+    $initialLoad->playerName = $playerID != 2 ? $p1uid : $p2uid;
+    $initialLoad->opponentName = $playerID != 2 ? $p2uid : $p1uid;
     $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
 
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
-    $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
+    $initialLoad->playerIsPatron = ($playerID != 2 ? $p1IsPatron : $p2IsPatron) ?: "";
 
     // Fetch tiers live from DB so they reflect the current state (not stale game file values)
     $livePlayerTiers = GetMetafyTiersFromDatabase($initialLoad->playerName);
     $liveOpponentTiers = GetMetafyTiersFromDatabase($initialLoad->opponentName);
-    $initialLoad->playerMetafyTiers = !empty($livePlayerTiers) ? $livePlayerTiers : (($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: []);
+    $initialLoad->playerMetafyTiers = !empty($livePlayerTiers) ? $livePlayerTiers : (($playerID != 2 ? $p1MetafyTiers : $p2MetafyTiers) ?: []);
 
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
-    $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
-    $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
+    $initialLoad->opponentIsPatron = ($playerID != 2 ? $p2IsPatron : $p1IsPatron) ?: "";
+    $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID != 2 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
-    $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
+    $initialLoad->isOpponentAI = $playerID != 2 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];

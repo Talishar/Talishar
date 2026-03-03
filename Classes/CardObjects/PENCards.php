@@ -1376,7 +1376,8 @@ class sigil_of_silphidae_blue extends Card {
       if ($AuraCard != "") $AuraCard->Destroy();
     }
     else {
-      $search = explode(",", SearchMultizone($this->controller, "MYDISCARD:subtype=Aura"));
+      $searchResult = SearchMultizone($this->controller, "MYDISCARD:subtype=Aura");
+      $search = $searchResult !== "" ? explode(",", $searchResult) : [];      
       $Discard = new Discard($this->controller);
       if ($Discard->TopCard() == $this->cardID && $additionalCosts != "ENTERS") { //it can't banish itself
         array_pop($search);
@@ -8011,6 +8012,7 @@ class helm_of_safe_haven extends Card {
         if (CanBlock($topCard, "DECK")) {
           $Deck->Top(true);
           AddCombatChain($topCard, $this->controller, "DECK", 0, "-", defending:true);
+          OnBlockResolveEffects($topCard); //This should probably be wrapped into AddCombatChain
         }
         PummelHit($this->controller);
       }

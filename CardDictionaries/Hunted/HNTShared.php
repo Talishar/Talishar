@@ -931,8 +931,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "cull_red":
-      MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-");
-      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-");
+      MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-", context:"Choose a card to banish to " . CardLink($cardID, $cardID));
+      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-", context:"Choose a card to banish to " . CardLink($cardID, $cardID));
       break;
     case "the_hand_that_pulls_the_strings":
       AddCurrentTurnEffect("the_hand_that_pulls_the_strings", $currentPlayer);

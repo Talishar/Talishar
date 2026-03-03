@@ -1538,12 +1538,14 @@ class no_hero_stands_alone_yellow extends Card {
   }
 
   function WonClashAbility($winnerID, $switched) {
+    $lostValue = -3;
     // will need to make this able to choose past chain links and make it clear which card is a past chain link
     AddDecisionQueue("MULTIZONEINDICES", $winnerID, "COMBATCHAINLINK");
-    AddDecisionQueue("SETDQCONTEXT", $winnerID, "Choose a card to give -3 power and block (or pass)", 1);
+    AddDecisionQueue("SETDQCONTEXT", $winnerID, "Choose a card to give -3 power and -3 block (or pass)", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $winnerID, "<-", 1);
-    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $winnerID, -3, 1);
-    AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $winnerID, -3, 1);
+    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $winnerID, $lostValue."-SKIPLOG", 1);
+    AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $winnerID, $lostValue."-SKIPLOG", 1);
+    AddDecisionQueue("WRITELOGCOMBATCHAIN", $winnerID, "gets -3 power and -3 defense", 1);
   }
 }
 
@@ -3910,7 +3912,15 @@ class look_tuff extends Card {
       AddDecisionQueue("PASSPARAMETER", $this->controller, "PASS");
     }
     AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $this->controller, "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return -1;
   }
 }
 
