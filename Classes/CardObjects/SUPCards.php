@@ -3912,7 +3912,15 @@ class look_tuff extends Card {
       AddDecisionQueue("PASSPARAMETER", $this->controller, "PASS");
     }
     AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $this->controller, "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return -1;
   }
 }
 
