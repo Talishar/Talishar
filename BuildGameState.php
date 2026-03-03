@@ -135,26 +135,26 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
     $initialLoad->gameGUID = $gameGUID;
-    $initialLoad->playerName = $playerID != 2 ? $p1uid : $p2uid;
-    $initialLoad->opponentName = $playerID != 2 ? $p2uid : $p1uid;
+    $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
+    $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
     $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
 
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
-    $initialLoad->playerIsPatron = ($playerID != 2 ? $p1IsPatron : $p2IsPatron) ?: "";
+    $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
 
     // Fetch tiers live from DB so they reflect the current state (not stale game file values)
     $livePlayerTiers = GetMetafyTiersFromDatabase($initialLoad->playerName);
     $liveOpponentTiers = GetMetafyTiersFromDatabase($initialLoad->opponentName);
-    $initialLoad->playerMetafyTiers = !empty($livePlayerTiers) ? $livePlayerTiers : (($playerID != 2 ? $p1MetafyTiers : $p2MetafyTiers) ?: []);
+    $initialLoad->playerMetafyTiers = !empty($livePlayerTiers) ? $livePlayerTiers : (($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: []);
 
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
-    $initialLoad->opponentIsPatron = ($playerID != 2 ? $p2IsPatron : $p1IsPatron) ?: "";
-    $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID != 2 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
+    $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
+    $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
-    $initialLoad->isOpponentAI = $playerID != 2 ? ($p2IsAI == "1") : ($p1IsAI == "1");
+    $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];
@@ -461,15 +461,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $theirHandCount = count($theirHand);
-  // For spectators, theirHand = P2's hand; show it if caster mode, game over, replay, or spectator is P2's friend
-  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2)));
-  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP2 && !IsHideHandFromFriends(2));
+  $spectatorCanSeeP1Hand = $playerID == 3 && ($isCasterMode || ($spectatorIsFriendOfP1 && !IsHideHandFromFriends(1)));
+  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !IsHideHandFromFriends(1));
   
   // Send debug info for front-end logging
   $response->debugFriendHand = [
     'playerID' => $playerID,
-    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2,
-    'p2HideHandFromFriends' => IsHideHandFromFriends(2),
+    'spectatorIsFriendOfP1' => $spectatorIsFriendOfP1,
+    'p1HideHandFromFriends' => IsHideHandFromFriends(1),
     'showTheirHand' => $showTheirHand,
     'isGameOver' => $isGameOver,
     'isReplay' => $isReplay
@@ -650,9 +649,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $handPieces = HandPieces();
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     if ($playerID == 3) {
-      // For spectators, myHand = P1's hand; show it if caster mode, game over, replay, or spectator is P1's friend
-      $spectatorCanSeeP1Hand = $isCasterMode || $isGameOver || ($spectatorIsFriendOfP1 && !IsHideHandFromFriends(1));
-      if($spectatorCanSeeP1Hand) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
+      $spectatorCanSeeP2Hand = $isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2));
+      if($spectatorCanSeeP2Hand) array_push($myHandContents, JSONRenderedCard(cardNumber: $myHand[$i], controller: 2));
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
