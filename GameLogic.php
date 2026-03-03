@@ -582,14 +582,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVECOMBATCHAIN":
       return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
-      $val = intval($parameter);
+      $params = explode("-", $parameter);
+      $val = intval($params[0]);
+      $skip = isset($params[1]) ? $params[1] : "-";
       CombatChainPowerModifier($lastResult, $val);
       $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult)[1]] : $combatChain[$lastResult];
-      if ($val > 0) WriteLog(CardLink($cardID, $cardID) . " gets +" . $val . " power");
-      else if ($val < 0) WriteLog(CardLink($cardID, $cardID) . " loses " . -$val . " power");
+      if ($skip == "-") {
+        if ($val > 0) WriteLog(CardLink($cardID, $cardID) . " gets +" . $val . " power");
+        else if ($val < 0) WriteLog(CardLink($cardID, $cardID) . " loses " . -$val . " power");
+      }
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
-      return CombatChainDefenseModifier($lastResult, intval($parameter));
+      $params = explode("-", $parameter);
+      $val = intval($params[0]);
+      $skip = isset($params[1]) ? $params[1] : "-";
+      return CombatChainDefenseModifier($lastResult, $val, $skip);
     case "PUTCOMBATCHAINDEFENSE0":
       //look at making this set base defense
       $index = count($combatChain) - CombatChainPieces();
@@ -1231,6 +1238,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "WRITELOGLASTRESULT":
       WriteLog("<b>$lastResult</b> was selected.");
+      return $lastResult;
+    case "WRITELOGCOMBATCHAIN":
+      $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult)[1]] : $combatChain[$lastResult];
+      WriteLog(GamestateUnsanitize(CardLink($cardID) . " " . $parameter));
       return $lastResult;
     case "ADDCURRENTTURNEFFECT":
       $params = explode("!", $parameter);

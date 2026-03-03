@@ -295,7 +295,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "standing_order_red":
-      MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may: true, silent: true);
+      MZMoveCard($currentPlayer, "MYARS", "MYBOTDECK", may: true, silent: true, DQContext:"Choose a card to put on the bottom of your deck (or pass)");
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       return "";
     case "tenacity_yellow":

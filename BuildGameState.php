@@ -78,7 +78,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
     }
   }
-  error_log("DEBUG: After ParseGamestate - p1uid=$p1uid, p2uid=$p2uid");
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
