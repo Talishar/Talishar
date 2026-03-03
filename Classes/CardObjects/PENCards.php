@@ -2582,7 +2582,13 @@ class fasting_carcass extends BaseCard {
 
   function CombatEffectActive() {
     global $CombatChain;
+    // need to check if it's attached
+    if (!IsAttackStep() && !DelimStringContains($CombatChain->AttackCard()->StaticBuffs(), SetID($this->cardID))) return false;
     return ColorContains($CombatChain->AttackCard()->ID(), PitchValue($this->cardID), $this->controller);
+  }
+
+  function CurrentEffectGrantsGoAgain() {
+    return true;
   }
 }
 
@@ -2599,6 +2605,10 @@ class fasting_carcass_red extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
   }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
 }
 
 class fasting_carcass_yellow extends Card {
@@ -2614,6 +2624,10 @@ class fasting_carcass_yellow extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
   }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
 }
 
 class fasting_carcass_blue extends Card {
@@ -2628,6 +2642,10 @@ class fasting_carcass_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 }
 

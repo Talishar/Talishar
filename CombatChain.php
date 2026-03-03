@@ -2107,6 +2107,12 @@ function IsLayerStep()
   return GoesOnCombatChain("M", $layers[$layerInd], $layerFrom, $mainPlayer);
 }
 
+function IsAttackStep() {
+  global $Stack;
+  $attackStep = $Stack->FindCardID("ATTACKSTEP");
+  return $attackStep != "";
+}
+
 // check if we've already passed damage
 // combat chain doesn't close of the attack goes away now
 function AfterDamage()

@@ -4274,20 +4274,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $index = -1;
     if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
-      if ($index == 0) {//if adding an attacking card
-        $count = count($currentTurnEffects);
-        $pieces = CurrentTurnEffectPieces();
-        for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-            if ($currentTurnEffects[$i] == "cheating_scoundrel_red")
-              AddOnWagerEffects();
-            elseif (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-              $CombatChain->AttackCard()->AddBuff(ConvertToSetID($currentTurnEffects[$i]));
-              RemoveCurrentTurnEffect($i);
-            }
-          }
-        }
-      }
     }
     if ($index <= 0 && !$skipDRResolution) {
       ChangeSetting($defPlayer, $SET_PassDRStep, 0);
@@ -4318,6 +4304,20 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
         AuraAttackAbilities($cardID);
         CharacterAttackAbilities($cardID);
+      }
+      if ($index == 0) {//if adding an attacking card
+        $count = count($currentTurnEffects);
+        $pieces = CurrentTurnEffectPieces();
+        for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+            if ($currentTurnEffects[$i] == "cheating_scoundrel_red")
+              AddOnWagerEffects();
+            elseif (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+              $CombatChain->AttackCard()->AddBuff(ConvertToSetID($currentTurnEffects[$i]));
+              RemoveCurrentTurnEffect($i);
+            }
+          }
+        }
       }
     } else { //On chain, but not index 0
       if ($definedCardType == "DR" && !$skipDRResolution) {

@@ -1174,6 +1174,9 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "beseech_the_demigon_yellow" => true,
     "beseech_the_demigon_blue" => true,
     "chase_the_tail_red" => true,
+    "fasting_carcass_red" => true,
+    "fasting_carcass_yellow" => true,
+    "fasting_carcass_blue" => true,
     default => false
   };
 }
