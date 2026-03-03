@@ -583,8 +583,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
       $params = explode("-", $parameter);
-      $val = intval($params[0]);
-      $skip = isset($params[1]) ? $params[1] : "-";
+      if ($params[0] == "") {
+        $val = -intval($params[1]);
+        $skip = $params[2] ?? "-";
+      }
+      else {
+        $val = intval($params[0]);
+        $skip = $params[1] ?? "-";
+      }
       CombatChainPowerModifier($lastResult, $val);
       $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult)[1]] : $combatChain[$lastResult];
       if ($skip == "-") {
@@ -594,8 +600,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
       $params = explode("-", $parameter);
-      $val = intval($params[0]);
-      $skip = isset($params[1]) ? $params[1] : "-";
+      if ($params[0] == "") {
+        $val = -intval($params[1]);
+        $skip = $params[2] ?? "-";
+      }
+      else {
+        $val = intval($params[0]);
+        $skip = $params[1] ?? "-";
+      }
       return CombatChainDefenseModifier($lastResult, $val, $skip);
     case "PUTCOMBATCHAINDEFENSE0":
       //look at making this set base defense
