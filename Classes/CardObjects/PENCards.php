@@ -5388,7 +5388,7 @@ class voltic_vanguard extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddCurrentTurnEffect($this->cardID."-2", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
   function EquipPayAdditionalCosts($cardIndex = '-') {
@@ -5401,16 +5401,22 @@ class voltic_vanguard extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
-    global $currentTurnEffects;
-    $effects = explode("-", $currentTurnEffects[$index]);
-    $prevented = min($damage, $effects[1]);
-    $effects[1] -= $prevented;
-    if ($effects[1] <= 0) $remove = true;
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->Effect($index);
+    $prevented = min($damage, $Effect->NumUses());
+    if (!$amount) {
+      $Effect->AddUses(-$prevented);
+      if ($Effect->NumUses() <= 0) $remove = true;
+    }
     return $prevented;
   }
 
   function DefaultActiveState() {
     return 1;
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
   }
 }
 
