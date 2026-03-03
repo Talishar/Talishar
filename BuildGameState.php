@@ -80,7 +80,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   // Auth validation
-  $targetAuth = $playerID != 2 ? $p1Key : $p2Key;
+  $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
   if ($playerID != 3 && $authKey !== $targetAuth) {
     return "Invalid Authkey";
   }
