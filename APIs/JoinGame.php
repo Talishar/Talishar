@@ -829,7 +829,7 @@ function isBannedInFormat($cardID, $format) {
         "fiddlers_green_red", "fiddlers_green_yellow", "fiddlers_green_blue",
         "honing_hood", "nimby_red", "nimby_yellow", "nimby_blue",
         "old_knocker", "reality_refractor", "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue",
-        "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_ironweave", "amulet_of_ice_blue",
+        "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_ironweave",
         "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue",
         "belittle_red", "belittle_yellow", "belittle_blue",
         "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
@@ -841,12 +841,15 @@ function isBannedInFormat($cardID, $format) {
         "flic_flak_red", "flic_flak_yellow", "flic_flak_blue",
         "goliath_gauntlet", "heartened_cross_strap", "mask_of_three_tails",
         "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
-        "rake_the_embers_red", "rake_the_embers_yellow", "rake_the_embers_blue",
-        "ragamuffins_hat", "rootbound_carapace_red", "rootbound_carapace_yellow", "rootbound_carapace_blue",
+        "ragamuffins_hat",
         "rosetta_thorn", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
         "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
+        "bracers_of_belief", "lightning_press_red", "lightning_press_yellow", "lightning_press_blue",
+        "aether_spindle_red", "aether_spindle_yellow", "aether_spindle_blue", "burn_up__shock_red",
+        "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
+        "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue"
       ], $benched)
   ];
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
