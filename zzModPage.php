@@ -7,6 +7,12 @@ include_once "./includes/dbh.inc.php";
 include_once './Libraries/CSRFLibraries.php';
 include_once './includes/ModeratorList.inc.php';
 
+if (!isset($_SESSION["userid"])) {
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
+
 if (!isset($_SESSION["useruid"])) {
   echo ("Please login to view this page.");
   exit;
