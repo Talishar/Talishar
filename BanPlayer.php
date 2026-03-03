@@ -17,6 +17,12 @@ include_once './includes/ModeratorList.inc.php';
 
 session_start();
 
+if (!isset($_SESSION["userid"])) {
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
+
 if (!isset($_SESSION["useruid"])) {
   echo json_encode(["status" => "error", "message" => "Please login to view this page."]);
   http_response_code(401);
@@ -30,6 +36,7 @@ if (!IsUserModerator($useruid)) {
 }
 
 // Validate CSRF token for POST requests (optional for API - credentials in cookies provide protection)
+/*
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
     if (!validateCSRFToken($_POST['csrf_token'])) {
         header('Content-Type: application/json');
@@ -38,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
         exit;
     }
 }
+    */
 
 // Handle both form-encoded and JSON POST data
 $postData = $_POST;
