@@ -65,7 +65,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerInventory = [];
 
   $isGamePlayer = $playerID == 1 || $playerID == 2;
-  $otherPlayer = $playerID == 2 ? 1 : 2;
+  $otherPlayer = $playerID == 1 ? 2 : 1;
   $cacheVal = intval(GetCachePiece($gameName, 1));
 
   include_once "ParseGamestate.php";
@@ -105,7 +105,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   
   $friendList = $sessionData['friendList'] ?? [];
   if ($playerID == 1 || $playerID == 2) {
-    $opponentUID = $playerID == 2 ? $p1uid : $p2uid;
+    $opponentUID = $playerID == 1 ? $p2uid : $p1uid;
     $viewerIsFriendOfOpponent = in_array($opponentUID, $friendList);
   } else if ($playerID == 3) {
     $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
@@ -152,7 +152,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID != 2 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID != 2 && $sessionIsPvtVoidPatron;
+    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
     $initialLoad->isOpponentAI = $playerID != 2 ? ($p2IsAI == "1") : ($p1IsAI == "1");
 
@@ -888,7 +888,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           action: $action,
           overlay: $overlay,
           borderColor: $border,
-          controller: $playerID == 2 ? 1 : 2,
+          controller: $playerID == 1 ? 2 : 1,
           facing: $theirArsenal[$i + 1],
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
           isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
@@ -898,7 +898,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         ));
       } else array_push($theirArse, JSONRenderedCard(
         cardNumber: $TheirCardBack,
-        controller: $playerID == 2 ? 1 : 2,
+        controller: $playerID == 1 ? 2 : 1,
         facing: $theirArsenal[$i + 1],
         countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
         isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
@@ -965,7 +965,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Their Allies
   $theirAlliesOutput = [];
-  $theirAllies = GetAllies($playerID == 2 ? 1 : 2);
+  $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
   $theirAlliesCount = count($theirAllies);
   $allyPieces = AllyPieces();
 
@@ -1061,7 +1061,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Their Permanents
   $theirPermanentsOutput = [];
-  $theirPermanents = GetPermanents($playerID == 2 ? 1 : 2);
+  $theirPermanents = GetPermanents($playerID == 1 ? 2 : 1);
   $theirPermanentsCount = count($theirPermanents);
   $permanentPieces = PermanentPieces();
   for ($i = 0; $i + $permanentPieces - 1 < $theirPermanentsCount; $i += $permanentPieces) {
@@ -1074,7 +1074,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //My Allies
   $myAlliesOutput = [];
-  $myAllies = GetAllies($playerID != 2 ? 1 : 2);
+  $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   $myAlliesCount = count($myAllies);
   for ($i = 0; $i + $allyPieces - 1 < $myAlliesCount; $i += $allyPieces) {
     $label = "";
@@ -1199,7 +1199,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //My Permanents
   $myPermanentsOutput = [];
-  $myPermanents = GetPermanents($playerID != 2 ? 1 : 2);
+  $myPermanents = GetPermanents($playerID == 1 ? 1 : 2);
   $myPermanentsCount = count($myPermanents);
   for ($i = 0; $i + $permanentPieces - 1 < $myPermanentsCount; $i += $permanentPieces) {
     $type = CardType($myPermanents[$i]);
@@ -1215,7 +1215,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //My Inventory
   $myInventoryOutput = [];
-  $myInventory = &GetInventory($playerID != 2 ? 1 : 2);
+  $myInventory = &GetInventory($playerID == 1 ? 1 : 2);
   $myInventoryCount = count($myInventory);
   for ($i = 0; $i < $myInventoryCount; ++$i) {
     array_push($myInventoryOutput, JSONRenderedCard(cardNumber: $myInventory[$i], controller: $playerID));
@@ -1394,7 +1394,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
 
   $response->turnPlayer = $mainPlayer;
-  $response->otherPlayer = $playerID == 2 ? 1 : 2;
+  $response->otherPlayer = $playerID == 1 ? 2 : 1;
   $response->firstPlayer = $firstPlayer;
   $response->turnNo = $currentTurn;
   $response->clock = $p1TotalTime + $p2TotalTime;
@@ -1470,7 +1470,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   // Opponent typing indicator
   if ($playerID >= 1 && $playerID <= 2) {
-    $opponentID = ($playerID == 2) ? 1 : 2;
+    $opponentID = ($playerID == 1) ? 2 : 1;
     $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $opponentID;
 
     $isOpponentTyping = false;
