@@ -3510,10 +3510,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         WriteLog(CardLink($parameter, $parameter) . " created an " . CardLink("agility", "agility") . ", " . CardLink("might", "might") . " and " . CardLink("vigor", "vigor") . " tokens.");
         break;
       case "standing_order_red":
-        MZMoveCard($player, "MYARS", "MYBOTDECK", may: true, silent: true);
+        MZMoveCard($player, "MYARS", "MYBOTDECK", may: true, silent: true, DQContext:"Choose a card to put on the bottom of your deck (or pass)");
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-        AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
-        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+        AddDecisionQueue("WRITELOG", $player, CardLink($parameter) . " gets +2 power and +2 defense", 1);
+        AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2-SKIPLOG", 1);
+        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2-SKIPLOG", 1);
         break;
       case "hide_tanner":
         $index = FindCharacterIndex($player, $parameter);

@@ -250,7 +250,7 @@ function CombatChainPowerModifier($index, $amount)
   ProcessAllMirage();
 }
 
-function CombatChainDefenseModifier($index, $amount)
+function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
 {
   global $combatChain, $CombatChain;
   if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
@@ -261,8 +261,10 @@ function CombatChainDefenseModifier($index, $amount)
       case "zephyr_needle_r":
       EvaluateCombatChain($totalPower, $totalBlock);
     }
-    if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
-    else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
+    if ($skipLog == "-") {
+      if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
+      else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
+    }
   }
   return $index;
 }
