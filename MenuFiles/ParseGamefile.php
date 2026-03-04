@@ -58,6 +58,8 @@
   $p2ContentCreatorID = trim(fgets($gameFileHandler));
   $p1SideboardSubmitted = trim(fgets($gameFileHandler));
   $p2SideboardSubmitted = trim(fgets($gameFileHandler));
+  $p1StartingEquipment = json_decode(trim(fgets($gameFileHandler)));
+  $p2StartingEquipment = json_decode(trim(fgets($gameFileHandler)));
   $p1IsAI = trim(fgets($gameFileHandler));
   $p2IsAI = trim(fgets($gameFileHandler));
   $gameGUID = trim(fgets($gameFileHandler));
@@ -65,6 +67,10 @@
   $p2MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true);
   if (!is_array($p1MetafyTiers)) $p1MetafyTiers = [];
   if (!is_array($p2MetafyTiers)) $p2MetafyTiers = [];
+  $p1MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
+  $p2MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
+  if (!is_array($p1MetafyCommunities)) $p1MetafyCommunities = [];
+  if (!is_array($p2MetafyCommunities)) $p2MetafyCommunities = [];
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

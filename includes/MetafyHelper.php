@@ -158,6 +158,36 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
     return $tiers;
   }
 }
+if (!function_exists('GetMetafyCommunitiesFromDatabase')) {
+  function GetMetafyCommunitiesFromDatabase($userName)
+  {
+    if (IsDevEnvironment()) return [];
+    $conn = GetDBConnection();
+    if (!$conn) return [];
+    $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_close($conn);
+      return [];
+    }
+
+    mysqli_stmt_bind_param($stmt, 's', $userName);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+
+    if (!$row || empty($row['metafyCommunities'])) {
+      return [];
+    }
+
+    $communities = json_decode($row['metafyCommunities'], true);
+    return is_array($communities) ? $communities : [];
+  }
+}
+
 function IsValidMetafyTier($tierName)
 {
   $supportedTiers = [
