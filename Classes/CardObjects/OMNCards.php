@@ -576,7 +576,12 @@ class astral_strike_red extends Card {
 
   function SpecificLogic() {
     global $dqVars;
-    switch ($dqVars["LASTRESULT"]) {
+    WriteLog(CardLink($this->cardID, $this->cardID) . " mode: " . str_replace("_", " ", $dqVars["LASTRESULT"]));
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:$dqVars["LASTRESULT"]);
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    switch ($additionalCosts) {
       case "Draw_a_Card": Draw($this->controller); break;
       case "Buff_Power": AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller); break;
       case "Go_Again": AddCurrentTurnEffect($this->cardID . "-GOAGAIN", $this->controller); break;
