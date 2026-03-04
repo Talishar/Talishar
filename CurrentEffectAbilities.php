@@ -1870,6 +1870,8 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
+      $Effect = new CurrentEffect($i);
+      if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != $uniqueID) continue;
       $effectArr = explode("-", $turnEffects[0]);
       $effectID = $effectArr[0];
       $parameter = $effectArr[1] ?? "-";

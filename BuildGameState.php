@@ -1532,30 +1532,21 @@ if (!function_exists('GetCardEffectLabel')) {
   function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
     if ($uniqueID == "" || $uniqueID == "-") return "";
     
-    $effectIndex = -1;
-    $effectsCount = count($currentTurnEffects);
-    for ($j = 0; $j < $effectsCount; ++$j) {
-      $effectParts = explode("-", $currentTurnEffects[$j]);
-      if (count($effectParts) >= 2) {
-        $targetUID = $effectParts[1];
-        if ($targetUID == $uniqueID) {
-          $effectIndex = $j;
-          break;
-        }
-      }
-    }
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffectUID($uniqueID);
+    if ($Effect->Index() == -1) return "";
     
-    if ($effectIndex == -1) return "";
-    
-    $effectName = explode("-", $currentTurnEffects[$effectIndex])[0];
+    $effectName = $Effect->EffectID();
     switch ($effectName) {
       case "beseech_the_demigon_red":
       case "beseech_the_demigon_yellow":
       case "beseech_the_demigon_blue":
+      case "painful_passage_red-buff":
         return "Power +" . EffectPowerModifier($effectName);
       case "tear_through_the_portal_red":
       case "tear_through_the_portal_yellow":
       case "tear_through_the_portal_blue":
+      case "painful_passage_red-go_again":
         return "Go Again";
       default:
         return "";

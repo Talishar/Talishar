@@ -22,11 +22,11 @@ class CurrentTurnEffects {
   }
 
   function FindEffectUID($uid) {
-    if (count($this->effects) == 0) return "";
+    if (count($this->effects) == 0) return new CurrentEffect(-1);
     for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {
       if ($this->effects[$i + 2] == $uid) return new CurrentEffect($i);
     }
-    return "";
+    return new CurrentEffect(-1);
   }
 
   function FindSpecificEffect($cardID, $uid) {
@@ -57,8 +57,11 @@ class CurrentEffect {
   // Constructor
   function __construct($index) {
 		global $currentTurnEffects;
-    $this->pieces = &$currentTurnEffects;
     $this->index = $index;
+    if ($index != -1)
+      $this->pieces = &$currentTurnEffects;
+    else
+      $this->pieces = [];
   }
 
   function Index() {
@@ -78,7 +81,7 @@ class CurrentEffect {
   }
 
   function AppliestoUniqueID() {
-    return $this->pieces[$this->index+2] ?? "-";
+    return $this->pieces[$this->index+2] ?? -1;
   }
 
   function NumUses() {

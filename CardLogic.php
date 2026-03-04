@@ -218,7 +218,9 @@ function AddNextTurnEffect($cardID, $player, $uniqueID = -1, $numTurns = 1)
 
 function IsCombatEffectLimited($index)
 {
-  global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID;
+  global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID, $CombatChain;
+  global $CurrentTurnEffects;
+  $Effect = $CurrentTurnEffects->Effect($index);
   if (count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
   // if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
   $attackSubType = CardSubType($combatChain[0]);
@@ -227,7 +229,8 @@ function IsCombatEffectLimited($index)
     if (count($allies) < $combatChainState[$CCS_WeaponIndex] + 5) return false;
     if ($allies[$combatChainState[$CCS_WeaponIndex] + 5] != $currentTurnEffects[$index + 2]) return true;
   } else {
-    return $combatChainState[$CCS_AttackUniqueID] != $currentTurnEffects[$index + 2];
+    if ($CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID()) return false;
+    else return $combatChainState[$CCS_AttackUniqueID] != $currentTurnEffects[$index + 2];
   }
   return false;
 }

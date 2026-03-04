@@ -363,12 +363,7 @@ class beseech_the_demigon extends BaseCard {
 		global $dqVars;
 		$index = $dqVars["index"] ?? "";
 		$choice = explode("-", CleanTarget($this->controller, $index))[1] ?? "";
-		AddCurrentTurnEffect("$this->cardID-$choice", $this->controller);
-	}
-
-	function CombatEffectActive($parameter) {
-		global $CombatChain;
-		return $parameter == $CombatChain->AttackCard()->OriginUniqueID();
+		AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$choice);
 	}
 }
 
@@ -389,7 +384,7 @@ class beseech_the_demigon_red extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive($parameter);
+		return true;
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
@@ -415,7 +410,7 @@ class beseech_the_demigon_yellow extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive($parameter);
+		return true;
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
@@ -441,7 +436,7 @@ class beseech_the_demigon_blue extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive($parameter);
+		return true;
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
@@ -2426,20 +2421,7 @@ class tear_through_the_portal extends BaseCard {
 		global $dqVars;
 		$index = $dqVars["index"] ?? "";
 		$choice = explode("-", CleanTarget($this->controller, $index))[1] ?? "";
-		AddCurrentTurnEffect("$this->cardID-$choice", $this->controller);
-	}
-
-	function CombatEffectActive($parameter) {
-		global $CombatChain;
-		return $parameter == $CombatChain->AttackCard()->OriginUniqueID();
-	}
-
-	function GrantsNAAGoAgain($uniqueID, $parameter, &$remove) {
-		if ($uniqueID == $parameter) {
-			$remove = true;
-			return true;
-		}
-		return false;
+		AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$choice);
 	}
 }
 
@@ -2460,11 +2442,12 @@ class tear_through_the_portal_red extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive($parameter);
+		return true;
 	}
 
 	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-		return $this->baseCard->GrantsNAAGoAgain($uniqueID, $parameter, $remove);
+		$remove = true;
+		return true;
 	}
 
 	function CurrentEffectGrantsGoAgain($param) {
@@ -2490,11 +2473,12 @@ class tear_through_the_portal_yellow extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive($parameter);
+		return true;
 	}
 
 	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-		return $this->baseCard->GrantsNAAGoAgain($uniqueID, $parameter, $remove);
+		$remove = true;
+		return true;
 	}
 
 	function CurrentEffectGrantsGoAgain($param) {
@@ -2520,11 +2504,12 @@ class tear_through_the_portal_blue extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive($parameter);
+		return true;
 	}
 
 	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-		return $this->baseCard->GrantsNAAGoAgain($uniqueID, $parameter, $remove);
+		$remove = true;
+		return true;
 	}
 
 	function CurrentEffectGrantsGoAgain($param) {
