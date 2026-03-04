@@ -557,3 +557,48 @@ class voltbound_duality_blue extends Card {
   }
 
 }
+
+class astral_strike_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "astral_strike_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumLightningFlowDestroyed;
+    if (GetClassState($this->controller, $CS_NumLightningFlowDestroyed) > 0) {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "Draw_a_Card,Buff_Power,Go_Again");
+      AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+      Await($this->controller, $this->cardID, final:true);
+    }
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    WriteLog(CardLink($this->cardID) . " mode: " . GamestateUnsanitize($dqVars["LASTRESULT"]));
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:$dqVars["LASTRESULT"]);
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    switch ($additionalCosts) {
+      case "Draw_a_Card": Draw($this->controller); break;
+      case "Buff_Power": AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller); break;
+      case "Go_Again": AddCurrentTurnEffect($this->cardID . "-GOAGAIN", $this->controller); break;
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $parameter == "BUFF" || $parameter == "GOAGAIN";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    if ($param == "BUFF") return 2;
+    return 0;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "GOAGAIN";
+  }
+}

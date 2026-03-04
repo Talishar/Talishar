@@ -110,6 +110,81 @@ Zone, then `:` for conditions, `;` separates AND conditions, `&` combines search
 
 **Zones:** CHAR, ALLY, ARS/ARSENAL, AURAS, BANISH, ITEMS, LAYER, HAND, DISCARD, PERM, PITCH, DECK, SOUL, LANDMARK, CC/COMBATCHAINLINK, PASTCHAINLINKS, COMBATCHAINATTACKS, CURRENTTURNEFFECTS
 
+## ClassState Tracking Pattern
+
+To track per-turn game events (e.g., "if you've destroyed X this turn"), use **ClassState** variables:
+
+1. **`Constants.php`** — Define constant (next sequential number after `$CS_NumWeaponsActivated = 115`), add to `global` declaration in `ResetMainClassState()`, and initialize to 0 in the same function.
+2. **`MenuFiles/StartHelper.php`** — Append ` 0` to the class state string on line 35 (one value per constant).
+3. **Trigger location** — Call `IncrementClassState($player, $CS_YourConstant)` where the event occurs (e.g., `AuraAbilities.php:DestroyAura()` for aura destruction).
+4. **Check** — `GetClassState($player, $CS_YourConstant) > 0` in card logic.
+
+Existing examples: `$CS_NumSeismicSurgeDestroyed`, `$CS_NumRedPlayed`, `$CS_NumWeaponsActivated`.
+
+## Modal Choose-1 Pattern (BUTTONINPUT + Await + Trigger Layer)
+
+For "choose 1" effects on attack cards, use BUTTONINPUT with Await, then resolve via a **trigger layer**:
+```php
+// In PlayAbility — queue the choice
+AddDecisionQueue("SETDQCONTEXT", $player, "Choose a mode for " . CardLink($cardID));
+AddDecisionQueue("BUTTONINPUT", $player, "Option_A,Option_B,Option_C");
+AddDecisionQueue("SHOWMODES", $player, $cardID, 1);
+Await($player, $cardID, final:true);
+
+// In SpecificLogic — log choice and create trigger layer
+global $dqVars;
+WriteLog(CardLink($this->cardID) . " mode: " . GamestateUnsanitize($dqVars["LASTRESULT"]));
+AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:$dqVars["LASTRESULT"]);
+
+// In ProcessTrigger — resolve the actual effect
+function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+  switch ($additionalCosts) {
+    case "Option_A": /* effect */ break;
+    case "Option_B": /* effect */ break;
+  }
+}
+```
+
+**Key points:**
+- Button labels use underscores as spaces. Use `GamestateUnsanitize()` (not `str_replace`) to convert back for display.
+- `SHOWMODES` logs the player's choice. Use `final:true` since no further DQ vars are needed.
+- Do NOT resolve effects directly in `SpecificLogic` — always create a trigger layer so the effect goes on the stack properly.
+- The engine routes trigger resolution through `CardLogic.php` → `ProcessTrigger()` when `additionalCosts` is not a known keyword like "ATTACKTRIGGER".
+
+## CurrentTurnEffect with Suffixed IDs
+
+When a card creates multiple possible effects (e.g., modal choices for +power or go again), use **suffixed card IDs** to distinguish them:
+```php
+// In SpecificLogic — create effect with suffix
+AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller);
+AddCurrentTurnEffect($this->cardID . "-GOAGAIN", $this->controller);
+```
+
+The engine strips the suffix and routes to the card class, passing the suffix as `$parameter`/`$param`. Implement methods that check the suffix:
+```php
+function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+  return $parameter == "BUFF" || $parameter == "GOAGAIN";
+}
+function EffectPowerModifier($param, $attached = false) {
+  if ($param == "BUFF") return 2;
+  return 0;
+}
+function CurrentEffectGrantsGoAgain($param) {
+  return $param == "GOAGAIN";
+}
+```
+
+**Key points:**
+- `CombatEffectActive` ties the effect to the current attack (cleans up when chain link closes)
+- Do NOT use `GiveAttackGoAgain()` directly — use `CurrentEffectGrantsGoAgain` via the effect system instead
+- Do NOT return `true` unconditionally from `CombatEffectActive` — always check `$parameter`
+
+## Utility Functions
+
+- **`CardLink($cardID)`** — Single argument is sufficient; the second argument (display name) defaults to the same cardID if omitted.
+- **`GamestateUnsanitize($str)`** — Converts underscored gamestate strings back to human-readable form (replaces `_` with spaces). Prefer this over manual `str_replace("_", " ", ...)`.
+- **`WriteLog($msg)`** — Writes to the game log visible to players.
+
 ## Conventions
 
 - **Card IDs:** lowercase with underscores (e.g., `fyendals_spring_tunic`, `command_and_conquer_red`)
