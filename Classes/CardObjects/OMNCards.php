@@ -83,10 +83,6 @@ class aurora_legacy_of_tempest extends Card {
   function AbilityCost() {
     return 2;
   }
-
-  function SpecialType() {
-    return "C";
-  }
 }
 
 class oscilio_forked_continuum extends Card {
@@ -118,10 +114,6 @@ class oscilio_forked_continuum extends Card {
 
   function AbilityCost() {
     return 1;
-  }
-
-  function SpecialType() {
-    return "C";
   }
 }
 
