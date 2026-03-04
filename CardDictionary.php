@@ -55,6 +55,7 @@ include "CardDictionaries/ArmoryDecks/APSShared.php";
 include "CardDictionaries/ArmoryDecks/AACShared.php";
 include "CardDictionaries/ArmoryDecks/ARRShared.php";
 include "CardDictionaries/ArmoryDecks/AHAShared.php";
+include "CardDictionaries/OmensOfTheThirdAge/OMNShared.php";
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";
@@ -1347,6 +1348,15 @@ function GetEasyAbilityNames($cardID, $index, $from) {
         }
       }
       return $names;
+    case "I,A":
+      $names = ["-", "-"];
+      //can it ability?
+      if ($from == "HAND") $names[0] = "Ability";
+      else return "-,Action";
+      //can it be played?
+      if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
+      if ($names[1] == "-") return $names[0];
+      return implode(",", $names);
     default:
     return "";
   }

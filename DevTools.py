@@ -38,6 +38,28 @@ class_template = """class {cardID} extends Card {{
   }}
 }}"""
 
+cycle_template = """class {cardID} extends Card {{
+  function __construct($controller) {{
+    $this->cardID = "{cardID}";
+    $this->controller = $controller;
+    $this->baseCard = new {cardName}($this->cardID, $this->controller);
+  }}
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {{
+    return "";
+  }}
+}}"""
+
+base_template = """class {cardName} extends BaseCard {{
+
+}}
+"""
+
+def CycleFormat(cardName):
+    ret = base_template.format(cardName=cardName) + "\n"
+    ret += "\n\n".join([cycle_template.format(cardID=cardName+color, cardName=cardName) for color in ["_red", "_yellow", "_blue"]])
+    return ret
+
 def unravel(L, zone_name):
     if L == "":
         return ""

@@ -5,6 +5,7 @@
 class BaseCard {
   public $cardID;
   public $controller;
+  public $archetype;
 
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;

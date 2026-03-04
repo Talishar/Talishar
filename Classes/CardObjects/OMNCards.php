@@ -1,5 +1,6 @@
 <?php
-
+include_once  __DIR__ . "/HVYCards.php";
+include_once  __DIR__ . "/SUPCards.php";
 class twoscilio extends BaseCard {
   function PlayAbility() {
     PummelHit($this->controller, track:true);
@@ -116,3 +117,186 @@ class lightning_flow extends Card {
   }
 }
 
+class nebula_duality extends BaseCard {
+  public $archetype;
+  function __construct($cardID, $controller = '-') {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($damage, $target) {
+    DealArcane($damage, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
+    return "";
+  }
+
+  function ProcessAbility($target) {
+    DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,A";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1) {
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
+  }
+
+  function CardCost() {
+    global $Stack;
+    return $Stack->TopLayer()->ID() == "ABILITY" ? 1 : 0;
+  }
+}
+
+class nebula_duality_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "nebula_duality_red";
+    $this->controller = $controller;
+    $this->baseCard = new nebula_duality($this->cardID, $this->controller);
+  }
+  
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessAbility($target);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(3, $target);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->baseCard->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+    return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    return $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "A"; //just here for testing
+  }
+
+  function CardCost($from = '-') {
+    return $this->baseCard->CardCost();
+  }
+}
+
+class nebula_duality_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "nebula_duality_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new nebula_duality($this->cardID, $this->controller);
+  }
+  
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessAbility($target);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(2, $target);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->baseCard->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+    return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    return $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "A"; //just here for testing
+  }
+
+  function CardCost($from = '-') {
+    return $this->baseCard->CardCost();
+  }
+}
+
+class nebula_duality_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "nebula_duality_blue";
+    $this->controller = $controller;
+    $this->baseCard = new nebula_duality($this->cardID, $this->controller);
+  }
+  
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessAbility($target);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(1, $target);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->baseCard->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+    return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    return $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function ArcaneDamage() {
+    return 1;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "A"; //just here for testing
+  }
+
+  function CardCost($from = '-') {
+    return $this->baseCard->CardCost();
+  }
+}
