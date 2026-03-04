@@ -57,6 +57,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
+  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -1181,6 +1182,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $params = explode(",", $parameter);
       $cardID = $params[0];
       $index = $params[1] ?? -1;
+      $cardType = CardType($cardID);
+      $mod = $lastResult;
       // Check if the selected mode is an Action (should close the chain/resolution step).
       // We only flag CHAINCLOSING here;
       if ((IsMeldActionName($lastResult) || ($lastResult == "Both" && TypeContains($cardID, "A", $player))) && ($CombatChain->HasCurrentLink() || isResolutionStep())
