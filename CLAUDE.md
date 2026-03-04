@@ -74,6 +74,10 @@ Use `zzCardCodeGenerator.php` to auto-generate card stats from FabCube JSON. The
 - **`CombatEffectActive`** — Returns true if a layer continuous effect should apply
 - **`EffectPowerModifier`** — Power bonus from layer continuous effects
 
+**Methods to avoid unless specifically needed:**
+- **`SpecialType()`** — Only needed when coding cards before FabCube database is updated. If the card exists in FabCube/generated dictionaries, do NOT add this method.
+- **`ArcaneDamage()` / `ActionsThatDoArcaneDamage()`** — Only for cards whose **resolution abilities** deal arcane damage (so Blaze can detect it). Do NOT use for cards that deal arcane via `ProcessAbility` (ability mode).
+
 To hook new methods into the engine, add above the relevant switch statement:
 ```php
 $card = GetClass($card, $player);
