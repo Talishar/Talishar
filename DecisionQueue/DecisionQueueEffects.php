@@ -515,12 +515,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         return $block < $dqVars[0]; });
     case "SIFT":
       $numCards = SearchCount($lastResult);
-      WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
+      WriteLog("<b>$numCards cards</b> were put on the bottom of the deck.");
       Draw($player, effectSource: "sift_red", num: $numCards);
       return "1";
     case "SURFACESHAKING":
       $numCards = SearchCount($lastResult);
-      WriteLog("<b>$numCards cards</b> were put at the bottom of the deck.");
+      WriteLog("<b>$numCards cards</b> were put on the bottom of the deck.");
       Draw($player, effectSource: "surface_shaking_blue", num: $numCards);
       return "1";
     case "ENCASEDAMAGE":

@@ -1075,9 +1075,17 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $deck->Opt($cardListTop, $cardListBottom);
       $topCount = count($cardListTop);
       $bottomCount = count($cardListBottom);
-      $topMessage = $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
-      $bottomMessage = $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
-      WriteLog("Player " . $playerID . " has put " . $topMessage . " and " . $bottomMessage . " of their deck.");
+      $message = "";
+      if ($topCount > 0) {
+        $message .= $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+      }
+      if ($bottomCount > 0) {
+        if ($message !== "") {
+          $message .= " and ";
+        }
+        $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+      }
+      WriteLog("Player " . $playerID . " has put " . $message . " of their deck.");
       ContinueDecisionQueue();
       break;
     case "REORDER": // should only show up in replays
