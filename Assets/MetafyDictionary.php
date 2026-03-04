@@ -227,7 +227,7 @@ enum MetafyCommunity : string
         "take_it_on_the_chin_red=LGS256-T", "tales_of_adventure_blue=LSS005-T", "talk_a_big_game_blue=FAB195-T", "tarantula_toxin_red=FAB315-T",
         "tarpit_trap_yellow=LGS140-T", "taylor=LSS003-T", "teklovossen_the_mechropotent=EVO410-T", "ten_foot_tall_and_bulletproof_red=ROS217-T",
         "terminator_tank_red=EVO055-T", "test_of_agility_red=LGS261-T", "test_of_iron_grip_red=MPG025-T", "test_of_might_red=LGS260-T", "test_of_strength_red=FAB199-T",
-        "test_of_vigor_red=LGS262-T", "testament_of_valahai=MPG404-T", "the_grain_that_tips_the_scale_blue=MST102-T", "the_hand_that_pulls_the_strings=ARK007-T",
+        "test_of_vigor_red=LGS262-T", "testament_of_valahai=MPG004-T", "the_grain_that_tips_the_scale_blue=MST102-T", "the_hand_that_pulls_the_strings=ARK007-T",
         "the_suspense_is_killing_me_blue=SUP207-T", "themai=UPR415-T", "themis_archangel_of_judgment=DTD406-T", "thespian_charm_yellow=FAB371-T",
         "thick_hide_hunter_yellow=HNT246-T", "thunder_quake_red=EVR024-T", "thunder_quake_yellow=EVR025-T", "thunder_quake_blue=EVR026-T", "thunk_red=VIC011-T",
         "thunk_yellow=VIC018-T", "thunk_blue=VIC025-T", "timesnap_potion_blue=FAB224-T", "tip_the_barkeep_blue=SEA132-T", "to_be_continued_blue=SUP208-T",
