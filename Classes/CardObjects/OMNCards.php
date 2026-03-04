@@ -566,7 +566,7 @@ class astral_strike_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_NumLightningFlowDestroyed;
     if (GetClassState($this->controller, $CS_NumLightningFlowDestroyed) > 0) {
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID, $this->cardID));
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
       AddDecisionQueue("BUTTONINPUT", $this->controller, "Draw_a_Card,Buff_Power,Go_Again");
       AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
       Await($this->controller, $this->cardID, final:true);
@@ -576,7 +576,7 @@ class astral_strike_red extends Card {
 
   function SpecificLogic() {
     global $dqVars;
-    WriteLog(CardLink($this->cardID, $this->cardID) . " mode: " . str_replace("_", " ", $dqVars["LASTRESULT"]));
+    WriteLog(CardLink($this->cardID) . " mode: " . GamestateUnsanitize($dqVars["LASTRESULT"]));
     AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:$dqVars["LASTRESULT"]);
   }
 
