@@ -69,6 +69,7 @@ function JSONRenderedCard(
   $tapped = NULL,
   $uniqueID = NULL,
   $isOpponent = NULL,
+  $holoCounters = NULL
 ) {
   $cardNumber = BlindCard($cardNumber, true);
   global $playerID, $CS_NumLightningPlayed;
@@ -273,6 +274,7 @@ function JSONRenderedCard(
   if($isBroken !== NULL) $card->isBroken = $isBroken;
   if($onChain !== NULL) $card->onChain = $onChain;
   if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
+  if($holoCounters !== NULL) $card->holoCounters = $holoCounters;
   if($countersMap != json_decode('{}')) $card->countersMap = $countersMap;
   if($label !== NULL) $card->label = $label;
   if($facing !== NULL) $card->facing = $facing;

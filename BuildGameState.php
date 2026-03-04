@@ -968,6 +968,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
+    $holoCounters = $theirAuras[$i + 13];
     if(in_array($theirAuras[$i], $labeledAuras)) {
       $label = GamestateUnsanitize($theirAuras[$i + 10]);
     }
@@ -987,7 +988,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       gem: $gem,
       label: $label,
       isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer),
-      tapped: $theirAuras[$i+12] == "1"));
+      tapped: $theirAuras[$i+12] == "1",
+      holoCounters: $holoCounters == 1
+      ));
   }
   $response->opponentAuras = $theirAurasOutput;
 
@@ -1085,6 +1088,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($myAuras[$i]);
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
+    $holoCounters = $myAuras[$i + 13];
     if(in_array($myAuras[$i], $labeledAuras)) {
       $label = GamestateUnsanitize($myAuras[$i + 10]);
     }
@@ -1107,6 +1111,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($myAuras, "AURAS", $i, $playerID),
       tapped: $myAuras[$i + 12] == 1,
+      holoCounters: $holoCounters == 1
     ));
   }
   $response->playerAuras = $myAurasOutput;
