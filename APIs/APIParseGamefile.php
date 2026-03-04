@@ -67,6 +67,10 @@ $p1MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true);
 $p2MetafyTiers = json_decode(trim(fgets($gameFileHandler)), true);
 if (!is_array($p1MetafyTiers)) $p1MetafyTiers = [];
 if (!is_array($p2MetafyTiers)) $p2MetafyTiers = [];
+$p1MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
+$p2MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
+if (!is_array($p1MetafyCommunities)) $p1MetafyCommunities = [];
+if (!is_array($p2MetafyCommunities)) $p2MetafyCommunities = [];
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;

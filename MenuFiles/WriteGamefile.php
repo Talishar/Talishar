@@ -14,6 +14,7 @@
       global $p1Matchups, $p2Matchups, $p1StartingHealth, $p1ContentCreatorID, $p2ContentCreatorID;
       global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1StartingEquipment, $p2StartingEquipment, $p1IsAI, $p2IsAI, $gameGUID;
       global $p1MetafyTiers, $p2MetafyTiers;
+      global $p1MetafyCommunities, $p2MetafyCommunities;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -55,6 +56,8 @@
       fwrite($gameFileHandler, $gameGUID . "\r\n");
       fwrite($gameFileHandler, json_encode($p1MetafyTiers ?? []) . "\r\n");
       fwrite($gameFileHandler, json_encode($p2MetafyTiers ?? []) . "\r\n");
+      fwrite($gameFileHandler, json_encode($p1MetafyCommunities ?? []) . "\r\n");
+      fwrite($gameFileHandler, json_encode($p2MetafyCommunities ?? []) . "\r\n");
       fclose($gameFileHandler);
     }
   }

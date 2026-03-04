@@ -12,6 +12,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $AIHasInfiniteHP, $EffectContext;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
+  global $p1MetafyCommunities, $p2MetafyCommunities;
   global $p1TotalTime, $p2TotalTime;
 
   // Variables that will be set locally and need to be accessible to BuildPlayerInputPopup
@@ -142,14 +143,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
     $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
 
-    // Fetch tiers live from DB so they reflect the current state (not stale game file values)
-    $livePlayerTiers = GetMetafyTiersFromDatabase($initialLoad->playerName);
-    $liveOpponentTiers = GetMetafyTiersFromDatabase($initialLoad->opponentName);
-    $initialLoad->playerMetafyTiers = !empty($livePlayerTiers) ? $livePlayerTiers : (($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: []);
+    // Use cached Metafy tiers from game file (populated at JoinGame time)
+    $initialLoad->playerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: [];
 
     $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
-    $initialLoad->opponentMetafyTiers = !empty($liveOpponentTiers) ? $liveOpponentTiers : (($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: []);
+    $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
@@ -192,51 +191,33 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         }
       }
 
-      // Add Metafy community alt arts
-      // We look up by player username since session might not have login data (e.g., in SSE connections)
-      $playerUsername = $altArtsPlayerName;
-      if (!empty($playerUsername) && !IsDevEnvironment()) {
-        $conn = GetDBConnection();
-        $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-        $stmt = mysqli_stmt_init($conn);
-        if (mysqli_stmt_prepare($stmt, $sql)) {
-          mysqli_stmt_bind_param($stmt, 's', $playerUsername);
-          mysqli_stmt_execute($stmt);
-          $result = mysqli_stmt_get_result($stmt);
-          $row = mysqli_fetch_assoc($result);
-          mysqli_stmt_close($stmt);
-
-          if ($row && !empty($row['metafyCommunities'])) {
-            $communities = json_decode($row['metafyCommunities'], true);
-            if (is_array($communities)) {
-              foreach ($communities as $community) {
-                $communityId = $community['id'] ?? null;
-                if ($communityId) {
-                  foreach(MetafyCommunity::cases() as $metafyCommunity) {
-                    if ($metafyCommunity->value === $communityId) {
-                      $metafyAltArts = $metafyCommunity->AltArts();
-                      if (!empty($metafyAltArts)) {
-                        $metafyAltArtsCount = count($metafyAltArts);
-                        for($i = 0; $i < $metafyAltArtsCount; ++$i) {
-                          $arr = explode("=", $metafyAltArts[$i]);
-                          if (count($arr) === 2) {
-                            $altArt = new stdClass();
-                            $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                            $altArt->cardId = trim($arr[0]);
-                            $altArt->altPath = trim($arr[1]);
-                            array_push($initialLoad->altArts, $altArt);
-                          }
-                        }
-                      }
-                      break;
+      // Add Metafy community alt arts from cached game file data
+      $playerCommunities = $playerID == 3 ? ($p1MetafyCommunities ?? []) : ($playerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []));
+      if (is_array($playerCommunities)) {
+        foreach ($playerCommunities as $community) {
+          $communityId = $community['id'] ?? null;
+          if ($communityId) {
+            foreach(MetafyCommunity::cases() as $metafyCommunity) {
+              if ($metafyCommunity->value === $communityId) {
+                $metafyAltArts = $metafyCommunity->AltArts();
+                if (!empty($metafyAltArts)) {
+                  $metafyAltArtsCount = count($metafyAltArts);
+                  for($i = 0; $i < $metafyAltArtsCount; ++$i) {
+                    $arr = explode("=", $metafyAltArts[$i]);
+                    if (count($arr) === 2) {
+                      $altArt = new stdClass();
+                      $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
+                      $altArt->cardId = trim($arr[0]);
+                      $altArt->altPath = trim($arr[1]);
+                      array_push($initialLoad->altArts, $altArt);
                     }
                   }
                 }
+                break;
               }
             }
           }
         }
-        mysqli_close($conn);
       }
     }
 
@@ -266,49 +247,33 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         }
       }
 
-      // Add opponent's Metafy community alt arts
-      if (!IsDevEnvironment()) {
-        $conn = GetDBConnection();
-        $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-        $stmt = mysqli_stmt_init($conn);
-        if (mysqli_stmt_prepare($stmt, $sql)) {
-          mysqli_stmt_bind_param($stmt, 's', $altArtsOpponentName);
-          mysqli_stmt_execute($stmt);
-          $result = mysqli_stmt_get_result($stmt);
-          $row = mysqli_fetch_assoc($result);
-          mysqli_stmt_close($stmt);
-
-          if ($row && !empty($row['metafyCommunities'])) {
-            $communities = json_decode($row['metafyCommunities'], true);
-            if (is_array($communities)) {
-              foreach ($communities as $community) {
-                $communityId = $community['id'] ?? null;
-                if ($communityId) {
-                  foreach(MetafyCommunity::cases() as $metafyCommunity) {
-                    if ($metafyCommunity->value === $communityId) {
-                      $opponentMetafyAltArts = $metafyCommunity->AltArts();
-                      if (!empty($opponentMetafyAltArts)) {
-                        $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
-                        for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
-                          $arr = explode("=", $opponentMetafyAltArts[$i]);
-                          if (count($arr) === 2) {
-                            $opponentAltArt = new stdClass();
-                            $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                            $opponentAltArt->cardId = trim($arr[0]);
-                            $opponentAltArt->altPath = trim($arr[1]);
-                            array_push($initialLoad->opponentAltArts, $opponentAltArt);
-                          }
-                        }
-                      }
-                      break;
+      // Add opponent's Metafy community alt arts from cached game file data
+      $opponentCommunities = $playerID == 3 ? ($p2MetafyCommunities ?? []) : ($playerID == 1 ? ($p2MetafyCommunities ?? []) : ($p1MetafyCommunities ?? []));
+      if (is_array($opponentCommunities)) {
+        foreach ($opponentCommunities as $community) {
+          $communityId = $community['id'] ?? null;
+          if ($communityId) {
+            foreach(MetafyCommunity::cases() as $metafyCommunity) {
+              if ($metafyCommunity->value === $communityId) {
+                $opponentMetafyAltArts = $metafyCommunity->AltArts();
+                if (!empty($opponentMetafyAltArts)) {
+                  $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
+                  for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
+                    $arr = explode("=", $opponentMetafyAltArts[$i]);
+                    if (count($arr) === 2) {
+                      $opponentAltArt = new stdClass();
+                      $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
+                      $opponentAltArt->cardId = trim($arr[0]);
+                      $opponentAltArt->altPath = trim($arr[1]);
+                      array_push($initialLoad->opponentAltArts, $opponentAltArt);
                     }
                   }
                 }
+                break;
               }
             }
           }
         }
-        mysqli_close($conn);
       }
     }
     $response->initialLoad = $initialLoad;
