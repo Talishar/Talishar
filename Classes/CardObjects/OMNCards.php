@@ -34,6 +34,61 @@ class twoscilio extends BaseCard {
   }
 }
 
+class bauroralegacy extends BaseCard {
+  function PlayAbility() {
+    PlayAura("embodiment_of_lightning", $this->controller);
+    return "";
+  }
+
+  function IsPlayRestricted($index) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if ($CharacterCard->Tapped()) return true;
+    $Auras = new Auras($this->controller);
+    if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
+    return false;
+  }
+
+  function PayAdditionalCosts($index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Tap();
+    $Auras = new Auras($this->controller);
+    $Flow = $Auras->FindCardID("lightning_flow");
+    $Flow->Destroy();
+  }
+}
+
+class aurora_legacy_of_tempest extends Card {
+  function __construct($controller) {
+    $this->cardID = "aurora_legacy_of_tempest";
+    $this->controller = $controller;
+    $this->baseCard = new bauroralegacy($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+}
+
 class oscilio_forked_continuum extends Card {
   function __construct($controller) {
     $this->cardID = "oscilio_forked_continuum";
