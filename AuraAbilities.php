@@ -455,6 +455,10 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
   $destinationUID = AuraDestroyed($player, $auras[$index], $isToken, $from);
   $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose, $mainPhase, $destinationUID);
+  if ($cardID == "lightning_flow") {
+    global $CS_NumLightningFlowDestroyed;
+    IncrementClassState($player, $CS_NumLightningFlowDestroyed);
+  }
   // Refreshes the aura index with the Unique ID in case of aura destruction
   if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
     $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
