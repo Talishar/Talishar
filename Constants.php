@@ -89,9 +89,10 @@ function CombatChainPieces()
 //10 - Modalities (eg. blessing of themis)
 //11 - Frozen (1 = yes, 0 = no)
 //12 - Tapped (1 = yes, 0 = no)
+//13 - Holo Counters
 function AuraPieces()
 {
-  return 13;
+  return 14;
 }
 
 //0 - Item ID

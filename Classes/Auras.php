@@ -145,6 +145,15 @@ class AuraCard {
       return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase);
 	}
 
+  function Banish($mod="-", $banishedBy="", $banisher="-") {
+    if ($this->index != -1) {
+      $cardID = $this->CardID();
+      $this->Remove();
+      return BanishCardForPlayer($cardID, $this->controller, "PLAY", $mod, $banishedBy, $banisher);
+    }
+    return -1;
+  }
+
   function GetModalities() {
     return $this->pieces[$this->index+10] ?? "-";
   }
@@ -171,5 +180,14 @@ class AuraCard {
   function Tap($tapState=1, $endStepUntap=false) {
     if ($this->index != -1)
       Tap("MYAURAS-" . $this->index, $this->controller, $tapState, $endStepUntap);
+  }
+
+  function HoloCounters() {
+    return $this->pieces[$this->index + 13] ?? 0;
+  }
+
+  function AddHoloCounter($n=1) {
+    if ($this->index != -1)
+      $this->pieces[$this->index + 13] += $n;
   }
 }

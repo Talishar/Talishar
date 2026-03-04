@@ -25,7 +25,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   return true;
 }
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-")
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0)
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated;
   if ($number == 0) return; //there is no event
@@ -107,7 +107,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       $from, // 9: Where it's played from
       "-", // 10: modalities
       0, // frozen, (0 = no, 1 = yes)
-      0 // tapped (0 = no, 1 = yes)
+      0, // tapped (0 = no, 1 = yes)
+      $holoCounters, // holo counters
     );
   }
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
