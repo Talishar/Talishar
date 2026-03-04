@@ -365,8 +365,9 @@ class zyggy_base extends BaseCard {
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     $Flow->Destroy();
+    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to banish";
     $indices = FindHoloAuras($this->controller, excludeFirstFlow:false);
-    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
     Await($this->controller, $this->cardID, final:true);
   }
 

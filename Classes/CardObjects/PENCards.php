@@ -6972,7 +6972,7 @@ class astravolt_elemental_red extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller, may:true);
+    MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller, may:true, DQContext:"Choose an instant to discard (or pass)");
     AddDecisionQueue("DRAW", $this->controller, $this->cardID, 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "embodiment_of_lightning-1-" . $this->cardID, 1);
   }
