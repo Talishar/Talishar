@@ -876,6 +876,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
     }
   }
+  ProcessFragmentOnBlock(count($combatChain) - CombatChainPieces());
   $card = GetClass($combatChain[0], $mainPlayer);
   if ($card != "-") $card->AttackGetsBlockedEffect(count($combatChain) - CombatChainPieces());
   switch ($combatChain[0]) {
@@ -1006,6 +1007,7 @@ function OnBlockResolveEffects($cardID = "")
     if ($auraPowerModifier != 0) CombatChainPowerModifier($i, $auraPowerModifier);
     else ProcessPhantasmOnBlock($i);
     ProcessMirageOnBlock($i);
+    ProcessFragmentOnBlock($i);
   }
   $blockedFromHand = 0;
   $blockedWithIce = 0;

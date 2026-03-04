@@ -151,7 +151,11 @@ function ReEvalCombatChain() {
   if ($CombatChain->HasCurrentLink()) {
     // checking if things should trigger/be modified with the power change
     for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
-      if ($combatChain[$i + 1] == $defPlayer) ProcessPhantasmOnBlock($i);
+      if ($combatChain[$i + 1] == $defPlayer) {
+        ProcessPhantasmOnBlock($i);
+        ProcessMirageOnBlock($i);
+        ProcessFragmentOnBlock($i);
+      }
     }
     ProcessAllMirage();
     $totalPower = 0;
@@ -266,6 +270,7 @@ function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
       else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
     }
   }
+  ProcessFragmentOnBlock($index);
   return $index;
 }
 

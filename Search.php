@@ -258,6 +258,7 @@ function isAdministrativeStep($cardID)
     case "MIRAGE":
     case "BLOODDEBT":
     case "SPECTRA":
+    case "FRAGMENT":
       return true;
     default:
       return false;

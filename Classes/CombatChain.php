@@ -122,6 +122,10 @@ class ChainCard {
       return $powerValue;
     }
 
+    function TotalBlock() {
+      return BlockingCardDefense($this->index);
+    }
+
     function ModifyPower($amount) {
       $this->chain[$this->index+5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();

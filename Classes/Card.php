@@ -602,4 +602,9 @@ class Card {
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     return false;
   }
+
+  function HasFragment() {
+    return false;
+    // return GeneratedHasFragment();
+  }
 }

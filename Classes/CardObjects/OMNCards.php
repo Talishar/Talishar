@@ -463,7 +463,7 @@ class voltbound_duality_red extends Card {
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
   }
 
 }
@@ -508,7 +508,7 @@ class voltbound_duality_yellow extends Card {
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
   }
 
 }
@@ -553,9 +553,153 @@ class voltbound_duality_blue extends Card {
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
   }
 
+}
+
+class cosmic_duality_red extends Card {
+  public $archetype;
+
+  function __construct($controller) {
+    $this->cardID = "cosmic_duality_red";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
+  }
+
+  function HasFragment() {
+    return true;
+  }
+}
+
+class cosmic_duality_yellow extends Card {
+  public $archetype;
+
+  function __construct($controller) {
+    $this->cardID = "cosmic_duality_yellow";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
+  }
+
+  function HasFragment() {
+    return true;
+  }
+}
+
+class cosmic_duality_blue extends Card {
+  public $archetype;
+
+  function __construct($controller) {
+    $this->cardID = "cosmic_duality_blue";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
+    return DualityPrePitch($this->cardID, $index, $from, $this->controller);
+  }
+
+  function HasFragment() {
+    return true;
+  }
 }
 
 class astral_strike_red extends Card {
@@ -600,5 +744,24 @@ class astral_strike_red extends Card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return $param == "GOAGAIN";
+  }
+}
+
+class FRAGMENT extends Card {
+  function __construct($controller) {
+    $this->cardID = "FRAGMENT";
+    $this->controller = $controller;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return -2;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    FragmentLayer($target);
   }
 }
