@@ -989,7 +989,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer),
       tapped: $theirAuras[$i+12] == "1",
-      holoCounters: $holoCounters == 1
+      holoCounters: $holoCounters > 0
       ));
   }
   $response->opponentAuras = $theirAurasOutput;
@@ -1111,7 +1111,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($myAuras, "AURAS", $i, $playerID),
       tapped: $myAuras[$i + 12] == 1,
-      holoCounters: $holoCounters == 1
+      holoCounters: $holoCounters > 0
     ));
   }
   $response->playerAuras = $myAurasOutput;
