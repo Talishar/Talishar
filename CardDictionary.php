@@ -384,6 +384,8 @@ function CardSet($cardID)
       return "SEA";
     case "okana_scar_wraps": case "iris_of_the_blossom":
       return "ASR";
+    case "oscilio_forked_continuum": //temporary while testing
+      return "OMN";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return substr($setID, 0, 3);
@@ -4418,12 +4420,14 @@ function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
 
 function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
 {
-  global $currentPlayer, $mainPlayer, $currentTurnEffects;
+  global $currentPlayer, $mainPlayer, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
+  $DiscardCard = new DiscardCard($index, $player);
   if (isFaceDownMod($mod)) return false;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $currentPlayer) return true;
   if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $currentPlayer) return true;
   if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_forked_continuum", $DiscardCard->UniqueID()) != "") return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
   return match ($cardID) {

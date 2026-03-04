@@ -79,11 +79,11 @@ class Discard {
   }
 
   function FindCardUID($uid) {
-    if (count($this->discard) == 0) return "";
+    if (count($this->discard) == 0) return new DiscardCard(-1, $this->playerID);
     for ($i = 0; $i < count($this->discard); $i += DiscardPieces()) {
       if ($this->discard[$i + 1] == $uid) return new DiscardCard($i, $this->playerID);
     }
-    return "";
+    return new DiscardCard(-1, $this->playerID);
   }
 }
 
@@ -94,9 +94,12 @@ class DiscardCard {
 
   // Constructor
   function __construct($index, $player) {
-    $this->pieces = &GetDiscard($player);
     $this->index = $index;
 		$this->controller = $player;
+    if ($index != -1)
+      $this->pieces = &GetDiscard($player);
+    else
+      $this->pieces = [];
   }
 
   function ID() {
@@ -112,7 +115,7 @@ class DiscardCard {
   }
 
   function Remove() {
-    RemoveDiscard($this->controller, $this->index());
+    RemoveDiscard($this->controller, $this->Index());
   }
 
   function Flip($facing="DOWN") {

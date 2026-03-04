@@ -681,7 +681,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $overlay = 0;
       $action = $currentPlayer == $playerID && (PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2], $playerID, $i) || AbilityPlayableFromGraveyard($myDiscard[$i], $i)) && IsPlayable($myDiscard[$i], $turnPhase, "GY", $i) ? 36 : 0;
       $mod = explode("-", $myDiscard[$i + 2])[0];
-      $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod);
+      $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod, $i);
       $cardID = $myDiscard[$i];
       if($mod == "DOWN") {
         $overlay = 1;

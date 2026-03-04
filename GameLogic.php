@@ -41,6 +41,7 @@ include "Classes/CardObjects/SUPCards.php";
 include "Classes/CardObjects/APSCards.php";
 include "Classes/CardObjects/ARRCards.php";
 include "Classes/CardObjects/PENCards.php";
+include "Classes/CardObjects/OMNCards.php";
 include "Classes/CardObjects/AACCards.php";
 include "Classes/CardObjects/AHACards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
@@ -1044,6 +1045,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       CardDiscarded($player, $lastResult, count($params) > 1 ? $params[1] : "");
       AddGraveyard($lastResult, $player, $params[0], count($params) > 1 ? $params[1] : "");
       return $lastResult;
+    case "DISCARDCARDTRACK":
+      $params = explode("-", $parameter);
+      CardDiscarded($player, $lastResult, count($params) > 1 ? $params[1] : "");
+      return AddGraveyard($lastResult, $player, $params[0], count($params) > 1 ? $params[1] : "");
     case "BANISHCARD":
       $params = explode(",", $parameter);
       BanishCardForPlayer($lastResult, $player, $params[0], count($params) > 1 ? $params[1] : "", count($params) > 2 ? $params[2] : "");
