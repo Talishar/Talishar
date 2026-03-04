@@ -301,3 +301,29 @@ class nebula_duality_blue extends Card {
     return $this->baseCard->CardCost();
   }
 }
+
+// class zyggy_base extends BaseCard {
+//   function IsPlayRestricted($index) {
+//     $CharacterCard = new CharacterCard($index, $this->controller);
+//     if ($CharacterCard->Tapped()) return true;
+//     $Auras = new Auras($this->controller);
+//     if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
+
+//   }
+// }
+
+// class zyggy_starlight extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "zyggy_starlight";
+//     $this->controller = $controller;
+//     $this->baseCard = new zyggy_base($this->cardID, $this->controller);
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+
+//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+//     return $this->baseCard->IsPlayRestricted($index);
+//   }
+// }
