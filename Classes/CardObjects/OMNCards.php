@@ -153,6 +153,7 @@ class nebula_duality extends BaseCard {
 
   function CardCost() {
     global $Stack;
+    // this works
     return $Stack->TopLayer()->ID() == "ABILITY" ? 1 : 0;
   }
 }
