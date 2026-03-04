@@ -349,28 +349,75 @@ class nebula_duality_blue extends Card {
   }
 }
 
-// class zyggy_base extends BaseCard {
-//   function IsPlayRestricted($index) {
-//     $CharacterCard = new CharacterCard($index, $this->controller);
-//     if ($CharacterCard->Tapped()) return true;
-//     $Auras = new Auras($this->controller);
-//     if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
+class zyggy_base extends BaseCard {
+  function IsPlayRestricted($index) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if ($CharacterCard->Tapped()) return true;
+    $Auras = new Auras($this->controller);
+    if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
+    if (FindHoloAuras($this->controller) == "") return true;
+    return false;
+  }
 
-//   }
-// }
+  function PayAdditionalCosts($index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Tap();
+    $Auras = new Auras($this->controller);
+    $Flow = $Auras->FindCardID("lightning_flow");
+    $Flow->Destroy();
+    $indices = FindHoloAuras($this->controller, excludeFirstFlow:false);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices);
+    Await($this->controller, $this->cardID, final:true);
+  }
 
-// class zyggy_starlight extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "zyggy_starlight";
-//     $this->controller = $controller;
-//     $this->baseCard = new zyggy_base($this->cardID, $this->controller);
-//   }
+  function SpecificLogic() {
+    global $dqVars, $Stack;
+    $AuraCard = MZIndexToObject($this->controller, $dqVars["MZIndex"]);
+    $banishCount = $AuraCard->Banish();
+    $BanishedCard = new BanishCard($this->controller, $banishCount);
+    $Layer = $Stack->TopLayer($this->cardID);
+    $Layer->AddTarget($BanishedCard->UniqueID());
+  }
+
+  function PlayAbility($target) {
+    $Banish = new Banish($this->controller);
+    $BanishCard = $Banish->FindCardUID($target);
+    if ($BanishCard != "" && $BanishCard->Index() != -1) {
+      $cardID = $BanishCard->ID();
+      $BanishCard->Remove();
+      PlayAura($cardID, $this->controller, holoCounters:1);
+    }
+  }
+}
+
+class zyggy_starlight extends Card {
+  function __construct($controller) {
+    $this->cardID = "zyggy_starlight";
+    $this->controller = $controller;
+    $this->baseCard = new zyggy_base($this->cardID, $this->controller);
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
+  }
 
-//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-//     return $this->baseCard->IsPlayRestricted($index);
-//   }
-// }
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($index);
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($index);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+}

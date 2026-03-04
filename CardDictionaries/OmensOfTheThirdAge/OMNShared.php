@@ -34,3 +34,19 @@ function DualityPrePitch($cardID, $index, $from, $player, $actionTargets=true) {
 	AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
 	AddDecisionQueue("SETLAYERTARGET", $player, "ABILITY", 1);
 }
+
+function FindHoloAuras($player, $subtype="LIGHTNING", $holoState=0, $excludeFirstFlow=true) {
+	$Auras = new Auras($player);
+	$ret = [];
+	for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+		$AuraCard = $Auras->Card($i, true);
+		if ($excludeFirstFlow && $AuraCard->CardID() == "lightning_flow") {
+			$excludeFirstFlow = false;
+			continue;
+		}
+		if ($AuraCard->HoloCounters() != $holoState) continue;
+		if (!TalentContains($AuraCard->CardID(), $subtype, $player)) continue;
+		$ret[] = "MYAURAS-" . $AuraCard->Index();
+	}
+	return implode(",", $ret);
+}
