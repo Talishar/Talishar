@@ -465,17 +465,6 @@ class voltbound_duality_red extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 
-  function ArcaneDamage() {
-    return 1;
-  }
-
-  function ActionsThatDoArcaneDamage() {
-    return true;
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class voltbound_duality_yellow extends Card {
@@ -521,17 +510,6 @@ class voltbound_duality_yellow extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 
-  function ArcaneDamage() {
-    return 1;
-  }
-
-  function ActionsThatDoArcaneDamage() {
-    return true;
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class voltbound_duality_blue extends Card {
@@ -577,15 +555,4 @@ class voltbound_duality_blue extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 
-  function ArcaneDamage() {
-    return 1;
-  }
-
-  function ActionsThatDoArcaneDamage() {
-    return true;
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
