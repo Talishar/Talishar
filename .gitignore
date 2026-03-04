@@ -34,3 +34,4 @@ APIKeys/APIKeys.php
 .env
 private_messaging_errors.log
 /__pycache__
+.claude/
