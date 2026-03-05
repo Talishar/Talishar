@@ -41305,4 +41305,13 @@ return match($cardID) {
 default => false
 };
 }
+function GeneratedHasFragment($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+"cosmic_duality_red" => true,
+"cosmic_duality_yellow" => true,
+"cosmic_duality_blue" => true,
+default => false
+};
+}
 ?>

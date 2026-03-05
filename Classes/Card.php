@@ -604,7 +604,6 @@ class Card {
   }
 
   function HasFragment() {
-    return false;
-    // return GeneratedHasFragment();
+    return GeneratedHasFragment($this->cardID);
   }
 }
