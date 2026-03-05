@@ -28,6 +28,8 @@ class twoscilio extends BaseCard {
   function PayAdditionalCosts($index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Tap();
+    $CharacterCard->AddUse(1); //unlimited uses
+    $CharacterCard->SetUsed(2);
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     $Flow->Destroy();
@@ -51,6 +53,8 @@ class bauroralegacy extends BaseCard {
   function PayAdditionalCosts($index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Tap();
+    $CharacterCard->AddUse(1); //unlimited uses
+    $CharacterCard->SetUsed(2);
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     $Flow->Destroy();
@@ -362,6 +366,8 @@ class zyggy_base extends BaseCard {
   function PayAdditionalCosts($index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Tap();
+    $CharacterCard->AddUse(1); //unlimited uses
+    $CharacterCard->SetUsed(2);
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     $Flow->Destroy();
@@ -857,5 +863,43 @@ class voltic_impact_red extends lightning_jab {
   function __construct($controller) {
     $this->cardID = "voltic_impact_red";
     $this->controller = $controller;
+  }
+}
+
+class aphrodias extends Card {
+  function __construct($controller) {
+    $this->cardID = "aphrodias";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    WriteLog("HERE: $target");
+    DealArcane(2, resolvedTarget:$target);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CS_HoloAurasEntered;
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if ($CharacterCard->Tapped()) return true;
+    if (GetClassState($this->controller, $CS_HoloAurasEntered) == 0) return true;
+    return false;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Tap();
+    $CharacterCard->AddUse(1); //unlimited uses
+    $CharacterCard->SetUsed(2);
+    SetArcaneTarget($this->controller, $this->cardID);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
   }
 }
