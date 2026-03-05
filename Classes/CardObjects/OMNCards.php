@@ -873,7 +873,6 @@ class aphrodias extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    WriteLog("HERE: $target");
     DealArcane(2, resolvedTarget:$target);
     return "";
   }
