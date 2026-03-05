@@ -16,6 +16,7 @@ include_once "../Assets/MetafyDictionary.php";
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 include_once "../Classes/CardObjects/OMNCards.php";
+include_once "../Classes/CardObjects/AZSCards.php";
 include_once "../Classes/CardObjects/AHACards.php";
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
@@ -773,7 +774,7 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["AHA", "OMN"];
+  $unreleasedSets = ["AHA", "OMN", "AZS"];
   // promos that are made legal ahead of thier set
   $specialReleases = ["batter_to_a_pulp_red"];
   if (in_array($cardID, $specialReleases)) return false;
@@ -787,6 +788,9 @@ function isUnimplemented($cardID) {
       $card = GetClass($cardID, 0);
       return $card == "-";
     case "OMN":
+      $card = GetClass($cardID, 0);
+      return $card == "-";
+    case "AZS":
       $card = GetClass($cardID, 0);
       return $card == "-";
     default:

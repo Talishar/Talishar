@@ -1253,7 +1253,7 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
   if (HasWard($auras[$index], $player)) $preventedDamage = WardAmount($auras[$index], $player, $index);
   elseif (HasArcaneShelter($auras[$index]) && $type == "ARCANE") $preventedDamage = ArcaneShelterAmount($auras[$index]);
   $card = GetClass($auras[$index], $player);
-  if ($card != "-") $preventedDamage = $card->PermDamagePreventionAmount($index, $type, $damage, $active, $cancelRemove, $check);
+  if ($card != "-") $preventedDamage += $card->PermDamagePreventionAmount($index, $type, $damage, $active, $cancelRemove, $check);
   switch ($auras[$index]) {
     case "enchanting_melody_red":
       $preventedDamage = 4;

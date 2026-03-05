@@ -44,6 +44,7 @@ include "Classes/CardObjects/PENCards.php";
 include "Classes/CardObjects/OMNCards.php";
 include "Classes/CardObjects/AACCards.php";
 include "Classes/CardObjects/AHACards.php";
+include "Classes/CardObjects/AZSCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
