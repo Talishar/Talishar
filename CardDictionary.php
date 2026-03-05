@@ -281,6 +281,8 @@ function CardSubType($cardID, $uniqueID = -1)
   switch ($cardID) {
     case "sanctuary_of_aria"://Technically false, but helps with Rosetta Limited
       return "Item";
+    case "omens_of_arcana":
+      return "Landmark"; //Technically false, but helps with OMN Limited
     case "UPR439":
     case "UPR440":
     case "UPR441": //resolved sand cover
@@ -4055,6 +4057,11 @@ function CharacterDefaultActiveState($cardID)
 //Hold priority for triggers (2 = Always hold, 1 = Hold, 0 = Don't Hold)
 function AuraDefaultHoldTriggerState($cardID): int
 {
+  global $Landmarks;
+  if ($cardID == "lightning_flow") {
+    if ($Landmarks->NumLandmarks() == 0) return 2;
+    return $Landmarks->Card(0)->CardID() == "omens_of_arcana" ? 0 : 2;
+  }
   return match ($cardID) {
     "forged_for_war_yellow", "show_time_blue", "blessing_of_deliverance_red", "blessing_of_deliverance_yellow", "blessing_of_deliverance_blue", "emerging_power_red", "emerging_power_yellow", "emerging_power_blue", "stonewall_confidence_red", "stonewall_confidence_yellow", "stonewall_confidence_blue",
     "seismic_surge", "eloquence", "tome_of_aeo_blue", "fog_down_yellow", "sigil_of_protection_red", "sigil_of_protection_yellow", "sigil_of_protection_blue", "runeblood_incantation_red", "runeblood_incantation_yellow", "runeblood_incantation_blue", "pyroglyphic_protection_red",

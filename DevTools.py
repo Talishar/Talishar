@@ -123,7 +123,7 @@ def parse_gamestate(gameid):
     results['p2']['permanents'] = unravel(lines[35], "Permanent")
     results['p2']['settings'] = lines[36].split(" ")
     
-    results['Both']['landmarks'] = unravel(lines[38], "Landmark")
+    results['Both']['landmarks'] = unravel(lines[37], "Landmark")
     results['Both']['turn'] = lines[42].split(" ")
     results['Both']['combat chain'] = unravel(lines[44], "CombatChain")
     results['Both']['ccs'] = unravel(lines[45], "ccs")

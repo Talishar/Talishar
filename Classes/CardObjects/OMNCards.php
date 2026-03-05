@@ -166,6 +166,12 @@ class lightning_flow extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
+
+  function SpellVoidAmount() {
+    global $Landmarks;
+    if ($Landmarks->NumLandmarks() == 0) return 0;
+    return $Landmarks->Card(0)->CardID() == "omens_of_arcana" ? 1 : 0;
+  }
 }
 
 class nebula_duality extends BaseCard {
@@ -900,5 +906,12 @@ class aphrodias extends Card {
     $CharacterCard->SetUsed(2);
     SetArcaneTarget($this->controller, $this->cardID);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+}
+
+class omens_of_arcana extends Card {
+  function __construct($controller) {
+    $this->cardID = "omens_of_arcana";
+    $this->controller = $controller;
   }
 }
