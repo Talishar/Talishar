@@ -51,7 +51,7 @@
         return "";
       case "searing_touch_red":
         if(RuptureActive()) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
+          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MY&MYALLY", 1);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
