@@ -606,4 +606,8 @@ class Card {
   function HasFragment() {
     return GeneratedHasFragment($this->cardID);
   }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount=false) {
+    return 0;
+  }
 }

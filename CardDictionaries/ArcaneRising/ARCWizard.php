@@ -498,6 +498,9 @@ function ArcaneModifierAmount($source, $player, $index)
   global $currentTurnEffects;
     $effectArr = explode(",", $currentTurnEffects[$index]);
     if ($currentTurnEffects[$index + 1] != $player || $source != $effectArr[0]) return 0;
+    $remove = false;
+    $card = GetClass($effectArr[0], $player);
+    if ($card != "-") return $card->ArcaneModifier($remove, $player, $index, amount:true);
     switch ($effectArr[0]) {
       case "crucible_of_aetherweave":
         return 1;
@@ -594,6 +597,8 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRe
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $effectArr = explode(",", $currentTurnEffects[$i]);
+    $card = GetClass($effectArr[0], $currentTurnEffects[$i + 1]);
+    if ($card != "-") $modifier += $card->ArcaneModifier($remove, $player, $i);
     switch ($effectArr[0]) {
       case "aether_wildfire_red":
         if ($meldState == "-" && MeldTriggersDealingArcane($source)) $modifier += $effectArr[1];
