@@ -4476,13 +4476,11 @@ function RequiresDieRoll($cardID, $from, $player): bool
   };
 }
 
-function SpellVoidAmount($cardID, $player): int
+function SpellVoidAmount($cardID, $player, $index=-1): int
 {
   if ($cardID == "runechant" && SearchCurrentTurnEffects("amethyst_tiara", $player)) return 1;
   $card = GetClass($cardID, $player);
-  if ($card != "-") {
-    return $card->SpellVoidAmount();
-  }
+  if ($card != "-") return $card->SpellVoidAmount($index);
   return match ($cardID) {
     "arcanite_fortress" => SearchCount(SearchMultiZone($player, "MYCHAR:type=E;nameIncludes=Arcanite")),
     default => GeneratedSpellVoidAmount($cardID),

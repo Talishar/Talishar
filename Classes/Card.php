@@ -466,7 +466,7 @@ class Card {
     return false;
   }
 
-  function SpellVoidAmount() {
+  function SpellVoidAmount($index=-1) {
     return GeneratedSpellVoidAmount($this->cardID);
   }
 

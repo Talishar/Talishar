@@ -95,6 +95,11 @@ class AllyCard {
     return $this->pieces[$this->index+8] ?? 0;
   }
 
+  function AddUses($n=1) { //(0 = no, 1 = yes)
+    if (isset($this->pieces[$this->index+8]))
+      $this->pieces[$this->index+8] += $n;
+  }
+
   function PowerCounters() {
     return $this->pieces[$this->index+9] ?? 0;
   }
@@ -111,6 +116,12 @@ class AllyCard {
 	function Tapped() { //(0 = no, 1 = yes)
     return $this->pieces[$this->index+11] ?? 0;
   }
+
+  function Tap($tapState=1) { //(0 = no, 1 = yes)
+    if (isset($this->pieces[$this->index+11]))
+      $this->pieces[$this->index+11] = $tapState;
+  }
+
 
 	function SteamCounters() {
     return $this->pieces[$this->index+12] ?? 0;

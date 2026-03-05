@@ -568,7 +568,7 @@ class mask_of_the_swarming_claw extends Card {
     $this->controller = $controller;
   }
 
-  function SpellVoidAmount() {
+  function SpellVoidAmount($index=-1) {
     global $mainPlayer, $ChainLinks, $CombatChain;
     if ($this->controller != $mainPlayer) return 0;
     elseif (IsLayerStep() || IsResolutionStep()) return $ChainLinks->NumLinks();
@@ -2374,7 +2374,7 @@ class volcanic_vice extends Card {
     $this->controller = $controller;
   }
 
-  function SpellVoidAmount() {
+  function SpellVoidAmount($index=-1) {
     global $CS_SeismicSurgesCreated;
     return GetClassState($this->controller, $CS_SeismicSurgesCreated) > 0 ? 3 : 0;
   }
@@ -2386,7 +2386,7 @@ class skera_strapping extends Card {
     $this->controller = $controller;
   }
 
-  function SpellVoidAmount() {
+  function SpellVoidAmount($index=-1) {
     //this has an issue where it can actually gain spellvoid in the middle of preventing arcane damage
     $pitch = GetPitch($this->controller);
     for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
@@ -7845,8 +7845,10 @@ class boo_resident_spook_yellow extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     if ($from == "PLAY") {
-      $allies = &GetAllies($this->controller);
-      Tap("MYALLY-$index", $this->controller);
+      $Card = new AllyCard($index, $this->controller);
+      $Card->Tap();
+      $Card->AddUses();
+      $Card->SetStatus(2);
       $ally[$index + 1] = 2;//Not once per turn effects
     }
   }
@@ -7858,6 +7860,11 @@ class boo_resident_spook_yellow extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     if($from == "PLAY") return CheckTapped("MYALLY-$index", $this->controller);
     return false;
+  }
+
+  function SpellVoidAmount($index=-1) {
+    $Card = new AllyCard($index, $this->controller);
+    return $Card->Tapped() ? 0 : 2;
   }
 }
 
@@ -7879,8 +7886,10 @@ class bubba_lubba_run_aground_yellow extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     if ($from == "PLAY") {
-      if(GetResolvedAbilityType($this->cardID, $from, $this->controller) == "AA")
-        Tap("MYALLY-$index", $this->controller);
+      $Ally = new AllyCard($index, $this->controller);
+      if(GetResolvedAbilityType($this->cardID, $from, $this->controller) == "AA") {
+        $Ally->Tap();
+      }
       elseif(GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") {
         $choices = GetAllyCounterIndices($this->controller);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, "Remove a +1 counter from an ally");
@@ -7888,8 +7897,8 @@ class bubba_lubba_run_aground_yellow extends Card {
         AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $choices, 1);
         AddDecisionQueue("MZREMOVECOUNTER", $this->controller, "-", 1);
       }
-      $Ally = new AllyCard($index, $this->controller);
       $Ally->SetStatus(2);
+      $Ally->AddUses();
     }
   }
 
@@ -7922,6 +7931,10 @@ class bubba_lubba_run_aground_yellow extends Card {
 
   function AbilityHasGoAgain($from) {
     if ($from == "PLAY" && GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") return true;
+    return false;
+  }
+
+  function HasGoAgain($from) {
     return false;
   }
 }

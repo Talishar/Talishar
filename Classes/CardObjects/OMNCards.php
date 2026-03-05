@@ -167,7 +167,7 @@ class lightning_flow extends Card {
     return "";
   }
 
-  function SpellVoidAmount() {
+  function SpellVoidAmount($index=-1) {
     global $Landmarks;
     if ($Landmarks->NumLandmarks() == 0) return 0;
     return $Landmarks->Card(0)->CardID() == "omens_of_arcana" ? 1 : 0;

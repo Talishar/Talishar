@@ -1385,7 +1385,7 @@ function SearchArcaneReplacement($player, $zone, $damage)
     if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
     if ($zone == "MYAURAS" && $array[$i + 7] == 0) continue;
-    if (SpellVoidAmount($cardID, $player) > 0) {
+    if (SpellVoidAmount($cardID, $player, $i) > 0) {
       if ($zone == "MYCHAR" && !IsCharacterActive($player, $i)) continue;
       if ($cardID == "runechant" && $zone != "MYCHAR") {
         if ($addedRunechants < $damage) {
