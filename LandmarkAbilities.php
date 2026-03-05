@@ -16,6 +16,10 @@ function PlayLandmark($cardID, $player, $from="-")
     case "treasure_island":
       AddCurrentTurnEffect($cardID, $player);
       break;
+    case "omens_of_arcana":
+      PlayAura("lightning_flow", 1);
+      PlayAura("lightning_flow", 2);
+      break;
     default:
       break;
   }
