@@ -476,9 +476,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->opponentDeckCard = JSONRenderedCard($theirDeckCount > 0 ? $TheirCardBack : $blankZone);
   $opponentDeckArr = [];
   $deckPieces = DeckPieces();
-  if($isGameOver) {
-    for($i=0; $i<$theirDeckCount; $i+=$deckPieces) {
-      $opponentDeckArr[] = JSONRenderedCard($theirDeck[$i]);
+  if ($playerID == $currentPlayer || $isGameOver || IsReplay()) {
+    if ($playerID != 3) {
+      for($i=0; $i<$theirDeckCount; $i+=$deckPieces) {
+        $opponentDeckArr[] = JSONRenderedCard($theirDeck[$i]);
+      }    
     }
   }
   $theirBlessingsCount = SearchCount(SearchDiscardForCard($otherPlayer, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
@@ -686,7 +688,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $playerDeckArr = [];
   $response->playerDeckPopup = false;
   if ($playerID == $currentPlayer || $isGameOver || IsReplay()) {
-    if($isGameOver || IsReplay() || ($turnPhase == "CHOOSEMULTIZONE" || $turnPhase == "MAYCHOOSEMULTIZONE") && isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0" || $turnPhase == "MAYCHOOSEDECK" || $turnPhase == "CHOOSEDECK" || $turnPhase == "MULTICHOOSEDECK") {
+    if($playerID != 3 || ($turnPhase == "CHOOSEMULTIZONE" || $turnPhase == "MAYCHOOSEMULTIZONE") && isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0" || $turnPhase == "MAYCHOOSEDECK" || $turnPhase == "CHOOSEDECK" || $turnPhase == "MULTICHOOSEDECK") {
       for($i=0; $i<$myDeckCount; $i+=$deckPieces) {
         array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
       }
