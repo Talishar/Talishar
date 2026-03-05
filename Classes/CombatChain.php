@@ -166,6 +166,15 @@ class ChainCard {
       return $this->chain[$this->index + 9];
     }
 
+    function NumTimesUsed() {
+      return $this->chain[$this->index + 11] ?? 0;
+    }
+
+    function AddUse($n=1) {
+      if (isset($this->chain[$this->index + 11]))
+        $this->chain[$this->index + 11] += $n;
+    }
+
     function Remove() {
       global $CombatChain;
       return $CombatChain->Remove($this->Index());

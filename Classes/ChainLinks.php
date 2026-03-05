@@ -180,6 +180,11 @@ class LinkCard {
 		return $this->link[$this->index+9] ?? 0;
 	}
 
+	function AddUse($n=1) {
+		if (isset($this->link[$this->index + 9]))
+			$this->link[$this->index + 9] += $n;
+	}
+
 	function Remove() {
 		if (isset($this->link[$this->index+2]))
 			$this->link[$this->index+2] = 0;

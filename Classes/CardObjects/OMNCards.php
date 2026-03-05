@@ -765,3 +765,97 @@ class FRAGMENT extends Card {
     FragmentLayer($target);
   }
 }
+
+class lightning_jab extends Card {
+  //base card for flowing stormstrike, meteoric rise, and voltic impact
+  function __construct($controller) {
+    $this->cardID = "lightning_jab";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY") {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    global $mainPlayer, $CombatChain, $ChainLinks;
+    if ($this->controller != $mainPlayer) return true;
+    if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
+    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 2) return true;
+    if ($from == "COMBATCHAINATTACKS") {
+      $Link = $ChainLinks->GetLink($index);
+      return $Link->AttackCard()->NumTimesUsed() >= 2;
+    }
+    return false;
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    global $mainPlayer;
+    return $this->controller == $mainPlayer;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CombatChain, $ChainLinks;
+    if (is_numeric($index)) {
+      if ($from == "CC") {
+        $i = 0;
+      }
+      else {
+        $i = intdiv($index, ChainLinksPieces());
+      }
+      if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
+        if ($from == "COMBATCHAINATTACKS") $ChainLinks->GetLink($i)->AttackCard()->AddUse(1);
+        else $CombatChain->AttackCard()->AddUse(1);
+      }
+    }
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+    return true;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    PlayAura("lightning_flow", $this->controller);
+  }
+}
+
+class flowing_stormstrike_red extends lightning_jab {
+  function __construct($controller) {
+    $this->cardID = "flowing_stormstrike_red";
+    $this->controller = $controller;
+  }
+}
+
+class meteoric_rise_red extends lightning_jab {
+  function __construct($controller) {
+    $this->cardID = "meteoric_rise_red";
+    $this->controller = $controller;
+  }
+}
+
+class voltic_impact_red extends lightning_jab {
+  function __construct($controller) {
+    $this->cardID = "voltic_impact_red";
+    $this->controller = $controller;
+  }
+}
