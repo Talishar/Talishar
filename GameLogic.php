@@ -1951,7 +1951,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       RollDie($player, true, $parameter == "1");
       return "";
     case "REROLLDIE":
-      RollDie($player, true, $parameter == "1", true);
+      WriteLog(CardLink($parameter) . " rerolled the die.");
+      RollDie($player, true, true, true);
       return "";
     case "SETCOMBATCHAINSTATE":
       $combatChainState[$parameter] = $lastResult;
