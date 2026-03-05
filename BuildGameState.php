@@ -691,7 +691,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if(($turnPhase == "CHOOSEMULTIZONE" || $turnPhase == "MAYCHOOSEMULTIZONE") && isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0"
     || $turnPhase == "MAYCHOOSEDECK"
     || $turnPhase == "CHOOSEDECK"
-    || $turnPhase == "MULTICHOOSEDECK") {
+    || $turnPhase == "MULTICHOOSEDECK"
+    || $isGameOver || IsReplay()) {
       for($i=0; $i<$myDeckCount; $i+=$deckPieces) {
         array_push($playerDeckArr, JSONRenderedCard($myDeck[$i]));
       }
