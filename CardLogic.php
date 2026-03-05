@@ -4880,7 +4880,7 @@ function GamblersGlovesReroll($player, $target){
   AddDecisionQueue("NOPASS", $player, "-");
   AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
   AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-  AddDecisionQueue("REROLLDIE", $target, "1", 1);
+  AddDecisionQueue("REROLLDIE", $target, "gamblers_gloves", 1);
 }
 
 function DestroyFrozenArsenal($player)
