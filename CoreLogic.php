@@ -154,7 +154,6 @@ function ReEvalCombatChain() {
       if ($combatChain[$i + 1] == $defPlayer) {
         ProcessPhantasmOnBlock($i);
         ProcessMirageOnBlock($i);
-        ProcessFragmentOnBlock($i);
       }
     }
     ProcessAllMirage();
@@ -270,7 +269,6 @@ function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
       else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
     }
   }
-  ProcessFragmentOnBlock($index);
   return $index;
 }
 
