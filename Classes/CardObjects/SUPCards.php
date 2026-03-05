@@ -1377,6 +1377,11 @@ class truth_or_trickery_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "YesNo", context: "Would you like to play a game of Truth or Trickery?");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
     global $mainPlayer;
     LookAtTopCard($this->controller, $this->cardID, setPlayer:$this->controller);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "Red,Yellow,Blue");
