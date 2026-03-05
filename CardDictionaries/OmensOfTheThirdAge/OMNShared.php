@@ -89,13 +89,13 @@ function IsFragmentActive() {
 function IsFragmentStillActive($blockingCardUID) {
 	global $CombatChain;
 	$BlockCard = $CombatChain->FindCardUID($blockingCardUID);
-	return IsFragmentActive() && $BlockCard->TotalBlock() >= 3;
+	return IsFragmentActive() && $BlockCard->TotalBlock() >= 2;
 }
 
 function DoesBlockTriggerFragment($index) {
-	global $CombatChain, $defPlayer;
+	global $CombatChain;
 	$card = $CombatChain->Card($index);
-	return $card->TotalBlock() >= 3;
+	return $card->TotalBlock() >= 2;
 }
 
 function FragmentLayer($blockingCardUID) {
