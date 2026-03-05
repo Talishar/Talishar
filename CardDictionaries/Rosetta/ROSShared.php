@@ -463,7 +463,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "2-");
-      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-2");
+      AddDecisionQueue("APPENDMINHAND", $currentPlayer, "2");
       AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-");
       AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-");
       AddDecisionQueue("MULTIADDDECK", $currentPlayer, "-");

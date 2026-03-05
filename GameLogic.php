@@ -2229,6 +2229,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "$parameter$lastResult";
     case "APPENDLASTRESULT":
       return "$lastResult$parameter";
+    case "APPENDMINHAND":
+      $min = min($parameter, count(GetHand($player)));
+      return "$lastResult-$min";
     case "REMOVETAG":
       $arr = explode("-", $lastResult);
       return $arr[1] ?? $lastResult;
