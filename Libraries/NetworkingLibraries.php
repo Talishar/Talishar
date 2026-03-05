@@ -2346,8 +2346,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")) {
       IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
-    } 
-    if (($CombatChain->HasCurrentLink() || IsLayerStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && GetResolvedAbilityType($cardID, $from) != "I" && $mainPlayer == $currentPlayer) {
+    }
+    if (($CombatChain->HasCurrentLink() || IsLayerStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && !IsActivated($cardID, $from) && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
       if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
         if (IsLayerStep()) {
