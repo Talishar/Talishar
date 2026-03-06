@@ -23,11 +23,6 @@ function GetDBConnection()
 	global $servername, $dBUsername, $dBPassword, $dBName;
 	try {
 		$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
-		// Set timezone for this connection to UTC to ensure consistent timestamps
-		if ($conn) {
-			$conn->set_charset("utf8mb4");
-			$conn->query("SET time_zone = '+00:00'");
-		}
 	} catch (\Exception $e) {
 		$conn = false;
 	}
