@@ -142,7 +142,7 @@
         AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from Strategic Planning", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from " . CardLink($cardID), 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "trade_in_red": case "trade_in_yellow": case "trade_in_blue":
