@@ -265,6 +265,10 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1, $created
         array_splice($hand, $index, 0, $cardID);
       }
     }
+    if ($from == "CC") {
+      $card = GetClass($cardID, $player);
+      if ($card != "-") $card->LeavesCombatChainAbility();
+    }
   }
 }
 

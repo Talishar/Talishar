@@ -3739,41 +3739,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
         break;
-      case "electromagnetic_somersault_red":
-      case "electromagnetic_somersault_yellow":
-      case "electromagnetic_somersault_blue":
-        if (count($chainLinks) > 0) { //only do this if the chain wasn't forced closed
-          $prevLink = $chainLinks[count($chainLinks) - 1];
-          $indices = [];
-          $index = -1;
-          $prevLinkCount = count($prevLink);
-          for ($i = 0; $i < $prevLinkCount; $i += ChainLinksPieces()) {
-            if ($target == $prevLink[$i+7] && $prevLink[$i+2] == 1) {
-              $indices[] = $i;
-            }
-          }
-          if (count($indices) == 1) {
-            $index = $indices[0];
-          }
-          else if (count($indices) > 1) { //if there are two copies of the same card on the link, assume the player chose their own card
-            // fix later
-            foreach ($indices as $i) {
-              if ($prevLink[$i + 1] == $player) $index = $i; 
-            }
-            if ($index == -1) $index = $indices[0];
-          }
-          if ($index != -1)
-          {
-            $player = $prevLink[$index + 1];
-            // if it was played from an opponent's zone
-            if (DelimStringContains($prevLink[$index+3], "THEIR", true)) {
-              $player = $player == 1 ? 2 : 1;
-            }
-            AddPlayerHand($target, $player, "CC");
-            $chainLinks[count($chainLinks) - 1][$index + 2] = 0;
-          }
-        }
-        break;
       case "face_purgatory":
         if($CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
         Draw($player);

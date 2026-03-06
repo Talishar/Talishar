@@ -123,7 +123,7 @@ class bait extends Card {
     return $index != "-" && IsReactionPhase() && $this->controller == $mainPlayer && $auras[$index + 5] > 0; //makes it so you can't activate the AR layers it puts onto the combat chain
   }
 
-  function ResolutionStepEffectTriggers($parameter) {
+  function ResolutionStepEffectTriggers($parameter, $index) {
     $index = SearchAurasForUniqueID($parameter, $this->controller);
     if ($index != -1) DestroyAura($this->controller, $index, skipClose:true);
     return true;

@@ -793,31 +793,94 @@ class barkskin_of_the_millennium_tree extends Card {
 //   }
 // }
 
+class electromagnetic_somersault extends BaseCard {
+  function PlayAbility($minCost) {
+    $options = SearchCombatChainLink($this->controller, "AA", minCost: $minCost);
+    if($options != "") {
+      $search = "COMBATCHAINLINK:type=AA;minCost=$minCost";
+      $max = count(explode(",", $options));
+      $message = "Choose an attack action card to return to the owner's hand";
+      Await($this->controller, "MultiChooseIndices", "indices", search:$search, subsequent:0);
+    	Await($this->controller, "ChooseMultiZone", "currentChoices", context:$message, may:true);
+      Await($this->controller, $this->cardID, final:$max == 1);
+      if ($max > 1) {
+        Await($this->controller, "MultiChooseIndices", "indices", search:$search);
+    	  Await($this->controller, "ChooseMultiZone", "currentChoices", context:$message, may:true);
+        Await($this->controller, $this->cardID, final:true);
+      }
+    }
+    return "";
+  }
 
-// class electromagnetic_somersault_red extends Card {
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["currentChoices"];
+    $Choice = MZIndexToObject($this->controller, $choice);
+    WriteLog(CardLink($Choice->ID()) . " was chosen.");
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Choice->UniqueID());
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "electromagnetic_somersault_red";
-//     $this->controller = $controller;
-//     }
+  function ResolutionStepEffectTriggers($index) {
+    $Effect = new CurrentEffect($index);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $Effect->AppliestoUniqueID());
+    return true;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function ProcessTrigger($target) {
+    global $ChainLinks;
+    if ($ChainLinks->NumLinks() > 0) { //only do this if the chain wasn't forced closed
+      $prevLink = $ChainLinks->LastLink();
+      $targetCard = $prevLink->FindCardUID($target);
+      $targetCard->Bounce();
+    }
+  }
+}
+
+class electromagnetic_somersault_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "electromagnetic_somersault_red";
+    $this->controller = $controller;
+    $this->baseCard = new electromagnetic_somersault($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(0);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($target);
+  }
+}
 
 
-// class electromagnetic_somersault_yellow extends Card {
+class electromagnetic_somersault_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "electromagnetic_somersault_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "electromagnetic_somersault_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new electromagnetic_somersault($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(1);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($target);
+  }
+
+  function ResolutionStepEffectTriggers($parameter, $index) {
+    $this->baseCard->ResolutionStepEffectTriggers($index);
+  }
+}
 
 
 // class electromagnetic_somersault_blue extends Card {

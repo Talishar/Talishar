@@ -73,6 +73,23 @@ class ChainLink {
 		return intdiv(count($this->link), ChainLinksPieces());
 	}
 
+	function FindCardUID($uid) {
+		if (count($this->link) == 0) return new LinkCard($this->linkNum, -1);
+		for ($i = 0; $i < count($this->link); $i += ChainLinksPieces()) {
+      if ($this->link[$i + 8] == $uid) return new LinkCard($this->linkNum, $i);
+    }
+    return new LinkCard($this->linkNum, -1);
+	}
+
+	function FindCardID($id, $player="-") {
+		if (count($this->link) == 0) return new LinkCard($this->linkNum, -1);
+		for ($i = 0; $i < count($this->link); $i += ChainLinksPieces()) {
+			if ($player != "-" && $this->link[$i + 1] != $player) continue;
+      if ($this->link[$i] == $id) return new LinkCard($this->linkNum, $i);
+    }
+    return new LinkCard($this->linkNum, -1);
+	}
+
 	function GetLinkCard($index, $cardNumber=false) {
 		if ($cardNumber) $index = $index * ChainLinksPieces();
 		return new LinkCard($this->linkNum, $index);
@@ -131,7 +148,10 @@ class LinkCard {
 	// Constructor
 	function __construct($linkNum, $index) {
 		global $chainLinks, $chainLinkSummary;
-		$this->link = &$chainLinks[$linkNum] ?? [];
+		if ($index != -1)
+			$this->link = &$chainLinks[$linkNum] ?? [];
+		else
+			$this->link = [];
 		$this->index = $index;
 	}
 
@@ -188,5 +208,13 @@ class LinkCard {
 	function Remove() {
 		if (isset($this->link[$this->index+2]))
 			$this->link[$this->index+2] = 0;
+	}
+
+	function Bounce() {
+		if ($this->index == -1) return;
+		$otherPlayer = $this->PlayerID() == 1 ? 2 : 1;
+		$destPlayer = str_contains($this->From(), "THEIR") ? $otherPlayer : $this->PlayerID();
+		AddPlayerHand($this->OriginalCardID(), $destPlayer, "CC");
+		$this->Remove();
 	}
 }

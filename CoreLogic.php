@@ -1292,19 +1292,8 @@ function ResolutionStepEffectTriggers()
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     $parameter = $currentEffect[1] ?? "-";
     if (class_exists($currentEffect[0])) {
-      $card = new $currentEffect[0]($mainPlayer);
-      if ($card->ResolutionStepEffectTriggers($parameter)) RemoveCurrentTurnEffect($i);
-    }
-    switch ($currentEffect[0]) {
-      case "electromagnetic_somersault_red":
-      case "electromagnetic_somersault_yellow":
-      case "electromagnetic_somersault_blue":
-        $player = $currentTurnEffects[$i + 1];
-        AddLayer("TRIGGER", $player, $currentEffect[0], $currentEffect[1]);
-        RemoveCurrentTurnEffect($i);
-        break;
-      default:
-        break;
+      $card = new $currentEffect[0]($currentTurnEffects[$i + 1]);
+      if ($card->ResolutionStepEffectTriggers($parameter, $i)) RemoveCurrentTurnEffect($i);
     }
   }
 }

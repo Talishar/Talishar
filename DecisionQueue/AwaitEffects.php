@@ -113,6 +113,19 @@ function MultiTargetIndicesAwait($player) {
   return $rv == "" ? "PASS" : $rv;
 }
 
+function MultiChooseIndicesAwait($player) {
+  global $dqVars;
+  $currentChoices = explode(",", $dqVars["currentChoices"] ?? "");
+  $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
+  $rv = [];
+  //remove any choices that have already been targeted
+  foreach ($rvOrig as $ind) {
+    if (!in_array($ind, $currentChoices)) array_push($rv, $ind);
+  }
+  $rv = implode(",", $rv);
+  return $rv == "" ? "PASS" : $rv;
+}
+
 function ChooseMultiZoneAwait($player) {
   global $dqVars;
   $may = $dqVars["may"] ?? false;

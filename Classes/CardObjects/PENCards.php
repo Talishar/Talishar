@@ -2853,7 +2853,7 @@ class rainbow_goo_trap_red extends Card {
     return true;
   }
 
-  function ResolutionStepEffectTriggers($parameter) {
+  function ResolutionStepEffectTriggers($parameter, $index) {
     global $combatChain;
     if ($parameter == "BLIND") {
       $combatChain[0] = BlindCard($combatChain[0], unblind:true);
@@ -3670,7 +3670,7 @@ class dyed_silk_sleeves extends Card {
     return true;
   }
 
-  function ResolutionStepEffectTriggers($parameter) {
+  function ResolutionStepEffectTriggers($parameter, $index) {
     global $combatChainState, $CCS_DamageDealt;
     if ($combatChainState[$CCS_DamageDealt] == 0) {
       $Character = new PlayerCharacter($this->controller);
@@ -3984,10 +3984,18 @@ class verdant_tide_red extends Card {
 
 class shimmering_specter extends BaseCard {
   function CombatChainCloseAbility($chainLink) {
-    PlayAura("spectral_shield", $this->controller);
+    $this->ProcessTrigger();
   }
 
   function BlockCardDestroyed() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function LeavesCombatChainAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
     PlayAura("spectral_shield", $this->controller);
   }
 }
@@ -4010,6 +4018,14 @@ class shimmering_specter_red extends Card {
   function SpecialBlock() {
     return 2;
   }
+
+  function LeavesCombatChainAbility() {
+    return $this->baseCard->LeavesCombatChainAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger();
+  }
 }
 
 class shimmering_specter_yellow extends Card {
@@ -4030,6 +4046,14 @@ class shimmering_specter_yellow extends Card {
   function SpecialBlock() {
     return 2;
   }
+
+  function LeavesCombatChainAbility() {
+    return $this->baseCard->LeavesCombatChainAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger();
+  }
 }
 
 class shimmering_specter_blue extends Card {
@@ -4049,6 +4073,14 @@ class shimmering_specter_blue extends Card {
 
   function SpecialBlock() {
     return 2;
+  }
+
+  function LeavesCombatChainAbility() {
+    return $this->baseCard->LeavesCombatChainAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger();
   }
 }
 

@@ -229,33 +229,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "blast_to_oblivion_blue":
       $combatChainState[$CCS_NextInstantBouncesAura] = 1;
       return "";
-    case "electromagnetic_somersault_red":
-    case "electromagnetic_somersault_yellow":
-    case "electromagnetic_somersault_blue":
-      $minCost = match ($cardID) {
-        "electromagnetic_somersault_red" => 0,
-        "electromagnetic_somersault_yellow" => 1,
-        "electromagnetic_somersault_blue" => 2
-      };
-      $options = SearchCombatChainLink($currentPlayer, "AA", minCost: $minCost);
-      if($options != "") {
-        $max = count(explode(",", $options));
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-        AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
-        AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
-        AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID . "-{1}", 1);
-        if($max > 1) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:type=AA;minCost=".$minCost);
-          AddDecisionQueue("REMOVEPREVIOUSCHOICES", $currentPlayer, "{0}", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZSETDQVAR", $currentPlayer, "1", 1);
-          AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "{1}", 1);
-          AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID . "-{1}", 1);  
-        }
-      }
-      return "";
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":

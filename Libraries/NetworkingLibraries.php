@@ -1596,6 +1596,8 @@ function FinalizeChainLink($chainClosed = false)
       if ($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves];
       ResolveGoesWhere($goesWhere, $combatChain[$i - 1], $combatChain[$i], "CC", "", count($params) > 1 ? $params[1] : "NA");
     }
+    $originUID = $combatChain[$i + 7];
+    if ($originUID == -1) $originUID = $combatChain[$i + 6]; //if it doesn't have a source, just give it the combat chain uid
     array_push($chainLinks[$CLIndex], $combatChain[$i - 1]); //Card ID
     array_push($chainLinks[$CLIndex], $combatChain[$i]); //Player ID
     array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[$i + 1] != "PLAY" ? "1" : "0")); //Still on chain? 1 = yes, 0 = no
@@ -1604,7 +1606,7 @@ function FinalizeChainLink($chainClosed = false)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 5]); //Defense Modifier
     array_push($chainLinks[$CLIndex], "-"); //Added On-hits (comma separated)
     array_push($chainLinks[$CLIndex], $combatChain[$i + 8]); //Original card ID, differs from CardID in case of copies
-    array_push($chainLinks[$CLIndex], $combatChain[$i + 7]); //Origin unique ID
+    array_push($chainLinks[$CLIndex], $originUID); //Origin unique ID
     array_push($chainLinks[$CLIndex], $combatChain[$i + 10]); //number of times used
   }
 

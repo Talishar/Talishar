@@ -115,7 +115,7 @@ class Card {
     return "";
   }
 
-  function ResolutionStepEffectTriggers($parameter) {
+  function ResolutionStepEffectTriggers($parameter, $index) {
     return false; //return whether to remove the effect
   }
 
@@ -609,5 +609,9 @@ class Card {
 
   function ArcaneModifier(&$remove, $player, $index, $amount=false) {
     return 0;
+  }
+
+  function LeavesCombatChainAbility() {
+    return;
   }
 }
