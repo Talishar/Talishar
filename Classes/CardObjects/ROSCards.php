@@ -844,7 +844,7 @@ class electromagnetic_somersault_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(1);
+    return $this->baseCard->PlayAbility(0);
   }
 
   function SpecificLogic() {
@@ -896,7 +896,7 @@ class electromagnetic_somersault_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(1);
+    return $this->baseCard->PlayAbility(2);
   }
 
   function SpecificLogic() {
