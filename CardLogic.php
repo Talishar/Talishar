@@ -4605,7 +4605,7 @@ function Opt($cardID, $amount)
   PlayerOpt($currentPlayer, $amount);
 }
 
-function PlayerOpt($player, $amount, $optKeyword = true)
+function PlayerOpt($player, $amount, $optKeyword = true, $DQContext = "")
 {
   global $CS_CardsInDeckBeforeOpt;
   $char = GetPlayerCharacter($player);
@@ -4614,6 +4614,7 @@ function PlayerOpt($player, $amount, $optKeyword = true)
   $deck = new Deck($player);
   SetClassState($player, $CS_CardsInDeckBeforeOpt, $deck->RemainingCards());
   AddDecisionQueue("FINDINDICES", $player, "DECKTOPXREMOVE," . $amount);
+  if($DQContext != "") AddDecisionQueue("SETDQCONTEXT", $player, $DQContext, 1);
   AddDecisionQueue("OPT", $player, "<-", 1);
   if ($optKeyword && $heroID == "blaze_firemind" && $heroStatus < 3) AddDecisionQueue("BLAZE", $player, $amount, 1);
 }

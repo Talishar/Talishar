@@ -491,7 +491,8 @@
         if($cardID == "even_bigger_than_that_red") $opt = 3;
         else if($cardID == "even_bigger_than_that_yellow") $opt = 2;
         else if($cardID == "even_bigger_than_that_blue") $opt = 1;
-        PlayerOpt($currentPlayer, $opt);
+        global $CS_DamageDealt;
+        PlayerOpt($currentPlayer, $opt, DQContext:"Choose a card to add to the deck top or bottom. Damage Dealt: " . GetClassState($currentPlayer, piece: $CS_DamageDealt));
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT-".$cardID);
         return "";
       case "amulet_of_assertiveness_yellow":
