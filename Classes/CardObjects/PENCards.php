@@ -7657,7 +7657,7 @@ class whispering_mist_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return HasEphemeral($CombatChain->AttackCard()->ID()) || ColorContains($CombatChain->AttackCard()->ID(), "Blue", $this->controller);
+    return HasEphemeral($CombatChain->AttackCard()->ID()) || ColorContains($CombatChain->AttackCard()->ID(), 3, $this->controller);
   }
 
   function IsCombatEffectPersistent($mode) {
