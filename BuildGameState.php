@@ -41,6 +41,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $sessionIsPvtVoidPatron = $sessionData['isPvtVoidPatron'] ?? false;
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
+  $friendListFromSession = [];
+  /*
   $friendListFromSession = $sessionData['friendList'] ?? [];
   if (empty($friendListFromSession) && $playerID == 3 && !empty($sessionUserName)) {
     $dbConn = GetDBConnection();
@@ -61,6 +63,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   
   $sessionData['friendList'] = $friendListFromSession;
+  */
 
   $response = new stdClass();
   $response->playerInventory = [];
