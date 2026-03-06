@@ -127,8 +127,8 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
     default:
       return false;
   }
-  $message = "The heat of your " . CardLink($cardID) . " melts the frostbites!";
-  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID) . "_to_melt_the_frostbites");
+  $message = "The heat of your " . CardLink($cardID) . " melts the " . CardLink("frostbite") . "!";
+  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID) . "_to_melt_the_" . CardLink("frostbite"));
   AddDecisionQueue("NOPASS", $player, "-", 1);
   switch ($cardID) {
     case "smoldering_scales":
