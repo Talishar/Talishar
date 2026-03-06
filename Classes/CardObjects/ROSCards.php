@@ -844,7 +844,7 @@ class electromagnetic_somersault_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(0);
+    return $this->baseCard->PlayAbility(1);
   }
 
   function SpecificLogic() {
@@ -853,6 +853,10 @@ class electromagnetic_somersault_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($target);
+  }
+
+  function ResolutionStepEffectTriggers($parameter, $index) {
+    $this->baseCard->ResolutionStepEffectTriggers($index);
   }
 }
 
@@ -883,17 +887,30 @@ class electromagnetic_somersault_yellow extends Card {
 }
 
 
-// class electromagnetic_somersault_blue extends Card {
+class electromagnetic_somersault_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "electromagnetic_somersault_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "electromagnetic_somersault_blue";
+    $this->controller = $controller;
+    $this->baseCard = new electromagnetic_somersault($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility(1);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($target);
+  }
+
+  function ResolutionStepEffectTriggers($parameter, $index) {
+    $this->baseCard->ResolutionStepEffectTriggers($index);
+  }
+}
 
 
 // class electrostatic_discharge_red extends Card {
