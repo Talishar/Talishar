@@ -1597,7 +1597,7 @@ function FinalizeChainLink($chainClosed = false)
       ResolveGoesWhere($goesWhere, $combatChain[$i - 1], $combatChain[$i], "CC", "", count($params) > 1 ? $params[1] : "NA");
     }
     $originUID = $combatChain[$i + 7];
-    if ($originUID == -1) $originUID = $combatChain[$i + 6]; //if it doesn't have a source, just give it the combat chain uid
+    if ($originUID == -1 || $combatChain[$i + 1] != "PLAY") $originUID = $combatChain[$i + 6]; //if it doesn't have a source, just give it the combat chain
     array_push($chainLinks[$CLIndex], $combatChain[$i - 1]); //Card ID
     array_push($chainLinks[$CLIndex], $combatChain[$i]); //Player ID
     array_push($chainLinks[$CLIndex], ($goesWhere == "GY" && $combatChain[$i + 1] != "PLAY" ? "1" : "0")); //Still on chain? 1 = yes, 0 = no
