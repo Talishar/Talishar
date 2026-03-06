@@ -823,7 +823,8 @@ class electromagnetic_somersault extends BaseCard {
   function ResolutionStepEffectTriggers($index) {
     $Effect = new CurrentEffect($index);
     AddLayer("TRIGGER", $this->controller, $this->cardID, $Effect->AppliestoUniqueID());
-    return true;
+    $Effect->Remove();
+    return false;
   }
 
   function ProcessTrigger($target) {
