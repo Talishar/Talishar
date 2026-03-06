@@ -762,6 +762,10 @@ class predatory_plating extends Card {
     $CharCard = new CharacterCard($index, $this->controller);
     $CharCard->Destroy();
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class basalt_boots extends Card {
