@@ -228,7 +228,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your deck:";
-        $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2], 11, $caption, "(You can click your deck to see its content during this card resolution)");
+        $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2] ?? "", 11, $caption, "(You can click your deck to see its content during this card resolution)");
       }
       break;
 
@@ -237,7 +237,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent deck:";
-        $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2], 11, $caption);
+        $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2] ?? "", 11, $caption);
       }
       break;
 
@@ -245,7 +245,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your banish:";
-        $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2] ?? "", 16, $caption);
       }
       break;
 
@@ -255,7 +255,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your arsenal:";
-        $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2], 16, $caption, "", "ARSENAL");
+        $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2] ?? "", 16, $caption, "", "ARSENAL");
       }
       break;
 
@@ -264,7 +264,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $myPermanents = &GetPermanents($playerID);
         $playerInputPopup->active = true;
-        $playerInputPopup->popup = ChoosePopup($myPermanents, $turn[2], 16, GetPhaseHelptext());
+        $playerInputPopup->popup = ChoosePopup($myPermanents, $turn[2] ?? "", 16, GetPhaseHelptext());
       }
       break;
 
@@ -272,7 +272,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent's hand:";
-        $playerInputPopup->popup = ChoosePopup($theirHand, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($theirHand, $turn[2] ?? "", 16, $caption);
       }
       break;
 
@@ -280,7 +280,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose one of your auras:";
-        $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2] ?? "", 16, $caption);
       }
       break;
 
@@ -290,7 +290,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your graveyard:";
-        $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2] ?? "", 16, $caption);
       }
       break;
 
@@ -298,7 +298,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent's graveyard:";
-        $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2] ?? "", 16, $caption);
       }
       break;
 
@@ -315,7 +315,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your character/equipment:";
-        $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2] ?? "", 16, $caption);
       }
       break;
 
@@ -323,7 +323,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent character/equipment:";
-        $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2] ?? "", 16, $caption);
       }
       break;
 

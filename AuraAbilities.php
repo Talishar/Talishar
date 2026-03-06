@@ -832,9 +832,10 @@ function AuraStartTurnAbilities()
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     if (!isset($defPlayerAuras[$i])) continue;
     $EffectContext = $defPlayerAuras[$i];
-    $card = GetClass($defPlayerAuras[$i], $defPlayer);
+    $cardID = $defPlayerAuras[$i];
+    $card = GetClass($cardID, $defPlayer);
     if ($card != "-") $card->OppStartTurnAbility($i);
-    switch ($defPlayerAuras[$i]) {
+    switch ($cardID) {
       case "restless_coalescence_yellow":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
         break;
