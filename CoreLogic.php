@@ -2680,6 +2680,11 @@ function HaveUnblockedEquip($player)
 {
   $restriction = ""; // This just needs to exist cause IsBlockRestricted uses a reference op on it.
   $char = &GetPlayerCharacter($player);
+  $mechanoidIndex = SearchItemForIndex("nitro_mechanoidc", $player);
+  if ($mechanoidIndex != -1) {
+    $items = &GetItems($player);
+    if ($items[$mechanoidIndex + 13] == 0) return true;
+  }
   for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
     if ($char[$i + 1] == 0) continue;//If broken
     if ($char[$i + 6] == 1) continue;//On combat chain
