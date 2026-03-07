@@ -26,25 +26,7 @@ function ProcessMacros()
       else if ($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if ($turn[0] == "CHOOSETHEIRCHARACTER" && strlen($turn[2]) <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       else if ($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
-      
-      // Specific card macros
-      else if ($turn[0] == "CHOOSEMULTIZONE" && GetMZCard($currentPlayer, explode(",", $turn[2])[0]) == "phoenix_flame_red" && ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red")) 
-        { 
-          $somethingChanged = true; 
-          ContinueDecisionQueue(explode(",", $turn[2])[0]); 
-        }
-      else if ($turn[0] == "CHOOSEMULTIZONE" && $EffectContext == "blood_runs_deep_red")
-      { 
-        $Daggers = explode(",", $turn[2]);
-        $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[0]));
-        $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[1]));
-        if ($dagger1 == $dagger2) 
-        { 
-          $somethingChanged = true; 
-          ContinueDecisionQueue($Daggers[0]); 
-        }
-      }
-
+      else if (ProcessSpecificCardMacros()) { $somethingChanged = true; }
       else if ((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < LayerPieces() * 3) { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
       else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }
@@ -103,6 +85,32 @@ function ProcessMacros()
 function NormalizeWeaponCard($cardName)
 {
   return preg_replace('/_r$/', '', $cardName);
+}
+
+function ProcessSpecificCardMacros()
+{
+  global $currentPlayer, $turn, $EffectContext;
+  
+  if ($turn[0] == "CHOOSEMULTIZONE" && GetMZCard($currentPlayer, explode(",", $turn[2])[0]) == "phoenix_flame_red" && 
+      ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red")) 
+  { 
+    ContinueDecisionQueue(explode(",", $turn[2])[0]); 
+    return true;
+  }
+  
+  if ($turn[0] == "CHOOSEMULTIZONE" && $EffectContext == "blood_runs_deep_red")
+  { 
+    $Daggers = explode(",", $turn[2]);
+    $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[0]));
+    $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[1]));
+    if ($dagger1 == $dagger2) 
+    { 
+      ContinueDecisionQueue($Daggers[0]); 
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 function AutopassPhaseWithOneOption($phase)
