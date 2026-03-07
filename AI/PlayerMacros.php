@@ -18,50 +18,90 @@ function ProcessMacros()
       //Debug
       //WriteLog($turn[0] . " - " . $turn[2] . "-" . $EffectContext);
 
-      if ($turn[0] == "A" && ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if ($turn[0] == "D" && ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
-      else if ($turn[0] == "B" && !IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
-      else if ($turn[0] == "CHOOSECARDID" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if ($turn[0] == "CHOOSECARD" && strlen($turn[2]) <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if ($turn[0] == "CHOOSETHEIRHAND" && strlen($turn[2]) <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if ($turn[0] == "CHOOSETHEIRCHARACTER" && strlen($turn[2]) <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if ($turn[0] == "CHOOSETOPOPPONENT" && strlen($turn[2]) <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
-      else if (ProcessSpecificCardMacros()) { $somethingChanged = true; }
-      else if ((count($decisionQueue) == 0 || $decisionQueue[0] == "INSTANT") && count($layers) > 0 && $layers[count($layers)-LayerPieces()] == "ENDPHASE" && count($layers) < LayerPieces() * 3) { $somethingChanged = true; PassInput(); }
-      else if ($turn[0] == "ENDPHASE") { $somethingChanged = true; PassInput(); }
-      else if ($turn[0] == "STARTTURN") { $somethingChanged = true; PassInput(); }
-      else if ($turn[0] == "DYNPITCH" && $turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
-      else if ($turn[0] == "INSTANT" || $turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))
-      {
-        if(HoldPrioritySetting($currentPlayer) == 0 && !HasPlayableCard($currentPlayer, $turn[0]))
-        {
+      // Cache expensive function calls and counts
+      $layerCount = count($layers);
+      $decisionQueueCount = count($decisionQueue);
+      $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
+      $choiceLength = strlen($turn[2] ?? "");
+      $firstLayer = $layerCount > 0 ? $layers[0] : null;
+      $lastLayer = $layerCount > 0 ? $layers[$layerCount - LayerPieces()] : null;
+      
+      switch ($turn[0]) {
+        case "A":
+          if (ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+          break;
+        case "D":
+          if (ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+          break;
+        case "B":
+          if (!IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
+          break;
+        case "CHOOSECARDID":
+        case "CHOOSECARD":
+          if ($choiceLength <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          break;
+        case "CHOOSETHEIRHAND":
+          if ($choiceLength <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          break;
+        case "CHOOSETHEIRCHARACTER":
+          if ($choiceLength <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          break;
+        case "CHOOSETOPOPPONENT":
+          if ($choiceLength <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
+          break;
+        case "ENDPHASE":
+        case "STARTTURN":
           $somethingChanged = true;
           PassInput();
-        }
-        if($turn[0] == "INSTANT" && count($layers) > 0)
-        {
-          if(($layers[0] == "FINALIZECHAINLINK" || $layers[0] == "RESOLUTIONSTEP" || $layers[0] == "CLOSINGCHAIN") && HoldPrioritySetting($currentPlayer) != "1" && !HasPlayableCard($currentPlayer, $turn[0])) { $somethingChanged = true; PassInput(); }
-          else if($layers[0] == "DEFENDSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-          else if($layers[0] == "ATTACKSTEP" && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-          else if($layers[5] != "-")//Means there is a unique ID
-          {
-            $subtype = CardSubType($layers[2]);
-            if(DelimStringContains($subtype, "Aura") && GetAuraGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-            else if(DelimStringContains($subtype, "Item") && GetItemGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
-            else if($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($layers[1], $layers[2]) == 0 && HoldPrioritySetting($currentPlayer) != "1") { $somethingChanged = true; PassInput(); }
+          break;
+        case "DYNPITCH":
+          if ($turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          break;
+        case "INSTANT":
+        case "M":
+          if ($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))) {
+            if ($holdPrioritySetting == 0 && !HasPlayableCard($currentPlayer, $turn[0])) {
+              $somethingChanged = true;
+              PassInput();
+            }
+            
+            if ($turn[0] == "INSTANT" && $layerCount > 0) {
+              ProcessInstantMacros($firstLayer, $layerCount, $holdPrioritySetting, $somethingChanged, $lastLayer);
+            }
           }
-        }
+          break;
+        default:
+          if (!ProcessSpecificCardMacros()) {
+            if ($decisionQueueCount == 0 || $decisionQueue[0] == "INSTANT") {
+              if ($lastLayer == "ENDPHASE" && $layerCount < LayerPieces() * 3) {
+                $somethingChanged = true;
+                PassInput();
+              }
+            }
+            if (!$somethingChanged && AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2]) == 1) {
+              $somethingChanged = true;
+              ContinueDecisionQueue($turn[2]);
+            }
+          } else {
+            $somethingChanged = true;
+          }
       }
-      else if(AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
       if($turn[0] == "B" || $turn[0] == "D")
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
         if ($combatChainState[$CCS_RequiredEquipmentBlock] == 0) {
-          if($threshold == "99") { $somethingChanged = true; PassInput(); }
-          else if($threshold == "1")
-          {
-            CacheCombatResult();
-            if(CachedTotalPower() <= 1) { $somethingChanged = true; PassInput(); }
+          switch ($threshold) {
+            case "99":
+              $somethingChanged = true;
+              PassInput();
+              break;
+            case "1":
+              CacheCombatResult();
+              if (CachedTotalPower() <= 1) {
+                $somethingChanged = true;
+                PassInput();
+              }
+              break;
           }
         }
       }
@@ -85,6 +125,39 @@ function ProcessMacros()
 function NormalizeWeaponCard($cardName)
 {
   return preg_replace('/_r$/', '', $cardName);
+}
+
+function ProcessInstantMacros($firstLayer, $layerCount, $holdPrioritySetting, &$somethingChanged, $lastLayer)
+{
+  global $currentPlayer, $turn, $layers, $CS_SkipAllRunechants;
+  
+  // Cache whether there's a unique ID
+  $hasUniqueID = isset($layers[5]) && $layers[5] != "-";
+  
+  if ($firstLayer == "FINALIZECHAINLINK" || $firstLayer == "RESOLUTIONSTEP" || $firstLayer == "CLOSINGCHAIN") {
+    if ($holdPrioritySetting != "1" && !HasPlayableCard($currentPlayer, $turn[0])) {
+      $somethingChanged = true;
+      PassInput();
+    }
+  } else if ($firstLayer == "DEFENDSTEP" && $holdPrioritySetting != "1") {
+    $somethingChanged = true;
+    PassInput();
+  } else if ($firstLayer == "ATTACKSTEP" && $holdPrioritySetting != "1") {
+    $somethingChanged = true;
+    PassInput();
+  } else if ($hasUniqueID) {
+    $subtype = CardSubType($layers[2]);
+    if (DelimStringContains($subtype, "Aura") && GetAuraGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
+      $somethingChanged = true;
+      PassInput();
+    } else if (DelimStringContains($subtype, "Item") && GetItemGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
+      $somethingChanged = true;
+      PassInput();
+    } else if ($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
+      $somethingChanged = true;
+      PassInput();
+    }
+  }
 }
 
 function ProcessSpecificCardMacros()
