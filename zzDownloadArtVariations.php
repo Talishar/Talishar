@@ -11,11 +11,11 @@ $manualArtVariationOverrides = [
   //   "art_of_the_void_red" => "AA",
   // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
   //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
-
-  //"oldhim" => [
-  // "artVariation" => "FA",
-  // "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/PEN345-CF.webp"
-  //],
+/* 
+  "nitro_mechanoid" => [
+   "artVariation" => "FA",
+   "imageUrl" => "https://content.fabrary.net/cards/GEM119_BACK.webp"
+  ], */
 ];
 
 echo "<h2>Starting Art Variations Download</h2>";

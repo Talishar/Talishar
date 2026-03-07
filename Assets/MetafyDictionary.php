@@ -276,7 +276,8 @@ enum MetafyCommunity : string
         "fire_that_burns_within_red=GEM132-T", "frost_spike_blue=GEM130-T", "future_sight_red=GEM124-T", "graven_gaslight=GEM106-T", "grimoire_of_fellingsong=GEM110-T", "hulk_up_blue=GEM138-T",
         "hyper_inflation_red=GEM131-T", "ion_charged_yellow=GEM135-T", "knife_through_red=GEM113-T", "man_overboard_red=GEM126-T", "maxx_the_hype_nitro=GEM105-T", "rainbow_goo_trap_red=GEM122-T",
         "reinforce_the_line_red=GEM140-T", "roaring_beam_yellow=GEM129-T", "shallow_water_shark_harpoon_yellow=GEM127-T", "shimmering_mirage_blue=GEM125-T", "snarky_prick_red=GEM139-T",
-        "submerge_red=GEM128-T", "teklo_trebuchet_2000_blue=GEM121-T", "valahai_riven_yellow=GEM115-T", "weeping_battleground_red=GEM123-T", "elemental_strike_red=PEN205-T"
+        "submerge_red=GEM128-T", "teklo_trebuchet_2000_blue=GEM121-T", "valahai_riven_yellow=GEM115-T", "weeping_battleground_red=GEM123-T", "elemental_strike_red=PEN205-T",
+        "nitro_mechanoid=GEM519-T", "nitro_mechanoida=GEM519-T", "nitro_mechanoidb=GEM519-T", "nitro_mechanoidc=GEM519-T"
     ];
     return $altArts;
   }
