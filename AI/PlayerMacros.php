@@ -66,7 +66,7 @@ function ProcessMacros()
             }
             
             if ($turn[0] == "INSTANT" && $layerCount > 0) {
-              ProcessInstantMacros($firstLayer, $layerCount, $holdPrioritySetting, $somethingChanged, $lastLayer);
+              ProcessInstantMacros($firstLayer, $holdPrioritySetting, $somethingChanged);
             }
           }
           break;
@@ -127,9 +127,9 @@ function NormalizeWeaponCard($cardName)
   return preg_replace('/_r$/', '', $cardName);
 }
 
-function ProcessInstantMacros($firstLayer, $layerCount, $holdPrioritySetting, &$somethingChanged, $lastLayer)
+function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChanged)
 {
-  global $currentPlayer, $turn, $layers, $CS_SkipAllRunechants;
+  global $currentPlayer, $turn, $layers;
   
   // Cache whether there's a unique ID
   $hasUniqueID = isset($layers[5]) && $layers[5] != "-";
@@ -208,56 +208,82 @@ function HasPlayableCard($player, $phase)
 {
   global $CombatChain;
   $restriction = "";
-  $character = &GetPlayerCharacter($player);
   $otherPlayer = $player == 1 ? 2 : 1;
-  for($i=0; $i<count($character); $i+=CharacterPieces()) {
+  
+  // Cache piece sizes
+  $characterPieces = CharacterPieces();
+  $handPieces = HandPieces();
+  $arsenalPieces = ArsenalPieces();
+  $itemPieces = ItemPieces();
+  $banishPieces = BanishPieces();
+  $auraPieces = AuraPieces();
+  $allyPieces = AllyPieces();
+  $discardPieces = DiscardPieces();
+  
+  // Get all zones once
+  $character = &GetPlayerCharacter($player);
+  $hand = &GetHand($player);
+  $arsenal = &GetArsenal($player);
+  $items = &GetItems($player);
+  $banish = &GetBanish($player);
+  $theirBanish = &GetBanish($otherPlayer);
+  $discard = GetDiscard($player);
+  $auras = &GetAuras($player);
+  $allies = GetAllies($player);
+  $deck = &GetDeck($player);
+  $ccNumCards = $CombatChain->NumCardsActiveLink();
+  
+  // Cache counts
+  $characterCount = count($character);
+  $handCount = count($hand);
+  $arsenalCount = count($arsenal);
+  $itemCount = count($items);
+  $banishCount = count($banish);
+  $theirBanishCount = count($theirBanish);
+  $discardCount = count($discard);
+  $auraCount = count($auras);
+  $allyCount = count($allies);
+  $deckCount = count($deck);
+  
+  for($i=0; $i<$characterCount; $i+=$characterPieces) {
     if($character[$i+1] == 2 && GetCharacterGemState($player, $character[$i]) && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
-  $hand = &GetHand($player);
-  for($i=0; $i<count($hand); $i+=HandPieces()) {
+  for($i=0; $i<$handCount; $i+=$handPieces) {
     if(IsPlayable($hand[$i], $phase, "HAND", $i, $restriction, $player)) return true;
   }
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  for ($i = 0; $i < $ccNumCards; ++$i) {
     if(IsPlayable($CombatChain->Card($i, cardNumber:true)->ID(), $phase, "CC", $i, $restriction, $player)) return true;
   }
-  $arsenal = &GetArsenal($player);
-  for($i=0; $i<count($arsenal); $i+=ArsenalPieces()) {
+  for($i=0; $i<$arsenalCount; $i+=$arsenalPieces) {
     if(IsPlayable($arsenal[$i], $phase, "ARS", $i, $restriction, $player)) return true;
   }
-  $items = &GetItems($player);
-  for($i=0; $i<count($items); $i+=ItemPieces()) {
+  for($i=0; $i<$itemCount; $i+=$itemPieces) {
     if (!ItemActiveStateTracked($items[$i]) || GetItemGemState($player, $items[$i], $i) != 0) {
       if(IsPlayable($items[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
     }
   }
-  $banish = &GetBanish($player);
-  for($i=0; $i<count($banish); $i+=BanishPieces()) {
+  for($i=0; $i<$banishCount; $i+=$banishPieces) {
     if(IsPlayable($banish[$i], $phase, "BANISH", $i, $restriction, $player)) return true;
   }
-  $theirBanish = &GetBanish($otherPlayer);
-  for($i=0; $i<count($theirBanish); $i+=BanishPieces()) {
+  for($i=0; $i<$theirBanishCount; $i+=$banishPieces) {
     if(IsPlayable($theirBanish[$i], $phase, "THEIRBANISH", $i, $restriction, $player)) return true;
   }
-  $discard = GetDiscard($player);
-  for($i=0; $i<count($discard); $i+=DiscardPieces()) {
+  for($i=0; $i<$discardCount; $i+=$discardPieces) {
     if(IsPlayable($discard[$i], $phase, "GY", $i, $restriction, $player)) return true;
   }
-  $auras = &GetAuras($player);
-  for($i=0; $i<count($auras); $i+=AuraPieces()) {
+  for($i=0; $i<$auraCount; $i+=$auraPieces) {
     if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  $character = GetPlayerCharacter($player);
   if ($character[0] == "dash_io" || $character[0] == "dash_database") {
-    $deck = &GetDeck($player);
-    if(count($deck) > 0 && $character[1] == 2) {
+    if($deckCount > 0 && $character[1] == 2) {
       if(IsPlayable($deck[0], $phase, "DECK", 0)) return true;
     }
   }
-  $allies = GetAllies($player);
-  for($i=0; $i<count($allies); $i+=AllyPieces()) {
+  for($i=0; $i<$allyCount; $i+=$allyPieces) {
     if(IsPlayable($allies[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
   if(AbilityPlayableFromCombatChain($CombatChain->CurrentAttack()) && !IsPlayRestricted($CombatChain->CurrentAttack(), $restriction, "PLAY", 0, $player)) return true;
+  
   return false;
 }
 
