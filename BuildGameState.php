@@ -453,6 +453,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Their Soul Count
   $response->opponentSoulCount = count($theirSoul);
 
+  $opponentSoulArr = [];
+  $theirSoulCount = count($theirSoul);
+  for ($i = 0; $i < $theirSoulCount; $i += SoulPieces()) {
+    $opponentSoulArr[] = JSONRenderedCard($theirSoul[$i]);
+  }
+  $response->opponentSoul = $opponentSoulArr;
+
   //Display their discard, pitch, deck, and banish
   $opponentDiscardArray = [];
   for ($i = 0; $i < $theirDiscardCount; $i += $discardPieces) {
@@ -642,6 +649,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerHealth = $myHealth;
   //My Soul Count
   $response->playerSoulCount = count($mySoul);
+
+  $playerSoulArr = [];
+  $mySoulCount = count($mySoul);
+  for ($i = 0; $i < $mySoulCount; $i += SoulPieces()) {
+    $playerSoulArr[] = JSONRenderedCard($mySoul[$i]);
+  }
+  $response->playerSoul = $playerSoulArr;
 
   //My Discard
   $playerDiscardArr = [];
