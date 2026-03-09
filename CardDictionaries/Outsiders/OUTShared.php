@@ -130,7 +130,7 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return true;
-      case "prowl_red": case "prowl_yellow": case "prowl_blue": return HasStealth($attackID);
+      case "prowl_red": case "prowl_yellow": case "prowl_blue": return HasStealth($attackID) && TypeContains($attackID, "AA");
       case "razors_edge_red": case "razors_edge_yellow": case "razors_edge_blue": return true;
       case "mask_of_many_faces": return CardType($attackID) == "AA";
       case "head_leads_the_tail_red": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
