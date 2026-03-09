@@ -180,6 +180,11 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     $response->canSubmitSideboard =($gameStatus > $MGS_ChooseFirstPlayer && ($playerID == 1 ? $p1SideboardSubmitted == "0" : $p2SideboardSubmitted == "0"));
   }
   else $response->canSubmitSideboard = ($gameStatus > $MGS_ChooseFirstPlayer && $gameStatus != $MGS_ReadyToStart);
+  $response->canUnreadySideboard = (
+    $gameStatus > $MGS_ChooseFirstPlayer &&
+    $gameStatus < $MGS_ReadyToStart &&
+    ($playerID == 1 ? $p1SideboardSubmitted == "1" : $p2SideboardSubmitted == "1")
+  );
 
   $decklink = ($playerID == 1 ? $p1DeckLink : $p2DeckLink);
   $matchups = ($playerID == 1 ? $p1Matchups : $p2Matchups);
