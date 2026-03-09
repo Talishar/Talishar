@@ -16,7 +16,7 @@ function ProcessMacros()
       $somethingChanged = false;
 
       //Debug
-      //WriteLog($turn[0] . " - " . $turn[2] . "-" . $EffectContext);
+      // WriteLog("$currentPlayer, $turn[0], $turn[2], $EffectContext");
 
       // Cache expensive function calls and counts
       $layerCount = count($layers);
@@ -64,10 +64,8 @@ function ProcessMacros()
               $somethingChanged = true;
               PassInput();
             }
-            
-            if ($turn[0] == "INSTANT" && $layerCount > 0) {
+            elseif ($turn[0] == "INSTANT" && $layerCount > 0) // I don't think this should ever be called after the above
               ProcessInstantMacros($firstLayer, $holdPrioritySetting, $somethingChanged);
-            }
           }
           break;
         default:
@@ -109,7 +107,7 @@ function ProcessMacros()
         $somethingChanged = true; 
         SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
       }
-      else if (!IsGameOver() && isset($layers[2]) && $layers[2] == "runechant" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+      else if (!IsGameOver() && ($layers[2] ?? "-") == "runechant" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
       }
