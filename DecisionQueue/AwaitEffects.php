@@ -148,8 +148,10 @@ function SetLayerTargetAwait($player) {
   $cleanTarget = CleanTarget($player, $targ);
   for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
     $Layer = $Stack->Card($i, true);
-    if ($Layer->ID() == $cardID) 
+    if ($Layer->ID() == $cardID) {
       $Layer->AddTarget($cleanTarget);
+      return $Layer->Target();
+    }
   }
   return $cleanTarget;
 }

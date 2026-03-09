@@ -7024,14 +7024,7 @@ class glyph_destruction_nodes_yellow extends Card {
     $numTargets = SearchCount(SearchMultizone($this->controller, "MYAURAS:nameIncludes=Sigil"));
     $search = "THEIRCHAR:type=C&THEIRALLY";
     if (!ShouldAutotargetOpponent($this->controller)) $search .= "&MYCHAR:type=C&MYALLY";
-    for ($i = 0; $i < $numTargets; ++$i) {
-      $nLeft = $numTargets - $i;
-      AddDecisionQueue("MULTITARGETINDICES", $this->controller, $search, 1);
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose up to $nLeft more target(s)", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-    }
+    SetTargets($this->controller, $this->cardID, $search, $numTargets, true);
   }
 
   function ArcaneDamage() {
