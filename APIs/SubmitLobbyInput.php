@@ -60,6 +60,27 @@ if($action == "Request Chat")
   GamestateUpdated($gameName);
 }
 
+if ($action == "Unready Sideboard") {
+  $didChangeSideboardState = false;
+
+  if ($playerID == 1 && $p1SideboardSubmitted == "1") {
+    $p1SideboardSubmitted = "0";
+    $didChangeSideboardState = true;
+  } else if ($playerID == 2 && $p2SideboardSubmitted == "1") {
+    $p2SideboardSubmitted = "0";
+    $didChangeSideboardState = true;
+  }
+
+  if ($didChangeSideboardState && $gameStatus == $MGS_ReadyToStart) {
+    $gameStatus = $MGS_P2Sideboard;
+    SetCachePiece($gameName, 14, $gameStatus);
+  }
+
+  if ($didChangeSideboardState) {
+    GamestateUpdated($gameName);
+  }
+}
+
 WriteGameFile();
 
 $response->success = true;
