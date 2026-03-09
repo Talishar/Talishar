@@ -4017,7 +4017,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "ADDSTATICBUFF":
-      $combatChain[$parameter + 10] = $lastResult;
+      $CombatChain->Card($parameter)->AddBuff($lastResult);
       return $lastResult;
     case "REMOVEFROMCHOICES":
       $ret = [];

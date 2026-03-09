@@ -150,6 +150,7 @@ class ChainCard {
     }
 
     function AddBuff($effectID) {
+      if (!isset($this->chain[$this->index+10])) return;
       if ($this->StaticBuffs() == "-") $this->chain[$this->index+10] = $effectID;
       else $this->chain[$this->index+10] .= ",$effectID";
     }
