@@ -64,8 +64,10 @@ function ProcessMacros()
               $somethingChanged = true;
               PassInput();
             }
-            elseif ($turn[0] == "INSTANT" && $layerCount > 0) // I don't think this should ever be called after the above
+            elseif ($turn[0] == "INSTANT" && $layerCount > 0) {// I don't think this should ever be called after the above
+              WriteLog("HERE1: $currentPlayer");
               ProcessInstantMacros($firstLayer, $holdPrioritySetting, $somethingChanged);
+            }
           }
           break;
         default:
@@ -127,10 +129,12 @@ function NormalizeWeaponCard($cardName)
 
 function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChanged)
 {
-  global $currentPlayer, $turn, $layers;
+  global $currentPlayer, $turn, $layers, $Stack;
   
   // Cache whether there's a unique ID
-  $hasUniqueID = isset($layers[5]) && $layers[5] != "-";
+  $layerController = $Stack->TopLayer()->PlayerID();
+  $uid = $Stack->TopLayer()->UniqueID();
+  $hasUniqueID = $uid != "-";
   
   if ($firstLayer == "FINALIZECHAINLINK" || $firstLayer == "RESOLUTIONSTEP" || $firstLayer == "CLOSINGCHAIN") {
     if ($holdPrioritySetting != "1" && !HasPlayableCard($currentPlayer, $turn[0])) {
@@ -145,9 +149,15 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
     PassInput();
   } else if ($hasUniqueID) {
     $subtype = CardSubType($layers[2]);
-    if (DelimStringContains($subtype, "Aura") && GetAuraGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
-      $somethingChanged = true;
-      PassInput();
+    if (DelimStringContains($subtype, "Aura") && $holdPrioritySetting != "1") {
+      // TODO: move this gem checking to its own function so we can do all zones checking in one spot
+      $Auras = new Auras($layerController);
+      $AuraCard = $Auras->FindCardUID($uid);
+      $gemStatus = $currentPlayer == $layerController ? $AuraCard->MyGemStatus() : $AuraCard->TheirGemStatus();
+      if ($gemStatus === "0") {
+        $somethingChanged = true;
+        PassInput();
+      }
     } else if (DelimStringContains($subtype, "Item") && GetItemGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
       $somethingChanged = true;
       PassInput();
