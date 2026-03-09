@@ -183,29 +183,30 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false): void
 
 function BlockingCardDefense($index)
 {
-  global $combatChain, $defPlayer, $currentTurnEffects;
+  global $combatChain, $defPlayer, $currentTurnEffects, $CombatChain;
+  $BlockCard = $CombatChain->Card($index);
   $canGainBlock = CanGainBlock($combatChain[$index]);
-  $from = $combatChain[$index + 2] ?? "-";
-  $cardID = $combatChain[$index] ?? "-";
+  $from = $BlockCard->From();
+  $cardID = $BlockCard->ID();
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
-  $resourcesPaid = (isset($combatChain[$index + 3]) ? intval($combatChain[$index + 3]) : 0) + intval($baseCost);
-  $uid = $combatChain[$index + 2] == "EQUIP" ? $combatChain[$index + 8] : $combatChain[$index + 7];
+  $resourcesPaid = $BlockCard->ResourcesPaid() + intval($baseCost);
+  $uid = ($from == "EQUIP" || $from == "PLAY") ? $BlockCard->OriginUniqueID() : $BlockCard->UniqueID();
   $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC", "", $uid));
   if (!BlockCantBeModified($cardID)) {
-    if (isset($combatChain[$index + 6]) && ($combatChain[$index + 6] < 0 || $canGainBlock)) $defense += $combatChain[$index + 6];
+    if (($BlockCard->DefenseModifier() < 0 || $canGainBlock)) $defense += $BlockCard->DefenseModifier();
     $blockModifier = intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
     $defense += $blockModifier;
   }
   if (SubtypeContains($cardID, "Item", $defPlayer)) {
     $DefItems = new Items($defPlayer);
-    $ItemCard = $DefItems->FindCardUID($combatChain[$index + 8]);
+    $ItemCard = $DefItems->FindCardUID($BlockCard->OriginUniqueID());
     $counters = $ItemCard->NumDefCounters();
     if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
   }
   elseif (TypeContains($cardID, "E", $defPlayer)) {
-    $defCharacter = &GetPlayerCharacter($defPlayer);
-    $charIndex = isset($combatChain[$index + 8]) ? SearchCharacterForUniqueID($combatChain[$index + 8], $defPlayer) : null;
-    $counters = $defCharacter[$charIndex + 4];
+    $defCharacter = new PlayerCharacter($defPlayer);
+    $CharCard = $defCharacter->FindCardUID($uid);
+    $counters = $CharCard->NumDefenseCounters();
     if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
   }
   if ($defense < 0) $defense = 0;

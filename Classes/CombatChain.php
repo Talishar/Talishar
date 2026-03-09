@@ -100,7 +100,7 @@ class ChainCard {
     }
 
     function ResourcesPaid() {
-      return isset($this->chain[$this->index+3]) ? $this->chain[$this->index+3] : 0;
+      return $this->chain[$this->index+3] ?? 0;
     }
 
     function RepriseActive() {
@@ -129,6 +129,10 @@ class ChainCard {
     function ModifyPower($amount) {
       $this->chain[$this->index+5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();
+    }
+
+    function DefenseModifier() {
+      return $this->chain[$this->index+6] ?? 0;
     }
 
     function ModifyDefense($amount) {

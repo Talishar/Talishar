@@ -19,11 +19,11 @@ class PlayerCharacter {
   }
 
   function FindCardUID($uid) {
-    if (count($this->char) == 0) return "";
+    if (count($this->char) == 0) return new CharacterCard(-1, $this->player);
     for ($i = 0; $i < count($this->char); $i += CharacterPieces()) {
       if ($this->char[$i + 11] == $uid) return new CharacterCard($i, $this->player);
     }
-    return "";
+    return new CharacterCard(-1, $this->player);
   }
 
   function FindCardID($id) {
@@ -47,7 +47,10 @@ class CharacterCard {
 
   // Constructor
   function __construct($index, $player) {
-    $this->pieces = &GetPlayerCharacter($player);
+    if ($index != -1)
+      $this->pieces = &GetPlayerCharacter($player);
+    else
+      $this->pieces = [];
     $this->index = $index;
     $this->controller = $player;
   }
