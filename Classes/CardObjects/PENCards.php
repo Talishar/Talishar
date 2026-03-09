@@ -7806,7 +7806,7 @@ class seismic_shift_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     foreach(explode(",", $target) as $targ) {
       $Target = CleanTargetToObject($this->controller, $targ);
-      $Target->Destroy();
+      if ($Target != "") $Target->Destroy();
     }
   }
 }
