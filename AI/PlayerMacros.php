@@ -65,7 +65,6 @@ function ProcessMacros()
               PassInput();
             }
             elseif ($turn[0] == "INSTANT" && $layerCount > 0) {// I don't think this should ever be called after the above
-              WriteLog("HERE1: $currentPlayer");
               ProcessInstantMacros($firstLayer, $holdPrioritySetting, $somethingChanged);
             }
           }
