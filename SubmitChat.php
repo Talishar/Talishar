@@ -184,8 +184,9 @@ function parseQuickChat($inputEnum)
     case "18": return "That was really cool!";
     case "19": return "Thinking... Please bear with me!";
     case "20": return "Want to Chat?";
-    case "21": return "Whoops!";
-    case "22": return "Yes";
+    case "21": return "Well played!";
+    case "22": return "Whoops!";
+    case "23": return "Yes";
     default: return "";
   };
 }
