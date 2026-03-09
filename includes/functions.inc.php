@@ -349,6 +349,10 @@ function logCompletedGameStats($conceded = false)
 		$countLoserDeck = count(GetDeck($loser));
 
 		$conn = GetDBConnection();
+		if (!$conn) {
+			WriteLog("Something went wrong connecting to the database, failing to log stats", highlight:true);
+			return;
+		}
 
 		// Build parameterized query safely
 		$params = [$winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer];

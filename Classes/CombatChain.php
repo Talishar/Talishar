@@ -83,7 +83,7 @@ class ChainCard {
 
     function ID() {
       if(count($this->chain) == 0) return "";
-      return $this->chain[$this->index];
+      return $this->chain[$this->index] ?? "-";
     }
 
     function Become($cardID) {
