@@ -181,8 +181,8 @@ function ProcessSpecificCardMacros()
   if ($turn[0] == "CHOOSEMULTIZONE" && $EffectContext == "blood_runs_deep_red" || $turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
   { 
     $Daggers = explode(",", $turn[2]);
-    $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[0]));
-    $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[1]));
+    $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[0] ?? "-"));
+    $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[1] ?? "-"));
     if ($dagger1 == $dagger2) 
     { 
       ContinueDecisionQueue($Daggers[0]); 
