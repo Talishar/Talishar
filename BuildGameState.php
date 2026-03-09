@@ -115,17 +115,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
     $spectatorIsFriendOfP2 = in_array($p2uid, $friendList);
   }
-  
-  // Debug logging
-  $response->debugFriendsBackend = [
-    'friendList' => $friendList,
-    'p1uid' => $p1uid,
-    'p2uid' => $p2uid,
-    'spectatorIsFriendOfP1' => $spectatorIsFriendOfP1,
-    'spectatorIsFriendOfP2' => $spectatorIsFriendOfP2,
-    'sessionUserLoggedIn' => $sessionUserLoggedIn,
-    'sessionUserName' => $sessionUserName,
-  ];
 
   $response->lastUpdate = $cacheVal;
 
@@ -431,16 +420,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirHandCount = count($theirHand);
   $spectatorCanSeeP1Hand = $playerID == 3 && ($isCasterMode || ($spectatorIsFriendOfP1 && !IsHideHandFromFriends(1)));
   $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !IsHideHandFromFriends(1));
-  
-  // Send debug info for front-end logging
-  $response->debugFriendHand = [
-    'playerID' => $playerID,
-    'spectatorIsFriendOfP1' => $spectatorIsFriendOfP1,
-    'p1HideHandFromFriends' => IsHideHandFromFriends(1),
-    'showTheirHand' => $showTheirHand,
-    'isGameOver' => $isGameOver,
-    'isReplay' => $isReplay
-  ];
   
   for ($i = 0; $i < $theirHandCount; ++$i) {
     $theirHandContents[] = JSONRenderedCard($showTheirHand ? $theirHand[$i] : $TheirCardBack);
