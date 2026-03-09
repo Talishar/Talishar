@@ -46,14 +46,14 @@ function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
-  return $settings[$SET_AlwaysHoldPriority];
+  return $settings[$SET_AlwaysHoldPriority] ?? 0;
 }
 
 function ManualTunicSetting($player)
 {
   global $SET_ManualTunic;
   $settings = GetSettings($player);
-  return $settings[$SET_ManualTunic];
+  return $settings[$SET_ManualTunic] ?? 0;
 }
 
 function UseNewUI($player)
@@ -67,21 +67,21 @@ function IsDarkMode($player)
 {
   global $SET_DarkMode;
   $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] == 1 || $settings[$SET_DarkMode] == 3;
+  return $settings[$SET_DarkMode] ?? 0 == 1 || $settings[$SET_DarkMode] ?? 0 == 3;
 }
 
 function IsPlainMode($player)
 {
   global $SET_DarkMode;
   $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] == 2;
+  return $settings[$SET_DarkMode] ?? 0 == 2;
 }
 
 function IsDarkPlainMode($player)
 {
   global $SET_DarkMode;
   $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] == 3;
+  return $settings[$SET_DarkMode] ?? 0 == 3;
 }
 
 function IsPatron($player)
@@ -89,21 +89,21 @@ function IsPatron($player)
   global $SET_IsPatron;
   $settings = GetSettings($player);
   if(count($settings) < $SET_IsPatron) return false;
-  return $settings[$SET_IsPatron] == "1";
+  return $settings[$SET_IsPatron] ?? "0" == "1";
 }
 
 function GetPlaymat($player)
 {
   global $SET_Playmat;
   $settings = GetSettings($player);
-  return $settings[$SET_Playmat];
+  return $settings[$SET_Playmat] ?? 0;
 }
 
 function GetCardBack($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
- switch($settings[$SET_Cardback]) {
+ switch($settings[$SET_Cardback] ?? 0) {
     case 1: return "CBBlack";
     case 2: return "CBCreamWhite";
     case 3: return "CBGold";
@@ -250,7 +250,7 @@ function ShouldSkipARs($player)
 {
   global $SET_SkipARs;
   $settings = GetSettings($player);
-  return $settings[$SET_SkipARs];
+  return $settings[$SET_SkipARs] ?? 0;
 }
 
 function ShouldSkipDRs($player)
