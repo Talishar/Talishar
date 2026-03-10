@@ -250,6 +250,10 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 function GetDeckBuilderId($uid, $decklink)
 {
 	$conn = GetDBConnection();
+	if (!$conn) {
+        echo json_encode(["error" => "Database connection failed in getting deckbuilder ID"]);
+        return "";
+	}
 	$sql = "SELECT fabraryId,fabdbId FROM users WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
