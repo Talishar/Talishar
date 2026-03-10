@@ -7209,7 +7209,7 @@ class cheating_scoundrel_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter != "WAGER";
+    return CardType($CombatChain->AttackCard()->ID()) == "AA";
   }
 
   function OnAttackEffect($cardID, $i) {
@@ -7226,7 +7226,7 @@ class cheating_scoundrel_red extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 3;
+    return $param != "WAGER" ? 3 : 0;
   } 
 }
 
