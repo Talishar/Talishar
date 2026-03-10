@@ -110,6 +110,11 @@ class AuraCard {
     return $this->pieces[$this->index+5] ?? 0;
   }
 
+  function AddUses($n=1) {
+    if (isset($this->pieces[$this->index+5]))
+      $this->pieces[$this->index+5] += $n;
+  }
+
 
   function UniqueID() {
     return $this->pieces[$this->index+6] ?? "-";
