@@ -488,7 +488,7 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
     case "haze_bending_blue":
       if (!$isToken && $AuraCard->NumAbilityUses() > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
         $EffectContext = $cardID;
-        $AuraCard->AddUse(-1);
+        $AuraCard->AddUses(-1);
         AddLayer("TRIGGER", $player, $AuraCard->CardID(), "-", "-", $AuraCard->UniqueID());
       }
       break;
