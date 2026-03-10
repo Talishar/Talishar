@@ -97,7 +97,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $isReactFE = true;
-  $isGameOver = IsGameOver();
+  $isGameOver = function_exists("IsGameOver") ? IsGameOver() : false;
   $isCasterMode = IsCasterMode();
   $isReplay = IsReplay();
 
