@@ -4320,9 +4320,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $pieces = CurrentTurnEffectPieces();
         for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
           if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-            if ($currentTurnEffects[$i] == "cheating_scoundrel_red")
-              AddOnWagerEffects();
-            elseif (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+            if (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
               $CombatChain->AttackCard()->AddBuff(ConvertToSetID($currentTurnEffects[$i]));
               RemoveCurrentTurnEffect($i);
             }

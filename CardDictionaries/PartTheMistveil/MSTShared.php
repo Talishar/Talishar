@@ -766,7 +766,7 @@ function MSTHitEffect($cardID, $from): void
       AddDecisionQueue("MZREVEAL", $mainPlayer, "-", 1);
       break;
     case "murky_water_red":
-      $trapsArr = explode(",", SearchDiscard($mainPlayer, subtype: "Trap"));
+      $trapsArr = explode(",", SearchDiscard($mainPlayer, subtype: "Trap", minCost:0));
       if (count($trapsArr) >= 3) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish traps");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");

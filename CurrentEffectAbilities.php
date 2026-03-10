@@ -766,6 +766,9 @@ function OnAttackEffects($cardID)
   $attackType = CardType($cardID);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
+    $Effect = new CurrentEffect($i);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    if ($card != "-") $remove = $card->OnAttackEffect($cardID, $i);
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "bramble_spark_red":

@@ -614,4 +614,8 @@ class Card {
   function LeavesCombatChainAbility() {
     return;
   }
+
+  function OnAttackEffect($cardID, $i) {
+    return false;
+  }
 }

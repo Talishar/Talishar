@@ -6053,11 +6053,10 @@ class snarky_prick_red extends Card {
   function ProcessAttackTrigger($target, $uniqueID) {
     global $defPlayer;
     $Deck = new Deck($defPlayer);
-    if (ColorContains($Deck->Top(), 1, $defPlayer)) {
-      $cardID = $Deck->Top(true);
-      AddGraveyard($cardID, $defPlayer, "DECK", $this->controller);
-      AddCurrentTurnEffect($this->cardID, $this->controller);
-      WriteLog("You " . CardLink($this->cardID) . "! You destroyed my " . CardLink($cardID) . "!");
+    $topDeck = $Deck->Top();
+    if (ColorContains($topDeck, 1, $defPlayer)) {
+      Await($this->controller,  "YesNo", context:"if you want to destroy " . CardLink($topDeck) . " from your opponent's deck?", subsequent:false);
+      Await($this->controller, $this->cardID);
     }
     else {
       AddDecisionQueue("WRITELOG", $defPlayer, "Shows opponent's top deck", 1);
@@ -6075,6 +6074,15 @@ class snarky_prick_red extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 4;
+  }
+
+  function SpecificLogic() {
+    global $defPlayer;
+    $Deck = new Deck($defPlayer);
+    $cardID = $Deck->Top(true);
+    AddGraveyard($cardID, $defPlayer, "DECK", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    WriteLog("You " . CardLink($this->cardID) . "! You destroyed my " . CardLink($cardID) . "!");
   }
 }
 
@@ -7201,8 +7209,22 @@ class cheating_scoundrel_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter !=  "WAGER";
+    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter != "WAGER";
   }
+
+  function OnAttackEffect($cardID, $i) {
+    $Effect = new CurrentEffect($i);
+    $param = explode("-", $Effect->EffectID())[1] ?? "-";
+    if ($param == "WAGER") {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+    return false;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddOnWagerEffects();
+  }
+
   function EffectPowerModifier($param, $attached = false) {
     return 3;
   } 
