@@ -175,8 +175,11 @@ function MZReveal($player, $parameter, $lastResult)
     if (!isset($mzIndex[1])) continue;
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
-    $cardID = $zone[$mzIndex[1]];
-    WriteLog("👁️‍🗨️" .CardLink($cardID, $cardID) . " was revealed");
+    $cardID = $zone[$mzIndex[1]] ?? "-";
+    if ($cardID != "-")
+      WriteLog("👁️‍🗨️" .CardLink($cardID, $cardID) . " was revealed");
+    else
+      WriteLog("Nothing was revealed");
   }
   return $lastResult;
 }
