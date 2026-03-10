@@ -7209,13 +7209,13 @@ class cheating_scoundrel_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return CardType($CombatChain->AttackCard()->ID()) == "AA";
+    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter != "WAGER";
   }
 
   function OnAttackEffect($cardID, $i) {
     $Effect = new CurrentEffect($i);
     $param = explode("-", $Effect->EffectID())[1] ?? "-";
-    if ($param == "WAGER") {
+    if ($param != "WAGER") {//the "Wager" effect is for the lose replacement effect
       AddLayer("TRIGGER", $this->controller, $this->cardID);
     }
     return false;
@@ -7226,7 +7226,7 @@ class cheating_scoundrel_red extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return $param != "WAGER" ? 3 : 0;
+    return 3;
   } 
 }
 
