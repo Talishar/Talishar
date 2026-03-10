@@ -440,29 +440,40 @@ function &GetAurasLocation($player, $location)
   return $auras;
 }
 
+function GetAuraObject($player, $location, $index) {
+  switch ($location) {
+    case "AURAS":
+      return new AuraCard($index, $player);
+    case "EQUIP":
+      return new CharacterCard($index, $player);
+    default:
+      return new AuraCard($index, $player);
+  }
+}
+
 function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true)
 {
-  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer, $currentPlayer;
-  $auras = &GetAurasLocation($player, $location);
-  $isToken = ($location == "EQUIP") ? true : $auras[$index + 4] == 1;
+  global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer, $currentPlayer, $CombatChain;
+  $AuraCard = GetAuraObject($player, $location, $index);
+  $isToken = ($location == "EQUIP") ? true : $AuraCard->IsToken() == 1;
   if ($uniqueID != "") {
     $index = $location == "AURAS" ? SearchAurasForUniqueID($uniqueID, $player) : SearchCharacterForUniqueID($uniqueID, $player);
   }
-  if ($auras[$index] == "fealty" && SearchCharacterActive($player, "dynastic_diadem") && $player != $currentPlayer) {
+  if ($AuraCard->CardID() == "fealty" && SearchCharacterActive($player, "dynastic_diadem") && $player != $currentPlayer) {
     WriteLog("<b style='color:red;'>🐉My " . CardLink("fealty") . " cannot be quenched!🐉</b>");
     return;
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
-  $from = $location == "AURAS" ? $auras[$index + 9] : "EQUIPMENT";
-  $destinationUID = AuraDestroyed($player, $auras[$index], $isToken, $from);
+  $from = $location == "AURAS" ? $AuraCard->From() : "EQUIPMENT";
+  $destinationUID = AuraDestroyed($player, $AuraCard->CardID(), $isToken, $from);
   $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose, $mainPhase, $destinationUID);
   if ($cardID == "lightning_flow") {
     global $CS_NumLightningFlowDestroyed;
     IncrementClassState($player, $CS_NumLightningFlowDestroyed);
   }
   // Refreshes the aura index with the Unique ID in case of aura destruction
-  if (isset($combatChain[0]) && DelimStringContains(CardSubtype($combatChain[0]), "Aura") && $player == $mainPlayer) {
-    $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($combatChain[8], $player);
+  if ($CombatChain->HasCurrentLink() && DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura") && $player == $mainPlayer) {
+    $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($CombatChain->AttackCard()->OriginUniqueID(), $player);
   }
   if ($cardID == "passing_mirage_blue") ReEvalCombatChain(); //check if phantasm should trigger
   return $cardID;
@@ -471,17 +482,14 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
 function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
 {
   global $EffectContext;
-  $auras = &GetAurasLocation($player, $location);
-  $cardID = $auras[$index];
+  $AuraCard = GetAuraObject($player, $location, $index);
+  $cardID = $AuraCard->CardID();
   switch ($cardID) {
     case "haze_bending_blue":
-      $auraConstants = AuraLocationConstants($location);
-      $uniqueIDIndex = $auraConstants[1];
-      $numUsesIndex = $auraConstants[2];
-      if (!$isToken && $auras[$index + $numUsesIndex] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
+      if (!$isToken && $AuraCard->NumAbilityUses() > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
         $EffectContext = $cardID;
-        --$auras[$index + $numUsesIndex];
-        AddLayer("TRIGGER", $player, $auras[$index], "-", "-", $auras[$index + $uniqueIDIndex]);
+        $AuraCard->AddUse(-1);
+        AddLayer("TRIGGER", $player, $AuraCard->CardID(), "-", "-", $AuraCard->UniqueID());
       }
       break;
     default:

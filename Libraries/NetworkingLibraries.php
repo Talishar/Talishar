@@ -1021,9 +1021,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
       if (file_exists("./Games/$gameName/gamestateBackup.txt")) copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
-      copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
-      copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
-      copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
+      if (file_exists("./Games/$gameName/gamelog.txt")) copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
+      if (file_exists("./Games/$gameName/beginTurnGamestate.txt")) copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
+      if (file_exists("./Games/$gameName/lastTurnGamestate.txt")) copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
       WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
       break;
     case 100015: //Request to enable chat

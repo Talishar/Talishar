@@ -212,16 +212,18 @@
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     if (SubtypeContains($cardID, "Aura") || TypeContains($cardID, "AA")) {
       $numMercifulRetribution = SearchCount(SearchAurasForCard("merciful_retribution_yellow", $player));
+      $uid = "-";
       if ($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
         AddGraveyard($cardID, $player, "COMBATCHAIN");
         $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
         $grave = GetDiscard($player);
         $uid = $grave[count($grave) - DiscardPieces() + 1];
       }
-
-      for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-        SetArcaneTarget($player, "merciful_retribution_yellow", 0);
-        AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
+      if ($uid != "-") {
+        for ($i = 0; $i < $numMercifulRetribution; ++$i) {
+          SetArcaneTarget($player, "merciful_retribution_yellow", 0);
+          AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
+        }
       }
     }
   }
