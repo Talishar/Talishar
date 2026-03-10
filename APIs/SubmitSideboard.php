@@ -105,7 +105,7 @@ if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format =
   exit;
 }
 
-$inventory = isset($submission->inventory) ? $submission->inventory : [];
+$inventory = $submission->inventory ?? [];
 
 $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
@@ -199,7 +199,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $p2chatEnabled = GetCachePiece($gameName, 16);
   $currentPlayer = 0;
   $isReplay = 0;
-  WriteCache($gameName, ($currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
+  WriteCache($gameName, $currentUpdate + 1 . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
 
   $filename = "../Games/" . $gameName . "/gamestate.txt";
   include "../ParseGamestate.php";
