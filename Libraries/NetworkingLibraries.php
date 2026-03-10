@@ -2805,6 +2805,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     ) {
         $names[0] = "-";
     }
+    $option = "-";
     if ($names[0] == "-" && $names[1] == "-") {
       WriteLog("Both sides of the meld card are blocked, reverting play", highlight: true);
       RevertGamestate();

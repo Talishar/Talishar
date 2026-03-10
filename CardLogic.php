@@ -297,7 +297,7 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeChe
     }
   }
 
-  $parameter = str_replace(" ", "_", $parameter);
+  $parameter = str_replace(" ", "_", $parameter ?? "");
   array_splice($decisionQueue, $insertIndex, 0, [$phase, $player, $parameter, $subsequent, $makeCheckpoint]);
 }
 
