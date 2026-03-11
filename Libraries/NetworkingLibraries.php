@@ -1222,6 +1222,13 @@ function PassInput($autopass = true, $doublePass = false)
     }
     ContinueDecisionQueue();
   }
+  elseif ($turn[0] == "PDECK") {
+    $pitch = &GetPitch($currentPlayer);
+    for ($i = 0; $i < count($pitch); ++$i) {
+      PitchDeck($currentPlayer, 0);
+    }
+    PassTurn();
+  }
   else {
     switch ($autopass) {
       case true:

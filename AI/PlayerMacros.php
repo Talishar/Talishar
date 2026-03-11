@@ -177,19 +177,24 @@ function ProcessSpecificCardMacros()
     ContinueDecisionQueue(explode(",", $turn[2])[0]); 
     return true;
   }
-  
   if ($turn[0] == "CHOOSEMULTIZONE" && $EffectContext == "blood_runs_deep_red" || $turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
   { 
-    $Daggers = explode(",", $turn[2]);
-    $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[0] ?? "-"));
-    $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $Daggers[1] ?? "-"));
+    $daggers = explode(",", $turn[2]);
+    $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $daggers[0] ?? "-"));
+    $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $daggers[1] ?? "-"));
     if ($dagger1 == $dagger2) 
     { 
-      ContinueDecisionQueue($Daggers[0]); 
+      ContinueDecisionQueue($daggers[0]); 
       return true;
     }
   }
-  
+  if ($turn[0] == "BUTTONINPUT" && $EffectContext == "jarl_vetreidi")
+  {
+    if(GetCharacterGemState($currentPlayer, $EffectContext) != 0) {
+      ContinueDecisionQueue(explode(",", $turn[2])[0]); 
+      return true;
+    }
+  }
   return false;
 }
 
