@@ -55,6 +55,13 @@ class CombatChain {
     return count($this->chain) > 0;
   }
 
+  function HasCurrentAttack() {
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    if (!$this->HasCurrentLink()) return false;
+    if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return false;
+    return true;
+  }
+
   function CurrentAttack() {
     if(!$this->HasCurrentLink()) return "";
     return $this->chain[0];

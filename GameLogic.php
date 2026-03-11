@@ -58,7 +58,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
-  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -3663,6 +3663,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResult = str_replace(",,", ",", $lastResult);
       return $lastResult;
     case "GONEINAFLASH":
+      if (!DoesAttackHaveGoAgain()) //lock in last known information
+        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
       CleanUpCombatEffects();
       if (SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
       elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
