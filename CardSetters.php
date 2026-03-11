@@ -70,8 +70,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       
     }
   }
-  // created cards don't count as cards put into banish
-  if ($from != "-") $classState[$CS_CardsBanished] += $amount;
+  $classState[$CS_CardsBanished] += $amount;
   if ($created) {
       $ClassState = new ClassState($player);
       $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $amount);
