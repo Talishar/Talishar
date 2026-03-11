@@ -4048,6 +4048,7 @@ function CharacterDefaultActiveState($cardID)
       return 1;
     case "verdance_thorn_of_the_rose":
     case "verdance":
+    case "jarl_vetreidi":
       return 0;
     default:
       return 2;
