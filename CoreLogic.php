@@ -2752,7 +2752,6 @@ function CanPassPhase($phase)
   }
   switch ($phase) {
     case "P":
-    case "PDECK":
     case "CHOOSEDECK":
     case "CHOOSETHEIRDECK":
     case "HANDTOPBOTTOM":
