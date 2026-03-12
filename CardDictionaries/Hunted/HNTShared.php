@@ -413,7 +413,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (IsHeroAttackTarget() && CheckMarked($otherPlayer)) GiveAttackGoAgain();
       break;
     case "two_sides_to_the_blade_red":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1); 
       AddDecisionQueue("MODAL", $currentPlayer, "TWOSIDES", 1);
       break;
     case "graphene_chelicera":
@@ -421,8 +421,12 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "cindra_dracai_of_retribution":
     case "cindra":
-      RecurDagger($currentPlayer);
-      RecurDagger($currentPlayer);
+      if (NumOccupiedHands($currentPlayer) < 1) { //Only Equip if there is a broken weapon/off-hand
+        RecurDagger($currentPlayer);
+      }
+      if (NumOccupiedHands($currentPlayer) < 2) { //Only Equip if there is a broken weapon/off-hand
+        RecurDagger($currentPlayer);
+      }
       break;
     case "blood_runs_deep_red":
       if (IsHeroAttackTarget()) AddLayer("TRIGGER", $currentPlayer, "blood_runs_deep_red");
@@ -1051,13 +1055,11 @@ function RemoveMark($player)
 function RecurDagger($player) //$mode == 0 for left, and 1 for right
 {
   $char = &GetPlayerCharacter($player);
-  if (NumOccupiedHands($player) < 2) { //Only Equip if there is a broken weapon/off-hand
-    AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
-    AddDecisionQueue("NULLPASS", $player, "-", 1);
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
-    AddDecisionQueue("MAYCHOOSECARD", $player, "<-", 1);
-    AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
-  }
+  AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
+  AddDecisionQueue("NULLPASS", $player, "-", 1);
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
+  AddDecisionQueue("MAYCHOOSECARD", $player, "<-", 1);
+  AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
 }
 
 function ListDracDaggersGraveyard($player) {
