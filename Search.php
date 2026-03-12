@@ -1545,7 +1545,12 @@ function SearchMultizone($player, $searches)
             $phantasmOnly = $condition[1];
             break;
           case "pitch":
-            $pitch = $condition[1];
+            $pitch = match(strtolower($condition[1])) {
+              "red" => "1",
+              "yellow" => "2",
+              "blue" => "3",
+              default => $pitch
+            };
             break;
           case "specOnly":
             $specOnly = $condition[1];
