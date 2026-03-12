@@ -1841,7 +1841,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       }
       $index = SearchCharacterForCards($cardID, $player);
       if (SearchBanishForCard($player, "edge_of_autumn") != -1 && $openHands) {
-        AddDecisionQueue("SETDQCONTEXT", $player, "Equip_a_banished_edge_of_autumn?");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Do you want to equip an ".CardLink("edge_of_autumn")." from your banish zone?");
         if ($index == "" || IsCharacterActive($player, $index)) {
          AddDecisionQueue("YESNO", $player, "-", 1);
          AddDecisionQueue("NOPASS", $player, "-", 1);
