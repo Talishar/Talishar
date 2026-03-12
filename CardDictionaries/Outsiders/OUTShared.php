@@ -520,8 +520,8 @@ function OUTAbilityCost($cardID)
       case "shake_down_red":
         if(NumAttackReactionsPlayed() > 0 && IsHeroAttackTarget())
         {
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
-          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
+          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a color", 1);
+          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Red,Yellow,Blue", 1);
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
           AddDecisionQueue("WRITELOG", $mainPlayer, "Main player chose: {0}", 1);
           AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
