@@ -1034,6 +1034,7 @@ function EquipPayAdditionalCosts($cardIndex)
     $card = new $cardID($currentPlayer);
     return $card->EquipPayAdditionalCosts($cardIndex);
   }
+  $CharacterCard = new CharacterCard($cardIndex, $currentPlayer);
   switch ($cardID) {
     case "fyendals_spring_tunic": //Tunic energy counters
       if (!ManualTunicSetting($currentPlayer) || $character[$cardIndex + 2] == 3) {
@@ -1051,7 +1052,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "kano_dracai_of_aether":
     case "kano":
     case "sledge_of_anvilheim":
-    case "plasma_barrel_shot":
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
     case "shock_charmers":
@@ -1060,6 +1060,11 @@ function EquipPayAdditionalCosts($cardIndex)
     case "jinglewood_smash_hit":
     case "hidden_agenda":
       break; //Unlimited uses
+    case "plasma_barrel_shot":
+      $abilityType = GetResolvedAbilityType($cardID, "EQUIP", $currentPlayer);
+      if ($abilityType == "AA")
+        $CharacterCard->AddUse(-1);
+      break;
     case "spellbound_creepers": 
       ++$character[$cardIndex + 2];//Add a counter
       --$character[$cardIndex + 5];

@@ -1380,10 +1380,15 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
   if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing);
   switch ($cardID) {
     case "teklo_plasma_pistol":
-    case "plasma_barrel_shot":
       if ($index == -1) return "";
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($character[$index + 2] > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) $rv .= ",Attack";
+      return $rv;
+    case "plasma_barrel_shot":
+      $CharacterCard = new CharacterCard($index, $currentPlayer);
+      if ($index == -1) return "";
+      $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
+      if ($CharacterCard->NumCounters() > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer) && $CharacterCard->NumUses() > 0) $rv .= ",Attack";
       return $rv;
     case "barbed_castaway":
       if(!SearchCurrentTurnEffects("barbed_castaway-Load", $currentPlayer)) return "Aim";
