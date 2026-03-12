@@ -1549,7 +1549,7 @@ function SearchMultizone($player, $searches)
               "red" => "1",
               "yellow" => "2",
               "blue" => "3",
-              default => $pitch
+              default => $condition[1]
             };
             break;
           case "specOnly":
