@@ -2502,7 +2502,7 @@ class hope_merchants_hood extends Card {
 
 class staunch_response extends BaseCard {
   function PayAdditionalCosts() {
-    Await($this->controller, "YesNo", context:"Pay 4 resources to gain +3 block?", subsequent:0);
+    Await($this->controller, "YesNo", context:" if you want to pay 4 resources to gain +3 block?", subsequent:0);
     Await($this->controller, "PayResources", amount:4);
     Await($this->controller, $this->cardID, final:true);
   }
