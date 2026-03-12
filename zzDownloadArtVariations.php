@@ -11,10 +11,10 @@ $manualArtVariationOverrides = [
   //   "art_of_the_void_red" => "AA",
   // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
   //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
-/* 
-  "nitro_mechanoid" => [
-   "artVariation" => "FA",
-   "imageUrl" => "https://content.fabrary.net/cards/GEM119_BACK.webp"
+
+/*    "colors_of_aria_red" => [
+   "artVariation" => "EA",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/FAB426.webp"
   ], */
 ];
 
@@ -296,7 +296,7 @@ function RegenerateImageVariations($filepath, $filename)
         @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
         
         CreateDirIfNotExists(dirname($cardSquaresMissingFolder));
-        @imagewebp($dest, $cardSquaresMissingFolder, 80);
+        @imagewebp($dest, $cardSquaresMissingFolder, 90);
         
         @imagedestroy($dest);
       }
@@ -445,7 +445,7 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
       CreateDirIfNotExists(dirname($cardCropsMissingFolder));
       
       // Save main card image to CardImages missing folder
-      $webpResult = @imagewebp($processedImage, $filepath, 80);
+      $webpResult = @imagewebp($processedImage, $filepath, 90);
       if (!$webpResult) {
         error_log("Warning: Failed to save webp for $filename to $filepath");
       }
@@ -462,7 +462,7 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
             @imagecopy($dest, $imageTop, 0, 0, 0, 0, 450, 372);
             @imagecopy($dest, $imageBottom, 0, 373, 0, 0, 450, 78);
             
-            @imagewebp($dest, $cardSquaresMissingFolder, 80);
+            @imagewebp($dest, $cardSquaresMissingFolder, 90);
             
             @imagedestroy($dest);
           }
