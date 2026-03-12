@@ -531,7 +531,7 @@ function CardTalent($cardID, $from="-")
 }
 
 //Minimum cost of the card
-function CardCost($cardID, $from="-")
+function CardCost($cardID, $from="-", $index=-1)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
@@ -601,6 +601,12 @@ function CardCost($cardID, $from="-")
       return 1;
     case "nitro_mechanoidc":
       return -1;
+    case "spark_of_genius_yellow":
+      if ($from == "LAYER") {
+        $Layer = new Layer($index);
+        return $Layer->DynCost();
+      }
+      else return 0;
     default:
       break;
   }

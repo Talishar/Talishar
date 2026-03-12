@@ -7510,7 +7510,7 @@ class temporal_wobble_red extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     $cost = SearchCount(SearchAura($this->controller, nameIncludes:"Sigil"))-1;
     if ($cost == -1) return true;
-    return SearchLayersForNAACard($cost) == "";;
+    return SearchLayersForNAACard($cost) == "";
   }
 
   function PayAdditionalCosts($from, $index = '-') {
@@ -7531,7 +7531,7 @@ class temporal_wobble_red extends Card {
       // It should do this even if the target is gone, use LKI to find the owner
       // low priority to fix
       GainActionPoints(1, $TargetLayer->PlayerID());
-      if (CardCost($TargetLayer->ID(), "LAYER") <= $cost)
+      if (CardCost($TargetLayer->ID(), "LAYER", $TargetLayer->Index()) <= $cost)
         $TargetLayer->Negate("GY");
     }
   }

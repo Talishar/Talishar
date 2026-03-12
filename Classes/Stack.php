@@ -103,7 +103,10 @@ class Layer {
 	// Constructor
 	function __construct($index) {
 		global $layers;
-		$this->layers = &$layers;
+    if ($index != -1)
+  		$this->layers = &$layers;
+    else
+      $this->layers = [];
 		$this->index = $index;
 	}
 
@@ -123,6 +126,10 @@ class Layer {
 	function Parameter() {
 		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
+
+  function DynCost() {
+    return explode("|", $this->Parameter())[1] ?? 0;
+  }
 
 	function Target() {
 		return isset($this->layers[$this->index+3]) ? $this->layers[$this->index+3] : "-";
