@@ -4757,9 +4757,9 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
       }
     }
   }
-  else if ($cardID == "nitro_mechanoidc") {
+  if ($cardID == "nitro_mechanoidc") {
     $Items = new Items($player);
-    $Mechanoid = $Items->FindCard("nitromechanoidc");
+    $Mechanoid = $Items->FindCard("nitro_mechanoidc");
     $power = 5;
     $subcards = $Mechanoid->SubCards();
     if ($subcards != "-") {
