@@ -1424,7 +1424,7 @@ function EquipPayAdditionalCosts($cardIndex)
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $allInds));
       AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Edge of Autumn to banish", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an " . CardLink("edge_of_autumn") . " to banish", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
