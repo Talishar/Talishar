@@ -100,6 +100,7 @@ echo ("<br><h1>Run SQL Query:</h1>");
 
 $queryExecuted = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
+  /*
   try {
     $rawQuery = trim($_POST['sqlQuery']);
     if ($rawQuery !== '') {
@@ -139,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
   } catch (Exception $e) {
     echo "<p style='color:red; margin-left:10px; padding:10px; background:rgba(255,0,0,0.2); border-radius:3px;'><strong>❌ Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
   }
+    */
 }
 
 echo "<form action='./zzModPage.php' method='POST'>";
