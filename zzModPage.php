@@ -141,15 +141,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
     echo "<p style='color:red; margin-left:10px; padding:10px; background:rgba(255,0,0,0.2); border-radius:3px;'><strong>❌ Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
   }
 }
-?>
-<form action='./zzModPage.php' method="POST">
-  <?php echo getCSRFTokenField(); ?>
-  <label for="sqlQuery" style='font-weight:bolder; margin-left:10px;'>SQL Query:</label><br>
-  <textarea id="sqlQuery" name="sqlQuery" rows="5" style="width:480px; margin-left:10px; font-family:monospace; background:#2a2a2a; color:#fff; padding:5px; border:1px solid #666;"><?php echo isset($_POST['sqlQuery']) ? htmlspecialchars($_POST['sqlQuery']) : ''; ?></textarea>
-  <br>
-  <input type="submit" value="Run Query" style="margin-left:10px; margin-top:5px; padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:3px; cursor:pointer;">
-</form>
-<?php
+
+echo "<form action='./zzModPage.php' method='POST'>";
+echo getCSRFTokenField();
+echo "<label for='sqlQuery' style='font-weight:bolder; margin-left:10px;'>SQL Query:</label><br>";
+echo "<textarea id='sqlQuery' name='sqlQuery' rows='5' style='width:480px; margin-left:10px; font-family:monospace; background:#2a2a2a; color:#fff; padding:5px; border:1px solid #666;'>";
+echo isset($_POST['sqlQuery']) ? htmlspecialchars($_POST['sqlQuery']) : '';
+echo "</textarea>";
+echo "<br>";
+echo "<input type='submit' value='Run Query' style='margin-left:10px; margin-top:5px; padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:3px; cursor:pointer;'>";
+echo "</form>";
+
 ?>
 
 </div>
