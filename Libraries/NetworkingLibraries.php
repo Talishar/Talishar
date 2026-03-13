@@ -4205,7 +4205,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $Mechanoid->ToggleOnChain(1);
   }
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
-  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) || $cardID == "quickdodge_flexors") {
+  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
     if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
@@ -4354,6 +4354,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
+  } else if ($cardID == "quickdodge_flexors") {
+    if ($CombatChain->FindCardID($cardID)->Index() == -1)
+      // helpful log message
+      WriteLog(CardLink($cardID) . " could not be added as a defending chain link!");
   } else if ($from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS") {
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);

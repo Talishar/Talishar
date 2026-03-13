@@ -28,6 +28,14 @@ class CombatChain {
     return "";
   }
 
+  function FindCardID($id) {
+    if (!$this->HasCurrentLink()) return new ChainCard(-1);
+    for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
+      if ($this->chain[$i] == $id) return new ChainCard($i);
+    }
+    return new ChainCard(-1);
+  }
+
   function AttackCard() {
     return new ChainCard(0);
   }
@@ -80,7 +88,10 @@ class ChainCard {
     // Constructor
     function __construct($index) {
       global $combatChain;
-      $this->chain = &$combatChain;
+      if ($index != -1)
+        $this->chain = &$combatChain;
+      else
+        $this->chain = [];
       $this->index = $index;
     }
 
